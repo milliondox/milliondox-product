@@ -20834,6 +20834,7 @@ display: block;
     background: linear-gradient(98.11deg, #454545 0%, #141414 100%);
     padding: 40px 30px;
     border-radius: 20px;
+    cursor: pointer;
 }
 
 .invest_rec .left_pop_directorss span {
