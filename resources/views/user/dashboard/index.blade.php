@@ -32,7 +32,7 @@
         <div class="left-menu-header">
           <h2>
             <b><span class="greeting" id="greeting"></span><span class="greeting">, {{$user->name}}</span></b>
-            Welcome to MillionDox!
+            Welcome to MillionDoxx!
           </h2>
         </div>
       </div>
