@@ -1381,7 +1381,7 @@ $(document).ready(function() {
                                   <div class="modal-body">
 
 <div class="iframe_contennt">
-     <embed src="../assets/images/vikram.pdf#toolbar=0&navpanes=0&scrollbar=0" type="application/pdf" width="100%" height="100%" style="border: none;">
+     <embed src="../assets/images/tc.pdf#toolbar=0&navpanes=0&scrollbar=0" type="application/pdf" width="100%" height="100%" style="border: none;">
 </div>
 
      <div class="btn_access_reg">

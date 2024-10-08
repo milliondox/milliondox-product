@@ -3,6 +3,15 @@
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+<script>
+    // Check if there's a success message in the session and display it
+    @if(session('success'))
+        toastr.success('{{ session('success') }}');
+    @endif
+    @if(session('error'))
+        toastr.error('{{ session('error') }}');
+    @endif
+</script>
     
  <link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" rel="stylesheet"/>
 
@@ -156,7 +165,7 @@
         <h2>Enter organization details</h2>
         <span>STEP 2</span>
     </div>
-              <form action="{{ route('updateuserprofile') }}" method="POST" enctype="multipart/form-data" class="upload-form">
+              <form action="{{ route('updateuserprofile') }}" method="POST" enctype="multipart/form-data" class="upload-form compuserprofile">
                 @csrf
 
 <div class="image_upload_area">
@@ -351,6 +360,43 @@
           </div>
         </div>
       </div>
+      <script>
+  $(document).ready(function () {
+    // Handle form submission
+    $('.compuserprofile').on('submit', function (e) {
+        e.preventDefault(); // Prevent form from submitting
+
+        // Get form values
+        var backupemail = $('#email').val();
+        var phone = $('#phone').val();
+        var form = $(this);
+
+        // Check if backup email or phone already exists
+        $.ajax({
+            url: "{{ route('checkEmailPhone') }}", // Route to check email/phone existence
+            method: 'POST',
+            data: {
+                _token: "{{ csrf_token() }}",
+                backupemail: backupemail,
+                phone: phone
+            },
+            success: function (response) {
+                if (response.exists) {
+                    // If backup email or phone exists, show an error message using Toastr
+                    toastr.error(response.message, 'Error');
+                } else {
+                    // If they do not exist, submit the form
+                    form.off('submit').submit(); // Unbind the submit event and submit the form
+                }
+            },
+            error: function (xhr) {
+                // Handle any errors with Toastr
+                toastr.error('Something went wrong! Please try again later.', 'Error');
+            }
+        });
+    });
+  });
+</script>
 
 
       <!-- organisation done pop end -->

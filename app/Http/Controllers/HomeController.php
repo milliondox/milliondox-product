@@ -195,6 +195,7 @@ use App\Models\TaskEvents;
 use App\Models\Feedback;
 
 
+
 use Illuminate\Support\Facades\Log;
 
 class HomeController extends Controller
@@ -13595,12 +13596,38 @@ public function checkFilesboradminutebook()
     $files = CommonTable::where('user_id', $userId)->get();
     return response()->json($files);
 }
-   public function updateuserprofile(Request $request)
+public function checkEmailPhone(Request $request)
 {
-    // Validate the input data (optional but recommended)
-    $request->validate([
+    $emailExists = User::where('backupemail', $request->backupemail)->exists();
+    $phoneExists = User::where('phone', $request->phone)->exists();
+
+    // Determine which exists, if any
+    $message = '';
+    if ($emailExists && $phoneExists) {
+        $message = 'Both email and phone number already exist!';
+    } elseif ($emailExists) {
+        $message = 'The email already exists!';
+    } elseif ($phoneExists) {
+        $message = 'The phone number already exists!';
+    }
+
+    return response()->json([
+        'exists' => $emailExists || $phoneExists,
+        'email_exists' => $emailExists,
+        'phone_exists' => $phoneExists,
+        'message' => $message
+    ]);
+}
+
+
+public function updateuserprofile(Request $request)
+{
+    // Validate the input data
+    $validatedData = $request->validate([
         'user_id' => 'required|exists:users,id',
-        'profile_picture' => 'nullable|image|max:2048', // Ensure it's an image and within size limit
+        'profile_picture' => 'nullable|image|max:2048',
+        'phone' => 'required|string|max:15|unique:users,phone,' . $request->user_id,
+        'backupemail' => 'nullable|email|unique:users,backupemail,' . $request->user_id,
     ]);
 
     $userId = $request->input('user_id');
@@ -13633,7 +13660,7 @@ public function checkFilesboradminutebook()
         
         $user->save(); // Save the updated user data
     }
-
+// dd($user);
     // Find the user info associated with the user
     $userInfo = UserInfo::where('user_id', $userId)->first();
     if ($userInfo) {
@@ -13663,6 +13690,8 @@ public function checkFilesboradminutebook()
     // Redirect back with a success message
     return redirect()->back()->with('success', 'Profile updated successfully');
 }
+
+
 
     
 
@@ -13743,42 +13772,71 @@ public function checkFilesboradminutebook()
 	
     public function companystoreprofile(Request $request)
     {
-        // Check if a record already exists for the authenticated user
-        $existingProfile = CompanyProfiles::where('user_id', auth()->id())->first();
+       
 
-        // If a record exists, update it; otherwise, create a new record
-        if ($existingProfile) {
-            $existingProfile->update([
+        $user_id = $request->input('user_id');
+        // Validate the input data, including PAN and CIN validation
+        $request->validate([
+            'state' => 'required|string|max:255',
+            'industry' => 'required|string|max:255',
+            'employee_count' => 'required|integer',
+            'DOI' => 'required|date',
+            'CIN' => ['required', 'string', 'regex:/^([A-Z]{5}[0-9]{4}[A-Z]{1}[0-9]{6})$/', 'unique:users,cin,' . auth()->id()], // CIN format validation
+            'PAN' => ['required', 'string', 'regex:/^([A-Z]{5}[0-9]{4}[A-Z]{1})$/', 'unique:users,pan,' . auth()->id()], // PAN format validation
+            'Email' => 'required|email|unique:users,email,' . $user_id, // Ensure the email is unique except for the current user
+            'phone' => 'required|string|max:15|unique:users,phone,' . $user_id, // Ensure the phone is unique except for the current user
+            'authorized_capital' => 'nullable|numeric',
+            'paid_up_capital' => 'nullable|numeric',
+        ]);
+    
+        // Get the authenticated user
+        $user = User::find($user_id);
+    
+        if ($user) {
+            // Update the User model
+            $user->update([
                 'state' => $request->input('state'),
-                'industry' => $request->input('industry'),
-                'employee_count' => $request->input('employee_count'),
+               'industry' => $request->input('industry'),
+               'employees' => $request->input('employee_count'),
+                'email' => $request->input('backupemail'),
                 'DOI' => $request->input('DOI'),
+                'phone' => $request->input('phone'),
                 'CIN' => $request->input('CIN'),
                 'PAN' => $request->input('PAN'),
-                'Email' => $request->input('Email'), 
-                'Phone' => $request->input('Phone'), 
                 'authorized_capital' => $request->input('authorized_capital'),
                 'paid_up_capital' => $request->input('paid_up_capital'),
             ]);
-        } else {
-            CompanyProfiles::create([
-                'user_id' => auth()->id(),
-                'state' => $request->input('state'),
-                'industry' => $request->input('industry'),
-                'employee_count' => $request->input('employee_count'),
-                'DOI' => $request->input('DOI'),
+    
+            // Find the associated UserInfo record
+            $userInfo = UserInfo::where('user_id', $user_id)->first();
+    
+            if ($userInfo) {
+                // Update existing UserInfo
+                $userInfo->update([
+                    'state' => $request->input('state'),
+               'industry' => $request->input('industry'),
+               'employees' => $request->input('employee_count'),
+                'email' => $request->input('backupemail'),
+                'joining_date' => $request->input('DOI'),
+                'phone' => $request->input('phone'),
                 'CIN' => $request->input('CIN'),
                 'PAN' => $request->input('PAN'),
-                'Email' => $request->input('Email'), 
-                'Phone' => $request->input('Phone'), 
                 'authorized_capital' => $request->input('authorized_capital'),
-                'paid_up_capital' => $request->input('paid_up_capital'), 
-            ]);
+                'paid_up_capital' => $request->input('paid_up_capital'),
+                ]);
+            } else {
+                // If no UserInfo record exists, you can choose to return an error message
+                return redirect()->back()->with('error', 'User information record not found.');
+            }
+        } else {
+            // If user not found, you can choose to return an error message
+            return redirect()->back()->with('error', 'User not found.');
         }
-
-        // Return a redirect with success message
+    
+        // Return a redirect with a success message
         return redirect()->back()->with('success', 'Profile updated successfully');
     }
+    
 
 //    public function storeregister(Request $request){
 //     dd($request);
@@ -17045,8 +17103,9 @@ public function shareFolder(Request $request)
     $commonFoldersQuery = Folder::where('parent_name', $folderPath)
                                 ->where('common_folder', 1);
 
-    $userFoldersQuery = Folder::where('parent_name', $folderPath)
-                              ->where('user_id', Auth::id());
+                                $userFoldersQuery = Folder::where('parent_name', $folderPath)
+                                ->where('user_id', Auth::id())
+                                ->where('is_delete', 0);
 
     // Apply sorting logic based on the selected sort option
     switch ($sortOption) {
