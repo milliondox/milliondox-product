@@ -442,7 +442,21 @@ closeToastBtn.addEventListener("click", closeToast);
   </tr>
   <tr>
     <th>Phone :</th>
-    <td><input type="text" id="Phone" name="Phone"  value="{{$pc->Phone}}"> </td>
+    <td>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/css/intlTelInput.css" />
+                  <script src="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/js/intlTelInput.min.js"></script>
+                  <input id="phone" class="form-control @error('phone') is-invalid @enderror" type="tel" pattern="[2-9]{1}[0-9]{9}" title="Phone number with 2-9 and remaing 9 digit with 0-9" placeholder="Contact no" name="phone" value="{{$pc->Phone}}"> @error('phone') <span class="invalid-feedback" role="alert">
+
+                    <strong>{{ $message }}</strong>
+                  </span> @enderror
+                  <script>
+                    const phoneInputField = document.querySelector("#phone");
+                    const phoneInput = window.intlTelInput(phoneInputField, {
+                      utilsScript: "https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/js/utils.js",
+                      initialCountry: "in" // Set initial country to India
+                    });
+                  </script>  
+    <!-- <input type="text" id="Phone" name="Phone"  value="{{$pc->Phone}}"> </td> -->
     <input type="hidden" id="user_id" name="user_id" value="{{$user->id}}"  >
   </tr>
   <tr>
