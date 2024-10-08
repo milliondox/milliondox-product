@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\Auth;
 use DB;
 use App\Models\Announcement;
 use App\Models\EmployeeProfile;
+use App\Models\StoreCompanydirector;
 use App\Models\ClientProfile;
 use App\Models\TimeSheet;
 use App\Models\Issue;
@@ -192,6 +193,7 @@ use App\Models\StoreGST;
 use App\Models\StoreCompanyEmployee;
 use App\Models\TaskEvents;
 use App\Models\Feedback;
+
 
 
 use Illuminate\Support\Facades\Log;
@@ -524,11 +526,16 @@ public function getTaskWithDate(Request $request,$taskDate)
 public function storegst(Request $request)
 {
     // Validate the incoming request data
+    $messages = [
+        'add_gstt.unique' => 'This GST number already exists. Please provide a unique GST number.',
+    ];
+
+    // Validate the incoming request data
     $validatedData = $request->validate([
         'user_id' => 'required|exists:users,id', // Ensure the user exists
         'statee_new' => 'required|string|max:255',
-        'add_gstt' => 'required|string|max:255',
-    ]);
+        'add_gstt' => 'required|string|max:255|unique:store_gst,add_gstt', // Ensure GSTIN is unique
+    ], $messages);
 
     // Create a new StoreGST record
     $storeGst = StoreGST::create([
@@ -574,21 +581,163 @@ public function deleteGST($id)
     
     return response()->json(['message' => 'GST record not found.'], 404);
 }
+public function storecompanydirector(Request $request)
+{
+    // Validate input
+    $validatedData = $request->validate([
+        'name' => 'required|string|max:255',
+        'startdate' => 'required|date',
+        'enddate' => 'nullable|date',
+        'DIN' => 'required|string|max:50',
+        'path' => 'nullable|string',
+        'parent_name' => 'nullable|string',
+    ]);
 
+    $userId = Auth::id(); // Get authenticated user ID
+    $name = $request->name;
+
+    // Get current year and month
+    $currentYear = now()->year;
+    $currentMonth = now()->format('F'); // Full month name (e.g., 'June')
+    
+    // Determine fiscal year
+    if (now()->month < 4) {
+        // Before April, fiscal year is previous year - current year
+        $fiscalYear = ($currentYear - 1) . '-' . $currentYear;
+    } else {
+        // Otherwise, current year - next year
+        $fiscalYear = $currentYear . '-' . ($currentYear + 1);
+    }
+
+    // Generate new folder name
+    $new_folderName = $fiscalYear . $currentMonth . $userId . "_" . $name;
+
+    // Define the parent folder path
+    $parentFolderPath = "Accounting & Taxation/Charter documents/Director Details";
+
+    // Combine parent folder path with new folder name
+    $newFolderPath = $parentFolderPath . '/' . $new_folderName;
+
+    // Check if folder already exists
+    if (Storage::exists($newFolderPath)) {
+        return redirect()->back()->with('error', 'Same Name already exists.');
+    }
+
+    // Create a new StoreCompanyDirector record
+    $storedir = StoreCompanydirector::create([
+        'user_id' => $userId,
+        'name' => $request->name,
+        'startdate' => $request->startdate,
+        'enddate' => $request->enddate,
+        'DIN' => $request->DIN,
+        'path' => $newFolderPath,
+        'parent_name' => $parentFolderPath,
+    ]);
+
+    // Create the directory
+    Storage::makeDirectory($newFolderPath);
+
+    // Create a new Folder record and associate the director ID
+    $folder = new Folder();
+    $folder->name = $new_folderName;
+    $folder->path = $newFolderPath;
+    $folder->parent_name = $parentFolderPath;
+    $folder->user_id = $userId;
+    $folder->director_id = $storedir->id;  // Store the last inserted director ID
+    $folder->save();
+
+    // Redirect back with a success message
+    return redirect()->back()->with('success', 'Director details stored successfully!');
+}
+
+public function updatecompanydirector(Request $request)
+{
+    // Find the director record by ID
+    $dir = StoreCompanydirector::find($request->dir_id);
+
+    // Update director details
+    $dir->name = $request->f_name;
+    $dir->startdate = $request->startdate;
+    $dir->enddate = $request->enddate;
+    $dir->DIN = $request->DIN;
+    $dir->save(); // Save updated director information
+
+    // Find the corresponding folder record
+    $folder = Folder::where('director_id', $dir->id)->first();
+
+    if ($folder) {
+        // Get the current folder name and path
+        $currentFolderPath = $folder->path;
+
+        // Generate new folder name and path
+        $currentYear = now()->year;
+        $currentMonth = now()->format('F'); // Full month name (e.g., 'June')
+        
+        // Determine fiscal year
+        if (now()->month < 4) {
+            $fiscalYear = ($currentYear - 1) . '-' . $currentYear;
+        } else {
+            $fiscalYear = $currentYear . '-' . ($currentYear + 1);
+        }
+
+        // Generate new folder name
+        $new_folderName = $fiscalYear . $currentMonth . Auth::id() . "_" . $request->f_name;
+        $newFolderPath = "Accounting & Taxation/Charter documents/Director Details/" . $new_folderName;
+
+        // Check if the folder name has changed
+        if ($currentFolderPath !== $newFolderPath) {
+            // Rename the directory in the file system
+            if (Storage::exists($currentFolderPath)) {
+                Storage::move($currentFolderPath, $newFolderPath); // Move/rename directory
+            }
+
+            // Update folder record with the new name and path
+            $folder->name = $new_folderName;
+            $folder->path = $newFolderPath;
+            $folder->save();
+        }
+    }
+
+    // Redirect back with a success message
+    return redirect()->back()->with('success', 'Director details updated successfully, and folder renamed if necessary.');
+}
+
+public function updatedirstatus(Request $request)
+{
+    $request->validate([
+        'id' => 'required|integer',
+        
+    ]);
+
+    // Update the is_delete status in storecompanydirector
+    StoreCompanyDirector::where('id', $request->id)
+        ->update(['is_delete' => 1]);
+
+    // Update the is_delete status in folder
+    Folder::where('director_id', $request->id)
+        ->update(['is_delete' => 1]);
+
+    return response()->json(['success' => true]);
+}
 public function storecompanyemployee(Request $request)
 {
-   
-   $validatedData = $request->validate([
+    // Custom validation messages
+    $messages = [
+        'emp_code.unique' => 'This Employee Code already exists. Please provide a unique Employee Code.',
+    ];
+
+    // Validate the incoming request data
+    $validatedData = $request->validate([
         'name' => 'required|string|max:255',
         'app_dates' => 'required|date',
         'termi_dates' => 'nullable|date',
-        'emp_code' => 'required|string|max:50',
-    ]);
+        'emp_code' => 'required|string|max:50|unique:store_company_employee,emp_code', // Ensure emp_code is unique
+    ], $messages);
 
- $user = auth()->user();
-        $userId = Auth::id();
-    // Create a new StoreGST record
-    //  dd($userId);
+    $user = auth()->user();
+    $userId = Auth::id();
+
+    // Create a new StoreCompanyEmployee record
     $storeemp = StoreCompanyEmployee::create([
         'user_id' => $userId,
         'name' => $request->name,
@@ -640,8 +789,9 @@ public function delcompemp(Request $request)
 
 public function downloadCsv()
 {
-    // Fetch all employees
-    $employees = StoreCompanyEmployee::all();
+    $user = auth()->user();
+    $userId = Auth::id();// Fetch all employees
+    $employees = StoreCompanyEmployee::where('user_id',$userId)->get();
     $filename = "employees.csv";
 
     // Set headers for the response
@@ -697,29 +847,46 @@ public function uploadempcsv(Request $request)
 
     // Open the CSV file for reading
     $file_handle = fopen($file->getRealPath(), 'r');
+    
     // Skip the header row
     $header = fgetcsv($file_handle); 
 
-    $employees = [];
+    $employeesToInsert = [];
+    $existingEmpCodes = [];
+    $skippedRecords = 0;
+
+    // Process the CSV file row by row
     while (($row = fgetcsv($file_handle, 1000, ",")) !== FALSE) {
-        $employees[] = [
-            'user_id' => $userId,
-            'name' => $row[0],
-            'app_date' => \Carbon\Carbon::parse($row[1])->format('Y-m-d'), // Convert date to Y-m-d format
-            'termi_date' => \Carbon\Carbon::parse($row[2])->format('Y-m-d'), // Convert date to Y-m-d format
-            'emp_code' => $row[3],
-            'created_at' => now(), // Set the created_at timestamp
-            'updated_at' => now(), // Set the updated_at timestamp
-        ];
+        $emp_code = $row[3];
+
+        // Check if the emp_code already exists in the database
+        if (StoreCompanyEmployee::where('emp_code', $emp_code)->exists()) {
+            // If the emp_code exists, increment the skipped record count
+            $skippedRecords++;
+        } else {
+            // If it's unique, prepare it for insertion
+            $employeesToInsert[] = [
+                'user_id' => $userId,
+                'name' => $row[0],
+                'app_date' => \Carbon\Carbon::parse($row[1])->format('Y-m-d'), // Convert date to Y-m-d format
+                'termi_date' => !empty($row[2]) ? \Carbon\Carbon::parse($row[2])->format('Y-m-d') : null,
+                'emp_code' => $emp_code,
+                'created_at' => now(), // Set the created_at timestamp
+                'updated_at' => now(), // Set the updated_at timestamp
+            ];
+        }
     }
 
     fclose($file_handle);
 
-    // Insert the employee records into the database
-    StoreCompanyEmployee::insert($employees);
+    // Insert only the unique employee records into the database
+    $storedRecords = count($employeesToInsert);
+    if ($storedRecords > 0) {
+        StoreCompanyEmployee::insert($employeesToInsert);
+    }
 
-    // Redirect back with a success message
-    return redirect()->back()->with('success', 'Employees uploaded successfully!');
+    // Return a success message with the count of stored and skipped records
+    return redirect()->back()->with('success', "{$storedRecords} employees stored successfully and {$skippedRecords} duplicate employees were skipped.");
 }
 
 
@@ -13429,12 +13596,38 @@ public function checkFilesboradminutebook()
     $files = CommonTable::where('user_id', $userId)->get();
     return response()->json($files);
 }
-   public function updateuserprofile(Request $request)
+public function checkEmailPhone(Request $request)
 {
-    // Validate the input data (optional but recommended)
-    $request->validate([
+    $emailExists = User::where('backupemail', $request->backupemail)->exists();
+    $phoneExists = User::where('phone', $request->phone)->exists();
+
+    // Determine which exists, if any
+    $message = '';
+    if ($emailExists && $phoneExists) {
+        $message = 'Both email and phone number already exist!';
+    } elseif ($emailExists) {
+        $message = 'The email already exists!';
+    } elseif ($phoneExists) {
+        $message = 'The phone number already exists!';
+    }
+
+    return response()->json([
+        'exists' => $emailExists || $phoneExists,
+        'email_exists' => $emailExists,
+        'phone_exists' => $phoneExists,
+        'message' => $message
+    ]);
+}
+
+
+public function updateuserprofile(Request $request)
+{
+    // Validate the input data
+    $validatedData = $request->validate([
         'user_id' => 'required|exists:users,id',
-        'profile_picture' => 'nullable|image|max:2048', // Ensure it's an image and within size limit
+        'profile_picture' => 'nullable|image|max:2048',
+        'phone' => 'required|string|max:15|unique:users,phone,' . $request->user_id,
+        'backupemail' => 'nullable|email|unique:users,backupemail,' . $request->user_id,
     ]);
 
     $userId = $request->input('user_id');
@@ -13467,7 +13660,7 @@ public function checkFilesboradminutebook()
         
         $user->save(); // Save the updated user data
     }
-
+// dd($user);
     // Find the user info associated with the user
     $userInfo = UserInfo::where('user_id', $userId)->first();
     if ($userInfo) {
@@ -13497,6 +13690,8 @@ public function checkFilesboradminutebook()
     // Redirect back with a success message
     return redirect()->back()->with('success', 'Profile updated successfully');
 }
+
+
 
     
 
@@ -13577,42 +13772,71 @@ public function checkFilesboradminutebook()
 	
     public function companystoreprofile(Request $request)
     {
-        // Check if a record already exists for the authenticated user
-        $existingProfile = CompanyProfiles::where('user_id', auth()->id())->first();
+       
 
-        // If a record exists, update it; otherwise, create a new record
-        if ($existingProfile) {
-            $existingProfile->update([
+        $user_id = $request->input('user_id');
+        // Validate the input data, including PAN and CIN validation
+        $request->validate([
+            'state' => 'required|string|max:255',
+            'industry' => 'required|string|max:255',
+            'employee_count' => 'required|integer',
+            'DOI' => 'required|date',
+            'CIN' => ['required', 'string', 'regex:/^([A-Z]{5}[0-9]{4}[A-Z]{1}[0-9]{6})$/', 'unique:users,cin,' . auth()->id()], // CIN format validation
+            'PAN' => ['required', 'string', 'regex:/^([A-Z]{5}[0-9]{4}[A-Z]{1})$/', 'unique:users,pan,' . auth()->id()], // PAN format validation
+            'Email' => 'required|email|unique:users,email,' . $user_id, // Ensure the email is unique except for the current user
+            'phone' => 'required|string|max:15|unique:users,phone,' . $user_id, // Ensure the phone is unique except for the current user
+            'authorized_capital' => 'nullable|numeric',
+            'paid_up_capital' => 'nullable|numeric',
+        ]);
+    
+        // Get the authenticated user
+        $user = User::find($user_id);
+    
+        if ($user) {
+            // Update the User model
+            $user->update([
                 'state' => $request->input('state'),
-                'industry' => $request->input('industry'),
-                'employee_count' => $request->input('employee_count'),
+               'industry' => $request->input('industry'),
+               'employees' => $request->input('employee_count'),
+                'email' => $request->input('backupemail'),
                 'DOI' => $request->input('DOI'),
+                'phone' => $request->input('phone'),
                 'CIN' => $request->input('CIN'),
                 'PAN' => $request->input('PAN'),
-                'Email' => $request->input('Email'), 
-                'Phone' => $request->input('Phone'), 
                 'authorized_capital' => $request->input('authorized_capital'),
                 'paid_up_capital' => $request->input('paid_up_capital'),
             ]);
-        } else {
-            CompanyProfiles::create([
-                'user_id' => auth()->id(),
-                'state' => $request->input('state'),
-                'industry' => $request->input('industry'),
-                'employee_count' => $request->input('employee_count'),
-                'DOI' => $request->input('DOI'),
+    
+            // Find the associated UserInfo record
+            $userInfo = UserInfo::where('user_id', $user_id)->first();
+    
+            if ($userInfo) {
+                // Update existing UserInfo
+                $userInfo->update([
+                    'state' => $request->input('state'),
+               'industry' => $request->input('industry'),
+               'employees' => $request->input('employee_count'),
+                'email' => $request->input('backupemail'),
+                'joining_date' => $request->input('DOI'),
+                'phone' => $request->input('phone'),
                 'CIN' => $request->input('CIN'),
                 'PAN' => $request->input('PAN'),
-                'Email' => $request->input('Email'), 
-                'Phone' => $request->input('Phone'), 
                 'authorized_capital' => $request->input('authorized_capital'),
-                'paid_up_capital' => $request->input('paid_up_capital'), 
-            ]);
+                'paid_up_capital' => $request->input('paid_up_capital'),
+                ]);
+            } else {
+                // If no UserInfo record exists, you can choose to return an error message
+                return redirect()->back()->with('error', 'User information record not found.');
+            }
+        } else {
+            // If user not found, you can choose to return an error message
+            return redirect()->back()->with('error', 'User not found.');
         }
-
-        // Return a redirect with success message
+    
+        // Return a redirect with a success message
         return redirect()->back()->with('success', 'Profile updated successfully');
     }
+    
 
 //    public function storeregister(Request $request){
 //     dd($request);
@@ -16879,8 +17103,9 @@ public function shareFolder(Request $request)
     $commonFoldersQuery = Folder::where('parent_name', $folderPath)
                                 ->where('common_folder', 1);
 
-    $userFoldersQuery = Folder::where('parent_name', $folderPath)
-                              ->where('user_id', Auth::id());
+                                $userFoldersQuery = Folder::where('parent_name', $folderPath)
+                                ->where('user_id', Auth::id())
+                                ->where('is_delete', 0);
 
     // Apply sorting logic based on the selected sort option
     switch ($sortOption) {
@@ -18202,7 +18427,11 @@ public function updateoutofexpense(request $request)
     // dd($gstnocount);
     // Find the UserRole record where the role matches the user's role
     $userRoleRecord = UserRole::where('role', $userRole)->first();
-       return view('user.Administration.company-profile',compact('cli_announcements','cp','user','user','gstno','gstnocount','employeescompany','employeescount'));
+
+    $directorcompany = StoreCompanydirector ::where('user_id', $user->id)->where('is_delete', 0)->get();
+    
+    $directorcount = StoreCompanydirector::where('user_id', $user->id)->where('is_delete', 0)->count();
+       return view('user.Administration.company-profile',compact('cli_announcements','directorcompany','directorcount','cp','user','user','gstno','gstnocount','employeescompany','employeescount'));
     }
     
     

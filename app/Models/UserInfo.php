@@ -65,7 +65,12 @@ class UserInfo extends Model
         'Trash_Panel_Access',
         'main_role_id',
         'google_id',
-        'createdby_id'
+        'createdby_id',
+        'CIN',
+        'PAN',
+        'state',
+        'authorized_capital',
+        'paid_up_capital'
     ];
     public function user()
     {

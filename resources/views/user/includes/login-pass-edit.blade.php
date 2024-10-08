@@ -21,6 +21,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@200..800&display=swap" rel="stylesheet">
     <!-- website font end -->
     
+    
     <link rel="stylesheet" type="text/css" href="../assets/css/vendors/font-awesome.css">
     <!-- ico-font-->
     <link rel="stylesheet" type="text/css" href="../assets/css/vendors/icofont.css">

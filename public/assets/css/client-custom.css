@@ -15957,6 +15957,18 @@ body.dark-only .page-wrapper .page-header .header-wrapper .nav-right>ul>li:nth-c
     height: 140px;
     border: 3px solid #5790FF;
     box-shadow: none;
+    background: #5790ff57;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.main_thumb.y_organistaion .in_thumb h2 {
+    margin: 0;
+    padding: 0;
+    font-size: 30px;
+    font-weight: 900;
+    color: #FFF;
 }
 
 .main_thumb.y_organistaion .in_thumb:after {
@@ -20822,6 +20834,7 @@ display: block;
     background: linear-gradient(98.11deg, #454545 0%, #141414 100%);
     padding: 40px 30px;
     border-radius: 20px;
+    cursor: pointer;
 }
 
 .invest_rec .left_pop_directorss span {
@@ -23217,7 +23230,17 @@ display: block;
     border: 1px solid #E6EBFA;
     border-radius: 6px;
     padding: 7px 10px;
+    font-size: 15px;
 }
+
+.edit_start .iti.iti--allow-dropdown {
+    width: 50%;
+}
+
+.edit_start .iti.iti--allow-dropdown input {
+    width: 100%;
+}
+
 .edit_start select {
     border-bottom: 1px solid #D0D0D0;
     box-shadow: none;
@@ -23227,6 +23250,7 @@ display: block;
     border: 1px solid #E6EBFA;
     border-radius: 6px;
     padding: 7px 10px;
+    font-size: 15px;
 }
 .dark-only .edit_start select {
     border: 1px solid #DBDBDB;
@@ -24099,6 +24123,10 @@ b.toggle-password {
 b.toggle-password i {
     font-size: 11px;
     color: #333;
+}
+
+.dark-only b.toggle-password i {
+    color: #FFF;
 }
 
 /****passward fill eye css end*****/
@@ -25878,6 +25906,104 @@ display:none !important;
 
 /*****sweet alert pop delet css end********/
 
+/******login edit passward css start*****/
+.login_form_editfl {
+    display: block;
+    max-width: 50%;
+}
+
+.login_form_editfl .gropu_form {
+    display: block;
+    margin: 0px 0px 20px 0px;
+}
+
+.login_form_editfl .gropu_form label {
+    font-size: 14px;
+    font-weight: 500;
+    letter-spacing: 0;
+    margin: 0;
+    padding: 0px 0px 8px 0px;
+}
+
+.login_form_editfl .gropu_form_input {
+    position: relative;
+}
+
+.login_form_editfl .gropu_form_input input {
+    width: 100%;
+    min-width: unset;
+    padding: 7px 25px 7px 7px;
+    border: 1px solid #D9D9D9;
+    color: #646464;
+    border-radius: 5px;
+    outline: none;
+    box-shadow: none;
+    background: transparent;
+}
+
+.login_form_editfl .gropu_form_input b.toggle-password {
+    top: 50%;
+    transform: translateY(-50%);
+    display: flex;
+}
+
+.login_form_editfl button {
+    background: linear-gradient(100.13deg, #81ACFF 14.53%, #5790FF 72.91%);
+    border: 0;
+    padding: 10px 10px;
+    border-radius: 50px;
+    width: 100%;
+    font-size: 14px;
+    font-weight: 700;
+    color: #FFF;
+}
+
+.login_form_editfl .gropu_form:last-child {
+    margin: 30px 0px 0px;
+}
+
+.sure_passward {
+    display: inline-block;
+    position: relative;
+    border-radius: 10px;
+    padding: 50px 40px 50px 60px;
+    background: #5790FF;
+}
+
+.sure_passward .vg_passward {
+    top: 30px;
+    position: absolute;
+    left: -20px;
+}
+
+.sure_passward h2 {
+    margin: 0px 0px 20px;
+    font-size: 18px;
+    color: #FFF;
+    letter-spacing: normal;
+    font-weight: 700;
+}
+
+.sure_passward ul {
+    list-style: disc;
+    list-style-position: inside;
+    padding: 0px 0px 0px 10px;
+}
+
+.sure_passward ul li {
+    margin: 0px 0px 3px;
+    font-size: 14px;
+    color: #FFF;
+    letter-spacing: normal;
+    font-weight: 400;
+}
+
+.dark-only .login_form_editfl .gropu_form_input input {
+    color: #FFF;
+}
+
+/******login edit passward css end*****/
+
 
 /****media start****/
 @media(max-width:1600px)
@@ -26119,6 +26245,9 @@ display:none !important;
     width: 40%;
 }
 
+.login_form_editfl {
+    max-width: 80%;
+}
 
 
 }
@@ -27247,6 +27376,14 @@ display:none !important;
     padding: 30px 20px;
 }
 
+.login_form_editfl {
+    max-width: 100%;
+    margin: 0px 0px 30px;
+}
+
+.edit_start .iti.iti--allow-dropdown {
+    width: 100%;
+}
 }
 
 

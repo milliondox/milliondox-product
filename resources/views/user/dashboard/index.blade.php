@@ -3,6 +3,15 @@
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+<script>
+    // Check if there's a success message in the session and display it
+    @if(session('success'))
+        toastr.success('{{ session('success') }}');
+    @endif
+    @if(session('error'))
+        toastr.error('{{ session('error') }}');
+    @endif
+</script>
     
  <link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" rel="stylesheet"/>
 
@@ -32,7 +41,7 @@
         <div class="left-menu-header">
           <h2>
             <b><span class="greeting" id="greeting"></span><span class="greeting">, {{$user->name}}</span></b>
-            Welcome to MillionDox!
+            Welcome to MillionDoxx!
           </h2>
         </div>
       </div>
@@ -156,7 +165,7 @@
         <h2>Enter organization details</h2>
         <span>STEP 2</span>
     </div>
-              <form action="{{ route('updateuserprofile') }}" method="POST" enctype="multipart/form-data" class="upload-form">
+              <form action="{{ route('updateuserprofile') }}" method="POST" enctype="multipart/form-data" class="upload-form compuserprofile">
                 @csrf
 
 <div class="image_upload_area">
@@ -170,7 +179,7 @@
 <path d="M14.75 10.25V13.25C14.75 13.6478 14.592 14.0294 14.3107 14.3107C14.0294 14.592 13.6478 14.75 13.25 14.75H2.75C2.35218 14.75 1.97064 14.592 1.68934 14.3107C1.40804 14.0294 1.25 13.6478 1.25 13.25V10.25M11.75 5L8 1.25M8 1.25L4.25 5M8 1.25V10.25" stroke="#DFDFDF" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
 </svg>
             <input type="hidden" id="user_id" name="user_id" value="{{$user->id}}">
-           <input type="file" class="dragfile" id="profile_picture" name="profile_picture" required>
+           <input type="file" class="dragfile" id="profile_picture" name="profile_picture" >
             <input type="hidden" id="user_status" name="user_status" value="1">
         </div>
     </div>
@@ -351,6 +360,43 @@
           </div>
         </div>
       </div>
+      <script>
+  $(document).ready(function () {
+    // Handle form submission
+    $('.compuserprofile').on('submit', function (e) {
+        e.preventDefault(); // Prevent form from submitting
+
+        // Get form values
+        var backupemail = $('#email').val();
+        var phone = $('#phone').val();
+        var form = $(this);
+
+        // Check if backup email or phone already exists
+        $.ajax({
+            url: "{{ route('checkEmailPhone') }}", // Route to check email/phone existence
+            method: 'POST',
+            data: {
+                _token: "{{ csrf_token() }}",
+                backupemail: backupemail,
+                phone: phone
+            },
+            success: function (response) {
+                if (response.exists) {
+                    // If backup email or phone exists, show an error message using Toastr
+                    toastr.error(response.message, 'Error');
+                } else {
+                    // If they do not exist, submit the form
+                    form.off('submit').submit(); // Unbind the submit event and submit the form
+                }
+            },
+            error: function (xhr) {
+                // Handle any errors with Toastr
+                toastr.error('Something went wrong! Please try again later.', 'Error');
+            }
+        });
+    });
+  });
+</script>
 
 
       <!-- organisation done pop end -->
@@ -2190,8 +2236,18 @@ $(document).ready(function() {
             <div class="main_thumb y_organistaion">
               <div class="in_thumb">
                 @if($user->profile_picture == NULL)
-
-                <img src="../assets/images/gold-logo.png" class="mtt">
+                <h2>
+    <?php 
+        // Get the first and last name
+        $nameParts = explode(' ', $user->name);
+        $firstLetter = strtoupper(substr($nameParts[0], 0, 1)); // First letter of first name
+        $secondLetter = strtoupper(substr($nameParts[1], 0, 1)); // First letter of last name
+        
+        // Display the initials
+        echo $firstLetter . $secondLetter;
+    ?>
+</h2>
+                <!-- <img src="../assets/images/gold-logo.png" class="mtt"> -->
                 @else
 
                 <img src="{{asset('/' . $user->profile_picture)}}" class="mtt" alt="Profile Image">

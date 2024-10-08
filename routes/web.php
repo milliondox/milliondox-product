@@ -117,6 +117,12 @@ Route::get('/downloadCsv', [App\Http\Controllers\HomeController::class, 'downloa
 
 Route::post('/uploadempcsv', [App\Http\Controllers\HomeController::class, 'uploadempcsv'])->name('uploadempcsv');
 
+Route::post('/storecompanydirector', [App\Http\Controllers\HomeController::class, 'storecompanydirector'])->name('storecompanydirector');
+
+Route::post('/updatecompanydirector', [App\Http\Controllers\HomeController::class, 'updatecompanydirector'])->name('updatecompanydirector');
+Route::post('/updatedirstatus', [App\Http\Controllers\HomeController::class, 'updatedirstatus']);
+
+Route::post('/check-email-phone', [App\Http\Controllers\HomeController::class, 'checkEmailPhone'])->name('checkEmailPhone');
 
 
 // sandeep routes start 
