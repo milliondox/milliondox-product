@@ -15957,6 +15957,18 @@ body.dark-only .page-wrapper .page-header .header-wrapper .nav-right>ul>li:nth-c
     height: 140px;
     border: 3px solid #5790FF;
     box-shadow: none;
+    background: #5790ff57;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.main_thumb.y_organistaion .in_thumb h2 {
+    margin: 0;
+    padding: 0;
+    font-size: 30px;
+    font-weight: 900;
+    color: #FFF;
 }
 
 .main_thumb.y_organistaion .in_thumb:after {
