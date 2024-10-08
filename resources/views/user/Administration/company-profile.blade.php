@@ -442,7 +442,21 @@ closeToastBtn.addEventListener("click", closeToast);
   </tr>
   <tr>
     <th>Phone :</th>
-    <td><input type="text" id="Phone" name="Phone"  value="{{$pc->Phone}}"> </td>
+    <td>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/css/intlTelInput.css" />
+                  <script src="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/js/intlTelInput.min.js"></script>
+                  <input id="phone" class="form-control @error('phone') is-invalid @enderror" type="tel" pattern="[2-9]{1}[0-9]{9}" title="Phone number with 2-9 and remaing 9 digit with 0-9" placeholder="Contact no" name="phone" value="{{$pc->Phone}}"> @error('phone') <span class="invalid-feedback" role="alert">
+
+                    <strong>{{ $message }}</strong>
+                  </span> @enderror
+                  <script>
+                    const phoneInputField = document.querySelector("#phone");
+                    const phoneInput = window.intlTelInput(phoneInputField, {
+                      utilsScript: "https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/js/utils.js",
+                      initialCountry: "in" // Set initial country to India
+                    });
+                  </script>  
+    <!-- <input type="text" id="Phone" name="Phone"  value="{{$pc->Phone}}"> </td> -->
     <input type="hidden" id="user_id" name="user_id" value="{{$user->id}}"  >
   </tr>
   <tr>
@@ -687,7 +701,8 @@ closeToastBtn.addEventListener("click", closeToast);
                     </span>
                     
                     <div class="gst_nomver">
-                    <h3 class="edit_new_filed"><input type="text" id="add_gstt" name="add_gstt" placeholder="Enter GSTINs" value=""></h3>
+                    <h3 class="edit_new_filed"><input type="text" id="add_gstt" name="add_gstt" placeholder="Enter GSTINs" value="" pattern="^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[A-Z0-9]{3}$" 
+                    title="GST must be 15 characters: 2 digits for state code, 5 letters for PAN, 4 digits for PAN, 1 letter, and 3 alphanumeric characters." required></h3>
                      
                     <div class="copy_save">
 
@@ -760,7 +775,8 @@ closeToastBtn.addEventListener("click", closeToast);
                     
                     <div class="gst_nomver">
                     <h3 class="saved_filed">{{$gst->add_gstt}}</h3>
-                    <h3 class="edit_mode_filed" style="display:none;"><input type="text" id="edit_gstt" name="add_gstt" value="{{$gst->add_gstt}}"></h3>
+                    <h3 class="edit_mode_filed" style="display:none;"><input type="text" id="edit_gstt" name="add_gstt" value="{{$gst->add_gstt}}" pattern="^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[A-Z0-9]{3}$" 
+                    title="GST must be 15 characters: 2 digits for state code, 5 letters for PAN, 4 digits for PAN, 1 letter, and 3 alphanumeric characters."></h3>
                      
                     <div class="copy_save">
                         <button class="copy_gst_no" type="button">
@@ -820,13 +836,13 @@ closeToastBtn.addEventListener("click", closeToast);
     </div>
 
 <div class="invest_botom">
-<div class="pop_directorss">
+<div class="pop_directorss" data-bs-toggle="modal" data-bs-target="#add_directorrs">
     <div class="left_pop_directorss">
         <span>Director Details</span>
-        <h2>3 Directors</h2>
+        <h2>{{$directorcount}} Directors</h2>
     </div>
     <div class="right_pop_directorss">
-    <button data-bs-toggle="modal" data-bs-target="#add_directorrs"><svg width="14" height="24" viewBox="0 0 14 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <button ><svg width="14" height="24" viewBox="0 0 14 24" fill="none" xmlns="http://www.w3.org/2000/svg">
 <path d="M2 2L12 12L2 22" stroke="white" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/>
 </svg>
 </button>
@@ -836,13 +852,13 @@ closeToastBtn.addEventListener("click", closeToast);
 
 <!--------->
 <div class="invest_botom inverst_employes">
-<div class="pop_directorss">
+<div class="pop_directorss" data-bs-toggle="modal" data-bs-target="#employees_master_details">
     <div class="left_pop_directorss">
         <span>Employee Details</span>
         <h2>{{$employeescount}} Employees</h2>
     </div>
     <div class="right_pop_directorss">
-    <button data-bs-toggle="modal" data-bs-target="#employees_master_details"><svg width="14" height="24" viewBox="0 0 14 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <button ><svg width="14" height="24" viewBox="0 0 14 24" fill="none" xmlns="http://www.w3.org/2000/svg">
 <path d="M2 2L12 12L2 22" stroke="white" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/>
 </svg>
 </button>
@@ -871,9 +887,9 @@ closeToastBtn.addEventListener("click", closeToast);
 
 <div class="accordion">
     
-    <form action="" method="POST" enctype="multipart/form-data" class="upload-form">
+<form action="{{ route('storecompanydirector') }}" method="POST" enctype="multipart/form-data" class="upload-form stempcom storedirector">
     <!--new append form accordian start-->
-    
+    @csrf 
     <div class="accordion-item open_default">
     <div class="accordion-header">
         <div class="ac_round_wrap">
@@ -906,7 +922,7 @@ closeToastBtn.addEventListener("click", closeToast);
 
  </div>
  <div class="two_edit_del_button">
-     <a class="director_full_del_row" id="director_full_del_row">
+     <a class="director_full_del_row clearempform" id="director_full_del_row">
          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
 <path d="M6.42969 2.67871H9.42969C9.42969 2.28089 9.27165 1.89936 8.99035 1.61805C8.70904 1.33675 8.32751 1.17871 7.92969 1.17871C7.53186 1.17871 7.15033 1.33675 6.86903 1.61805C6.58772 1.89936 6.42969 2.28089 6.42969 2.67871ZM5.30469 2.67871C5.30469 2.33399 5.37259 1.99265 5.5045 1.67417C5.63642 1.35569 5.82978 1.06631 6.07353 0.822556C6.31729 0.578802 6.60666 0.385446 6.92514 0.253527C7.24362 0.121609 7.58497 0.0537109 7.92969 0.0537109C8.27441 0.0537109 8.61575 0.121609 8.93423 0.253527C9.25271 0.385446 9.54209 0.578802 9.78584 0.822556C10.0296 1.06631 10.223 1.35569 10.3549 1.67417C10.4868 1.99265 10.5547 2.33399 10.5547 2.67871H14.8672C15.0164 2.67871 15.1594 2.73797 15.2649 2.84346C15.3704 2.94895 15.4297 3.09203 15.4297 3.24121C15.4297 3.3904 15.3704 3.53347 15.2649 3.63896C15.1594 3.74445 15.0164 3.80371 14.8672 3.80371H13.8772L12.9997 12.887C12.9324 13.5829 12.6082 14.2289 12.0904 14.6988C11.5727 15.1688 10.8984 15.429 10.1992 15.4287H5.66019C4.96109 15.4288 4.28701 15.1685 3.7694 14.6986C3.25179 14.2287 2.92774 13.5828 2.86044 12.887L1.98219 3.80371H0.992188C0.843003 3.80371 0.699929 3.74445 0.59444 3.63896C0.488951 3.53347 0.429688 3.3904 0.429688 3.24121C0.429688 3.09203 0.488951 2.94895 0.59444 2.84346C0.699929 2.73797 0.843003 2.67871 0.992188 2.67871H5.30469ZM6.80469 6.24121C6.80469 6.09203 6.74542 5.94895 6.63994 5.84346C6.53445 5.73797 6.39137 5.67871 6.24219 5.67871C6.093 5.67871 5.94993 5.73797 5.84444 5.84346C5.73895 5.94895 5.67969 6.09203 5.67969 6.24121V11.8662C5.67969 12.0154 5.73895 12.1585 5.84444 12.264C5.94993 12.3694 6.093 12.4287 6.24219 12.4287C6.39137 12.4287 6.53445 12.3694 6.63994 12.264C6.74542 12.1585 6.80469 12.0154 6.80469 11.8662V6.24121ZM9.61719 5.67871C9.76637 5.67871 9.90945 5.73797 10.0149 5.84346C10.1204 5.94895 10.1797 6.09203 10.1797 6.24121V11.8662C10.1797 12.0154 10.1204 12.1585 10.0149 12.264C9.90945 12.3694 9.76637 12.4287 9.61719 12.4287C9.468 12.4287 9.32493 12.3694 9.21944 12.264C9.11395 12.1585 9.05469 12.0154 9.05469 11.8662V6.24121C9.05469 6.09203 9.11395 5.94895 9.21944 5.84346C9.32493 5.73797 9.468 5.67871 9.61719 5.67871ZM3.98019 12.779C4.02064 13.1964 4.21512 13.5839 4.52571 13.8658C4.83631 14.1477 5.24075 14.3038 5.66019 14.3037H10.1992C10.6186 14.3038 11.0231 14.1477 11.3337 13.8658C11.6443 13.5839 11.8387 13.1964 11.8792 12.779L12.7477 3.80371H3.11169L3.98019 12.779Z" fill="#1C1C1C"/>
 </svg>
@@ -924,8 +940,9 @@ closeToastBtn.addEventListener("click", closeToast);
   </div>
     <!--new append form accordian end-->
     </form>
-    
-  <form action="" method="POST" enctype="multipart/form-data" class="upload-form">
+    @foreach($directorcompany as $dir)
+  <form action="{{ route('updatecompanydirector') }}" method="POST" enctype="multipart/form-data" class="upload-form">
+  @csrf
   <div class="accordion-item">
     <div class="accordion-header">
         <div class="ac_round_wrap">
@@ -934,7 +951,7 @@ closeToastBtn.addEventListener("click", closeToast);
         <path d="M11.994 1.52266C11.2338 0.701953 10.1721 0.25 9.00022 0.25C7.8221 0.25 6.75686 0.699219 6.00022 1.51484C5.23538 2.33945 4.86272 3.46016 4.95022 4.67031C5.12366 7.05781 6.94046 9 9.00022 9C11.06 9 12.8737 7.0582 13.0498 4.67109C13.1385 3.47187 12.7635 2.35352 11.994 1.52266ZM15.8752 17.75H2.12522C1.94525 17.7523 1.76702 17.7145 1.60349 17.6393C1.43997 17.5641 1.29526 17.4534 1.17991 17.3152C0.926005 17.0117 0.823661 16.5973 0.899442 16.1781C1.22913 14.3492 2.25804 12.8129 3.87522 11.7344C5.31194 10.777 7.13186 10.25 9.00022 10.25C10.8686 10.25 12.6885 10.7773 14.1252 11.7344C15.7424 12.8125 16.7713 14.3488 17.101 16.1777C17.1768 16.5969 17.0744 17.0113 16.8205 17.3148C16.7052 17.4531 16.5605 17.5639 16.397 17.6391C16.2335 17.7144 16.0552 17.7523 15.8752 17.75Z" fill="#4B4B4B"/>
         </svg>
         </div>
-        <h2 class="name_form_rj">Sachin Kankaria</h2>
+        <h2 class="name_form_rj">{{$dir->name}}</h2>
         </div>
         <div class="less_morre">
             <span class="lless">Less</span>
@@ -950,28 +967,29 @@ closeToastBtn.addEventListener("click", closeToast);
 <div class="thhree_fieldswraoo">
 <div class="gropu_form">
 <label for="start">Start Date</label>
-<input type="date" id="start" name="startdate" readonly>
+<input type="hidden" id="dir_id" name="dir_id" value="{{$dir->id}}" readonly>
+<input type="date" id="start" name="startdate" value="{{$dir->startdate}}" readonly>
 </div>
 <div class="gropu_form">
 <label for="end">End Date</label>
-<input type="date" id="end" name="enddate" readonly>
+<input type="date" id="end" name="enddate" value="{{$dir->enddate}}" readonly>
 </div>
 </div>
 
 <div class="thhree_fieldswraoo">
 <div class="gropu_form">
 <label for="DIN">DIN</label>
-<input type="text" id="DIN" name="DIN" readonly>
+<input type="text" id="DIN" name="DIN" value="{{$dir->DIN}}" readonly>
 </div>
 <div class="gropu_form f_nname">
 <label for="f_name">Name</label>
-<input type="text" id="f_name" name="f_name" readonly>
+<input type="text" id="f_name" name="f_name" value="{{$dir->name}}" readonly>
 </div>
 </div>
 
  </div>
  <div class="two_edit_del_button">
-     <button class="director_full_del" id="director_full_del">
+     <button class="director_full_del delcompdir" id="director_full_del_{{ $dir->id }}"  data-id="{{ $dir->id }}">
          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
 <path d="M6.42969 2.67871H9.42969C9.42969 2.28089 9.27165 1.89936 8.99035 1.61805C8.70904 1.33675 8.32751 1.17871 7.92969 1.17871C7.53186 1.17871 7.15033 1.33675 6.86903 1.61805C6.58772 1.89936 6.42969 2.28089 6.42969 2.67871ZM5.30469 2.67871C5.30469 2.33399 5.37259 1.99265 5.5045 1.67417C5.63642 1.35569 5.82978 1.06631 6.07353 0.822556C6.31729 0.578802 6.60666 0.385446 6.92514 0.253527C7.24362 0.121609 7.58497 0.0537109 7.92969 0.0537109C8.27441 0.0537109 8.61575 0.121609 8.93423 0.253527C9.25271 0.385446 9.54209 0.578802 9.78584 0.822556C10.0296 1.06631 10.223 1.35569 10.3549 1.67417C10.4868 1.99265 10.5547 2.33399 10.5547 2.67871H14.8672C15.0164 2.67871 15.1594 2.73797 15.2649 2.84346C15.3704 2.94895 15.4297 3.09203 15.4297 3.24121C15.4297 3.3904 15.3704 3.53347 15.2649 3.63896C15.1594 3.74445 15.0164 3.80371 14.8672 3.80371H13.8772L12.9997 12.887C12.9324 13.5829 12.6082 14.2289 12.0904 14.6988C11.5727 15.1688 10.8984 15.429 10.1992 15.4287H5.66019C4.96109 15.4288 4.28701 15.1685 3.7694 14.6986C3.25179 14.2287 2.92774 13.5828 2.86044 12.887L1.98219 3.80371H0.992188C0.843003 3.80371 0.699929 3.74445 0.59444 3.63896C0.488951 3.53347 0.429688 3.3904 0.429688 3.24121C0.429688 3.09203 0.488951 2.94895 0.59444 2.84346C0.699929 2.73797 0.843003 2.67871 0.992188 2.67871H5.30469ZM6.80469 6.24121C6.80469 6.09203 6.74542 5.94895 6.63994 5.84346C6.53445 5.73797 6.39137 5.67871 6.24219 5.67871C6.093 5.67871 5.94993 5.73797 5.84444 5.84346C5.73895 5.94895 5.67969 6.09203 5.67969 6.24121V11.8662C5.67969 12.0154 5.73895 12.1585 5.84444 12.264C5.94993 12.3694 6.093 12.4287 6.24219 12.4287C6.39137 12.4287 6.53445 12.3694 6.63994 12.264C6.74542 12.1585 6.80469 12.0154 6.80469 11.8662V6.24121ZM9.61719 5.67871C9.76637 5.67871 9.90945 5.73797 10.0149 5.84346C10.1204 5.94895 10.1797 6.09203 10.1797 6.24121V11.8662C10.1797 12.0154 10.1204 12.1585 10.0149 12.264C9.90945 12.3694 9.76637 12.4287 9.61719 12.4287C9.468 12.4287 9.32493 12.3694 9.21944 12.264C9.11395 12.1585 9.05469 12.0154 9.05469 11.8662V6.24121C9.05469 6.09203 9.11395 5.94895 9.21944 5.84346C9.32493 5.73797 9.468 5.67871 9.61719 5.67871ZM3.98019 12.779C4.02064 13.1964 4.21512 13.5839 4.52571 13.8658C4.83631 14.1477 5.24075 14.3038 5.66019 14.3037H10.1992C10.6186 14.3038 11.0231 14.1477 11.3337 13.8658C11.6443 13.5839 11.8387 13.1964 11.8792 12.779L12.7477 3.80371H3.11169L3.98019 12.779Z" fill="#1C1C1C"/>
 </svg>
@@ -992,10 +1010,38 @@ closeToastBtn.addEventListener("click", closeToast);
     </div>
   </div>
   </form>
+@endforeach
 
 </div>
 
-
+<script>
+  $(document).on('click', '.delcompdir', function() {
+    const id = $(this).data('id');
+    
+    $.ajax({
+        url: '/updatedirstatus', // The URL for the update request
+        method: 'POST',
+        data: {
+            id: id,
+            _token: '{{ csrf_token() }}' // Include CSRF token for Laravel
+        },
+        success: function(response) {
+            // Handle the success response
+            if (response.success) {
+                // Show success message with Toastr
+                toastr.success('Status updated successfully!');
+            } else {
+                // Show error message with Toastr
+                toastr.error('Error updating status.');
+            }
+        },
+        error: function(xhr) {
+            // Show error message with Toastr
+            toastr.error('An error occurred: ' + xhr.responseText);
+        }
+    });
+});
+</script>
   
 </div>
                                 </div>
