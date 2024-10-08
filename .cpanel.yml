@@ -1,0 +1,11 @@
+##### THIS ALLOWS US TO DEPLOY THE SITE FROM A GIT REPO ######
+---
+deployment:
+  tasks:
+    - export DEPLOYPATH=/home/qfwz8ujazq4o/public_html/development.milliondox.com
+   - /bin/cp -R $SOURCE_DIR/* $DEPLOYPATH/
+    - /bin/cp -R $SOURCE_DIR/resources/views/* $DEPLOYPATH/resources/views/
+    - /bin/cp -R $SOURCE_DIR/resources/lang/* $DEPLOYPATH/resources/lang/
+    - /bin/cp -R $SOURCE_DIR/public/* $DEPLOYPATH/public/
+    - /bin/cp -R $SOURCE_DIR/storage/* $DEPLOYPATH/storage/
+    
