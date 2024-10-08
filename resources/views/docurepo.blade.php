@@ -1182,7 +1182,37 @@ closeToastBtn.addEventListener("click", closeToast);
           <div class="col-md-12">
          <div class="logout_repo">
 
-         <div class="find_par">   
+         <div class="find_par"> 
+         <div class="left-menu-header">
+          <h2>
+            <b><span class="greeting" id="greetings"></span><span class="greeting">, {{$user->name}}</span></b>
+            Welcome to MillionDox!
+          </h2>
+        </div>  
+        <script>
+        var hour = (new Date()).getHours();
+        var greeting;
+
+        // Determine the greeting based on the current hour
+        if (hour >= 5 && hour < 12) {
+            greeting = "Good morning";
+        } else if (hour >= 12 && hour < 16) {
+            greeting = "Good afternoon";
+        } else {
+            greeting = "Good evening";
+        }
+
+        // Get the greeting element by its ID
+        var greetingElement = document.getElementById("greetings");
+
+        // Check if the greeting element exists
+        if (greetingElement) {
+            // Set the greeting text content
+            greetingElement.textContent = greeting;
+        } else {
+            console.error("Element with ID 'greeting' not found.");
+        }
+    </script>
 				<!--	  
          <div class="filter_drop">
          <select id="fyear_one_f1" name="fyear_one" required="" onchange="fetchData(this.value)">

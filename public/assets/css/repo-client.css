@@ -97,6 +97,33 @@
     width: auto;
 }
 
+.logout_repo .find_par h2 {
+    font-size: 24px;
+    margin: 0;
+    color: #FFF;
+}
+
+.logout_repo .find_par h2 b {
+    display: flex;
+    align-items: center;
+}
+
+.logout_repo .find_par h2 b span {
+    display: block;
+    font-size: 14px;
+    font-weight: 600;
+    color: #ceffa8;
+    margin: 0px 0px 5px 0px;
+}
+
+.dark-only .logout_repo .find_par h2 b span {
+    color: #99db66;
+}
+
+.dark-only .logout_repo .find_par h2 {
+    color: #515151;
+}
+
 .find_par form {
     display: flex;
     align-items: center;
