@@ -122,6 +122,9 @@ Route::post('/storecompanydirector', [App\Http\Controllers\HomeController::class
 Route::post('/updatecompanydirector', [App\Http\Controllers\HomeController::class, 'updatecompanydirector'])->name('updatecompanydirector');
 Route::post('/updatedirstatus', [App\Http\Controllers\HomeController::class, 'updatedirstatus']);
 
+Route::post('/check-email-phone', [App\Http\Controllers\HomeController::class, 'checkEmailPhone'])->name('checkEmailPhone');
+
+
 // sandeep routes start 
 
 Route::post('/saveFeedback', [App\Http\Controllers\HomeController::class, 'saveFeedback'])->name('saveFeedback');
