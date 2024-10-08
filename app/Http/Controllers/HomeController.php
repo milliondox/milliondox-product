@@ -13380,6 +13380,137 @@ public function SecretarialStatutoryRegistersRPB(Request $request)
     }
 }
 
+
+////////////////////////////////////////////// 4 october sandeep added code here for prdefined paths common pop upload form file upload  start ///////////////////////////////////////////////////////////////////
+public function PredefinedCommonUploadFiles(Request $request)
+{
+    $request->validate([
+        'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
+        'tagList' => 'nullable', // Allow tagList to be nullable
+    ], [
+        'files.*.required' => 'Each file is required.',
+        'files.*.file' => 'The uploaded item must be a valid file.',
+        'files.*.max' => 'Each file may not be larger than 100MB.',
+        'files.*.mimes' => 'The file type must be one of the following: PDF, ODP, ODS, PPT, DOC, ODT, RTF, CSV, JSON, XML, HTML, ICO, SVG, WEBP, ZIP, XLS, DOCX, WAV, OGG, MP3, AVI, MOV, WMV, WEBM, TIFF, MP4, JPG, PNG, GIF, JPEG, 3GP, MKV, FLV.',
+    ]);
+
+    if ($request->hasFile('files')) {
+        try {
+            // Initialize counters
+            $totalSize = 0;
+
+            // Store success and error messages for individual files
+            $successMessages = [];
+            $errorMessages = [];
+            
+            // 22 August code added by sandeep ---- default tags added -- reference excel sheet shared by sir;
+                    // Default tags
+                    $tag_list = [];
+                    
+                    // $automated_tags=[];
+                    
+                    $automated_tags_temp1 = $request->input('location'); // 'Legal /Secretarial /Statutory Registers'
+                    $automated_tags_temp2 = $request->input('real_file_name'); // Example: 'File1 /File2 /File3'
+                    
+                    $automated_tags_temp11 = array_map('trim', explode('/', $automated_tags_temp1)); // ['Legal', 'Secretarial', 'Statutory Registers']
+                    $automated_tags_temp22 = array_map('trim', explode('/', $automated_tags_temp2)); // ['File1', 'File2', 'File3']
+                    
+                    // Merge both arrays
+                    $merged_automated_tags = array_merge($automated_tags_temp11, $automated_tags_temp22);
+                    
+                    // Display the merged array
+                    // dd($merged_automated_tags);
+                    
+
+                    // Handle tagList whether it's an array, a comma-separated string, or empty
+                    $userTags = $request->input('tagList', []);
+                    
+                    // Convert to array if it's a comma-separated string
+                    if (is_string($userTags)) {
+                        $userTags = explode(',', $userTags);
+                    }
+                    // Ensure $userTags is an array and remove any empty values
+                    if (is_array($userTags)) {
+                        $userTags = array_filter($userTags); // Remove empty values
+                    } else {
+                        $userTags = []; // Fallback to empty array if not an array
+                    }
+                    
+                    // Merge with default tags
+                    $tag_list = array_merge($tag_list, $userTags);
+                    // dd($tag_list);
+                    
+                    $final_automated_tags = array_merge($merged_automated_tags , $tag_list);
+                    //  dd($final_automated_tags);
+                    // dd("okokokok");
+                    
+                    
+                    // $tags = empty($tag_list) ? NULL : json_encode($tag_list);
+                    $tags = empty($final_automated_tags) ? NULL : json_encode($final_automated_tags);
+
+            foreach ($request->file('files') as $file) {
+                try {
+                    $filePath = $file->store('uploads');
+
+                    // Create a new entry for each file
+                    CommonTable::create([
+                        'file_type' => $file->getClientMimeType(),
+                        'file_name' => $file->getClientOriginalName(),
+                        'real_file_name' => $request->input('real_file_name'),
+                        'file_size' => $file->getSize(),
+                        'file_path' => $filePath,
+                        'user_name' => auth()->user()->name, // Assuming user is authenticated
+                        'user_id' => auth()->user()->id,
+                        'file_status' => $request->input('file_status', 0),
+                        'fyear' => $request->input('fyear'),
+                        'month' => $request->input('Month'),
+                        'tags' => $tags, // Store tags as JSON
+                        'location' => $request->input('location'),
+                        'descp' => $request->input('desc'),
+                        
+                    ]);
+
+                    $totalSize += $file->getSize();
+                    $successMessages[] = "File {$file->getClientOriginalName()} uploaded successfully.";
+                } catch (\Exception $e) {
+                    $errorMessages[] = "Failed to save file {$file->getClientOriginalName()} to database.";
+                }
+            }
+            
+            
+
+            // Compile overall success message
+            $user = auth()->user();
+    //         $entries = CommonTable::where('user_id', $user->id)
+    // ->where('is_delete', 0)
+    // ->where('location', $request->input('location'))
+    // ->where('real_file_name', $request->input('real_file_name'))
+    // ->get();
+    //         $count = $entries->count();
+            
+            return redirect()->back()->with('success2', 'File Uploaded successfully.');
+
+            // return response()->json([
+            //     'success' => true,
+            //     'count' => $count,
+            //     'totalSize' => $totalSize,
+            //     'successMessages' => $successMessages,
+            //     'errorMessages' => $errorMessages,
+            // ]);
+
+        } catch (\Exception $e) {
+            // Handle any exceptions that occur during file upload or database saving
+            return response()->json(['success' => false, 'message' => 'Failed to process file uploads.'], 500);
+        }
+    } else {
+        // Return a JSON response indicating no file was uploaded
+        return response()->json(['success' => false, 'message' => 'No files uploaded.'], 400);
+    }
+}
+
+//////////////////////////////////////////// 4 october sandeep added code here for prdefined paths common pop upload form file upload  start /////////////////////////////////////////////////////////////////////////
+
+
 public function fetchSecretarialStatutoryRegistersROSHFileData()
 {
     $user = auth()->user();
