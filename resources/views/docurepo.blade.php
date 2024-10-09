@@ -4175,6 +4175,14 @@ $(window).on('load', function() {
   <div class="selected-file"></div>
 </div> 
                           </div>
+
+                          <div class="gropu_form test-area">
+                          <label for="Tags">Tags (Optional)</label>
+                         <div class="tag-container">
+            <textarea name="Tags" class="tag-input" placeholder="Add a tag and press enter"  style="height: 68px;"></textarea>
+            <input type="hidden" name="tagList" id="tagList" class="tagList">
+        </div>
+                          </div>
                           
         <div class="gropu_form test-area">
         <label for="desc">Description</label>
@@ -4664,6 +4672,33 @@ input#parent-folders {
         });
     });
 </script>
+
+<script>
+$(document).ready(function() {
+  // Toggle the dropdown-content when button is clicked
+  $('body').on('click', '.dropbtn', function(e) {
+    // Prevent body click from immediately closing the dropdown
+    e.stopPropagation();
+
+    // Get the dropdown content of the clicked button
+    var dropdownContent = $(this).siblings('.dropdown-content');
+    
+    // Close any currently open dropdowns by removing the active class from all dropdown-content
+    $('.dropdown-content').not(dropdownContent).removeClass('active');
+    
+    // Toggle the active class on the clicked dropdown-content
+    dropdownContent.toggleClass('active');
+  });
+
+  // Close dropdown-content if clicking outside
+  $('body').on('click', function() {
+    $('.dropdown-content').removeClass('active');
+  });
+});
+
+
+</script>
+
 
 <script>
     function check() {

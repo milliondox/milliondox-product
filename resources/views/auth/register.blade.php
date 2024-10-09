@@ -934,6 +934,7 @@ b.toggle-password {
     top: 12px;
     cursor: pointer;
     user-select: none;
+    pointer-events: auto; /* Make sure clicks are allowed */
 }
 b.toggle-password i {
     font-size: 11px;
@@ -1075,6 +1076,42 @@ b.toggle-password i {
             margin: 10px 0px;
           }     
         }
+
+        @media(max-width:576px)
+        {
+          .login_board .loginn_nt_form .fomr_head {
+    flex-direction: row-reverse;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 15px;
+}
+
+.login_board .login_logo a img {
+    max-width: 110px;
+}
+
+.login_forrm .last_flid {
+    margin-bottom: 20px;
+}
+
+.login_board .loginn_nt_form {
+    padding: 30px 20px 20px;
+}
+
+.login_board .loginn_nt_form .fomr_head p {
+    font-size: 12px;
+}
+
+.login_board .loginn_nt_form .login_forrm h2 {
+    font-size: 28px;
+}
+
+.form-group.fild_ntt {
+    margin-bottom: 10px;
+}
+
+ 
+}
       </style>
       <!-- login page css end-->
       <!-- latest jquery-->

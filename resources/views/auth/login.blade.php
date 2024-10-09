@@ -427,6 +427,7 @@ b.toggle-password {
     top: 12px;
     cursor: pointer;
     user-select: none;
+    pointer-events: auto; /* Make sure clicks are allowed */
 }
 b.toggle-password i {
     font-size: 11px;
