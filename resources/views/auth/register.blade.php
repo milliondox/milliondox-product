@@ -1092,6 +1092,23 @@ b.toggle-password i {
 .login_forrm .last_flid {
     margin-bottom: 20px;
 }
+
+.login_board .loginn_nt_form {
+    padding: 30px 20px 20px;
+}
+
+.login_board .loginn_nt_form .fomr_head p {
+    font-size: 12px;
+}
+
+.login_board .loginn_nt_form .login_forrm h2 {
+    font-size: 28px;
+}
+
+.form-group.fild_ntt {
+    margin-bottom: 10px;
+}
+
  
 }
       </style>
