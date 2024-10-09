@@ -779,11 +779,6 @@ $('body').on('click touchend', '.toggle-password', function(e) {
     }
 });
 
-
-
-
-
-
 		
 
 

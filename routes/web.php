@@ -124,6 +124,10 @@ Route::post('/updatedirstatus', [App\Http\Controllers\HomeController::class, 'up
 
 Route::post('/check-email-phone', [App\Http\Controllers\HomeController::class, 'checkEmailPhone'])->name('checkEmailPhone');
 
+Route::post('/check-user-existence', [App\Http\Controllers\HomeController::class, 'checkUserExistence'])->name('checkUserExistence');
+
+Route::post('/changeemppassword', [App\Http\Controllers\HomeController::class, 'changeemppassword'])->name('changeemppassword');
+
 
 // sandeep routes start 
 
