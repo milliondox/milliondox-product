@@ -17179,12 +17179,92 @@ public function shareFolder(Request $request)
             
             
             $folderHtml .= '<li><a href="#" class="folder-link wedcolor" data-folder-path="' . $folder->path . '">
-                                <div class="folder_wraap foldreload" >
+                                <div class="folder_wraap">
                                     <img src="../assets/images/solar_folder-bold.png" id="folders" class="folder-icon" alt="Folder Icon">
                                     <span>' . $folder->name . '</span>
                                 </div>
                             </a>
-                                           
+                            <div class="three_dots">
+                                <button class="click_folder_dot" data-folder-id="' . $folder->id . '">
+                                    <img src="../assets/images/folder_dot.png" id="folders" class="folder-dots" alt="Folder dots">
+                                </button>
+                                <div id="myDropdown2-' . $folder->id . '" class="dropdown-content">
+                                   
+                                    <a class="dropdown-itemm rename_nt"><img src="../assets/images/rename_nt.png">Rename</a>
+                                </div>
+                                <div class="modal fade drop_coman_file have_title drive_permissions_share" id="share_folder" tabindex="-1" role="dialog" aria-labelledby="share_folder" aria-hidden="true">
+                                <div class="modal-dialog modal-dialog-centered" role="document">
+                                  <div class="modal-content">
+                                    <div class="modal-header">
+                                      <h5 class="modal-title" style="font-weight:700">Share </h5>
+                                    </div>
+                                    <div class="modal-body">
+                                      <h3>Share</h3>
+                                      <form action="" method="POST" enctype="multipart/form-data" class="upload-form"> 
+                                      <div class="share_people">
+                                      <h2>Choose people to share</h2>
+                                      <div class="sarhe_search">
+                                      <input type="search" class="" placeholder="Search for people" aria-controls="">
+                                      </div>
+                                      </div>
+
+                                      <div class="people_with_acces">
+                                      <h2>People with access</h2>
+                                      <div class="people_list">
+                                      
+                                      <div class="people_repeat">
+                                       <div class="people_ini_image">
+                                      <img src="../assets/images/alok.png" alt="img">
+                                      </div>
+                                      
+                                      <div class="repeat_detailss">
+                                      <h2>devanshu.kumar@milliondox.com</h2>
+                                      <span>devanshu.kumar@milliondox.com</span>
+                                      </div>
+                                      
+                                      </div>
+ 
+                                      </div>
+                                      </div>
+
+                                      <div class="share_radio">
+                                      <h2>Access Type</h2>
+                                      <div class="radio_sare_button">
+                                      <div class="for_group radio">
+                                      <input type="radio" id="can_view" name="status" value="can_view">
+                                      <label for="can_view">Can View</label>   
+                                      </div>
+                                      <div class="for_group radio">
+                                      <input type="radio" id="can_edit" name="status" value="can_edit">
+                                      <label for="can_edit">Can Edit</label>   
+                                      </div>
+                                      </div>
+                                       </div>
+                        
+                                      <div class="toggle-btn">
+                                      <span>Limit Access Duration</span>
+                                      <label class="switch">
+                                      <input type="checkbox" id="checbox" onclick="check()" ;="">
+                                      <span class="slider round"></span>
+                                      </label>              
+                                      </div>
+                        
+                                      <div class="addTimeDateDiv">
+                                      <div class="two_search_togle">
+                                      <input type="search" class="" placeholder="Enter Date" aria-controls="">
+                                      <input type="search" class="" placeholder="Enter Time" aria-controls="">
+                                      </div>
+                                      </div>
+
+                                      <div class="togle_area_btn">
+                                      <a href="#">Share</a>
+                                      </div>
+                        
+                                      </form>
+                                    </div>
+                                  </div>
+                                </div>
+                            </div>                            
                         </li>';
         }
           }
@@ -17214,7 +17294,8 @@ public function shareFolder(Request $request)
             foreach ($fileContents as $file) {
                 $fileHtml .= '<tr>';
                 $fileHtml .= '<td>' . $file->file_name . '</td>';
-                $fileHtml .= '<td class="funtion_buttnss"><a href="' . route('downloadFilecustom', $file->id) . '">
+                $fileHtml .= '<td class="funtion_buttnss">                
+                <a href="' . route('downloadFilecustom', $file->id) . '">
                                   <svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
                                       <path d="M2.40625 12.25C2.00014 12.25 1.61066 12.0887 1.32349 11.8015C1.03633 11.5143 0.875 11.1249 0.875 10.7188V8.53125C0.875 8.3572 0.94414 8.19028 1.06721 8.06721C1.19028 7.94414 1.3572 7.875 1.53125 7.875C1.7053 7.875 1.87222 7.94414 1.99529 8.06721C2.11836 8.19028 2.1875 8.3572 2.1875 8.53125V10.7188C2.1875 10.8395 2.2855 10.9375 2.40625 10.9375H11.5938C11.6518 10.9375 11.7074 10.9145 11.7484 10.8734C11.7895 10.8324 11.8125 10.7768 11.8125 10.7188V8.53125C11.8125 8.3572 11.8816 8.19028 12.0047 8.06721C12.1278 7.94414 12.2947 7.875 12.4688 7.875C12.6428 7.875 12.8097 7.94414 12.9328 8.06721C13.0559 8.19028 13.125 8.3572 13.125 8.53125V10.7188C13.125 11.1249 12.9637 11.5143 12.6765 11.8015C12.3893 12.0887 11.9999 12.25 11.5938 12.25H2.40625Z" fill="#CEFFA8" />
                                       <path d="M6.34334 6.72788V1.75C6.34334 1.57595 6.41248 1.40903 6.53555 1.28596C6.65862 1.16289 6.82554 1.09375 6.99959 1.09375C7.17364 1.09375 7.34056 1.16289 7.46363 1.28596C7.5867 1.40903 7.65584 1.57595 7.65584 1.75V6.72788L9.37959 5.005C9.44049 4.9441 9.51279 4.89579 9.59236 4.86283C9.67193 4.82987 9.75722 4.81291 9.84334 4.81291C9.92947 4.81291 10.0148 4.82987 10.0943 4.86283C10.1739 4.89579 10.2462 4.9441 10.3071 5.005C10.368 5.0659 10.4163 5.1382 10.4493 5.21777C10.4822 5.29734 10.4992 5.38262 10.4992 5.46875C10.4992 5.55488 10.4822 5.64016 10.4493 5.71973C10.4163 5.7993 10.368 5.8716 10.3071 5.9325L7.46334 8.77625C7.40247 8.83721 7.33018 8.88556 7.25061 8.91856C7.17103 8.95155 7.08574 8.96853 6.99959 8.96853C6.91345 8.96853 6.82815 8.95155 6.74857 8.91856C6.669 8.88556 6.59671 8.83721 6.53584 8.77625L3.69209 5.9325C3.63119 5.8716 3.58288 5.7993 3.54992 5.71973C3.51696 5.64016 3.5 5.55488 3.5 5.46875C3.5 5.38262 3.51696 5.29734 3.54992 5.21777C3.58288 5.1382 3.63119 5.0659 3.69209 5.005C3.75299 4.9441 3.82529 4.89579 3.90486 4.86283C3.98443 4.82987 4.06972 4.81291 4.15584 4.81291C4.24197 4.81291 4.32725 4.82987 4.40682 4.86283C4.48639 4.89579 4.55869 4.9441 4.61959 5.005L6.34334 6.72788Z" fill="#CEFFA8" />
@@ -17226,6 +17307,19 @@ public function shareFolder(Request $request)
                                       <path d="M5.07536 13.3334C4.77759 13.3334 4.52359 13.2285 4.31336 13.0187C4.10359 12.809 3.9987 12.555 3.9987 12.2567V4.00007H3.33203V3.3334H5.9987V2.82007H9.9987V3.3334H12.6654V4.00007H11.9987V12.2567C11.9987 12.5634 11.896 12.8194 11.6907 13.0247C11.4849 13.2305 11.2287 13.3334 10.922 13.3334H5.07536ZM11.332 4.00007H4.66536V12.2567C4.66536 12.3763 4.70381 12.4745 4.7807 12.5514C4.85759 12.6283 4.95581 12.6667 5.07536 12.6667H10.922C11.0243 12.6667 11.1183 12.6241 11.204 12.5387C11.2894 12.453 11.332 12.359 11.332 12.2567V4.00007ZM6.53736 11.3334H7.20403V5.3334H6.53736V11.3334ZM8.79337 11.3334H9.46003V5.3334H8.79337V11.3334Z" fill="#FA4A4A"></path>
                                     </svg> 
                                 </button> 
+                <div class="dropdown commn_table_wrap">
+                <button class="dropbtn show_pp">
+                <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M10.3994 4.19166C10.3994 4.37562 10.3632 4.55779 10.2929 4.72778C10.2226 4.89776 10.1194 5.05222 9.98937 5.18234C9.85934 5.31246 9.70494 5.4157 9.535 5.48615C9.36507 5.55661 9.18292 5.5929 8.99896 5.59296C8.81499 5.59302 8.63282 5.55684 8.46284 5.4865C8.29286 5.41615 8.1384 5.31302 8.00827 5.18298C7.87815 5.05294 7.77492 4.89854 7.70446 4.72861C7.63401 4.55867 7.59772 4.37652 7.59766 4.19256C7.59754 3.82103 7.74501 3.46467 8.00764 3.20188C8.27026 2.93908 8.62653 2.79138 8.99806 2.79126C9.36958 2.79114 9.72594 2.93862 9.98874 3.20124C10.2515 3.46387 10.3992 3.82013 10.3994 4.19166Z" fill="#8D8D8D"></path>
+                  <path d="M8.99806 10.3999C9.77148 10.3999 10.3985 9.77294 10.3985 8.99952C10.3985 8.2261 9.77148 7.59912 8.99806 7.59912C8.22464 7.59912 7.59766 8.2261 7.59766 8.99952C7.59766 9.77294 8.22464 10.3999 8.99806 10.3999Z" fill="#8D8D8D"></path>
+                  <path d="M8.99806 15.2085C9.77148 15.2085 10.3985 14.5815 10.3985 13.8081C10.3985 13.0347 9.77148 12.4077 8.99806 12.4077C8.22464 12.4077 7.59766 13.0347 7.59766 13.8081C7.59766 14.5815 8.22464 15.2085 8.99806 15.2085Z" fill="#8D8D8D"></path>
+                </svg>
+              </button>
+              <div id="myDropdown3" class="dropdown-content"> 
+                <a class="dropdown-itemm open_eye_pdf">
+                  View </a>
+            </div>
+        </div>
                           </td>';
                 $fileHtml .= '</tr>';
             }

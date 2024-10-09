@@ -1075,6 +1075,25 @@ b.toggle-password i {
             margin: 10px 0px;
           }     
         }
+
+        @media(max-width:576px)
+        {
+          .login_board .loginn_nt_form .fomr_head {
+    flex-direction: row-reverse;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 15px;
+}
+
+.login_board .login_logo a img {
+    max-width: 110px;
+}
+
+.login_forrm .last_flid {
+    margin-bottom: 20px;
+}
+ 
+}
       </style>
       <!-- login page css end-->
       <!-- latest jquery-->
