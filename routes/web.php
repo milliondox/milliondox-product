@@ -171,6 +171,11 @@ Route::get('/download-common-file/{id}', [App\Http\Controllers\HomeController::c
 Route::post('/softdeleteCommonFile/{id}', [App\Http\Controllers\HomeController::class, 'softdeleteCommonFile'])->name('softdeleteCommonFile');
 Route::post('/deleteCustomFile/{id}', [App\Http\Controllers\HomeController::class, 'deleteCustomFile'])->name('deleteCustomFile');
 
+////////////////////////////////// sandeep added this route for predefined common files upload  4 october 2024 ////////////////////////////////////////////////////
+Route::post('/PredefinedCommonUploadFiles', [App\Http\Controllers\HomeController::class, 'PredefinedCommonUploadFiles'])->name('PredefinedCommonUploadFiles');
+Route::post('/PredefinedCommonUploadFilesBank', [App\Http\Controllers\HomeController::class, 'PredefinedCommonUploadFilesBank'])->name('PredefinedCommonUploadFilesBank');
+
+
 // sandeep routes end
 
 
