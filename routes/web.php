@@ -166,6 +166,8 @@ Route::post('/deleteCustomFile/{id}', [App\Http\Controllers\HomeController::clas
 
 ////////////////////////////////// sandeep added this route for predefined common files upload  4 october 2024 ////////////////////////////////////////////////////
 Route::post('/PredefinedCommonUploadFiles', [App\Http\Controllers\HomeController::class, 'PredefinedCommonUploadFiles'])->name('PredefinedCommonUploadFiles');
+Route::post('/PredefinedCommonUploadFilesBank', [App\Http\Controllers\HomeController::class, 'PredefinedCommonUploadFilesBank'])->name('PredefinedCommonUploadFilesBank');
+
 
 // sandeep routes end
 
