@@ -67,19 +67,24 @@ window.onload = function() {
 																												xmlns="http://www.w3.org/2000/svg"><path d="M4.375 9.375H16.875C17.0408 9.375 17.1997 9.44085 17.3169 9.55806C17.4342 9.67527 17.5 9.83424 17.5 10C17.5 10.1658 17.4342 10.3247 17.3169 10.4419C17.1997 10.5592 17.0408 10.625 16.875 10.625H4.375C4.20924 10.625 4.05027 10.5592 3.93306 10.4419C3.81585 10.3247 3.75 10.1658 3.75 10C3.75 9.83424 3.81585 9.67527 3.93306 9.55806C4.05027 9.44085 4.20924 9.375 4.375 9.375Z" fill="black" /><path d="M4.63365 10L9.8174 15.1825C9.93475 15.2999 10.0007 15.459 10.0007 15.625C10.0007 15.791 9.93475 15.9501 9.8174 16.0675C9.70004 16.1849 9.54087 16.2508 9.3749 16.2508C9.20893 16.2508 9.04975 16.1849 8.9324 16.0675L3.3074 10.4425C3.24919 10.3844 3.20301 10.3155 3.17151 10.2395C3.14 10.1636 3.12378 10.0822 3.12378 10C3.12378 9.91779 3.14 9.83639 3.17151 9.76046C3.20301 9.68453 3.24919 9.61556 3.3074 9.5575L8.9324 3.9325C9.04975 3.81515 9.20893 3.74921 9.3749 3.74921C9.54087 3.74921 9.70004 3.81515 9.8174 3.9325C9.93475 4.04986 10.0007 4.20903 10.0007 4.375C10.0007 4.54097 9.93475 4.70015 9.8174 4.8175L4.63365 10Z" fill="black" /></svg></button></div> -->
               <p>Already have an account? <a href="{{url('/login')}}">Login</a>
               </p>
+              <div class="login_logo">
+                <a href="https://milliondox.com/" class="logo">
+                <img src="https://milliondox.com/assets/img/logo.webp" alt="logo" class="img-fluid">
+                </a>
+                </div>
             </div>
             <div class="login_forrm regestirr">
               <div class="last_flid">
               <h2>Sign Up</h2>
 
-              <div class="or_login">
+              <!-- <div class="or_login">
                       <span>or</span>
                       <div class="two_option">
                         <a href="{{url('/auth/google')}}">
                           <img src="../assets/images/sign-google.png" alt="img">
                         </a>
                       </div>
-                    </div>
+                    </div> -->
 
 </div>
               <div class="comman_loderr" id="customLoader">
@@ -493,11 +498,13 @@ Read the policy <a data-bs-toggle="modal" data-bs-target="#term_regester">Click 
         }
 
         .login_board .loginn_nt_form .fomr_head {
-          display: flex;
-          align-items: center;
-          justify-content: space-between;
-          margin-bottom: 70px;
-        }
+    display: flex;
+    align-items: flex-start;
+    justify-content: flex-start;
+    margin-bottom: 30px;
+    flex-direction: column;
+    gap: 15px 0px;
+}
 
         .login_board .loginn_nt_form .fomr_head p {
           margin: 0;
@@ -723,7 +730,7 @@ Read the policy <a data-bs-toggle="modal" data-bs-target="#term_regester">Click 
 .login_forrm .last_flid {
     display: flex;
     align-items: center;
-    padding: 0px 10px;
+    padding: 0px 0px;
     margin-bottom: 40px;
 }
 
@@ -927,11 +934,25 @@ b.toggle-password {
     top: 12px;
     cursor: pointer;
     user-select: none;
+    pointer-events: auto; /* Make sure clicks are allowed */
 }
 b.toggle-password i {
     font-size: 11px;
     color: #333;
 }
+
+.login_board .login_logo {
+    display: block;
+}
+
+.login_board .login_logo a {
+    display: flex;
+}
+
+.login_board .login_logo a img {
+    max-width: 130px;
+}
+
         /* media start */
         @media(max-width:1566px) {
           .main_voltt {
@@ -948,7 +969,7 @@ b.toggle-password i {
           }
 
           .login_board .loginn_nt_form .fomr_head {
-            margin-bottom: 90px;
+            margin-bottom: 30px;
           }
 
           .login_board .loginn_nt_form .login_forrm h2 {
@@ -982,7 +1003,7 @@ b.toggle-password i {
           }
 
           .login_board .loginn_nt_form .fomr_head {
-            margin-bottom: 60px;
+            margin-bottom: 30px;
           }
         }
 
@@ -1040,7 +1061,7 @@ b.toggle-password i {
           }
 
           .login_board .loginn_nt_form .fomr_head {
-            margin-bottom: 50px;
+            margin-bottom: 30px;
           }
 
           .login_forrm .last_flid {
@@ -1055,6 +1076,42 @@ b.toggle-password i {
             margin: 10px 0px;
           }     
         }
+
+        @media(max-width:576px)
+        {
+          .login_board .loginn_nt_form .fomr_head {
+    flex-direction: row-reverse;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 15px;
+}
+
+.login_board .login_logo a img {
+    max-width: 110px;
+}
+
+.login_forrm .last_flid {
+    margin-bottom: 20px;
+}
+
+.login_board .loginn_nt_form {
+    padding: 30px 20px 20px;
+}
+
+.login_board .loginn_nt_form .fomr_head p {
+    font-size: 12px;
+}
+
+.login_board .loginn_nt_form .login_forrm h2 {
+    font-size: 28px;
+}
+
+.form-group.fild_ntt {
+    margin-bottom: 10px;
+}
+
+ 
+}
       </style>
       <!-- login page css end-->
       <!-- latest jquery-->
@@ -1381,7 +1438,7 @@ $(document).ready(function() {
                                   <div class="modal-body">
 
 <div class="iframe_contennt">
-     <embed src="../assets/images/vikram.pdf#toolbar=0&navpanes=0&scrollbar=0" type="application/pdf" width="100%" height="100%" style="border: none;">
+     <embed src="../assets/images/tc.pdf#toolbar=0&navpanes=0&scrollbar=0" type="application/pdf" width="100%" height="100%" style="border: none;">
 </div>
 
      <div class="btn_access_reg">

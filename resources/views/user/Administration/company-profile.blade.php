@@ -237,12 +237,12 @@ closeToastBtn.addEventListener("click", closeToast);
 </a>
 </div>
 <div class="cpy_table table-responsive theme-scrollbar">
-@forelse($cp as $pc)
+
 
 <table>
   <tr>
       <th>State of Registration :</th>
-    <td id="state" >{{$pc->state ?? 'N/A'}} <button class="copy"><svg width="11" height="13" viewBox="0 0 11 13" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <td id="state" >{{$user->state ?? 'N/A'}} <button class="copy"><svg width="11" height="13" viewBox="0 0 11 13" fill="none" xmlns="http://www.w3.org/2000/svg">
 <path d="M6.96484 2.69067H1.96484C1.27449 2.69067 0.714844 3.16237 0.714844 3.74425V10.7681C0.714844 11.3499 1.27449 11.8216 1.96484 11.8216H6.96484C7.6552 11.8216 8.21484 11.3499 8.21484 10.7681V3.74425C8.21484 3.16237 7.6552 2.69067 6.96484 2.69067Z" stroke="#BCBCBC"/>
 <path d="M2.37891 2.33934C2.37891 2.05991 2.5106 1.79193 2.74502 1.59435C2.97944 1.39677 3.29739 1.28577 3.62891 1.28577H8.62891C8.96043 1.28577 9.27837 1.39677 9.51279 1.59435C9.74721 1.79193 9.87891 2.05991 9.87891 2.33934V9.36315C9.87891 9.64257 9.74721 9.91055 9.51279 10.1081C9.27837 10.3057 8.96043 10.4167 8.62891 10.4167" stroke="#BCBCBC"/>
 </svg>
@@ -250,7 +250,7 @@ closeToastBtn.addEventListener("click", closeToast);
   </tr>
     <tr>
       <th>Industry :</th>
-    <td id="industry" >{{$pc->industry ?? 'N/A'}} <button class="copy"><svg width="11" height="13" viewBox="0 0 11 13" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <td id="industry" >{{$user->industry ?? 'N/A'}} <button class="copy"><svg width="11" height="13" viewBox="0 0 11 13" fill="none" xmlns="http://www.w3.org/2000/svg">
 <path d="M6.96484 2.69067H1.96484C1.27449 2.69067 0.714844 3.16237 0.714844 3.74425V10.7681C0.714844 11.3499 1.27449 11.8216 1.96484 11.8216H6.96484C7.6552 11.8216 8.21484 11.3499 8.21484 10.7681V3.74425C8.21484 3.16237 7.6552 2.69067 6.96484 2.69067Z" stroke="#BCBCBC"/>
 <path d="M2.37891 2.33934C2.37891 2.05991 2.5106 1.79193 2.74502 1.59435C2.97944 1.39677 3.29739 1.28577 3.62891 1.28577H8.62891C8.96043 1.28577 9.27837 1.39677 9.51279 1.59435C9.74721 1.79193 9.87891 2.05991 9.87891 2.33934V9.36315C9.87891 9.64257 9.74721 9.91055 9.51279 10.1081C9.27837 10.3057 8.96043 10.4167 8.62891 10.4167" stroke="#BCBCBC"/>
 </svg>
@@ -258,7 +258,7 @@ closeToastBtn.addEventListener("click", closeToast);
   </tr>
       <tr>
       <th>Employee Count :</th>
-    <td id="employee-count" >{{$pc->employee_count ?? 'N/A'}} <button class="copy"><svg width="11" height="13" viewBox="0 0 11 13" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <td id="employee-count" >{{$user->employees ?? 'N/A'}} <button class="copy"><svg width="11" height="13" viewBox="0 0 11 13" fill="none" xmlns="http://www.w3.org/2000/svg">
 <path d="M6.96484 2.69067H1.96484C1.27449 2.69067 0.714844 3.16237 0.714844 3.74425V10.7681C0.714844 11.3499 1.27449 11.8216 1.96484 11.8216H6.96484C7.6552 11.8216 8.21484 11.3499 8.21484 10.7681V3.74425C8.21484 3.16237 7.6552 2.69067 6.96484 2.69067Z" stroke="#BCBCBC"/>
 <path d="M2.37891 2.33934C2.37891 2.05991 2.5106 1.79193 2.74502 1.59435C2.97944 1.39677 3.29739 1.28577 3.62891 1.28577H8.62891C8.96043 1.28577 9.27837 1.39677 9.51279 1.59435C9.74721 1.79193 9.87891 2.05991 9.87891 2.33934V9.36315C9.87891 9.64257 9.74721 9.91055 9.51279 10.1081C9.27837 10.3057 8.96043 10.4167 8.62891 10.4167" stroke="#BCBCBC"/>
 </svg>
@@ -266,7 +266,7 @@ closeToastBtn.addEventListener("click", closeToast);
   </tr>
         <tr>
       <th>Date of Incorporation :</th>
-    <td id="DOI" >{{$pc->DOI ?? 'N/A'}} <button class="copy"><svg width="11" height="13" viewBox="0 0 11 13" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <td id="DOI" >{{$user->joining_date ?? 'N/A'}} <button class="copy"><svg width="11" height="13" viewBox="0 0 11 13" fill="none" xmlns="http://www.w3.org/2000/svg">
 <path d="M6.96484 2.69067H1.96484C1.27449 2.69067 0.714844 3.16237 0.714844 3.74425V10.7681C0.714844 11.3499 1.27449 11.8216 1.96484 11.8216H6.96484C7.6552 11.8216 8.21484 11.3499 8.21484 10.7681V3.74425C8.21484 3.16237 7.6552 2.69067 6.96484 2.69067Z" stroke="#BCBCBC"/>
 <path d="M2.37891 2.33934C2.37891 2.05991 2.5106 1.79193 2.74502 1.59435C2.97944 1.39677 3.29739 1.28577 3.62891 1.28577H8.62891C8.96043 1.28577 9.27837 1.39677 9.51279 1.59435C9.74721 1.79193 9.87891 2.05991 9.87891 2.33934V9.36315C9.87891 9.64257 9.74721 9.91055 9.51279 10.1081C9.27837 10.3057 8.96043 10.4167 8.62891 10.4167" stroke="#BCBCBC"/>
 </svg>
@@ -275,7 +275,7 @@ closeToastBtn.addEventListener("click", closeToast);
   
   
     <th>CIN :</th>
-    <td id="cin" >{{$pc->CIN ?? 'N/A'}} <button class="copy"><svg width="11" height="13" viewBox="0 0 11 13" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <td id="cin" >{{$user->CIN ?? 'N/A'}} <button class="copy"><svg width="11" height="13" viewBox="0 0 11 13" fill="none" xmlns="http://www.w3.org/2000/svg">
 <path d="M6.96484 2.69067H1.96484C1.27449 2.69067 0.714844 3.16237 0.714844 3.74425V10.7681C0.714844 11.3499 1.27449 11.8216 1.96484 11.8216H6.96484C7.6552 11.8216 8.21484 11.3499 8.21484 10.7681V3.74425C8.21484 3.16237 7.6552 2.69067 6.96484 2.69067Z" stroke="#BCBCBC"/>
 <path d="M2.37891 2.33934C2.37891 2.05991 2.5106 1.79193 2.74502 1.59435C2.97944 1.39677 3.29739 1.28577 3.62891 1.28577H8.62891C8.96043 1.28577 9.27837 1.39677 9.51279 1.59435C9.74721 1.79193 9.87891 2.05991 9.87891 2.33934V9.36315C9.87891 9.64257 9.74721 9.91055 9.51279 10.1081C9.27837 10.3057 8.96043 10.4167 8.62891 10.4167" stroke="#BCBCBC"/>
 </svg>
@@ -284,7 +284,7 @@ closeToastBtn.addEventListener("click", closeToast);
   
   <tr>
     <th>PAN :</th>
-    <td id="pan">{{$pc->PAN ?? 'N/A'}} <button class="copy"><svg width="11" height="13" viewBox="0 0 11 13" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <td id="pan">{{$user->PAN ?? 'N/A'}} <button class="copy"><svg width="11" height="13" viewBox="0 0 11 13" fill="none" xmlns="http://www.w3.org/2000/svg">
 <path d="M6.96484 2.69067H1.96484C1.27449 2.69067 0.714844 3.16237 0.714844 3.74425V10.7681C0.714844 11.3499 1.27449 11.8216 1.96484 11.8216H6.96484C7.6552 11.8216 8.21484 11.3499 8.21484 10.7681V3.74425C8.21484 3.16237 7.6552 2.69067 6.96484 2.69067Z" stroke="#BCBCBC"/>
 <path d="M2.37891 2.33934C2.37891 2.05991 2.5106 1.79193 2.74502 1.59435C2.97944 1.39677 3.29739 1.28577 3.62891 1.28577H8.62891C8.96043 1.28577 9.27837 1.39677 9.51279 1.59435C9.74721 1.79193 9.87891 2.05991 9.87891 2.33934V9.36315C9.87891 9.64257 9.74721 9.91055 9.51279 10.1081C9.27837 10.3057 8.96043 10.4167 8.62891 10.4167" stroke="#BCBCBC"/>
 </svg>
@@ -292,7 +292,7 @@ closeToastBtn.addEventListener("click", closeToast);
   </tr>
   <tr>
     <th>Email :</th>
-    <td id="mail">{{$pc->Email ?? 'N/A'}} <button class="copy"><svg width="11" height="13" viewBox="0 0 11 13" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <td id="mail">{{$user->backupemail ?? 'N/A'}} <button class="copy"><svg width="11" height="13" viewBox="0 0 11 13" fill="none" xmlns="http://www.w3.org/2000/svg">
 <path d="M6.96484 2.69067H1.96484C1.27449 2.69067 0.714844 3.16237 0.714844 3.74425V10.7681C0.714844 11.3499 1.27449 11.8216 1.96484 11.8216H6.96484C7.6552 11.8216 8.21484 11.3499 8.21484 10.7681V3.74425C8.21484 3.16237 7.6552 2.69067 6.96484 2.69067Z" stroke="#BCBCBC"/>
 <path d="M2.37891 2.33934C2.37891 2.05991 2.5106 1.79193 2.74502 1.59435C2.97944 1.39677 3.29739 1.28577 3.62891 1.28577H8.62891C8.96043 1.28577 9.27837 1.39677 9.51279 1.59435C9.74721 1.79193 9.87891 2.05991 9.87891 2.33934V9.36315C9.87891 9.64257 9.74721 9.91055 9.51279 10.1081C9.27837 10.3057 8.96043 10.4167 8.62891 10.4167" stroke="#BCBCBC"/>
 </svg>
@@ -300,7 +300,7 @@ closeToastBtn.addEventListener("click", closeToast);
   </tr>
   <tr>
     <th>Phone :</th>
-    <td id="phn">{{$pc->Phone ?? 'N/A'}} <button class="copy"><svg width="11" height="13" viewBox="0 0 11 13" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <td id="phn">{{$user->phone ?? 'N/A'}} <button class="copy"><svg width="11" height="13" viewBox="0 0 11 13" fill="none" xmlns="http://www.w3.org/2000/svg">
 <path d="M6.96484 2.69067H1.96484C1.27449 2.69067 0.714844 3.16237 0.714844 3.74425V10.7681C0.714844 11.3499 1.27449 11.8216 1.96484 11.8216H6.96484C7.6552 11.8216 8.21484 11.3499 8.21484 10.7681V3.74425C8.21484 3.16237 7.6552 2.69067 6.96484 2.69067Z" stroke="#BCBCBC"/>
 <path d="M2.37891 2.33934C2.37891 2.05991 2.5106 1.79193 2.74502 1.59435C2.97944 1.39677 3.29739 1.28577 3.62891 1.28577H8.62891C8.96043 1.28577 9.27837 1.39677 9.51279 1.59435C9.74721 1.79193 9.87891 2.05991 9.87891 2.33934V9.36315C9.87891 9.64257 9.74721 9.91055 9.51279 10.1081C9.27837 10.3057 8.96043 10.4167 8.62891 10.4167" stroke="#BCBCBC"/>
 </svg>
@@ -308,35 +308,28 @@ closeToastBtn.addEventListener("click", closeToast);
   </tr>
   
       <th>Authorized Capital :</th>
-    <td id="authorized-capital">{{$pc->authorized_capital ?? 'N/A'}} <button class="copy"><svg width="11" height="13" viewBox="0 0 11 13" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <td id="authorized-capital">{{$user->authorized_capital ?? 'N/A'}} <button class="copy"><svg width="11" height="13" viewBox="0 0 11 13" fill="none" xmlns="http://www.w3.org/2000/svg">
 <path d="M6.96484 2.69067H1.96484C1.27449 2.69067 0.714844 3.16237 0.714844 3.74425V10.7681C0.714844 11.3499 1.27449 11.8216 1.96484 11.8216H6.96484C7.6552 11.8216 8.21484 11.3499 8.21484 10.7681V3.74425C8.21484 3.16237 7.6552 2.69067 6.96484 2.69067Z" stroke="#BCBCBC"/>
 <path d="M2.37891 2.33934C2.37891 2.05991 2.5106 1.79193 2.74502 1.59435C2.97944 1.39677 3.29739 1.28577 3.62891 1.28577H8.62891C8.96043 1.28577 9.27837 1.39677 9.51279 1.59435C9.74721 1.79193 9.87891 2.05991 9.87891 2.33934V9.36315C9.87891 9.64257 9.74721 9.91055 9.51279 10.1081C9.27837 10.3057 8.96043 10.4167 8.62891 10.4167" stroke="#BCBCBC"/>
 </svg>
 </button></td>
   </tr>
       <th>Paid-up Capital :</th>
-    <td id="paid-up-capital">{{$pc->paid_up_capital ?? 'N/A'}} <button class="copy"><svg width="11" height="13" viewBox="0 0 11 13" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <td id="paid-up-capital">{{$user->paid_up_capital ?? 'N/A'}} <button class="copy"><svg width="11" height="13" viewBox="0 0 11 13" fill="none" xmlns="http://www.w3.org/2000/svg">
 <path d="M6.96484 2.69067H1.96484C1.27449 2.69067 0.714844 3.16237 0.714844 3.74425V10.7681C0.714844 11.3499 1.27449 11.8216 1.96484 11.8216H6.96484C7.6552 11.8216 8.21484 11.3499 8.21484 10.7681V3.74425C8.21484 3.16237 7.6552 2.69067 6.96484 2.69067Z" stroke="#BCBCBC"/>
 <path d="M2.37891 2.33934C2.37891 2.05991 2.5106 1.79193 2.74502 1.59435C2.97944 1.39677 3.29739 1.28577 3.62891 1.28577H8.62891C8.96043 1.28577 9.27837 1.39677 9.51279 1.59435C9.74721 1.79193 9.87891 2.05991 9.87891 2.33934V9.36315C9.87891 9.64257 9.74721 9.91055 9.51279 10.1081C9.27837 10.3057 8.96043 10.4167 8.62891 10.4167" stroke="#BCBCBC"/>
 </svg>
 </button></td>
   </tr>
 </table>
-@empty
 
-<div class="khaliclass"><svg width="15" height="15" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                <path d="M7.0277 8.93L6.9077 4H8.0477L7.9277 8.93H7.0277ZM7.5077 11.06C7.30103 11.06 7.13103 10.9967 6.9977 10.87C6.87103 10.7367 6.8077 10.58 6.8077 10.4C6.8077 10.2133 6.87103 10.0567 6.9977 9.93C7.13103 9.79667 7.30103 9.73 7.5077 9.73C7.70103 9.73 7.86103 9.79667 7.9877 9.93C8.12103 10.0567 8.1877 10.2133 8.1877 10.4C8.1877 10.58 8.12103 10.7367 7.9877 10.87C7.86103 10.9967 7.70103 11.06 7.5077 11.06Z" fill="#FFDE2F"></path>
-                                <circle cx="7.5" cy="7.5" r="7" stroke="#FFDE2F"></circle>
-                              </svg>
-                              <p>please fill your company information first.</p>
-                              </div>
-                              
-@endforelse
+
+
 </div>
 </div>
 
 <!-- save mode code start -->
-@forelse($cp as $pc)
+
 <!-- edit mode code start -->
     <div class="cmpy_content edit_start" style="display:none;">
         <div class="cpmpany_head">
@@ -344,108 +337,118 @@ closeToastBtn.addEventListener("click", closeToast);
             <a class="hide_cancle hvr-rotate">Cancel</a>
 </div>
 <div class="cpy_table table-responsive theme-scrollbar">
-<form action="{{ route('companystoreprofile') }}" method="POST" enctype="multipart/form-data" class="upload-form"> 
+<form action="{{ route('companystoreprofile') }}" method="POST" id="companystore" enctype="multipart/form-data" class="upload-form"> 
 @csrf
 <table>
  <tr>
     <th>State of Registration :</th>
     <td><select id="state" name="state" class="state-field" required>
         <option value="">Select State</option>
-        <option value="Andhra Pradesh" {{ $pc->state === 'Andhra Pradesh' ? ' selected' : '' }}>Andhra Pradesh</option>
-        <option value="Arunachal Pradesh" {{ $pc->state === 'Arunachal Pradesh' ? ' selected' : '' }}>Arunachal Pradesh</option>
-        <option value="Assam" {{ $pc->state === 'Assam' ? ' selected' : '' }}>Assam</option>
-        <option value="Bihar" {{ $pc->state === 'Bihar' ? ' selected' : '' }}>Bihar</option>
-        <option value="Chhattisgarh" {{ $pc->state === 'Chhattisgarh' ? ' selected' : '' }}>Chhattisgarh</option>
-        <option value="Goa" {{ $pc->state === 'Goa' ? ' selected' : '' }}>Goa</option>
-        <option value="Gujarat" {{ $pc->state === 'Gujarat' ? ' selected' : '' }}>Gujarat</option>
-        <option value="Haryana" {{ $pc->state === 'Haryana' ? ' selected' : '' }}>Haryana</option>
-        <option value="Himachal Pradesh" {{ $pc->state === 'Himachal Pradesh' ? ' selected' : '' }}>Himachal Pradesh</option>
-        <option value="Jharkhand" {{ $pc->state === 'Jharkhand' ? ' selected' : '' }}>Jharkhand</option>
-        <option value="Karnataka" {{ $pc->state === 'Karnataka' ? ' selected' : '' }}>Karnataka</option>
-        <option value="Kerala" {{ $pc->state === 'Kerala' ? ' selected' : '' }}>Kerala</option>
-        <option value="Madhya Pradesh" {{ $pc->state === 'Madhya Pradesh' ? ' selected' : '' }}>Madhya Pradesh</option>
-        <option value="Maharashtra" {{ $pc->state === 'Maharashtra' ? ' selected' : '' }}>Maharashtra</option>
-        <option value="Manipur" {{ $pc->state === 'Manipur)' ? ' selected' : '' }}>Manipur</option>
-        <option value="Meghalaya" {{ $pc->state === 'Meghalaya' ? ' selected' : '' }}>Meghalaya</option>
-        <option value="Mizoram" {{ $pc->state === 'Mizoram' ? ' selected' : '' }}>Mizoram</option>
-        <option value="Nagaland" {{ $pc->state === 'Nagaland' ? ' selected' : '' }}>Nagaland</option>
-        <option value="Odisha" {{ $pc->state === 'Odisha' ? ' selected' : '' }}>Odisha</option>
-        <option value="Punjab" {{ $pc->state === 'Punjab' ? ' selected' : '' }}>Punjab</option>
-        <option value="Rajasthan" {{ $pc->state === 'Rajasthan' ? ' selected' : '' }}>Rajasthan</option>
-        <option value="Sikkim" {{ $pc->state === 'Sikkim' ? ' selected' : '' }}>Sikkim</option>
-        <option value="Tamil Nadu" {{ $pc->state === 'Tamil Nadu' ? ' selected' : '' }}>Tamil Nadu</option>
-        <option value="Telangana" {{ $pc->state === 'Telangana' ? ' selected' : '' }}>Telangana</option>
-        <option value="Tripura" {{ $pc->state === 'Tripura' ? ' selected' : '' }}>Tripura</option>
-        <option value="Uttar Pradesh" {{ $pc->state === 'Uttar Pradesh' ? ' selected' : '' }}>Uttar Pradesh</option>
-        <option value="Uttarakhand" {{ $pc->state === 'Uttarakhand' ? ' selected' : '' }}>Uttarakhand</option>
-        <option value="West Bengal" {{ $pc->state === 'West Bengal' ? ' selected' : '' }}>West Bengal</option>
-        <option value="Andaman and Nicobar Islands" {{ $pc->state === 'Andaman and Nicobar Islands' ? ' selected' : '' }}>Andaman and Nicobar Islands</option>
-        <option value="Chandigarh" {{ $pc->state === 'Chandigarh' ? ' selected' : '' }}>Chandigarh</option>
-        <option value="Dadra and Nagar Haveli" {{ $pc->state === 'Dadra and Nagar Haveli' ? ' selected' : '' }}>Dadra and Nagar Haveli</option>
-        <option value="Daman and Diu" {{ $pc->state === 'Daman and Diu' ? ' selected' : '' }}>Daman and Diu</option>
-        <option value="Lakshadweep" {{ $pc->state === 'Lakshadweep' ? ' selected' : '' }}>Lakshadweep</option>
-        <option value="Delhi" {{ $pc->state === 'Delhi' ? ' selected' : '' }}>Delhi</option>
-        <option value="Puducherry" {{ $pc->state === 'Puducherry' ? ' selected' : '' }}>Puducherry</option>
-        <option value="Ladakh" {{ $pc->state === 'Ladakh' ? ' selected' : '' }}>Ladakh</option>
-        <option value="Jammu and Kashmir" {{ $pc->state === 'Jammu and Kashmir' ? ' selected' : '' }}>Jammu and Kashmir</option>
+        <option value="Andhra Pradesh" {{ $user->state === 'Andhra Pradesh' ? ' selected' : '' }}>Andhra Pradesh</option>
+    <option value="Arunachal Pradesh" {{ $user->state === 'Arunachal Pradesh' ? ' selected' : '' }}>Arunachal Pradesh</option>
+    <option value="Assam" {{ $user->state === 'Assam' ? ' selected' : '' }}>Assam</option>
+    <option value="Bihar" {{ $user->state === 'Bihar' ? ' selected' : '' }}>Bihar</option>
+    <option value="Chandigarh" {{ $user->state === 'Chandigarh' ? ' selected' : '' }}>Chandigarh</option>
+    <option value="Chhattisgarh" {{ $user->state === 'Chhattisgarh' ? ' selected' : '' }}>Chhattisgarh</option>
+    <option value="Dadra and Nagar Haveli and Daman and Diu" {{ $user->state === 'Dadra and Nagar Haveli and Daman and Diu' ? ' selected' : '' }}>Dadra and Nagar Haveli and Daman and Diu</option>
+    <option value="Delhi" {{ $user->state === 'Delhi' ? ' selected' : '' }}>Delhi</option>
+    <option value="Goa" {{ $user->state === 'Goa' ? ' selected' : '' }}>Goa</option>
+    <option value="Gujarat" {{ $user->state === 'Gujarat' ? ' selected' : '' }}>Gujarat</option>
+    <option value="Haryana" {{ $user->state === 'Haryana' ? ' selected' : '' }}>Haryana</option>
+    <option value="Himachal Pradesh" {{ $user->state === 'Himachal Pradesh' ? ' selected' : '' }}>Himachal Pradesh</option>
+    <option value="Jammu and Kashmir" {{ $user->state === 'Jammu and Kashmir' ? ' selected' : '' }}>Jammu and Kashmir</option>
+    <option value="Jharkhand" {{ $user->state === 'Jharkhand' ? ' selected' : '' }}>Jharkhand</option>
+    <option value="Karnataka" {{ $user->state === 'Karnataka' ? ' selected' : '' }}>Karnataka</option>
+    <option value="Kerala" {{ $user->state === 'Kerala' ? ' selected' : '' }}>Kerala</option>
+    <option value="Ladakh" {{ $user->state === 'Ladakh' ? ' selected' : '' }}>Ladakh</option>
+    <option value="Lakshadweep" {{ $user->state === 'Lakshadweep' ? ' selected' : '' }}>Lakshadweep</option>
+    <option value="Madhya Pradesh" {{ $user->state === 'Madhya Pradesh' ? ' selected' : '' }}>Madhya Pradesh</option>
+    <option value="Maharashtra" {{ $user->state === 'Maharashtra' ? ' selected' : '' }}>Maharashtra</option>
+    <option value="Manipur" {{ $user->state === 'Manipur' ? ' selected' : '' }}>Manipur</option>
+    <option value="Meghalaya" {{ $user->state === 'Meghalaya' ? ' selected' : '' }}>Meghalaya</option>
+    <option value="Mizoram" {{ $user->state === 'Mizoram' ? ' selected' : '' }}>Mizoram</option>
+    <option value="Nagaland" {{ $user->state === 'Nagaland' ? ' selected' : '' }}>Nagaland</option>
+    <option value="Odisha" {{ $user->state === 'Odisha' ? ' selected' : '' }}>Odisha</option>
+    <option value="Puducherry" {{ $user->state === 'Puducherry' ? ' selected' : '' }}>Puducherry</option>
+    <option value="Punjab" {{ $user->state === 'Punjab' ? ' selected' : '' }}>Punjab</option>
+    <option value="Rajasthan" {{ $user->state === 'Rajasthan' ? ' selected' : '' }}>Rajasthan</option>
+    <option value="Sikkim" {{ $user->state === 'Sikkim' ? ' selected' : '' }}>Sikkim</option>
+    <option value="Tamil Nadu" {{ $user->state === 'Tamil Nadu' ? ' selected' : '' }}>Tamil Nadu</option>
+    <option value="Telangana" {{ $user->state === 'Telangana' ? ' selected' : '' }}>Telangana</option>
+    <option value="Tripura" {{ $user->state === 'Tripura' ? ' selected' : '' }}>Tripura</option>
+    <option value="Uttar Pradesh" {{ $user->state === 'Uttar Pradesh' ? ' selected' : '' }}>Uttar Pradesh</option>
+    <option value="Uttarakhand" {{ $user->state === 'Uttarakhand' ? ' selected' : '' }}>Uttarakhand</option>
+    <option value="West Bengal" {{ $user->state === 'West Bengal' ? ' selected' : '' }}>West Bengal</option>
+        
     </select></td>
   </tr>
     <tr>
     <th>Industry :</th>
     <td><select id="industry" name="industry" class="industry-field" required>
         <option value="">Select Industry</option>
-        <option value="Agriculture" {{ $pc->industry === 'Agriculture' ? ' selected' : '' }}>Agriculture</option>
-        <option value="Automobile" {{ $pc->industry === 'Automobile' ? ' selected' : '' }}>Automobile</option>
-        <option value="Banking and Finance" {{ $pc->industry === 'Banking and Finance' ? ' selected' : '' }}>Banking and Finance</option>
-        <option value="Construction" {{ $pc->industry === 'Construction' ? ' selected' : '' }}>Construction</option>
-        <option value="Education" {{ $pc->industry === 'Education' ? ' selected' : '' }}>Education</option>
-        <option value="Healthcare" {{ $pc->industry === 'Healthcare' ? ' selected' : '' }}>Healthcare</option>
-        <option value="Information Technology" {{ $pc->industry === 'Information Technology' ? ' selected' : '' }}>Information Technology</option>
-        <option value="Manufacturing" {{ $pc->industry === 'Manufacturing' ? ' selected' : '' }}>Manufacturing</option>
-        <option value="Pharmaceuticals" {{ $pc->industry === 'Pharmaceuticals' ? ' selected' : '' }}>Pharmaceuticals</option>
-        <option value="Retail" {{ $pc->industry === 'Retail' ? ' selected' : '' }}>Retail</option>
-        <option value="Telecommunication" {{ $pc->industry === 'Telecommunication' ? ' selected' : '' }}>Telecommunication</option>
-        <option value="Textile Manufacturing" {{ $pc->industry === 'Textile Manufacturing' ? ' selected' : '' }}>Textile Manufacturing</option>
-        <option value="Tourism and Hospitality" {{ $pc->industry === 'Tourism and Hospitality' ? ' selected' : '' }}>Tourism and Hospitality</option>
-        <option value="Transport and Logistics" {{ $pc->industry === 'Transport and Logistics' ? ' selected' : '' }}>Transport and Logistics</option>
+        <option value="Agriculture">Agriculture</option>
+                    <option value="Aggregator" {{ $user->	industry === 'Aggregator' ? ' selected' : '' }}>Aggregator</option>
+                    <option value="Automotive" {{ $user->	industry === 'Automotive' ? ' selected' : '' }}>Automotive</option>
+                    <option value="Aviation" {{ $user->industry === 'Aviation' ? ' selected' : '' }}>Aviation</option>
+                    <option value="Baking" {{ $user->	industry === 'Baking' ? ' selected' : '' }}>Baking</option>
+                    <option value="Cement" {{ $user->	industry === 'Cement' ? ' selected' : '' }}>Cement</option>
+                    <option value="Chemicals" {{ $user->	industry === 'Chemicals' ? ' selected' : '' }}>Chemicals</option>
+                    <option value="Diary" {{ $user->	industry === 'Diary' ? ' selected' : '' }}>Diary</option>
+                    <option value="E-commerce" {{ $user->	industry === 'E-commerce' ? ' selected' : '' }}>E-commerce</option>
+                    <option value="FMCG"  {{ $user->	industry === 'FMCG' ? ' selected' : '' }}>FMCG</option>
+                    <option value="Food Industry" {{ $user->	industry === 'Food Industry' ? ' selected' : '' }}>Food Industry</option>
+                    <option value="Healthcare" {{ $user->	industry === 'Healthcare' ? ' selected' : '' }}>Healthcare</option>
+                    <option value="Iron&Steel" {{ $user->	industry === 'Iron&Steel' ? ' selected' : '' }}>Iron & Steel</option>
+                    <option value="IT" {{ $user->	industry === 'IT' ? ' selected' : '' }}>IT Industry</option>
+                    <option value="Mining" {{ $user->	industry === 'Mining' ? ' selected' : '' }}>Mining</option>
+                    <option value="Poultry" {{ $user->	industry === 'Poultry' ? ' selected' : '' }}>Poultry</option>
+                    <option value="Real Estate" {{ $user->	industry === 'Real Estate' ? ' selected' : '' }}>Real Estate</option>
+                    <option value="Textile" {{ $user->	industry === 'Textile' ? ' selected' : '' }}>Textile</option>
+                    <option value="Others" {{ $user->	industry === 'Others' ? ' selected' : '' }}>Others</option>
+       
     </select></td>
   </tr>
   <tr>
     <th>Employee Count :</th>
     <td>    <select id="employee-count" name="employee_count" class="employee-count-field" required>
         <option value="">Select Employee Count</option>
-        <option value="1-10" {{ $pc->employee_count === '1-10' ? ' selected' : '' }}>1-10</option>
-        <option value="11-50" {{ $pc->employee_count === '11-50' ? ' selected' : '' }}>11-50</option>
-        <option value="51-100" {{ $pc->employee_count === '51-100' ? ' selected' : '' }}>51-100</option>
-        <option value="101-500" {{ $pc->employee_count === '101-500' ? ' selected' : '' }}>101-500</option>
-        <option value="501-1000" {{ $pc->employee_count === '501-1000' ? ' selected' : '' }}>501-1000</option>
-        <option value="1001-5000" {{ $pc->employee_count === '1001-5000' ? ' selected' : '' }}>1001-5000</option>
-        <option value="5001-10000" {{ $pc->employee_count === '5001-10000' ? ' selected' : '' }}>5001-10000</option>
-        <option value="10001+" {{ $pc->employee_count === '10001+' ? ' selected' : '' }}>10001+</option>
+        <option value="0-5" {{ $user->employees === '0-5' ? ' selected' : '' }}>0-5</option>
+                    <option value="5-10" {{ $user->employees === '5-10' ? ' selected' : '' }}>5-10</option>
+                    <option value="10-25" {{ $user->employees === '10-25' ? ' selected' : '' }}>10-25</option>
+                    <option value="25-50" {{ $user->employees === '25-50' ? ' selected' : '' }}>25-50</option>
+                    <option value="50-100" {{ $user->employees === '50-100' ? ' selected' : '' }}>50-100</option>
+                    <option value="more than 100" {{ $user->employees === 'more than 100' ? ' selected' : '' }}>more than 100</option>
+        
     </select></td>
   </tr>
     <tr>
     <th>Date of Incorporation :</th>
-    <td><input type="date" id="DOI" name="DOI"  value="{{$pc->DOI}}"></td>
+    <td><input type="date" id="DOI" name="DOI"  value="{{$user->joining_date}}"></td>
   </tr>
   <tr>
     <th>CIN :</th>
-    <td><input type="text" id="CIN" name="CIN" value="{{$pc->CIN}}" ></td>
+    <td><input type="text" id="CIN" name="CIN" value="{{$user->CIN}}" pattern="^[A-Z]{1}[0-9]{5}[A-Z]{2}[0-9]{4}[A-Z]{3}[0-9]{6}$" 
+           title="Please enter a valid CIN number (e.g., L01631KA2010PTC096843)" 
+           maxlength="21" required></td>
   </tr>
   <tr>
     <th>PAN :</th>
-    <td><input type="text" id="PAN" name="PAN"  value="{{$pc->PAN}}"> </td>
+    <td><input type="text" id="PAN" name="PAN"  value="{{$user->PAN}}" pattern="^[A-Z]{5}[0-9]{4}[A-Z]{1}$" 
+           title="Please enter a valid PAN number (e.g., ABCDE1234F)" 
+           required> </td>
   </tr>
   <tr>
     <th>Email :</th>
-    <td><input type="text" id="Email" name="Email" value="{{$pc->Email}}" > </td>
+    <td><input type="text" id="Email" name="Email" value="{{$user->backupemail}}" pattern="^[a-zA-Z0-9][a-zA-Z0-9._%+-]*@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$" 
+       title="Please enter a valid email address (e.g., user@example.com)" 
+       required> </td>
   </tr>
   <tr>
     <th>Phone :</th>
     <td>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/css/intlTelInput.css" />
                   <script src="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/js/intlTelInput.min.js"></script>
-                  <input id="phone" class="form-control @error('phone') is-invalid @enderror" type="tel" pattern="[2-9]{1}[0-9]{9}" title="Phone number with 2-9 and remaing 9 digit with 0-9" placeholder="Contact no" name="phone" value="{{$pc->Phone}}"> @error('phone') <span class="invalid-feedback" role="alert">
+                  <input id="phone" class="form-control @error('phone') is-invalid @enderror" type="tel" pattern="[2-9]{1}[0-9]{9}" title="Phone number with 2-9 and remaing 9 digit with 0-9" placeholder="Contact no" name="phone" value="{{$user->phone}}"> @error('phone') <span class="invalid-feedback" role="alert">
 
                     <strong>{{ $message }}</strong>
                   </span> @enderror
@@ -456,7 +459,7 @@ closeToastBtn.addEventListener("click", closeToast);
                       initialCountry: "in" // Set initial country to India
                     });
                   </script>  
-    <!-- <input type="text" id="Phone" name="Phone"  value="{{$pc->Phone}}"> </td> -->
+    <!-- <input type="text" id="Phone" name="Phone"  value="{{$user->Phone}}"> </td> -->
     <input type="hidden" id="user_id" name="user_id" value="{{$user->id}}"  >
   </tr>
   <tr>
@@ -464,7 +467,7 @@ closeToastBtn.addEventListener("click", closeToast);
     <td>
         <div class="captial_rs">
             <span style="margin-right: 5px;">₹</span>
-            <input type="text" id="authorized-capital" name="authorized_capital" value="{{$pc->authorized_capital}}" >
+            <input type="text" id="authorized-capital" name="authorized_capital" value="{{$user->authorized_capital}}" >
         </div>
     </td>
 </tr>
@@ -474,7 +477,7 @@ closeToastBtn.addEventListener("click", closeToast);
     <td>
         <div class="captial_rs">
             <span style="margin-right: 5px;">₹</span>
-            <input type="text" id="paid-up-capital" name="paid_up_capital" value="{{$pc->paid_up_capital}}">
+            <input type="text" id="paid-up-capital" name="paid_up_capital" value="{{$user->paid_up_capital}}">
         </div>
     </td>
 </tr>
@@ -488,147 +491,79 @@ closeToastBtn.addEventListener("click", closeToast);
 </div>
 </div>
 <!-- edit mode code start -->
-@empty
+
    <!-- save mode code start -->
+   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
-<!-- edit mode code start -->
-    <div class="cmpy_content edit_start" style="display:none;">
-        <div class="cpmpany_head">
-            <h2>Company Information</h2>
-            <a class="hide_cancle hvr-rotate">Cancel</a>
-</div>
-<div class="cpy_table table-responsive theme-scrollbar">
-<form action="{{ route('companystoreprofile') }}" method="POST" enctype="multipart/form-data" class="upload-form"> 
-@csrf
-<table>
-    <tr>
-    <th>State of Registration :</th>
-    <td><select id="state" name="state" class="state-field" required>
-        <option value="">Select State</option>
-        <option value="Andhra Pradesh">Andhra Pradesh</option>
-        <option value="Arunachal Pradesh">Arunachal Pradesh</option>
-        <option value="Assam">Assam</option>
-        <option value="Bihar">Bihar</option>
-        <option value="Chhattisgarh">Chhattisgarh</option>
-        <option value="Goa">Goa</option>
-        <option value="Gujarat">Gujarat</option>
-        <option value="Haryana">Haryana</option>
-        <option value="Himachal Pradesh">Himachal Pradesh</option>
-        <option value="Jharkhand">Jharkhand</option>
-        <option value="Karnataka">Karnataka</option>
-        <option value="Kerala">Kerala</option>
-        <option value="Madhya Pradesh">Madhya Pradesh</option>
-        <option value="Maharashtra">Maharashtra</option>
-        <option value="Manipur">Manipur</option>
-        <option value="Meghalaya">Meghalaya</option>
-        <option value="Mizoram">Mizoram</option>
-        <option value="Nagaland">Nagaland</option>
-        <option value="Odisha">Odisha</option>
-        <option value="Punjab">Punjab</option>
-        <option value="Rajasthan">Rajasthan</option>
-        <option value="Sikkim">Sikkim</option>
-        <option value="Tamil Nadu">Tamil Nadu</option>
-        <option value="Telangana">Telangana</option>
-        <option value="Tripura">Tripura</option>
-        <option value="Uttar Pradesh">Uttar Pradesh</option>
-        <option value="Uttarakhand">Uttarakhand</option>
-        <option value="West Bengal">West Bengal</option>
-        <option value="Andaman and Nicobar Islands">Andaman and Nicobar Islands</option>
-        <option value="Chandigarh">Chandigarh</option>
-        <option value="Dadra and Nagar Haveli">Dadra and Nagar Haveli</option>
-        <option value="Daman and Diu">Daman and Diu</option>
-        <option value="Lakshadweep">Lakshadweep</option>
-        <option value="Delhi">Delhi</option>
-        <option value="Puducherry">Puducherry</option>
-        <option value="Ladakh">Ladakh</option>
-        <option value="Jammu and Kashmir">Jammu and Kashmir</option>
-    </select></td>
-  </tr>
-    <tr>
-    <th>Industry :</th>
-    <td><select id="industry" name="industry" class="industry-field" required>
-        <option value="">Select Industry</option>
-        <option value="Agriculture">Agriculture</option>
-        <option value="Automobile">Automobile</option>
-        <option value="Banking and Finance">Banking and Finance</option>
-        <option value="Construction">Construction</option>
-        <option value="Education">Education</option>
-        <option value="Healthcare">Healthcare</option>
-        <option value="Information Technology">Information Technology</option>
-        <option value="Manufacturing">Manufacturing</option>
-        <option value="Pharmaceuticals">Pharmaceuticals</option>
-        <option value="Retail">Retail</option>
-        <option value="Telecommunication">Telecommunication</option>
-        <option value="Textile Manufacturing">Textile Manufacturing</option>
-        <option value="Tourism and Hospitality">Tourism and Hospitality</option>
-        <option value="Transport and Logistics">Transport and Logistics</option>
-    </select></td>
-  </tr>
-  <tr>
-    <th>Employee Count :</th>
-    <td>    <select id="employee-count" name="employee_count" class="employee-count-field" required>
-        <option value="">Select Employee Count</option>
-        <option value="1-10">1-10</option>
-        <option value="11-50">11-50</option>
-        <option value="51-100">51-100</option>
-        <option value="101-500">101-500</option>
-        <option value="501-1000">501-1000</option>
-        <option value="1001-5000">1001-5000</option>
-        <option value="5001-10000">5001-10000</option>
-        <option value="10001+">10001+</option>
-    </select></td>
-  </tr>
-    <tr>
-    <th>Date of Incorporation :</th>
-    <td><input type="date" id="DOI" name="DOI"  required></td>
-  </tr>
-  <tr>
-    <th>CIN :</th>
-    <td><input type="text" id="CIN" name="CIN"  required></td>
-  </tr>
-  <tr>
-    <th>PAN :</th>
-    <td><input type="text" id="PAN" name="PAN"  required> </td>
-  </tr>
-  <tr>
-    <th>Email :</th>
-    <td><input type="text" id="Email" name="Email"  required> </td>
-  </tr>
-  <tr>
-    <th>Phone :</th>
-    <td><input type="text" id="Phone" name="Phone"  required> </td>
-    <input type="hidden" id="user_id" name="user_id" value="{{$user->id}}"  required>
-  </tr>
-  <tr>
-    <th>Authorized Capital :</th>
-    <td>
-        <div class="captial_rs">
-            <span style="margin-right: 5px;">₹</span>
-            <input type="text" id="authorized-capital" name="authorized_capital" required>
-        </div>
-    </td>
-</tr>
 
-<tr>
-    <th>Paid-up Capital :</th>
-    <td>
-        <div class="captial_rs">
-            <span style="margin-right: 5px;">₹</span>
-            <input type="text" id="paid-up-capital" name="paid_up_capital" required>
-        </div>
-    </td>
-</tr>
 
-  <tr>
-    <td><button type="submit" value="Submit" class="hvr-rotate">Save</button> </td>
-  </tr>
-</table>
+<script>
+$(document).ready(function() {
+    let emailExists = false;
+    let phoneExists = false;
 
-</form>
+    // Check email on blur
+    $('#Email').on('blur', function() {
+        let email = $(this).val();
 
-</div>
-</div>
-@endforelse
+        // Make AJAX request to check email existence
+        $.ajax({
+            url: "{{ route('checkUserExistence') }}",
+            method: "POST",
+            data: {
+                email: email,
+                _token: '{{ csrf_token() }}'
+            },
+            success: function(response) {
+                if (response.emailExists) {
+                    toastr.error("Email already exists!");  // Toastr error notification
+                    $('#Email').addClass('is-invalid');  // Add invalid class for styling
+                    emailExists = true;  // Set flag to true if email exists
+                } else {
+                    $('#Email').removeClass('is-invalid');  // Remove invalid class if valid
+                    emailExists = false;  // Set flag to false if email is valid
+                }
+            }
+        });
+    });
+
+    // Check phone on blur
+    $('#phone').on('blur', function() {
+        let phone = $(this).val();
+
+        // Make AJAX request to check phone existence
+        $.ajax({
+            url: "{{ route('checkUserExistence') }}",
+            method: "POST",
+            data: {
+                phone: phone,
+                _token: '{{ csrf_token() }}'
+            },
+            success: function(response) {
+                if (response.phoneExists) {
+                    toastr.error("Phone number already exists!");  // Toastr error notification
+                    $('#phone').addClass('is-invalid');  // Add invalid class for styling
+                    phoneExists = true;  // Set flag to true if phone exists
+                } else {
+                    $('#phone').removeClass('is-invalid');  // Remove invalid class if valid
+                    phoneExists = false;  // Set flag to false if phone is valid
+                }
+            }
+        });
+    });
+
+    // Prevent form submission if email or phone exists
+    $('#companystore').on('submit', function(event) {
+        if (emailExists || phoneExists) {
+            event.preventDefault();  // Prevent form submission
+            toastr.error("Please fix the errors before submitting the form.");
+        }
+    });
+});
+</script>
+
+
+
 </div>
 <div class="col-md-4">
     <div class="invest_rec">
@@ -1435,6 +1370,9 @@ h2.busiimage {
     // Check if there's a success message in the session and display it
     @if(session('success'))
         toastr.success('{{ session('success') }}');
+    @endif
+    @if(session('error'))
+        toastr.error('{{ session('error') }}');
     @endif
 </script>
 <!-- Include SweetAlert2 CSS and JS -->
