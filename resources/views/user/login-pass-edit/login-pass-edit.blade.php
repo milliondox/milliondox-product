@@ -76,7 +76,7 @@
         <div class="gropu_form_input">
         <input type="hidden" id="user_id" name="user_id" value="{{$user->id}}">
         <input placeholder="Enter Old Password" type="password" id="old_password" name="old_password">
-        <b class="toggle-password"><i class="fas fa-eye"></i></b>
+        <b class="toggle-password"><i class="fas fa-eye-slash"></i></b>
     </div>
     </div>
 
@@ -85,7 +85,7 @@
         <div class="gropu_form_input">
         <input placeholder="Enter New Password" type="password" id="new_password" name="new_password" pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$" 
         title="Password must be at least 8 characters long, contain at least 1 uppercase letter, 1 lowercase letter, 1 number, and 1 special character (@, $, !, %, *, ?, &)." required>
-        <b class="toggle-password"><i class="fas fa-eye"></i></b>
+        <b class="toggle-password"><i class="fas fa-eye-slash"></i></b>
     </div>
     </div>
 
@@ -94,7 +94,7 @@
         <div class="gropu_form_input">
         <input placeholder="Confirm New Password" type="password" id="confirm_password" name="confirm_password" pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$" 
         title="Password must be at least 8 characters long, contain at least 1 uppercase letter, 1 lowercase letter, 1 number, and 1 special character (@, $, !, %, *, ?, &)." required>
-        <b class="toggle-password"><i class="fas fa-eye"></i></b>
+        <b class="toggle-password"><i class="fas fa-eye-slash"></i></b>
     </div>
     </div>
 

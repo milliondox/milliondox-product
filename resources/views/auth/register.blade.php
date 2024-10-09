@@ -128,7 +128,7 @@ window.onload = function() {
                 <div class="form-input position-relative">
                 <label for="password">Password <span class="red_star">*</span></label>
                  <div class="form-group fild_ntt">
-                <b class="toggle-password"><i class="fas fa-eye"></i></b>
+                 <b class="toggle-password"><i class="fas fa-eye-slash"></i></b>
                     <input id="password" class="form-control @error('password') is-invalid @enderror" type="password" name="password" required autocomplete="" placeholder="">
 
 <span id="password-strength-text" style="display: block; margin-top: 5px; color: red;"></span>
@@ -144,7 +144,7 @@ window.onload = function() {
                 <div class="form-input position-relative">
                 <label for="password-confirm">Confirm Password <span class="red_star">*</span></label>
                  <div class="form-group fild_ntt">
-                <b class="toggle-password"><i class="fas fa-eye"></i></b>
+                 <b class="toggle-password"><i class="fas fa-eye-slash"></i></b>
                     <input id="password-confirm" type="password" class="form-control" name="password_confirmation" required autocomplete="new-password" placeholder="">
  <span id="password-confirm-strength-text" style="display: block; margin-top: 5px; color: red;"></span>
         
