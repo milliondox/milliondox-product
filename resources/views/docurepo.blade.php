@@ -815,7 +815,7 @@ document.addEventListener('DOMContentLoaded', function() {
 </div>
 <div class="root_btn">  
 <div class="attach_ann">
-<input type="file" id="aoa-file" name="file" accept="" required="">
+<input type="file" id="aoa-file" name="file" accept="" >
 <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
 <g clip-path="url(#clip0_4033_7422)">
 <path d="M14.4031 8.00033L8.26234 14.1411C7.40991 14.9717 6.26465 15.433 5.07454 15.4252C3.88443 15.4175 2.74527 14.9413 1.90372 14.0997C1.06217 13.2582 0.585965 12.119 0.578221 10.9289C0.570477 9.73882 1.03182 8.59356 1.86234 7.74113L8.18661 1.41686C8.75241 0.851063 9.51979 0.533203 10.3199 0.533203C11.1201 0.533203 11.8875 0.851063 12.4533 1.41686C13.0191 1.98265 13.3369 2.75004 13.3369 3.55019C13.3369 4.35035 13.0191 5.11773 12.4533 5.68353L6.31141 11.8254C6.02851 12.1083 5.64482 12.2672 5.24474 12.2672C4.84467 12.2672 4.46097 12.1083 4.17808 11.8254C3.89518 11.5425 3.73625 11.1588 3.73625 10.7587C3.73625 10.3586 3.89518 9.97496 4.17808 9.69206L10.1365 3.73366" stroke="#A3AED0" stroke-width="1.5"/>
@@ -5183,6 +5183,14 @@ $(window).on('load', function() {
   <div class="selected-file"></div>
 </div> 
                           </div>
+
+                          <div class="gropu_form test-area">
+                          <label for="Tags">Tags (Optional)</label>
+                         <div class="tag-container">
+            <textarea name="Tags" class="tag-input" placeholder="Add a tag and press enter"  style="height: 68px;"></textarea>
+            <input type="hidden" name="tagList" id="tagList" class="tagList">
+        </div>
+                          </div>
                           
         <div class="gropu_form test-area">
         <label for="desc">Description</label>
@@ -6065,6 +6073,33 @@ input#parent-folders {
         });
     });
 </script>
+
+<script>
+$(document).ready(function() {
+  // Toggle the dropdown-content when button is clicked
+  $('body').on('click', '.dropbtn', function(e) {
+    // Prevent body click from immediately closing the dropdown
+    e.stopPropagation();
+
+    // Get the dropdown content of the clicked button
+    var dropdownContent = $(this).siblings('.dropdown-content');
+    
+    // Close any currently open dropdowns by removing the active class from all dropdown-content
+    $('.dropdown-content').not(dropdownContent).removeClass('active');
+    
+    // Toggle the active class on the clicked dropdown-content
+    dropdownContent.toggleClass('active');
+  });
+
+  // Close dropdown-content if clicking outside
+  $('body').on('click', function() {
+    $('.dropdown-content').removeClass('active');
+  });
+});
+
+
+</script>
+
 
 <script>
     function check() {

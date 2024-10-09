@@ -58,6 +58,11 @@ window.onload = function() {
         <div class="col-sm-5" data-aos="fade-right" data-aos-easing="linear" data-aos-duration="1000">
           <div class="loginn_nt_form">
             <div class="fomr_head">
+                <div class="login_logo">
+                <a href="https://milliondox.com/" class="logo">
+                <img src="https://milliondox.com/assets/img/logo.webp" alt="logo" class="img-fluid">
+                </a>
+                </div>
               <!--<div class="back_nt">-->
               <!--  <buttton id="back_nt">-->
               <!--    <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">-->
@@ -116,17 +121,17 @@ window.onload = function() {
                     </button>
                   </div>
       
-                  <div class="or_login">
+                  <!-- <div class="or_login">
                     <span>or</span>
                     <div class="two_option">
                       <a href="{{url('/auth/google')}}">
                     <img src="../assets/images/sign-google.png" alt="img">
                     </a>
-                    <!-- <a href=#">
+                    <a href=#">
                     <img src="../assets/images/sign-apple.png" alt="img">
-                    </a> -->
+                    </a>
                     </div>
-                    </div>
+                    </div> -->
                 </div>
               </form>
             </div>
@@ -206,7 +211,7 @@ window.onload = function() {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    margin-bottom: 70px;
+    margin-bottom: 40px;
 }
 
 
@@ -422,10 +427,23 @@ b.toggle-password {
     top: 12px;
     cursor: pointer;
     user-select: none;
+    pointer-events: auto; /* Make sure clicks are allowed */
 }
 b.toggle-password i {
     font-size: 11px;
     color: #333;
+}
+
+.login_board .login_logo {
+    display: block;
+}
+
+.login_board .login_logo a {
+    display: flex;
+}
+
+.login_board .login_logo a img {
+    max-width: 150px;
 }
 
 /* media start */
@@ -446,7 +464,7 @@ b.toggle-password i {
 }
 
 .login_board .loginn_nt_form .fomr_head {
-    margin-bottom: 90px;
+    margin-bottom: 50px;
 }
 
 .login_board .loginn_nt_form .login_forrm h2 {
@@ -481,7 +499,7 @@ position: relative;
 }
 
 .login_board .loginn_nt_form .fomr_head {
-    margin-bottom: 60px;
+    margin-bottom: 50px;
 }
 }
 
