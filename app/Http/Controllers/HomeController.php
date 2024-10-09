@@ -13767,27 +13767,24 @@ public function updateuserprofile(Request $request)
     {
         $cli_announcements = Announcement::where('role', 'Client')->latest()->get();
         $audit = StoreAudit::all();
-       return view('user.Audit-pro.Audit-pro',compact('cli_announcements','audit'));
+        $user = Auth::user();
+       return view('user.Audit-pro.Audit-pro',compact('cli_announcements','audit','user'));
     }
 	
     public function companystoreprofile(Request $request)
     {
        
-
+// dd($request);
         $user_id = $request->input('user_id');
         // Validate the input data, including PAN and CIN validation
-        $request->validate([
-            'state' => 'required|string|max:255',
-            'industry' => 'required|string|max:255',
-            'employee_count' => 'required|integer',
-            'DOI' => 'required|date',
-            'CIN' => ['required', 'string', 'regex:/^([A-Z]{5}[0-9]{4}[A-Z]{1}[0-9]{6})$/', 'unique:users,cin,' . auth()->id()], // CIN format validation
-            'PAN' => ['required', 'string', 'regex:/^([A-Z]{5}[0-9]{4}[A-Z]{1})$/', 'unique:users,pan,' . auth()->id()], // PAN format validation
-            'Email' => 'required|email|unique:users,email,' . $user_id, // Ensure the email is unique except for the current user
-            'phone' => 'required|string|max:15|unique:users,phone,' . $user_id, // Ensure the phone is unique except for the current user
-            'authorized_capital' => 'nullable|numeric',
-            'paid_up_capital' => 'nullable|numeric',
-        ]);
+        // $request->validate([
+           
+        //     'CIN' => ['required', 'string', 'regex:/^([A-Z]{5}[0-9]{4}[A-Z]{1}[0-9]{6})$/', 'unique:users,cin,' . auth()->id()], // CIN format validation
+        //     'PAN' => ['required', 'string', 'regex:/^([A-Z]{5}[0-9]{4}[A-Z]{1})$/', 'unique:users,pan,' . auth()->id()], // PAN format validation
+        //     'Email' => 'required|email|unique:users,email,' . $user_id, // Ensure the email is unique except for the current user
+        //     'phone' => 'required|string|max:15|unique:users,phone,' . $user_id, // Ensure the phone is unique except for the current user
+            
+        // ]);
     
         // Get the authenticated user
         $user = User::find($user_id);
@@ -13798,15 +13795,15 @@ public function updateuserprofile(Request $request)
                 'state' => $request->input('state'),
                'industry' => $request->input('industry'),
                'employees' => $request->input('employee_count'),
-                'email' => $request->input('backupemail'),
-                'DOI' => $request->input('DOI'),
+                'backupemail' => $request->input('Email'),
+                'joining_date' => $request->input('DOI'),
                 'phone' => $request->input('phone'),
                 'CIN' => $request->input('CIN'),
                 'PAN' => $request->input('PAN'),
                 'authorized_capital' => $request->input('authorized_capital'),
                 'paid_up_capital' => $request->input('paid_up_capital'),
             ]);
-    
+    // dd($user);
             // Find the associated UserInfo record
             $userInfo = UserInfo::where('user_id', $user_id)->first();
     
@@ -13816,7 +13813,7 @@ public function updateuserprofile(Request $request)
                     'state' => $request->input('state'),
                'industry' => $request->input('industry'),
                'employees' => $request->input('employee_count'),
-                'email' => $request->input('backupemail'),
+                'backupemail' => $request->input('Email'),
                 'joining_date' => $request->input('DOI'),
                 'phone' => $request->input('phone'),
                 'CIN' => $request->input('CIN'),
@@ -13837,6 +13834,20 @@ public function updateuserprofile(Request $request)
         return redirect()->back()->with('success', 'Profile updated successfully');
     }
     
+// In web.php (routes file)
+
+
+// In UserController.php
+public function checkUserExistence(Request $request)
+{
+    $emailExists = User::where('backupemail', $request->email)->exists();
+    $phoneExists = User::where('phone', $request->phone)->exists();
+
+    return response()->json([
+        'emailExists' => $emailExists,
+        'phoneExists' => $phoneExists
+    ]);
+}
 
 //    public function storeregister(Request $request){
 //     dd($request);
@@ -14097,9 +14108,9 @@ public function updateuserprofile(Request $request)
     {
         $cli_announcements = Announcement::where('role', 'Client')->latest()->get();
         $contractNamesArray = StoreContract::pluck('contract_name')->toArray();
-
+        $user = Auth::user();
         $fixed = StoreFixedAsset::all();
-       return view('user.fixed-management.fixed-management',compact('cli_announcements','contractNamesArray','fixed'));
+       return view('user.fixed-management.fixed-management',compact('cli_announcements','contractNamesArray','fixed','user'));
     }
 
     // public function storeevent(Request $request)
@@ -14299,8 +14310,8 @@ public function userimg(Request $request)
 public function whiteboard()
 {
     $cli_announcements = Announcement::where('role', 'Client')->latest()->get();
-    
-   return view('user.vandor-management.whiteboard',compact('cli_announcements'));
+    $user = Auth::user();
+   return view('user.vandor-management.whiteboard',compact('cli_announcements','user'));
 }
 
 
@@ -14959,28 +14970,32 @@ public function restorefile($id)
 public function venderlist()
 {
     $cli_announcements = Announcement::where('role', 'Client')->latest()->get();
+    $user = Auth::user();
     
-   return view('user.vandor-management.vendor-listing',compact('cli_announcements'));
+   return view('user.vandor-management.vendor-listing',compact('cli_announcements','user'));
 }
 
 public function bankingdoc()
 {
     $cli_announcements = Announcement::where('role', 'Client')->latest()->get();
     $bankdoc =  StoreBankDoc::all();
-   return view('user.banking.bankingdoc',compact('cli_announcements','bankdoc'));
+    $user = Auth::user();
+   return view('user.banking.bankingdoc',compact('cli_announcements','bankdoc','user'));
 }
 
 public function bankingcredit()
 {
     $cli_announcements = Announcement::where('role', 'Client')->latest()->get();
+    $user = Auth::user();
     
-   return view('user.banking.bankingcredit',compact('cli_announcements'));
+   return view('user.banking.bankingcredit',compact('cli_announcements','user'));
 }
 public function tickting()
 {
     $cli_announcements = Announcement::where('role', 'Client')->latest()->get();
+    $user = Auth::user();
     
-   return view('user.ticket.ticket',compact('cli_announcements'));
+   return view('user.ticket.ticket',compact('cli_announcements','user'));
 }
     public function Employeedetails($id)
     {
@@ -15032,6 +15047,41 @@ public function tickting()
         $user = auth()->user();
        return view('user.login-pass-edit.login-pass-edit',compact('cli_announcements', 'user'));
     }
+
+    public function changeemppassword(Request $request)
+{
+    
+
+    // Get the currently authenticated user
+    $user = Auth::user(); // Or use User::find($request->user_id) if not using Auth
+
+    // Check if the old password matches
+    if (!Hash::check($request->old_password, $user->password)) {
+        return redirect()->back()->withErrors(['old_password' => 'Old password is incorrect.']);
+    }
+
+    // Check if new password and confirm password match
+    if ($request->new_password !== $request->confirm_password) {
+        return redirect()->back()->withErrors(['confirm_password' => 'New password and confirm password do not match.']);
+    }
+
+    // Update the password in the User model
+    $user->password = Hash::make($request->new_password);
+    $user->save();
+
+    // Update the password in the UserInfo model
+    $userInfo = UserInfo::where('user_id', $user->id)->first();
+
+    if ($userInfo) {
+        // Update the password in the UserInfo model if needed
+        $userInfo->password = $request->new_password;
+        $userInfo->save();
+    }
+
+    // Redirect back with a success message
+    return redirect()->back()->with('success', 'Password changed successfully.');
+}
+
 	
 public function rolemanagement()
 {
@@ -15365,13 +15415,14 @@ private function generateUniqueUsername($fname, $lname)
         $cli_announcements = Announcement::where('role', 'Client')->latest()->get();
         $user = Auth::user();
         $emplife = StoreEmployeeprofile::where('user_id', $user->id)->get();
-       return view('user.HRM.employee-lifecycle',compact('cli_announcements','emplife'));
+       return view('user.HRM.employee-lifecycle',compact('cli_announcements','emplife','user'));
     }
     public function manageprofile()
     {
         $cli_announcements = Announcement::where('role', 'Client')->latest()->get();
+        $user = Auth::user();
         
-       return view('user.management.profile',compact('cli_announcements'));
+       return view('user.management.profile',compact('cli_announcements','user'));
     }
 
     public function managestore(Request $request)
@@ -15422,7 +15473,8 @@ private function generateUniqueUsername($fname, $lname)
     {
         $cli_announcements = Announcement::where('role', 'Client')->latest()->get();
         $iptd =  StoreIpFile::all();
-       return view('user.trademark.trademark',compact('cli_announcements','iptd'));
+        $user = Auth::user();
+       return view('user.trademark.trademark',compact('cli_announcements','iptd','user'));
     }
     
      public function director()
@@ -17377,8 +17429,8 @@ public function downloadFile($id)
     public function salemanage()
     {
         $cli_announcements = Announcement::where('role', 'Client')->latest()->get();
-        
-       return view('user.sale-management.sale-manage',compact('cli_announcements'));
+        $user = Auth::user();
+       return view('user.sale-management.sale-manage',compact('cli_announcements','user'));
     }
 
 
@@ -17557,75 +17609,95 @@ public function downloadFile($id)
     // }
     
 
-public function uploadFile(Request $request)
-{
-
-
-    // Validate the request
-    $request->validate([
-        'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
-        'tagList' => 'nullable', // Allow tagList to be nullable
-    ], [
-        'files.*.required' => 'Each file is required.',
-        'files.*.file' => 'The uploaded item must be a valid file.',
-        'files.*.max' => 'Each file may not be larger than 100MB.',
-        'files.*.mimes' => 'The file type must be one of the following: PDF, ODP, ODS, PPT, DOC, ODT, RTF, CSV, JSON, XML, HTML, ICO, SVG, WEBP, ZIP, XLS, DOCX, WAV, OGG, MP3, AVI, MOV, WMV, WEBM, TIFF, MP4, JPG, PNG, GIF, JPEG, 3GP, MKV, FLV.',
-    ]);
-
-    // Check if folder path is provided
-    $folderPath = $request->input('parent_folder');
-    // if (!$folderPath) {
-    //     return response()->json(['success' => false, 'message' => 'Folder path is required.'], 400);
-    // }
-
-    // Check if files are uploaded
-    if ($request->hasFile('files')) {
-        try {
-            $totalSize = 0;
-            $successMessages = [];
-            $errorMessages = [];
-
-            // Process each file
-            foreach ($request->file('files') as $file) {
-                try {
-                    $filePath = $file->store('uploads');
-
-                    // Store file details in the database
-                    CommonTable::create([
-                        'file_type' => $file->getClientMimeType(),
-                        'file_name' => $file->getClientOriginalName(),
-                        'file_size' => $file->getSize(),
-                        'file_path' => $filePath,
-                        'user_name' => auth()->user()->name,
-                        'user_id' => auth()->user()->id,
-                        'file_status' => $request->input('file_status', 0),
-                        'fyear' => $request->input('fyear'),
-                        'month' => $request->input('Month'),
-                        'location' => $folderPath,
-                        'descp' => $request->input('desc'),
-                    ]);
-
-                    $totalSize += $file->getSize();
-                    $successMessages[] = "File {$file->getClientOriginalName()} uploaded successfully.";
-                } catch (\Exception $e) {
-                    $errorMessages[] = "Failed to save file {$file->getClientOriginalName()} to the database.";
-                }
-            }
-
-            // Compile the response
-            return response()->json([
-                'success' => true,
-                'successMessages' => $successMessages,
-                'errorMessages' => $errorMessages,
-            ]);
-        } catch (\Exception $e) {
-            return response()->json(['success' => false, 'message' => 'Failed to process file uploads.'], 500);
-        }
-    } else {
-        // No files were uploaded
-        return response()->json(['success' => false, 'message' => 'No files uploaded.'], 400);
+    public function uploadFile(Request $request)
+    {
+    
+    
+        // Validate the request
+        $request->validate([
+            'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
+            'tagList' => 'nullable', // Allow tagList to be nullable
+        ], [
+            'files.*.required' => 'Each file is required.',
+            'files.*.file' => 'The uploaded item must be a valid file.',
+            'files.*.max' => 'Each file may not be larger than 100MB.',
+            'files.*.mimes' => 'The file type must be one of the following: PDF, ODP, ODS, PPT, DOC, ODT, RTF, CSV, JSON, XML, HTML, ICO, SVG, WEBP, ZIP, XLS, DOCX, WAV, OGG, MP3, AVI, MOV, WMV, WEBM, TIFF, MP4, JPG, PNG, GIF, JPEG, 3GP, MKV, FLV.',
+        ]);
+    
+        // Check if folder path is provided
+        $folderPath = $request->input('parent_folder');
+        // if (!$folderPath) {
+        //     return response()->json(['success' => false, 'message' => 'Folder path is required.'], 400);
+        // }
+    
+        // Check if files are uploaded
+        if ($request->hasFile('files')) {
+            try {
+                $totalSize = 0;
+                $successMessages = [];
+                $errorMessages = [];
+                $tag_list = [];
+    
+    // Handle tagList whether it's an array, a comma-separated string, or empty
+    $userTags = $request->input('tagList', []);
+    
+    // Convert to array if it's a comma-separated string
+    if (is_string($userTags)) {
+        $userTags = explode(',', $userTags);
     }
-}
+    // Ensure $userTags is an array and remove any empty values
+    if (is_array($userTags)) {
+        $userTags = array_filter($userTags); // Remove empty values
+    } else {
+        $userTags = []; // Fallback to empty array if not an array
+    }
+    
+    // Merge with default tags
+    $tag_list = array_merge($tag_list, $userTags);
+    $tags = empty($tag_list) ? NULL : json_encode($tag_list);
+    
+                // Process each file
+                foreach ($request->file('files') as $file) {
+                    try {
+                        $filePath = $file->store('uploads');
+    
+                        // Store file details in the database
+                        CommonTable::create([
+                            'file_type' => $file->getClientMimeType(),
+                            'file_name' => $file->getClientOriginalName(),
+                            'file_size' => $file->getSize(),
+                            'file_path' => $filePath,
+                            'user_name' => auth()->user()->name,
+                            'user_id' => auth()->user()->id,
+                            'file_status' => $request->input('file_status', 0),
+                            'fyear' => $request->input('fyear'),
+                            'month' => $request->input('Month'),
+                            'tags' => $tags, // Store tags as JSON
+                            'location' => $folderPath,
+                            'descp' => $request->input('desc'),
+                        ]);
+    
+                        $totalSize += $file->getSize();
+                        $successMessages[] = "File {$file->getClientOriginalName()} uploaded successfully.";
+                    } catch (\Exception $e) {
+                        $errorMessages[] = "Failed to save file {$file->getClientOriginalName()} to the database.";
+                    }
+                }
+    
+                // Compile the response
+                return response()->json([
+                    'success' => true,
+                    'successMessages' => $successMessages,
+                    'errorMessages' => $errorMessages,
+                ]);
+            } catch (\Exception $e) {
+                return response()->json(['success' => false, 'message' => 'Failed to process file uploads.'], 500);
+            }
+        } else {
+            // No files were uploaded
+            return response()->json(['success' => false, 'message' => 'No files uploaded.'], 400);
+        }
+    }
 
 
 
@@ -19226,7 +19298,7 @@ public function payrollmaster()
         $user = Auth::user();
         $emplife = StoreEmployeeprofile::where('user_id', $user->id)->get();
         
-       return view('user.HRM.payroll-master',compact('cli_announcements','emplife'));
+       return view('user.HRM.payroll-master',compact('cli_announcements','emplife','user'));
     }
     
     public function payrolldetails($id)
