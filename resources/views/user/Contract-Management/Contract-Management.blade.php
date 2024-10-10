@@ -93,11 +93,21 @@
    
   <div class="hearder-entres">    
                       <div class="volt_headd-filter">
-                        <button>
-                          <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M5.59282 11.625H4.5V5.94909L0.5625 1.26159V0.375H11.25V1.25653L7.5 5.94403V9.71782L5.59282 11.625ZM5.25 10.875H5.28218L6.75 9.40718V5.68097L10.3948 1.125H1.42734L5.25 5.67591V10.875Z" fill="#868686"></path>
-                          </svg> Apply Filter </button>
-                          <a href=#" class="exprot_master"><svg width="10" height="10" viewBox="0 0 10 10" fill="none" xmlns="http://www.w3.org/2000/svg">
+
+                     
+                      <div class="filter-container">
+    <h3>Filter by Status</h3>
+    <select id="status-filter" onchange="filterContracts()">
+        <option value="all">All</option>
+        <option value="active">Active</option>
+        <option value="expired">Expired</option>
+    </select>
+</div>
+
+
+
+                          
+                          <a href="{{ route('export.contracts') }}" class="exprot_master"><svg width="10" height="10" viewBox="0 0 10 10" fill="none" xmlns="http://www.w3.org/2000/svg">
 <path d="M9.58073 5.00008L7.91406 3.33341V4.58341H4.16406V5.41675H7.91406V6.66675M0.414062 7.50008V2.50008C0.414062 2.27907 0.50186 2.06711 0.65814 1.91083C0.814421 1.75455 1.02638 1.66675 1.2474 1.66675H6.2474C6.46841 1.66675 6.68037 1.75455 6.83665 1.91083C6.99293 2.06711 7.08073 2.27907 7.08073 2.50008V3.75008H6.2474V2.50008H1.2474V7.50008H6.2474V6.25008H7.08073V7.50008C7.08073 7.72109 6.99293 7.93306 6.83665 8.08934C6.68037 8.24562 6.46841 8.33341 6.2474 8.33341H1.2474C1.02638 8.33341 0.814421 8.24562 0.65814 8.08934C0.50186 7.93306 0.414063 7.72109 0.414062 7.50008Z" fill="#898989"/>
 </svg>Export Contract Master</a>
                       </div>
@@ -107,7 +117,7 @@
 <div class="tabs">
 @foreach($contract as $cont)
 @if($cont->contracttype == 'normalcontract')
-<button class="tablinks active" onclick="openTab(event, 'tab1{{$cont->id}}')">
+<button class="tablinks active" onclick="openTab(event, 'tab1{{$cont->id}}')" data-status="{{ strtotime(date('Y-m-d')) < strtotime($cont->startend) ? 'active' : 'expired' }}">
 
 
 <div class="btn_up_cont">
@@ -144,7 +154,45 @@
 </div>
 </div>
 </div>
+<script>
+  function filterContracts() {
+    const selectedStatus = document.getElementById("status-filter").value;
+    
+    const contracts = document.querySelectorAll("button.tablinks");
+    
+    contracts.forEach(contract => {
+        const contractStatus = contract.getAttribute("data-status");
+        
+        // Show the contract if it matches the selected status
+        if (selectedStatus === 'all' || contractStatus === selectedStatus) {
+            contract.style.display = "block"; // Show matching contracts
+        } else {
+            contract.style.display = "none"; // Hide non-matching contracts
+        }
+    });
+}
 
+</script>
+
+<script>
+  function filterContracts1() {
+    const selectedStatus = document.getElementById("status-filters").value;
+    
+    const contracts = document.querySelectorAll("button.tablinks");
+    
+    contracts.forEach(contract => {
+        const contractStatus = contract.getAttribute("data-status");
+        
+        // Show the contract if it matches the selected status
+        if (selectedStatus === 'all' || contractStatus === selectedStatus) {
+            contract.style.display = "block"; // Show matching contracts
+        } else {
+            contract.style.display = "none"; // Hide non-matching contracts
+        }
+    });
+}
+
+</script>
   <div class="hearder-entress enteries_bottom">
                       <div class="sadd_filds">
                       <button class="hvr-rotate" id="addCustomDocButton" data-bs-toggle="modal" data-bs-target="#add_contract1"><svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -375,11 +423,15 @@
   <div class="hearder-entres">
     
                       <div class="volt_headd-filter">
-                        <button>
-                          <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M5.59282 11.625H4.5V5.94909L0.5625 1.26159V0.375H11.25V1.25653L7.5 5.94403V9.71782L5.59282 11.625ZM5.25 10.875H5.28218L6.75 9.40718V5.68097L10.3948 1.125H1.42734L5.25 5.67591V10.875Z" fill="#868686"></path>
-                          </svg> Apply Filter </button>
-                          <a href=#" class="exprot_master"><svg width="10" height="10" viewBox="0 0 10 10" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <div class="filter-container">
+    <h3>Filter by Status</h3>
+    <select id="status-filters" onchange="filterContracts1()">
+        <option value="all">All</option>
+        <option value="active">Active</option>
+        <option value="expired">Expired</option>
+    </select>
+</div>
+                          <a href="{{ route('export.contractsss') }}" class="exprot_master"><svg width="10" height="10" viewBox="0 0 10 10" fill="none" xmlns="http://www.w3.org/2000/svg">
 <path d="M9.58073 5.00008L7.91406 3.33341V4.58341H4.16406V5.41675H7.91406V6.66675M0.414062 7.50008V2.50008C0.414062 2.27907 0.50186 2.06711 0.65814 1.91083C0.814421 1.75455 1.02638 1.66675 1.2474 1.66675H6.2474C6.46841 1.66675 6.68037 1.75455 6.83665 1.91083C6.99293 2.06711 7.08073 2.27907 7.08073 2.50008V3.75008H6.2474V2.50008H1.2474V7.50008H6.2474V6.25008H7.08073V7.50008C7.08073 7.72109 6.99293 7.93306 6.83665 8.08934C6.68037 8.24562 6.46841 8.33341 6.2474 8.33341H1.2474C1.02638 8.33341 0.814421 8.24562 0.65814 8.08934C0.50186 7.93306 0.414063 7.72109 0.414062 7.50008Z" fill="#898989"/>
 </svg>Export Contract Master</a>
                       </div>
@@ -389,7 +441,7 @@
 <div class="tabs">
 @foreach($contract as $cont)
 @if($cont->contracttype == 'customercontract')
-<button class="tablinks active" onclick="openTab(event, 'tab3{{$cont->id}}')">
+<button class="tablinks active" onclick="openTab(event, 'tab3{{$cont->id}}')" data-status="{{ strtotime(date('Y-m-d')) < strtotime($cont->startend) ? 'active' : 'expired' }}">
 <div class="btn_up_cont">
     <div class="up_lleft">
     <h2>{{$cont->contract_name}} <span>{{$cont->divison}}</span></h2>
@@ -669,9 +721,9 @@
 <a href="{{ route('download-contract-file', ['id' => $cont->id]) }}" class="view-cont">View Contract<svg width="6" height="10" viewBox="0 0 6 10" fill="none" xmlns="http://www.w3.org/2000/svg">
 <path fill-rule="evenodd" clip-rule="evenodd" d="M5.3691 4.38178C5.53296 4.54584 5.625 4.76824 5.625 5.00011C5.625 5.23199 5.53296 5.45438 5.3691 5.61845L2.06977 8.91895C1.98849 9.00019 1.89201 9.06462 1.78583 9.10857C1.67965 9.15252 1.56586 9.17513 1.45094 9.1751C1.33602 9.17508 1.22224 9.15242 1.11608 9.10841C1.00992 9.06441 0.913467 8.99993 0.832229 8.91866C0.750989 8.83738 0.686554 8.7409 0.642603 8.63472C0.598651 8.52854 0.576044 8.41474 0.576071 8.29982C0.576097 8.18491 0.59876 8.07112 0.642761 7.96496C0.686763 7.8588 0.751243 7.76235 0.83252 7.68111L3.51294 5.00011L0.831936 2.31911C0.748328 2.23844 0.681623 2.14192 0.635716 2.03518C0.589808 1.92845 0.565618 1.81365 0.564554 1.69747C0.56349 1.58129 0.585575 1.46606 0.62952 1.3585C0.673465 1.25095 0.738389 1.15322 0.820507 1.07103C0.902624 0.988832 1.00029 0.923815 1.1078 0.879768C1.21531 0.835722 1.33052 0.813528 1.4467 0.814483C1.56289 0.815437 1.67772 0.839521 1.78449 0.885327C1.89126 0.931134 1.98785 0.997747 2.0686 1.08128L5.3691 4.38178Z" fill="#5790FF"/>
 </svg></a>
-<a href="#" class="sharre"><svg width="12" height="10" viewBox="0 0 12 10" fill="none" xmlns="http://www.w3.org/2000/svg">
+<!-- <a href="#" class="sharre"><svg width="12" height="10" viewBox="0 0 12 10" fill="none" xmlns="http://www.w3.org/2000/svg">
 <path d="M11.25 5.00008L7.16667 0.916748V3.25008C3.08333 3.83341 1.33333 6.75008 0.75 9.66675C2.20833 7.62508 4.25 6.69175 7.16667 6.69175V9.08341L11.25 5.00008Z" fill="#858585"/>
-</svg>Share</a>
+</svg>Share</a> -->
 </div>
 </div>
 <div class="form_data">
@@ -855,21 +907,21 @@
   <select id="divison" name="divison" required>
   <option value="" disabled Selected>select</option>
     
-<option value="Human Resources" {{ $cont->division === 'Human Resources' ? ' selected' : '' }}>Human Resources</option>
-    <option value="Finance" {{ $cont->division === 'Finance' ? ' selected' : '' }}>Finance</option>
-    <option value="Legal" {{ $cont->division === 'Legal' ? ' selected' : '' }}>Legal</option>
-    <option value="Operations" {{ $cont->division === 'Operations' ? ' selected' : '' }}>Operations</option>
-    <option value="IT/Technology" {{ $cont->division === 'IT/Technology' ? ' selected' : '' }}>IT/Technology</option>
-    <option value="Sales & Marketing" {{ $cont->division === 'Sales & Marketing' ? ' selected' : '' }}>Sales & Marketing</option>
-    <option value="Procurement" {{ $cont->division === 'Procurement' ? ' selected' : '' }}>Procurement</option>
-    <option value="Administration" {{ $cont->division === 'Administration' ? ' selected' : '' }}>Administration</option>
-    <option value="Research & Development" {{ $cont->division === 'Research & Development' ? ' selected' : '' }}>Research & Development</option>
-    <option value="Customer Support" {{ $cont->division === 'Customer Support' ? ' selected' : '' }}>Customer Support</option>
-    <option value="Compliance" {{ $cont->division === 'Compliance' ? ' selected' : '' }}>Compliance</option>
-    <option value="Risk Management" {{ $cont->division === 'Risk Management' ? ' selected' : '' }}>Risk Management</option>
-    <option value="Logistics" {{ $cont->division === 'Logistics' ? ' selected' : '' }}>Logistics</option>
-    <option value="Corporate Affairs" {{ $cont->division === 'Corporate Affairs' ? ' selected' : '' }}>Corporate Affairs</option>
-    <option value="Public Relations" {{ $cont->division === 'Public Relations' ? ' selected' : '' }}>Public Relations</option>
+<option value="Human Resources" {{ $cont->divison === 'Human Resources' ? ' selected' : '' }}>Human Resources</option>
+    <option value="Finance" {{ $cont->divison === 'Finance' ? ' selected' : '' }}>Finance</option>
+    <option value="Legal" {{ $cont->divison === 'Legal' ? ' selected' : '' }}>Legal</option>
+    <option value="Operations" {{ $cont->divison === 'Operations' ? ' selected' : '' }}>Operations</option>
+    <option value="IT/Technology" {{ $cont->divison === 'IT/Technology' ? ' selected' : '' }}>IT/Technology</option>
+    <option value="Sales & Marketing" {{ $cont->divison === 'Sales & Marketing' ? ' selected' : '' }}>Sales & Marketing</option>
+    <option value="Procurement" {{ $cont->divison === 'Procurement' ? ' selected' : '' }}>Procurement</option>
+    <option value="Administration" {{ $cont->divison === 'Administration' ? ' selected' : '' }}>Administration</option>
+    <option value="Research & Development" {{ $cont->divison === 'Research & Development' ? ' selected' : '' }}>Research & Development</option>
+    <option value="Customer Support" {{ $cont->divison === 'Customer Support' ? ' selected' : '' }}>Customer Support</option>
+    <option value="Compliance" {{ $cont->divison === 'Compliance' ? ' selected' : '' }}>Compliance</option>
+    <option value="Risk Management" {{ $cont->divison === 'Risk Management' ? ' selected' : '' }}>Risk Management</option>
+    <option value="Logistics" {{ $cont->divison === 'Logistics' ? ' selected' : '' }}>Logistics</option>
+    <option value="Corporate Affairs" {{ $cont->divison === 'Corporate Affairs' ? ' selected' : '' }}>Corporate Affairs</option>
+    <option value="Public Relations" {{ $cont->divison === 'Public Relations' ? ' selected' : '' }}>Public Relations</option>
   </select>
                           </div>
 
@@ -884,18 +936,18 @@
   <select id="legal_entity_status" name="legal_entity_status" required>
   <option value="" disabled Selected>select</option>
     
-<option value="Sole Proprietorship" {{ $cont->entity_status === 'Sole Proprietorship' ? ' selected' : '' }}>Sole Proprietorship</option>
-    <option value="Partnership" {{ $cont->entity_status === 'Partnership' ? ' selected' : '' }}>Partnership</option>
-    <option value="Limited Liability Company (LLC)" {{ $cont->entity_status === 'Limited Liability Company (LLC)' ? ' selected' : '' }}>Limited Liability Company (LLC)</option>
-    <option value="Private Limited Company (Pvt Ltd)" {{ $cont->entity_status === 'Private Limited Company (Pvt Ltd)' ? ' selected' : '' }}>Private Limited Company (Pvt Ltd)</option>
-    <option value="Public Limited Company (Ltd)" {{ $cont->entity_status === 'Public Limited Company (Ltd)' ? ' selected' : '' }}>Public Limited Company (Ltd)</option>
-    <option value="Corporation" {{ $cont->entity_status === 'Corporation' ? ' selected' : '' }}>Corporation</option>
-    <option value="Non-Profit Organization (NGO)" {{ $cont->entity_status === 'Non-Profit Organization (NGO)' ? ' selected' : '' }}>Non-Profit Organization (NGO)</option>
-    <option value="Trust" {{ $cont->entity_status === 'Trust' ? ' selected' : '' }}>Trust</option>
-    <option value="Government Entity" {{ $cont->entity_status === 'Government Entity' ? ' selected' : '' }}>Government Entity</option>
-    <option value="Joint Venture" {{ $cont->entity_status === 'Joint Venture' ? ' selected' : '' }}>Joint Venture</option>
-    <option value="Association" {{ $cont->entity_status === 'Association' ? ' selected' : '' }}>Association</option>
-    <option value="Cooperative Society" {{ $cont->entity_status === 'Cooperative Society' ? ' selected' : '' }}>Cooperative Society</option>
+<option value="Sole Proprietorship" {{ $cont->legal_entity_status === 'Sole Proprietorship' ? ' selected' : '' }}>Sole Proprietorship</option>
+    <option value="Partnership" {{ $cont->legal_entity_status === 'Partnership' ? ' selected' : '' }}>Partnership</option>
+    <option value="Limited Liability Company (LLC)" {{ $cont->legal_entity_status === 'Limited Liability Company (LLC)' ? ' selected' : '' }}>Limited Liability Company (LLC)</option>
+    <option value="Private Limited Company (Pvt Ltd)" {{ $cont->legal_entity_status === 'Private Limited Company (Pvt Ltd)' ? ' selected' : '' }}>Private Limited Company (Pvt Ltd)</option>
+    <option value="Public Limited Company (Ltd)" {{ $cont->legal_entity_status === 'Public Limited Company (Ltd)' ? ' selected' : '' }}>Public Limited Company (Ltd)</option>
+    <option value="Corporation" {{ $cont->legal_entity_status === 'Corporation' ? ' selected' : '' }}>Corporation</option>
+    <option value="Non-Profit Organization (NGO)" {{ $cont->legal_entity_status === 'Non-Profit Organization (NGO)' ? ' selected' : '' }}>Non-Profit Organization (NGO)</option>
+    <option value="Trust" {{ $cont->legal_entity_status === 'Trust' ? ' selected' : '' }}>Trust</option>
+    <option value="Government Entity" {{ $cont->legal_entity_status === 'Government Entity' ? ' selected' : '' }}>Government Entity</option>
+    <option value="Joint Venture" {{ $cont->legal_entity_status === 'Joint Venture' ? ' selected' : '' }}>Joint Venture</option>
+    <option value="Association" {{ $cont->legal_entity_status === 'Association' ? ' selected' : '' }}>Association</option>
+    <option value="Cooperative Society" {{ $cont->legal_entity_status === 'Cooperative Society' ? ' selected' : '' }}>Cooperative Society</option>
   </select>
                           </div>
 
@@ -940,17 +992,21 @@
   
   <div class="gropu_form test-areaa">
                           <label for="fname">Renewal Terms <span class="red_star">*</span></label>
-                          <textarea name="renewal_terms" value="" required style="height: 58px;" placeholder="{{$cont->renewal_terms}}"> </textarea>
+
+                          <textarea name="renewal_terms" placeholder="{{$cont->renewal_terms}}"  style="height: 58px;">{{$cont->renewal_terms}} </textarea>
+
+                         
+
                           </div>
 
                           <div class="gropu_form test-areaa">
                           <label for="fname">Payment Terms <span class="red_star">*</span></label>
-                          <textarea name="payment_terms" required style="height: 58px;"> {{$cont->payment_terms}}</textarea>
+                          <textarea name="payment_terms" placeholder="{{$cont->payment_terms}}"  style="height: 58px;"> {{$cont->payment_terms}}</textarea>
                           </div>
 
                           <div class="gropu_form test-areaa">
                           <label for="fname">Fee Escalation Clause <span class="red_star">*</span></label>
-                          <textarea name="fee_escalation_clause" required style="height: 58px;"> {{$cont->fee_escalation_clause}}</textarea>
+                          <textarea name="fee_escalation_clause" placeholder="{{$cont->fee_escalation_clause}}"  style="height: 58px;"> {{$cont->fee_escalation_clause}}</textarea>
                           </div>
 
 
@@ -1028,9 +1084,9 @@
 <a href="{{ route('download-contract-file', ['id' => $cont->id]) }}" class="view-cont">View Contract<svg width="6" height="10" viewBox="0 0 6 10" fill="none" xmlns="http://www.w3.org/2000/svg">
 <path fill-rule="evenodd" clip-rule="evenodd" d="M5.3691 4.38178C5.53296 4.54584 5.625 4.76824 5.625 5.00011C5.625 5.23199 5.53296 5.45438 5.3691 5.61845L2.06977 8.91895C1.98849 9.00019 1.89201 9.06462 1.78583 9.10857C1.67965 9.15252 1.56586 9.17513 1.45094 9.1751C1.33602 9.17508 1.22224 9.15242 1.11608 9.10841C1.00992 9.06441 0.913467 8.99993 0.832229 8.91866C0.750989 8.83738 0.686554 8.7409 0.642603 8.63472C0.598651 8.52854 0.576044 8.41474 0.576071 8.29982C0.576097 8.18491 0.59876 8.07112 0.642761 7.96496C0.686763 7.8588 0.751243 7.76235 0.83252 7.68111L3.51294 5.00011L0.831936 2.31911C0.748328 2.23844 0.681623 2.14192 0.635716 2.03518C0.589808 1.92845 0.565618 1.81365 0.564554 1.69747C0.56349 1.58129 0.585575 1.46606 0.62952 1.3585C0.673465 1.25095 0.738389 1.15322 0.820507 1.07103C0.902624 0.988832 1.00029 0.923815 1.1078 0.879768C1.21531 0.835722 1.33052 0.813528 1.4467 0.814483C1.56289 0.815437 1.67772 0.839521 1.78449 0.885327C1.89126 0.931134 1.98785 0.997747 2.0686 1.08128L5.3691 4.38178Z" fill="#5790FF"/>
 </svg></a>
-<a href="#" class="sharre"><svg width="12" height="10" viewBox="0 0 12 10" fill="none" xmlns="http://www.w3.org/2000/svg">
+<!-- <a href="#" class="sharre"><svg width="12" height="10" viewBox="0 0 12 10" fill="none" xmlns="http://www.w3.org/2000/svg">
 <path d="M11.25 5.00008L7.16667 0.916748V3.25008C3.08333 3.83341 1.33333 6.75008 0.75 9.66675C2.20833 7.62508 4.25 6.69175 7.16667 6.69175V9.08341L11.25 5.00008Z" fill="#858585"/>
-</svg>Share</a>
+</svg>Share</a> -->
 </div>
 </div>
 <div class="form_data">
@@ -1211,21 +1267,21 @@
   <select id="divison" name="divison" required>
   <option value="" disabled Selected>select</option>
     
-<option value="Human Resources" {{ $cont->division === 'Human Resources' ? ' selected' : '' }}>Human Resources</option>
-    <option value="Finance" {{ $cont->division === 'Finance' ? ' selected' : '' }}>Finance</option>
-    <option value="Legal" {{ $cont->division === 'Legal' ? ' selected' : '' }}>Legal</option>
-    <option value="Operations" {{ $cont->division === 'Operations' ? ' selected' : '' }}>Operations</option>
-    <option value="IT/Technology" {{ $cont->division === 'IT/Technology' ? ' selected' : '' }}>IT/Technology</option>
-    <option value="Sales & Marketing" {{ $cont->division === 'Sales & Marketing' ? ' selected' : '' }}>Sales & Marketing</option>
-    <option value="Procurement" {{ $cont->division === 'Procurement' ? ' selected' : '' }}>Procurement</option>
-    <option value="Administration" {{ $cont->division === 'Administration' ? ' selected' : '' }}>Administration</option>
-    <option value="Research & Development" {{ $cont->division === 'Research & Development' ? ' selected' : '' }}>Research & Development</option>
-    <option value="Customer Support" {{ $cont->division === 'Customer Support' ? ' selected' : '' }}>Customer Support</option>
-    <option value="Compliance" {{ $cont->division === 'Compliance' ? ' selected' : '' }}>Compliance</option>
-    <option value="Risk Management" {{ $cont->division === 'Risk Management' ? ' selected' : '' }}>Risk Management</option>
-    <option value="Logistics" {{ $cont->division === 'Logistics' ? ' selected' : '' }}>Logistics</option>
-    <option value="Corporate Affairs" {{ $cont->division === 'Corporate Affairs' ? ' selected' : '' }}>Corporate Affairs</option>
-    <option value="Public Relations" {{ $cont->division === 'Public Relations' ? ' selected' : '' }}>Public Relations</option>
+<option value="Human Resources" {{ $cont->divison === 'Human Resources' ? ' selected' : '' }}>Human Resources</option>
+    <option value="Finance" {{ $cont->divison === 'Finance' ? ' selected' : '' }}>Finance</option>
+    <option value="Legal" {{ $cont->divison === 'Legal' ? ' selected' : '' }}>Legal</option>
+    <option value="Operations" {{ $cont->divison === 'Operations' ? ' selected' : '' }}>Operations</option>
+    <option value="IT/Technology" {{ $cont->divison === 'IT/Technology' ? ' selected' : '' }}>IT/Technology</option>
+    <option value="Sales & Marketing" {{ $cont->divison === 'Sales & Marketing' ? ' selected' : '' }}>Sales & Marketing</option>
+    <option value="Procurement" {{ $cont->divison === 'Procurement' ? ' selected' : '' }}>Procurement</option>
+    <option value="Administration" {{ $cont->divison === 'Administration' ? ' selected' : '' }}>Administration</option>
+    <option value="Research & Development" {{ $cont->divison === 'Research & Development' ? ' selected' : '' }}>Research & Development</option>
+    <option value="Customer Support" {{ $cont->divison === 'Customer Support' ? ' selected' : '' }}>Customer Support</option>
+    <option value="Compliance" {{ $cont->divison === 'Compliance' ? ' selected' : '' }}>Compliance</option>
+    <option value="Risk Management" {{ $cont->divison === 'Risk Management' ? ' selected' : '' }}>Risk Management</option>
+    <option value="Logistics" {{ $cont->divison === 'Logistics' ? ' selected' : '' }}>Logistics</option>
+    <option value="Corporate Affairs" {{ $cont->divison === 'Corporate Affairs' ? ' selected' : '' }}>Corporate Affairs</option>
+    <option value="Public Relations" {{ $cont->divison === 'Public Relations' ? ' selected' : '' }}>Public Relations</option>
     
   </select>
                           </div>
@@ -1241,18 +1297,18 @@
   <select id="legal_entity_status" name="legal_entity_status" required>
   <option value="" disabled Selected>select</option>
     
-<option value="Sole Proprietorship" {{ $cont->entity_status === 'Sole Proprietorship' ? ' selected' : '' }}>Sole Proprietorship</option>
-    <option value="Partnership" {{ $cont->entity_status === 'Partnership' ? ' selected' : '' }}>Partnership</option>
-    <option value="Limited Liability Company (LLC)" {{ $cont->entity_status === 'Limited Liability Company (LLC)' ? ' selected' : '' }}>Limited Liability Company (LLC)</option>
-    <option value="Private Limited Company (Pvt Ltd)" {{ $cont->entity_status === 'Private Limited Company (Pvt Ltd)' ? ' selected' : '' }}>Private Limited Company (Pvt Ltd)</option>
-    <option value="Public Limited Company (Ltd)" {{ $cont->entity_status === 'Public Limited Company (Ltd)' ? ' selected' : '' }}>Public Limited Company (Ltd)</option>
-    <option value="Corporation" {{ $cont->entity_status === 'Corporation' ? ' selected' : '' }}>Corporation</option>
-    <option value="Non-Profit Organization (NGO)" {{ $cont->entity_status === 'Non-Profit Organization (NGO)' ? ' selected' : '' }}>Non-Profit Organization (NGO)</option>
-    <option value="Trust" {{ $cont->entity_status === 'Trust' ? ' selected' : '' }}>Trust</option>
-    <option value="Government Entity" {{ $cont->entity_status === 'Government Entity' ? ' selected' : '' }}>Government Entity</option>
-    <option value="Joint Venture" {{ $cont->entity_status === 'Joint Venture' ? ' selected' : '' }}>Joint Venture</option>
-    <option value="Association" {{ $cont->entity_status === 'Association' ? ' selected' : '' }}>Association</option>
-    <option value="Cooperative Society" {{ $cont->entity_status === 'Cooperative Society' ? ' selected' : '' }}>Cooperative Society</option>
+<option value="Sole Proprietorship" {{ $cont->legal_entity_status === 'Sole Proprietorship' ? ' selected' : '' }}>Sole Proprietorship</option>
+    <option value="Partnership" {{ $cont->legal_entity_status === 'Partnership' ? ' selected' : '' }}>Partnership</option>
+    <option value="Limited Liability Company (LLC)" {{ $cont->legal_entity_status === 'Limited Liability Company (LLC)' ? ' selected' : '' }}>Limited Liability Company (LLC)</option>
+    <option value="Private Limited Company (Pvt Ltd)" {{ $cont->legal_entity_status === 'Private Limited Company (Pvt Ltd)' ? ' selected' : '' }}>Private Limited Company (Pvt Ltd)</option>
+    <option value="Public Limited Company (Ltd)" {{ $cont->legal_entity_status === 'Public Limited Company (Ltd)' ? ' selected' : '' }}>Public Limited Company (Ltd)</option>
+    <option value="Corporation" {{ $cont->legal_entity_status === 'Corporation' ? ' selected' : '' }}>Corporation</option>
+    <option value="Non-Profit Organization (NGO)" {{ $cont->legal_entity_status === 'Non-Profit Organization (NGO)' ? ' selected' : '' }}>Non-Profit Organization (NGO)</option>
+    <option value="Trust" {{ $cont->legal_entity_status === 'Trust' ? ' selected' : '' }}>Trust</option>
+    <option value="Government Entity" {{ $cont->legal_entity_status === 'Government Entity' ? ' selected' : '' }}>Government Entity</option>
+    <option value="Joint Venture" {{ $cont->legal_entity_status === 'Joint Venture' ? ' selected' : '' }}>Joint Venture</option>
+    <option value="Association" {{ $cont->legal_entity_status === 'Association' ? ' selected' : '' }}>Association</option>
+    <option value="Cooperative Society" {{ $cont->legal_entity_status === 'Cooperative Society' ? ' selected' : '' }}>Cooperative Society</option>
   </select>
                           </div>
 
@@ -1297,20 +1353,31 @@
   
   <div class="gropu_form test-areaa">
                           <label for="fname">Renewal Terms <span class="red_star">*</span></label>
-                          <textarea name="renewal_terms" required style="height: 58px;">{{$cont->renewal_terms}} </textarea>
+                          <textarea name="renewal_terms"  style="height: 58px;" placeholder="{{$cont->renewal_terms}}">{{$cont->renewal_terms}} </textarea>
                           </div>
 
                           <div class="gropu_form test-areaa">
                           <label for="fname">Payment Terms <span class="red_star">*</span></label>
-                          <textarea name="payment_terms" required style="height: 58px;">{{$cont->payment_terms}} </textarea>
+                          <textarea name="payment_terms"  style="height: 58px;" placeholder="{{$cont->payment_terms}}">{{$cont->payment_terms}} </textarea>
                           </div>
 
                           <div class="gropu_form test-areaa">
                           <label for="fname">Fee Escalation Clause <span class="red_star">*</span></label>
-                          <textarea name="fee_escalation_clause" required style="height: 58px;">{{$cont->fee_escalation_clause}} </textarea>
+                          <textarea name="fee_escalation_clause"  style="height: 58px;" placeholder="{{$cont->fee_escalation_clause}}">{{$cont->fee_escalation_clause}} </textarea>
                           </div>
 
-
+                          <script>
+    document.querySelectorAll('textarea').forEach(function(textarea) {
+        textarea.addEventListener('focus', function() {
+            this.setAttribute('data-placeholder', this.getAttribute('placeholder'));
+            this.setAttribute('placeholder', '');
+        });
+        
+        textarea.addEventListener('blur', function() {
+            this.setAttribute('placeholder', this.getAttribute('data-placeholder'));
+        });
+    });
+</script>
 
 
   </div>

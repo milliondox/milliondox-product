@@ -177,7 +177,9 @@ Route::post('/PredefinedCommonUploadFilesBank', [App\Http\Controllers\HomeContro
 
 
 // sandeep routes end
-
+Route::get('/export-contractsss', [App\Http\Controllers\HomeController::class, 'exportContractsss'])->name('export.contractsss');
+Route::get('/export-contracts', [App\Http\Controllers\HomeController::class,  'exportContracts'])->name('export.contracts');
+Route::post('/check-role-existence', [App\Http\Controllers\HomeController::class, 'checkRoleExistence'])->name('checkRoleExistence');
 
 Route::post('/addroles', [App\Http\Controllers\HomeController::class, 'addroles'])->name('addroles');
 
@@ -188,6 +190,7 @@ Route::delete('/file/{id}', [App\Http\Controllers\HomeController::class, 'delete
 
 Route::put('/file/{id}/restore', [App\Http\Controllers\HomeController::class, 'restore'])->name('file.restore');
 
+Route::get('/download-folder/{folderId}', [App\Http\Controllers\HomeController::class, 'downloadFolder']);
 
 Route::put('/file/{id}/restorefile', [App\Http\Controllers\HomeController::class, 'restorefile'])->name('file.restorefile');
 

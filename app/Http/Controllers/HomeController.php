@@ -194,6 +194,8 @@ use App\Models\StoreCompanyEmployee;
 use App\Models\TaskEvents;
 use App\Models\Feedback;
 
+use ZipArchive;
+
 
 
 use Illuminate\Support\Facades\Log;
@@ -276,6 +278,50 @@ if ($userRoleRecord) {
                     ->get();
                     // dd($upcomingevent);
 
+                    $gstnocount = StoreGST::where('user_id', $user->id)->count();
+$employeescount = StoreCompanyEmployee::where('user_id', $user->id)->count();
+$directorcount = StoreCompanydirector::where('user_id', $user->id)->where('is_delete', 0)->count();
+$progressPercentage = 0;
+
+    // Check user attributes for 40%
+    if (
+        ($user->profile_picture != NULL) &&
+        ($user->name_of_the_business != NULL) &&
+        ($user->legal_entity != NULL) &&
+        ($user->industry != NULL) &&
+        ($user->state != NULL) &&
+        ($user->backupemail != NULL) &&
+        ($user->employees != NULL) &&
+        ($user->phone != NULL)
+    ) {
+        $progressPercentage += 40; // Add 40%
+    }
+    
+    // Check additional user attributes for 30%
+    if (
+        ($user->joining_date != NULL) &&
+        ($user->PAN != NULL) &&
+        ($user->CIN != NULL) &&
+        ($user->authorized_capital != NULL) &&
+        ($user->paid_up_capital != NULL)
+    ) {
+        $progressPercentage += 30; // Add 30%
+    }
+    
+    // Check GST number count for 10%
+    if ($gstnocount > 0) {
+        $progressPercentage += 10; // Add 10%
+    }
+    
+   
+
+    if ($employeescount > 0) {
+        $progressPercentage += 10; // Add 10%
+    }
+    if ($directorcount > 0) {
+        $progressPercentage += 10; // Add 10%
+    }
+
     return view('user.dashboard.index', [
         'user' => $user,
         'policy' => $policy,
@@ -286,6 +332,7 @@ if ($userRoleRecord) {
         'userRoleRecord' => $userRoleRecord,
         'currentDate' => $currentDate,
         'eventsData' => $eventsData,
+        'progressPercentage' => $progressPercentage,
         'upcomingevent' => $upcomingevent
     ]);
 
@@ -15265,8 +15312,153 @@ public function tickting()
 // dd($employees);
        return view('user.HRM.lifecycle-details',compact('cli_announcements','emplife','employees'));
     }
+    public function exportContracts()
+    {
+        // Fetch the contract data for the authenticated user
+        $contracts = StoreContract::where('user_id', auth()->id())->where('contracttype' , 'normalcontract')->get();
+
+
+        $filename = 'contracts_' . date('Ymd') . '.csv';
+
+        // Create a file pointer connected to the output stream
+        $handle = fopen('php://output', 'w');
+
+        // Set the headers for the CSV download
+        header('Content-Type: text/csv');
+        header('Content-Disposition: attachment; filename="' . $filename . '"');
+
+        // Add the CSV column headers
+        fputcsv($handle, [
+            'ID', 
+            'File Type', 
+            'File Size', 
+            'Real File Name', 
+            'File Path', 
+            'User Name', 
+            'Contract Name', 
+            'Contract Type', 
+            'Division', 
+            'Vendor Name', 
+            'Legal Entity Status', 
+            'Start Date', 
+            'End Date', 
+            'Contract Value', 
+            'Signing Status', 
+            'Renewal Terms', 
+            'Payment Terms', 
+            'Fee Escalation Clause', 
+            'User ID', 
+            'Created At', 
+            'Updated At'
+        ]);
+
+        // Loop through the contracts and add them to the CSV
+        foreach ($contracts as $contract) {
+            fputcsv($handle, [
+                $contract->id,
+                $contract->file_type,
+                $contract->file_size,
+                $contract->real_file_name,
+                $contract->file_path,
+                $contract->user_name,
+                $contract->contract_name,
+                $contract->contracttype,
+                $contract->divison,
+                $contract->vendor_name,
+                $contract->legal_entity_status,
+                $contract->startdate,
+                $contract->startend,
+                $contract->contract_value,
+                $contract->signing_status,
+                $contract->renewal_terms,
+                $contract->payment_terms,
+                $contract->fee_escalation_clause,
+                $contract->user_id,
+                $contract->created_at,
+                $contract->updated_at,
+            ]);
+        }
+
+        // Close the file pointer
+        fclose($handle);
+        exit; // Terminate the script
+    }
+
+    public function exportContractsss()
+    {
+        // Fetch the contract data for the authenticated user
+        $contracts = StoreContract::where('user_id', auth()->id())->where('contracttype' , 'customercontract')->get();
+
+
+        $filename = 'contracts_' . date('Ymd') . '.csv';
+
+        // Create a file pointer connected to the output stream
+        $handle = fopen('php://output', 'w');
+
+        // Set the headers for the CSV download
+        header('Content-Type: text/csv');
+        header('Content-Disposition: attachment; filename="' . $filename . '"');
+
+        // Add the CSV column headers
+        fputcsv($handle, [
+            'ID', 
+            'File Type', 
+            'File Size', 
+            'Real File Name', 
+            'File Path', 
+            'User Name', 
+            'Contract Name', 
+            'Contract Type', 
+            'Division', 
+            'Vendor Name', 
+            'Legal Entity Status', 
+            'Start Date', 
+            'End Date', 
+            'Contract Value', 
+            'Signing Status', 
+            'Renewal Terms', 
+            'Payment Terms', 
+            'Fee Escalation Clause', 
+            'User ID', 
+            'Created At', 
+            'Updated At'
+        ]);
+
+        // Loop through the contracts and add them to the CSV
+        foreach ($contracts as $contract) {
+            fputcsv($handle, [
+                $contract->id,
+                $contract->file_type,
+                $contract->file_size,
+                $contract->real_file_name,
+                $contract->file_path,
+                $contract->user_name,
+                $contract->contract_name,
+                $contract->contracttype,
+                $contract->divison,
+                $contract->vendor_name,
+                $contract->legal_entity_status,
+                $contract->startdate,
+                $contract->startend,
+                $contract->contract_value,
+                $contract->signing_status,
+                $contract->renewal_terms,
+                $contract->payment_terms,
+                $contract->fee_escalation_clause,
+                $contract->user_id,
+                $contract->created_at,
+                $contract->updated_at,
+            ]);
+        }
+
+        // Close the file pointer
+        fclose($handle);
+        exit; // Terminate the script
+    }
     public function ContractManagement()
     {
+        $contracts = StoreContract::where('user_id', auth()->id())->where('contracttype' , 'normalcontract')->get();
+        // dd($contracts);
         $cli_announcements = Announcement::where('role', 'Client')->latest()->get();
         $contract = StoreContract::where('user_id', auth()->id())->get();
          $user = auth()->user();
@@ -15298,6 +15490,18 @@ public function tickting()
 
     public function loginpassedit()
     {
+        $user = auth()->user();
+        $userId = $user->id;
+        $role = User::where('id', $userId)
+        ->where('role', $user->role)
+        ->where('Edit_Password', 1)
+        ->first();
+// dd($role);
+
+if (!$role) {
+echo "You have no Access to Edit Password , Please Contact to your Account Provider";
+abort(403);  // Abort if the role is not found or access is not granted
+}
         $cli_announcements = Announcement::where('role', 'Client')->latest()->get();
         $user = auth()->user();
        return view('user.login-pass-edit.login-pass-edit',compact('cli_announcements', 'user'));
@@ -15409,26 +15613,49 @@ public function rolemanagement()
     
     
     
-    public function addroles(Request $request)
+public function addroles(Request $request)
 {
-   
-$userId = auth()->user()->id;
-    // Create a new OrganizationChart instance and fill it with validated data
+    // Get the logged-in user ID
+    $userId = auth()->user()->id;
+
+    // Check if the user has already created this role
+    $existingRole = UserRole::where('user_id', $userId)
+                            ->where('role', $request->role)
+                            ->first();
+
+    // If the role already exists for the current user, return an error
+    if ($existingRole) {
+        return redirect()->back()->with('error', 'You have already created this role.');
+    }
+
+    // If no role exists for this user, create a new role
     $userroleModel = new UserRole([
-       
         'role' => $request->role,
         'Edit_Password' => "0",
         'View_Exception_Reports' => "0",
         'user_id' => $userId,
-        
     ]);
 
-    // Save the data to the database
+    // Save the new role to the database
     $userroleModel->save();
 
-    // Return a JSON response indicating success
-        return redirect()->back()->with('success', 'Role created success.');
+    // Return a success message
+    return redirect()->back()->with('success', 'Role created successfully.');
 }
+public function checkRoleExistence(Request $request)
+{
+    // Get the logged-in user ID
+    $userId = auth()->user()->id;
+
+    // Check if the user has already created this role
+    $roleExists = UserRole::where('user_id', $userId)
+                          ->where('role', $request->role)
+                          ->exists();
+
+    // Return JSON response to indicate whether the role exists
+    return response()->json(['exists' => $roleExists]);
+}
+
 
 public function members(Request $request)
 {
@@ -17484,8 +17711,11 @@ public function shareFolder(Request $request)
             }
             // 11 sept sandeep merge code here end
             
-            
-            $folderHtml .= '<li><a href="#" class="folder-link wedcolor" data-folder-path="' . $folder->path . '">
+            if($folder->common_folder == 0)
+            {
+            $folderHtml .= 
+           
+            '<li><a href="#" class="folder-link wedcolor" data-folder-path="' . $folder->path . '">
                                 <div class="folder_wraap">
                                     <img src="../assets/images/solar_folder-bold.png" id="folders" class="folder-icon" alt="Folder Icon">
                                     <span>' . $folder->name . '</span>
@@ -17498,6 +17728,11 @@ public function shareFolder(Request $request)
                                 <div id="myDropdown2-' . $folder->id . '" class="dropdown-content">
                                    
                                     <a class="dropdown-itemm rename_nt"><img src="../assets/images/rename_nt.png">Rename</a>
+
+                                     <a class="dropdown-itemm download_nt" id="folderid-' . $folder->id . '"><svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                      <path d="M2.40625 12.25C2.00014 12.25 1.61066 12.0887 1.32349 11.8015C1.03633 11.5143 0.875 11.1249 0.875 10.7188V8.53125C0.875 8.3572 0.94414 8.19028 1.06721 8.06721C1.19028 7.94414 1.3572 7.875 1.53125 7.875C1.7053 7.875 1.87222 7.94414 1.99529 8.06721C2.11836 8.19028 2.1875 8.3572 2.1875 8.53125V10.7188C2.1875 10.8395 2.2855 10.9375 2.40625 10.9375H11.5938C11.6518 10.9375 11.7074 10.9145 11.7484 10.8734C11.7895 10.8324 11.8125 10.7768 11.8125 10.7188V8.53125C11.8125 8.3572 11.8816 8.19028 12.0047 8.06721C12.1278 7.94414 12.2947 7.875 12.4688 7.875C12.6428 7.875 12.8097 7.94414 12.9328 8.06721C13.0559 8.19028 13.125 8.3572 13.125 8.53125V10.7188C13.125 11.1249 12.9637 11.5143 12.6765 11.8015C12.3893 12.0887 11.9999 12.25 11.5938 12.25H2.40625Z" fill="#CEFFA8"></path>
+                                      <path d="M6.34334 6.72788V1.75C6.34334 1.57595 6.41248 1.40903 6.53555 1.28596C6.65862 1.16289 6.82554 1.09375 6.99959 1.09375C7.17364 1.09375 7.34056 1.16289 7.46363 1.28596C7.5867 1.40903 7.65584 1.57595 7.65584 1.75V6.72788L9.37959 5.005C9.44049 4.9441 9.51279 4.89579 9.59236 4.86283C9.67193 4.82987 9.75722 4.81291 9.84334 4.81291C9.92947 4.81291 10.0148 4.82987 10.0943 4.86283C10.1739 4.89579 10.2462 4.9441 10.3071 5.005C10.368 5.0659 10.4163 5.1382 10.4493 5.21777C10.4822 5.29734 10.4992 5.38262 10.4992 5.46875C10.4992 5.55488 10.4822 5.64016 10.4493 5.71973C10.4163 5.7993 10.368 5.8716 10.3071 5.9325L7.46334 8.77625C7.40247 8.83721 7.33018 8.88556 7.25061 8.91856C7.17103 8.95155 7.08574 8.96853 6.99959 8.96853C6.91345 8.96853 6.82815 8.95155 6.74857 8.91856C6.669 8.88556 6.59671 8.83721 6.53584 8.77625L3.69209 5.9325C3.63119 5.8716 3.58288 5.7993 3.54992 5.71973C3.51696 5.64016 3.5 5.55488 3.5 5.46875C3.5 5.38262 3.51696 5.29734 3.54992 5.21777C3.58288 5.1382 3.63119 5.0659 3.69209 5.005C3.75299 4.9441 3.82529 4.89579 3.90486 4.86283C3.98443 4.82987 4.06972 4.81291 4.15584 4.81291C4.24197 4.81291 4.32725 4.82987 4.40682 4.86283C4.48639 4.89579 4.55869 4.9441 4.61959 5.005L6.34334 6.72788Z" fill="#CEFFA8"></path>
+                                  </svg>Download</a>
                                 </div>
                                 <div class="modal fade drop_coman_file have_title drive_permissions_share" id="share_folder" tabindex="-1" role="dialog" aria-labelledby="share_folder" aria-hidden="true">
                                 <div class="modal-dialog modal-dialog-centered" role="document">
@@ -17573,6 +17808,104 @@ public function shareFolder(Request $request)
                                 </div>
                             </div>                            
                         </li>';
+            }
+                        else{
+                            $folderHtml .= 
+           
+                            '<li><a href="#" class="folder-link wedcolor" data-folder-path="' . $folder->path . '">
+                                                <div class="folder_wraap">
+                                                    <img src="../assets/images/solar_folder-bold.png" id="folders" class="folder-icon" alt="Folder Icon">
+                                                    <span>' . $folder->name . '</span>
+                                                </div>
+                                            </a>
+                                            <div class="three_dots">
+                                                <button class="click_folder_dot" data-folder-id="' . $folder->id . '">
+                                                    <img src="../assets/images/folder_dot.png" id="folders" class="folder-dots" alt="Folder dots">
+                                                </button>
+                                                <div id="myDropdown2-' . $folder->id . '" class="dropdown-content">
+                                   
+                                                   
+
+                                                    <a class="dropdown-itemm download_nt" id="folderid-' . $folder->id . '"><svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                      <path d="M2.40625 12.25C2.00014 12.25 1.61066 12.0887 1.32349 11.8015C1.03633 11.5143 0.875 11.1249 0.875 10.7188V8.53125C0.875 8.3572 0.94414 8.19028 1.06721 8.06721C1.19028 7.94414 1.3572 7.875 1.53125 7.875C1.7053 7.875 1.87222 7.94414 1.99529 8.06721C2.11836 8.19028 2.1875 8.3572 2.1875 8.53125V10.7188C2.1875 10.8395 2.2855 10.9375 2.40625 10.9375H11.5938C11.6518 10.9375 11.7074 10.9145 11.7484 10.8734C11.7895 10.8324 11.8125 10.7768 11.8125 10.7188V8.53125C11.8125 8.3572 11.8816 8.19028 12.0047 8.06721C12.1278 7.94414 12.2947 7.875 12.4688 7.875C12.6428 7.875 12.8097 7.94414 12.9328 8.06721C13.0559 8.19028 13.125 8.3572 13.125 8.53125V10.7188C13.125 11.1249 12.9637 11.5143 12.6765 11.8015C12.3893 12.0887 11.9999 12.25 11.5938 12.25H2.40625Z" fill="#CEFFA8"></path>
+                                      <path d="M6.34334 6.72788V1.75C6.34334 1.57595 6.41248 1.40903 6.53555 1.28596C6.65862 1.16289 6.82554 1.09375 6.99959 1.09375C7.17364 1.09375 7.34056 1.16289 7.46363 1.28596C7.5867 1.40903 7.65584 1.57595 7.65584 1.75V6.72788L9.37959 5.005C9.44049 4.9441 9.51279 4.89579 9.59236 4.86283C9.67193 4.82987 9.75722 4.81291 9.84334 4.81291C9.92947 4.81291 10.0148 4.82987 10.0943 4.86283C10.1739 4.89579 10.2462 4.9441 10.3071 5.005C10.368 5.0659 10.4163 5.1382 10.4493 5.21777C10.4822 5.29734 10.4992 5.38262 10.4992 5.46875C10.4992 5.55488 10.4822 5.64016 10.4493 5.71973C10.4163 5.7993 10.368 5.8716 10.3071 5.9325L7.46334 8.77625C7.40247 8.83721 7.33018 8.88556 7.25061 8.91856C7.17103 8.95155 7.08574 8.96853 6.99959 8.96853C6.91345 8.96853 6.82815 8.95155 6.74857 8.91856C6.669 8.88556 6.59671 8.83721 6.53584 8.77625L3.69209 5.9325C3.63119 5.8716 3.58288 5.7993 3.54992 5.71973C3.51696 5.64016 3.5 5.55488 3.5 5.46875C3.5 5.38262 3.51696 5.29734 3.54992 5.21777C3.58288 5.1382 3.63119 5.0659 3.69209 5.005C3.75299 4.9441 3.82529 4.89579 3.90486 4.86283C3.98443 4.82987 4.06972 4.81291 4.15584 4.81291C4.24197 4.81291 4.32725 4.82987 4.40682 4.86283C4.48639 4.89579 4.55869 4.9441 4.61959 5.005L6.34334 6.72788Z" fill="#CEFFA8"></path>
+                                  </svg>Download</a>
+                                                </div>
+                                                <div class="modal fade drop_coman_file have_title drive_permissions_share" id="share_folder" tabindex="-1" role="dialog" aria-labelledby="share_folder" aria-hidden="true">
+                                                <div class="modal-dialog modal-dialog-centered" role="document">
+                                                  <div class="modal-content">
+                                                    <div class="modal-header">
+                                                      <h5 class="modal-title" style="font-weight:700">Share </h5>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                      <h3>Share</h3>
+                                                      <form action="" method="POST" enctype="multipart/form-data" class="upload-form"> 
+                                                      <div class="share_people">
+                                                      <h2>Choose people to share</h2>
+                                                      <div class="sarhe_search">
+                                                      <input type="search" class="" placeholder="Search for people" aria-controls="">
+                                                      </div>
+                                                      </div>
+                
+                                                      <div class="people_with_acces">
+                                                      <h2>People with access</h2>
+                                                      <div class="people_list">
+                                                      
+                                                      <div class="people_repeat">
+                                                       <div class="people_ini_image">
+                                                      <img src="../assets/images/alok.png" alt="img">
+                                                      </div>
+                                                      
+                                                      <div class="repeat_detailss">
+                                                      <h2>devanshu.kumar@milliondox.com</h2>
+                                                      <span>devanshu.kumar@milliondox.com</span>
+                                                      </div>
+                                                      
+                                                      </div>
+                 
+                                                      </div>
+                                                      </div>
+                
+                                                      <div class="share_radio">
+                                                      <h2>Access Type</h2>
+                                                      <div class="radio_sare_button">
+                                                      <div class="for_group radio">
+                                                      <input type="radio" id="can_view" name="status" value="can_view">
+                                                      <label for="can_view">Can View</label>   
+                                                      </div>
+                                                      <div class="for_group radio">
+                                                      <input type="radio" id="can_edit" name="status" value="can_edit">
+                                                      <label for="can_edit">Can Edit</label>   
+                                                      </div>
+                                                      </div>
+                                                       </div>
+                                        
+                                                      <div class="toggle-btn">
+                                                      <span>Limit Access Duration</span>
+                                                      <label class="switch">
+                                                      <input type="checkbox" id="checbox" onclick="check()" ;="">
+                                                      <span class="slider round"></span>
+                                                      </label>              
+                                                      </div>
+                                        
+                                                      <div class="addTimeDateDiv">
+                                                      <div class="two_search_togle">
+                                                      <input type="search" class="" placeholder="Enter Date" aria-controls="">
+                                                      <input type="search" class="" placeholder="Enter Time" aria-controls="">
+                                                      </div>
+                                                      </div>
+                
+                                                      <div class="togle_area_btn">
+                                                      <a href="#">Share</a>
+                                                      </div>
+                                        
+                                                      </form>
+                                                    </div>
+                                                  </div>
+                                                </div>
+                                            </div>                            
+                                        </li>';
+                        }
         }
           }
           else{
@@ -17599,6 +17932,7 @@ public function shareFolder(Request $request)
             $fileHtml .= '</thead>';
             $fileHtml .= '<tbody>';
             foreach ($fileContents as $file) {
+                $fileUrl = asset('storage/app/' . $file->file_path);  
                 $fileHtml .= '<tr>';
                 $fileHtml .= '<td>' . $file->file_name . '</td>';
                 $fileHtml .= '<td class="funtion_buttnss">                
@@ -17623,7 +17957,7 @@ public function shareFolder(Request $request)
                 </svg>
               </button>
               <div id="myDropdown3" class="dropdown-content"> 
-                <a class="dropdown-itemm open_eye_pdf">
+                <a class="dropdown-itemm open_eye_pdf" data-file-url="' . $fileUrl . '" >
                   View </a>
             </div>
         </div>
@@ -17641,6 +17975,40 @@ public function shareFolder(Request $request)
     
         return response()->json(['folderHtml' => $folderHtml,  'fileHtml' => $fileHtml]);
     }
+
+    public function downloadFolder($folderId)
+{
+    // Fetch the folder and its contents from the database
+    $folder = Folder::find($folderId);
+
+    if (!$folder) {
+        return response()->json(['success' => false, 'message' => 'Folder not found.']);
+    }
+
+    // Create a new ZIP file
+    $zip = new ZipArchive();
+    $zipFileName = 'folder_' . $folder->id . '.zip';
+    $zipFilePath = storage_path('app/' . $zipFileName);
+
+    if ($zip->open($zipFilePath, ZipArchive::CREATE) !== TRUE) {
+        return response()->json(['success' => false, 'message' => 'Could not create ZIP file.']);
+    }
+
+    // Add folder contents to ZIP
+    // Assuming `files` is a relationship on the Folder model
+    foreach ($folder->files as $file) {
+        $zip->addFile(storage_path('app/' . $file->path), $file->name);
+    }
+
+    // Close the ZIP file
+    $zip->close();
+
+    // Return the path to the ZIP file for downloading
+    return response()->json([
+        'success' => true,
+        'zipFileUrl' => url('storage/' . $zipFileName)
+    ]);
+}
     
     public function downloadFilecustom($id)
     {
@@ -18854,29 +19222,46 @@ public function updateoutofexpense(request $request)
     $directorcount = StoreCompanydirector::where('user_id', $user->id)->where('is_delete', 0)->count();
     $progressPercentage = 0;
 
-if (!is_null($user->profile_picture) && !is_null($user->name_of_the_business) && !is_null($user->legal_entity) &&
-    !is_null($user->industry) && !is_null($user->state) && !is_null($user->backupemail) &&
-    !is_null($user->employees) && !is_null($user->phone)) {
-    $progressPercentage = 40;
+    // Check user attributes for 40%
+    if (
+        ($user->profile_picture != NULL) &&
+        ($user->name_of_the_business != NULL) &&
+        ($user->legal_entity != NULL) &&
+        ($user->industry != NULL) &&
+        ($user->state != NULL) &&
+        ($user->backupemail != NULL) &&
+        ($user->employees != NULL) &&
+        ($user->phone != NULL)
+    ) {
+        $progressPercentage += 40; // Add 40%
+    }
     
-}
+    // Check additional user attributes for 30%
+    if (
+        ($user->joining_date != NULL) &&
+        ($user->PAN != NULL) &&
+        ($user->CIN != NULL) &&
+        ($user->authorized_capital != NULL) &&
+        ($user->paid_up_capital != NULL)
+    ) {
+        $progressPercentage += 30; // Add 30%
+    }
+    
+    // Check GST number count for 10%
+    if ($gstnocount > 0) {
+        $progressPercentage += 10; // Add 10%
+    }
+    
+   
 
-if ($progressPercentage == 40 && !is_null($user->joining_date) && !is_null($user->PAN) && 
-    !is_null($user->CIN) && !is_null($user->authorized_capital) && !is_null($user->paid_up_capital)) {
-    $progressPercentage = 70;
-}
-
-if ($progressPercentage == 70 && isset($gstnocount) && count($gstnocount) > 0) {
-    $progressPercentage = 80;
-}
-
-if ($progressPercentage == 80 && isset($employeescount) && count($employeescount) > 0) {
-    $progressPercentage = 90;
-}
-
-if ($progressPercentage == 90 && isset($directorcount) && count($directorcount) > 0) {
-    $progressPercentage = 100;
-}
+    if ($employeescount > 0) {
+        $progressPercentage += 10; // Add 10%
+    }
+    if ($directorcount > 0) {
+        $progressPercentage += 10; // Add 10%
+    }
+    
+   
 
        return view('user.Administration.company-profile',compact('cli_announcements','progressPercentage','directorcompany','directorcount','cp','user','user','gstno','gstnocount','employeescompany','employeescount'));
     }
