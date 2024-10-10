@@ -183,22 +183,7 @@ window.addEventListener('load', function() {
 </script>
 
 
-<script>
-window.addEventListener('load', function() {
-    var forEach = function(array, callback, scope) {
-        for (var i = 0; i < array.length; i++) {
-            callback.call(scope, i, array[i]);
-        }
-    };
 
-    var max = 220; // Assuming a typical SVG path length
-    forEach(document.querySelectorAll('.progresss'), function(index, value) {
-        var percent = value.getAttribute('data-progresss');
-        value.querySelector('.fill').setAttribute('style', 'stroke-dashoffset: ' + ((100 - percent) / 100) * max);
-        value.querySelector('.value').innerHTML = percent + '%';
-    });
-});
-    </script>
 
 <script>
   function openTabbb(tabName) {

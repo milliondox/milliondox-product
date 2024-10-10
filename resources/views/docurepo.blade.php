@@ -1865,6 +1865,154 @@ $(document).ready(function() {
             <div class="file-contents"></div>
         </div>
         </div>
+        <div id="filePreviewModal" class="modal">
+    <div class="modal-content">
+        <span class="close">&times;</span>
+        <div id="filePreviewContainer"></div>
+    </div>
+</div>
+<!-- Rename Modal -->
+<!-- Rename Modal -->
+<div class="modal fade" id="renameModal" tabindex="-1" role="dialog" aria-labelledby="renameModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="renameModalLabel">Rename Folder</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <input type="text" id="newFolderName" class="form-control" placeholder="Enter new folder name" required>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                <button type="button" id="confirmRename" class="btn btn-primary">Rename</button>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    $(document).ready(function() {
+    $(document).on('click', '.download_nt', function() {
+        var folderId = $(this).data('folder-id'); // Get the folder ID
+        
+        // Show a loading spinner or message if needed
+        var loadingMessage = $("<div>Preparing your download...</div>");
+        $('body').append(loadingMessage);
+        
+        // Send AJAX request to download the folder
+        $.ajax({
+            url: '/download-folder/' + folderId, // Replace with your download endpoint
+            type: 'GET',
+            success: function(response) {
+                // Remove loading message
+                loadingMessage.remove();
+                
+                // Assuming response contains the URL of the ZIP file
+                if (response.success) {
+                    // Trigger file download
+                    window.location.href = response.zipFileUrl;
+                } else {
+                    alert('Error: ' + response.message);
+                }
+            },
+            error: function() {
+                loadingMessage.remove();
+                alert('An error occurred while downloading the folder. Please try again.');
+            }
+        });
+    });
+});
+
+</script>
+<script>
+    $(document).ready(function() {
+    // When the rename link is clicked
+    $(document).on('click', '.rename_nt', function() {
+        // Get the current folder name
+        var currentFolderName = $(this).closest('li').find('span').text();
+        var folderId = $(this).closest('button').data('folder-id');
+
+        // Set the current folder name in the input field
+        $('#newFolderName').val(currentFolderName);
+
+        // Open the modal
+        $('#renameModal').modal('show');
+
+        // Handle the confirm rename button click
+        $('#confirmRename').off('click').on('click', function() {
+            var newFolderName = $('#newFolderName').val();
+
+            // AJAX call to rename the folder
+            $.ajax({
+                url: '/rename-folder', // Replace with your rename endpoint
+                type: 'POST',
+                data: {
+                    id: folderId,
+                    name: newFolderName,
+                    _token: '{{ csrf_token() }}' // Ensure you include CSRF token
+                },
+                success: function(response) {
+                    // Handle success (e.g., update the folder name in the UI)
+                    if (response.success) {
+                        $(this).closest('li').find('span').text(newFolderName);
+                        $('#renameModal').modal('hide');
+                    } else {
+                        alert('Error renaming folder: ' + response.message);
+                    }
+                },
+                error: function() {
+                    alert('Error renaming folder. Please try again.');
+                }
+            });
+        });
+    });
+});
+
+
+</script>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const modal = document.getElementById("filePreviewModal");
+    const span = document.getElementsByClassName("close")[0];
+    const filePreviewContainer = document.getElementById('filePreviewContainer');
+
+    document.body.addEventListener('click', function(event) {
+        if (event.target.classList.contains('open_eye_pdf')) {
+            event.preventDefault();
+            const viewButton = event.target;
+            const fileUrl = viewButton.getAttribute('data-file-url');
+            const fileExtension = fileUrl.split('.').pop().toLowerCase();
+
+            if (fileExtension === 'pdf') {
+                filePreviewContainer.innerHTML = `<embed src="${fileUrl}" width="100%" height="600px" type="application/pdf" />`;
+            } else if (['jpg', 'jpeg', 'png', 'gif'].includes(fileExtension)) {
+                filePreviewContainer.innerHTML = `<img src="${fileUrl}" alt="Image Preview" style="max-width:100%; height:auto;" />`;
+            } else if (['doc', 'docx'].includes(fileExtension)) {
+                filePreviewContainer.innerHTML = `<object data="https://docs.google.com/viewer?url=${fileUrl}&embedded=true" type="application/pdf" width="100%" height="600px"> 
+                                                    <p>Your browser does not support documents. 
+                                                    <a href="${fileUrl}">Download the document</a>.</p>
+                                                  </object>`;
+            } else {
+                filePreviewContainer.innerHTML = `<p>Preview not available for this file type.</p>`;
+            }
+
+            modal.style.display = "block";
+        }
+    });
+
+    span.onclick = function () {
+        modal.style.display = "none";
+    }
+
+    window.onclick = function (event) {
+        if (event.target == modal) {
+            modal.style.display = "none";
+        }
+    }
+});
+</script>
         </div>
 
         </div>

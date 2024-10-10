@@ -706,7 +706,7 @@ function deleteUser(userId) {
                                     <h3>Add Role Name</h3>
 
 
-                                    <form action="{{ route('addroles') }}" method="POST" enctype="multipart/form-data" class="upload-form"> 
+                                    <form action="{{ route('addroles') }}" method="POST" enctype="multipart/form-data" class="upload-form" id="roleForm"> 
                                       @csrf
 								<div class="gropu_form">
                           <label for="fname">Role name </label>
@@ -722,6 +722,39 @@ function deleteUser(userId) {
                                 </div>
                               </div>
                             </div>
+
+                            <script>
+    $(document).ready(function() {
+        // Intercept the form submission
+        $('#roleForm').on('submit', function(e) {
+            e.preventDefault(); // Prevent default form submission
+
+            let roleName = $('#role_name').val();
+
+            // Send AJAX request to check if the role already exists for the user
+            $.ajax({
+                url: '{{ route("checkRoleExistence") }}',  // This route should check for role existence
+                type: 'POST',
+                data: {
+                    _token: '{{ csrf_token() }}',
+                    role: roleName
+                },
+                success: function(response) {
+                    if (response.exists) {
+                        // Show error if role already exists
+                        toastr.error('This role already exists for your account.');
+                    } else {
+                        // Proceed with form submission if role does not exist
+                        $('#roleForm')[0].submit();
+                    }
+                },
+                error: function() {
+                    toastr.error('An error occurred while checking the role.');
+                }
+            });
+        });
+    });
+</script>
 <!-- model end -->
 				</div>
 			
