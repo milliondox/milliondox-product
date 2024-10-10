@@ -940,7 +940,7 @@
   
   <div class="gropu_form test-areaa">
                           <label for="fname">Renewal Terms <span class="red_star">*</span></label>
-                          <textarea name="renewal_terms" required style="height: 58px;">{{$cont->renewal_terms}} </textarea>
+                          <textarea name="renewal_terms" value="" required style="height: 58px;" placeholder="{{$cont->renewal_terms}}"> </textarea>
                           </div>
 
                           <div class="gropu_form test-areaa">

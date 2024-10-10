@@ -25,7 +25,9 @@
     <!-- Bootstrap css-->
     <link rel="stylesheet" type="text/css" href="../assets/css/vendors/bootstrap.css">
     <!-- App css-->
+
     <link rel="stylesheet" type="text/css" href="../assets/css/style.css">
+    <link rel="stylesheet" type="text/css" href="../assets/css/client-custom.css">
     <link id="color" rel="stylesheet" href="../assets/css/color-1.css" media="screen">
     <!-- Responsive css-->
     <link rel="stylesheet" type="text/css" href="../assets/css/responsive.css">
@@ -445,6 +447,7 @@ b.toggle-password i {
 .login_board .login_logo a img {
     max-width: 150px;
 }
+
 
 /* media start */
 
