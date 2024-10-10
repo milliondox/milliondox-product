@@ -1079,6 +1079,10 @@ ul.dropdown-menu .toggle_icconn {
     text-overflow: ellipsis;
 }
 
+.dark-only .file-area_cover .file-list .file-item span {
+    color: #686868;
+}
+
 .file-area_cover .file-list .file-item .remove-btn {
     box-shadow: none;
     outline: none;
@@ -2765,7 +2769,7 @@ ul.dropdown-menu {
 }
 
 .dark-only .tab_ccontent .search_iconn {
-    background: #fdfffc;
+    background: #FAFFF5;
 }
 
 
@@ -2778,6 +2782,14 @@ ul.dropdown-menu {
     border: 1px solid #CEFFA8;
     color: #818181;
     padding: 8px 35px 8px 10px;
+}
+
+.dark-only .tab_ccontent .search_iconn input {
+    border-color: #9DDB77;
+}
+
+.dark-only .tab_ccontent .search_iconn svg path {
+    stroke: #9DDB77;
 }
 
 .tab_ccontent .search_iconn svg {
@@ -2833,6 +2845,10 @@ ul.dropdown-menu {
 .tab_ccontent #search-list li button svg {
     width: 100%;
     height: 100%;
+}
+
+.dark-only .tab_ccontent #search-list li button svg path {
+    stroke: #9DDB77;
 }
 
 .dark-only .wrap_side_nnt .clode_fltr span {
@@ -3076,7 +3092,7 @@ ul.dropdown-menu {
 }
 
 .dark-only #close_repo_filter svg path {
-    fill: #99DB66;
+    fill: #9DDB77;
 }
 
 .dark-only #close_repo_filter svg circle {
@@ -3306,7 +3322,7 @@ ul.dropdown-menu {
 }
 
 .dark-only .entry_body_wraap .entery_body.side_panel_wraap {
-    background: #fdfffc;
+    background: #FAFFF5;
 }
 
 .dark-only .side_panel_wraap .tabs {

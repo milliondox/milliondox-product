@@ -748,21 +748,7 @@ $(document).ready(function() {
     });
 });
 
-// // Toggle password visibility
-// $('body').on('click', '.toggle-password', function() {
-//     // Find the sibling input field with type="password" or type="text"
-//     var input = $(this).siblings('input[type="password"], input[type="text"]');
-//     var icon = $(this).find('i'); // Find the icon inside the clicked span
-    
-//     // Toggle between 'password' and 'text' types and update the icon
-//     if (input.attr('type') === 'password') {
-//         input.attr('type', 'text'); // Show password
-//         icon.removeClass('fa-eye').addClass('fa-eye-slash'); // Change icon to eye-slash
-//     } else {
-//         input.attr('type', 'password'); // Hide password
-//         icon.removeClass('fa-eye-slash').addClass('fa-eye'); // Change icon back to eye
-//     }
-// });
+
 
 $('body').on('click touchend', '.toggle-password', function(e) {
     e.preventDefault(); // Prevent default action for touch events
@@ -772,10 +758,17 @@ $('body').on('click touchend', '.toggle-password', function(e) {
     // Toggle visibility
     if (input.attr('type') === 'password') {
         input.attr('type', 'text');
+
         icon.removeClass('fa-eye').addClass('fa-eye-slash');
     } else {
         input.attr('type', 'password');
         icon.removeClass('fa-eye-slash').addClass('fa-eye');
+
+        icon.removeClass('fa-eye-slash').addClass('fa-eye');
+    } else {
+        input.attr('type', 'password');
+        icon.removeClass('fa-eye').addClass('fa-eye-slash');
+
     }
 });
 

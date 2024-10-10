@@ -99,7 +99,7 @@ window.onload = function() {
 </svg>
                   </label>
                   <div class="form-input position-relative">
-                  <b class="toggle-password"><i class="fas fa-eye"></i></b>
+                  <b class="toggle-password"><i class="fas fa-eye-slash"></i></b>
                     <input id="password" type="password" class="form-control @error('password') is-invalid @enderror" name="password" required autocomplete="current-password" placeholder=""> @error('password') <span class="invalid-feedback" role="alert">
                       <strong>{{ $message }}</strong>
                     </span> @enderror                    
