@@ -1,4 +1,9 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+
+
 <ul class="nav-menus">
     
   @if($user->Role_Access == 0)
@@ -43,13 +48,14 @@ Assign Roles to teammates
 </svg>
         Role Management</a></li>
         @endif
-
+        @if($user->Edit_Password == 1)
         <li class="edit_setting_passward"><a href="{{url('/user/loginpassedit')}}">
         <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
         <path d="M14.241 1.50879L16.491 3.75879L14.7758 5.47479L12.5258 3.22479L14.241 1.50879ZM6 11.9998H8.25L13.7153 6.53454L11.4653 4.28454L6 9.74979V11.9998Z" fill="#707070"></path>
         <path d="M14.25 14.25H6.1185C6.099 14.25 6.07875 14.2575 6.05925 14.2575C6.0345 14.2575 6.00975 14.2507 5.98425 14.25H3.75V3.75H8.88525L10.3853 2.25H3.75C2.92275 2.25 2.25 2.922 2.25 3.75V14.25C2.25 15.078 2.92275 15.75 3.75 15.75H14.25C14.6478 15.75 15.0294 15.592 15.3107 15.3107C15.592 15.0294 15.75 14.6478 15.75 14.25V7.749L14.25 9.249V14.25Z" fill="#707070"></path>
         </svg>
         Edit passward</a></li>
+        @endif
                                       <li class="logout_out">
                     <a class="logou_inn" href="{{ route('logout') }}"
                     onclick="event.preventDefault(); document.getElementById('logout-form').submit();">

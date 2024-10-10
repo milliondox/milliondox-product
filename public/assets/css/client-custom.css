@@ -9718,6 +9718,12 @@ display: block;
     cursor: pointer;
     animation: pulse 2s infinite;
 }
+
+.dark-only .ba-we-love-subscribers-fab {
+    background: #99DB66;
+    animation: pulse-dark 2s infinite;
+}
+
   
 @keyframes pulse {
     0% {
@@ -9733,6 +9739,23 @@ display: block;
     100% {
         -moz-box-shadow: 0 0 0 0 rgba(206, 255, 168, 0);
         box-shadow: 0 0 0 0 rgba(206, 255, 168, 0);
+    }
+}
+
+@keyframes pulse-dark {
+    0% {
+        -moz-box-shadow: 0 0 0 0 rgba(153, 219, 102, 0.4);
+        box-shadow: 0 0 0 0 rgba(153, 219, 102, 0.4);
+    }
+
+    70% {
+        -moz-box-shadow: 0 0 0 15px rgba(153, 219, 102, 0);
+        box-shadow: 0 0 0 15px rgba(153, 219, 102, 0);
+    }
+
+    100% {
+        -moz-box-shadow: 0 0 0 0 rgba(153, 219, 102, 0);
+        box-shadow: 0 0 0 0 rgba(153, 219, 102, 0);
     }
 }
 
@@ -23433,6 +23456,12 @@ display: block;
     animation: pulse 2s infinite;
 }
   
+.dark-only .ba-we-love-subscribers-fab {
+    background: #99DB66;
+    animation: pulse-dark 2s infinite;
+}
+
+  
 @keyframes pulse {
     0% {
         -moz-box-shadow: 0 0 0 0 rgba(206, 255, 168, 0.4);
@@ -23447,6 +23476,23 @@ display: block;
     100% {
         -moz-box-shadow: 0 0 0 0 rgba(206, 255, 168, 0);
         box-shadow: 0 0 0 0 rgba(206, 255, 168, 0);
+    }
+}
+
+@keyframes pulse-dark {
+    0% {
+        -moz-box-shadow: 0 0 0 0 rgba(153, 219, 102, 0.4);
+        box-shadow: 0 0 0 0 rgba(153, 219, 102, 0.4);
+    }
+
+    70% {
+        -moz-box-shadow: 0 0 0 15px rgba(153, 219, 102, 0);
+        box-shadow: 0 0 0 15px rgba(153, 219, 102, 0);
+    }
+
+    100% {
+        -moz-box-shadow: 0 0 0 0 rgba(153, 219, 102, 0);
+        box-shadow: 0 0 0 0 rgba(153, 219, 102, 0);
     }
 }
 
@@ -23495,6 +23541,9 @@ display: block;
   .ba-we-love-subscribers-fab svg path {
       fill: #6A924B;
   }
+  .dark-only .ba-we-love-subscribers-fab svg path {
+    fill: #2c2c2c;
+}
   
   .ba-we-love-subscribers-fab.grayy {
     background: #a2a2a2;
@@ -24118,6 +24167,7 @@ b.toggle-password {
     top: 12px;
     cursor: pointer;
     user-select: none;
+    pointer-events: auto; /* Make sure clicks are allowed */
 }
 
 b.toggle-password i {

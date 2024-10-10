@@ -124,6 +124,10 @@ Route::post('/updatedirstatus', [App\Http\Controllers\HomeController::class, 'up
 
 Route::post('/check-email-phone', [App\Http\Controllers\HomeController::class, 'checkEmailPhone'])->name('checkEmailPhone');
 
+Route::post('/check-user-existence', [App\Http\Controllers\HomeController::class, 'checkUserExistence'])->name('checkUserExistence');
+
+Route::post('/changeemppassword', [App\Http\Controllers\HomeController::class, 'changeemppassword'])->name('changeemppassword');
+
 
 // sandeep routes start 
 
@@ -166,6 +170,11 @@ Route::get('/getTask/{id}', [App\Http\Controllers\HomeController::class, 'getTas
 Route::get('/download-common-file/{id}', [App\Http\Controllers\HomeController::class, 'downloadCommonFile'])->name('download-common-file');
 Route::post('/softdeleteCommonFile/{id}', [App\Http\Controllers\HomeController::class, 'softdeleteCommonFile'])->name('softdeleteCommonFile');
 Route::post('/deleteCustomFile/{id}', [App\Http\Controllers\HomeController::class, 'deleteCustomFile'])->name('deleteCustomFile');
+
+////////////////////////////////// sandeep added this route for predefined common files upload  4 october 2024 ////////////////////////////////////////////////////
+Route::post('/PredefinedCommonUploadFiles', [App\Http\Controllers\HomeController::class, 'PredefinedCommonUploadFiles'])->name('PredefinedCommonUploadFiles');
+Route::post('/PredefinedCommonUploadFilesBank', [App\Http\Controllers\HomeController::class, 'PredefinedCommonUploadFilesBank'])->name('PredefinedCommonUploadFilesBank');
+
 
 // sandeep routes end
 
