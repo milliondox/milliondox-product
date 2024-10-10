@@ -304,7 +304,7 @@ if ($userRoleRecord) {
     
         $request->validate([
             'textarea' => 'required|string|max:1000', 
-            'file' => 'required|mimes:jpg,jpeg,png,pdf,doc,docx|max:4096',
+            'file' => 'required|mimes:jpg,jpeg,png,pdf,doc,docx|max:5096',
         ]);
     
         if ($request->hasFile('file')) {
@@ -18852,7 +18852,33 @@ public function updateoutofexpense(request $request)
     $directorcompany = StoreCompanydirector ::where('user_id', $user->id)->where('is_delete', 0)->get();
     
     $directorcount = StoreCompanydirector::where('user_id', $user->id)->where('is_delete', 0)->count();
-       return view('user.Administration.company-profile',compact('cli_announcements','directorcompany','directorcount','cp','user','user','gstno','gstnocount','employeescompany','employeescount'));
+    $progressPercentage = 0;
+
+if (!is_null($user->profile_picture) && !is_null($user->name_of_the_business) && !is_null($user->legal_entity) &&
+    !is_null($user->industry) && !is_null($user->state) && !is_null($user->backupemail) &&
+    !is_null($user->employees) && !is_null($user->phone)) {
+    $progressPercentage = 40;
+    
+}
+
+if ($progressPercentage == 40 && !is_null($user->joining_date) && !is_null($user->PAN) && 
+    !is_null($user->CIN) && !is_null($user->authorized_capital) && !is_null($user->paid_up_capital)) {
+    $progressPercentage = 70;
+}
+
+if ($progressPercentage == 70 && isset($gstnocount) && count($gstnocount) > 0) {
+    $progressPercentage = 80;
+}
+
+if ($progressPercentage == 80 && isset($employeescount) && count($employeescount) > 0) {
+    $progressPercentage = 90;
+}
+
+if ($progressPercentage == 90 && isset($directorcount) && count($directorcount) > 0) {
+    $progressPercentage = 100;
+}
+
+       return view('user.Administration.company-profile',compact('cli_announcements','progressPercentage','directorcompany','directorcount','cp','user','user','gstno','gstnocount','employeescompany','employeescount'));
     }
     
     

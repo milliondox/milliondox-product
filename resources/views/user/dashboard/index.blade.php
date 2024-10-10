@@ -264,7 +264,7 @@
 
               <div class="both_wraap">
                 <div class="gropu_form">
-<select id="Registered" name="Registered" required>
+<select id="state" name="state" required>
     <option value="" disabled selected>Select State/UT</option>
     <option value="Andhra Pradesh">Andhra Pradesh</option>
     <option value="Arunachal Pradesh">Arunachal Pradesh</option>

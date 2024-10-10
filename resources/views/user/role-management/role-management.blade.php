@@ -177,7 +177,7 @@ function fetchUsersByRole(role, tabId) {
                             <input type="hidden" name="role_id" value="${response.users[0].role }">
                             <input type="hidden" name="role_name" value="${response.users[0].main_role_id }">
                             
-                        {{--    <li>
+                           <li>
                                 <div class="left_gernal">
                                     <h3>Edit Password</h3>
                                     <p>Allows members to edit login password</p>
@@ -193,7 +193,7 @@ function fetchUsersByRole(role, tabId) {
                                         </label>
                                     </div>
                                 </div>
-                            </li> --}}
+                            </li> 
                             
                             <li>
                                 <div class="left_gernal">

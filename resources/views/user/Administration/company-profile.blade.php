@@ -198,8 +198,10 @@ closeToastBtn.addEventListener("click", closeToast);
 <div class="width_pro_complete">
    <span>Profile Completion</span>
    <div class="progress-bar">
-    <div class="progress" id="progress"></div>
+    <div class="progress" id="progress" style="width: {{ $progressPercentage }}%;"></div>
 </div>
+<!-- helloo -->
+
 </div>
 </div>
 </div>
