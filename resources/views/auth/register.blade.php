@@ -168,11 +168,19 @@ window.onload = function() {
                 <!-- Session messages will appear here -->
             </div>
             
-            <div class="rop_regseter">
-            <input type="checkbox" id="check_regs" name="check_reg" value="1" disabled required>
+            <div class="rop_regseter" style="align-items: flex-start;top: 0;">
+            <input type="checkbox" id="marketing_email" name="marketing_email" value="1">
 
-            <label for="check_regs">
-    Read the policy
+          <label for="marketing_email">
+    I would like to recieve Marketing Coummunication from Milliondox.
+  </label>
+
+</div>
+            <div class="rop_regseter">
+            <input type="checkbox" id="check_regs" name="check_reg" value="1" required>
+
+          <label for="check_regs">
+    I have read and accept to the Term and use & privacy policy.
   </label>
 
 <!-- <label for="">
@@ -1413,16 +1421,8 @@ setTimeout(function() {
 
 
 </script>
-<script>
-$(document).ready(function() {
-    // Handle click event for "I AGREE" button
-    $('#i_agree').on('click', function() {
-        // Enable and check the checkbox
-        $('#check_regs').prop('disabled', false); // Enable the checkbox
-        $('#check_regs').prop('checked', true);  // Check the checkbox
-    });
-});
-</script>
+
+
 
 
 <link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" rel="stylesheet">

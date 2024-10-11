@@ -96,8 +96,8 @@
 
                      
                       <div class="filter-container">
-    <h3>Filter by Status</h3>
     <select id="status-filter" onchange="filterContracts()">
+    <option value="" disabled Selected>Apply Filter</option>
         <option value="all">All</option>
         <option value="active">Active</option>
         <option value="expired">Expired</option>
@@ -424,8 +424,8 @@
     
                       <div class="volt_headd-filter">
                       <div class="filter-container">
-    <h3>Filter by Status</h3>
     <select id="status-filters" onchange="filterContracts1()">
+    <option value="" disabled Selected>Apply Filter</option>
         <option value="all">All</option>
         <option value="active">Active</option>
         <option value="expired">Expired</option>

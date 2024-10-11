@@ -3656,20 +3656,50 @@ document.addEventListener('DOMContentLoaded', function () {
 </div>
 
 <script>
+
+// function filterList() {
+//     const searchInput = document.getElementById('search-input').value.toLowerCase();
+//     const listItems = document.querySelectorAll('#search-list li');
+
+//     listItems.forEach((item) => {
+//         const text = item.querySelector('span').textContent.toLowerCase(); // Get text from the span only
+//         if (text.includes(searchInput)) {
+//             item.style.display = ''; // Show the matching item
+//             item.style.order = '0'; // Keep matching items in order
+//         } else {
+//             item.style.display = 'none'; // Hide non-matching items
+//         }
+//     });
+// }
+
 function filterList() {
     const searchInput = document.getElementById('search-input').value.toLowerCase();
     const listItems = document.querySelectorAll('#search-list li');
 
     listItems.forEach((item) => {
-        const text = item.querySelector('span').textContent.toLowerCase(); // Get text from the span only
-        if (text.includes(searchInput)) {
-            item.style.display = ''; // Show the matching item
-            item.style.order = '0'; // Keep matching items in order
+        const textElement = item.querySelector('span');
+        const text = textElement.textContent.toLowerCase(); // Get text from the span only
+
+        // Clear previous highlights
+        textElement.innerHTML = text; // Reset to original text
+
+        if (searchInput === '') {
+            // If the search input is empty, show all items
+            item.style.display = ''; // Show all items
+        } else if (text.includes(searchInput)) {
+            // Show the matching item
+            item.style.display = ''; 
+            
+            // Highlight the matched text
+            const regex = new RegExp(`(${searchInput})`, 'gi'); // Create a regex to match the search input
+            textElement.innerHTML = text.replace(regex, '<span class="highlight">$1</span>'); // Highlight the matched text
         } else {
-            item.style.display = 'none'; // Hide non-matching items
+            // Hide non-matching items
+            item.style.display = 'none'; 
         }
     });
 }
+
 
 </script>
 <!-- end -->

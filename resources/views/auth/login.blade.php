@@ -76,7 +76,10 @@ window.onload = function() {
               <!--<p>Don’t have an account? <a href="{{route('userregister')}}">Sign Up</a>-->
               <!--    </p>-->
             </div>
-            <div class="login_forrm">
+
+            <div class="main_form">
+			
+			<div class="login_forrm login_details">
               <h2>Login</h2>
               <form method="POST" action="{{ route('login') }}"> @csrf 
               
@@ -122,8 +125,7 @@ window.onload = function() {
                       </span>
                     </button>
                   </div>
-      
-                  <!-- <div class="or_login">
+                        <!-- <div class="or_login">
                     <span>or</span>
                     <div class="two_option">
                       <a href="{{url('/auth/google')}}">
@@ -134,9 +136,91 @@ window.onload = function() {
                     </a>
                     </div>
                     </div> -->
+					
                 </div>
+                <div class="forgot_passward">
+                        <a class="f_passward">Forgotten password?</a>
+                    </div>
               </form>
+			  </div>
+			  
+<!-- Enter Email Screen -->
+    <div class="login_forrm enter_email" style="display:none;">
+        <h2>Enter Email</h2>
+        <form>
+            <label for="forgot-email">E-mail <span class="red_star">*</span></label>
+            <div class="form-group fild_ntt">
+                <input id="forgot-email" type="email" class="form-control" name="forgot-email" required placeholder="Enter your email">
             </div>
+            <div class="form-group mb-0 last_flid">
+                <div class="botto_btn_nt">
+                    <button type="button" id="next-email" class="btn btn-primary btn-block btn-square" disabled>Next
+                    <span>
+                        <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+                          <path d="M14.0625 9.5625L2.8125 9.5625C2.66332 9.5625 2.52024 9.50324 2.41475 9.39775C2.30926 9.29226 2.25 9.14918 2.25 9C2.25 8.85082 2.30926 8.70774 2.41475 8.60225C2.52024 8.49676 2.66332 8.4375 2.8125 8.4375L14.0625 8.4375C14.2117 8.4375 14.3548 8.49676 14.4602 8.60225C14.5657 8.70774 14.625 8.85082 14.625 9C14.625 9.14918 14.5657 9.29226 14.4602 9.39775C14.3548 9.50324 14.2117 9.5625 14.0625 9.5625Z" fill="white" />
+                          <path d="M13.8296 8.99999L9.16422 4.33574C9.0586 4.23012 8.99926 4.08686 8.99926 3.93749C8.99926 3.78812 9.0586 3.64486 9.16422 3.53924C9.26984 3.43362 9.4131 3.37428 9.56247 3.37428C9.71184 3.37428 9.8551 3.43362 9.96072 3.53924L15.0232 8.60174C15.0756 8.65399 15.1172 8.71607 15.1455 8.7844C15.1739 8.85274 15.1885 8.926 15.1885 8.99999C15.1885 9.07398 15.1739 9.14724 15.1455 9.21558C15.1172 9.28392 15.0756 9.34599 15.0232 9.39824L9.96072 14.4607C9.8551 14.5664 9.71184 14.6257 9.56247 14.6257C9.4131 14.6257 9.26984 14.5664 9.16422 14.4607C9.0586 14.3551 8.99926 14.2119 8.99926 14.0625C8.99926 13.9131 9.0586 13.7699 9.16422 13.6642L13.8296 8.99999Z" fill="white" />
+                        </svg>
+                      </span>
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <!-- Enter OTP Screen -->
+    <div class="login_forrm enter_otp" style="display:none;">
+        <h2>Enter OTP</h2>
+        <form>
+            <label for="otp">OTP <span class="red_star">*</span></label>
+            <div class="form-group fild_ntt">
+                <input id="otp" type="text" class="form-control" name="otp" required placeholder="Enter your OTP">
+            </div>
+            <div class="form-group mb-0 last_flid">
+                <div class="botto_btn_nt">
+                    <button type="button" id="next-otp" class="btn btn-primary btn-block btn-square" disabled>Next
+                    <span>
+                        <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+                          <path d="M14.0625 9.5625L2.8125 9.5625C2.66332 9.5625 2.52024 9.50324 2.41475 9.39775C2.30926 9.29226 2.25 9.14918 2.25 9C2.25 8.85082 2.30926 8.70774 2.41475 8.60225C2.52024 8.49676 2.66332 8.4375 2.8125 8.4375L14.0625 8.4375C14.2117 8.4375 14.3548 8.49676 14.4602 8.60225C14.5657 8.70774 14.625 8.85082 14.625 9C14.625 9.14918 14.5657 9.29226 14.4602 9.39775C14.3548 9.50324 14.2117 9.5625 14.0625 9.5625Z" fill="white" />
+                          <path d="M13.8296 8.99999L9.16422 4.33574C9.0586 4.23012 8.99926 4.08686 8.99926 3.93749C8.99926 3.78812 9.0586 3.64486 9.16422 3.53924C9.26984 3.43362 9.4131 3.37428 9.56247 3.37428C9.71184 3.37428 9.8551 3.43362 9.96072 3.53924L15.0232 8.60174C15.0756 8.65399 15.1172 8.71607 15.1455 8.7844C15.1739 8.85274 15.1885 8.926 15.1885 8.99999C15.1885 9.07398 15.1739 9.14724 15.1455 9.21558C15.1172 9.28392 15.0756 9.34599 15.0232 9.39824L9.96072 14.4607C9.8551 14.5664 9.71184 14.6257 9.56247 14.6257C9.4131 14.6257 9.26984 14.5664 9.16422 14.4607C9.0586 14.3551 8.99926 14.2119 8.99926 14.0625C8.99926 13.9131 9.0586 13.7699 9.16422 13.6642L13.8296 8.99999Z" fill="white" />
+                        </svg>
+                      </span>
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <!-- Enter New Password Screen -->
+    <div class="login_forrm enter_passward" style="display:none;">
+        <h2>Enter New Password</h2>
+        <form>
+            <label for="new-password">New Password <span class="red_star">*</span></label>
+            <div class="form-group fild_ntt position-relative">
+                <input id="new-password" type="password" class="form-control" name="new-password" required placeholder="Enter new password">
+                <b class="toggle-password"><i class="fas fa-eye-slash"></i></b>
+            </div>
+            <label for="confirm-password">Confirm Password <span class="red_star">*</span></label>
+            <div class="form-group fild_ntt position-relative">
+                <input id="confirm-password" type="password" class="form-control" name="confirm-password" required placeholder="Confirm new password">
+                <b class="toggle-password"><i class="fas fa-eye-slash"></i></b>
+            </div>
+            <div class="form-group mb-0 last_flid">
+                <div class="botto_btn_nt">
+                    <button type="submit" id="done" class="btn btn-primary btn-block btn-square">Done
+                    <span>
+                        <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+                          <path d="M14.0625 9.5625L2.8125 9.5625C2.66332 9.5625 2.52024 9.50324 2.41475 9.39775C2.30926 9.29226 2.25 9.14918 2.25 9C2.25 8.85082 2.30926 8.70774 2.41475 8.60225C2.52024 8.49676 2.66332 8.4375 2.8125 8.4375L14.0625 8.4375C14.2117 8.4375 14.3548 8.49676 14.4602 8.60225C14.5657 8.70774 14.625 8.85082 14.625 9C14.625 9.14918 14.5657 9.29226 14.4602 9.39775C14.3548 9.50324 14.2117 9.5625 14.0625 9.5625Z" fill="white" />
+                          <path d="M13.8296 8.99999L9.16422 4.33574C9.0586 4.23012 8.99926 4.08686 8.99926 3.93749C8.99926 3.78812 9.0586 3.64486 9.16422 3.53924C9.26984 3.43362 9.4131 3.37428 9.56247 3.37428C9.71184 3.37428 9.8551 3.43362 9.96072 3.53924L15.0232 8.60174C15.0756 8.65399 15.1172 8.71607 15.1455 8.7844C15.1739 8.85274 15.1885 8.926 15.1885 8.99999C15.1885 9.07398 15.1739 9.14724 15.1455 9.21558C15.1172 9.28392 15.0756 9.34599 15.0232 9.39824L9.96072 14.4607C9.8551 14.5664 9.71184 14.6257 9.56247 14.6257C9.4131 14.6257 9.26984 14.5664 9.16422 14.4607C9.0586 14.3551 8.99926 14.2119 8.99926 14.0625C8.99926 13.9131 9.0586 13.7699 9.16422 13.6642L13.8296 8.99999Z" fill="white" />
+                        </svg>
+                      </span>
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+			  
+            </div>
+
           </div>
         </div>
         <div class="col-sm-7" data-aos="fade-left" data-aos-easing="linear" data-aos-duration="1000"> 
@@ -302,8 +386,20 @@ window.onload = function() {
 }
 
 .login_board .loginn_nt_form .login_forrm .botto_btn_nt {
-    margin: 40px 0px 30px;
+    margin: 20px 0px 20px;
     display: block;
+}
+.forgot_passward {
+    display: block;
+    padding: 0px 10px;
+}
+
+
+.forgot_passward .f_passward {
+    color: #6095fb;
+    font-size: 14px;
+    font-weight: 500;
+    letter-spacing: normal;
 }
 
 .main_voltt {
@@ -385,7 +481,7 @@ window.onload = function() {
 .login_forrm .last_flid {
     display: flex;
     align-items: center;
-    padding: 0px 10px;
+    padding: 0px 0px;
 }
 
 .login_forrm .last_flid .or_login {
@@ -448,6 +544,32 @@ b.toggle-password i {
     max-width: 150px;
 }
 
+/*step_form css start*/
+.login_board .loginn_nt_form .login_forrm.enter_email h2 {
+    font-size: 2.4vw;
+}
+
+.login_board .loginn_nt_form .login_forrm.enter_email form .form-group input {
+    padding: 12px 15px 12px 15px;
+}
+
+.login_board .loginn_nt_form .login_forrm.enter_otp h2 {
+    font-size: 2.4vw;
+}
+
+.login_board .loginn_nt_form .login_forrm.enter_otp form .form-group input {
+    padding: 12px 15px 12px 15px;
+}
+
+.login_board .loginn_nt_form .login_forrm.enter_passward h2 {
+    font-size: 1.5vw;
+}
+
+.login_board .loginn_nt_form .login_forrm.enter_passward form .form-group input {
+    padding: 12px 15px 12px 15px;
+}
+
+/*step_form css end*/
 
 /* media start */
 
@@ -604,6 +726,68 @@ position: relative;
       <script src="../assets/js/script.js"></script>
       <!-- login js-->
 
+
+      
+      <script>
+$(document).ready(function() {
+    // Click on "Forgotten password" - Transition to email input screen
+    $('.f_passward').click(function() {
+        $('.login_details').fadeOut(function() {
+            $('.enter_email').fadeIn();
+        });
+    });
+
+    // Enable the Next button on email input
+    $('#forgot-email').on('input', function() {
+        let email = $(this).val().trim();
+        let emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/; // Simple email pattern
+
+        // Check if the email is valid and enable the Next button
+        if (emailPattern.test(email)) {
+            $('#next-email').prop('disabled', false);  // Enable the Next button
+        } else {
+            $('#next-email').prop('disabled', true);   // Disable the Next button
+        }
+    });
+
+    // Move to OTP screen on clicking Next in the Email screen
+    $('#next-email').click(function() {
+        $('.enter_email').fadeOut(function() {
+            $('.enter_otp').fadeIn();
+        });
+    });
+
+    // Enable the Next button on OTP input
+    $('#otp').on('input', function() {
+        let otp = $(this).val().trim();
+        if (otp !== '') {
+            $('#next-otp').prop('disabled', false);  // Enable the Next button
+        } else {
+            $('#next-otp').prop('disabled', true);   // Disable the Next button
+        }
+    });
+
+    // Move to the password reset screen on clicking Next in the OTP screen
+    $('#next-otp').click(function() {
+        $('.enter_otp').fadeOut(function() {
+            $('.enter_passward').fadeIn();
+        });
+    });
+
+    // Enable Done button when both passwords are filled and match
+    $('#new-password, #confirm-password').on('input', function() {
+        let newPassword = $('#new-password').val().trim();
+        let confirmPassword = $('#confirm-password').val().trim();
+
+        if (newPassword !== '' && newPassword === confirmPassword) {
+            $('#done').prop('disabled', false);  // Enable Done button
+        } else {
+            $('#done').prop('disabled', true);   // Disable Done button
+        }
+    });
+});
+
+      </script>
 
     </div>
   </body>

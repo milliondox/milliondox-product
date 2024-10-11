@@ -819,6 +819,19 @@ ul.dropdown-menu .toggle_icconn {
     width: 16px;
 }
 
+.customulli .three_dots .dropdown-content .dropdown-itemm.download_nt path {
+    fill: #ffffff;
+}
+
+.dark-only .customulli .three_dots .dropdown-content .dropdown-itemm.download_nt path {
+    fill: #2c2e2b;
+}
+
+.customulli .three_dots .dropdown-content .dropdown-itemm.download_nt svg {
+    width: 16px;
+    height: 16px;
+}
+
 .folder-contents .customulli li {
     position: relative;
     background: #373737;
@@ -2830,7 +2843,14 @@ ul.dropdown-menu {
 
 .tab_ccontent #search-list li span {
     color: #E7E7E7;
-        flex: 1;
+    flex: 1;
+}
+.tab_ccontent #search-list li span .highlight {
+    color: #d0ffad;
+}
+
+.dark-only .tab_ccontent #search-list li span .highlight {
+    color: #9DDB77;
 }
 
 .tab_ccontent #search-list li button {
