@@ -5413,6 +5413,10 @@ $(window).on('load', function() {
     
    
   </script>
+
+  <!-- Progress Bar Container -->
+<div id="progress-container" style=" display:none; margin-top: 20px;"></div>
+
   
   
   
@@ -5512,7 +5516,7 @@ $(window).on('load', function() {
   
                           <div class="file-area_cover">
                               <div class="file-area">
-                                  <input type="file" class="dragfile" id="file" name="files[]" multiple
+                                  <input type="file" class="dragfile" id="fileCommon" name="files[]" multiple
                                       required>
                                       
                                       <!--working here start-->
@@ -5573,6 +5577,150 @@ $(window).on('load', function() {
   </div>
   <!-- upload file model end -->
   <!-- common modal upload 4 October 2024   Sandeep -->
+
+  <style>
+    #progress-container {
+    position: fixed; /* Keeps it in a fixed position relative to the viewport */
+    bottom: 20px;    /* 20px from the bottom */
+    right: 20px;     /* 20px from the right */
+    z-index: 1000;   /* Make sure it appears above other elements */
+    width: 300px;    /* Set a reasonable width */
+    padding: 10px;
+    background-color: rgba(255, 255, 255, 0.9); /* Optional: slight transparency */
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.progress-bar {
+    width: 100%;
+    background-color: #f3f3f3;
+    border: 1px solid #ccc;
+    margin-bottom: 10px;
+    position: relative;
+}
+
+.progress-bar div {
+    height: 20px;
+    width: 0;
+    background-color: #4caf50;
+}
+
+.cancel-button {
+    position: absolute;
+    top: 0;
+    right: 0;
+    background: red;
+    color: white;
+    border: none;
+    cursor: pointer;
+    padding: 3px 8px;
+    border-radius: 3px;
+}
+
+  </style>
+
+  <meta name="csrf-token" content="{{ csrf_token() }}">
+
+
+  <script>
+  document.getElementById('common_file_upload_form').addEventListener('submit', function(event) {
+    event.preventDefault(); // Prevent default form submission
+
+    const files = document.getElementById('fileCommon').files;
+    const formElement = document.getElementById('common_file_upload_form'); // Get the form element
+    const formData = new FormData(formElement); // Automatically includes form inputs
+
+    // Show the progress bar container
+    const progressContainer = document.getElementById('progress-container');
+    progressContainer.style.display = 'block';
+
+    // Disable the submit button to prevent double submission
+    const submitButton = document.getElementById('commom_file_upload_pop_submit');
+    submitButton.disabled = true;
+
+    // Append the CSRF token manually if required
+    const token = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+    formData.append('_token', token);
+
+    // Append the files
+    for (let i = 0; i < files.length; i++) {
+        formData.append('files[]', files[i]);
+    }
+
+    // Iterate over each file for progress tracking
+    for (let i = 0; i < files.length; i++) {
+        const xhr = new XMLHttpRequest();
+        const progressContainer = document.getElementById('progress-container');
+
+        // Create a progress bar for each file
+        const progressBar = document.createElement('div');
+        progressBar.classList.add('progress-bar');
+        progressBar.innerHTML = `
+            <div style="width: 0%; text-align: center;">0%</div>
+            <button class="cancel-button">Cancel</button>
+        `;
+        progressContainer.appendChild(progressBar);
+
+        // Setup request
+        xhr.open('POST', formElement.action, true);
+
+        // Progress event listener
+        xhr.upload.addEventListener('progress', function(e) {
+            if (e.lengthComputable) {
+                const percentComplete = Math.round((e.loaded / e.total) * 100);
+                const progressBarFill = progressBar.querySelector('div');
+                progressBarFill.style.width = percentComplete + '%';
+                progressBarFill.textContent = percentComplete + '%';
+
+                if (percentComplete === 100) {
+                    const cancelButton = progressBar.querySelector('.cancel-button');
+                    if (cancelButton) {
+                        cancelButton.remove(); // Remove cancel button after 100% completion
+                    }
+                }
+            }
+        });
+
+        // Load event listener
+        xhr.addEventListener('load', function() {
+            const progressBarFill = progressBar.querySelector('div');
+            if (xhr.status >= 200 && xhr.status < 300) {
+                progressBarFill.style.backgroundColor = 'green';
+                progressBar.innerHTML += ' - Upload completed';
+            } else {
+                progressBarFill.style.backgroundColor = 'red';
+                progressBar.innerHTML += ' - Upload failed';
+            }
+
+            // Remove the cancel button on completion
+            const cancelButton = progressBar.querySelector('.cancel-button');
+            if (cancelButton) {
+                cancelButton.remove();
+            }
+
+            // Re-enable the submit button after the upload completes (if required)
+            submitButton.disabled = false;
+        });
+
+        // Cancel upload functionality
+        progressBar.querySelector('.cancel-button').addEventListener('click', function() {
+            xhr.abort(); // Cancel the upload
+            progressBar.innerHTML = 'Upload cancelled';
+            const progressBarFill = progressBar.querySelector('div');
+            progressBarFill.style.backgroundColor = 'orange';
+        });
+
+        // Send the request with the FormData
+        xhr.send(formData);
+    }
+});
+
+
+
+
+
+    </script>
 
 
   <script>
