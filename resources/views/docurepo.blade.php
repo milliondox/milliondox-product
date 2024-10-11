@@ -5415,7 +5415,44 @@ $(window).on('load', function() {
   </script>
 
   <!-- Progress Bar Container -->
-<div id="progress-container" style=" display:none; margin-top: 20px;"></div>
+<div id="progress-container" class="progree_cont_nt" style=" display:none;">
+    <div class="progress_header">
+        <h2>1 upload completed</h2>
+        <div class="down_arroww">
+            <button type="button" class="down_box">
+            <svg width="15" height="10" viewBox="0 0 15 10" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path fill-rule="evenodd" clip-rule="evenodd" d="M8.60638 8.72891C8.31341 9.02151 7.91628 9.18587 7.50222 9.18587C7.08815 9.18587 6.69102 9.02151 6.39805 8.72891L0.504299 2.83724C0.211318 2.54412 0.0467774 2.14662 0.046875 1.73219C0.0469727 1.31775 0.2117 0.920328 0.504819 0.627346C0.797939 0.334365 1.19544 0.169824 1.60988 0.169922C2.02431 0.17002 2.42173 0.334747 2.71472 0.627867L7.50222 5.41537L12.2897 0.627867C12.5843 0.343103 12.9789 0.185423 13.3886 0.188789C13.7983 0.192154 14.1902 0.356296 14.4801 0.645861C14.7699 0.935425 14.9344 1.32724 14.9382 1.73693C14.9419 2.14661 14.7846 2.54138 14.5001 2.8362L8.60742 8.72995L8.60638 8.72891Z" fill="#1E1E1E"/>
+</svg>
+            </button>
+            <button type="button" class="close_down_box">
+            <svg width="50" height="50" viewBox="0 0 50 50" fill="none" xmlns="http://www.w3.org/2000/svg">
+             <rect width="4.27093" height="66.172" transform="matrix(0.702074 -0.712104 0.709324 0.704883 0 3.31244)" fill="black"></rect>
+              <rect width="4.27086" height="66.3713" transform="matrix(-0.704896 -0.70931 0.706518 -0.707695 3.10742 50)" fill="black"></rect>
+               </svg>
+            </button>
+        </div>
+    </div>
+
+    <div class="progress_repeat_wrap">
+    <div class="progress_repeat">
+        <h2 class="file_name">vikram.pdf</h2>
+        <div class="progress_circle">
+        <div id="wrapper_progreess" class="center">                  
+        <svg class="progresss" data-progresss="" x="0px" y="0px" viewBox="0 0 80 80">
+    <path class="track" d="M5,40a35,35 0 1,0 70,0a35,35 0 1,0 -70,0" />
+    <path class="fill"  id="progressFill" d="M5,40a35,35 0 1,0 70,0a35,35 0 1,0 -70,0" />
+    </svg>
+                  <span class="span_dott"></span>
+                </div>
+
+            <div class="cancle_file">
+            <button class="remove-btnn">X</button>
+            </div>
+        </div>
+    </div>
+    </div>
+
+</div>
 
   
   
@@ -5578,50 +5615,8 @@ $(window).on('load', function() {
   <!-- upload file model end -->
   <!-- common modal upload 4 October 2024   Sandeep -->
 
-  <style>
-    #progress-container {
-    position: fixed; /* Keeps it in a fixed position relative to the viewport */
-    bottom: 20px;    /* 20px from the bottom */
-    right: 20px;     /* 20px from the right */
-    z-index: 1000;   /* Make sure it appears above other elements */
-    width: 300px;    /* Set a reasonable width */
-    padding: 10px;
-    background-color: rgba(255, 255, 255, 0.9); /* Optional: slight transparency */
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-}
-
-.progress-bar {
-    width: 100%;
-    background-color: #f3f3f3;
-    border: 1px solid #ccc;
-    margin-bottom: 10px;
-    position: relative;
-}
-
-.progress-bar div {
-    height: 20px;
-    width: 0;
-    background-color: #4caf50;
-}
-
-.cancel-button {
-    position: absolute;
-    top: 0;
-    right: 0;
-    background: red;
-    color: white;
-    border: none;
-    cursor: pointer;
-    padding: 3px 8px;
-    border-radius: 3px;
-}
-
-  </style>
-
+ 
   <meta name="csrf-token" content="{{ csrf_token() }}">
-
 
   <script>
   document.getElementById('common_file_upload_form').addEventListener('submit', function(event) {
@@ -5632,8 +5627,8 @@ $(window).on('load', function() {
     const formData = new FormData(formElement); // Automatically includes form inputs
 
     // Show the progress bar container
-    const progressContainer = document.getElementById('progress-container');
-    progressContainer.style.display = 'block';
+    // const progressContainer = document.getElementById('progress-container');
+    // progressContainer.style.display = 'block';
 
     // Disable the submit button to prevent double submission
     const submitButton = document.getElementById('commom_file_upload_pop_submit');

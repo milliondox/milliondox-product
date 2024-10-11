@@ -4516,6 +4516,179 @@ td.file_dess {
 /******advance search coming soon end******/
 
 
+/******progress bar bottom css start*******/
+.progree_cont_nt {
+    position: fixed;
+    bottom: 0;
+    right: 25px;
+    width: 364px;
+    background: #f9f9f9;
+    padding: 0px 0px;
+    border-top-left-radius: 15px;
+    border-top-right-radius: 15px;
+    overflow: hidden;
+    z-index: 99;
+}
+
+.progree_cont_nt .progress_header {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px 15px;
+    background: #F8FAFD;
+    align-items: center;
+}
+
+.progree_cont_nt .progress_header h2 {
+    display: flex;
+    font-size: 16px;
+    font-weight: 600;
+    margin: 0;
+}
+
+.progree_cont_nt .progress_header .down_arroww {
+    display: flex;
+    align-items: center;
+    gap: 0px 10px;
+}
+
+.progree_cont_nt .progress_header .down_arroww button {
+    padding: 0;
+    background: transparent;
+    border: 0;
+    width: 35px;
+    height: 35px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all .25s ease-out;
+    border-radius: 50px;
+}
+
+.progree_cont_nt .progress_header .down_arroww button.down_box svg {
+    height: 15px;
+    width: 15px;
+}
+
+.progree_cont_nt .progress_header .down_arroww .close_down_box svg {
+    height: 12px;
+    width: 12px;
+}
+
+.progree_cont_nt .progress_header .down_arroww button:hover {
+    background: #E7E9EB;
+}
+
+.progree_cont_nt .progress_header .down_arroww .close_down_box svg rect {
+    width: 7px;
+}
+
+/*******/
+.progree_cont_nt .progress_repeat {
+    display: flex;
+    align-items: center;
+    padding: 10px 20px;
+    background: #FFF;
+    justify-content: space-between;
+    border-bottom: 1px solid #f4f4f4;
+}
+
+.progree_cont_nt .progress_repeat .file_name {
+    font-size: 16px;
+    font-weight: 500;
+    margin: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    width: 200px;
+}
+
+.progree_cont_nt .progress_circle {
+    width: 40px;
+    height: 40px;
+    position: relative;
+    transition: all .25s ease-out;
+}
+
+.progree_cont_nt .progress_circle .cancle_file {position: absolute;left: 0;top: 0;width: 100%;height: 100%;border: 1px solid #e4e4e4;display: flex;align-items: center;justify-content: center;transition: all .25s ease-out;z-index: 9;border-radius: 50px;background: #FFF;opacity: 0;visibility: hidden;}
+
+#wrapper_progreess {
+    width: 40px;
+    height: 40px;
+    position: relative;
+}
+#wrapper_progreess .progresss {
+    width: 100%;
+    height: 100%;
+    fill: #ffffff;
+    stroke-width: 3px;
+}
+#wrapper_progreess .progresss .track {
+    stroke: #e4e4e4;
+}
+#wrapper_progreess .progresss .fill {
+    stroke: rgb(104, 153, 247);
+    transition: stroke-dashoffset 1s;
+    stroke-width: 5px;
+    stroke-dasharray: 219.911, 219.911;
+    stroke-dashoffset: 157.938;
+}
+
+#wrapper_progreess .span_dott {
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    background: #6598fb;
+    border-radius: 50%;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.progree_cont_nt .progress_circle .cancle_file .remove-btnn {
+    box-shadow: none;
+    outline: none;
+    border: 0;
+    color: #FFF;
+    padding: 0;
+    background: #ff0000c4;
+    width: 20px;
+    height: 20px;
+    border-radius: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 9px;
+}
+
+
+.progree_cont_nt .progress_circle:hover .cancle_file {
+    opacity: 1;
+    visibility: visible;
+}
+
+.progress_repeat_wrap {
+    display: block;
+    max-height: 180px;
+    overflow: auto;
+}
+
+.progress_repeat_wrap::-webkit-scrollbar {
+    width: 5px;
+    border-radius:50px;
+  }
+  
+.progress_repeat_wrap::-webkit-scrollbar-track {
+    background: transparent;
+     border-radius:50px;
+  }
+  
+.progress_repeat_wrap::-webkit-scrollbar-thumb {
+    background: #E3E3E3;
+      border-radius:50px;
+  }
+
+/******progress bar bottom css end*******/
+
 
 /****media start****/
 
