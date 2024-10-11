@@ -75,6 +75,7 @@ class Kernel extends HttpKernel
         'prevent.direct.access' => \App\Http\Middleware\RestrictRegisterMiddleware::class,
         'check.role' => \App\Http\Middleware\CheckRoleExists::class,
          'allow.invite' => \App\Http\Middleware\AllowUnauthenticatedAccess::class,
+         'checkFileAccess' => \App\Http\Middleware\CheckFileAccess::class,
         // 'prevent_direct_access' => \App\Http\Middleware\PreventDirectURLAccess::class,
     ];
     

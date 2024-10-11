@@ -1195,7 +1195,7 @@ public function updateMembers(Request $request)
         'mem_id' => 'required|exists:users,id',
         'fname' => 'required|string',
         'email' => 'required|email',
-        'password' => 'required|string',
+       
         'phone' => 'required|string',
         'personal_email_id' => 'required|email',
         'Role' => 'required|string',
@@ -1206,7 +1206,7 @@ public function updateMembers(Request $request)
     $user = User::findOrFail($request->mem_id);
     $user->name = $request->fname;
     $user->email = $request->email;
-    $user->password = bcrypt($request->password); // Encrypt the password
+   
     $user->phone = $request->phone;
     $user->personal_email_id = $request->personal_email_id;
     $user->role = $request->Role;
@@ -1229,7 +1229,7 @@ public function updateMembers(Request $request)
     $userInfoData = [
         'name' => $request->fname,
         'email' => $request->email,
-        'password' => bcrypt($request->password), // Encrypt the password
+        
         'phone' => $request->phone,
         'personal_email_id' => $request->personal_email_id,
         'role' => $request->Role,
@@ -17729,7 +17729,7 @@ public function shareFolder(Request $request)
                                    
                                     <a class="dropdown-itemm rename_nt"><img src="../assets/images/rename_nt.png">Rename</a>
 
-                                     <a class="dropdown-itemm download_nt" id="folderid-' . $folder->id . '"><svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                     <a class="dropdown-itemm download_nt" data-folder-path="' . $folder->path . '" data-id="' . $folder->id . '"><svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
                                       <path d="M2.40625 12.25C2.00014 12.25 1.61066 12.0887 1.32349 11.8015C1.03633 11.5143 0.875 11.1249 0.875 10.7188V8.53125C0.875 8.3572 0.94414 8.19028 1.06721 8.06721C1.19028 7.94414 1.3572 7.875 1.53125 7.875C1.7053 7.875 1.87222 7.94414 1.99529 8.06721C2.11836 8.19028 2.1875 8.3572 2.1875 8.53125V10.7188C2.1875 10.8395 2.2855 10.9375 2.40625 10.9375H11.5938C11.6518 10.9375 11.7074 10.9145 11.7484 10.8734C11.7895 10.8324 11.8125 10.7768 11.8125 10.7188V8.53125C11.8125 8.3572 11.8816 8.19028 12.0047 8.06721C12.1278 7.94414 12.2947 7.875 12.4688 7.875C12.6428 7.875 12.8097 7.94414 12.9328 8.06721C13.0559 8.19028 13.125 8.3572 13.125 8.53125V10.7188C13.125 11.1249 12.9637 11.5143 12.6765 11.8015C12.3893 12.0887 11.9999 12.25 11.5938 12.25H2.40625Z" fill="#CEFFA8"></path>
                                       <path d="M6.34334 6.72788V1.75C6.34334 1.57595 6.41248 1.40903 6.53555 1.28596C6.65862 1.16289 6.82554 1.09375 6.99959 1.09375C7.17364 1.09375 7.34056 1.16289 7.46363 1.28596C7.5867 1.40903 7.65584 1.57595 7.65584 1.75V6.72788L9.37959 5.005C9.44049 4.9441 9.51279 4.89579 9.59236 4.86283C9.67193 4.82987 9.75722 4.81291 9.84334 4.81291C9.92947 4.81291 10.0148 4.82987 10.0943 4.86283C10.1739 4.89579 10.2462 4.9441 10.3071 5.005C10.368 5.0659 10.4163 5.1382 10.4493 5.21777C10.4822 5.29734 10.4992 5.38262 10.4992 5.46875C10.4992 5.55488 10.4822 5.64016 10.4493 5.71973C10.4163 5.7993 10.368 5.8716 10.3071 5.9325L7.46334 8.77625C7.40247 8.83721 7.33018 8.88556 7.25061 8.91856C7.17103 8.95155 7.08574 8.96853 6.99959 8.96853C6.91345 8.96853 6.82815 8.95155 6.74857 8.91856C6.669 8.88556 6.59671 8.83721 6.53584 8.77625L3.69209 5.9325C3.63119 5.8716 3.58288 5.7993 3.54992 5.71973C3.51696 5.64016 3.5 5.55488 3.5 5.46875C3.5 5.38262 3.51696 5.29734 3.54992 5.21777C3.58288 5.1382 3.63119 5.0659 3.69209 5.005C3.75299 4.9441 3.82529 4.89579 3.90486 4.86283C3.98443 4.82987 4.06972 4.81291 4.15584 4.81291C4.24197 4.81291 4.32725 4.82987 4.40682 4.86283C4.48639 4.89579 4.55869 4.9441 4.61959 5.005L6.34334 6.72788Z" fill="#CEFFA8"></path>
                                   </svg>Download</a>
@@ -17826,7 +17826,7 @@ public function shareFolder(Request $request)
                                    
                                                    
 
-                                                    <a class="dropdown-itemm download_nt" id="folderid-' . $folder->id . '"><svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                    <a class="dropdown-itemm download_nt" data-folder-path="' . $folder->path . '" data-id="' . $folder->id . '"><svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
                                       <path d="M2.40625 12.25C2.00014 12.25 1.61066 12.0887 1.32349 11.8015C1.03633 11.5143 0.875 11.1249 0.875 10.7188V8.53125C0.875 8.3572 0.94414 8.19028 1.06721 8.06721C1.19028 7.94414 1.3572 7.875 1.53125 7.875C1.7053 7.875 1.87222 7.94414 1.99529 8.06721C2.11836 8.19028 2.1875 8.3572 2.1875 8.53125V10.7188C2.1875 10.8395 2.2855 10.9375 2.40625 10.9375H11.5938C11.6518 10.9375 11.7074 10.9145 11.7484 10.8734C11.7895 10.8324 11.8125 10.7768 11.8125 10.7188V8.53125C11.8125 8.3572 11.8816 8.19028 12.0047 8.06721C12.1278 7.94414 12.2947 7.875 12.4688 7.875C12.6428 7.875 12.8097 7.94414 12.9328 8.06721C13.0559 8.19028 13.125 8.3572 13.125 8.53125V10.7188C13.125 11.1249 12.9637 11.5143 12.6765 11.8015C12.3893 12.0887 11.9999 12.25 11.5938 12.25H2.40625Z" fill="#CEFFA8"></path>
                                       <path d="M6.34334 6.72788V1.75C6.34334 1.57595 6.41248 1.40903 6.53555 1.28596C6.65862 1.16289 6.82554 1.09375 6.99959 1.09375C7.17364 1.09375 7.34056 1.16289 7.46363 1.28596C7.5867 1.40903 7.65584 1.57595 7.65584 1.75V6.72788L9.37959 5.005C9.44049 4.9441 9.51279 4.89579 9.59236 4.86283C9.67193 4.82987 9.75722 4.81291 9.84334 4.81291C9.92947 4.81291 10.0148 4.82987 10.0943 4.86283C10.1739 4.89579 10.2462 4.9441 10.3071 5.005C10.368 5.0659 10.4163 5.1382 10.4493 5.21777C10.4822 5.29734 10.4992 5.38262 10.4992 5.46875C10.4992 5.55488 10.4822 5.64016 10.4493 5.71973C10.4163 5.7993 10.368 5.8716 10.3071 5.9325L7.46334 8.77625C7.40247 8.83721 7.33018 8.88556 7.25061 8.91856C7.17103 8.95155 7.08574 8.96853 6.99959 8.96853C6.91345 8.96853 6.82815 8.95155 6.74857 8.91856C6.669 8.88556 6.59671 8.83721 6.53584 8.77625L3.69209 5.9325C3.63119 5.8716 3.58288 5.7993 3.54992 5.71973C3.51696 5.64016 3.5 5.55488 3.5 5.46875C3.5 5.38262 3.51696 5.29734 3.54992 5.21777C3.58288 5.1382 3.63119 5.0659 3.69209 5.005C3.75299 4.9441 3.82529 4.89579 3.90486 4.86283C3.98443 4.82987 4.06972 4.81291 4.15584 4.81291C4.24197 4.81291 4.32725 4.82987 4.40682 4.86283C4.48639 4.89579 4.55869 4.9441 4.61959 5.005L6.34334 6.72788Z" fill="#CEFFA8"></path>
                                   </svg>Download</a>
@@ -17932,7 +17932,7 @@ public function shareFolder(Request $request)
             $fileHtml .= '</thead>';
             $fileHtml .= '<tbody>';
             foreach ($fileContents as $file) {
-                $fileUrl = asset('storage/app/' . $file->file_path);  
+                
                 $fileHtml .= '<tr>';
                 $fileHtml .= '<td>' . $file->file_name . '</td>';
                 $fileHtml .= '<td class="funtion_buttnss">                
@@ -17957,7 +17957,7 @@ public function shareFolder(Request $request)
                 </svg>
               </button>
               <div id="myDropdown3" class="dropdown-content"> 
-                <a class="dropdown-itemm open_eye_pdf" data-file-url="' . $fileUrl . '" >
+                <a class="dropdown-itemm open_eye_pdf" href="' . route('showfile', $file->id) . '" target="_blank">
                   View </a>
             </div>
         </div>
@@ -17975,40 +17975,122 @@ public function shareFolder(Request $request)
     
         return response()->json(['folderHtml' => $folderHtml,  'fileHtml' => $fileHtml]);
     }
+    public function showfile($id)
+    {
+        // Get the authenticated user's ID
+        $authUserId = Auth::id();
+    
+        // Find the file by ID and ensure it belongs to the authenticated user
+        $file = CommonTable::where('id', $id)->where('user_id', $authUserId)->first();
+    
+        if (!$file) {
+            return redirect()->back()->with('error', 'File not found or you do not have permission to access this file.');
+        }
+    
+        // Extract the file path from the database
+        $filePath = $file->file_path;
+    
+        // Check if the file exists on the storage
+        if (!Storage::exists($filePath)) {
+            return redirect()->back()->with('error', 'File does not exist.');
+        }
+    
+        // Return the file response (for PDFs, the browser should display it)
+        return Storage::response($filePath, $file->file_name);
+    }
 
-    public function downloadFolder($folderId)
+
+    public function downloadFolder($folderPath)
 {
-    // Fetch the folder and its contents from the database
-    $folder = Folder::find($folderId);
-
+    // Decode the folder path since it was URL-encoded in the request
+    $folderPath = urldecode($folderPath);
+    
+    // Fetch the folder based on the folder path
+    $folder = Folder::where('path', $folderPath)->first();
+    
     if (!$folder) {
+        \Log::error("Folder not found for path: " . $folderPath);
         return response()->json(['success' => false, 'message' => 'Folder not found.']);
     }
 
-    // Create a new ZIP file
-    $zip = new ZipArchive();
-    $zipFileName = 'folder_' . $folder->id . '.zip';
-    $zipFilePath = storage_path('app/' . $zipFileName);
+    // Create a unique ZIP file name using folder id or name
+    $zipFileName = 'folder_' . $folder->id . '.zip'; // Unique ZIP filename
+    $zipFilePath = storage_path('app/public/' . $zipFileName); // Save in the storage/app/public directory
 
+    // Initialize the ZipArchive object
+    $zip = new ZipArchive();
+
+    // Open the ZIP file for writing
     if ($zip->open($zipFilePath, ZipArchive::CREATE) !== TRUE) {
+        \Log::error("Could not create ZIP file at: " . $zipFilePath);
         return response()->json(['success' => false, 'message' => 'Could not create ZIP file.']);
     }
 
-    // Add folder contents to ZIP
-    // Assuming `files` is a relationship on the Folder model
-    foreach ($folder->files as $file) {
-        $zip->addFile(storage_path('app/' . $file->path), $file->name);
+    // Recursively add the folder and its contents to the ZIP file
+    $folderFullPath = storage_path('app/' . $folderPath);
+    if (is_dir($folderFullPath)) {
+        $this->addFolderToZip($zip, $folderFullPath, $folder->name);
+    } else {
+        \Log::error("Folder does not exist: " . $folderFullPath);
+        return response()->json(['success' => false, 'message' => 'Folder does not exist.']);
     }
 
     // Close the ZIP file
     $zip->close();
 
-    // Return the path to the ZIP file for downloading
+    // Check if the ZIP file was created successfully
+    if (!file_exists($zipFilePath)) {
+        return response()->json(['success' => false, 'message' => 'ZIP file could not be created.']);
+    }
+
+    // Return the ZIP file URL for downloading (ensure storage link is created with 'php artisan storage:link')
     return response()->json([
         'success' => true,
-        'zipFileUrl' => url('storage/' . $zipFileName)
+        'zipFileUrl' => asset('storage/' . $zipFileName), // URL to download the file
     ]);
 }
+
+/**
+ * Recursively adds a folder and its contents to a ZipArchive.
+ *
+ * @param ZipArchive $zip The ZipArchive object.
+ * @param string $folderPath The path to the folder being added.
+ * @param string $folderName The name to be used inside the ZIP.
+ */
+private function addFolderToZip($zip, $folderPath, $folderName)
+{
+    // Add the folder itself
+    $zip->addEmptyDir($folderName);
+
+    // Get the files and subfolders inside this folder
+    $files = scandir($folderPath);
+
+    foreach ($files as $file) {
+        if ($file == '.' || $file == '..') {
+            continue; // Skip special directories
+        }
+
+        $filePath = $folderPath . '/' . $file;
+        $zipPath = $folderName . '/' . $file; // Path inside the ZIP
+
+        if (is_dir($filePath)) {
+            // Recursively add subfolder
+            $this->addFolderToZip($zip, $filePath, $zipPath);
+        } else {
+            // Add file to the ZIP
+            $zip->addFile($filePath, $zipPath);
+        }
+    }
+}
+
+    
+    
+
+
+    
+    
+
+    
     
     public function downloadFilecustom($id)
     {
@@ -18376,7 +18458,7 @@ public function downloadFile($id)
                 // Process each file
                 foreach ($request->file('files') as $file) {
                     try {
-                        $filePath = $file->store('uploads');
+                        $filePath = $file->store($folderPath);
     
                         // Store file details in the database
                         CommonTable::create([

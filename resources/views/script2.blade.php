@@ -248,6 +248,8 @@ $(document).ready(function() {
               <div id="myDropdown3" class="dropdown-content"> 
                 <a class="dropdown-itemm chck_slect">
                   Select Files </a>
+                  <a class="dropdown-itemm open_eye_pdf" href="{{ url('/showfile/${file.id}') }}" target="_blank">
+                  View </a>
             </div>
         </div>
         
@@ -611,6 +613,8 @@ $(document).ready(function() {
               <div id="myDropdown3" class="dropdown-content"> 
                 <a class="dropdown-itemm chck_slect">
                   Select Files </a>
+                  <a class="dropdown-itemm open_eye_pdf" href="{{ url('/showfile/${file.id}') }}" target="_blank">
+                  View </a>
             </div>
         </div>
         
@@ -969,6 +973,8 @@ $(document).ready(function() {
               <div id="myDropdown3" class="dropdown-content"> 
                 <a class="dropdown-itemm chck_slect">
                   Select Files </a>
+                  <a class="dropdown-itemm open_eye_pdf" href="{{ url('/showfile/${file.id}') }}" target="_blank">
+                  View </a>
             </div>
         </div>
         
@@ -1336,6 +1342,8 @@ $(document).ready(function() {
               <div id="myDropdown3" class="dropdown-content"> 
                 <a class="dropdown-itemm chck_slect">
                   Select Files </a>
+                  <a class="dropdown-itemm open_eye_pdf" href="{{ url('/showfile/${file.id}') }}" target="_blank">
+                  View </a>
             </div>
         </div>
         
@@ -1700,6 +1708,8 @@ $(document).ready(function() {
               <div id="myDropdown3" class="dropdown-content"> 
                 <a class="dropdown-itemm chck_slect">
                   Select Files </a>
+                  <a class="dropdown-itemm open_eye_pdf" href="{{ url('/showfile/${file.id}') }}" target="_blank">
+                  View </a>
             </div>
         </div>
         
@@ -2064,6 +2074,8 @@ $(document).ready(function() {
               <div id="myDropdown3" class="dropdown-content"> 
                 <a class="dropdown-itemm chck_slect">
                   Select Files </a>
+                  <a class="dropdown-itemm open_eye_pdf" href="{{ url('/showfile/${file.id}') }}" target="_blank">
+                  View </a>
             </div>
         </div>
         
@@ -2432,6 +2444,8 @@ $(document).ready(function() {
               <div id="myDropdown3" class="dropdown-content"> 
                 <a class="dropdown-itemm chck_slect">
                   Select Files </a>
+                  <a class="dropdown-itemm open_eye_pdf" href="{{ url('/showfile/${file.id}') }}" target="_blank">
+                  View </a>
             </div>
         </div>
         
@@ -2796,6 +2810,8 @@ $(document).ready(function() {
               <div id="myDropdown3" class="dropdown-content"> 
                 <a class="dropdown-itemm chck_slect">
                   Select Files </a>
+                  <a class="dropdown-itemm open_eye_pdf" href="{{ url('/showfile/${file.id}') }}" target="_blank">
+                  View </a>
             </div>
         </div>
         
@@ -3159,6 +3175,8 @@ $(document).ready(function() {
               <div id="myDropdown3" class="dropdown-content"> 
                 <a class="dropdown-itemm chck_slect">
                   Select Files </a>
+                  <a class="dropdown-itemm open_eye_pdf" href="{{ url('/showfile/${file.id}') }}" target="_blank">
+                  View </a>
             </div>
         </div>
         
@@ -3519,6 +3537,8 @@ $(document).ready(function() {
               <div id="myDropdown3" class="dropdown-content"> 
                 <a class="dropdown-itemm chck_slect">
                   Select Files </a>
+                  <a class="dropdown-itemm open_eye_pdf" href="{{ url('/showfile/${file.id}') }}" target="_blank">
+                  View </a>
             </div>
         </div>
         
@@ -3878,6 +3898,8 @@ $(document).ready(function() {
               <div id="myDropdown3" class="dropdown-content"> 
                 <a class="dropdown-itemm chck_slect">
                   Select Files </a>
+                  <a class="dropdown-itemm open_eye_pdf" href="{{ url('/showfile/${file.id}') }}" target="_blank">
+                  View </a>
             </div>
         </div>
         
@@ -4243,6 +4265,8 @@ $(document).ready(function() {
               <div id="myDropdown3" class="dropdown-content"> 
                 <a class="dropdown-itemm chck_slect">
                   Select Files </a>
+                  <a class="dropdown-itemm open_eye_pdf" href="{{ url('/showfile/${file.id}') }}" target="_blank">
+                  View </a>
             </div>
         </div>
         
@@ -4605,6 +4629,8 @@ $(document).ready(function() {
               <div id="myDropdown3" class="dropdown-content"> 
                 <a class="dropdown-itemm chck_slect">
                   Select Files </a>
+                  <a class="dropdown-itemm open_eye_pdf" href="{{ url('/showfile/${file.id}') }}" target="_blank">
+                  View </a>
             </div>
         </div>
         
@@ -4965,6 +4991,8 @@ $(document).ready(function() {
               <div id="myDropdown3" class="dropdown-content"> 
                 <a class="dropdown-itemm chck_slect">
                   Select Files </a>
+                  <a class="dropdown-itemm open_eye_pdf" href="{{ url('/showfile/${file.id}') }}" target="_blank">
+                  View </a>
             </div>
         </div>
         
@@ -5332,6 +5360,8 @@ $(document).ready(function() {
               <div id="myDropdown3" class="dropdown-content"> 
                 <a class="dropdown-itemm chck_slect">
                   Select Files </a>
+                  <a class="dropdown-itemm open_eye_pdf" href="{{ url('/showfile/${file.id}') }}" target="_blank">
+                  View </a>
             </div>
         </div>
         
@@ -5694,6 +5724,8 @@ $(document).ready(function() {
               <div id="myDropdown3" class="dropdown-content"> 
                 <a class="dropdown-itemm chck_slect">
                   Select Files </a>
+                  <a class="dropdown-itemm open_eye_pdf" href="{{ url('/showfile/${file.id}') }}" target="_blank">
+                  View </a>
             </div>
         </div>
         
@@ -6052,6 +6084,8 @@ $(document).ready(function() {
               <div id="myDropdown3" class="dropdown-content"> 
                 <a class="dropdown-itemm chck_slect">
                   Select Files </a>
+                  <a class="dropdown-itemm open_eye_pdf" href="{{ url('/showfile/${file.id}') }}" target="_blank">
+                  View </a>
             </div>
         </div>
         
@@ -6411,6 +6445,8 @@ $(document).ready(function() {
               <div id="myDropdown3" class="dropdown-content"> 
                 <a class="dropdown-itemm chck_slect">
                   Select Files </a>
+                  <a class="dropdown-itemm open_eye_pdf" href="{{ url('/showfile/${file.id}') }}" target="_blank">
+                  View </a>
             </div>
         </div>
         
@@ -6771,6 +6807,8 @@ $(document).ready(function() {
               <div id="myDropdown3" class="dropdown-content"> 
                 <a class="dropdown-itemm chck_slect">
                   Select Files </a>
+                  <a class="dropdown-itemm open_eye_pdf" href="{{ url('/showfile/${file.id}') }}" target="_blank">
+                  View </a>
             </div>
         </div>
         
@@ -7133,6 +7171,8 @@ $(document).ready(function() {
               <div id="myDropdown3" class="dropdown-content"> 
                 <a class="dropdown-itemm chck_slect">
                   Select Files </a>
+                  <a class="dropdown-itemm open_eye_pdf" href="{{ url('/showfile/${file.id}') }}" target="_blank">
+                  View </a>
             </div>
         </div>
         
@@ -7500,6 +7540,8 @@ $(document).ready(function() {
               <div id="myDropdown3" class="dropdown-content"> 
                 <a class="dropdown-itemm chck_slect">
                   Select Files </a>
+                  <a class="dropdown-itemm open_eye_pdf" href="{{ url('/showfile/${file.id}') }}" target="_blank">
+                  View </a>
             </div>
         </div>
         
@@ -7860,6 +7902,8 @@ $(document).ready(function() {
               <div id="myDropdown3" class="dropdown-content"> 
                 <a class="dropdown-itemm chck_slect">
                   Select Files </a>
+                  <a class="dropdown-itemm open_eye_pdf" href="{{ url('/showfile/${file.id}') }}" target="_blank">
+                  View </a>
             </div>
         </div>
         
@@ -8216,6 +8260,8 @@ $(document).ready(function() {
               <div id="myDropdown3" class="dropdown-content"> 
                 <a class="dropdown-itemm chck_slect">
                   Select Files </a>
+                  <a class="dropdown-itemm open_eye_pdf" href="{{ url('/showfile/${file.id}') }}" target="_blank">
+                  View </a>
             </div>
         </div>
         
@@ -8578,6 +8624,8 @@ $(document).ready(function() {
               <div id="myDropdown3" class="dropdown-content"> 
                 <a class="dropdown-itemm chck_slect">
                   Select Files </a>
+                  <a class="dropdown-itemm open_eye_pdf" href="{{ url('/showfile/${file.id}') }}" target="_blank">
+                  View </a>
             </div>
         </div>
         
@@ -8940,6 +8988,8 @@ $(document).ready(function() {
               <div id="myDropdown3" class="dropdown-content"> 
                 <a class="dropdown-itemm chck_slect">
                   Select Files </a>
+                  <a class="dropdown-itemm open_eye_pdf" href="{{ url('/showfile/${file.id}') }}" target="_blank">
+                  View </a>
             </div>
         </div>
         
@@ -9302,6 +9352,8 @@ $(document).ready(function() {
               <div id="myDropdown3" class="dropdown-content"> 
                 <a class="dropdown-itemm chck_slect">
                   Select Files </a>
+                  <a class="dropdown-itemm open_eye_pdf" href="{{ url('/showfile/${file.id}') }}" target="_blank">
+                  View </a>
             </div>
         </div>
         
@@ -9664,6 +9716,8 @@ $(document).ready(function() {
               <div id="myDropdown3" class="dropdown-content"> 
                 <a class="dropdown-itemm chck_slect">
                   Select Files </a>
+                  <a class="dropdown-itemm open_eye_pdf" href="{{ url('/showfile/${file.id}') }}" target="_blank">
+                  View </a>
             </div>
         </div>
         
@@ -10026,6 +10080,8 @@ $(document).ready(function() {
               <div id="myDropdown3" class="dropdown-content"> 
                 <a class="dropdown-itemm chck_slect">
                   Select Files </a>
+                  <a class="dropdown-itemm open_eye_pdf" href="{{ url('/showfile/${file.id}') }}" target="_blank">
+                  View </a>
             </div>
         </div>
         
@@ -10386,6 +10442,8 @@ $(document).ready(function() {
               <div id="myDropdown3" class="dropdown-content"> 
                 <a class="dropdown-itemm chck_slect">
                   Select Files </a>
+                  <a class="dropdown-itemm open_eye_pdf" href="{{ url('/showfile/${file.id}') }}" target="_blank">
+                  View </a>
             </div>
         </div>
         
@@ -10741,6 +10799,8 @@ $(document).ready(function() {
               <div id="myDropdown3" class="dropdown-content"> 
                 <a class="dropdown-itemm chck_slect">
                   Select Files </a>
+                  <a class="dropdown-itemm open_eye_pdf" href="{{ url('/showfile/${file.id}') }}" target="_blank">
+                  View </a>
             </div>
         </div>
         
@@ -11095,6 +11155,8 @@ $(document).ready(function() {
               <div id="myDropdown3" class="dropdown-content"> 
                 <a class="dropdown-itemm chck_slect">
                   Select Files </a>
+                  <a class="dropdown-itemm open_eye_pdf" href="{{ url('/showfile/${file.id}') }}" target="_blank">
+                  View </a>
             </div>
         </div>
         
@@ -11449,6 +11511,8 @@ $(document).ready(function() {
               <div id="myDropdown3" class="dropdown-content"> 
                 <a class="dropdown-itemm chck_slect">
                   Select Files </a>
+                  <a class="dropdown-itemm open_eye_pdf" href="{{ url('/showfile/${file.id}') }}" target="_blank">
+                  View </a>
             </div>
         </div>
         
@@ -11804,6 +11868,8 @@ $(document).ready(function() {
               <div id="myDropdown3" class="dropdown-content"> 
                 <a class="dropdown-itemm chck_slect">
                   Select Files </a>
+                  <a class="dropdown-itemm open_eye_pdf" href="{{ url('/showfile/${file.id}') }}" target="_blank">
+                  View </a>
             </div>
         </div>
         
@@ -12159,6 +12225,8 @@ $(document).ready(function() {
               <div id="myDropdown3" class="dropdown-content"> 
                 <a class="dropdown-itemm chck_slect">
                   Select Files </a>
+                  <a class="dropdown-itemm open_eye_pdf" href="{{ url('/showfile/${file.id}') }}" target="_blank">
+                  View </a>
             </div>
         </div>
         
@@ -12513,6 +12581,8 @@ $(document).ready(function() {
               <div id="myDropdown3" class="dropdown-content"> 
                 <a class="dropdown-itemm chck_slect">
                   Select Files </a>
+                  <a class="dropdown-itemm open_eye_pdf" href="{{ url('/showfile/${file.id}') }}" target="_blank">
+                  View </a>
             </div>
         </div>
         
@@ -12866,6 +12936,8 @@ $(document).ready(function() {
               <div id="myDropdown3" class="dropdown-content"> 
                 <a class="dropdown-itemm chck_slect">
                   Select Files </a>
+                  <a class="dropdown-itemm open_eye_pdf" href="{{ url('/showfile/${file.id}') }}" target="_blank">
+                  View </a>
             </div>
         </div>
         
@@ -13221,6 +13293,8 @@ $(document).ready(function() {
               <div id="myDropdown3" class="dropdown-content"> 
                 <a class="dropdown-itemm chck_slect">
                   Select Files </a>
+                  <a class="dropdown-itemm open_eye_pdf" href="{{ url('/showfile/${file.id}') }}" target="_blank">
+                  View </a>
             </div>
         </div>
         
@@ -13577,6 +13651,8 @@ $(document).ready(function() {
               <div id="myDropdown3" class="dropdown-content"> 
                 <a class="dropdown-itemm chck_slect">
                   Select Files </a>
+                  <a class="dropdown-itemm open_eye_pdf" href="{{ url('/showfile/${file.id}') }}" target="_blank">
+                  View </a>
             </div>
         </div>
         
@@ -13931,6 +14007,8 @@ $(document).ready(function() {
               <div id="myDropdown3" class="dropdown-content"> 
                 <a class="dropdown-itemm chck_slect">
                   Select Files </a>
+                  <a class="dropdown-itemm open_eye_pdf" href="{{ url('/showfile/${file.id}') }}" target="_blank">
+                  View </a>
             </div>
         </div>
         
@@ -14287,6 +14365,8 @@ $(document).ready(function() {
               <div id="myDropdown3" class="dropdown-content"> 
                 <a class="dropdown-itemm chck_slect">
                   Select Files </a>
+                  <a class="dropdown-itemm open_eye_pdf" href="{{ url('/showfile/${file.id}') }}" target="_blank">
+                  View </a>
             </div>
         </div>
         
@@ -14642,6 +14722,8 @@ $(document).ready(function() {
               <div id="myDropdown3" class="dropdown-content"> 
                 <a class="dropdown-itemm chck_slect">
                   Select Files </a>
+                  <a class="dropdown-itemm open_eye_pdf" href="{{ url('/showfile/${file.id}') }}" target="_blank">
+                  View </a>
             </div>
         </div>
         
@@ -14996,6 +15078,8 @@ $(document).ready(function() {
               <div id="myDropdown3" class="dropdown-content"> 
                 <a class="dropdown-itemm chck_slect">
                   Select Files </a>
+                  <a class="dropdown-itemm open_eye_pdf" href="{{ url('/showfile/${file.id}') }}" target="_blank">
+                  View </a>
             </div>
         </div>
         
@@ -15351,6 +15435,8 @@ $(document).ready(function() {
               <div id="myDropdown3" class="dropdown-content"> 
                 <a class="dropdown-itemm chck_slect">
                   Select Files </a>
+                  <a class="dropdown-itemm open_eye_pdf" href="{{ url('/showfile/${file.id}') }}" target="_blank">
+                  View </a>
             </div>
         </div>
         

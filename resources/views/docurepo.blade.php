@@ -1477,7 +1477,7 @@ closeToastBtn.addEventListener("click", closeToast);
 
                     <div class="hearder-entres">
                       <div class="volt_headd-filter">
-<span>Home</span>
+<!-- <span>Home</span> -->
                      <div class="go_and_search">
                          <a class="g_searttcg" target="_blank" onclick="openToast('info')">
                              Advanced Search
@@ -1865,12 +1865,8 @@ $(document).ready(function() {
             <div class="file-contents"></div>
         </div>
         </div>
-        <div id="filePreviewModal" class="modal">
-    <div class="modal-content">
-        <span class="close">&times;</span>
-        <div id="filePreviewContainer"></div>
-    </div>
-</div>
+
+
 <!-- Rename Modal -->
 <!-- Rename Modal -->
 <div class="modal fade" id="renameModal" tabindex="-1" role="dialog" aria-labelledby="renameModalLabel" aria-hidden="true">
@@ -1893,37 +1889,43 @@ $(document).ready(function() {
     </div>
 </div>
 <script>
-    $(document).ready(function() {
+$(document).ready(function() {
     $(document).on('click', '.download_nt', function() {
-        var folderId = $(this).data('folder-id'); // Get the folder ID
-        
-        // Show a loading spinner or message if needed
+        var folderPath = $(this).data('folder-path');
+
+        // Show a loading spinner or message
         var loadingMessage = $("<div>Preparing your download...</div>");
         $('body').append(loadingMessage);
-        
+
         // Send AJAX request to download the folder
         $.ajax({
-            url: '/download-folder/' + folderId, // Replace with your download endpoint
+            url: '/download-folder/' + encodeURIComponent(folderPath), // URL-encode the folder path
             type: 'GET',
             success: function(response) {
                 // Remove loading message
                 loadingMessage.remove();
-                
-                // Assuming response contains the URL of the ZIP file
-                if (response.success) {
-                    // Trigger file download
-                    window.location.href = response.zipFileUrl;
+
+                // Check if the response contains a valid success message
+                if (response && response.success) {
+                    // Trigger file download using the URL of the ZIP file
+                    window.location.href = response.zipFileUrl; // Ensure zipFileUrl is correctly set
                 } else {
-                    alert('Error: ' + response.message);
+                    console.log(response); // Log the entire response to debug
+                    alert('Error: ' + (response.message || 'An unknown error occurred.'));
                 }
             },
-            error: function() {
+            error: function(xhr, status, error) {
+                // Remove loading message
                 loadingMessage.remove();
+                console.error('Error details:', status, error, xhr.responseText); // Log the full error for debugging
                 alert('An error occurred while downloading the folder. Please try again.');
             }
         });
     });
 });
+
+
+
 
 </script>
 <script>
@@ -1972,47 +1974,22 @@ $(document).ready(function() {
 
 
 </script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
 <script>
-document.addEventListener('DOMContentLoaded', function () {
-    const modal = document.getElementById("filePreviewModal");
-    const span = document.getElementsByClassName("close")[0];
-    const filePreviewContainer = document.getElementById('filePreviewContainer');
-
-    document.body.addEventListener('click', function(event) {
-        if (event.target.classList.contains('open_eye_pdf')) {
-            event.preventDefault();
-            const viewButton = event.target;
-            const fileUrl = viewButton.getAttribute('data-file-url');
-            const fileExtension = fileUrl.split('.').pop().toLowerCase();
-
-            if (fileExtension === 'pdf') {
-                filePreviewContainer.innerHTML = `<embed src="${fileUrl}" width="100%" height="600px" type="application/pdf" />`;
-            } else if (['jpg', 'jpeg', 'png', 'gif'].includes(fileExtension)) {
-                filePreviewContainer.innerHTML = `<img src="${fileUrl}" alt="Image Preview" style="max-width:100%; height:auto;" />`;
-            } else if (['doc', 'docx'].includes(fileExtension)) {
-                filePreviewContainer.innerHTML = `<object data="https://docs.google.com/viewer?url=${fileUrl}&embedded=true" type="application/pdf" width="100%" height="600px"> 
-                                                    <p>Your browser does not support documents. 
-                                                    <a href="${fileUrl}">Download the document</a>.</p>
-                                                  </object>`;
-            } else {
-                filePreviewContainer.innerHTML = `<p>Preview not available for this file type.</p>`;
-            }
-
-            modal.style.display = "block";
-        }
-    });
-
-    span.onclick = function () {
-        modal.style.display = "none";
+    function encryptFileId(fileId) {
+        const secretKey = 'tu-amb-lene-aa'; // Use a secure key
+        const encryptedId = CryptoJS.AES.encrypt(fileId, secretKey).toString();
+        return encryptedId;
     }
 
-    window.onclick = function (event) {
-        if (event.target == modal) {
-            modal.style.display = "none";
-        }
+    function openFile(fileId) {
+        const encryptedId = encryptFileId(fileId);
+        const url = `/showfile/${encodeURIComponent(encryptedId)}`;
+        window.open(url, '_blank'); // Open in a new tab
     }
-});
 </script>
+
+
         </div>
 
         </div>
