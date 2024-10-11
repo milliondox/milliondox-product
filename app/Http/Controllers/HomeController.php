@@ -13536,15 +13536,15 @@ public function PredefinedCommonUploadFiles(Request $request)
     // ->get();
     //         $count = $entries->count();
             
-            return redirect()->back()->with('success2', 'File Uploaded successfully.');
+            // return redirect()->back()->with('success2', 'File Uploaded successfully.');
 
-            // return response()->json([
-            //     'success' => true,
-            //     'count' => $count,
-            //     'totalSize' => $totalSize,
-            //     'successMessages' => $successMessages,
-            //     'errorMessages' => $errorMessages,
-            // ]);
+            return response()->json([
+                'success' => true,
+                // 'count' => $count,
+                'totalSize' => $totalSize,
+                'successMessages' => $successMessages,
+                'errorMessages' => $errorMessages,
+            ]);
 
         } catch (\Exception $e) {
             // Handle any exceptions that occur during file upload or database saving
