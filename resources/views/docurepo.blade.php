@@ -4911,6 +4911,9 @@ function handleFolderPath(folderPath) {
                 setTimeout(function() {
                     $('.button-spinner').remove();
                     toastr.success(response.message);
+                   
+                        window.location.reload(true);
+                        exit;
                     if (response.success) {
                         $('#create_folder').modal('hide');
                         fetchFolderContents(parentFolderValue);
