@@ -570,11 +570,7 @@ function fetchUsersByRole(role, tabId) {
             <label for="email"> Email ( professional ) </label>
             <input placeholder="email( professional )" type="text" id="email" value="${user.email}" name="email" >
         </div>
-        <div class="gropu_form">
-            <label for="password">Password  </label>
-            <input placeholder="Password" type="password" id="password" name="password" value="${user.password}" >
-            <b class="toggle-password"><i class="fas fa-eye-slash"></i></b>
-        </div>
+       
       
         <div class="gropu_form">
             <label for="phone">Phone  </label>

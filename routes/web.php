@@ -77,6 +77,9 @@ Route::delete('/delete-user/{id}', [App\Http\Controllers\HomeController::class, 
 Route::post('/updatemembers', [App\Http\Controllers\HomeController::class, 'updatemembers'])->name('updatemembers');
 Route::post('/shareFolder', [App\Http\Controllers\HomeController::class, 'shareFolder'])->name('shareFolder');
 
+Route::get('showfile/{id}', [App\Http\Controllers\HomeController::class, 'showfile'])
+    ->name('showfile');
+
 Route::get('/fetch-data-for-year', [App\Http\Controllers\HomeController::class,'fetchDataForYear'])->name('fetch.data.year');
 Route::get('/getboardnoticeFiles', [App\Http\Controllers\HomeController::class, 'getboardnoticeFiles'])->name('getboardnoticeFiles');
 Route::post('/boradnotice', [App\Http\Controllers\HomeController::class, 'boradnotice'])->name('boradnotice');
@@ -190,7 +193,7 @@ Route::delete('/file/{id}', [App\Http\Controllers\HomeController::class, 'delete
 
 Route::put('/file/{id}/restore', [App\Http\Controllers\HomeController::class, 'restore'])->name('file.restore');
 
-Route::get('/download-folder/{folderId}', [App\Http\Controllers\HomeController::class, 'downloadFolder']);
+Route::get('/download-folder/{folderPath}', [App\Http\Controllers\HomeController::class, 'downloadFolder']);
 
 Route::put('/file/{id}/restorefile', [App\Http\Controllers\HomeController::class, 'restorefile'])->name('file.restorefile');
 
