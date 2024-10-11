@@ -169,10 +169,16 @@ window.onload = function() {
             </div>
             
             <div class="rop_regseter">
-<input type="checkbox" id="check_regs" name="check_reg" value="1" disabled  required>
-<label for="">
+            <input type="checkbox" id="check_regs" name="check_reg" value="1" disabled required>
+
+            <label for="check_regs">
+    Read the policy
+  </label>
+
+<!-- <label for="">
 Read the policy <a data-bs-toggle="modal" data-bs-target="#term_regester">Click here</a>
-</label>
+</label> -->
+
 </div>
 <div class="term_sshoww" style="display:none;">
     <p>You must agree to the terms and conditions before continuing</p>
@@ -829,15 +835,16 @@ Read the policy <a data-bs-toggle="modal" data-bs-target="#term_regester">Click 
     margin: 0;
     color: #B3B3B3;
     font-size: 13px;
+    cursor: pointer;
 }
 
 .rop_regseter input {
     width: 17px;
     height: 17px;
     opacity: 0.5;
-    /*pointer-events: none;*/
     position: relative;
     top: -1px;
+    cursor: pointer;
 }
 
 .term_sshoww p {
@@ -1458,24 +1465,29 @@ $(document).ready(function() {
                             </div>
 <!--term pop end-->
 
-    <script>
-        document.getElementById('i_agree').addEventListener('click', function() {
-            var checkbox = document.getElementById('check_reg');
-             $('#term_regester').modal('hide');
-            checkbox.checked = true;
-            checkbox.disabled = false;
-        });
-        
-            document.getElementById('close_bbtn').addEventListener('click', function() {
-            var termShowElement = document.querySelector('.term_sshoww');
-            termShowElement.style.display = 'block';
-            
-            setTimeout(function() {
-                termShowElement.style.display = 'none';
-            }, 5000); // 5000 milliseconds = 5 seconds
-        });
-        
-    </script>
+<script>
+// Body click event listener
+$('body').on('click', '#check_regs, label[for="check_regs"]', function(e) {
+    e.preventDefault(); // Prevent the checkbox from being checked immediately
+    $('#term_regester').modal('show'); // Open the modal when the checkbox or its label is clicked
+});
+
+// When the user clicks "I AGREE"
+$('#i_agree').on('click', function() {
+    var checkbox = $('#check_regs');
+    $('#term_regester').modal('hide'); // Close the modal
+    checkbox.prop('checked', true); // Check the checkbox
+    checkbox.prop('disabled', false); // Enable the checkbox
+});
+
+// When the user clicks "I DISAGREE"
+$('#close_bbtn').on('click', function() {
+    var checkbox = $('#check_regs');
+    $('#term_regester').modal('hide'); // Close the modal
+    checkbox.prop('checked', false); // Keep the checkbox unchecked
+});
+
+</script>
     
         <script>
 $(document).ready(function() {
