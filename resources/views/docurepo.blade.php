@@ -815,7 +815,7 @@ document.addEventListener('DOMContentLoaded', function() {
 </div>
 <div class="root_btn">  
 <div class="attach_ann">
-<input type="file" id="aoa-file" name="file" accept="" required="">
+<input type="file" id="aoa-file" name="file" accept="" >
 <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
 <g clip-path="url(#clip0_4033_7422)">
 <path d="M14.4031 8.00033L8.26234 14.1411C7.40991 14.9717 6.26465 15.433 5.07454 15.4252C3.88443 15.4175 2.74527 14.9413 1.90372 14.0997C1.06217 13.2582 0.585965 12.119 0.578221 10.9289C0.570477 9.73882 1.03182 8.59356 1.86234 7.74113L8.18661 1.41686C8.75241 0.851063 9.51979 0.533203 10.3199 0.533203C11.1201 0.533203 11.8875 0.851063 12.4533 1.41686C13.0191 1.98265 13.3369 2.75004 13.3369 3.55019C13.3369 4.35035 13.0191 5.11773 12.4533 5.68353L6.31141 11.8254C6.02851 12.1083 5.64482 12.2672 5.24474 12.2672C4.84467 12.2672 4.46097 12.1083 4.17808 11.8254C3.89518 11.5425 3.73625 11.1588 3.73625 10.7587C3.73625 10.3586 3.89518 9.97496 4.17808 9.69206L10.1365 3.73366" stroke="#A3AED0" stroke-width="1.5"/>
@@ -1477,7 +1477,7 @@ closeToastBtn.addEventListener("click", closeToast);
 
                     <div class="hearder-entres">
                       <div class="volt_headd-filter">
-<span>Home</span>
+<!-- <span>Home</span> -->
                      <div class="go_and_search">
                          <a class="g_searttcg" target="_blank" onclick="openToast('info')">
                              Advanced Search
@@ -1865,6 +1865,131 @@ $(document).ready(function() {
             <div class="file-contents"></div>
         </div>
         </div>
+
+
+<!-- Rename Modal -->
+<!-- Rename Modal -->
+<div class="modal fade" id="renameModal" tabindex="-1" role="dialog" aria-labelledby="renameModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="renameModalLabel">Rename Folder</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <input type="text" id="newFolderName" class="form-control" placeholder="Enter new folder name" required>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                <button type="button" id="confirmRename" class="btn btn-primary">Rename</button>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+$(document).ready(function() {
+    $(document).on('click', '.download_nt', function() {
+        var folderPath = $(this).data('folder-path');
+
+        // Show a loading spinner or message
+        var loadingMessage = $("<div>Preparing your download...</div>");
+        $('body').append(loadingMessage);
+
+        // Send AJAX request to download the folder
+        $.ajax({
+            url: '/download-folder/' + encodeURIComponent(folderPath), // URL-encode the folder path
+            type: 'GET',
+            success: function(response) {
+                // Remove loading message
+                loadingMessage.remove();
+
+                // Check if the response contains a valid success message
+                if (response && response.success) {
+                    // Trigger file download using the URL of the ZIP file
+                    window.location.href = response.zipFileUrl; // Ensure zipFileUrl is correctly set
+                } else {
+                    console.log(response); // Log the entire response to debug
+                    alert('Error: ' + (response.message || 'An unknown error occurred.'));
+                }
+            },
+            error: function(xhr, status, error) {
+                // Remove loading message
+                loadingMessage.remove();
+                console.error('Error details:', status, error, xhr.responseText); // Log the full error for debugging
+                alert('An error occurred while downloading the folder. Please try again.');
+            }
+        });
+    });
+});
+
+
+
+
+</script>
+<script>
+    $(document).ready(function() {
+    // When the rename link is clicked
+    $(document).on('click', '.rename_nt', function() {
+        // Get the current folder name
+        var currentFolderName = $(this).closest('li').find('span').text();
+        var folderId = $(this).closest('button').data('folder-id');
+
+        // Set the current folder name in the input field
+        $('#newFolderName').val(currentFolderName);
+
+        // Open the modal
+        $('#renameModal').modal('show');
+
+        // Handle the confirm rename button click
+        $('#confirmRename').off('click').on('click', function() {
+            var newFolderName = $('#newFolderName').val();
+
+            // AJAX call to rename the folder
+            $.ajax({
+                url: '/rename-folder', // Replace with your rename endpoint
+                type: 'POST',
+                data: {
+                    id: folderId,
+                    name: newFolderName,
+                    _token: '{{ csrf_token() }}' // Ensure you include CSRF token
+                },
+                success: function(response) {
+                    // Handle success (e.g., update the folder name in the UI)
+                    if (response.success) {
+                        $(this).closest('li').find('span').text(newFolderName);
+                        $('#renameModal').modal('hide');
+                    } else {
+                        alert('Error renaming folder: ' + response.message);
+                    }
+                },
+                error: function() {
+                    alert('Error renaming folder. Please try again.');
+                }
+            });
+        });
+    });
+});
+
+
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
+<script>
+    function encryptFileId(fileId) {
+        const secretKey = 'tu-amb-lene-aa'; // Use a secure key
+        const encryptedId = CryptoJS.AES.encrypt(fileId, secretKey).toString();
+        return encryptedId;
+    }
+
+    function openFile(fileId) {
+        const encryptedId = encryptFileId(fileId);
+        const url = `/showfile/${encodeURIComponent(encryptedId)}`;
+        window.open(url, '_blank'); // Open in a new tab
+    }
+</script>
+
+
         </div>
 
         </div>
@@ -2182,22 +2307,22 @@ $(document).ready(function() {
         <h2>CATEGORIES</h2>
     </div>
     <ul id="search-list">
-        <li><span>Book-Keeping / Bank Account Statements</span><button data-bs-toggle="modal" data-bs-target="#bankaccstatement_pop"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+        {{-- <li><span>Book-Keeping / Bank Account Statements</span><button data-bs-toggle="modal" data-bs-target="#bankaccstatement_pop"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
 <path d="M14.75 10.25V13.25C14.75 13.6478 14.592 14.0294 14.3107 14.3107C14.0294 14.592 13.6478 14.75 13.25 14.75H2.75C2.35218 14.75 1.97064 14.592 1.68934 14.3107C1.40804 14.0294 1.25 13.6478 1.25 13.25V10.25M11.75 5L8 1.25M8 1.25L4.25 5M8 1.25V10.25" stroke="#CEFFA8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-</svg></button></li>
-        <li><span>Book-Keeping / Fixed Deposit Statements</span><button data-bs-toggle="modal" data-bs-target="#fixeddepositstatement_pop"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+</svg></button></li> --}}
+        {{-- <li><span>Book-Keeping / Fixed Deposit Statements</span><button data-bs-toggle="modal" data-bs-target="#fixeddepositstatement_pop"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
 <path d="M14.75 10.25V13.25C14.75 13.6478 14.592 14.0294 14.3107 14.3107C14.0294 14.592 13.6478 14.75 13.25 14.75H2.75C2.35218 14.75 1.97064 14.592 1.68934 14.3107C1.40804 14.0294 1.25 13.6478 1.25 13.25V10.25M11.75 5L8 1.25M8 1.25L4.25 5M8 1.25V10.25" stroke="#CEFFA8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-</svg></button></li>
-        <li><span>Book-Keeping / Credit Card Statements</span><button data-bs-toggle="modal" data-bs-target="#creditcardstatement_pop"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+</svg></button></li> --}}
+        {{-- <li><span>Book-Keeping / Credit Card Statements</span><button data-bs-toggle="modal" data-bs-target="#creditcardstatement_pop"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
 <path d="M14.75 10.25V13.25C14.75 13.6478 14.592 14.0294 14.3107 14.3107C14.0294 14.592 13.6478 14.75 13.25 14.75H2.75C2.35218 14.75 1.97064 14.592 1.68934 14.3107C1.40804 14.0294 1.25 13.6478 1.25 13.25V10.25M11.75 5L8 1.25M8 1.25L4.25 5M8 1.25V10.25" stroke="#CEFFA8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-</svg></button></li>
-        <li><span>Book-Keeping / Mutual Fund Statements</span><button data-bs-toggle="modal" data-bs-target="#mutualfundstatement_pop"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+</svg></button></li> --}}
+        {{-- <li><span>Book-Keeping / Mutual Fund Statements</span><button data-bs-toggle="modal" data-bs-target="#mutualfundstatement_pop"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
 <path d="M14.75 10.25V13.25C14.75 13.6478 14.592 14.0294 14.3107 14.3107C14.0294 14.592 13.6478 14.75 13.25 14.75H2.75C2.35218 14.75 1.97064 14.592 1.68934 14.3107C1.40804 14.0294 1.25 13.6478 1.25 13.25V10.25M11.75 5L8 1.25M8 1.25L4.25 5M8 1.25V10.25" stroke="#CEFFA8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-</svg></button></li>
+</svg></button></li> --}}
 
 <!---->
 
-        <li><span>Finance / Charter documents / Director Details / Director 1 / Photo</span><button data-bs-toggle="modal" data-bs-target="#director1_photo_pop"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+        {{-- <li><span>Finance / Charter documents / Director Details / Director 1 / Photo</span><button data-bs-toggle="modal" data-bs-target="#director1_photo_pop"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
 <path d="M14.75 10.25V13.25C14.75 13.6478 14.592 14.0294 14.3107 14.3107C14.0294 14.592 13.6478 14.75 13.25 14.75H2.75C2.35218 14.75 1.97064 14.592 1.68934 14.3107C1.40804 14.0294 1.25 13.6478 1.25 13.25V10.25M11.75 5L8 1.25M8 1.25L4.25 5M8 1.25V10.25" stroke="#CEFFA8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
 </svg></button></li>
         <li><span>Finance / Charter documents / Director Details / Director 1 /  Signature image</span><button data-bs-toggle="modal" data-bs-target="#director1_signature_pop"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -2214,10 +2339,10 @@ $(document).ready(function() {
 </svg></button></li>
         <li><span>Finance / Charter documents / Director Details / Director 1 / Contact Details</span><button data-bs-toggle="modal" data-bs-target="#director1_contactdetails_pop"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
 <path d="M14.75 10.25V13.25C14.75 13.6478 14.592 14.0294 14.3107 14.3107C14.0294 14.592 13.6478 14.75 13.25 14.75H2.75C2.35218 14.75 1.97064 14.592 1.68934 14.3107C1.40804 14.0294 1.25 13.6478 1.25 13.25V10.25M11.75 5L8 1.25M8 1.25L4.25 5M8 1.25V10.25" stroke="#CEFFA8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-</svg></button></li>
+</svg></button></li> --}}
 
 <!---->
-        <li><span>Finance / Charter documents / Director Details / Director 2 / Photo</span><button data-bs-toggle="modal" data-bs-target="#director2_photo_pop"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+        {{-- <li><span>Finance / Charter documents / Director Details / Director 2 / Photo</span><button data-bs-toggle="modal" data-bs-target="#director2_photo_pop"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
 <path d="M14.75 10.25V13.25C14.75 13.6478 14.592 14.0294 14.3107 14.3107C14.0294 14.592 13.6478 14.75 13.25 14.75H2.75C2.35218 14.75 1.97064 14.592 1.68934 14.3107C1.40804 14.0294 1.25 13.6478 1.25 13.25V10.25M11.75 5L8 1.25M8 1.25L4.25 5M8 1.25V10.25" stroke="#CEFFA8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
 </svg></button></li>
         <li><span>Finance / Charter documents / Director Details / Director 2 /  Signature image</span><button data-bs-toggle="modal" data-bs-target="#director2_signature_pop"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -2234,11 +2359,11 @@ $(document).ready(function() {
 </svg></button></li>
         <li><span>Finance / Charter documents / Director Details / Director 2 / Contact Details</span><button data-bs-toggle="modal" data-bs-target="#director2_contactdetails_pop"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
 <path d="M14.75 10.25V13.25C14.75 13.6478 14.592 14.0294 14.3107 14.3107C14.0294 14.592 13.6478 14.75 13.25 14.75H2.75C2.35218 14.75 1.97064 14.592 1.68934 14.3107C1.40804 14.0294 1.25 13.6478 1.25 13.25V10.25M11.75 5L8 1.25M8 1.25L4.25 5M8 1.25V10.25" stroke="#CEFFA8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-</svg></button></li>
+</svg></button></li> --}}
 
 <!---->
 
-        <li><span>Finance / Charter documents / Incorporation / Memorandum of Association</span><button data-bs-toggle="modal" data-bs-target="#inco_Moa_pop"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+        {{-- <li><span>Finance / Charter documents / Incorporation / Memorandum of Association</span><button data-bs-toggle="modal" data-bs-target="#inco_Moa_pop"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
 <path d="M14.75 10.25V13.25C14.75 13.6478 14.592 14.0294 14.3107 14.3107C14.0294 14.592 13.6478 14.75 13.25 14.75H2.75C2.35218 14.75 1.97064 14.592 1.68934 14.3107C1.40804 14.0294 1.25 13.6478 1.25 13.25V10.25M11.75 5L8 1.25M8 1.25L4.25 5M8 1.25V10.25" stroke="#CEFFA8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
 </svg></button></li>
         <li><span>Finance / Charter documents / Incorporation / Articles of Association</span><button data-bs-toggle="modal" data-bs-target="#inco_aoa_pop"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -2252,218 +2377,218 @@ $(document).ready(function() {
 </svg></button></li>
         <li><span>Finance / Charter documents / Incorporation / LLP Agreement</span><button data-bs-toggle="modal" data-bs-target="#inco_llpaggree_pop"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
 <path d="M14.75 10.25V13.25C14.75 13.6478 14.592 14.0294 14.3107 14.3107C14.0294 14.592 13.6478 14.75 13.25 14.75H2.75C2.35218 14.75 1.97064 14.592 1.68934 14.3107C1.40804 14.0294 1.25 13.6478 1.25 13.25V10.25M11.75 5L8 1.25M8 1.25L4.25 5M8 1.25V10.25" stroke="#CEFFA8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-</svg></button></li>
-        <li><span>Finance / Charter documents / Incorporation / Trust Deed</span><button data-bs-toggle="modal" data-bs-target="#inco_trustdeed_pop"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+</svg></button></li> --}}
+        {{-- <li><span>Finance / Charter documents / Incorporation / Trust Deed</span><button data-bs-toggle="modal" data-bs-target="#inco_trustdeed_pop"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
 <path d="M14.75 10.25V13.25C14.75 13.6478 14.592 14.0294 14.3107 14.3107C14.0294 14.592 13.6478 14.75 13.25 14.75H2.75C2.35218 14.75 1.97064 14.592 1.68934 14.3107C1.40804 14.0294 1.25 13.6478 1.25 13.25V10.25M11.75 5L8 1.25M8 1.25L4.25 5M8 1.25V10.25" stroke="#CEFFA8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-</svg></button></li>
-        <li><span>Finance / Charter documents / Incorporation / Share certificates</span><button data-bs-toggle="modal" data-bs-target="#inco_sharecertificate_pop"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+</svg></button></li> --}}
+        {{-- <li><span>Finance / Charter documents / Incorporation / Share certificates</span><button data-bs-toggle="modal" data-bs-target="#inco_sharecertificate_pop"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
 <path d="M14.75 10.25V13.25C14.75 13.6478 14.592 14.0294 14.3107 14.3107C14.0294 14.592 13.6478 14.75 13.25 14.75H2.75C2.35218 14.75 1.97064 14.592 1.68934 14.3107C1.40804 14.0294 1.25 13.6478 1.25 13.25V10.25M11.75 5L8 1.25M8 1.25L4.25 5M8 1.25V10.25" stroke="#CEFFA8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-</svg></button></li>
+</svg></button></li> --}}
 
 <!---->
 
-        <li><span>Finance / Charter documents / Registrations / PAN certificate</span><button data-bs-toggle="modal" data-bs-target="#Regist_pan_pop"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+        {{-- <li><span>Finance / Charter documents / Registrations / PAN certificate</span><button data-bs-toggle="modal" data-bs-target="#Regist_pan_pop"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
 <path d="M14.75 10.25V13.25C14.75 13.6478 14.592 14.0294 14.3107 14.3107C14.0294 14.592 13.6478 14.75 13.25 14.75H2.75C2.35218 14.75 1.97064 14.592 1.68934 14.3107C1.40804 14.0294 1.25 13.6478 1.25 13.25V10.25M11.75 5L8 1.25M8 1.25L4.25 5M8 1.25V10.25" stroke="#CEFFA8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-</svg></button></li>
-        <li><span>Finance / Charter documents / Registrations / TAN certificate</span><button data-bs-toggle="modal" data-bs-target="#Regist_tan_pop"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+</svg></button></li> --}}
+        {{-- <li><span>Finance / Charter documents / Registrations / TAN certificate</span><button data-bs-toggle="modal" data-bs-target="#Regist_tan_pop"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
 <path d="M14.75 10.25V13.25C14.75 13.6478 14.592 14.0294 14.3107 14.3107C14.0294 14.592 13.6478 14.75 13.25 14.75H2.75C2.35218 14.75 1.97064 14.592 1.68934 14.3107C1.40804 14.0294 1.25 13.6478 1.25 13.25V10.25M11.75 5L8 1.25M8 1.25L4.25 5M8 1.25V10.25" stroke="#CEFFA8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-</svg></button></li>
-        <li><span>Finance / Charter documents / Registrations / GSTIN certificate</span><button data-bs-toggle="modal" data-bs-target="#Regist_gstin_pop"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+</svg></button></li> --}}
+        {{-- <li><span>Finance / Charter documents / Registrations / GSTIN certificate</span><button data-bs-toggle="modal" data-bs-target="#Regist_gstin_pop"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
 <path d="M14.75 10.25V13.25C14.75 13.6478 14.592 14.0294 14.3107 14.3107C14.0294 14.592 13.6478 14.75 13.25 14.75H2.75C2.35218 14.75 1.97064 14.592 1.68934 14.3107C1.40804 14.0294 1.25 13.6478 1.25 13.25V10.25M11.75 5L8 1.25M8 1.25L4.25 5M8 1.25V10.25" stroke="#CEFFA8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-</svg></button></li>
-        <li><span>Finance / Charter documents / Registrations / MSME certificate</span><button data-bs-toggle="modal" data-bs-target="#Regist_msme_pop"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+</svg></button></li> --}}
+        {{-- <li><span>Finance / Charter documents / Registrations / MSME certificate</span><button data-bs-toggle="modal" data-bs-target="#Regist_msme_pop"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
 <path d="M14.75 10.25V13.25C14.75 13.6478 14.592 14.0294 14.3107 14.3107C14.0294 14.592 13.6478 14.75 13.25 14.75H2.75C2.35218 14.75 1.97064 14.592 1.68934 14.3107C1.40804 14.0294 1.25 13.6478 1.25 13.25V10.25M11.75 5L8 1.25M8 1.25L4.25 5M8 1.25V10.25" stroke="#CEFFA8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-</svg></button></li>
-        <li><span>Finance / Charter documents / Registrations / Trademark</span><button data-bs-toggle="modal" data-bs-target="#Regist_trademark_pop"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+</svg></button></li> --}}
+        {{-- <li><span>Finance / Charter documents / Registrations / Trademark</span><button data-bs-toggle="modal" data-bs-target="#Regist_trademark_pop"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
 <path d="M14.75 10.25V13.25C14.75 13.6478 14.592 14.0294 14.3107 14.3107C14.0294 14.592 13.6478 14.75 13.25 14.75H2.75C2.35218 14.75 1.97064 14.592 1.68934 14.3107C1.40804 14.0294 1.25 13.6478 1.25 13.25V10.25M11.75 5L8 1.25M8 1.25L4.25 5M8 1.25V10.25" stroke="#CEFFA8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-</svg></button></li>
-        <li><span>Finance / Charter documents / Registrations / Provident Fund certificate</span><button data-bs-toggle="modal" data-bs-target="#Regist_profc_pop"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+</svg></button></li> --}}
+        {{-- <li><span>Finance / Charter documents / Registrations / Provident Fund certificate</span><button data-bs-toggle="modal" data-bs-target="#Regist_profc_pop"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
 <path d="M14.75 10.25V13.25C14.75 13.6478 14.592 14.0294 14.3107 14.3107C14.0294 14.592 13.6478 14.75 13.25 14.75H2.75C2.35218 14.75 1.97064 14.592 1.68934 14.3107C1.40804 14.0294 1.25 13.6478 1.25 13.25V10.25M11.75 5L8 1.25M8 1.25L4.25 5M8 1.25V10.25" stroke="#CEFFA8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-</svg></button></li>
-        <li><span>Finance / Charter documents / Registrations / Employee State Insurance certificate</span><button data-bs-toggle="modal" data-bs-target="#Regist_esic_pop"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+</svg></button></li> --}}
+        {{-- <li><span>Finance / Charter documents / Registrations / Employee State Insurance certificate</span><button data-bs-toggle="modal" data-bs-target="#Regist_esic_pop"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
 <path d="M14.75 10.25V13.25C14.75 13.6478 14.592 14.0294 14.3107 14.3107C14.0294 14.592 13.6478 14.75 13.25 14.75H2.75C2.35218 14.75 1.97064 14.592 1.68934 14.3107C1.40804 14.0294 1.25 13.6478 1.25 13.25V10.25M11.75 5L8 1.25M8 1.25L4.25 5M8 1.25V10.25" stroke="#CEFFA8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-</svg></button></li>
-        <li><span>Finance / Charter documents / Registrations / Professional Tax certificate</span><button data-bs-toggle="modal" data-bs-target="#Regist_protaxcer_pop"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+</svg></button></li> --}}
+        {{-- <li><span>Finance / Charter documents / Registrations / Professional Tax certificate</span><button data-bs-toggle="modal" data-bs-target="#Regist_protaxcer_pop"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
 <path d="M14.75 10.25V13.25C14.75 13.6478 14.592 14.0294 14.3107 14.3107C14.0294 14.592 13.6478 14.75 13.25 14.75H2.75C2.35218 14.75 1.97064 14.592 1.68934 14.3107C1.40804 14.0294 1.25 13.6478 1.25 13.25V10.25M11.75 5L8 1.25M8 1.25L4.25 5M8 1.25V10.25" stroke="#CEFFA8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-</svg></button></li>
-        <li><span>Finance / Charter documents / Registrations / Labour Welfare Fund certificate</span><button data-bs-toggle="modal" data-bs-target="#Regist_lwfc_pop"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+</svg></button></li> --}}
+        {{-- <li><span>Finance / Charter documents / Registrations / Labour Welfare Fund certificate</span><button data-bs-toggle="modal" data-bs-target="#Regist_lwfc_pop"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
 <path d="M14.75 10.25V13.25C14.75 13.6478 14.592 14.0294 14.3107 14.3107C14.0294 14.592 13.6478 14.75 13.25 14.75H2.75C2.35218 14.75 1.97064 14.592 1.68934 14.3107C1.40804 14.0294 1.25 13.6478 1.25 13.25V10.25M11.75 5L8 1.25M8 1.25L4.25 5M8 1.25V10.25" stroke="#CEFFA8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-</svg></button></li>
-        <li><span>Finance / Charter documents / Registrations / POSH Policy</span><button data-bs-toggle="modal" data-bs-target="#Regist_posh_pop"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+</svg></button></li> --}}
+        {{-- <li><span>Finance / Charter documents / Registrations / POSH Policy</span><button data-bs-toggle="modal" data-bs-target="#Regist_posh_pop"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
 <path d="M14.75 10.25V13.25C14.75 13.6478 14.592 14.0294 14.3107 14.3107C14.0294 14.592 13.6478 14.75 13.25 14.75H2.75C2.35218 14.75 1.97064 14.592 1.68934 14.3107C1.40804 14.0294 1.25 13.6478 1.25 13.25V10.25M11.75 5L8 1.25M8 1.25L4.25 5M8 1.25V10.25" stroke="#CEFFA8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-</svg></button></li>
+</svg></button></li> --}}
 
 <!---->
 
-        <li><span>Legal / Secretarial / Annual Filings / AoC-4 (Annual Filing Statement Form)</span><button data-bs-toggle="modal" data-bs-target="#filling_AoC_4_pop"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+        {{-- <li><span>Legal / Secretarial / Annual Filings / AoC-4 (Annual Filing Statement Form)</span><button data-bs-toggle="modal" data-bs-target="#filling_AoC_4_pop"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
 <path d="M14.75 10.25V13.25C14.75 13.6478 14.592 14.0294 14.3107 14.3107C14.0294 14.592 13.6478 14.75 13.25 14.75H2.75C2.35218 14.75 1.97064 14.592 1.68934 14.3107C1.40804 14.0294 1.25 13.6478 1.25 13.25V10.25M11.75 5L8 1.25M8 1.25L4.25 5M8 1.25V10.25" stroke="#CEFFA8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-</svg></button></li>
-        <li><span>Legal / Secretarial / Annual Filings / AoC-4 (CFS) (Form for filing consolidated financial statements and other documents with the Registrar)</span><button data-bs-toggle="modal" data-bs-target="#filling_AoC_4_cfs_pop"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+</svg></button></li> --}}
+        {{-- <li><span>Legal / Secretarial / Annual Filings / AoC-4 (CFS) (Form for filing consolidated financial statements and other documents with the Registrar)</span><button data-bs-toggle="modal" data-bs-target="#filling_AoC_4_cfs_pop"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
 <path d="M14.75 10.25V13.25C14.75 13.6478 14.592 14.0294 14.3107 14.3107C14.0294 14.592 13.6478 14.75 13.25 14.75H2.75C2.35218 14.75 1.97064 14.592 1.68934 14.3107C1.40804 14.0294 1.25 13.6478 1.25 13.25V10.25M11.75 5L8 1.25M8 1.25L4.25 5M8 1.25V10.25" stroke="#CEFFA8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-</svg></button></li>
-        <li><span>Legal / Secretarial / Annual Filings / MGT-7/ (Annual Return of a company)</span><button data-bs-toggle="modal" data-bs-target="#filling_MGT_7_pop"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+</svg></button></li> --}}
+        {{-- <li><span>Legal / Secretarial / Annual Filings / MGT-7/ (Annual Return of a company)</span><button data-bs-toggle="modal" data-bs-target="#filling_MGT_7_pop"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
 <path d="M14.75 10.25V13.25C14.75 13.6478 14.592 14.0294 14.3107 14.3107C14.0294 14.592 13.6478 14.75 13.25 14.75H2.75C2.35218 14.75 1.97064 14.592 1.68934 14.3107C1.40804 14.0294 1.25 13.6478 1.25 13.25V10.25M11.75 5L8 1.25M8 1.25L4.25 5M8 1.25V10.25" stroke="#CEFFA8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-</svg></button></li>
-        <li><span>Legal / Secretarial / Annual Filings / MGT-7A (Annual Return of a small company)</span><button data-bs-toggle="modal" data-bs-target="#filling_MGT_7a_pop"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+</svg></button></li> --}}
+        {{-- <li><span>Legal / Secretarial / Annual Filings / MGT-7A (Annual Return of a small company)</span><button data-bs-toggle="modal" data-bs-target="#filling_MGT_7a_pop"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
 <path d="M14.75 10.25V13.25C14.75 13.6478 14.592 14.0294 14.3107 14.3107C14.0294 14.592 13.6478 14.75 13.25 14.75H2.75C2.35218 14.75 1.97064 14.592 1.68934 14.3107C1.40804 14.0294 1.25 13.6478 1.25 13.25V10.25M11.75 5L8 1.25M8 1.25L4.25 5M8 1.25V10.25" stroke="#CEFFA8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-</svg></button></li>
+</svg></button></li> --}}
 
 <!---->
 
-        <li><span>Legal / Secretarial / Annual General Meeting / Notices</span><button data-bs-toggle="modal" data-bs-target="#anual_Notices_pop"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+        {{-- <li><span>Legal / Secretarial / Annual General Meeting / Notices</span><button data-bs-toggle="modal" data-bs-target="#anual_Notices_pop"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
 <path d="M14.75 10.25V13.25C14.75 13.6478 14.592 14.0294 14.3107 14.3107C14.0294 14.592 13.6478 14.75 13.25 14.75H2.75C2.35218 14.75 1.97064 14.592 1.68934 14.3107C1.40804 14.0294 1.25 13.6478 1.25 13.25V10.25M11.75 5L8 1.25M8 1.25L4.25 5M8 1.25V10.25" stroke="#CEFFA8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-</svg></button></li>
-        <li><span>Legal / Secretarial / Annual General Meeting / Minute Book</span><button data-bs-toggle="modal" data-bs-target="#anual_minut_pop"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+</svg></button></li> --}}
+        {{-- <li><span>Legal / Secretarial / Annual General Meeting / Minute Book</span><button data-bs-toggle="modal" data-bs-target="#anual_minut_pop"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
 <path d="M14.75 10.25V13.25C14.75 13.6478 14.592 14.0294 14.3107 14.3107C14.0294 14.592 13.6478 14.75 13.25 14.75H2.75C2.35218 14.75 1.97064 14.592 1.68934 14.3107C1.40804 14.0294 1.25 13.6478 1.25 13.25V10.25M11.75 5L8 1.25M8 1.25L4.25 5M8 1.25V10.25" stroke="#CEFFA8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-</svg></button></li>
-        <li><span>Legal / Secretarial / Annual General Meeting / Attendance sheet</span><button data-bs-toggle="modal" data-bs-target="#anual_atandence_pop"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+</svg></button></li> --}}
+        {{-- <li><span>Legal / Secretarial / Annual General Meeting / Attendance sheet</span><button data-bs-toggle="modal" data-bs-target="#anual_atandence_pop"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
 <path d="M14.75 10.25V13.25C14.75 13.6478 14.592 14.0294 14.3107 14.3107C14.0294 14.592 13.6478 14.75 13.25 14.75H2.75C2.35218 14.75 1.97064 14.592 1.68934 14.3107C1.40804 14.0294 1.25 13.6478 1.25 13.25V10.25M11.75 5L8 1.25M8 1.25L4.25 5M8 1.25V10.25" stroke="#CEFFA8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-</svg></button></li>
-        <li><span>Legal / Secretarial / Annual General Meeting / Resolutions</span><button data-bs-toggle="modal" data-bs-target="#anual_Resolutions_pop"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+</svg></button></li> --}}
+        {{-- <li><span>Legal / Secretarial / Annual General Meeting / Resolutions</span><button data-bs-toggle="modal" data-bs-target="#anual_Resolutions_pop"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
 <path d="M14.75 10.25V13.25C14.75 13.6478 14.592 14.0294 14.3107 14.3107C14.0294 14.592 13.6478 14.75 13.25 14.75H2.75C2.35218 14.75 1.97064 14.592 1.68934 14.3107C1.40804 14.0294 1.25 13.6478 1.25 13.25V10.25M11.75 5L8 1.25M8 1.25L4.25 5M8 1.25V10.25" stroke="#CEFFA8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-</svg></button></li>
+</svg></button></li> --}}
 
 <!---->
 
-        <li><span>Legal / Secretarial / Auditor Appointment / Board Resolution for the appointment of Auditor</span><button data-bs-toggle="modal" data-bs-target="#aduit_reso_pop"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+        {{-- <li><span>Legal / Secretarial / Auditor Appointment / Board Resolution for the appointment of Auditor</span><button data-bs-toggle="modal" data-bs-target="#aduit_reso_pop"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
 <path d="M14.75 10.25V13.25C14.75 13.6478 14.592 14.0294 14.3107 14.3107C14.0294 14.592 13.6478 14.75 13.25 14.75H2.75C2.35218 14.75 1.97064 14.592 1.68934 14.3107C1.40804 14.0294 1.25 13.6478 1.25 13.25V10.25M11.75 5L8 1.25M8 1.25L4.25 5M8 1.25V10.25" stroke="#CEFFA8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-</svg></button></li>
-        <li><span>Legal / Secretarial / Auditor Appointment / Intimation to auditor</span><button data-bs-toggle="modal" data-bs-target="#audit_Intimation_pop"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+</svg></button></li> --}}
+        {{-- <li><span>Legal / Secretarial / Auditor Appointment / Intimation to auditor</span><button data-bs-toggle="modal" data-bs-target="#audit_Intimation_pop"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
 <path d="M14.75 10.25V13.25C14.75 13.6478 14.592 14.0294 14.3107 14.3107C14.0294 14.592 13.6478 14.75 13.25 14.75H2.75C2.35218 14.75 1.97064 14.592 1.68934 14.3107C1.40804 14.0294 1.25 13.6478 1.25 13.25V10.25M11.75 5L8 1.25M8 1.25L4.25 5M8 1.25V10.25" stroke="#CEFFA8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-</svg></button></li>
-        <li><span>Legal / Secretarial / Auditor Appointment / Letter of appointment</span><button data-bs-toggle="modal" data-bs-target="#audit_Letter_pop"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+</svg></button></li> --}}
+        {{-- <li><span>Legal / Secretarial / Auditor Appointment / Letter of appointment</span><button data-bs-toggle="modal" data-bs-target="#audit_Letter_pop"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
 <path d="M14.75 10.25V13.25C14.75 13.6478 14.592 14.0294 14.3107 14.3107C14.0294 14.592 13.6478 14.75 13.25 14.75H2.75C2.35218 14.75 1.97064 14.592 1.68934 14.3107C1.40804 14.0294 1.25 13.6478 1.25 13.25V10.25M11.75 5L8 1.25M8 1.25L4.25 5M8 1.25V10.25" stroke="#CEFFA8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-</svg></button></li>
-        <li><span>Legal / Secretarial / Auditor Appointment / Certificate as per Rule 4 and consent by Auditor for his appointment</span><button data-bs-toggle="modal" data-bs-target="#audit_Certificate_pop"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+</svg></button></li> --}}
+        {{-- <li><span>Legal / Secretarial / Auditor Appointment / Certificate as per Rule 4 and consent by Auditor for his appointment</span><button data-bs-toggle="modal" data-bs-target="#audit_Certificate_pop"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
 <path d="M14.75 10.25V13.25C14.75 13.6478 14.592 14.0294 14.3107 14.3107C14.0294 14.592 13.6478 14.75 13.25 14.75H2.75C2.35218 14.75 1.97064 14.592 1.68934 14.3107C1.40804 14.0294 1.25 13.6478 1.25 13.25V10.25M11.75 5L8 1.25M8 1.25L4.25 5M8 1.25V10.25" stroke="#CEFFA8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-</svg></button></li>
-        <li><span>Legal / Secretarial / Auditor Appointment / Acceptance letter for appointment</span><button data-bs-toggle="modal" data-bs-target="#audit_Acceptance_pop"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+</svg></button></li> --}}
+        {{-- <li><span>Legal / Secretarial / Auditor Appointment / Acceptance letter for appointment</span><button data-bs-toggle="modal" data-bs-target="#audit_Acceptance_pop"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
 <path d="M14.75 10.25V13.25C14.75 13.6478 14.592 14.0294 14.3107 14.3107C14.0294 14.592 13.6478 14.75 13.25 14.75H2.75C2.35218 14.75 1.97064 14.592 1.68934 14.3107C1.40804 14.0294 1.25 13.6478 1.25 13.25V10.25M11.75 5L8 1.25M8 1.25L4.25 5M8 1.25V10.25" stroke="#CEFFA8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-</svg></button></li>
-        <li><span>Legal / Secretarial / Auditor Appointment / Special Resolution</span><button data-bs-toggle="modal" data-bs-target="#audit_Resolution_pop"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+</svg></button></li> --}}
+        {{-- <li><span>Legal / Secretarial / Auditor Appointment / Special Resolution</span><button data-bs-toggle="modal" data-bs-target="#audit_Resolution_pop"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
 <path d="M14.75 10.25V13.25C14.75 13.6478 14.592 14.0294 14.3107 14.3107C14.0294 14.592 13.6478 14.75 13.25 14.75H2.75C2.35218 14.75 1.97064 14.592 1.68934 14.3107C1.40804 14.0294 1.25 13.6478 1.25 13.25V10.25M11.75 5L8 1.25M8 1.25L4.25 5M8 1.25V10.25" stroke="#CEFFA8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-</svg></button></li>
+</svg></button></li> --}}
 
 <!---->
 
-        <li><span>Legal / Secretarial / Auditor Exits / ADT-3 form</span><button data-bs-toggle="modal" data-bs-target="#aduitexit_ADT_3_pop"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+        {{-- <li><span>Legal / Secretarial / Auditor Exits / ADT-3 form</span><button data-bs-toggle="modal" data-bs-target="#aduitexit_ADT_3_pop"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
 <path d="M14.75 10.25V13.25C14.75 13.6478 14.592 14.0294 14.3107 14.3107C14.0294 14.592 13.6478 14.75 13.25 14.75H2.75C2.35218 14.75 1.97064 14.592 1.68934 14.3107C1.40804 14.0294 1.25 13.6478 1.25 13.25V10.25M11.75 5L8 1.25M8 1.25L4.25 5M8 1.25V10.25" stroke="#CEFFA8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-</svg></button></li>
-        <li><span>Legal / Secretarial / Auditor Exits / Resignation letter by auditor</span><button data-bs-toggle="modal" data-bs-target="#auditexit_regnisation_pop"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+</svg></button></li> --}}
+        {{-- <li><span>Legal / Secretarial / Auditor Exits / Resignation letter by auditor</span><button data-bs-toggle="modal" data-bs-target="#auditexit_regnisation_pop"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
 <path d="M14.75 10.25V13.25C14.75 13.6478 14.592 14.0294 14.3107 14.3107C14.0294 14.592 13.6478 14.75 13.25 14.75H2.75C2.35218 14.75 1.97064 14.592 1.68934 14.3107C1.40804 14.0294 1.25 13.6478 1.25 13.25V10.25M11.75 5L8 1.25M8 1.25L4.25 5M8 1.25V10.25" stroke="#CEFFA8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-</svg></button></li>
-        <li><span>Legal / Secretarial / Auditor Exits / Details of the grounds for seeking removal of auditor</span><button data-bs-toggle="modal" data-bs-target="#auditexit_dgs_pop"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+</svg></button></li> --}}
+        {{-- <li><span>Legal / Secretarial / Auditor Exits / Details of the grounds for seeking removal of auditor</span><button data-bs-toggle="modal" data-bs-target="#auditexit_dgs_pop"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
 <path d="M14.75 10.25V13.25C14.75 13.6478 14.592 14.0294 14.3107 14.3107C14.0294 14.592 13.6478 14.75 13.25 14.75H2.75C2.35218 14.75 1.97064 14.592 1.68934 14.3107C1.40804 14.0294 1.25 13.6478 1.25 13.25V10.25M11.75 5L8 1.25M8 1.25L4.25 5M8 1.25V10.25" stroke="#CEFFA8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-</svg></button></li>
-        <li><span>Legal / Secretarial / Auditor Exits / Special Resolution</span><button data-bs-toggle="modal" data-bs-target="#auditexit_se_r_pop"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+</svg></button></li> --}}
+        {{-- <li><span>Legal / Secretarial / Auditor Exits / Special Resolution</span><button data-bs-toggle="modal" data-bs-target="#auditexit_se_r_pop"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
 <path d="M14.75 10.25V13.25C14.75 13.6478 14.592 14.0294 14.3107 14.3107C14.0294 14.592 13.6478 14.75 13.25 14.75H2.75C2.35218 14.75 1.97064 14.592 1.68934 14.3107C1.40804 14.0294 1.25 13.6478 1.25 13.25V10.25M11.75 5L8 1.25M8 1.25L4.25 5M8 1.25V10.25" stroke="#CEFFA8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-</svg></button></li>
-        <li><span>Legal / Secretarial / Auditor Exits / ADT-2 (Application for removal of auditor(s) before expiry of term)</span><button data-bs-toggle="modal" data-bs-target="#auditexit_ADT_2_pop"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+</svg></button></li> --}}
+        {{-- <li><span>Legal / Secretarial / Auditor Exits / ADT-2 (Application for removal of auditor(s) before expiry of term)</span><button data-bs-toggle="modal" data-bs-target="#auditexit_ADT_2_pop"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
 <path d="M14.75 10.25V13.25C14.75 13.6478 14.592 14.0294 14.3107 14.3107C14.0294 14.592 13.6478 14.75 13.25 14.75H2.75C2.35218 14.75 1.97064 14.592 1.68934 14.3107C1.40804 14.0294 1.25 13.6478 1.25 13.25V10.25M11.75 5L8 1.25M8 1.25L4.25 5M8 1.25V10.25" stroke="#CEFFA8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-</svg></button></li>
+</svg></button></li> --}}
 
 <!---->
 
-        <li><span>Legal / Secretarial / Board Meetings / Notices</span><button data-bs-toggle="modal" data-bs-target="#board_Notices_pop"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+        {{-- <li><span>Legal / Secretarial / Board Meetings / Notices</span><button data-bs-toggle="modal" data-bs-target="#board_Notices_pop"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
 <path d="M14.75 10.25V13.25C14.75 13.6478 14.592 14.0294 14.3107 14.3107C14.0294 14.592 13.6478 14.75 13.25 14.75H2.75C2.35218 14.75 1.97064 14.592 1.68934 14.3107C1.40804 14.0294 1.25 13.6478 1.25 13.25V10.25M11.75 5L8 1.25M8 1.25L4.25 5M8 1.25V10.25" stroke="#CEFFA8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-</svg></button></li>
-        <li><span>Legal / Secretarial / Board Meetings / Minute Book</span><button data-bs-toggle="modal" data-bs-target="#board_minut_pop"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+</svg></button></li> --}}
+        {{-- <li><span>Legal / Secretarial / Board Meetings / Minute Book</span><button data-bs-toggle="modal" data-bs-target="#board_minut_pop"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
 <path d="M14.75 10.25V13.25C14.75 13.6478 14.592 14.0294 14.3107 14.3107C14.0294 14.592 13.6478 14.75 13.25 14.75H2.75C2.35218 14.75 1.97064 14.592 1.68934 14.3107C1.40804 14.0294 1.25 13.6478 1.25 13.25V10.25M11.75 5L8 1.25M8 1.25L4.25 5M8 1.25V10.25" stroke="#CEFFA8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-</svg></button></li>
-        <li><span>Legal / Secretarial / Board Meetings / Attendance sheet</span><button data-bs-toggle="modal" data-bs-target="#board_atandence_pop"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+</svg></button></li> --}}
+        {{-- <li><span>Legal / Secretarial / Board Meetings / Attendance sheet</span><button data-bs-toggle="modal" data-bs-target="#board_atandence_pop"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
 <path d="M14.75 10.25V13.25C14.75 13.6478 14.592 14.0294 14.3107 14.3107C14.0294 14.592 13.6478 14.75 13.25 14.75H2.75C2.35218 14.75 1.97064 14.592 1.68934 14.3107C1.40804 14.0294 1.25 13.6478 1.25 13.25V10.25M11.75 5L8 1.25M8 1.25L4.25 5M8 1.25V10.25" stroke="#CEFFA8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-</svg></button></li>
-        <li><span>Legal / Secretarial / Board Meetings / Resolutions</span><button data-bs-toggle="modal" data-bs-target="#board_Resolutions_pop"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+</svg></button></li> --}}
+        {{-- <li><span>Legal / Secretarial / Board Meetings / Resolutions</span><button data-bs-toggle="modal" data-bs-target="#board_Resolutions_pop"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
 <path d="M14.75 10.25V13.25C14.75 13.6478 14.592 14.0294 14.3107 14.3107C14.0294 14.592 13.6478 14.75 13.25 14.75H2.75C2.35218 14.75 1.97064 14.592 1.68934 14.3107C1.40804 14.0294 1.25 13.6478 1.25 13.25V10.25M11.75 5L8 1.25M8 1.25L4.25 5M8 1.25V10.25" stroke="#CEFFA8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-</svg></button></li>
+</svg></button></li> --}}
 
 <!---->
 
-        <li><span>Legal / Secretarial / Deposit Undertakings /Form DPT-3</span><button data-bs-toggle="modal" data-bs-target="#Undertakings_dpt_3_pop"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+        {{-- <li><span>Legal / Secretarial / Deposit Undertakings /Form DPT-3</span><button data-bs-toggle="modal" data-bs-target="#Undertakings_dpt_3_pop"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
 <path d="M14.75 10.25V13.25C14.75 13.6478 14.592 14.0294 14.3107 14.3107C14.0294 14.592 13.6478 14.75 13.25 14.75H2.75C2.35218 14.75 1.97064 14.592 1.68934 14.3107C1.40804 14.0294 1.25 13.6478 1.25 13.25V10.25M11.75 5L8 1.25M8 1.25L4.25 5M8 1.25V10.25" stroke="#CEFFA8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-</svg></button></li>
+</svg></button></li> --}}
 
 <!---->
 
-        <li><span>Legal / Secretarial / Director Appointments / DIR-3 KYC</span><button data-bs-toggle="modal" data-bs-target="#director_DIR_3_pop"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+        {{-- <li><span>Legal / Secretarial / Director Appointments / DIR-3 KYC</span><button data-bs-toggle="modal" data-bs-target="#director_DIR_3_pop"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
 <path d="M14.75 10.25V13.25C14.75 13.6478 14.592 14.0294 14.3107 14.3107C14.0294 14.592 13.6478 14.75 13.25 14.75H2.75C2.35218 14.75 1.97064 14.592 1.68934 14.3107C1.40804 14.0294 1.25 13.6478 1.25 13.25V10.25M11.75 5L8 1.25M8 1.25L4.25 5M8 1.25V10.25" stroke="#CEFFA8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-</svg></button></li>
-        <li><span>Legal / Secretarial / Director Appointments / DIR-6 form</span><button data-bs-toggle="modal" data-bs-target="#director_DIR_6_pop"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+</svg></button></li> --}}
+        {{-- <li><span>Legal / Secretarial / Director Appointments / DIR-6 form</span><button data-bs-toggle="modal" data-bs-target="#director_DIR_6_pop"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
 <path d="M14.75 10.25V13.25C14.75 13.6478 14.592 14.0294 14.3107 14.3107C14.0294 14.592 13.6478 14.75 13.25 14.75H2.75C2.35218 14.75 1.97064 14.592 1.68934 14.3107C1.40804 14.0294 1.25 13.6478 1.25 13.25V10.25M11.75 5L8 1.25M8 1.25L4.25 5M8 1.25V10.25" stroke="#CEFFA8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-</svg></button></li>
-        <li><span>Legal / Secretarial / Director Appointments / DIR-12 form</span><button data-bs-toggle="modal" data-bs-target="#director_DIR_12_pop"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+</svg></button></li> --}}
+        {{-- <li><span>Legal / Secretarial / Director Appointments / DIR-12 form</span><button data-bs-toggle="modal" data-bs-target="#director_DIR_12_pop"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
 <path d="M14.75 10.25V13.25C14.75 13.6478 14.592 14.0294 14.3107 14.3107C14.0294 14.592 13.6478 14.75 13.25 14.75H2.75C2.35218 14.75 1.97064 14.592 1.68934 14.3107C1.40804 14.0294 1.25 13.6478 1.25 13.25V10.25M11.75 5L8 1.25M8 1.25L4.25 5M8 1.25V10.25" stroke="#CEFFA8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-</svg></button></li>
+</svg></button></li> --}}
 
 <!---->
 
-        <li><span>Legal / Secretarial / Director Resignation / DIR-11 form</span><button data-bs-toggle="modal" data-bs-target="#director_DIR_11form_pop"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+        {{-- <li><span>Legal / Secretarial / Director Resignation / DIR-11 form</span><button data-bs-toggle="modal" data-bs-target="#director_DIR_11form_pop"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
 <path d="M14.75 10.25V13.25C14.75 13.6478 14.592 14.0294 14.3107 14.3107C14.0294 14.592 13.6478 14.75 13.25 14.75H2.75C2.35218 14.75 1.97064 14.592 1.68934 14.3107C1.40804 14.0294 1.25 13.6478 1.25 13.25V10.25M11.75 5L8 1.25M8 1.25L4.25 5M8 1.25V10.25" stroke="#CEFFA8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-</svg></button></li>
-        <li><span>Legal / Secretarial / Director Resignation / DIR-12 form</span><button data-bs-toggle="modal" data-bs-target="#director_DIR_12form_pop"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+</svg></button></li> --}}
+        {{-- <li><span>Legal / Secretarial / Director Resignation / DIR-12 form</span><button data-bs-toggle="modal" data-bs-target="#director_DIR_12form_pop"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
 <path d="M14.75 10.25V13.25C14.75 13.6478 14.592 14.0294 14.3107 14.3107C14.0294 14.592 13.6478 14.75 13.25 14.75H2.75C2.35218 14.75 1.97064 14.592 1.68934 14.3107C1.40804 14.0294 1.25 13.6478 1.25 13.25V10.25M11.75 5L8 1.25M8 1.25L4.25 5M8 1.25V10.25" stroke="#CEFFA8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-</svg></button></li>
+</svg></button></li> --}}
 
 <!---->
 
-        <li><span>Legal / Secretarial / Extra Ordinary General Meeting / Notices</span><button data-bs-toggle="modal" data-bs-target="#ordinary_Notices_pop"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+        {{-- <li><span>Legal / Secretarial / Extra Ordinary General Meeting / Notices</span><button data-bs-toggle="modal" data-bs-target="#ordinary_Notices_pop"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
 <path d="M14.75 10.25V13.25C14.75 13.6478 14.592 14.0294 14.3107 14.3107C14.0294 14.592 13.6478 14.75 13.25 14.75H2.75C2.35218 14.75 1.97064 14.592 1.68934 14.3107C1.40804 14.0294 1.25 13.6478 1.25 13.25V10.25M11.75 5L8 1.25M8 1.25L4.25 5M8 1.25V10.25" stroke="#CEFFA8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-</svg></button></li>
-        <li><span>Legal / Secretarial / Extra Ordinary General Meeting / Minute Book</span><button data-bs-toggle="modal" data-bs-target="#ordinary_minut_pop"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+</svg></button></li> --}}
+        {{-- <li><span>Legal / Secretarial / Extra Ordinary General Meeting / Minute Book</span><button data-bs-toggle="modal" data-bs-target="#ordinary_minut_pop"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
 <path d="M14.75 10.25V13.25C14.75 13.6478 14.592 14.0294 14.3107 14.3107C14.0294 14.592 13.6478 14.75 13.25 14.75H2.75C2.35218 14.75 1.97064 14.592 1.68934 14.3107C1.40804 14.0294 1.25 13.6478 1.25 13.25V10.25M11.75 5L8 1.25M8 1.25L4.25 5M8 1.25V10.25" stroke="#CEFFA8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-</svg></button></li>
-        <li><span>Legal / Secretarial / Extra Ordinary General Meeting / Attendance sheet</span><button data-bs-toggle="modal" data-bs-target="#ordinary_atandence_pop"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+</svg></button></li> --}}
+        {{-- <li><span>Legal / Secretarial / Extra Ordinary General Meeting / Attendance sheet</span><button data-bs-toggle="modal" data-bs-target="#ordinary_atandence_pop"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
 <path d="M14.75 10.25V13.25C14.75 13.6478 14.592 14.0294 14.3107 14.3107C14.0294 14.592 13.6478 14.75 13.25 14.75H2.75C2.35218 14.75 1.97064 14.592 1.68934 14.3107C1.40804 14.0294 1.25 13.6478 1.25 13.25V10.25M11.75 5L8 1.25M8 1.25L4.25 5M8 1.25V10.25" stroke="#CEFFA8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-</svg></button></li>
-        <li><span>Legal / Secretarial / Extra Ordinary General Meeting / Resolutions</span><button data-bs-toggle="modal" data-bs-target="#ordinary_Resolutions_pop"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+</svg></button></li> --}}
+        {{-- <li><span>Legal / Secretarial / Extra Ordinary General Meeting / Resolutions</span><button data-bs-toggle="modal" data-bs-target="#ordinary_Resolutions_pop"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
 <path d="M14.75 10.25V13.25C14.75 13.6478 14.592 14.0294 14.3107 14.3107C14.0294 14.592 13.6478 14.75 13.25 14.75H2.75C2.35218 14.75 1.97064 14.592 1.68934 14.3107C1.40804 14.0294 1.25 13.6478 1.25 13.25V10.25M11.75 5L8 1.25M8 1.25L4.25 5M8 1.25V10.25" stroke="#CEFFA8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-</svg></button></li>
+</svg></button></li> --}}
 
 <!---->
 
-        <li><span>Legal / Secretarial / Incorporation / RUN Form (Reserve Unique Name)</span><button data-bs-toggle="modal" data-bs-target="#inco_run_form_pop"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+        {{-- <li><span>Legal / Secretarial / Incorporation / RUN Form (Reserve Unique Name)</span><button data-bs-toggle="modal" data-bs-target="#inco_run_form_pop"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
 <path d="M14.75 10.25V13.25C14.75 13.6478 14.592 14.0294 14.3107 14.3107C14.0294 14.592 13.6478 14.75 13.25 14.75H2.75C2.35218 14.75 1.97064 14.592 1.68934 14.3107C1.40804 14.0294 1.25 13.6478 1.25 13.25V10.25M11.75 5L8 1.25M8 1.25L4.25 5M8 1.25V10.25" stroke="#CEFFA8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-</svg></button></li>
-        <li><span>Legal / Secretarial / Incorporation / INC-9 (Declaration of Subscribers and First Directors)</span><button data-bs-toggle="modal" data-bs-target="#inco_INC_9_pop"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+</svg></button></li> --}}
+        {{-- <li><span>Legal / Secretarial / Incorporation / INC-9 (Declaration of Subscribers and First Directors)</span><button data-bs-toggle="modal" data-bs-target="#inco_INC_9_pop"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
 <path d="M14.75 10.25V13.25C14.75 13.6478 14.592 14.0294 14.3107 14.3107C14.0294 14.592 13.6478 14.75 13.25 14.75H2.75C2.35218 14.75 1.97064 14.592 1.68934 14.3107C1.40804 14.0294 1.25 13.6478 1.25 13.25V10.25M11.75 5L8 1.25M8 1.25L4.25 5M8 1.25V10.25" stroke="#CEFFA8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-</svg></button></li>
-        <li><span>Legal / Secretarial / Incorporation / SPICe+Part B (Simplified Proforma for Incorporating Company Electronically)</span><button data-bs-toggle="modal" data-bs-target="#inco_SPICe_Part_B_pop"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+</svg></button></li> --}}
+        {{-- <li><span>Legal / Secretarial / Incorporation / SPICe+Part B (Simplified Proforma for Incorporating Company Electronically)</span><button data-bs-toggle="modal" data-bs-target="#inco_SPICe_Part_B_pop"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
 <path d="M14.75 10.25V13.25C14.75 13.6478 14.592 14.0294 14.3107 14.3107C14.0294 14.592 13.6478 14.75 13.25 14.75H2.75C2.35218 14.75 1.97064 14.592 1.68934 14.3107C1.40804 14.0294 1.25 13.6478 1.25 13.25V10.25M11.75 5L8 1.25M8 1.25L4.25 5M8 1.25V10.25" stroke="#CEFFA8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-</svg></button></li>
-        <li><span>Legal / Secretarial / Incorporation / INC-33 SPICe MoA (e-Momorandum of Association)</span><button data-bs-toggle="modal" data-bs-target="#inco_INC_33_pop"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+</svg></button></li> --}}
+        {{-- <li><span>Legal / Secretarial / Incorporation / INC-33 SPICe MoA (e-Momorandum of Association)</span><button data-bs-toggle="modal" data-bs-target="#inco_INC_33_pop"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
 <path d="M14.75 10.25V13.25C14.75 13.6478 14.592 14.0294 14.3107 14.3107C14.0294 14.592 13.6478 14.75 13.25 14.75H2.75C2.35218 14.75 1.97064 14.592 1.68934 14.3107C1.40804 14.0294 1.25 13.6478 1.25 13.25V10.25M11.75 5L8 1.25M8 1.25L4.25 5M8 1.25V10.25" stroke="#CEFFA8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-</svg></button></li>
-        <li><span>Legal / Secretarial / Incorporation / INC-34 SPICe MoA (e-Articles of Association)</span><button data-bs-toggle="modal" data-bs-target="#inco_INC_34_pop"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+</svg></button></li> --}}
+        {{-- <li><span>Legal / Secretarial / Incorporation / INC-34 SPICe MoA (e-Articles of Association)</span><button data-bs-toggle="modal" data-bs-target="#inco_INC_34_pop"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
 <path d="M14.75 10.25V13.25C14.75 13.6478 14.592 14.0294 14.3107 14.3107C14.0294 14.592 13.6478 14.75 13.25 14.75H2.75C2.35218 14.75 1.97064 14.592 1.68934 14.3107C1.40804 14.0294 1.25 13.6478 1.25 13.25V10.25M11.75 5L8 1.25M8 1.25L4.25 5M8 1.25V10.25" stroke="#CEFFA8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-</svg></button></li>
-        <li><span>Legal / Secretarial / Incorporation / INC-35 AGILE-PRO-s</span><button data-bs-toggle="modal" data-bs-target="#inco_INC_35_pop"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+</svg></button></li> --}}
+        {{-- <li><span>Legal / Secretarial / Incorporation / INC-35 AGILE-PRO-s</span><button data-bs-toggle="modal" data-bs-target="#inco_INC_35_pop"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
 <path d="M14.75 10.25V13.25C14.75 13.6478 14.592 14.0294 14.3107 14.3107C14.0294 14.592 13.6478 14.75 13.25 14.75H2.75C2.35218 14.75 1.97064 14.592 1.68934 14.3107C1.40804 14.0294 1.25 13.6478 1.25 13.25V10.25M11.75 5L8 1.25M8 1.25L4.25 5M8 1.25V10.25" stroke="#CEFFA8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-</svg></button></li>
-        <li><span>Legal / Secretarial / Incorporation / INC-22 (Notice of situation or change of situation of registered office)</span><button data-bs-toggle="modal" data-bs-target="#inco_INC_22_pop"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+</svg></button></li> --}}
+        {{-- <li><span>Legal / Secretarial / Incorporation / INC-22 (Notice of situation or change of situation of registered office)</span><button data-bs-toggle="modal" data-bs-target="#inco_INC_22_pop"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
 <path d="M14.75 10.25V13.25C14.75 13.6478 14.592 14.0294 14.3107 14.3107C14.0294 14.592 13.6478 14.75 13.25 14.75H2.75C2.35218 14.75 1.97064 14.592 1.68934 14.3107C1.40804 14.0294 1.25 13.6478 1.25 13.25V10.25M11.75 5L8 1.25M8 1.25L4.25 5M8 1.25V10.25" stroke="#CEFFA8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-</svg></button></li>
-        <li><span>Legal / Secretarial / Incorporation / INC-20A (Commencement of Business)</span><button data-bs-toggle="modal" data-bs-target="#inco_INC_20A_pop"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+</svg></button></li> --}}
+        {{-- <li><span>Legal / Secretarial / Incorporation / INC-20A (Commencement of Business)</span><button data-bs-toggle="modal" data-bs-target="#inco_INC_20A_pop"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
 <path d="M14.75 10.25V13.25C14.75 13.6478 14.592 14.0294 14.3107 14.3107C14.0294 14.592 13.6478 14.75 13.25 14.75H2.75C2.35218 14.75 1.97064 14.592 1.68934 14.3107C1.40804 14.0294 1.25 13.6478 1.25 13.25V10.25M11.75 5L8 1.25M8 1.25L4.25 5M8 1.25V10.25" stroke="#CEFFA8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-</svg></button></li>
+</svg></button></li> --}}
 
 <!---->
 
-        <li><span>Legal / Secretarial / Statutory Registers / Register of Members</span><button data-bs-toggle="modal" data-bs-target="#StautoryReg_meber_pop"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+        {{-- <li><span>Legal / Secretarial / Statutory Registers / Register of Members</span><button data-bs-toggle="modal" data-bs-target="#StautoryReg_meber_pop"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
 <path d="M14.75 10.25V13.25C14.75 13.6478 14.592 14.0294 14.3107 14.3107C14.0294 14.592 13.6478 14.75 13.25 14.75H2.75C2.35218 14.75 1.97064 14.592 1.68934 14.3107C1.40804 14.0294 1.25 13.6478 1.25 13.25V10.25M11.75 5L8 1.25M8 1.25L4.25 5M8 1.25V10.25" stroke="#CEFFA8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-</svg></button></li>
-        <li><span>Legal / Secretarial / Statutory Registers / Register of Other Security Holders</span><button data-bs-toggle="modal" data-bs-target="#StautoryReg_security_pop"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+</svg></button></li> --}}
+        {{-- <li><span>Legal / Secretarial / Statutory Registers / Register of Other Security Holders</span><button data-bs-toggle="modal" data-bs-target="#StautoryReg_security_pop"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
 <path d="M14.75 10.25V13.25C14.75 13.6478 14.592 14.0294 14.3107 14.3107C14.0294 14.592 13.6478 14.75 13.25 14.75H2.75C2.35218 14.75 1.97064 14.592 1.68934 14.3107C1.40804 14.0294 1.25 13.6478 1.25 13.25V10.25M11.75 5L8 1.25M8 1.25L4.25 5M8 1.25V10.25" stroke="#CEFFA8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-</svg></button></li>
-        <li><span>Legal / Secretarial / Statutory Registers / Foreign Register</span><button data-bs-toggle="modal" data-bs-target="#StautoryReg_forginreg_pop"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+</svg></button></li> --}}
+        {{-- <li><span>Legal / Secretarial / Statutory Registers / Foreign Register</span><button data-bs-toggle="modal" data-bs-target="#StautoryReg_forginreg_pop"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
 <path d="M14.75 10.25V13.25C14.75 13.6478 14.592 14.0294 14.3107 14.3107C14.0294 14.592 13.6478 14.75 13.25 14.75H2.75C2.35218 14.75 1.97064 14.592 1.68934 14.3107C1.40804 14.0294 1.25 13.6478 1.25 13.25V10.25M11.75 5L8 1.25M8 1.25L4.25 5M8 1.25V10.25" stroke="#CEFFA8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-</svg></button></li>
-        <li><span>Legal / Secretarial / Statutory Registers / Register of Directors and KMP</span><button data-bs-toggle="modal" data-bs-target="#StautoryReg_kmp_pop"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+</svg></button></li> --}}
+        {{-- <li><span>Legal / Secretarial / Statutory Registers / Register of Directors and KMP</span><button data-bs-toggle="modal" data-bs-target="#StautoryReg_kmp_pop"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
 <path d="M14.75 10.25V13.25C14.75 13.6478 14.592 14.0294 14.3107 14.3107C14.0294 14.592 13.6478 14.75 13.25 14.75H2.75C2.35218 14.75 1.97064 14.592 1.68934 14.3107C1.40804 14.0294 1.25 13.6478 1.25 13.25V10.25M11.75 5L8 1.25M8 1.25L4.25 5M8 1.25V10.25" stroke="#CEFFA8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-</svg></button></li>
-        <li><span>Legal / Secretarial / Statutory Registers / Register of Charges</span><button data-bs-toggle="modal" data-bs-target="#StautoryReg_regchnage_pop"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+</svg></button></li> --}}
+        {{-- <li><span>Legal / Secretarial / Statutory Registers / Register of Charges</span><button data-bs-toggle="modal" data-bs-target="#StautoryReg_regchnage_pop"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
 <path d="M14.75 10.25V13.25C14.75 13.6478 14.592 14.0294 14.3107 14.3107C14.0294 14.592 13.6478 14.75 13.25 14.75H2.75C2.35218 14.75 1.97064 14.592 1.68934 14.3107C1.40804 14.0294 1.25 13.6478 1.25 13.25V10.25M11.75 5L8 1.25M8 1.25L4.25 5M8 1.25V10.25" stroke="#CEFFA8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-</svg></button></li>
-        <li><span>Legal / Secretarial / Statutory Registers / Register of Deposits</span><button data-bs-toggle="modal" data-bs-target="#StautoryReg_dep_pop"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+</svg></button></li> --}}
+        {{-- <li><span>Legal / Secretarial / Statutory Registers / Register of Deposits</span><button data-bs-toggle="modal" data-bs-target="#StautoryReg_dep_pop"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
 <path d="M14.75 10.25V13.25C14.75 13.6478 14.592 14.0294 14.3107 14.3107C14.0294 14.592 13.6478 14.75 13.25 14.75H2.75C2.35218 14.75 1.97064 14.592 1.68934 14.3107C1.40804 14.0294 1.25 13.6478 1.25 13.25V10.25M11.75 5L8 1.25M8 1.25L4.25 5M8 1.25V10.25" stroke="#CEFFA8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
 </svg></button></li>
         <li><span>Legal / Secretarial / Statutory Registers / Register of Loans, Guarantees and Securities</span><button data-bs-toggle="modal" data-bs-target="#StautoryReg_lgs_pop"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -2483,8 +2608,8 @@ $(document).ready(function() {
 </svg></button></li>
         <li><span>Legal / Secretarial / Statutory Registers / Register of Securities Bought Back</span><button data-bs-toggle="modal" data-bs-target="#StautoryReg_bought_pop"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
 <path d="M14.75 10.25V13.25C14.75 13.6478 14.592 14.0294 14.3107 14.3107C14.0294 14.592 13.6478 14.75 13.25 14.75H2.75C2.35218 14.75 1.97064 14.592 1.68934 14.3107C1.40804 14.0294 1.25 13.6478 1.25 13.25V10.25M11.75 5L8 1.25M8 1.25L4.25 5M8 1.25V10.25" stroke="#CEFFA8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-</svg></button></li>
-        <li><span>Legal / Secretarial / Statutory Registers / Register of Renewed or Duplicate Share Certificates</span><button data-bs-toggle="modal" data-bs-target="#StautoryReg_share_pop"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+</svg></button></li> --}}
+        {{-- <li><span>Legal / Secretarial / Statutory Registers / Register of Renewed or Duplicate Share Certificates</span><button data-bs-toggle="modal" data-bs-target="#StautoryReg_share_pop"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
 <path d="M14.75 10.25V13.25C14.75 13.6478 14.592 14.0294 14.3107 14.3107C14.0294 14.592 13.6478 14.75 13.25 14.75H2.75C2.35218 14.75 1.97064 14.592 1.68934 14.3107C1.40804 14.0294 1.25 13.6478 1.25 13.25V10.25M11.75 5L8 1.25M8 1.25L4.25 5M8 1.25V10.25" stroke="#CEFFA8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
 </svg></button></li>
         <li><span>Legal / Secretarial / Statutory Registers / Register of SBO</span><button data-bs-toggle="modal" data-bs-target="#StautoryReg_sbo_pop"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -2492,7 +2617,1015 @@ $(document).ready(function() {
 </svg></button></li>
         <li><span>Legal / Secretarial / Statutory Registers / Register of Postal Ballot</span><button data-bs-toggle="modal" data-bs-target="#StautoryReg_ballot_pop"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
 <path d="M14.75 10.25V13.25C14.75 13.6478 14.592 14.0294 14.3107 14.3107C14.0294 14.592 13.6478 14.75 13.25 14.75H2.75C2.35218 14.75 1.97064 14.592 1.68934 14.3107C1.40804 14.0294 1.25 13.6478 1.25 13.25V10.25M11.75 5L8 1.25M8 1.25L4.25 5M8 1.25V10.25" stroke="#CEFFA8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-</svg></button></li>
+</svg></button></li> --}}
+
+<li>
+    <span>Accounting & Taxation / Book-Keeping / Bank Account Statements</span>
+    <button data-bs-toggle="modal" data-bs-target="#common_file_upload_pop_bank"
+            data-location="Accounting & Taxation / Book-Keeping / Bank Account Statements"
+            data-real-file-name="Bank Account Statement">
+    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M14.75 10.25V13.25C14.75 13.6478 14.592 14.0294 14.3107 14.3107C14.0294 14.592 13.6478 14.75 13.25 14.75H2.75C2.35218 14.75 1.97064 14.592 1.68934 14.3107C1.40804 14.0294 1.25 13.6478 1.25 13.25V10.25M11.75 5L8 1.25M8 1.25L4.25 5M8 1.25V10.25" stroke="#CEFFA8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+    </button>
+</li>
+
+
+<li>
+    <span>Accounting & Taxation / Book-Keeping / Fixed Deposit Statements</span>
+    <button data-bs-toggle="modal" data-bs-target="#common_file_upload_pop_bank"
+            data-location="Accounting & Taxation / Book-Keeping / Fixed Deposit Statements"
+            data-real-file-name="Fixed Deposit Account Statement">
+    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M14.75 10.25V13.25C14.75 13.6478 14.592 14.0294 14.3107 14.3107C14.0294 14.592 13.6478 14.75 13.25 14.75H2.75C2.35218 14.75 1.97064 14.592 1.68934 14.3107C1.40804 14.0294 1.25 13.6478 1.25 13.25V10.25M11.75 5L8 1.25M8 1.25L4.25 5M8 1.25V10.25" stroke="#CEFFA8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+    </button>
+</li>
+
+<li>
+    <span>Accounting & Taxation / Book-Keeping / Credit Card Statements</span>
+    <button data-bs-toggle="modal" data-bs-target="#common_file_upload_pop_bank"
+            data-location="Accounting & Taxation / Book-Keeping / Credit Card Statements"
+            data-real-file-name="Add Credit Card Statements">
+    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M14.75 10.25V13.25C14.75 13.6478 14.592 14.0294 14.3107 14.3107C14.0294 14.592 13.6478 14.75 13.25 14.75H2.75C2.35218 14.75 1.97064 14.592 1.68934 14.3107C1.40804 14.0294 1.25 13.6478 1.25 13.25V10.25M11.75 5L8 1.25M8 1.25L4.25 5M8 1.25V10.25" stroke="#CEFFA8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+    </button>
+</li>
+
+<li>
+    <span>Accounting & Taxation / Book-Keeping / Mutual Fund Statements</span>
+    <button data-bs-toggle="modal" data-bs-target="#common_file_upload_pop_bank"
+            data-location="Accounting & Taxation / Book-Keeping / Mutual Fund Statements"
+            data-real-file-name="Add Mutual Fund Statements">
+    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M14.75 10.25V13.25C14.75 13.6478 14.592 14.0294 14.3107 14.3107C14.0294 14.592 13.6478 14.75 13.25 14.75H2.75C2.35218 14.75 1.97064 14.592 1.68934 14.3107C1.40804 14.0294 1.25 13.6478 1.25 13.25V10.25M11.75 5L8 1.25M8 1.25L4.25 5M8 1.25V10.25" stroke="#CEFFA8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+    </button>
+</li>
+
+<li>
+    <span>Accounting & Taxation / Charter documents / Director Details / Director 1 / Photo</span>
+    <button data-bs-toggle="modal" data-bs-target="#common_file_upload_pop"
+            data-location="Accounting & Taxation / Charter documents / Director Details / Director 1"
+            data-real-file-name="Photo">
+    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M14.75 10.25V13.25C14.75 13.6478 14.592 14.0294 14.3107 14.3107C14.0294 14.592 13.6478 14.75 13.25 14.75H2.75C2.35218 14.75 1.97064 14.592 1.68934 14.3107C1.40804 14.0294 1.25 13.6478 1.25 13.25V10.25M11.75 5L8 1.25M8 1.25L4.25 5M8 1.25V10.25" stroke="#CEFFA8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+    </button>
+</li>
+
+
+<li>
+    <span>Accounting & Taxation / Charter documents / Director Details / Director 1 / Signature image</span>
+    <button data-bs-toggle="modal" data-bs-target="#common_file_upload_pop"
+            data-location="Accounting & Taxation / Charter documents / Director Details / Director 1"
+            data-real-file-name="Signature image">
+    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M14.75 10.25V13.25C14.75 13.6478 14.592 14.0294 14.3107 14.3107C14.0294 14.592 13.6478 14.75 13.25 14.75H2.75C2.35218 14.75 1.97064 14.592 1.68934 14.3107C1.40804 14.0294 1.25 13.6478 1.25 13.25V10.25M11.75 5L8 1.25M8 1.25L4.25 5M8 1.25V10.25" stroke="#CEFFA8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+    </button>
+</li>
+
+<li>
+    <span>Accounting & Taxation / Charter documents / Director Details / Director 1 / Aadhar KYC</span>
+    <button data-bs-toggle="modal" data-bs-target="#common_file_upload_pop"
+            data-location="Accounting & Taxation / Charter documents / Director Details / Director 1"
+            data-real-file-name="Aadhar KYC">
+    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M14.75 10.25V13.25C14.75 13.6478 14.592 14.0294 14.3107 14.3107C14.0294 14.592 13.6478 14.75 13.25 14.75H2.75C2.35218 14.75 1.97064 14.592 1.68934 14.3107C1.40804 14.0294 1.25 13.6478 1.25 13.25V10.25M11.75 5L8 1.25M8 1.25L4.25 5M8 1.25V10.25" stroke="#CEFFA8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+    </button>
+</li>
+
+
+<li>
+    <span>Accounting & Taxation / Charter documents / Director Details / Director 1 / PAN KYC</span>
+    <button data-bs-toggle="modal" data-bs-target="#common_file_upload_pop"
+            data-location="Accounting & Taxation / Charter documents / Director Details / Director 1"
+            data-real-file-name="PAN KYC">
+    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M14.75 10.25V13.25C14.75 13.6478 14.592 14.0294 14.3107 14.3107C14.0294 14.592 13.6478 14.75 13.25 14.75H2.75C2.35218 14.75 1.97064 14.592 1.68934 14.3107C1.40804 14.0294 1.25 13.6478 1.25 13.25V10.25M11.75 5L8 1.25M8 1.25L4.25 5M8 1.25V10.25" stroke="#CEFFA8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+    </button>
+</li>
+
+<li>
+    <span>Accounting & Taxation / Charter documents / Director Details / Director 1 / Address Proof</span>
+    <button data-bs-toggle="modal" data-bs-target="#common_file_upload_pop"
+            data-location="Accounting & Taxation / Charter documents / Director Details / Director 1"
+            data-real-file-name="Address Proof">
+    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M14.75 10.25V13.25C14.75 13.6478 14.592 14.0294 14.3107 14.3107C14.0294 14.592 13.6478 14.75 13.25 14.75H2.75C2.35218 14.75 1.97064 14.592 1.68934 14.3107C1.40804 14.0294 1.25 13.6478 1.25 13.25V10.25M11.75 5L8 1.25M8 1.25L4.25 5M8 1.25V10.25" stroke="#CEFFA8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+    </button>
+</li>
+
+<li>
+    <span>Accounting & Taxation / Charter documents / Director Details / Director 1 / Contact Details</span>
+    <button data-bs-toggle="modal" data-bs-target="#common_file_upload_pop"
+            data-location="Accounting & Taxation / Charter documents / Director Details / Director 1"
+            data-real-file-name="Contact Details">
+    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M14.75 10.25V13.25C14.75 13.6478 14.592 14.0294 14.3107 14.3107C14.0294 14.592 13.6478 14.75 13.25 14.75H2.75C2.35218 14.75 1.97064 14.592 1.68934 14.3107C1.40804 14.0294 1.25 13.6478 1.25 13.25V10.25M11.75 5L8 1.25M8 1.25L4.25 5M8 1.25V10.25" stroke="#CEFFA8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+    </button>
+</li>
+
+<li>
+    <span>Accounting & Taxation / Charter documents / Director Details / Director 2 / Photo</span>
+    <button data-bs-toggle="modal" data-bs-target="#common_file_upload_pop"
+            data-location="Accounting & Taxation / Charter documents / Director Details / Director 2"
+            data-real-file-name="Photo">
+    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M14.75 10.25V13.25C14.75 13.6478 14.592 14.0294 14.3107 14.3107C14.0294 14.592 13.6478 14.75 13.25 14.75H2.75C2.35218 14.75 1.97064 14.592 1.68934 14.3107C1.40804 14.0294 1.25 13.6478 1.25 13.25V10.25M11.75 5L8 1.25M8 1.25L4.25 5M8 1.25V10.25" stroke="#CEFFA8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+    </button>
+</li>
+
+<li>
+    <span>Accounting & Taxation / Charter documents / Director Details / Director 2 / Signature image</span>
+    <button data-bs-toggle="modal" data-bs-target="#common_file_upload_pop"
+            data-location="Accounting & Taxation / Charter documents / Director Details / Director 2"
+            data-real-file-name="Signature image">
+    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M14.75 10.25V13.25C14.75 13.6478 14.592 14.0294 14.3107 14.3107C14.0294 14.592 13.6478 14.75 13.25 14.75H2.75C2.35218 14.75 1.97064 14.592 1.68934 14.3107C1.40804 14.0294 1.25 13.6478 1.25 13.25V10.25M11.75 5L8 1.25M8 1.25L4.25 5M8 1.25V10.25" stroke="#CEFFA8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+    </button>
+</li>
+
+<li>
+    <span>Accounting & Taxation / Charter documents / Director Details / Director 2 / Aadhar KYC</span>
+    <button data-bs-toggle="modal" data-bs-target="#common_file_upload_pop"
+            data-location="Accounting & Taxation / Charter documents / Director Details / Director 2"
+            data-real-file-name="Aadhar KYC">
+    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M14.75 10.25V13.25C14.75 13.6478 14.592 14.0294 14.3107 14.3107C14.0294 14.592 13.6478 14.75 13.25 14.75H2.75C2.35218 14.75 1.97064 14.592 1.68934 14.3107C1.40804 14.0294 1.25 13.6478 1.25 13.25V10.25M11.75 5L8 1.25M8 1.25L4.25 5M8 1.25V10.25" stroke="#CEFFA8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+    </button>
+</li>
+
+
+<li>
+    <span>Accounting & Taxation / Charter documents / Director Details / Director 2 / PAN KYC</span>
+    <button data-bs-toggle="modal" data-bs-target="#common_file_upload_pop"
+            data-location="Accounting & Taxation / Charter documents / Director Details / Director 2"
+            data-real-file-name="PAN KYC">
+    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M14.75 10.25V13.25C14.75 13.6478 14.592 14.0294 14.3107 14.3107C14.0294 14.592 13.6478 14.75 13.25 14.75H2.75C2.35218 14.75 1.97064 14.592 1.68934 14.3107C1.40804 14.0294 1.25 13.6478 1.25 13.25V10.25M11.75 5L8 1.25M8 1.25L4.25 5M8 1.25V10.25" stroke="#CEFFA8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+    </button>
+</li>
+
+
+<li>
+    <span>Accounting & Taxation / Charter documents / Director Details / Director 2 / Address Proof</span>
+    <button data-bs-toggle="modal" data-bs-target="#common_file_upload_pop"
+            data-location="Accounting & Taxation / Charter documents / Director Details / Director 2"
+            data-real-file-name="Address Proof">
+    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M14.75 10.25V13.25C14.75 13.6478 14.592 14.0294 14.3107 14.3107C14.0294 14.592 13.6478 14.75 13.25 14.75H2.75C2.35218 14.75 1.97064 14.592 1.68934 14.3107C1.40804 14.0294 1.25 13.6478 1.25 13.25V10.25M11.75 5L8 1.25M8 1.25L4.25 5M8 1.25V10.25" stroke="#CEFFA8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+    </button>
+</li>
+
+<li>
+    <span>Accounting & Taxation / Charter documents / Director Details / Director 2 / Contact Details</span>
+    <button data-bs-toggle="modal" data-bs-target="#common_file_upload_pop"
+            data-location="Accounting & Taxation / Charter documents / Director Details / Director 2"
+            data-real-file-name="Contact Details">
+    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M14.75 10.25V13.25C14.75 13.6478 14.592 14.0294 14.3107 14.3107C14.0294 14.592 13.6478 14.75 13.25 14.75H2.75C2.35218 14.75 1.97064 14.592 1.68934 14.3107C1.40804 14.0294 1.25 13.6478 1.25 13.25V10.25M11.75 5L8 1.25M8 1.25L4.25 5M8 1.25V10.25" stroke="#CEFFA8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+    </button>
+</li>
+
+
+<li>
+    <span>Accounting & Taxation / Charter documents / Incorporation / Memorandum of Association</span>
+    <button data-bs-toggle="modal" data-bs-target="#common_file_upload_pop"
+            data-location="Accounting & Taxation / Charter documents / Incorporation"
+            data-real-file-name="Memorandum of Association">
+    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M14.75 10.25V13.25C14.75 13.6478 14.592 14.0294 14.3107 14.3107C14.0294 14.592 13.6478 14.75 13.25 14.75H2.75C2.35218 14.75 1.97064 14.592 1.68934 14.3107C1.40804 14.0294 1.25 13.6478 1.25 13.25V10.25M11.75 5L8 1.25M8 1.25L4.25 5M8 1.25V10.25" stroke="#CEFFA8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+    </button>
+</li>
+
+
+<li>
+    <span>Accounting & Taxation / Charter documents / Incorporation / Articles of Association</span>
+    <button data-bs-toggle="modal" data-bs-target="#common_file_upload_pop"
+            data-location="Accounting & Taxation / Charter documents / Incorporation"
+            data-real-file-name="Articles of Association">
+    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M14.75 10.25V13.25C14.75 13.6478 14.592 14.0294 14.3107 14.3107C14.0294 14.592 13.6478 14.75 13.25 14.75H2.75C2.35218 14.75 1.97064 14.592 1.68934 14.3107C1.40804 14.0294 1.25 13.6478 1.25 13.25V10.25M11.75 5L8 1.25M8 1.25L4.25 5M8 1.25V10.25" stroke="#CEFFA8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+    </button>
+</li>
+
+<li>
+    <span>Accounting & Taxation / Charter documents / Incorporation / Certificate of incorporation</span>
+    <button data-bs-toggle="modal" data-bs-target="#common_file_upload_pop"
+            data-location="Accounting & Taxation / Charter documents / Incorporation"
+            data-real-file-name="Certificate of incorporation">
+    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M14.75 10.25V13.25C14.75 13.6478 14.592 14.0294 14.3107 14.3107C14.0294 14.592 13.6478 14.75 13.25 14.75H2.75C2.35218 14.75 1.97064 14.592 1.68934 14.3107C1.40804 14.0294 1.25 13.6478 1.25 13.25V10.25M11.75 5L8 1.25M8 1.25L4.25 5M8 1.25V10.25" stroke="#CEFFA8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+    </button>
+</li>
+
+<li>
+    <span>Accounting & Taxation / Charter documents / Incorporation / Partnership deed</span>
+    <button data-bs-toggle="modal" data-bs-target="#common_file_upload_pop"
+            data-location="Accounting & Taxation / Charter documents / Incorporation"
+            data-real-file-name="Partnership deed">
+    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M14.75 10.25V13.25C14.75 13.6478 14.592 14.0294 14.3107 14.3107C14.0294 14.592 13.6478 14.75 13.25 14.75H2.75C2.35218 14.75 1.97064 14.592 1.68934 14.3107C1.40804 14.0294 1.25 13.6478 1.25 13.25V10.25M11.75 5L8 1.25M8 1.25L4.25 5M8 1.25V10.25" stroke="#CEFFA8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+    </button>
+</li>
+
+<li>
+    <span>Accounting & Taxation / Charter documents / Incorporation / LLP Agreement</span>
+    <button data-bs-toggle="modal" data-bs-target="#common_file_upload_pop"
+            data-location="Accounting & Taxation / Charter documents / Incorporation"
+            data-real-file-name="LLP Agreement">
+    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M14.75 10.25V13.25C14.75 13.6478 14.592 14.0294 14.3107 14.3107C14.0294 14.592 13.6478 14.75 13.25 14.75H2.75C2.35218 14.75 1.97064 14.592 1.68934 14.3107C1.40804 14.0294 1.25 13.6478 1.25 13.25V10.25M11.75 5L8 1.25M8 1.25L4.25 5M8 1.25V10.25" stroke="#CEFFA8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+    </button>
+</li>
+
+<li>
+    <span>Accounting & Taxation / Charter documents / Incorporation / Trust Deed</span>
+    <button data-bs-toggle="modal" data-bs-target="#common_file_upload_pop"
+            data-location="Accounting & Taxation / Charter documents / Incorporation"
+            data-real-file-name="Trust Deed">
+    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M14.75 10.25V13.25C14.75 13.6478 14.592 14.0294 14.3107 14.3107C14.0294 14.592 13.6478 14.75 13.25 14.75H2.75C2.35218 14.75 1.97064 14.592 1.68934 14.3107C1.40804 14.0294 1.25 13.6478 1.25 13.25V10.25M11.75 5L8 1.25M8 1.25L4.25 5M8 1.25V10.25" stroke="#CEFFA8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+    </button>
+</li>
+
+<li>
+    <span>Accounting & Taxation / Charter documents / Incorporation / Share certificates</span>
+    <button data-bs-toggle="modal" data-bs-target="#common_file_upload_pop"
+            data-location="Accounting & Taxation / Charter documents / Incorporation"
+            data-real-file-name="Share certificates">
+    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M14.75 10.25V13.25C14.75 13.6478 14.592 14.0294 14.3107 14.3107C14.0294 14.592 13.6478 14.75 13.25 14.75H2.75C2.35218 14.75 1.97064 14.592 1.68934 14.3107C1.40804 14.0294 1.25 13.6478 1.25 13.25V10.25M11.75 5L8 1.25M8 1.25L4.25 5M8 1.25V10.25" stroke="#CEFFA8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+    </button>
+</li>
+
+<li>
+    <span>Accounting & Taxation / Charter documents / Registrations / PAN certificate</span>
+    <button data-bs-toggle="modal" data-bs-target="#common_file_upload_pop"
+            data-location="Accounting & Taxation / Charter documents / Registrations"
+            data-real-file-name="PAN certificate">
+    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M14.75 10.25V13.25C14.75 13.6478 14.592 14.0294 14.3107 14.3107C14.0294 14.592 13.6478 14.75 13.25 14.75H2.75C2.35218 14.75 1.97064 14.592 1.68934 14.3107C1.40804 14.0294 1.25 13.6478 1.25 13.25V10.25M11.75 5L8 1.25M8 1.25L4.25 5M8 1.25V10.25" stroke="#CEFFA8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+    </button>
+</li>
+
+
+<li>
+    <span>Accounting & Taxation / Charter documents / Registrations / TAN certificate</span>
+    <button data-bs-toggle="modal" data-bs-target="#common_file_upload_pop"
+            data-location="Accounting & Taxation / Charter documents / Registrations"
+            data-real-file-name="TAN certificate">
+    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M14.75 10.25V13.25C14.75 13.6478 14.592 14.0294 14.3107 14.3107C14.0294 14.592 13.6478 14.75 13.25 14.75H2.75C2.35218 14.75 1.97064 14.592 1.68934 14.3107C1.40804 14.0294 1.25 13.6478 1.25 13.25V10.25M11.75 5L8 1.25M8 1.25L4.25 5M8 1.25V10.25" stroke="#CEFFA8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+    </button>
+</li>
+
+<li>
+    <span>Accounting & Taxation / Charter documents / Registrations / GSTIN certificate</span>
+    <button data-bs-toggle="modal" data-bs-target="#common_file_upload_pop"
+            data-location="Accounting & Taxation / Charter documents / Registrations"
+            data-real-file-name="GSTIN certificate">
+    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M14.75 10.25V13.25C14.75 13.6478 14.592 14.0294 14.3107 14.3107C14.0294 14.592 13.6478 14.75 13.25 14.75H2.75C2.35218 14.75 1.97064 14.592 1.68934 14.3107C1.40804 14.0294 1.25 13.6478 1.25 13.25V10.25M11.75 5L8 1.25M8 1.25L4.25 5M8 1.25V10.25" stroke="#CEFFA8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+    </button>
+</li>
+
+<li>
+    <span>Accounting & Taxation / Charter documents / Registrations / MSME certificate</span>
+    <button data-bs-toggle="modal" data-bs-target="#common_file_upload_pop"
+            data-location="Accounting & Taxation / Charter documents / Registrations"
+            data-real-file-name="MSME certificate">
+    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M14.75 10.25V13.25C14.75 13.6478 14.592 14.0294 14.3107 14.3107C14.0294 14.592 13.6478 14.75 13.25 14.75H2.75C2.35218 14.75 1.97064 14.592 1.68934 14.3107C1.40804 14.0294 1.25 13.6478 1.25 13.25V10.25M11.75 5L8 1.25M8 1.25L4.25 5M8 1.25V10.25" stroke="#CEFFA8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+    </button>
+</li>
+
+<li>
+    <span>Accounting & Taxation / Charter documents / Registrations / Trademark</span>
+    <button data-bs-toggle="modal" data-bs-target="#common_file_upload_pop"
+            data-location="Accounting & Taxation / Charter documents / Registrations"
+            data-real-file-name="Trademark">
+    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M14.75 10.25V13.25C14.75 13.6478 14.592 14.0294 14.3107 14.3107C14.0294 14.592 13.6478 14.75 13.25 14.75H2.75C2.35218 14.75 1.97064 14.592 1.68934 14.3107C1.40804 14.0294 1.25 13.6478 1.25 13.25V10.25M11.75 5L8 1.25M8 1.25L4.25 5M8 1.25V10.25" stroke="#CEFFA8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+    </button>
+</li>
+
+<li>
+    <span>Accounting & Taxation / Charter documents / Registrations / Provident Fund certificate</span>
+    <button data-bs-toggle="modal" data-bs-target="#common_file_upload_pop"
+            data-location="Accounting & Taxation / Charter documents / Registrations"
+            data-real-file-name="Provident Fund certificate">
+    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M14.75 10.25V13.25C14.75 13.6478 14.592 14.0294 14.3107 14.3107C14.0294 14.592 13.6478 14.75 13.25 14.75H2.75C2.35218 14.75 1.97064 14.592 1.68934 14.3107C1.40804 14.0294 1.25 13.6478 1.25 13.25V10.25M11.75 5L8 1.25M8 1.25L4.25 5M8 1.25V10.25" stroke="#CEFFA8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+    </button>
+</li>
+
+<li>
+    <span>Accounting & Taxation / Charter documents / Registrations / Employee State Insurance certificate</span>
+    <button data-bs-toggle="modal" data-bs-target="#common_file_upload_pop"
+            data-location="Accounting & Taxation / Charter documents / Registrations"
+            data-real-file-name="Employee State Insurance certificate">
+    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M14.75 10.25V13.25C14.75 13.6478 14.592 14.0294 14.3107 14.3107C14.0294 14.592 13.6478 14.75 13.25 14.75H2.75C2.35218 14.75 1.97064 14.592 1.68934 14.3107C1.40804 14.0294 1.25 13.6478 1.25 13.25V10.25M11.75 5L8 1.25M8 1.25L4.25 5M8 1.25V10.25" stroke="#CEFFA8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+    </button>
+</li>
+
+<li>
+    <span>Accounting & Taxation / Charter documents / Registrations / Professional Tax certificate</span>
+    <button data-bs-toggle="modal" data-bs-target="#common_file_upload_pop"
+            data-location="Accounting & Taxation / Charter documents / Registrations"
+            data-real-file-name="Professional Tax certificate">
+    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M14.75 10.25V13.25C14.75 13.6478 14.592 14.0294 14.3107 14.3107C14.0294 14.592 13.6478 14.75 13.25 14.75H2.75C2.35218 14.75 1.97064 14.592 1.68934 14.3107C1.40804 14.0294 1.25 13.6478 1.25 13.25V10.25M11.75 5L8 1.25M8 1.25L4.25 5M8 1.25V10.25" stroke="#CEFFA8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+    </button>
+</li>
+
+
+<li>
+    <span>Accounting & Taxation / Charter documents / Registrations / Labour Welfare Fund certificate</span>
+    <button data-bs-toggle="modal" data-bs-target="#common_file_upload_pop"
+            data-location="Accounting & Taxation / Charter documents / Registrations"
+            data-real-file-name="Labour Welfare Fund certificate">
+    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M14.75 10.25V13.25C14.75 13.6478 14.592 14.0294 14.3107 14.3107C14.0294 14.592 13.6478 14.75 13.25 14.75H2.75C2.35218 14.75 1.97064 14.592 1.68934 14.3107C1.40804 14.0294 1.25 13.6478 1.25 13.25V10.25M11.75 5L8 1.25M8 1.25L4.25 5M8 1.25V10.25" stroke="#CEFFA8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+    </button>
+</li>
+
+<li>
+    <span>Accounting & Taxation / Charter documents / Registrations / POSH Policy</span>
+    <button data-bs-toggle="modal" data-bs-target="#common_file_upload_pop"
+            data-location="Accounting & Taxation / Charter documents / Registrations"
+            data-real-file-name="POSH Policy">
+    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M14.75 10.25V13.25C14.75 13.6478 14.592 14.0294 14.3107 14.3107C14.0294 14.592 13.6478 14.75 13.25 14.75H2.75C2.35218 14.75 1.97064 14.592 1.68934 14.3107C1.40804 14.0294 1.25 13.6478 1.25 13.25V10.25M11.75 5L8 1.25M8 1.25L4.25 5M8 1.25V10.25" stroke="#CEFFA8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+    </button>
+</li>
+
+
+<li>
+    <span>Legal / Secretarial / Annual Filings / AoC-4 (Annual Filing Statement Form)</span>
+    <button data-bs-toggle="modal" data-bs-target="#common_file_upload_pop"
+            data-location="Legal / Secretarial / Annual Filings"
+            data-real-file-name="AoC-4 (Annual Filing Statement Form)">
+    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M14.75 10.25V13.25C14.75 13.6478 14.592 14.0294 14.3107 14.3107C14.0294 14.592 13.6478 14.75 13.25 14.75H2.75C2.35218 14.75 1.97064 14.592 1.68934 14.3107C1.40804 14.0294 1.25 13.6478 1.25 13.25V10.25M11.75 5L8 1.25M8 1.25L4.25 5M8 1.25V10.25" stroke="#CEFFA8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+    </button>
+</li>
+
+
+<li>
+    <span>Legal / Secretarial / Annual Filings / AoC-4 (CFS) (Form for filing consolidated financial statements and other documents with the Registrar)</span>
+    <button data-bs-toggle="modal" data-bs-target="#common_file_upload_pop"
+            data-location="Legal / Secretarial / Annual Filings"
+            data-real-file-name="AoC-4 (CFS) (Form for filing consolidated financial statements and other documents with the Registrar)">
+    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M14.75 10.25V13.25C14.75 13.6478 14.592 14.0294 14.3107 14.3107C14.0294 14.592 13.6478 14.75 13.25 14.75H2.75C2.35218 14.75 1.97064 14.592 1.68934 14.3107C1.40804 14.0294 1.25 13.6478 1.25 13.25V10.25M11.75 5L8 1.25M8 1.25L4.25 5M8 1.25V10.25" stroke="#CEFFA8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+    </button>
+</li>
+
+<li>
+    <span>Legal / Secretarial / Annual Filings / MGT-7/ (Annual Return of a company)</span>
+    <button data-bs-toggle="modal" data-bs-target="#common_file_upload_pop"
+            data-location="Legal / Secretarial / Annual Filings"
+            data-real-file-name="MGT-7/ (Annual Return of a company)">
+    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M14.75 10.25V13.25C14.75 13.6478 14.592 14.0294 14.3107 14.3107C14.0294 14.592 13.6478 14.75 13.25 14.75H2.75C2.35218 14.75 1.97064 14.592 1.68934 14.3107C1.40804 14.0294 1.25 13.6478 1.25 13.25V10.25M11.75 5L8 1.25M8 1.25L4.25 5M8 1.25V10.25" stroke="#CEFFA8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+    </button>
+</li>
+
+<li>
+    <span>Legal / Secretarial / Annual Filings / MGT-7A (Annual Return of a small company)</span>
+    <button data-bs-toggle="modal" data-bs-target="#common_file_upload_pop"
+            data-location="Legal / Secretarial / Annual Filings"
+            data-real-file-name="MGT-7A (Annual Return of a small company)">
+    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M14.75 10.25V13.25C14.75 13.6478 14.592 14.0294 14.3107 14.3107C14.0294 14.592 13.6478 14.75 13.25 14.75H2.75C2.35218 14.75 1.97064 14.592 1.68934 14.3107C1.40804 14.0294 1.25 13.6478 1.25 13.25V10.25M11.75 5L8 1.25M8 1.25L4.25 5M8 1.25V10.25" stroke="#CEFFA8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+    </button>
+</li>
+
+<li>
+    <span>Legal / Secretarial / Annual General Meeting / Notices</span>
+    <button data-bs-toggle="modal" data-bs-target="#common_file_upload_pop"
+            data-location="Legal / Secretarial / Annual General Meeting"
+            data-real-file-name="Notices">
+    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M14.75 10.25V13.25C14.75 13.6478 14.592 14.0294 14.3107 14.3107C14.0294 14.592 13.6478 14.75 13.25 14.75H2.75C2.35218 14.75 1.97064 14.592 1.68934 14.3107C1.40804 14.0294 1.25 13.6478 1.25 13.25V10.25M11.75 5L8 1.25M8 1.25L4.25 5M8 1.25V10.25" stroke="#CEFFA8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+    </button>
+</li>
+
+<li>
+    <span>Legal / Secretarial / Annual General Meeting / Minute Book</span>
+    <button data-bs-toggle="modal" data-bs-target="#common_file_upload_pop"
+            data-location="Legal / Secretarial / Annual General Meeting"
+            data-real-file-name="Minute Book">
+    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M14.75 10.25V13.25C14.75 13.6478 14.592 14.0294 14.3107 14.3107C14.0294 14.592 13.6478 14.75 13.25 14.75H2.75C2.35218 14.75 1.97064 14.592 1.68934 14.3107C1.40804 14.0294 1.25 13.6478 1.25 13.25V10.25M11.75 5L8 1.25M8 1.25L4.25 5M8 1.25V10.25" stroke="#CEFFA8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+    </button>
+</li>
+
+<li>
+    <span>Legal / Secretarial / Annual General Meeting / Attendance sheet</span>
+    <button data-bs-toggle="modal" data-bs-target="#common_file_upload_pop"
+            data-location="Legal / Secretarial / Annual General Meeting"
+            data-real-file-name="Attendance sheet">
+    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M14.75 10.25V13.25C14.75 13.6478 14.592 14.0294 14.3107 14.3107C14.0294 14.592 13.6478 14.75 13.25 14.75H2.75C2.35218 14.75 1.97064 14.592 1.68934 14.3107C1.40804 14.0294 1.25 13.6478 1.25 13.25V10.25M11.75 5L8 1.25M8 1.25L4.25 5M8 1.25V10.25" stroke="#CEFFA8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+    </button>
+</li>
+
+<li>
+    <span>Legal / Secretarial / Annual General Meeting / Resolutions</span>
+    <button data-bs-toggle="modal" data-bs-target="#common_file_upload_pop"
+            data-location="Legal / Secretarial / Annual General Meeting"
+            data-real-file-name="Resolutions">
+    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M14.75 10.25V13.25C14.75 13.6478 14.592 14.0294 14.3107 14.3107C14.0294 14.592 13.6478 14.75 13.25 14.75H2.75C2.35218 14.75 1.97064 14.592 1.68934 14.3107C1.40804 14.0294 1.25 13.6478 1.25 13.25V10.25M11.75 5L8 1.25M8 1.25L4.25 5M8 1.25V10.25" stroke="#CEFFA8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+    </button>
+</li>
+
+<li>
+    <span>Legal / Secretarial / Auditor Appointment / Board Resolution for the appointment of Auditor</span>
+    <button data-bs-toggle="modal" data-bs-target="#common_file_upload_pop"
+            data-location="Legal / Secretarial / Auditor Appointment"
+            data-real-file-name="Board Resolution for the appointment of Auditor">
+    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M14.75 10.25V13.25C14.75 13.6478 14.592 14.0294 14.3107 14.3107C14.0294 14.592 13.6478 14.75 13.25 14.75H2.75C2.35218 14.75 1.97064 14.592 1.68934 14.3107C1.40804 14.0294 1.25 13.6478 1.25 13.25V10.25M11.75 5L8 1.25M8 1.25L4.25 5M8 1.25V10.25" stroke="#CEFFA8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+    </button>
+</li>
+
+<li>
+    <span>Legal / Secretarial / Auditor Appointment / Intimation to auditor</span>
+    <button data-bs-toggle="modal" data-bs-target="#common_file_upload_pop"
+            data-location="Legal / Secretarial / Auditor Appointment"
+            data-real-file-name="Intimation to auditor">
+    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M14.75 10.25V13.25C14.75 13.6478 14.592 14.0294 14.3107 14.3107C14.0294 14.592 13.6478 14.75 13.25 14.75H2.75C2.35218 14.75 1.97064 14.592 1.68934 14.3107C1.40804 14.0294 1.25 13.6478 1.25 13.25V10.25M11.75 5L8 1.25M8 1.25L4.25 5M8 1.25V10.25" stroke="#CEFFA8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+    </button>
+</li>
+
+<li>
+    <span>Legal / Secretarial / Auditor Appointment / Letter of appointment</span>
+    <button data-bs-toggle="modal" data-bs-target="#common_file_upload_pop"
+            data-location="Legal / Secretarial / Auditor Appointment"
+            data-real-file-name="Letter of appointment">
+    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M14.75 10.25V13.25C14.75 13.6478 14.592 14.0294 14.3107 14.3107C14.0294 14.592 13.6478 14.75 13.25 14.75H2.75C2.35218 14.75 1.97064 14.592 1.68934 14.3107C1.40804 14.0294 1.25 13.6478 1.25 13.25V10.25M11.75 5L8 1.25M8 1.25L4.25 5M8 1.25V10.25" stroke="#CEFFA8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+    </button>
+</li>
+
+<li>
+    <span>Legal / Secretarial / Auditor Appointment / Certificate as per Rule 4 and consent by Auditor for his appointment</span>
+    <button data-bs-toggle="modal" data-bs-target="#common_file_upload_pop"
+            data-location="Legal / Secretarial / Auditor Appointment"
+            data-real-file-name="Certificate as per Rule 4 and consent by Auditor for his appointment">
+    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M14.75 10.25V13.25C14.75 13.6478 14.592 14.0294 14.3107 14.3107C14.0294 14.592 13.6478 14.75 13.25 14.75H2.75C2.35218 14.75 1.97064 14.592 1.68934 14.3107C1.40804 14.0294 1.25 13.6478 1.25 13.25V10.25M11.75 5L8 1.25M8 1.25L4.25 5M8 1.25V10.25" stroke="#CEFFA8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+    </button>
+</li>
+
+
+<li>
+    <span>Legal / Secretarial / Auditor Appointment / Acceptance letter for appointment</span>
+    <button data-bs-toggle="modal" data-bs-target="#common_file_upload_pop"
+            data-location="Legal / Secretarial / Auditor Appointment"
+            data-real-file-name="Acceptance letter for appointment">
+    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M14.75 10.25V13.25C14.75 13.6478 14.592 14.0294 14.3107 14.3107C14.0294 14.592 13.6478 14.75 13.25 14.75H2.75C2.35218 14.75 1.97064 14.592 1.68934 14.3107C1.40804 14.0294 1.25 13.6478 1.25 13.25V10.25M11.75 5L8 1.25M8 1.25L4.25 5M8 1.25V10.25" stroke="#CEFFA8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+    </button>
+</li>
+
+
+<li>
+    <span>Legal / Secretarial / Auditor Appointment / Special Resolution</span>
+    <button data-bs-toggle="modal" data-bs-target="#common_file_upload_pop"
+            data-location="Legal / Secretarial / Auditor Appointment"
+            data-real-file-name="Special Resolution">
+    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M14.75 10.25V13.25C14.75 13.6478 14.592 14.0294 14.3107 14.3107C14.0294 14.592 13.6478 14.75 13.25 14.75H2.75C2.35218 14.75 1.97064 14.592 1.68934 14.3107C1.40804 14.0294 1.25 13.6478 1.25 13.25V10.25M11.75 5L8 1.25M8 1.25L4.25 5M8 1.25V10.25" stroke="#CEFFA8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+    </button>
+</li>
+
+<li>
+    <span>Legal / Secretarial / Auditor Exits / ADT-3 form</span>
+    <button data-bs-toggle="modal" data-bs-target="#common_file_upload_pop"
+            data-location="Legal / Secretarial / Auditor Exits"
+            data-real-file-name="ADT-3 form">
+    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M14.75 10.25V13.25C14.75 13.6478 14.592 14.0294 14.3107 14.3107C14.0294 14.592 13.6478 14.75 13.25 14.75H2.75C2.35218 14.75 1.97064 14.592 1.68934 14.3107C1.40804 14.0294 1.25 13.6478 1.25 13.25V10.25M11.75 5L8 1.25M8 1.25L4.25 5M8 1.25V10.25" stroke="#CEFFA8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+    </button>
+</li>
+
+<li>
+    <span>Legal / Secretarial / Auditor Exits / Resignation letter by auditor</span>
+    <button data-bs-toggle="modal" data-bs-target="#common_file_upload_pop"
+            data-location="Legal / Secretarial / Auditor Exits"
+            data-real-file-name="Resignation letter by auditor">
+    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M14.75 10.25V13.25C14.75 13.6478 14.592 14.0294 14.3107 14.3107C14.0294 14.592 13.6478 14.75 13.25 14.75H2.75C2.35218 14.75 1.97064 14.592 1.68934 14.3107C1.40804 14.0294 1.25 13.6478 1.25 13.25V10.25M11.75 5L8 1.25M8 1.25L4.25 5M8 1.25V10.25" stroke="#CEFFA8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+    </button>
+</li>
+
+<li>
+    <span>Legal / Secretarial / Auditor Exits / Details of the grounds for seeking removal of auditor</span>
+    <button data-bs-toggle="modal" data-bs-target="#common_file_upload_pop"
+            data-location="Legal / Secretarial / Auditor Exits"
+            data-real-file-name="Details of the grounds for seeking removal of auditor">
+    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M14.75 10.25V13.25C14.75 13.6478 14.592 14.0294 14.3107 14.3107C14.0294 14.592 13.6478 14.75 13.25 14.75H2.75C2.35218 14.75 1.97064 14.592 1.68934 14.3107C1.40804 14.0294 1.25 13.6478 1.25 13.25V10.25M11.75 5L8 1.25M8 1.25L4.25 5M8 1.25V10.25" stroke="#CEFFA8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+    </button>
+</li>
+
+<li>
+    <span>Legal / Secretarial / Auditor Exits / Special Resolution</span>
+    <button data-bs-toggle="modal" data-bs-target="#common_file_upload_pop"
+            data-location="Legal / Secretarial / Auditor Exits"
+            data-real-file-name="Special Resolution">
+    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M14.75 10.25V13.25C14.75 13.6478 14.592 14.0294 14.3107 14.3107C14.0294 14.592 13.6478 14.75 13.25 14.75H2.75C2.35218 14.75 1.97064 14.592 1.68934 14.3107C1.40804 14.0294 1.25 13.6478 1.25 13.25V10.25M11.75 5L8 1.25M8 1.25L4.25 5M8 1.25V10.25" stroke="#CEFFA8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+    </button>
+</li>
+
+<li>
+    <span>Legal / Secretarial / Auditor Exits / ADT-2 (Application for removal of auditor(s) before expiry of term)</span>
+    <button data-bs-toggle="modal" data-bs-target="#common_file_upload_pop"
+            data-location="Legal / Secretarial / Auditor Exits"
+            data-real-file-name="ADT-2 (Application for removal of auditor(s) before expiry of term)">
+    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M14.75 10.25V13.25C14.75 13.6478 14.592 14.0294 14.3107 14.3107C14.0294 14.592 13.6478 14.75 13.25 14.75H2.75C2.35218 14.75 1.97064 14.592 1.68934 14.3107C1.40804 14.0294 1.25 13.6478 1.25 13.25V10.25M11.75 5L8 1.25M8 1.25L4.25 5M8 1.25V10.25" stroke="#CEFFA8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+    </button>
+</li>
+
+<li>
+    <span>Legal / Secretarial / Board Meetings / Notices</span>
+    <button data-bs-toggle="modal" data-bs-target="#common_file_upload_pop"
+            data-location="Legal / Secretarial / Board Meetings"
+            data-real-file-name="Notices">
+    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M14.75 10.25V13.25C14.75 13.6478 14.592 14.0294 14.3107 14.3107C14.0294 14.592 13.6478 14.75 13.25 14.75H2.75C2.35218 14.75 1.97064 14.592 1.68934 14.3107C1.40804 14.0294 1.25 13.6478 1.25 13.25V10.25M11.75 5L8 1.25M8 1.25L4.25 5M8 1.25V10.25" stroke="#CEFFA8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+    </button>
+</li>
+
+<li>
+    <span>Legal / Secretarial / Board Meetings / Minute Book</span>
+    <button data-bs-toggle="modal" data-bs-target="#common_file_upload_pop"
+            data-location="Legal / Secretarial / Board Meetings"
+            data-real-file-name="Minute Book">
+    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M14.75 10.25V13.25C14.75 13.6478 14.592 14.0294 14.3107 14.3107C14.0294 14.592 13.6478 14.75 13.25 14.75H2.75C2.35218 14.75 1.97064 14.592 1.68934 14.3107C1.40804 14.0294 1.25 13.6478 1.25 13.25V10.25M11.75 5L8 1.25M8 1.25L4.25 5M8 1.25V10.25" stroke="#CEFFA8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+    </button>
+</li>
+
+<li>
+    <span>Legal / Secretarial / Board Meetings / Attendance sheet</span>
+    <button data-bs-toggle="modal" data-bs-target="#common_file_upload_pop"
+            data-location="Legal / Secretarial / Board Meetings"
+            data-real-file-name="Attendance sheet">
+    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M14.75 10.25V13.25C14.75 13.6478 14.592 14.0294 14.3107 14.3107C14.0294 14.592 13.6478 14.75 13.25 14.75H2.75C2.35218 14.75 1.97064 14.592 1.68934 14.3107C1.40804 14.0294 1.25 13.6478 1.25 13.25V10.25M11.75 5L8 1.25M8 1.25L4.25 5M8 1.25V10.25" stroke="#CEFFA8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+    </button>
+</li>
+
+
+<li>
+    <span>Legal / Secretarial / Board Meetings / Resolutions</span>
+    <button data-bs-toggle="modal" data-bs-target="#common_file_upload_pop"
+            data-location="Legal / Secretarial / Board Meetings"
+            data-real-file-name="Resolutions">
+    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M14.75 10.25V13.25C14.75 13.6478 14.592 14.0294 14.3107 14.3107C14.0294 14.592 13.6478 14.75 13.25 14.75H2.75C2.35218 14.75 1.97064 14.592 1.68934 14.3107C1.40804 14.0294 1.25 13.6478 1.25 13.25V10.25M11.75 5L8 1.25M8 1.25L4.25 5M8 1.25V10.25" stroke="#CEFFA8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+    </button>
+</li>
+
+<li>
+    <span>Legal / Secretarial / Deposit Undertakings /Form DPT-3</span>
+    <button data-bs-toggle="modal" data-bs-target="#common_file_upload_pop"
+            data-location="Legal / Secretarial / Deposit Undertakings"
+            data-real-file-name="Form DPT-3">
+    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M14.75 10.25V13.25C14.75 13.6478 14.592 14.0294 14.3107 14.3107C14.0294 14.592 13.6478 14.75 13.25 14.75H2.75C2.35218 14.75 1.97064 14.592 1.68934 14.3107C1.40804 14.0294 1.25 13.6478 1.25 13.25V10.25M11.75 5L8 1.25M8 1.25L4.25 5M8 1.25V10.25" stroke="#CEFFA8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+    </button>
+</li>
+
+<li>
+    <span>Legal / Secretarial / Director Appointments / DIR-3 form/ DIN number</span>
+    <button data-bs-toggle="modal" data-bs-target="#common_file_upload_pop"
+            data-location="Legal / Secretarial / Director Appointments"
+            data-real-file-name="DIR-3 form/ DIN number">
+    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M14.75 10.25V13.25C14.75 13.6478 14.592 14.0294 14.3107 14.3107C14.0294 14.592 13.6478 14.75 13.25 14.75H2.75C2.35218 14.75 1.97064 14.592 1.68934 14.3107C1.40804 14.0294 1.25 13.6478 1.25 13.25V10.25M11.75 5L8 1.25M8 1.25L4.25 5M8 1.25V10.25" stroke="#CEFFA8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+    </button>
+</li>
+
+<li>
+    <span>Legal / Secretarial / Director Appointments / DIR-3 KYC</span>
+    <button data-bs-toggle="modal" data-bs-target="#common_file_upload_pop"
+            data-location="Legal / Secretarial / Director Appointments"
+            data-real-file-name="DIR-3 KYC">
+    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M14.75 10.25V13.25C14.75 13.6478 14.592 14.0294 14.3107 14.3107C14.0294 14.592 13.6478 14.75 13.25 14.75H2.75C2.35218 14.75 1.97064 14.592 1.68934 14.3107C1.40804 14.0294 1.25 13.6478 1.25 13.25V10.25M11.75 5L8 1.25M8 1.25L4.25 5M8 1.25V10.25" stroke="#CEFFA8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+    </button>
+</li>
+
+<li>
+    <span>Legal / Secretarial / Director Appointments / DIR-6 form</span>
+    <button data-bs-toggle="modal" data-bs-target="#common_file_upload_pop"
+            data-location="Legal / Secretarial / Director Appointments"
+            data-real-file-name="DIR-6 form">
+    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M14.75 10.25V13.25C14.75 13.6478 14.592 14.0294 14.3107 14.3107C14.0294 14.592 13.6478 14.75 13.25 14.75H2.75C2.35218 14.75 1.97064 14.592 1.68934 14.3107C1.40804 14.0294 1.25 13.6478 1.25 13.25V10.25M11.75 5L8 1.25M8 1.25L4.25 5M8 1.25V10.25" stroke="#CEFFA8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+    </button>
+</li>
+
+
+<li>
+    <span>Legal / Secretarial / Director Appointments / DIR-12 form</span>
+    <button data-bs-toggle="modal" data-bs-target="#common_file_upload_pop"
+            data-location="Legal / Secretarial / Director Appointments"
+            data-real-file-name="DIR-12 form">
+    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M14.75 10.25V13.25C14.75 13.6478 14.592 14.0294 14.3107 14.3107C14.0294 14.592 13.6478 14.75 13.25 14.75H2.75C2.35218 14.75 1.97064 14.592 1.68934 14.3107C1.40804 14.0294 1.25 13.6478 1.25 13.25V10.25M11.75 5L8 1.25M8 1.25L4.25 5M8 1.25V10.25" stroke="#CEFFA8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+    </button>
+</li>
+
+<li>
+    <span>Legal / Secretarial / Director Resignation / DIR-11 form</span>
+    <button data-bs-toggle="modal" data-bs-target="#common_file_upload_pop"
+            data-location="Legal / Secretarial / Director Resignation"
+            data-real-file-name="DIR-11 form">
+    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M14.75 10.25V13.25C14.75 13.6478 14.592 14.0294 14.3107 14.3107C14.0294 14.592 13.6478 14.75 13.25 14.75H2.75C2.35218 14.75 1.97064 14.592 1.68934 14.3107C1.40804 14.0294 1.25 13.6478 1.25 13.25V10.25M11.75 5L8 1.25M8 1.25L4.25 5M8 1.25V10.25" stroke="#CEFFA8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+    </button>
+</li>
+
+<li>
+    <span>Legal / Secretarial / Director Resignation / DIR-12 form</span>
+    <button data-bs-toggle="modal" data-bs-target="#common_file_upload_pop"
+            data-location="Legal / Secretarial / Director Resignation"
+            data-real-file-name="DIR-12 form">
+    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M14.75 10.25V13.25C14.75 13.6478 14.592 14.0294 14.3107 14.3107C14.0294 14.592 13.6478 14.75 13.25 14.75H2.75C2.35218 14.75 1.97064 14.592 1.68934 14.3107C1.40804 14.0294 1.25 13.6478 1.25 13.25V10.25M11.75 5L8 1.25M8 1.25L4.25 5M8 1.25V10.25" stroke="#CEFFA8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+    </button>
+</li>
+
+
+<li>
+    <span>Legal / Secretarial / Extra Ordinary General Meeting / Notices</span>
+    <button data-bs-toggle="modal" data-bs-target="#common_file_upload_pop"
+            data-location="Legal / Secretarial / Extra Ordinary General Meeting"
+            data-real-file-name="Notices">
+    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M14.75 10.25V13.25C14.75 13.6478 14.592 14.0294 14.3107 14.3107C14.0294 14.592 13.6478 14.75 13.25 14.75H2.75C2.35218 14.75 1.97064 14.592 1.68934 14.3107C1.40804 14.0294 1.25 13.6478 1.25 13.25V10.25M11.75 5L8 1.25M8 1.25L4.25 5M8 1.25V10.25" stroke="#CEFFA8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+    </button>
+</li>
+
+<li>
+    <span>Legal / Secretarial / Extra Ordinary General Meeting / Minute Book</span>
+    <button data-bs-toggle="modal" data-bs-target="#common_file_upload_pop"
+            data-location="Legal / Secretarial / Extra Ordinary General Meeting"
+            data-real-file-name="Minute Book">
+    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M14.75 10.25V13.25C14.75 13.6478 14.592 14.0294 14.3107 14.3107C14.0294 14.592 13.6478 14.75 13.25 14.75H2.75C2.35218 14.75 1.97064 14.592 1.68934 14.3107C1.40804 14.0294 1.25 13.6478 1.25 13.25V10.25M11.75 5L8 1.25M8 1.25L4.25 5M8 1.25V10.25" stroke="#CEFFA8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+    </button>
+</li>
+
+<li>
+    <span>Legal / Secretarial / Extra Ordinary General Meeting / Attendance sheet</span>
+    <button data-bs-toggle="modal" data-bs-target="#common_file_upload_pop"
+            data-location="Legal / Secretarial / Extra Ordinary General Meeting"
+            data-real-file-name="Attendance sheet">
+    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M14.75 10.25V13.25C14.75 13.6478 14.592 14.0294 14.3107 14.3107C14.0294 14.592 13.6478 14.75 13.25 14.75H2.75C2.35218 14.75 1.97064 14.592 1.68934 14.3107C1.40804 14.0294 1.25 13.6478 1.25 13.25V10.25M11.75 5L8 1.25M8 1.25L4.25 5M8 1.25V10.25" stroke="#CEFFA8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+    </button>
+</li>
+
+<li>
+    <span>Legal / Secretarial / Extra Ordinary General Meeting / Resolutions</span>
+    <button data-bs-toggle="modal" data-bs-target="#common_file_upload_pop"
+            data-location="Legal / Secretarial / Extra Ordinary General Meeting"
+            data-real-file-name="Resolutions">
+    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M14.75 10.25V13.25C14.75 13.6478 14.592 14.0294 14.3107 14.3107C14.0294 14.592 13.6478 14.75 13.25 14.75H2.75C2.35218 14.75 1.97064 14.592 1.68934 14.3107C1.40804 14.0294 1.25 13.6478 1.25 13.25V10.25M11.75 5L8 1.25M8 1.25L4.25 5M8 1.25V10.25" stroke="#CEFFA8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+    </button>
+</li>
+
+<li>
+    <span>Legal / Secretarial / Incorporation / RUN Form (Reserve Unique Name)</span>
+    <button data-bs-toggle="modal" data-bs-target="#common_file_upload_pop"
+            data-location="Legal / Secretarial / Incorporation"
+            data-real-file-name="RUN Form (Reserve Unique Name)">
+    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M14.75 10.25V13.25C14.75 13.6478 14.592 14.0294 14.3107 14.3107C14.0294 14.592 13.6478 14.75 13.25 14.75H2.75C2.35218 14.75 1.97064 14.592 1.68934 14.3107C1.40804 14.0294 1.25 13.6478 1.25 13.25V10.25M11.75 5L8 1.25M8 1.25L4.25 5M8 1.25V10.25" stroke="#CEFFA8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+    </button>
+</li>
+
+<li>
+    <span>Legal / Secretarial / Incorporation / INC-9 (Declaration of Subscribers and First Directors)</span>
+    <button data-bs-toggle="modal" data-bs-target="#common_file_upload_pop"
+            data-location="Legal / Secretarial / Incorporation"
+            data-real-file-name="INC-9 (Declaration of Subscribers and First Directors)">
+    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M14.75 10.25V13.25C14.75 13.6478 14.592 14.0294 14.3107 14.3107C14.0294 14.592 13.6478 14.75 13.25 14.75H2.75C2.35218 14.75 1.97064 14.592 1.68934 14.3107C1.40804 14.0294 1.25 13.6478 1.25 13.25V10.25M11.75 5L8 1.25M8 1.25L4.25 5M8 1.25V10.25" stroke="#CEFFA8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+    </button>
+</li>
+
+<li>
+    <span>Legal / Secretarial / Incorporation / SPICe+Part B (Simplified Proforma for Incorporating Company Electronically)</span>
+    <button data-bs-toggle="modal" data-bs-target="#common_file_upload_pop"
+            data-location="Legal / Secretarial / Incorporation"
+            data-real-file-name="SPICe+Part B (Simplified Proforma for Incorporating Company Electronically)">
+    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M14.75 10.25V13.25C14.75 13.6478 14.592 14.0294 14.3107 14.3107C14.0294 14.592 13.6478 14.75 13.25 14.75H2.75C2.35218 14.75 1.97064 14.592 1.68934 14.3107C1.40804 14.0294 1.25 13.6478 1.25 13.25V10.25M11.75 5L8 1.25M8 1.25L4.25 5M8 1.25V10.25" stroke="#CEFFA8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+    </button>
+</li>
+
+
+<li>
+    <span>Legal / Secretarial / Incorporation / INC-33 SPICe MoA (e-Momorandum of Association)</span>
+    <button data-bs-toggle="modal" data-bs-target="#common_file_upload_pop"
+            data-location="Legal / Secretarial / Incorporation"
+            data-real-file-name="INC-33 SPICe MoA (e-Momorandum of Association)">
+    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M14.75 10.25V13.25C14.75 13.6478 14.592 14.0294 14.3107 14.3107C14.0294 14.592 13.6478 14.75 13.25 14.75H2.75C2.35218 14.75 1.97064 14.592 1.68934 14.3107C1.40804 14.0294 1.25 13.6478 1.25 13.25V10.25M11.75 5L8 1.25M8 1.25L4.25 5M8 1.25V10.25" stroke="#CEFFA8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+    </button>
+</li>
+
+<li>
+    <span>Legal / Secretarial / Incorporation / INC-34 SPICe MoA (e-Articles of Association)</span>
+    <button data-bs-toggle="modal" data-bs-target="#common_file_upload_pop"
+            data-location="Legal / Secretarial / Incorporation"
+            data-real-file-name="INC-34 SPICe MoA (e-Articles of Association)">
+    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M14.75 10.25V13.25C14.75 13.6478 14.592 14.0294 14.3107 14.3107C14.0294 14.592 13.6478 14.75 13.25 14.75H2.75C2.35218 14.75 1.97064 14.592 1.68934 14.3107C1.40804 14.0294 1.25 13.6478 1.25 13.25V10.25M11.75 5L8 1.25M8 1.25L4.25 5M8 1.25V10.25" stroke="#CEFFA8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+    </button>
+</li>
+
+<li>
+    <span>Legal / Secretarial / Incorporation / INC-35 AGILE-PRO-s</span>
+    <button data-bs-toggle="modal" data-bs-target="#common_file_upload_pop"
+            data-location="Legal / Secretarial / Incorporation"
+            data-real-file-name="INC-35 AGILE-PRO-s">
+    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M14.75 10.25V13.25C14.75 13.6478 14.592 14.0294 14.3107 14.3107C14.0294 14.592 13.6478 14.75 13.25 14.75H2.75C2.35218 14.75 1.97064 14.592 1.68934 14.3107C1.40804 14.0294 1.25 13.6478 1.25 13.25V10.25M11.75 5L8 1.25M8 1.25L4.25 5M8 1.25V10.25" stroke="#CEFFA8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+    </button>
+</li>
+
+<li>
+    <span>Legal / Secretarial / Incorporation / INC-22 (Notice of situation or change of situation of registered office)</span>
+    <button data-bs-toggle="modal" data-bs-target="#common_file_upload_pop"
+            data-location="Legal / Secretarial / Incorporation"
+            data-real-file-name="INC-22 (Notice of situation or change of situation of registered office)">
+    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M14.75 10.25V13.25C14.75 13.6478 14.592 14.0294 14.3107 14.3107C14.0294 14.592 13.6478 14.75 13.25 14.75H2.75C2.35218 14.75 1.97064 14.592 1.68934 14.3107C1.40804 14.0294 1.25 13.6478 1.25 13.25V10.25M11.75 5L8 1.25M8 1.25L4.25 5M8 1.25V10.25" stroke="#CEFFA8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+    </button>
+</li>
+
+<li>
+    <span>Legal / Secretarial / Incorporation / INC-20A (Commencement of Business)</span>
+    <button data-bs-toggle="modal" data-bs-target="#common_file_upload_pop"
+            data-location="Legal / Secretarial / Incorporation"
+            data-real-file-name="INC-20A (Commencement of Business)">
+    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M14.75 10.25V13.25C14.75 13.6478 14.592 14.0294 14.3107 14.3107C14.0294 14.592 13.6478 14.75 13.25 14.75H2.75C2.35218 14.75 1.97064 14.592 1.68934 14.3107C1.40804 14.0294 1.25 13.6478 1.25 13.25V10.25M11.75 5L8 1.25M8 1.25L4.25 5M8 1.25V10.25" stroke="#CEFFA8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+    </button>
+</li>
+
+<li>
+    <span>Legal / Secretarial / Statutory Registers / Register of Members</span>
+    <button data-bs-toggle="modal" data-bs-target="#common_file_upload_pop"
+            data-location="Legal / Secretarial / Statutory Registers"
+            data-real-file-name="Register of Members">
+    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M14.75 10.25V13.25C14.75 13.6478 14.592 14.0294 14.3107 14.3107C14.0294 14.592 13.6478 14.75 13.25 14.75H2.75C2.35218 14.75 1.97064 14.592 1.68934 14.3107C1.40804 14.0294 1.25 13.6478 1.25 13.25V10.25M11.75 5L8 1.25M8 1.25L4.25 5M8 1.25V10.25" stroke="#CEFFA8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+    </button>
+</li>
+
+<li>
+    <span>Legal / Secretarial / Statutory Registers / Register of Other Security Holders</span>
+    <button data-bs-toggle="modal" data-bs-target="#common_file_upload_pop"
+            data-location="Legal / Secretarial / Statutory Registers"
+            data-real-file-name="Register of Other Security Holders">
+    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M14.75 10.25V13.25C14.75 13.6478 14.592 14.0294 14.3107 14.3107C14.0294 14.592 13.6478 14.75 13.25 14.75H2.75C2.35218 14.75 1.97064 14.592 1.68934 14.3107C1.40804 14.0294 1.25 13.6478 1.25 13.25V10.25M11.75 5L8 1.25M8 1.25L4.25 5M8 1.25V10.25" stroke="#CEFFA8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+    </button>
+</li>
+
+<li>
+    <span>Legal / Secretarial / Statutory Registers / Foreign Register</span>
+    <button data-bs-toggle="modal" data-bs-target="#common_file_upload_pop"
+            data-location="Legal / Secretarial / Statutory Registers"
+            data-real-file-name="Foreign Register">
+    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M14.75 10.25V13.25C14.75 13.6478 14.592 14.0294 14.3107 14.3107C14.0294 14.592 13.6478 14.75 13.25 14.75H2.75C2.35218 14.75 1.97064 14.592 1.68934 14.3107C1.40804 14.0294 1.25 13.6478 1.25 13.25V10.25M11.75 5L8 1.25M8 1.25L4.25 5M8 1.25V10.25" stroke="#CEFFA8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+    </button>
+</li>
+
+<li>
+    <span>Legal / Secretarial / Statutory Registers / Register of Directors and KMP</span>
+    <button data-bs-toggle="modal" data-bs-target="#common_file_upload_pop"
+            data-location="Legal / Secretarial / Statutory Registers"
+            data-real-file-name="Register of Directors and KMP">
+    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M14.75 10.25V13.25C14.75 13.6478 14.592 14.0294 14.3107 14.3107C14.0294 14.592 13.6478 14.75 13.25 14.75H2.75C2.35218 14.75 1.97064 14.592 1.68934 14.3107C1.40804 14.0294 1.25 13.6478 1.25 13.25V10.25M11.75 5L8 1.25M8 1.25L4.25 5M8 1.25V10.25" stroke="#CEFFA8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+    </button>
+</li>
+
+<li>
+    <span>Legal / Secretarial / Statutory Registers / Register of Charges</span>
+    <button data-bs-toggle="modal" data-bs-target="#common_file_upload_pop"
+            data-location="Legal / Secretarial / Statutory Registers"
+            data-real-file-name="Register of Charges">
+    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M14.75 10.25V13.25C14.75 13.6478 14.592 14.0294 14.3107 14.3107C14.0294 14.592 13.6478 14.75 13.25 14.75H2.75C2.35218 14.75 1.97064 14.592 1.68934 14.3107C1.40804 14.0294 1.25 13.6478 1.25 13.25V10.25M11.75 5L8 1.25M8 1.25L4.25 5M8 1.25V10.25" stroke="#CEFFA8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+    </button>
+</li>
+
+<li>
+    <span>Legal / Secretarial / Statutory Registers / Register of Deposits</span>
+    <button data-bs-toggle="modal" data-bs-target="#common_file_upload_pop"
+            data-location="Legal / Secretarial / Statutory Registers"
+            data-real-file-name="Register of Deposits">
+    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M14.75 10.25V13.25C14.75 13.6478 14.592 14.0294 14.3107 14.3107C14.0294 14.592 13.6478 14.75 13.25 14.75H2.75C2.35218 14.75 1.97064 14.592 1.68934 14.3107C1.40804 14.0294 1.25 13.6478 1.25 13.25V10.25M11.75 5L8 1.25M8 1.25L4.25 5M8 1.25V10.25" stroke="#CEFFA8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+    </button>
+</li>
+
+<li>
+    <span>Legal / Secretarial / Statutory Registers / Register of Loans, Guarantees and Securities</span>
+    <button data-bs-toggle="modal" data-bs-target="#common_file_upload_pop"
+            data-location="Legal / Secretarial / Statutory Registers"
+            data-real-file-name="Register of Loans, Guarantees and Securities">
+    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M14.75 10.25V13.25C14.75 13.6478 14.592 14.0294 14.3107 14.3107C14.0294 14.592 13.6478 14.75 13.25 14.75H2.75C2.35218 14.75 1.97064 14.592 1.68934 14.3107C1.40804 14.0294 1.25 13.6478 1.25 13.25V10.25M11.75 5L8 1.25M8 1.25L4.25 5M8 1.25V10.25" stroke="#CEFFA8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+    </button>
+</li>
+
+<li>
+    <span>Legal / Secretarial / Statutory Registers / Register of Investments not held in Company’s name</span>
+    <button data-bs-toggle="modal" data-bs-target="#common_file_upload_pop"
+            data-location="Legal / Secretarial / Statutory Registers"
+            data-real-file-name="Register of Investments not held in Company’s name">
+    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M14.75 10.25V13.25C14.75 13.6478 14.592 14.0294 14.3107 14.3107C14.0294 14.592 13.6478 14.75 13.25 14.75H2.75C2.35218 14.75 1.97064 14.592 1.68934 14.3107C1.40804 14.0294 1.25 13.6478 1.25 13.25V10.25M11.75 5L8 1.25M8 1.25L4.25 5M8 1.25V10.25" stroke="#CEFFA8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+    </button>
+</li>
+
+<li>
+    <span>Legal / Secretarial / Statutory Registers / Register of Contracts in which Directors are interested</span>
+    <button data-bs-toggle="modal" data-bs-target="#common_file_upload_pop"
+            data-location="Legal / Secretarial / Statutory Registers"
+            data-real-file-name="Register of Contracts in which Directors are interested">
+    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M14.75 10.25V13.25C14.75 13.6478 14.592 14.0294 14.3107 14.3107C14.0294 14.592 13.6478 14.75 13.25 14.75H2.75C2.35218 14.75 1.97064 14.592 1.68934 14.3107C1.40804 14.0294 1.25 13.6478 1.25 13.25V10.25M11.75 5L8 1.25M8 1.25L4.25 5M8 1.25V10.25" stroke="#CEFFA8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+    </button>
+</li>
+
+
+<li>
+    <span>Legal / Secretarial / Statutory Registers / Register of Sweat Equity Shares</span>
+    <button data-bs-toggle="modal" data-bs-target="#common_file_upload_pop"
+            data-location="Legal / Secretarial / Statutory Registers"
+            data-real-file-name="Register of Sweat Equity Shares">
+    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M14.75 10.25V13.25C14.75 13.6478 14.592 14.0294 14.3107 14.3107C14.0294 14.592 13.6478 14.75 13.25 14.75H2.75C2.35218 14.75 1.97064 14.592 1.68934 14.3107C1.40804 14.0294 1.25 13.6478 1.25 13.25V10.25M11.75 5L8 1.25M8 1.25L4.25 5M8 1.25V10.25" stroke="#CEFFA8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+    </button>
+</li>
+
+<li>
+    <span>Legal / Secretarial / Statutory Registers / Register of Employee Stock Options</span>
+    <button data-bs-toggle="modal" data-bs-target="#common_file_upload_pop"
+            data-location="Legal / Secretarial / Statutory Registers"
+            data-real-file-name="Register of Employee Stock Options">
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M14.75 10.25V13.25C14.75 13.6478 14.592 14.0294 14.3107 14.3107C14.0294 14.592 13.6478 14.75 13.25 14.75H2.75C2.35218 14.75 1.97064 14.592 1.68934 14.3107C1.40804 14.0294 1.25 13.6478 1.25 13.25V10.25M11.75 5L8 1.25M8 1.25L4.25 5M8 1.25V10.25" stroke="#CEFFA8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </button>
+</li>
+
+<li>
+    <span>Legal / Secretarial / Statutory Registers / Register of Securities Bought Back</span>
+    <button data-bs-toggle="modal" data-bs-target="#common_file_upload_pop"
+            data-location="Legal / Secretarial / Statutory Registers"
+            data-real-file-name="Register of Securities Bought Back">
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M14.75 10.25V13.25C14.75 13.6478 14.592 14.0294 14.3107 14.3107C14.0294 14.592 13.6478 14.75 13.25 14.75H2.75C2.35218 14.75 1.97064 14.592 1.68934 14.3107C1.40804 14.0294 1.25 13.6478 1.25 13.25V10.25M11.75 5L8 1.25M8 1.25L4.25 5M8 1.25V10.25" stroke="#CEFFA8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </button>
+</li>
+
+<li>
+  <span>Legal / Secretarial / Statutory Registers / Register of Renewed or Duplicate Share Certificates</span>
+  <button data-bs-toggle="modal" data-bs-target="#common_file_upload_pop"
+          data-location="Legal / Secretarial / Statutory Registers"
+          data-real-file-name="Register of Renewed or Duplicate Share Certificates">
+    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M14.75 10.25V13.25C14.75 13.6478 14.592 14.0294 14.3107 14.3107C14.0294 14.592 13.6478 14.75 13.25 14.75H2.75C2.35218 14.75 1.97064 14.592 1.68934 14.3107C1.40804 14.0294 1.25 13.6478 1.25 13.25V10.25M11.75 5L8 1.25M8 1.25L4.25 5M8 1.25V10.25" stroke="#CEFFA8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+  </button>
+</li>
+
+<li>
+  <span>Legal / Secretarial / Statutory Registers / Register of SBO</span>
+  <button data-bs-toggle="modal" data-bs-target="#common_file_upload_pop"
+          data-location="Legal / Secretarial / Statutory Registers"
+          data-real-file-name="Register of SBO">
+    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M14.75 10.25V13.25C14.75 13.6478 14.592 14.0294 14.3107 14.3107C14.0294 14.592 13.6478 14.75 13.25 14.75H2.75C2.35218 14.75 1.97064 14.592 1.68934 14.3107C1.40804 14.0294 1.25 13.6478 1.25 13.25V10.25M11.75 5L8 1.25M8 1.25L4.25 5M8 1.25V10.25" stroke="#CEFFA8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+  </button>
+</li>
+
+<li>
+  <span>Legal / Secretarial / Statutory Registers / Register of Postal Ballot</span>
+  <button data-bs-toggle="modal" data-bs-target="#common_file_upload_pop"
+          data-location="Legal / Secretarial / Statutory Registers"
+          data-real-file-name="Register of Postal Ballot">
+    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M14.75 10.25V13.25C14.75 13.6478 14.592 14.0294 14.3107 14.3107C14.0294 14.592 13.6478 14.75 13.25 14.75H2.75C2.35218 14.75 1.97064 14.592 1.68934 14.3107C1.40804 14.0294 1.25 13.6478 1.25 13.25V10.25M11.75 5L8 1.25M8 1.25L4.25 5M8 1.25V10.25" stroke="#CEFFA8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+  </button>
+</li>
 
 
     </ul>
@@ -2500,20 +3633,50 @@ $(document).ready(function() {
 </div>
 
 <script>
+
+// function filterList() {
+//     const searchInput = document.getElementById('search-input').value.toLowerCase();
+//     const listItems = document.querySelectorAll('#search-list li');
+
+//     listItems.forEach((item) => {
+//         const text = item.querySelector('span').textContent.toLowerCase(); // Get text from the span only
+//         if (text.includes(searchInput)) {
+//             item.style.display = ''; // Show the matching item
+//             item.style.order = '0'; // Keep matching items in order
+//         } else {
+//             item.style.display = 'none'; // Hide non-matching items
+//         }
+//     });
+// }
+
 function filterList() {
     const searchInput = document.getElementById('search-input').value.toLowerCase();
     const listItems = document.querySelectorAll('#search-list li');
 
     listItems.forEach((item) => {
-        const text = item.querySelector('span').textContent.toLowerCase(); // Get text from the span only
-        if (text.includes(searchInput)) {
-            item.style.display = ''; // Show the matching item
-            item.style.order = '0'; // Keep matching items in order
+        const textElement = item.querySelector('span');
+        const text = textElement.textContent.toLowerCase(); // Get text from the span only
+
+        // Clear previous highlights
+        textElement.innerHTML = text; // Reset to original text
+
+        if (searchInput === '') {
+            // If the search input is empty, show all items
+            item.style.display = ''; // Show all items
+        } else if (text.includes(searchInput)) {
+            // Show the matching item
+            item.style.display = ''; 
+            
+            // Highlight the matched text
+            const regex = new RegExp(`(${searchInput})`, 'gi'); // Create a regex to match the search input
+            textElement.innerHTML = text.replace(regex, '<span class="highlight">$1</span>'); // Highlight the matched text
         } else {
-            item.style.display = 'none'; // Hide non-matching items
+            // Hide non-matching items
+            item.style.display = 'none'; 
         }
     });
 }
+
 
 </script>
 <!-- end -->
@@ -3778,6 +4941,9 @@ function handleFolderPath(folderPath) {
                 setTimeout(function() {
                     $('.button-spinner').remove();
                     toastr.success(response.message);
+                   
+                        window.location.reload(true);
+                        exit;
                     if (response.success) {
                         $('#create_folder').modal('hide');
                         fetchFolderContents(parentFolderValue);
@@ -4175,6 +5341,14 @@ $(window).on('load', function() {
   <div class="selected-file"></div>
 </div> 
                           </div>
+
+                          <div class="gropu_form test-area">
+                          <label for="Tags">Tags (Optional)</label>
+                         <div class="tag-container">
+            <textarea name="Tags" class="tag-input" placeholder="Add a tag and press enter"  style="height: 68px;"></textarea>
+            <input type="hidden" name="tagList" id="tagList" class="tagList">
+        </div>
+                          </div>
                           
         <div class="gropu_form test-area">
         <label for="desc">Description</label>
@@ -4193,6 +5367,542 @@ $(window).on('load', function() {
     </div>
 </div>
 <!-- upload file model end -->
+
+{{-- common pop for file upload from outside start--}}
+<!-- common modal upload 4 October 2024   Sandeep -->
+<!-- upload file model start  StautoryReg_ballot_pop-->
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+      // Listen for modal show event
+      const modal = document.getElementById('common_file_upload_pop');
+      modal.addEventListener('show.bs.modal', function (event) {
+        // Button that triggered the modal
+        const button = event.relatedTarget;
+        // Extract info from data-* attributes
+        const location = button.getAttribute('data-location');
+        const realFileName = button.getAttribute('data-real-file-name');
+  
+        // Update the modal's hidden input values
+        document.getElementById('location2').value = location;
+        document.getElementById('real_file_name2').value = realFileName;
+      });
+    });
+    
+    
+  
+    
+   
+  </script>
+
+  <!-- Progress Bar Container -->
+<div id="progress-container" class="progree_cont_nt" style=" display:none;">
+    <div class="progress_header">
+        <h2>1 upload completed</h2>
+        <div class="down_arroww">
+            <button type="button" class="down_box">
+            <svg width="15" height="10" viewBox="0 0 15 10" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path fill-rule="evenodd" clip-rule="evenodd" d="M8.60638 8.72891C8.31341 9.02151 7.91628 9.18587 7.50222 9.18587C7.08815 9.18587 6.69102 9.02151 6.39805 8.72891L0.504299 2.83724C0.211318 2.54412 0.0467774 2.14662 0.046875 1.73219C0.0469727 1.31775 0.2117 0.920328 0.504819 0.627346C0.797939 0.334365 1.19544 0.169824 1.60988 0.169922C2.02431 0.17002 2.42173 0.334747 2.71472 0.627867L7.50222 5.41537L12.2897 0.627867C12.5843 0.343103 12.9789 0.185423 13.3886 0.188789C13.7983 0.192154 14.1902 0.356296 14.4801 0.645861C14.7699 0.935425 14.9344 1.32724 14.9382 1.73693C14.9419 2.14661 14.7846 2.54138 14.5001 2.8362L8.60742 8.72995L8.60638 8.72891Z" fill="#1E1E1E"/>
+</svg>
+            </button>
+            <button type="button" class="close_down_box">
+            <svg width="50" height="50" viewBox="0 0 50 50" fill="none" xmlns="http://www.w3.org/2000/svg">
+             <rect width="4.27093" height="66.172" transform="matrix(0.702074 -0.712104 0.709324 0.704883 0 3.31244)" fill="black"></rect>
+              <rect width="4.27086" height="66.3713" transform="matrix(-0.704896 -0.70931 0.706518 -0.707695 3.10742 50)" fill="black"></rect>
+               </svg>
+            </button>
+        </div>
+    </div>
+
+    <div class="progress_repeat_wrap">
+    <div class="progress_repeat">
+        <h2 class="file_name">vikram.pdf</h2>
+        <div class="progress_circle">
+        <div id="wrapper_progreess" class="center">                  
+        <svg class="progresss" data-progresss="" x="0px" y="0px" viewBox="0 0 80 80">
+    <path class="track" d="M5,40a35,35 0 1,0 70,0a35,35 0 1,0 -70,0" />
+    <path class="fill"  id="progressFill" d="M5,40a35,35 0 1,0 70,0a35,35 0 1,0 -70,0" />
+    </svg>
+                  <span class="span_dott"></span>
+                </div>
+
+            <div class="cancle_file">
+            <button class="remove-btnn">X</button>
+            </div>
+        </div>
+    </div>
+    </div>
+
+</div>
+
+  
+  
+  
+  
+  <!--<div class="modal fade drop_coman_file have_title" id="StautoryReg_ballot_pop" tabindex="-1" role="dialog"-->
+  <div class="modal fade drop_coman_file have_title" id="common_file_upload_pop" tabindex="-1" role="dialog"
+      aria-labelledby="common_file_upload_pop" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered" role="document">
+          <div class="modal-content">
+              <div class="modal-header">
+                  <h5 class="modal-title" style="font-weight:700">Upload File</h5>
+                  <button class="close" style="border-radius:5px;" type="button" data-bs-dismiss="modal">
+                      <span aria-hidden="true">
+                          <svg width="50" height="50" viewBox="0 0 50 50" fill="none"
+                              xmlns="http://www.w3.org/2000/svg">
+                              <rect width="4.27093" height="66.172"
+                                  transform="matrix(0.702074 -0.712104 0.709324 0.704883 0 3.31244)" fill="black" />
+                              <rect width="4.27086" height="66.3713"
+                                  transform="matrix(-0.704896 -0.70931 0.706518 -0.707695 3.10742 50)" fill="black" />
+                          </svg>
+                      </span>
+                  </button>
+              </div>
+              <div class="modal-body">
+                  <h3>Upload File</h3>
+                  <form id="common_file_upload_form" action="{{ route('PredefinedCommonUploadFiles') }}" method="POST"
+                      enctype="multipart/form-data">
+  
+                      @csrf
+  
+  
+  
+                      <div class="gropu_form">
+                          <label for="fyear">Financial Year *</label>
+                          <select id="fyear" name="fyear" required="">
+                              <option value="" disabled="" selected="">select</option>
+                              <option value="2013-2014">2013-2014</option>
+                              <option value="2014-2015">2014-2015</option>
+                              <option value="2015-2016">2015-2016</option>
+                              <option value="2016-2017">2016-2017</option>
+                              <option value="2017-2018">2017-2018</option>
+                              <option value="2018-2019">2018-2019</option>
+                              <option value="2019-2020">2019-2020</option>
+  
+                              <option value="2020-2021">2020-2021</option>
+                              <option value="2021-2022">2021-2022</option>
+                              <option value="2022-2023">2022-2023</option>
+                              <option value="2023-2024">2023-2024</option>
+                              <option value="2024-2025">2024-2025</option>
+                              <option value="2025-2026">2025-2026</option>
+                              <option value="2026-2027">2026-2027</option>
+  
+                              <option value="2027-2028">2027-2028</option>
+                              <option value="2028-2029">2028-2029</option>
+                              <option value="2029-2030">2029-2030</option>
+                              <option value="2030-2031">2030-2031</option>
+                              <option value="2031-2032">2031-2032</option>
+                              <option value="2032-2033">2032-2033</option>
+                              <option value="2033-2034">2033-2034</option>
+                              <option value="2034-2035">2034-2035</option>
+                              <option value="2035-2036">2035-2036</option>
+                              <option value="2036-2037">2036-2037</option>
+                          </select>
+                      </div>
+  
+                      <div class="gropu_form">
+                          <label for="Month">Month *</label>
+                          <select id="Month" name="Month" required="">
+                              <option value="" disabled="" selected="">select</option>
+                              <option value="January">January</option>
+                              <option value="February">February</option>
+                              <option value="March">March</option>
+                              <option value="April">April</option>
+                              <option value="May">May</option>
+                              <option value="June">June</option>
+                              <option value="July">July</option>
+                              <option value="August">August</option>
+                              <option value="September">September</option>
+                              <option value="October">October</option>
+                              <option value="November">November</option>
+                              <option value="December">December</option>
+                          </select>
+                      </div>
+  
+  
+  
+                      <div class="gropu_form test-area">
+                          <label for="Tags">Tags (Optional)</label>
+                          <div class="tag-container">
+                              <textarea name="Tags" class="tag-input" placeholder="Add a tag and press enter" style="height: 68px;"></textarea>
+                              <input type="hidden" name="tagList" id="tagList" class="tagList">
+                          </div>
+                      </div>
+  
+                      <div class="gropu_form ivoice-upload">
+                          <label for="fname">Upload File *</label>
+  
+                          <div class="file-area_cover">
+                              <div class="file-area">
+                                  <input type="file" class="dragfile" id="fileCommon" name="files[]" multiple
+                                      required>
+                                      
+                                      <!--working here start-->
+                                      
+                                      <input type="hidden" id="real_file_name2" name="real_file_name"
+                                      value="">
+                                  <input type="hidden" id="location2" name="location"
+                                      value="">
+                                      
+                                  <!--<input type="hidden" id="real_file_name" name="real_file_name"-->
+                                  <!--    value="Register of Postal Ballot">-->
+                                  <!--<input type="hidden" id="location" name="location"-->
+                                  <!--    value="Legal / Secretarial / Statutory Registers">-->
+                                      
+                                      <!--working here end-->
+                                      
+                                      
+                                  <input type="hidden" id="file_status" name="file_status" value="0">
+  
+                                  <div class="file-dummy">
+                                      <div class="success">Great, your files are selected. Keep on.</div>
+                                      <div class="default">
+                                          <span class="upload_icon">
+  
+                                              <svg id="Layer_1" data-name="Layer 1"
+                                                  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 99.09 122.88">
+                                                  <title>file-upload</title>
+                                                  <path
+                                                      d="M64.64,13,86.77,36.21H64.64V13ZM42.58,71.67a3.25,3.25,0,0,1-4.92-4.25l9.42-10.91a3.26,3.26,0,0,1,4.59-.33,5.14,5.14,0,0,1,.4.41l9.3,10.28a3.24,3.24,0,0,1-4.81,4.35L52.8,67.07V82.52a3.26,3.26,0,1,1-6.52,0V67.38l-3.7,4.29ZM24.22,85.42a3.26,3.26,0,1,1,6.52,0v7.46H68.36V85.42a3.26,3.26,0,1,1,6.51,0V96.14a3.26,3.26,0,0,1-3.26,3.26H27.48a3.26,3.26,0,0,1-3.26-3.26V85.42ZM99.08,39.19c.15-.57-1.18-2.07-2.68-3.56L63.8,1.36A3.63,3.63,0,0,0,61,0H6.62A6.62,6.62,0,0,0,0,6.62V116.26a6.62,6.62,0,0,0,6.62,6.62H92.46a6.62,6.62,0,0,0,6.62-6.62V39.19Zm-7.4,4.42v71.87H7.4V7.37H57.25V39.9A3.71,3.71,0,0,0,61,43.61Z">
+                                                  </path>
+                                              </svg>
+                                          </span>
+                                          Upload File
+                                      </div>
+                                  </div>
+                              </div>
+                              <div class="file-list"></div>
+                          </div>
+                      </div>
+  
+                      <div class="gropu_form test-area">
+                          <label for="desc">Description (Optional)</label>
+                          <div class="tag-container">
+                              <textarea name="desc" placeholder="Description" style="height: 68px;"></textarea>
+                          </div>
+                      </div>
+  
+  
+  
+                      <div class="upp_input">
+                          <button class="btn btn-primary" style="border-radius:5px;" id="commom_file_upload_pop_submit"
+                              disabled type="submit">Upload</button>
+                      </div>
+                  </form>
+              </div>
+          </div>
+      </div>
+  </div>
+  <!-- upload file model end -->
+  <!-- common modal upload 4 October 2024   Sandeep -->
+
+ 
+  <meta name="csrf-token" content="{{ csrf_token() }}">
+
+  <script>
+  document.getElementById('common_file_upload_form').addEventListener('submit', function(event) {
+    event.preventDefault(); // Prevent default form submission
+
+    const files = document.getElementById('fileCommon').files;
+    const formElement = document.getElementById('common_file_upload_form'); // Get the form element
+    const formData = new FormData(formElement); // Automatically includes form inputs
+
+    // Show the progress bar container
+    // const progressContainer = document.getElementById('progress-container');
+    // progressContainer.style.display = 'block';
+
+    // Disable the submit button to prevent double submission
+    const submitButton = document.getElementById('commom_file_upload_pop_submit');
+    submitButton.disabled = true;
+
+    // Append the CSRF token manually if required
+    const token = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+    formData.append('_token', token);
+
+    // Append the files
+    for (let i = 0; i < files.length; i++) {
+        formData.append('files[]', files[i]);
+    }
+
+    // Iterate over each file for progress tracking
+    for (let i = 0; i < files.length; i++) {
+        const xhr = new XMLHttpRequest();
+        const progressContainer = document.getElementById('progress-container');
+
+        // Create a progress bar for each file
+        const progressBar = document.createElement('div');
+        progressBar.classList.add('progress-bar');
+        progressBar.innerHTML = `
+            <div style="width: 0%; text-align: center;">0%</div>
+            <button class="cancel-button">Cancel</button>
+        `;
+        progressContainer.appendChild(progressBar);
+
+        // Setup request
+        xhr.open('POST', formElement.action, true);
+
+        // Progress event listener
+        xhr.upload.addEventListener('progress', function(e) {
+            if (e.lengthComputable) {
+                const percentComplete = Math.round((e.loaded / e.total) * 100);
+                const progressBarFill = progressBar.querySelector('div');
+                progressBarFill.style.width = percentComplete + '%';
+                progressBarFill.textContent = percentComplete + '%';
+
+                if (percentComplete === 100) {
+                    const cancelButton = progressBar.querySelector('.cancel-button');
+                    if (cancelButton) {
+                        cancelButton.remove(); // Remove cancel button after 100% completion
+                    }
+                }
+            }
+        });
+
+        // Load event listener
+        xhr.addEventListener('load', function() {
+            const progressBarFill = progressBar.querySelector('div');
+            if (xhr.status >= 200 && xhr.status < 300) {
+                progressBarFill.style.backgroundColor = 'green';
+                progressBar.innerHTML += ' - Upload completed';
+            } else {
+                progressBarFill.style.backgroundColor = 'red';
+                progressBar.innerHTML += ' - Upload failed';
+            }
+
+            // Remove the cancel button on completion
+            const cancelButton = progressBar.querySelector('.cancel-button');
+            if (cancelButton) {
+                cancelButton.remove();
+            }
+
+            // Re-enable the submit button after the upload completes (if required)
+            submitButton.disabled = false;
+        });
+
+        // Cancel upload functionality
+        progressBar.querySelector('.cancel-button').addEventListener('click', function() {
+            xhr.abort(); // Cancel the upload
+            progressBar.innerHTML = 'Upload cancelled';
+            const progressBarFill = progressBar.querySelector('div');
+            progressBarFill.style.backgroundColor = 'orange';
+        });
+
+        // Send the request with the FormData
+        xhr.send(formData);
+    }
+});
+
+
+
+
+
+    </script>
+
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      // Listen for modal show event
+      const modal = document.getElementById('common_file_upload_pop_bank');
+      modal.addEventListener('show.bs.modal', function (event) {
+        // Button that triggered the modal
+        const button = event.relatedTarget;
+        // Extract info from data-* attributes
+        const location = button.getAttribute('data-location');
+        const realFileName = button.getAttribute('data-real-file-name');
+  
+        // Update the modal's hidden input values
+        document.getElementById('location3').value = location;
+        document.getElementById('real_file_name3').value = realFileName;
+      });
+    });
+    
+    
+  
+    
+   
+  </script>
+
+  <!-- upload file model start common bank bankaccstatement_pop-->
+<div class="modal fade drop_coman_file have_title" id="common_file_upload_pop_bank" tabindex="-1" role="dialog" aria-labelledby="common_file_upload_pop_bank" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" style="font-weight:700">Upload File</h5>
+                <button class="close" style="border-radius:5px;" type="button" data-bs-dismiss="modal">
+                    <span aria-hidden="true">
+                        <svg width="50" height="50" viewBox="0 0 50 50" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <rect width="4.27093" height="66.172" transform="matrix(0.702074 -0.712104 0.709324 0.704883 0 3.31244)" fill="black" />
+                            <rect width="4.27086" height="66.3713" transform="matrix(-0.704896 -0.70931 0.706518 -0.707695 3.10742 50)" fill="black" />
+                        </svg>
+                    </span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <h3>Upload File</h3>
+                <form id="common_file_upload_form_bank" action="{{ route('PredefinedCommonUploadFilesBank') }}" method="POST" enctype="multipart/form-data">
+
+                    @csrf
+
+                    <div class="gropu_form">
+                        <label for="choose_bank">Choose Bank *</label>
+                        <select id="choose_banks" name="bank_name" required="">
+                            <option value="" disabled="" selected="">Select Bank</option>
+                            <option value="ABBank">Allahabad Bank</option>
+                            <option value="AndhraBank">Andhra Bank</option>
+                            <option value="AxisBank">Axis Bank Limited</option>
+                            <option value="BandhanBank">Bandhan Bank Limited</option>
+                            <option value="BankofBaroda">Bank of Baroda</option>
+                            <option value="BankofIndia">Bank of India</option>
+                            <option value="BankofMaharashtra">Bank of Maharashtra</option>
+                            <option value="CanaraBank">Canara Bank</option>
+                            <option value="CSBank">Catholic Syrian Bank Limited</option>
+                            <option value="CentralBankofIndia">Central Bank of India</option>
+                            <option value="CityUnionBank">City Union Bank Limited</option>
+                            <option value="CorporationBank">Corporation Bank</option>
+                            <option value="DCB">DCB Bank Limited</option>
+                            <option value="DBS">DBS Bank India Limited</option>
+                            <option value="DhanlaxmiBank">Dhanlaxmi Bank Limited</option>
+                            <option value="FederalBank">Federal Bank Limited</option>
+                            <option value="HDFCBank">HDFC Bank Limited</option>
+                            <option value="ICICIBank">ICICI Bank Limited</option>
+                            <option value="IDBIBank">IDBI Bank Limited</option>
+                            <option value="IDFCFirstBank">IDFC First Bank Limited</option>
+                            <option value="IndianBank">Indian Bank</option>
+                            <option value="IndianOverseasBank">Indian Overseas Bank</option>
+                            <option value="IndusIndBank">IndusInd Bank Limited</option>
+                            <option value="Jammu&KashmirBank">Jammu & Kashmir Bank Limited</option>
+                            <option value="KarnatakaBank">Karnataka Bank Limited</option>
+                            <option value="KarurVysyaBank">Karur Vysya Bank Limited</option>
+                            <option value="KotakMahindraBank">Kotak Mahindra Bank Limited</option>
+                            <option value="LakshmiVilasBank">Lakshmi Vilas Bank Limited</option>
+                            <option value="OrientalBankofCommerce">Oriental Bank of Commerce</option>
+                            <option value="PNB">Punjab National Bank</option>
+                            <option value="Punjab&SindBank">Punjab & Sind Bank</option>
+                            <option value="RBLBank">RBL Bank Limited</option>
+                            <option value="SouthIndianBank">South Indian Bank Limited</option>
+                            <option value="SBI">State Bank of India</option>
+                            <option value="SyndicateBank">Syndicate Bank</option>
+                            <option value="TNSC">Tamilnad Mercantile Bank Limited</option>
+                            <option value="UCOBank">UCO Bank</option>
+                            <option value="UnionBank">Union Bank of India</option>
+                            <option value="UnitedBankofIndia">United Bank of India</option>
+                            <option value="VijayaBank">Vijaya Bank</option>
+                            <option value="YesBank">Yes Bank Limited</option>
+                        </select>
+
+                    </div>
+
+                    <div class="gropu_form">
+                        <label for="fyear">Financial Year *</label>
+                        <select id="fyears" name="fyear" required="">
+                            <option value="" disabled="" selected="">select</option>
+                            <option value="2013-2014">2013-2014</option>
+                            <option value="2014-2015">2014-2015</option>
+                            <option value="2015-2016">2015-2016</option>
+                            <option value="2016-2017">2016-2017</option>
+                            <option value="2017-2018">2017-2018</option>
+                            <option value="2018-2019">2018-2019</option>
+                            <option value="2019-2020">2019-2020</option>
+
+                            <option value="2020-2021">2020-2021</option>
+                            <option value="2021-2022">2021-2022</option>
+                            <option value="2022-2023">2022-2023</option>
+                            <option value="2023-2024">2023-2024</option>
+                            <option value="2024-2025">2024-2025</option>
+                            <option value="2025-2026">2025-2026</option>
+                            <option value="2026-2027">2026-2027</option>
+
+                            <option value="2027-2028">2027-2028</option>
+                            <option value="2028-2029">2028-2029</option>
+                            <option value="2029-2030">2029-2030</option>
+                            <option value="2030-2031">2030-2031</option>
+                            <option value="2031-2032">2031-2032</option>
+                            <option value="2032-2033">2032-2033</option>
+                            <option value="2033-2034">2033-2034</option>
+                            <option value="2034-2035">2034-2035</option>
+                            <option value="2035-2036">2035-2036</option>
+                            <option value="2036-2037">2036-2037</option>
+                        </select>
+                    </div>
+
+                    <div class="gropu_form">
+                        <label for="Month">Month *</label>
+                        <select id="Month" name="Month" required="">
+                            <option value="" disabled="" selected="">select</option>
+                            <option value="January">January</option>
+                            <option value="February">February</option>
+                            <option value="March">March</option>
+                            <option value="April">April</option>
+                            <option value="May">May</option>
+                            <option value="June">June</option>
+                            <option value="July">July</option>
+                            <option value="August">August</option>
+                            <option value="September">September</option>
+                            <option value="October">October</option>
+                            <option value="November">November</option>
+                            <option value="December">December</option>
+                        </select>
+                    </div>
+
+
+
+                    <div class="gropu_form test-area">
+                        <label for="Tags">Tags (Optional)</label>
+                        <div class="tag-container">
+                            <textarea name="Tags" class="tag-input" placeholder="Add a tag and press enter" style="height: 68px;"></textarea>
+                            <input type="hidden" name="tagList" id="tagList" class="tagList">
+                        </div>
+                    </div>
+
+                    <div class="gropu_form ivoice-upload">
+                        <label for="fname">Upload File *</label>
+
+                        <div class="file-area_cover">
+                            <div class="file-area">
+                                <input type="file" class="dragfile" id="file" name="files[]" multiple required>
+                                <input type="hidden" id="real_file_name3" name="real_file_name" value="">
+                                <input type="hidden" id="location3" name="location" value="">
+                                <input type="hidden" id="file_status" name="file_status" value="0">
+
+                                <div class="file-dummy">
+                                    <div class="success">Great, your files are selected. Keep on.</div>
+                                    <div class="default">
+                                        <span class="upload_icon">
+
+                                            <svg id="Layer_1" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 99.09 122.88">
+                                                <title>file-upload</title>
+                                                <path d="M64.64,13,86.77,36.21H64.64V13ZM42.58,71.67a3.25,3.25,0,0,1-4.92-4.25l9.42-10.91a3.26,3.26,0,0,1,4.59-.33,5.14,5.14,0,0,1,.4.41l9.3,10.28a3.24,3.24,0,0,1-4.81,4.35L52.8,67.07V82.52a3.26,3.26,0,1,1-6.52,0V67.38l-3.7,4.29ZM24.22,85.42a3.26,3.26,0,1,1,6.52,0v7.46H68.36V85.42a3.26,3.26,0,1,1,6.51,0V96.14a3.26,3.26,0,0,1-3.26,3.26H27.48a3.26,3.26,0,0,1-3.26-3.26V85.42ZM99.08,39.19c.15-.57-1.18-2.07-2.68-3.56L63.8,1.36A3.63,3.63,0,0,0,61,0H6.62A6.62,6.62,0,0,0,0,6.62V116.26a6.62,6.62,0,0,0,6.62,6.62H92.46a6.62,6.62,0,0,0,6.62-6.62V39.19Zm-7.4,4.42v71.87H7.4V7.37H57.25V39.9A3.71,3.71,0,0,0,61,43.61Z"></path>
+                                            </svg>
+                                        </span>
+                                        Upload File
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="file-list"></div>
+                        </div>
+                    </div>
+
+                    <div class="gropu_form test-area">
+                        <label for="desc">Description (Optional)</label>
+                        <div class="tag-container">
+                            <textarea name="desc" placeholder="Description" style="height: 68px;"></textarea>
+                        </div>
+                    </div>
+
+
+                    <div class="upp_input">
+                        <button class="btn btn-primary" style="border-radius:5px;" id="commom_file_upload_pop_bank_submit" disabled type="submit">Upload</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- upload file model  common bank end -->
+
+  
+{{-- common pop for file upload from outside end--}}
+
+
 
 </div>
                   </div>                 
@@ -4664,6 +6374,33 @@ input#parent-folders {
         });
     });
 </script>
+
+<script>
+$(document).ready(function() {
+  // Toggle the dropdown-content when button is clicked
+  $('body').on('click', '.dropbtn', function(e) {
+    // Prevent body click from immediately closing the dropdown
+    e.stopPropagation();
+
+    // Get the dropdown content of the clicked button
+    var dropdownContent = $(this).siblings('.dropdown-content');
+    
+    // Close any currently open dropdowns by removing the active class from all dropdown-content
+    $('.dropdown-content').not(dropdownContent).removeClass('active');
+    
+    // Toggle the active class on the clicked dropdown-content
+    dropdownContent.toggleClass('active');
+  });
+
+  // Close dropdown-content if clicking outside
+  $('body').on('click', function() {
+    $('.dropdown-content').removeClass('active');
+  });
+});
+
+
+</script>
+
 
 <script>
     function check() {

@@ -128,7 +128,7 @@ window.onload = function() {
                 <div class="form-input position-relative">
                 <label for="password">Password <span class="red_star">*</span></label>
                  <div class="form-group fild_ntt">
-                <b class="toggle-password"><i class="fas fa-eye"></i></b>
+                 <b class="toggle-password"><i class="fas fa-eye-slash"></i></b>
                     <input id="password" class="form-control @error('password') is-invalid @enderror" type="password" name="password" required autocomplete="" placeholder="">
 
 <span id="password-strength-text" style="display: block; margin-top: 5px; color: red;"></span>
@@ -144,7 +144,7 @@ window.onload = function() {
                 <div class="form-input position-relative">
                 <label for="password-confirm">Confirm Password <span class="red_star">*</span></label>
                  <div class="form-group fild_ntt">
-                <b class="toggle-password"><i class="fas fa-eye"></i></b>
+                 <b class="toggle-password"><i class="fas fa-eye-slash"></i></b>
                     <input id="password-confirm" type="password" class="form-control" name="password_confirmation" required autocomplete="new-password" placeholder="">
  <span id="password-confirm-strength-text" style="display: block; margin-top: 5px; color: red;"></span>
         
@@ -168,11 +168,25 @@ window.onload = function() {
                 <!-- Session messages will appear here -->
             </div>
             
+            <div class="rop_regseter" style="align-items: flex-start;top: 0;">
+            <input type="checkbox" id="marketing_email" name="marketing_email" value="1">
+
+          <label for="marketing_email">
+    I would like to recieve Marketing Coummunication from Milliondox.
+  </label>
+
+</div>
             <div class="rop_regseter">
-<input type="checkbox" id="check_regs" name="check_reg" value="1" disabled  required>
-<label for="">
+            <input type="checkbox" id="check_regs" name="check_reg" value="1" required>
+
+          <label for="check_regs">
+    I have read and accept to the Term and use & privacy policy.
+  </label>
+
+<!-- <label for="">
 Read the policy <a data-bs-toggle="modal" data-bs-target="#term_regester">Click here</a>
-</label>
+</label> -->
+
 </div>
 <div class="term_sshoww" style="display:none;">
     <p>You must agree to the terms and conditions before continuing</p>
@@ -829,15 +843,16 @@ Read the policy <a data-bs-toggle="modal" data-bs-target="#term_regester">Click 
     margin: 0;
     color: #B3B3B3;
     font-size: 13px;
+    cursor: pointer;
 }
 
 .rop_regseter input {
     width: 17px;
     height: 17px;
     opacity: 0.5;
-    /*pointer-events: none;*/
     position: relative;
     top: -1px;
+    cursor: pointer;
 }
 
 .term_sshoww p {
@@ -934,6 +949,7 @@ b.toggle-password {
     top: 12px;
     cursor: pointer;
     user-select: none;
+    pointer-events: auto; /* Make sure clicks are allowed */
 }
 b.toggle-password i {
     font-size: 11px;
@@ -1075,6 +1091,42 @@ b.toggle-password i {
             margin: 10px 0px;
           }     
         }
+
+        @media(max-width:576px)
+        {
+          .login_board .loginn_nt_form .fomr_head {
+    flex-direction: row-reverse;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 15px;
+}
+
+.login_board .login_logo a img {
+    max-width: 110px;
+}
+
+.login_forrm .last_flid {
+    margin-bottom: 20px;
+}
+
+.login_board .loginn_nt_form {
+    padding: 30px 20px 20px;
+}
+
+.login_board .loginn_nt_form .fomr_head p {
+    font-size: 12px;
+}
+
+.login_board .loginn_nt_form .login_forrm h2 {
+    font-size: 28px;
+}
+
+.form-group.fild_ntt {
+    margin-bottom: 10px;
+}
+
+ 
+}
       </style>
       <!-- login page css end-->
       <!-- latest jquery-->
@@ -1369,16 +1421,8 @@ setTimeout(function() {
 
 
 </script>
-<script>
-$(document).ready(function() {
-    // Handle click event for "I AGREE" button
-    $('#i_agree').on('click', function() {
-        // Enable and check the checkbox
-        $('#check_regs').prop('disabled', false); // Enable the checkbox
-        $('#check_regs').prop('checked', true);  // Check the checkbox
-    });
-});
-</script>
+
+
 
 
 <link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" rel="stylesheet">
@@ -1421,24 +1465,29 @@ $(document).ready(function() {
                             </div>
 <!--term pop end-->
 
-    <script>
-        document.getElementById('i_agree').addEventListener('click', function() {
-            var checkbox = document.getElementById('check_reg');
-             $('#term_regester').modal('hide');
-            checkbox.checked = true;
-            checkbox.disabled = false;
-        });
-        
-            document.getElementById('close_bbtn').addEventListener('click', function() {
-            var termShowElement = document.querySelector('.term_sshoww');
-            termShowElement.style.display = 'block';
-            
-            setTimeout(function() {
-                termShowElement.style.display = 'none';
-            }, 5000); // 5000 milliseconds = 5 seconds
-        });
-        
-    </script>
+<script>
+// Body click event listener
+$('body').on('click', '#check_regs, label[for="check_regs"]', function(e) {
+    e.preventDefault(); // Prevent the checkbox from being checked immediately
+    $('#term_regester').modal('show'); // Open the modal when the checkbox or its label is clicked
+});
+
+// When the user clicks "I AGREE"
+$('#i_agree').on('click', function() {
+    var checkbox = $('#check_regs');
+    $('#term_regester').modal('hide'); // Close the modal
+    checkbox.prop('checked', true); // Check the checkbox
+    checkbox.prop('disabled', false); // Enable the checkbox
+});
+
+// When the user clicks "I DISAGREE"
+$('#close_bbtn').on('click', function() {
+    var checkbox = $('#check_regs');
+    $('#term_regester').modal('hide'); // Close the modal
+    checkbox.prop('checked', false); // Keep the checkbox unchecked
+});
+
+</script>
     
         <script>
 $(document).ready(function() {

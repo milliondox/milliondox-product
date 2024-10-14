@@ -9718,6 +9718,12 @@ display: block;
     cursor: pointer;
     animation: pulse 2s infinite;
 }
+
+.dark-only .ba-we-love-subscribers-fab {
+    background: #99DB66;
+    animation: pulse-dark 2s infinite;
+}
+
   
 @keyframes pulse {
     0% {
@@ -9733,6 +9739,23 @@ display: block;
     100% {
         -moz-box-shadow: 0 0 0 0 rgba(206, 255, 168, 0);
         box-shadow: 0 0 0 0 rgba(206, 255, 168, 0);
+    }
+}
+
+@keyframes pulse-dark {
+    0% {
+        -moz-box-shadow: 0 0 0 0 rgba(153, 219, 102, 0.4);
+        box-shadow: 0 0 0 0 rgba(153, 219, 102, 0.4);
+    }
+
+    70% {
+        -moz-box-shadow: 0 0 0 15px rgba(153, 219, 102, 0);
+        box-shadow: 0 0 0 15px rgba(153, 219, 102, 0);
+    }
+
+    100% {
+        -moz-box-shadow: 0 0 0 0 rgba(153, 219, 102, 0);
+        box-shadow: 0 0 0 0 rgba(153, 219, 102, 0);
     }
 }
 
@@ -13862,6 +13885,26 @@ body.dark-only .page-wrapper .page-header .header-wrapper .nav-right>ul>li:nth-c
     position: relative;
     top: 12px;
 }
+
+.progress-bar_wrap {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0px 5px;
+}
+
+.progress-bar_wrap .progress-precentage {
+    font-size: 10px !IMPORTANT;
+}
+
+.width_pro_complete .progress-bar {
+    width: 100%;
+    background-color: #f3f3f3;
+    border-radius: 6px;
+    margin: 2px 0px 0px;
+    flex: 1;
+}
+
 
 .storage_progress .progress-bar-container {
             width: 100%;
@@ -21635,6 +21678,25 @@ display: block;
     opacity: 0.6;
 }
 
+.main_contractt .column-tabs .tab .manage_co_nt select {
+    font-size: 15px;
+    font-weight: 500;
+    letter-spacing: -0.02em;
+    border-radius: 10px;
+    padding: 8px 14px;
+    background: transparent;
+    color: #A2A2A2;
+    box-shadow: none;
+    border: 1px solid #B8B8B8;
+    text-align: left;
+    outline: none;
+    cursor: pointer;
+}
+
+.dark-only .main_contractt .column-tabs .tab .manage_co_nt select {
+    background: #2e364c;
+}
+
 .manage_co_nt .volt_headd-filter .exprot_master {
     font-size: 12px;
     font-weight: 500;
@@ -23433,6 +23495,12 @@ display: block;
     animation: pulse 2s infinite;
 }
   
+.dark-only .ba-we-love-subscribers-fab {
+    background: #99DB66;
+    animation: pulse-dark 2s infinite;
+}
+
+  
 @keyframes pulse {
     0% {
         -moz-box-shadow: 0 0 0 0 rgba(206, 255, 168, 0.4);
@@ -23447,6 +23515,23 @@ display: block;
     100% {
         -moz-box-shadow: 0 0 0 0 rgba(206, 255, 168, 0);
         box-shadow: 0 0 0 0 rgba(206, 255, 168, 0);
+    }
+}
+
+@keyframes pulse-dark {
+    0% {
+        -moz-box-shadow: 0 0 0 0 rgba(153, 219, 102, 0.4);
+        box-shadow: 0 0 0 0 rgba(153, 219, 102, 0.4);
+    }
+
+    70% {
+        -moz-box-shadow: 0 0 0 15px rgba(153, 219, 102, 0);
+        box-shadow: 0 0 0 15px rgba(153, 219, 102, 0);
+    }
+
+    100% {
+        -moz-box-shadow: 0 0 0 0 rgba(153, 219, 102, 0);
+        box-shadow: 0 0 0 0 rgba(153, 219, 102, 0);
     }
 }
 
@@ -23495,6 +23580,9 @@ display: block;
   .ba-we-love-subscribers-fab svg path {
       fill: #6A924B;
   }
+  .dark-only .ba-we-love-subscribers-fab svg path {
+    fill: #2c2c2c;
+}
   
   .ba-we-love-subscribers-fab.grayy {
     background: #a2a2a2;
@@ -24118,6 +24206,7 @@ b.toggle-password {
     top: 12px;
     cursor: pointer;
     user-select: none;
+    pointer-events: auto; /* Make sure clicks are allowed */
 }
 
 b.toggle-password i {

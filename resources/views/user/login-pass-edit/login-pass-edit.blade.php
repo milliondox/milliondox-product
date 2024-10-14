@@ -69,28 +69,36 @@
                   <div class="row">
                     <div class="col-sm-5">
 <div class="login_form_editfl">
-<form action="" method="POST" enctype="multipart/form-data" class="upload-form"> 
+<form action="{{ route('changeemppassword') }}" method="POST" enctype="multipart/form-data" class="upload-form"> 
+@csrf
     <div class="gropu_form">
         <label for="old_password">Enter Old Password</label>
         <div class="gropu_form_input">
+        <input type="hidden" id="user_id" name="user_id" value="{{$user->id}}">
         <input placeholder="Enter Old Password" type="password" id="old_password" name="old_password">
-        <b class="toggle-password"><i class="fas fa-eye"></i></b>
+        <b class="toggle-password"><i class="fas fa-eye-slash"></i></b>
     </div>
     </div>
 
     <div class="gropu_form">
         <label for="new_password">Enter New Password</label>
         <div class="gropu_form_input">
-        <input placeholder="Enter New Password" type="password" id="new_password" name="new_password">
-        <b class="toggle-password"><i class="fas fa-eye"></i></b>
+        <input placeholder="Enter New Password" type="password" id="new_password" name="new_password" pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$" 
+        title="Password must be at least 8 characters long, contain at least 1 uppercase letter, 1 lowercase letter, 1 number, and 1 special character (@, $, !, %, *, ?, &)." required>
+
+        <b class="toggle-password"><i class="fas fa-eye-slash"></i></b>
+
     </div>
     </div>
 
     <div class="gropu_form">
         <label for="confirm_password">Confirm New Password</label>
         <div class="gropu_form_input">
-        <input placeholder="Confirm New Password" type="password" id="confirm_password" name="confirm_password">
-        <b class="toggle-password"><i class="fas fa-eye"></i></b>
+        <input placeholder="Confirm New Password" type="password" id="confirm_password" name="confirm_password" pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$" 
+        title="Password must be at least 8 characters long, contain at least 1 uppercase letter, 1 lowercase letter, 1 number, and 1 special character (@, $, !, %, *, ?, &)." required>
+
+        <b class="toggle-password"><i class="fas fa-eye-slash"></i></b>
+
     </div>
     </div>
 
@@ -98,7 +106,26 @@
         <button type="submit">Confirm</button>
     </div>
 </form>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
 
+    <!-- Include jQuery -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    <!-- Include Toastr JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+<script>
+    $(document).ready(function() {
+        @if(session('success'))
+            toastr.success("{{ session('success') }}");
+        @endif
+
+        @if($errors->any())
+            @foreach ($errors->all() as $error)
+                toastr.error("{{ $error }}");
+            @endforeach
+        @endif
+    });
+    </script>
 </div>
 			
 </div>

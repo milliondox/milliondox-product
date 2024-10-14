@@ -177,7 +177,7 @@ function fetchUsersByRole(role, tabId) {
                             <input type="hidden" name="role_id" value="${response.users[0].role }">
                             <input type="hidden" name="role_name" value="${response.users[0].main_role_id }">
                             
-                        {{--    <li>
+                           <li>
                                 <div class="left_gernal">
                                     <h3>Edit Password</h3>
                                     <p>Allows members to edit login password</p>
@@ -193,7 +193,7 @@ function fetchUsersByRole(role, tabId) {
                                         </label>
                                     </div>
                                 </div>
-                            </li> --}}
+                            </li> 
                             
                             <li>
                                 <div class="left_gernal">
@@ -570,11 +570,7 @@ function fetchUsersByRole(role, tabId) {
             <label for="email"> Email ( professional ) </label>
             <input placeholder="email( professional )" type="text" id="email" value="${user.email}" name="email" >
         </div>
-        <div class="gropu_form">
-            <label for="password">Password  </label>
-            <input placeholder="Password" type="password" id="password" name="password" value="${user.password}" >
-            <b class="toggle-password"><i class="fas fa-eye"></i></b>
-        </div>
+       
       
         <div class="gropu_form">
             <label for="phone">Phone  </label>
@@ -706,7 +702,7 @@ function deleteUser(userId) {
                                     <h3>Add Role Name</h3>
 
 
-                                    <form action="{{ route('addroles') }}" method="POST" enctype="multipart/form-data" class="upload-form"> 
+                                    <form action="{{ route('addroles') }}" method="POST" enctype="multipart/form-data" class="upload-form" id="roleForm"> 
                                       @csrf
 								<div class="gropu_form">
                           <label for="fname">Role name </label>
@@ -722,6 +718,39 @@ function deleteUser(userId) {
                                 </div>
                               </div>
                             </div>
+
+                            <script>
+    $(document).ready(function() {
+        // Intercept the form submission
+        $('#roleForm').on('submit', function(e) {
+            e.preventDefault(); // Prevent default form submission
+
+            let roleName = $('#role_name').val();
+
+            // Send AJAX request to check if the role already exists for the user
+            $.ajax({
+                url: '{{ route("checkRoleExistence") }}',  // This route should check for role existence
+                type: 'POST',
+                data: {
+                    _token: '{{ csrf_token() }}',
+                    role: roleName
+                },
+                success: function(response) {
+                    if (response.exists) {
+                        // Show error if role already exists
+                        toastr.error('This role already exists for your account.');
+                    } else {
+                        // Proceed with form submission if role does not exist
+                        $('#roleForm')[0].submit();
+                    }
+                },
+                error: function() {
+                    toastr.error('An error occurred while checking the role.');
+                }
+            });
+        });
+    });
+</script>
 <!-- model end -->
 				</div>
 			
@@ -945,7 +974,7 @@ function deleteUser(userId) {
             <div class="pasward_wrap">
             <input placeholder="Password" type="password" id="password" name="password" value="" class="password-field" required>
             <span class="password-strength-text" style="display: block; margin-top: 5px; color: red;"></span>
-            <b class="toggle-password"><i class="fas fa-eye"></i></b>
+            <b class="toggle-password"><i class="fas fa-eye-slash"></i></b>
             </div>
         </div>
       

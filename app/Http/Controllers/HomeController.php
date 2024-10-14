@@ -194,6 +194,8 @@ use App\Models\StoreCompanyEmployee;
 use App\Models\TaskEvents;
 use App\Models\Feedback;
 
+use ZipArchive;
+
 
 
 use Illuminate\Support\Facades\Log;
@@ -276,6 +278,50 @@ if ($userRoleRecord) {
                     ->get();
                     // dd($upcomingevent);
 
+                    $gstnocount = StoreGST::where('user_id', $user->id)->count();
+$employeescount = StoreCompanyEmployee::where('user_id', $user->id)->count();
+$directorcount = StoreCompanydirector::where('user_id', $user->id)->where('is_delete', 0)->count();
+$progressPercentage = 0;
+
+    // Check user attributes for 40%
+    if (
+        ($user->profile_picture != NULL) &&
+        ($user->name_of_the_business != NULL) &&
+        ($user->legal_entity != NULL) &&
+        ($user->industry != NULL) &&
+        ($user->state != NULL) &&
+        ($user->backupemail != NULL) &&
+        ($user->employees != NULL) &&
+        ($user->phone != NULL)
+    ) {
+        $progressPercentage += 40; // Add 40%
+    }
+    
+    // Check additional user attributes for 30%
+    if (
+        ($user->joining_date != NULL) &&
+        ($user->PAN != NULL) &&
+        ($user->CIN != NULL) &&
+        ($user->authorized_capital != NULL) &&
+        ($user->paid_up_capital != NULL)
+    ) {
+        $progressPercentage += 30; // Add 30%
+    }
+    
+    // Check GST number count for 10%
+    if ($gstnocount > 0) {
+        $progressPercentage += 10; // Add 10%
+    }
+    
+   
+
+    if ($employeescount > 0) {
+        $progressPercentage += 10; // Add 10%
+    }
+    if ($directorcount > 0) {
+        $progressPercentage += 10; // Add 10%
+    }
+
     return view('user.dashboard.index', [
         'user' => $user,
         'policy' => $policy,
@@ -286,6 +332,7 @@ if ($userRoleRecord) {
         'userRoleRecord' => $userRoleRecord,
         'currentDate' => $currentDate,
         'eventsData' => $eventsData,
+        'progressPercentage' => $progressPercentage,
         'upcomingevent' => $upcomingevent
     ]);
 
@@ -304,7 +351,7 @@ if ($userRoleRecord) {
     
         $request->validate([
             'textarea' => 'required|string|max:1000', 
-            'file' => 'required|mimes:jpg,jpeg,png,pdf,doc,docx|max:4096',
+            'file' => 'required|mimes:jpg,jpeg,png,pdf,doc,docx|max:5096',
         ]);
     
         if ($request->hasFile('file')) {
@@ -1148,7 +1195,7 @@ public function updateMembers(Request $request)
         'mem_id' => 'required|exists:users,id',
         'fname' => 'required|string',
         'email' => 'required|email',
-        'password' => 'required|string',
+       
         'phone' => 'required|string',
         'personal_email_id' => 'required|email',
         'Role' => 'required|string',
@@ -1159,7 +1206,7 @@ public function updateMembers(Request $request)
     $user = User::findOrFail($request->mem_id);
     $user->name = $request->fname;
     $user->email = $request->email;
-    $user->password = bcrypt($request->password); // Encrypt the password
+   
     $user->phone = $request->phone;
     $user->personal_email_id = $request->personal_email_id;
     $user->role = $request->Role;
@@ -1182,7 +1229,7 @@ public function updateMembers(Request $request)
     $userInfoData = [
         'name' => $request->fname,
         'email' => $request->email,
-        'password' => bcrypt($request->password), // Encrypt the password
+        
         'phone' => $request->phone,
         'personal_email_id' => $request->personal_email_id,
         'role' => $request->Role,
@@ -13381,6 +13428,261 @@ public function SecretarialStatutoryRegistersRPB(Request $request)
     }
 }
 
+
+////////////////////////////////////////////// 4 october sandeep added code here for prdefined paths common pop upload form file upload  start ///////////////////////////////////////////////////////////////////
+public function PredefinedCommonUploadFiles(Request $request)
+{
+    $request->validate([
+        'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
+        'tagList' => 'nullable', // Allow tagList to be nullable
+    ], [
+        'files.*.required' => 'Each file is required.',
+        'files.*.file' => 'The uploaded item must be a valid file.',
+        'files.*.max' => 'Each file may not be larger than 100MB.',
+        'files.*.mimes' => 'The file type must be one of the following: PDF, ODP, ODS, PPT, DOC, ODT, RTF, CSV, JSON, XML, HTML, ICO, SVG, WEBP, ZIP, XLS, DOCX, WAV, OGG, MP3, AVI, MOV, WMV, WEBM, TIFF, MP4, JPG, PNG, GIF, JPEG, 3GP, MKV, FLV.',
+    ]);
+
+    if ($request->hasFile('files')) {
+        try {
+            // Initialize counters
+            $totalSize = 0;
+
+            // Store success and error messages for individual files
+            $successMessages = [];
+            $errorMessages = [];
+            
+            // 22 August code added by sandeep ---- default tags added -- reference excel sheet shared by sir;
+                    // Default tags
+                    $tag_list = [];
+                    
+                    // $automated_tags=[];
+                    
+                    $automated_tags_temp1 = $request->input('location'); // 'Legal /Secretarial /Statutory Registers'
+                    $automated_tags_temp2 = $request->input('real_file_name'); // Example: 'File1 /File2 /File3'
+                    
+                    $automated_tags_temp11 = array_map('trim', explode('/', $automated_tags_temp1)); // ['Legal', 'Secretarial', 'Statutory Registers']
+                    $automated_tags_temp22 = array_map('trim', explode('/', $automated_tags_temp2)); // ['File1', 'File2', 'File3']
+                    
+                    // Merge both arrays
+                    $merged_automated_tags = array_merge($automated_tags_temp11, $automated_tags_temp22);
+                    
+                    // Display the merged array
+                    // dd($merged_automated_tags);
+                    
+
+                    // Handle tagList whether it's an array, a comma-separated string, or empty
+                    $userTags = $request->input('tagList', []);
+                    
+                    // Convert to array if it's a comma-separated string
+                    if (is_string($userTags)) {
+                        $userTags = explode(',', $userTags);
+                    }
+                    // Ensure $userTags is an array and remove any empty values
+                    if (is_array($userTags)) {
+                        $userTags = array_filter($userTags); // Remove empty values
+                    } else {
+                        $userTags = []; // Fallback to empty array if not an array
+                    }
+                    
+                    // Merge with default tags
+                    $tag_list = array_merge($tag_list, $userTags);
+                    // dd($tag_list);
+                    
+                    $final_automated_tags = array_merge($merged_automated_tags , $tag_list);
+                    //  dd($final_automated_tags);
+                    // dd("okokokok");
+                    
+                    
+                    // $tags = empty($tag_list) ? NULL : json_encode($tag_list);
+                    $tags = empty($final_automated_tags) ? NULL : json_encode($final_automated_tags);
+
+            foreach ($request->file('files') as $file) {
+                try {
+                    $filePath = $file->store('uploads');
+
+                    // Create a new entry for each file
+                    CommonTable::create([
+                        'file_type' => $file->getClientMimeType(),
+                        'file_name' => $file->getClientOriginalName(),
+                        'real_file_name' => $request->input('real_file_name'),
+                        'file_size' => $file->getSize(),
+                        'file_path' => $filePath,
+                        'user_name' => auth()->user()->name, // Assuming user is authenticated
+                        'user_id' => auth()->user()->id,
+                        'file_status' => $request->input('file_status', 0),
+                        'fyear' => $request->input('fyear'),
+                        'month' => $request->input('Month'),
+                        'tags' => $tags, // Store tags as JSON
+                        'location' => $request->input('location'),
+                        'descp' => $request->input('desc'),
+                        
+                    ]);
+
+                    $totalSize += $file->getSize();
+                    $successMessages[] = "File {$file->getClientOriginalName()} uploaded successfully.";
+                } catch (\Exception $e) {
+                    $errorMessages[] = "Failed to save file {$file->getClientOriginalName()} to database.";
+                }
+            }
+            
+            
+
+            // Compile overall success message
+            $user = auth()->user();
+    //         $entries = CommonTable::where('user_id', $user->id)
+    // ->where('is_delete', 0)
+    // ->where('location', $request->input('location'))
+    // ->where('real_file_name', $request->input('real_file_name'))
+    // ->get();
+    //         $count = $entries->count();
+            
+            // return redirect()->back()->with('success2', 'File Uploaded successfully.');
+
+            return response()->json([
+                'success' => true,
+                // 'count' => $count,
+                'totalSize' => $totalSize,
+                'successMessages' => $successMessages,
+                'errorMessages' => $errorMessages,
+            ]);
+
+        } catch (\Exception $e) {
+            // Handle any exceptions that occur during file upload or database saving
+            return response()->json(['success' => false, 'message' => 'Failed to process file uploads.'], 500);
+        }
+    } else {
+        // Return a JSON response indicating no file was uploaded
+        return response()->json(['success' => false, 'message' => 'No files uploaded.'], 400);
+    }
+}
+
+
+public function PredefinedCommonUploadFilesBank(Request $request)
+{
+    $request->validate([
+        'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
+        'tagList' => 'nullable', // Allow tagList to be nullable
+    ], [
+        'files.*.required' => 'Each file is required.',
+        'files.*.file' => 'The uploaded item must be a valid file.',
+        'files.*.max' => 'Each file may not be larger than 100MB.',
+        'files.*.mimes' => 'The file type must be one of the following: PDF, ODP, ODS, PPT, DOC, ODT, RTF, CSV, JSON, XML, HTML, ICO, SVG, WEBP, ZIP, XLS, DOCX, WAV, OGG, MP3, AVI, MOV, WMV, WEBM, TIFF, MP4, JPG, PNG, GIF, JPEG, 3GP, MKV, FLV.',
+    ]);
+
+    if ($request->hasFile('files')) {
+        try {
+            // Initialize counters and message arrays
+            $totalSize = 0;
+            $successMessages = [];
+            $errorMessages = [];
+            
+            // 22 August code added by sandeep ---- default tags added -- reference excel sheet shared by sir;
+                    // Default tags
+                    $tag_list = [];
+                    
+                    // $automated_tags=[];
+                    
+                    $automated_tags_temp1 = $request->input('location'); // 'Legal /Secretarial /Statutory Registers'
+                    $automated_tags_temp2 = $request->input('real_file_name'); // Example: 'File1 /File2 /File3'
+                    
+                    $automated_tags_temp11 = array_map('trim', explode('/', $automated_tags_temp1)); // ['Legal', 'Secretarial', 'Statutory Registers']
+                    $automated_tags_temp22 = array_map('trim', explode('/', $automated_tags_temp2)); // ['File1', 'File2', 'File3']
+                    
+                    // Merge both arrays
+                    $merged_automated_tags = array_merge($automated_tags_temp11, $automated_tags_temp22);
+                    
+                    // Display the merged array
+                    // dd($merged_automated_tags);
+                    
+
+                    // Handle tagList whether it's an array, a comma-separated string, or empty
+                    $userTags = $request->input('tagList', []);
+                    
+                    // Convert to array if it's a comma-separated string
+                    if (is_string($userTags)) {
+                        $userTags = explode(',', $userTags);
+                    }
+                    // Ensure $userTags is an array and remove any empty values
+                    if (is_array($userTags)) {
+                        $userTags = array_filter($userTags); // Remove empty values
+                    } else {
+                        $userTags = []; // Fallback to empty array if not an array
+                    }
+                    
+                    // Merge with default tags
+                    $tag_list = array_merge($tag_list, $userTags);
+                    // dd($tag_list);
+                    
+                    $final_automated_tags = array_merge($merged_automated_tags , $tag_list);
+                    //  dd($final_automated_tags);
+                    // dd("okokokok");
+                    
+                    
+                    // $tags = empty($tag_list) ? NULL : json_encode($tag_list);
+                    $tags = empty($final_automated_tags) ? NULL : json_encode($final_automated_tags);
+
+            foreach ($request->file('files') as $file) {
+                try {
+                    $filePath = $file->store('uploads');
+
+                    // Create a new entry for each file
+                    CommonTable::create([
+                        'file_type' => $file->getClientMimeType(),
+                        'file_name' => $file->getClientOriginalName(),
+                        'real_file_name' => $request->input('real_file_name'),
+                        'file_size' => $file->getSize(),
+                        'file_path' => $filePath,
+                        'user_name' => auth()->user()->name, // Assuming user is authenticated
+                        'user_id' => auth()->user()->id,
+                        'file_status' => $request->input('file_status', 0),
+                        'fyear' => $request->input('fyear'),
+                        'month' => $request->input('Month'),
+                        'tags' => $tags, // Store tags as JSON
+                        'bank_name' => $request->input('bank_name'),
+                        'location' => $request->input('location'),
+                        'descp' => $request->input('desc'),
+                    ]);
+
+                    $totalSize += $file->getSize();
+                    $successMessages[] = "File {$file->getClientOriginalName()} uploaded successfully.";
+                } catch (\Exception $e) {
+                    $errorMessages[] = "Failed to save file {$file->getClientOriginalName()} to the database.";
+                }
+            }
+
+            // Compile overall success message
+            $user = auth()->user();
+//             $entries = CommonTable::where('user_id', $user->id)
+//     ->where('is_delete', 0)
+//    ->where('location', 'LIKE', '%Bank Account Statements%')
+//         ->where('real_file_name', 'Bank account statement')
+//     ->get();
+//             $count = $entries->count(); // Count of entries
+//             $totalSizeKB = round($totalSize / 1024, 2); // Convert to KB and round
+
+            return redirect()->back()->with('success2', 'File Uploaded successfully.');
+
+            // return response()->json([
+            //     'success' => true,
+            //     'count' => $count,
+            //     'totalSize' => $totalSizeKB,
+            //     'successMessages' => $successMessages,
+            //     'errorMessages' => $errorMessages,
+            // ]);
+
+        } catch (\Exception $e) {
+            // Handle any exceptions that occur during file upload or database saving
+            return response()->json(['success' => false, 'message' => 'Failed to process file uploads.'], 500);
+        }
+    } else {
+        // Return a JSON response indicating no files were uploaded
+        return response()->json(['success' => false, 'message' => 'No files uploaded.'], 400);
+    }
+}
+
+//////////////////////////////////////////// 4 october sandeep added code here for prdefined paths common pop upload form file upload  start /////////////////////////////////////////////////////////////////////////
+
+
 public function fetchSecretarialStatutoryRegistersROSHFileData()
 {
     $user = auth()->user();
@@ -13767,27 +14069,24 @@ public function updateuserprofile(Request $request)
     {
         $cli_announcements = Announcement::where('role', 'Client')->latest()->get();
         $audit = StoreAudit::all();
-       return view('user.Audit-pro.Audit-pro',compact('cli_announcements','audit'));
+        $user = Auth::user();
+       return view('user.Audit-pro.Audit-pro',compact('cli_announcements','audit','user'));
     }
 	
     public function companystoreprofile(Request $request)
     {
        
-
+// dd($request);
         $user_id = $request->input('user_id');
         // Validate the input data, including PAN and CIN validation
-        $request->validate([
-            'state' => 'required|string|max:255',
-            'industry' => 'required|string|max:255',
-            'employee_count' => 'required|integer',
-            'DOI' => 'required|date',
-            'CIN' => ['required', 'string', 'regex:/^([A-Z]{5}[0-9]{4}[A-Z]{1}[0-9]{6})$/', 'unique:users,cin,' . auth()->id()], // CIN format validation
-            'PAN' => ['required', 'string', 'regex:/^([A-Z]{5}[0-9]{4}[A-Z]{1})$/', 'unique:users,pan,' . auth()->id()], // PAN format validation
-            'Email' => 'required|email|unique:users,email,' . $user_id, // Ensure the email is unique except for the current user
-            'phone' => 'required|string|max:15|unique:users,phone,' . $user_id, // Ensure the phone is unique except for the current user
-            'authorized_capital' => 'nullable|numeric',
-            'paid_up_capital' => 'nullable|numeric',
-        ]);
+        // $request->validate([
+           
+        //     'CIN' => ['required', 'string', 'regex:/^([A-Z]{5}[0-9]{4}[A-Z]{1}[0-9]{6})$/', 'unique:users,cin,' . auth()->id()], // CIN format validation
+        //     'PAN' => ['required', 'string', 'regex:/^([A-Z]{5}[0-9]{4}[A-Z]{1})$/', 'unique:users,pan,' . auth()->id()], // PAN format validation
+        //     'Email' => 'required|email|unique:users,email,' . $user_id, // Ensure the email is unique except for the current user
+        //     'phone' => 'required|string|max:15|unique:users,phone,' . $user_id, // Ensure the phone is unique except for the current user
+            
+        // ]);
     
         // Get the authenticated user
         $user = User::find($user_id);
@@ -13798,15 +14097,15 @@ public function updateuserprofile(Request $request)
                 'state' => $request->input('state'),
                'industry' => $request->input('industry'),
                'employees' => $request->input('employee_count'),
-                'email' => $request->input('backupemail'),
-                'DOI' => $request->input('DOI'),
+                'backupemail' => $request->input('Email'),
+                'joining_date' => $request->input('DOI'),
                 'phone' => $request->input('phone'),
                 'CIN' => $request->input('CIN'),
                 'PAN' => $request->input('PAN'),
                 'authorized_capital' => $request->input('authorized_capital'),
                 'paid_up_capital' => $request->input('paid_up_capital'),
             ]);
-    
+    // dd($user);
             // Find the associated UserInfo record
             $userInfo = UserInfo::where('user_id', $user_id)->first();
     
@@ -13816,7 +14115,7 @@ public function updateuserprofile(Request $request)
                     'state' => $request->input('state'),
                'industry' => $request->input('industry'),
                'employees' => $request->input('employee_count'),
-                'email' => $request->input('backupemail'),
+                'backupemail' => $request->input('Email'),
                 'joining_date' => $request->input('DOI'),
                 'phone' => $request->input('phone'),
                 'CIN' => $request->input('CIN'),
@@ -13837,6 +14136,20 @@ public function updateuserprofile(Request $request)
         return redirect()->back()->with('success', 'Profile updated successfully');
     }
     
+// In web.php (routes file)
+
+
+// In UserController.php
+public function checkUserExistence(Request $request)
+{
+    $emailExists = User::where('backupemail', $request->email)->exists();
+    $phoneExists = User::where('phone', $request->phone)->exists();
+
+    return response()->json([
+        'emailExists' => $emailExists,
+        'phoneExists' => $phoneExists
+    ]);
+}
 
 //    public function storeregister(Request $request){
 //     dd($request);
@@ -14097,9 +14410,9 @@ public function updateuserprofile(Request $request)
     {
         $cli_announcements = Announcement::where('role', 'Client')->latest()->get();
         $contractNamesArray = StoreContract::pluck('contract_name')->toArray();
-
+        $user = Auth::user();
         $fixed = StoreFixedAsset::all();
-       return view('user.fixed-management.fixed-management',compact('cli_announcements','contractNamesArray','fixed'));
+       return view('user.fixed-management.fixed-management',compact('cli_announcements','contractNamesArray','fixed','user'));
     }
 
     // public function storeevent(Request $request)
@@ -14299,8 +14612,8 @@ public function userimg(Request $request)
 public function whiteboard()
 {
     $cli_announcements = Announcement::where('role', 'Client')->latest()->get();
-    
-   return view('user.vandor-management.whiteboard',compact('cli_announcements'));
+    $user = Auth::user();
+   return view('user.vandor-management.whiteboard',compact('cli_announcements','user'));
 }
 
 
@@ -14959,28 +15272,32 @@ public function restorefile($id)
 public function venderlist()
 {
     $cli_announcements = Announcement::where('role', 'Client')->latest()->get();
+    $user = Auth::user();
     
-   return view('user.vandor-management.vendor-listing',compact('cli_announcements'));
+   return view('user.vandor-management.vendor-listing',compact('cli_announcements','user'));
 }
 
 public function bankingdoc()
 {
     $cli_announcements = Announcement::where('role', 'Client')->latest()->get();
     $bankdoc =  StoreBankDoc::all();
-   return view('user.banking.bankingdoc',compact('cli_announcements','bankdoc'));
+    $user = Auth::user();
+   return view('user.banking.bankingdoc',compact('cli_announcements','bankdoc','user'));
 }
 
 public function bankingcredit()
 {
     $cli_announcements = Announcement::where('role', 'Client')->latest()->get();
+    $user = Auth::user();
     
-   return view('user.banking.bankingcredit',compact('cli_announcements'));
+   return view('user.banking.bankingcredit',compact('cli_announcements','user'));
 }
 public function tickting()
 {
     $cli_announcements = Announcement::where('role', 'Client')->latest()->get();
+    $user = Auth::user();
     
-   return view('user.ticket.ticket',compact('cli_announcements'));
+   return view('user.ticket.ticket',compact('cli_announcements','user'));
 }
     public function Employeedetails($id)
     {
@@ -14995,8 +15312,153 @@ public function tickting()
 // dd($employees);
        return view('user.HRM.lifecycle-details',compact('cli_announcements','emplife','employees'));
     }
+    public function exportContracts()
+    {
+        // Fetch the contract data for the authenticated user
+        $contracts = StoreContract::where('user_id', auth()->id())->where('contracttype' , 'normalcontract')->get();
+
+
+        $filename = 'contracts_' . date('Ymd') . '.csv';
+
+        // Create a file pointer connected to the output stream
+        $handle = fopen('php://output', 'w');
+
+        // Set the headers for the CSV download
+        header('Content-Type: text/csv');
+        header('Content-Disposition: attachment; filename="' . $filename . '"');
+
+        // Add the CSV column headers
+        fputcsv($handle, [
+            'ID', 
+            'File Type', 
+            'File Size', 
+            'Real File Name', 
+            'File Path', 
+            'User Name', 
+            'Contract Name', 
+            'Contract Type', 
+            'Division', 
+            'Vendor Name', 
+            'Legal Entity Status', 
+            'Start Date', 
+            'End Date', 
+            'Contract Value', 
+            'Signing Status', 
+            'Renewal Terms', 
+            'Payment Terms', 
+            'Fee Escalation Clause', 
+            'User ID', 
+            'Created At', 
+            'Updated At'
+        ]);
+
+        // Loop through the contracts and add them to the CSV
+        foreach ($contracts as $contract) {
+            fputcsv($handle, [
+                $contract->id,
+                $contract->file_type,
+                $contract->file_size,
+                $contract->real_file_name,
+                $contract->file_path,
+                $contract->user_name,
+                $contract->contract_name,
+                $contract->contracttype,
+                $contract->divison,
+                $contract->vendor_name,
+                $contract->legal_entity_status,
+                $contract->startdate,
+                $contract->startend,
+                $contract->contract_value,
+                $contract->signing_status,
+                $contract->renewal_terms,
+                $contract->payment_terms,
+                $contract->fee_escalation_clause,
+                $contract->user_id,
+                $contract->created_at,
+                $contract->updated_at,
+            ]);
+        }
+
+        // Close the file pointer
+        fclose($handle);
+        exit; // Terminate the script
+    }
+
+    public function exportContractsss()
+    {
+        // Fetch the contract data for the authenticated user
+        $contracts = StoreContract::where('user_id', auth()->id())->where('contracttype' , 'customercontract')->get();
+
+
+        $filename = 'contracts_' . date('Ymd') . '.csv';
+
+        // Create a file pointer connected to the output stream
+        $handle = fopen('php://output', 'w');
+
+        // Set the headers for the CSV download
+        header('Content-Type: text/csv');
+        header('Content-Disposition: attachment; filename="' . $filename . '"');
+
+        // Add the CSV column headers
+        fputcsv($handle, [
+            'ID', 
+            'File Type', 
+            'File Size', 
+            'Real File Name', 
+            'File Path', 
+            'User Name', 
+            'Contract Name', 
+            'Contract Type', 
+            'Division', 
+            'Vendor Name', 
+            'Legal Entity Status', 
+            'Start Date', 
+            'End Date', 
+            'Contract Value', 
+            'Signing Status', 
+            'Renewal Terms', 
+            'Payment Terms', 
+            'Fee Escalation Clause', 
+            'User ID', 
+            'Created At', 
+            'Updated At'
+        ]);
+
+        // Loop through the contracts and add them to the CSV
+        foreach ($contracts as $contract) {
+            fputcsv($handle, [
+                $contract->id,
+                $contract->file_type,
+                $contract->file_size,
+                $contract->real_file_name,
+                $contract->file_path,
+                $contract->user_name,
+                $contract->contract_name,
+                $contract->contracttype,
+                $contract->divison,
+                $contract->vendor_name,
+                $contract->legal_entity_status,
+                $contract->startdate,
+                $contract->startend,
+                $contract->contract_value,
+                $contract->signing_status,
+                $contract->renewal_terms,
+                $contract->payment_terms,
+                $contract->fee_escalation_clause,
+                $contract->user_id,
+                $contract->created_at,
+                $contract->updated_at,
+            ]);
+        }
+
+        // Close the file pointer
+        fclose($handle);
+        exit; // Terminate the script
+    }
     public function ContractManagement()
     {
+        $contracts = StoreContract::where('user_id', auth()->id())->where('contracttype' , 'normalcontract')->get();
+        // dd($contracts);
         $cli_announcements = Announcement::where('role', 'Client')->latest()->get();
         $contract = StoreContract::where('user_id', auth()->id())->get();
          $user = auth()->user();
@@ -15028,10 +15490,57 @@ public function tickting()
 
     public function loginpassedit()
     {
+        $user = auth()->user();
+        $userId = $user->id;
+        $role = User::where('id', $userId)
+        ->where('role', $user->role)
+        ->where('Edit_Password', 1)
+        ->first();
+// dd($role);
+
+if (!$role) {
+echo "You have no Access to Edit Password , Please Contact to your Account Provider";
+abort(403);  // Abort if the role is not found or access is not granted
+}
         $cli_announcements = Announcement::where('role', 'Client')->latest()->get();
         $user = auth()->user();
        return view('user.login-pass-edit.login-pass-edit',compact('cli_announcements', 'user'));
     }
+
+    public function changeemppassword(Request $request)
+{
+    
+
+    // Get the currently authenticated user
+    $user = Auth::user(); // Or use User::find($request->user_id) if not using Auth
+
+    // Check if the old password matches
+    if (!Hash::check($request->old_password, $user->password)) {
+        return redirect()->back()->withErrors(['old_password' => 'Old password is incorrect.']);
+    }
+
+    // Check if new password and confirm password match
+    if ($request->new_password !== $request->confirm_password) {
+        return redirect()->back()->withErrors(['confirm_password' => 'New password and confirm password do not match.']);
+    }
+
+    // Update the password in the User model
+    $user->password = Hash::make($request->new_password);
+    $user->save();
+
+    // Update the password in the UserInfo model
+    $userInfo = UserInfo::where('user_id', $user->id)->first();
+
+    if ($userInfo) {
+        // Update the password in the UserInfo model if needed
+        $userInfo->password = $request->new_password;
+        $userInfo->save();
+    }
+
+    // Redirect back with a success message
+    return redirect()->back()->with('success', 'Password changed successfully.');
+}
+
 	
 public function rolemanagement()
 {
@@ -15104,26 +15613,49 @@ public function rolemanagement()
     
     
     
-    public function addroles(Request $request)
+public function addroles(Request $request)
 {
-   
-$userId = auth()->user()->id;
-    // Create a new OrganizationChart instance and fill it with validated data
+    // Get the logged-in user ID
+    $userId = auth()->user()->id;
+
+    // Check if the user has already created this role
+    $existingRole = UserRole::where('user_id', $userId)
+                            ->where('role', $request->role)
+                            ->first();
+
+    // If the role already exists for the current user, return an error
+    if ($existingRole) {
+        return redirect()->back()->with('error', 'You have already created this role.');
+    }
+
+    // If no role exists for this user, create a new role
     $userroleModel = new UserRole([
-       
         'role' => $request->role,
         'Edit_Password' => "0",
         'View_Exception_Reports' => "0",
         'user_id' => $userId,
-        
     ]);
 
-    // Save the data to the database
+    // Save the new role to the database
     $userroleModel->save();
 
-    // Return a JSON response indicating success
-        return redirect()->back()->with('success', 'Role created success.');
+    // Return a success message
+    return redirect()->back()->with('success', 'Role created successfully.');
 }
+public function checkRoleExistence(Request $request)
+{
+    // Get the logged-in user ID
+    $userId = auth()->user()->id;
+
+    // Check if the user has already created this role
+    $roleExists = UserRole::where('user_id', $userId)
+                          ->where('role', $request->role)
+                          ->exists();
+
+    // Return JSON response to indicate whether the role exists
+    return response()->json(['exists' => $roleExists]);
+}
+
 
 public function members(Request $request)
 {
@@ -15365,13 +15897,14 @@ private function generateUniqueUsername($fname, $lname)
         $cli_announcements = Announcement::where('role', 'Client')->latest()->get();
         $user = Auth::user();
         $emplife = StoreEmployeeprofile::where('user_id', $user->id)->get();
-       return view('user.HRM.employee-lifecycle',compact('cli_announcements','emplife'));
+       return view('user.HRM.employee-lifecycle',compact('cli_announcements','emplife','user'));
     }
     public function manageprofile()
     {
         $cli_announcements = Announcement::where('role', 'Client')->latest()->get();
+        $user = Auth::user();
         
-       return view('user.management.profile',compact('cli_announcements'));
+       return view('user.management.profile',compact('cli_announcements','user'));
     }
 
     public function managestore(Request $request)
@@ -15422,7 +15955,8 @@ private function generateUniqueUsername($fname, $lname)
     {
         $cli_announcements = Announcement::where('role', 'Client')->latest()->get();
         $iptd =  StoreIpFile::all();
-       return view('user.trademark.trademark',compact('cli_announcements','iptd'));
+        $user = Auth::user();
+       return view('user.trademark.trademark',compact('cli_announcements','iptd','user'));
     }
     
      public function director()
@@ -17177,15 +17711,201 @@ public function shareFolder(Request $request)
             }
             // 11 sept sandeep merge code here end
             
-            
-            $folderHtml .= '<li><a href="#" class="folder-link wedcolor" data-folder-path="' . $folder->path . '">
-                                <div class="folder_wraap foldreload" >
+            if($folder->common_folder == 0)
+            {
+            $folderHtml .= 
+           
+            '<li><a href="#" class="folder-link wedcolor" data-folder-path="' . $folder->path . '">
+                                <div class="folder_wraap">
                                     <img src="../assets/images/solar_folder-bold.png" id="folders" class="folder-icon" alt="Folder Icon">
                                     <span>' . $folder->name . '</span>
                                 </div>
                             </a>
-                                           
+                            <div class="three_dots">
+                                <button class="click_folder_dot" data-folder-id="' . $folder->id . '">
+                                    <img src="../assets/images/folder_dot.png" id="folders" class="folder-dots" alt="Folder dots">
+                                </button>
+                                <div id="myDropdown2-' . $folder->id . '" class="dropdown-content">
+                                   
+                                    <a class="dropdown-itemm rename_nt"><img src="../assets/images/rename_nt.png">Rename</a>
+
+                                     <a class="dropdown-itemm download_nt" data-folder-path="' . $folder->path . '" data-id="' . $folder->id . '"><svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                      <path d="M2.40625 12.25C2.00014 12.25 1.61066 12.0887 1.32349 11.8015C1.03633 11.5143 0.875 11.1249 0.875 10.7188V8.53125C0.875 8.3572 0.94414 8.19028 1.06721 8.06721C1.19028 7.94414 1.3572 7.875 1.53125 7.875C1.7053 7.875 1.87222 7.94414 1.99529 8.06721C2.11836 8.19028 2.1875 8.3572 2.1875 8.53125V10.7188C2.1875 10.8395 2.2855 10.9375 2.40625 10.9375H11.5938C11.6518 10.9375 11.7074 10.9145 11.7484 10.8734C11.7895 10.8324 11.8125 10.7768 11.8125 10.7188V8.53125C11.8125 8.3572 11.8816 8.19028 12.0047 8.06721C12.1278 7.94414 12.2947 7.875 12.4688 7.875C12.6428 7.875 12.8097 7.94414 12.9328 8.06721C13.0559 8.19028 13.125 8.3572 13.125 8.53125V10.7188C13.125 11.1249 12.9637 11.5143 12.6765 11.8015C12.3893 12.0887 11.9999 12.25 11.5938 12.25H2.40625Z" fill="#CEFFA8"></path>
+                                      <path d="M6.34334 6.72788V1.75C6.34334 1.57595 6.41248 1.40903 6.53555 1.28596C6.65862 1.16289 6.82554 1.09375 6.99959 1.09375C7.17364 1.09375 7.34056 1.16289 7.46363 1.28596C7.5867 1.40903 7.65584 1.57595 7.65584 1.75V6.72788L9.37959 5.005C9.44049 4.9441 9.51279 4.89579 9.59236 4.86283C9.67193 4.82987 9.75722 4.81291 9.84334 4.81291C9.92947 4.81291 10.0148 4.82987 10.0943 4.86283C10.1739 4.89579 10.2462 4.9441 10.3071 5.005C10.368 5.0659 10.4163 5.1382 10.4493 5.21777C10.4822 5.29734 10.4992 5.38262 10.4992 5.46875C10.4992 5.55488 10.4822 5.64016 10.4493 5.71973C10.4163 5.7993 10.368 5.8716 10.3071 5.9325L7.46334 8.77625C7.40247 8.83721 7.33018 8.88556 7.25061 8.91856C7.17103 8.95155 7.08574 8.96853 6.99959 8.96853C6.91345 8.96853 6.82815 8.95155 6.74857 8.91856C6.669 8.88556 6.59671 8.83721 6.53584 8.77625L3.69209 5.9325C3.63119 5.8716 3.58288 5.7993 3.54992 5.71973C3.51696 5.64016 3.5 5.55488 3.5 5.46875C3.5 5.38262 3.51696 5.29734 3.54992 5.21777C3.58288 5.1382 3.63119 5.0659 3.69209 5.005C3.75299 4.9441 3.82529 4.89579 3.90486 4.86283C3.98443 4.82987 4.06972 4.81291 4.15584 4.81291C4.24197 4.81291 4.32725 4.82987 4.40682 4.86283C4.48639 4.89579 4.55869 4.9441 4.61959 5.005L6.34334 6.72788Z" fill="#CEFFA8"></path>
+                                  </svg>Download</a>
+                                </div>
+                                <div class="modal fade drop_coman_file have_title drive_permissions_share" id="share_folder" tabindex="-1" role="dialog" aria-labelledby="share_folder" aria-hidden="true">
+                                <div class="modal-dialog modal-dialog-centered" role="document">
+                                  <div class="modal-content">
+                                    <div class="modal-header">
+                                      <h5 class="modal-title" style="font-weight:700">Share </h5>
+                                    </div>
+                                    <div class="modal-body">
+                                      <h3>Share</h3>
+                                      <form action="" method="POST" enctype="multipart/form-data" class="upload-form"> 
+                                      <div class="share_people">
+                                      <h2>Choose people to share</h2>
+                                      <div class="sarhe_search">
+                                      <input type="search" class="" placeholder="Search for people" aria-controls="">
+                                      </div>
+                                      </div>
+
+                                      <div class="people_with_acces">
+                                      <h2>People with access</h2>
+                                      <div class="people_list">
+                                      
+                                      <div class="people_repeat">
+                                       <div class="people_ini_image">
+                                      <img src="../assets/images/alok.png" alt="img">
+                                      </div>
+                                      
+                                      <div class="repeat_detailss">
+                                      <h2>devanshu.kumar@milliondox.com</h2>
+                                      <span>devanshu.kumar@milliondox.com</span>
+                                      </div>
+                                      
+                                      </div>
+ 
+                                      </div>
+                                      </div>
+
+                                      <div class="share_radio">
+                                      <h2>Access Type</h2>
+                                      <div class="radio_sare_button">
+                                      <div class="for_group radio">
+                                      <input type="radio" id="can_view" name="status" value="can_view">
+                                      <label for="can_view">Can View</label>   
+                                      </div>
+                                      <div class="for_group radio">
+                                      <input type="radio" id="can_edit" name="status" value="can_edit">
+                                      <label for="can_edit">Can Edit</label>   
+                                      </div>
+                                      </div>
+                                       </div>
+                        
+                                      <div class="toggle-btn">
+                                      <span>Limit Access Duration</span>
+                                      <label class="switch">
+                                      <input type="checkbox" id="checbox" onclick="check()" ;="">
+                                      <span class="slider round"></span>
+                                      </label>              
+                                      </div>
+                        
+                                      <div class="addTimeDateDiv">
+                                      <div class="two_search_togle">
+                                      <input type="search" class="" placeholder="Enter Date" aria-controls="">
+                                      <input type="search" class="" placeholder="Enter Time" aria-controls="">
+                                      </div>
+                                      </div>
+
+                                      <div class="togle_area_btn">
+                                      <a href="#">Share</a>
+                                      </div>
+                        
+                                      </form>
+                                    </div>
+                                  </div>
+                                </div>
+                            </div>                            
                         </li>';
+            }
+                        else{
+                            $folderHtml .= 
+           
+                            '<li><a href="#" class="folder-link wedcolor" data-folder-path="' . $folder->path . '">
+                                                <div class="folder_wraap">
+                                                    <img src="../assets/images/solar_folder-bold.png" id="folders" class="folder-icon" alt="Folder Icon">
+                                                    <span>' . $folder->name . '</span>
+                                                </div>
+                                            </a>
+                                            <div class="three_dots">
+                                                <button class="click_folder_dot" data-folder-id="' . $folder->id . '">
+                                                    <img src="../assets/images/folder_dot.png" id="folders" class="folder-dots" alt="Folder dots">
+                                                </button>
+                                                <div id="myDropdown2-' . $folder->id . '" class="dropdown-content">
+                                   
+                                                   
+
+                                                    <a class="dropdown-itemm download_nt" data-folder-path="' . $folder->path . '" data-id="' . $folder->id . '"><svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                      <path d="M2.40625 12.25C2.00014 12.25 1.61066 12.0887 1.32349 11.8015C1.03633 11.5143 0.875 11.1249 0.875 10.7188V8.53125C0.875 8.3572 0.94414 8.19028 1.06721 8.06721C1.19028 7.94414 1.3572 7.875 1.53125 7.875C1.7053 7.875 1.87222 7.94414 1.99529 8.06721C2.11836 8.19028 2.1875 8.3572 2.1875 8.53125V10.7188C2.1875 10.8395 2.2855 10.9375 2.40625 10.9375H11.5938C11.6518 10.9375 11.7074 10.9145 11.7484 10.8734C11.7895 10.8324 11.8125 10.7768 11.8125 10.7188V8.53125C11.8125 8.3572 11.8816 8.19028 12.0047 8.06721C12.1278 7.94414 12.2947 7.875 12.4688 7.875C12.6428 7.875 12.8097 7.94414 12.9328 8.06721C13.0559 8.19028 13.125 8.3572 13.125 8.53125V10.7188C13.125 11.1249 12.9637 11.5143 12.6765 11.8015C12.3893 12.0887 11.9999 12.25 11.5938 12.25H2.40625Z" fill="#CEFFA8"></path>
+                                      <path d="M6.34334 6.72788V1.75C6.34334 1.57595 6.41248 1.40903 6.53555 1.28596C6.65862 1.16289 6.82554 1.09375 6.99959 1.09375C7.17364 1.09375 7.34056 1.16289 7.46363 1.28596C7.5867 1.40903 7.65584 1.57595 7.65584 1.75V6.72788L9.37959 5.005C9.44049 4.9441 9.51279 4.89579 9.59236 4.86283C9.67193 4.82987 9.75722 4.81291 9.84334 4.81291C9.92947 4.81291 10.0148 4.82987 10.0943 4.86283C10.1739 4.89579 10.2462 4.9441 10.3071 5.005C10.368 5.0659 10.4163 5.1382 10.4493 5.21777C10.4822 5.29734 10.4992 5.38262 10.4992 5.46875C10.4992 5.55488 10.4822 5.64016 10.4493 5.71973C10.4163 5.7993 10.368 5.8716 10.3071 5.9325L7.46334 8.77625C7.40247 8.83721 7.33018 8.88556 7.25061 8.91856C7.17103 8.95155 7.08574 8.96853 6.99959 8.96853C6.91345 8.96853 6.82815 8.95155 6.74857 8.91856C6.669 8.88556 6.59671 8.83721 6.53584 8.77625L3.69209 5.9325C3.63119 5.8716 3.58288 5.7993 3.54992 5.71973C3.51696 5.64016 3.5 5.55488 3.5 5.46875C3.5 5.38262 3.51696 5.29734 3.54992 5.21777C3.58288 5.1382 3.63119 5.0659 3.69209 5.005C3.75299 4.9441 3.82529 4.89579 3.90486 4.86283C3.98443 4.82987 4.06972 4.81291 4.15584 4.81291C4.24197 4.81291 4.32725 4.82987 4.40682 4.86283C4.48639 4.89579 4.55869 4.9441 4.61959 5.005L6.34334 6.72788Z" fill="#CEFFA8"></path>
+                                  </svg>Download</a>
+                                                </div>
+                                                <div class="modal fade drop_coman_file have_title drive_permissions_share" id="share_folder" tabindex="-1" role="dialog" aria-labelledby="share_folder" aria-hidden="true">
+                                                <div class="modal-dialog modal-dialog-centered" role="document">
+                                                  <div class="modal-content">
+                                                    <div class="modal-header">
+                                                      <h5 class="modal-title" style="font-weight:700">Share </h5>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                      <h3>Share</h3>
+                                                      <form action="" method="POST" enctype="multipart/form-data" class="upload-form"> 
+                                                      <div class="share_people">
+                                                      <h2>Choose people to share</h2>
+                                                      <div class="sarhe_search">
+                                                      <input type="search" class="" placeholder="Search for people" aria-controls="">
+                                                      </div>
+                                                      </div>
+                
+                                                      <div class="people_with_acces">
+                                                      <h2>People with access</h2>
+                                                      <div class="people_list">
+                                                      
+                                                      <div class="people_repeat">
+                                                       <div class="people_ini_image">
+                                                      <img src="../assets/images/alok.png" alt="img">
+                                                      </div>
+                                                      
+                                                      <div class="repeat_detailss">
+                                                      <h2>devanshu.kumar@milliondox.com</h2>
+                                                      <span>devanshu.kumar@milliondox.com</span>
+                                                      </div>
+                                                      
+                                                      </div>
+                 
+                                                      </div>
+                                                      </div>
+                
+                                                      <div class="share_radio">
+                                                      <h2>Access Type</h2>
+                                                      <div class="radio_sare_button">
+                                                      <div class="for_group radio">
+                                                      <input type="radio" id="can_view" name="status" value="can_view">
+                                                      <label for="can_view">Can View</label>   
+                                                      </div>
+                                                      <div class="for_group radio">
+                                                      <input type="radio" id="can_edit" name="status" value="can_edit">
+                                                      <label for="can_edit">Can Edit</label>   
+                                                      </div>
+                                                      </div>
+                                                       </div>
+                                        
+                                                      <div class="toggle-btn">
+                                                      <span>Limit Access Duration</span>
+                                                      <label class="switch">
+                                                      <input type="checkbox" id="checbox" onclick="check()" ;="">
+                                                      <span class="slider round"></span>
+                                                      </label>              
+                                                      </div>
+                                        
+                                                      <div class="addTimeDateDiv">
+                                                      <div class="two_search_togle">
+                                                      <input type="search" class="" placeholder="Enter Date" aria-controls="">
+                                                      <input type="search" class="" placeholder="Enter Time" aria-controls="">
+                                                      </div>
+                                                      </div>
+                
+                                                      <div class="togle_area_btn">
+                                                      <a href="#">Share</a>
+                                                      </div>
+                                        
+                                                      </form>
+                                                    </div>
+                                                  </div>
+                                                </div>
+                                            </div>                            
+                                        </li>';
+                        }
         }
           }
           else{
@@ -17212,9 +17932,11 @@ public function shareFolder(Request $request)
             $fileHtml .= '</thead>';
             $fileHtml .= '<tbody>';
             foreach ($fileContents as $file) {
+                
                 $fileHtml .= '<tr>';
                 $fileHtml .= '<td>' . $file->file_name . '</td>';
-                $fileHtml .= '<td class="funtion_buttnss"><a href="' . route('downloadFilecustom', $file->id) . '">
+                $fileHtml .= '<td class="funtion_buttnss">                
+                <a href="' . route('downloadFilecustom', $file->id) . '">
                                   <svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
                                       <path d="M2.40625 12.25C2.00014 12.25 1.61066 12.0887 1.32349 11.8015C1.03633 11.5143 0.875 11.1249 0.875 10.7188V8.53125C0.875 8.3572 0.94414 8.19028 1.06721 8.06721C1.19028 7.94414 1.3572 7.875 1.53125 7.875C1.7053 7.875 1.87222 7.94414 1.99529 8.06721C2.11836 8.19028 2.1875 8.3572 2.1875 8.53125V10.7188C2.1875 10.8395 2.2855 10.9375 2.40625 10.9375H11.5938C11.6518 10.9375 11.7074 10.9145 11.7484 10.8734C11.7895 10.8324 11.8125 10.7768 11.8125 10.7188V8.53125C11.8125 8.3572 11.8816 8.19028 12.0047 8.06721C12.1278 7.94414 12.2947 7.875 12.4688 7.875C12.6428 7.875 12.8097 7.94414 12.9328 8.06721C13.0559 8.19028 13.125 8.3572 13.125 8.53125V10.7188C13.125 11.1249 12.9637 11.5143 12.6765 11.8015C12.3893 12.0887 11.9999 12.25 11.5938 12.25H2.40625Z" fill="#CEFFA8" />
                                       <path d="M6.34334 6.72788V1.75C6.34334 1.57595 6.41248 1.40903 6.53555 1.28596C6.65862 1.16289 6.82554 1.09375 6.99959 1.09375C7.17364 1.09375 7.34056 1.16289 7.46363 1.28596C7.5867 1.40903 7.65584 1.57595 7.65584 1.75V6.72788L9.37959 5.005C9.44049 4.9441 9.51279 4.89579 9.59236 4.86283C9.67193 4.82987 9.75722 4.81291 9.84334 4.81291C9.92947 4.81291 10.0148 4.82987 10.0943 4.86283C10.1739 4.89579 10.2462 4.9441 10.3071 5.005C10.368 5.0659 10.4163 5.1382 10.4493 5.21777C10.4822 5.29734 10.4992 5.38262 10.4992 5.46875C10.4992 5.55488 10.4822 5.64016 10.4493 5.71973C10.4163 5.7993 10.368 5.8716 10.3071 5.9325L7.46334 8.77625C7.40247 8.83721 7.33018 8.88556 7.25061 8.91856C7.17103 8.95155 7.08574 8.96853 6.99959 8.96853C6.91345 8.96853 6.82815 8.95155 6.74857 8.91856C6.669 8.88556 6.59671 8.83721 6.53584 8.77625L3.69209 5.9325C3.63119 5.8716 3.58288 5.7993 3.54992 5.71973C3.51696 5.64016 3.5 5.55488 3.5 5.46875C3.5 5.38262 3.51696 5.29734 3.54992 5.21777C3.58288 5.1382 3.63119 5.0659 3.69209 5.005C3.75299 4.9441 3.82529 4.89579 3.90486 4.86283C3.98443 4.82987 4.06972 4.81291 4.15584 4.81291C4.24197 4.81291 4.32725 4.82987 4.40682 4.86283C4.48639 4.89579 4.55869 4.9441 4.61959 5.005L6.34334 6.72788Z" fill="#CEFFA8" />
@@ -17226,6 +17948,19 @@ public function shareFolder(Request $request)
                                       <path d="M5.07536 13.3334C4.77759 13.3334 4.52359 13.2285 4.31336 13.0187C4.10359 12.809 3.9987 12.555 3.9987 12.2567V4.00007H3.33203V3.3334H5.9987V2.82007H9.9987V3.3334H12.6654V4.00007H11.9987V12.2567C11.9987 12.5634 11.896 12.8194 11.6907 13.0247C11.4849 13.2305 11.2287 13.3334 10.922 13.3334H5.07536ZM11.332 4.00007H4.66536V12.2567C4.66536 12.3763 4.70381 12.4745 4.7807 12.5514C4.85759 12.6283 4.95581 12.6667 5.07536 12.6667H10.922C11.0243 12.6667 11.1183 12.6241 11.204 12.5387C11.2894 12.453 11.332 12.359 11.332 12.2567V4.00007ZM6.53736 11.3334H7.20403V5.3334H6.53736V11.3334ZM8.79337 11.3334H9.46003V5.3334H8.79337V11.3334Z" fill="#FA4A4A"></path>
                                     </svg> 
                                 </button> 
+                <div class="dropdown commn_table_wrap">
+                <button class="dropbtn show_pp">
+                <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M10.3994 4.19166C10.3994 4.37562 10.3632 4.55779 10.2929 4.72778C10.2226 4.89776 10.1194 5.05222 9.98937 5.18234C9.85934 5.31246 9.70494 5.4157 9.535 5.48615C9.36507 5.55661 9.18292 5.5929 8.99896 5.59296C8.81499 5.59302 8.63282 5.55684 8.46284 5.4865C8.29286 5.41615 8.1384 5.31302 8.00827 5.18298C7.87815 5.05294 7.77492 4.89854 7.70446 4.72861C7.63401 4.55867 7.59772 4.37652 7.59766 4.19256C7.59754 3.82103 7.74501 3.46467 8.00764 3.20188C8.27026 2.93908 8.62653 2.79138 8.99806 2.79126C9.36958 2.79114 9.72594 2.93862 9.98874 3.20124C10.2515 3.46387 10.3992 3.82013 10.3994 4.19166Z" fill="#8D8D8D"></path>
+                  <path d="M8.99806 10.3999C9.77148 10.3999 10.3985 9.77294 10.3985 8.99952C10.3985 8.2261 9.77148 7.59912 8.99806 7.59912C8.22464 7.59912 7.59766 8.2261 7.59766 8.99952C7.59766 9.77294 8.22464 10.3999 8.99806 10.3999Z" fill="#8D8D8D"></path>
+                  <path d="M8.99806 15.2085C9.77148 15.2085 10.3985 14.5815 10.3985 13.8081C10.3985 13.0347 9.77148 12.4077 8.99806 12.4077C8.22464 12.4077 7.59766 13.0347 7.59766 13.8081C7.59766 14.5815 8.22464 15.2085 8.99806 15.2085Z" fill="#8D8D8D"></path>
+                </svg>
+              </button>
+              <div id="myDropdown3" class="dropdown-content"> 
+                <a class="dropdown-itemm open_eye_pdf" href="' . route('showfile', $file->id) . '" target="_blank">
+                  View </a>
+            </div>
+        </div>
                           </td>';
                 $fileHtml .= '</tr>';
             }
@@ -17240,6 +17975,122 @@ public function shareFolder(Request $request)
     
         return response()->json(['folderHtml' => $folderHtml,  'fileHtml' => $fileHtml]);
     }
+    public function showfile($id)
+    {
+        // Get the authenticated user's ID
+        $authUserId = Auth::id();
+    
+        // Find the file by ID and ensure it belongs to the authenticated user
+        $file = CommonTable::where('id', $id)->where('user_id', $authUserId)->first();
+    
+        if (!$file) {
+            return redirect()->back()->with('error', 'File not found or you do not have permission to access this file.');
+        }
+    
+        // Extract the file path from the database
+        $filePath = $file->file_path;
+    
+        // Check if the file exists on the storage
+        if (!Storage::exists($filePath)) {
+            return redirect()->back()->with('error', 'File does not exist.');
+        }
+    
+        // Return the file response (for PDFs, the browser should display it)
+        return Storage::response($filePath, $file->file_name);
+    }
+
+
+    public function downloadFolder($folderPath)
+{
+    // Decode the folder path since it was URL-encoded in the request
+    $folderPath = urldecode($folderPath);
+    
+    // Fetch the folder based on the folder path
+    $folder = Folder::where('path', $folderPath)->first();
+    
+    if (!$folder) {
+        \Log::error("Folder not found for path: " . $folderPath);
+        return response()->json(['success' => false, 'message' => 'Folder not found.']);
+    }
+
+    // Create a unique ZIP file name using folder id or name
+    $zipFileName = 'folder_' . $folder->id . '.zip'; // Unique ZIP filename
+    $zipFilePath = storage_path('app/public/' . $zipFileName); // Save in the storage/app/public directory
+
+    // Initialize the ZipArchive object
+    $zip = new ZipArchive();
+
+    // Open the ZIP file for writing
+    if ($zip->open($zipFilePath, ZipArchive::CREATE) !== TRUE) {
+        \Log::error("Could not create ZIP file at: " . $zipFilePath);
+        return response()->json(['success' => false, 'message' => 'Could not create ZIP file.']);
+    }
+
+    // Recursively add the folder and its contents to the ZIP file
+    $folderFullPath = storage_path('app/' . $folderPath);
+    if (is_dir($folderFullPath)) {
+        $this->addFolderToZip($zip, $folderFullPath, $folder->name);
+    } else {
+        \Log::error("Folder does not exist: " . $folderFullPath);
+        return response()->json(['success' => false, 'message' => 'Folder does not exist.']);
+    }
+
+    // Close the ZIP file
+    $zip->close();
+
+    // Check if the ZIP file was created successfully
+    if (!file_exists($zipFilePath)) {
+        return response()->json(['success' => false, 'message' => 'ZIP file could not be created.']);
+    }
+
+    // Return the ZIP file URL for downloading (ensure storage link is created with 'php artisan storage:link')
+    return response()->json([
+        'success' => true,
+        'zipFileUrl' => asset('storage/' . $zipFileName), // URL to download the file
+    ]);
+}
+
+/**
+ * Recursively adds a folder and its contents to a ZipArchive.
+ *
+ * @param ZipArchive $zip The ZipArchive object.
+ * @param string $folderPath The path to the folder being added.
+ * @param string $folderName The name to be used inside the ZIP.
+ */
+private function addFolderToZip($zip, $folderPath, $folderName)
+{
+    // Add the folder itself
+    $zip->addEmptyDir($folderName);
+
+    // Get the files and subfolders inside this folder
+    $files = scandir($folderPath);
+
+    foreach ($files as $file) {
+        if ($file == '.' || $file == '..') {
+            continue; // Skip special directories
+        }
+
+        $filePath = $folderPath . '/' . $file;
+        $zipPath = $folderName . '/' . $file; // Path inside the ZIP
+
+        if (is_dir($filePath)) {
+            // Recursively add subfolder
+            $this->addFolderToZip($zip, $filePath, $zipPath);
+        } else {
+            // Add file to the ZIP
+            $zip->addFile($filePath, $zipPath);
+        }
+    }
+}
+
+    
+    
+
+
+    
+    
+
+    
     
     public function downloadFilecustom($id)
     {
@@ -17377,8 +18228,8 @@ public function downloadFile($id)
     public function salemanage()
     {
         $cli_announcements = Announcement::where('role', 'Client')->latest()->get();
-        
-       return view('user.sale-management.sale-manage',compact('cli_announcements'));
+        $user = Auth::user();
+       return view('user.sale-management.sale-manage',compact('cli_announcements','user'));
     }
 
 
@@ -17557,75 +18408,95 @@ public function downloadFile($id)
     // }
     
 
-public function uploadFile(Request $request)
-{
-
-
-    // Validate the request
-    $request->validate([
-        'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
-        'tagList' => 'nullable', // Allow tagList to be nullable
-    ], [
-        'files.*.required' => 'Each file is required.',
-        'files.*.file' => 'The uploaded item must be a valid file.',
-        'files.*.max' => 'Each file may not be larger than 100MB.',
-        'files.*.mimes' => 'The file type must be one of the following: PDF, ODP, ODS, PPT, DOC, ODT, RTF, CSV, JSON, XML, HTML, ICO, SVG, WEBP, ZIP, XLS, DOCX, WAV, OGG, MP3, AVI, MOV, WMV, WEBM, TIFF, MP4, JPG, PNG, GIF, JPEG, 3GP, MKV, FLV.',
-    ]);
-
-    // Check if folder path is provided
-    $folderPath = $request->input('parent_folder');
-    // if (!$folderPath) {
-    //     return response()->json(['success' => false, 'message' => 'Folder path is required.'], 400);
-    // }
-
-    // Check if files are uploaded
-    if ($request->hasFile('files')) {
-        try {
-            $totalSize = 0;
-            $successMessages = [];
-            $errorMessages = [];
-
-            // Process each file
-            foreach ($request->file('files') as $file) {
-                try {
-                    $filePath = $file->store('uploads');
-
-                    // Store file details in the database
-                    CommonTable::create([
-                        'file_type' => $file->getClientMimeType(),
-                        'file_name' => $file->getClientOriginalName(),
-                        'file_size' => $file->getSize(),
-                        'file_path' => $filePath,
-                        'user_name' => auth()->user()->name,
-                        'user_id' => auth()->user()->id,
-                        'file_status' => $request->input('file_status', 0),
-                        'fyear' => $request->input('fyear'),
-                        'month' => $request->input('Month'),
-                        'location' => $folderPath,
-                        'descp' => $request->input('desc'),
-                    ]);
-
-                    $totalSize += $file->getSize();
-                    $successMessages[] = "File {$file->getClientOriginalName()} uploaded successfully.";
-                } catch (\Exception $e) {
-                    $errorMessages[] = "Failed to save file {$file->getClientOriginalName()} to the database.";
-                }
-            }
-
-            // Compile the response
-            return response()->json([
-                'success' => true,
-                'successMessages' => $successMessages,
-                'errorMessages' => $errorMessages,
-            ]);
-        } catch (\Exception $e) {
-            return response()->json(['success' => false, 'message' => 'Failed to process file uploads.'], 500);
-        }
-    } else {
-        // No files were uploaded
-        return response()->json(['success' => false, 'message' => 'No files uploaded.'], 400);
+    public function uploadFile(Request $request)
+    {
+    
+    
+        // Validate the request
+        $request->validate([
+            'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
+            'tagList' => 'nullable', // Allow tagList to be nullable
+        ], [
+            'files.*.required' => 'Each file is required.',
+            'files.*.file' => 'The uploaded item must be a valid file.',
+            'files.*.max' => 'Each file may not be larger than 100MB.',
+            'files.*.mimes' => 'The file type must be one of the following: PDF, ODP, ODS, PPT, DOC, ODT, RTF, CSV, JSON, XML, HTML, ICO, SVG, WEBP, ZIP, XLS, DOCX, WAV, OGG, MP3, AVI, MOV, WMV, WEBM, TIFF, MP4, JPG, PNG, GIF, JPEG, 3GP, MKV, FLV.',
+        ]);
+    
+        // Check if folder path is provided
+        $folderPath = $request->input('parent_folder');
+        // if (!$folderPath) {
+        //     return response()->json(['success' => false, 'message' => 'Folder path is required.'], 400);
+        // }
+    
+        // Check if files are uploaded
+        if ($request->hasFile('files')) {
+            try {
+                $totalSize = 0;
+                $successMessages = [];
+                $errorMessages = [];
+                $tag_list = [];
+    
+    // Handle tagList whether it's an array, a comma-separated string, or empty
+    $userTags = $request->input('tagList', []);
+    
+    // Convert to array if it's a comma-separated string
+    if (is_string($userTags)) {
+        $userTags = explode(',', $userTags);
     }
-}
+    // Ensure $userTags is an array and remove any empty values
+    if (is_array($userTags)) {
+        $userTags = array_filter($userTags); // Remove empty values
+    } else {
+        $userTags = []; // Fallback to empty array if not an array
+    }
+    
+    // Merge with default tags
+    $tag_list = array_merge($tag_list, $userTags);
+    $tags = empty($tag_list) ? NULL : json_encode($tag_list);
+    
+                // Process each file
+                foreach ($request->file('files') as $file) {
+                    try {
+                        $filePath = $file->store($folderPath);
+    
+                        // Store file details in the database
+                        CommonTable::create([
+                            'file_type' => $file->getClientMimeType(),
+                            'file_name' => $file->getClientOriginalName(),
+                            'file_size' => $file->getSize(),
+                            'file_path' => $filePath,
+                            'user_name' => auth()->user()->name,
+                            'user_id' => auth()->user()->id,
+                            'file_status' => $request->input('file_status', 0),
+                            'fyear' => $request->input('fyear'),
+                            'month' => $request->input('Month'),
+                            'tags' => $tags, // Store tags as JSON
+                            'location' => $folderPath,
+                            'descp' => $request->input('desc'),
+                        ]);
+    
+                        $totalSize += $file->getSize();
+                        $successMessages[] = "File {$file->getClientOriginalName()} uploaded successfully.";
+                    } catch (\Exception $e) {
+                        $errorMessages[] = "Failed to save file {$file->getClientOriginalName()} to the database.";
+                    }
+                }
+    
+                // Compile the response
+                return response()->json([
+                    'success' => true,
+                    'successMessages' => $successMessages,
+                    'errorMessages' => $errorMessages,
+                ]);
+            } catch (\Exception $e) {
+                return response()->json(['success' => false, 'message' => 'Failed to process file uploads.'], 500);
+            }
+        } else {
+            // No files were uploaded
+            return response()->json(['success' => false, 'message' => 'No files uploaded.'], 400);
+        }
+    }
 
 
 
@@ -18431,7 +19302,50 @@ public function updateoutofexpense(request $request)
     $directorcompany = StoreCompanydirector ::where('user_id', $user->id)->where('is_delete', 0)->get();
     
     $directorcount = StoreCompanydirector::where('user_id', $user->id)->where('is_delete', 0)->count();
-       return view('user.Administration.company-profile',compact('cli_announcements','directorcompany','directorcount','cp','user','user','gstno','gstnocount','employeescompany','employeescount'));
+    $progressPercentage = 0;
+
+    // Check user attributes for 40%
+    if (
+        ($user->profile_picture != NULL) &&
+        ($user->name_of_the_business != NULL) &&
+        ($user->legal_entity != NULL) &&
+        ($user->industry != NULL) &&
+        ($user->state != NULL) &&
+        ($user->backupemail != NULL) &&
+        ($user->employees != NULL) &&
+        ($user->phone != NULL)
+    ) {
+        $progressPercentage += 40; // Add 40%
+    }
+    
+    // Check additional user attributes for 30%
+    if (
+        ($user->joining_date != NULL) &&
+        ($user->PAN != NULL) &&
+        ($user->CIN != NULL) &&
+        ($user->authorized_capital != NULL) &&
+        ($user->paid_up_capital != NULL)
+    ) {
+        $progressPercentage += 30; // Add 30%
+    }
+    
+    // Check GST number count for 10%
+    if ($gstnocount > 0) {
+        $progressPercentage += 10; // Add 10%
+    }
+    
+   
+
+    if ($employeescount > 0) {
+        $progressPercentage += 10; // Add 10%
+    }
+    if ($directorcount > 0) {
+        $progressPercentage += 10; // Add 10%
+    }
+    
+   
+
+       return view('user.Administration.company-profile',compact('cli_announcements','progressPercentage','directorcompany','directorcount','cp','user','user','gstno','gstnocount','employeescompany','employeescount'));
     }
     
     
@@ -19226,7 +20140,7 @@ public function payrollmaster()
         $user = Auth::user();
         $emplife = StoreEmployeeprofile::where('user_id', $user->id)->get();
         
-       return view('user.HRM.payroll-master',compact('cli_announcements','emplife'));
+       return view('user.HRM.payroll-master',compact('cli_announcements','emplife','user'));
     }
     
     public function payrolldetails($id)

@@ -77,6 +77,9 @@ Route::delete('/delete-user/{id}', [App\Http\Controllers\HomeController::class, 
 Route::post('/updatemembers', [App\Http\Controllers\HomeController::class, 'updatemembers'])->name('updatemembers');
 Route::post('/shareFolder', [App\Http\Controllers\HomeController::class, 'shareFolder'])->name('shareFolder');
 
+Route::get('showfile/{id}', [App\Http\Controllers\HomeController::class, 'showfile'])
+    ->name('showfile');
+
 Route::get('/fetch-data-for-year', [App\Http\Controllers\HomeController::class,'fetchDataForYear'])->name('fetch.data.year');
 Route::get('/getboardnoticeFiles', [App\Http\Controllers\HomeController::class, 'getboardnoticeFiles'])->name('getboardnoticeFiles');
 Route::post('/boradnotice', [App\Http\Controllers\HomeController::class, 'boradnotice'])->name('boradnotice');
@@ -124,6 +127,10 @@ Route::post('/updatedirstatus', [App\Http\Controllers\HomeController::class, 'up
 
 Route::post('/check-email-phone', [App\Http\Controllers\HomeController::class, 'checkEmailPhone'])->name('checkEmailPhone');
 
+Route::post('/check-user-existence', [App\Http\Controllers\HomeController::class, 'checkUserExistence'])->name('checkUserExistence');
+
+Route::post('/changeemppassword', [App\Http\Controllers\HomeController::class, 'changeemppassword'])->name('changeemppassword');
+
 
 // sandeep routes start 
 
@@ -167,8 +174,15 @@ Route::get('/download-common-file/{id}', [App\Http\Controllers\HomeController::c
 Route::post('/softdeleteCommonFile/{id}', [App\Http\Controllers\HomeController::class, 'softdeleteCommonFile'])->name('softdeleteCommonFile');
 Route::post('/deleteCustomFile/{id}', [App\Http\Controllers\HomeController::class, 'deleteCustomFile'])->name('deleteCustomFile');
 
-// sandeep routes end
+////////////////////////////////// sandeep added this route for predefined common files upload  4 october 2024 ////////////////////////////////////////////////////
+Route::post('/PredefinedCommonUploadFiles', [App\Http\Controllers\HomeController::class, 'PredefinedCommonUploadFiles'])->name('PredefinedCommonUploadFiles');
+Route::post('/PredefinedCommonUploadFilesBank', [App\Http\Controllers\HomeController::class, 'PredefinedCommonUploadFilesBank'])->name('PredefinedCommonUploadFilesBank');
 
+
+// sandeep routes end
+Route::get('/export-contractsss', [App\Http\Controllers\HomeController::class, 'exportContractsss'])->name('export.contractsss');
+Route::get('/export-contracts', [App\Http\Controllers\HomeController::class,  'exportContracts'])->name('export.contracts');
+Route::post('/check-role-existence', [App\Http\Controllers\HomeController::class, 'checkRoleExistence'])->name('checkRoleExistence');
 
 Route::post('/addroles', [App\Http\Controllers\HomeController::class, 'addroles'])->name('addroles');
 
@@ -179,6 +193,7 @@ Route::delete('/file/{id}', [App\Http\Controllers\HomeController::class, 'delete
 
 Route::put('/file/{id}/restore', [App\Http\Controllers\HomeController::class, 'restore'])->name('file.restore');
 
+Route::get('/download-folder/{folderPath}', [App\Http\Controllers\HomeController::class, 'downloadFolder']);
 
 Route::put('/file/{id}/restorefile', [App\Http\Controllers\HomeController::class, 'restorefile'])->name('file.restorefile');
 

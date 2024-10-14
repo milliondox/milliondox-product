@@ -197,9 +197,14 @@ closeToastBtn.addEventListener("click", closeToast);
 </div>
 <div class="width_pro_complete">
    <span>Profile Completion</span>
+   <div class="progress-bar_wrap">
    <div class="progress-bar">
-    <div class="progress" id="progress"></div>
+    <div class="progress" id="progress" style="width: {{ $progressPercentage }}%;"></div>
 </div>
+<span class="progress-precentage">{{ $progressPercentage }}%</span>
+</div>
+<!-- helloo -->
+
 </div>
 </div>
 </div>
@@ -337,7 +342,7 @@ closeToastBtn.addEventListener("click", closeToast);
             <a class="hide_cancle hvr-rotate">Cancel</a>
 </div>
 <div class="cpy_table table-responsive theme-scrollbar">
-<form action="{{ route('companystoreprofile') }}" method="POST" enctype="multipart/form-data" class="upload-form"> 
+<form action="{{ route('companystoreprofile') }}" method="POST" id="companystore" enctype="multipart/form-data" class="upload-form"> 
 @csrf
 <table>
  <tr>
@@ -387,24 +392,24 @@ closeToastBtn.addEventListener("click", closeToast);
     <td><select id="industry" name="industry" class="industry-field" required>
         <option value="">Select Industry</option>
         <option value="Agriculture">Agriculture</option>
-                    <option value="Aggregator" {{ $user->industry === 'Aggregator' ? ' selected' : '' }}>Aggregator</option>
-                    <option value="Automotive" {{ $user->industry === 'Automotive' ? ' selected' : '' }}>Automotive</option>
+                    <option value="Aggregator" {{ $user->	industry === 'Aggregator' ? ' selected' : '' }}>Aggregator</option>
+                    <option value="Automotive" {{ $user->	industry === 'Automotive' ? ' selected' : '' }}>Automotive</option>
                     <option value="Aviation" {{ $user->industry === 'Aviation' ? ' selected' : '' }}>Aviation</option>
-                    <option value="Baking" {{ $user->industry === 'Baking' ? ' selected' : '' }}>Baking</option>
-                    <option value="Cement" {{ $user->industry === 'Cement' ? ' selected' : '' }}>Cement</option>
-                    <option value="Chemicals" {{ $user->industry === 'Chemicals' ? ' selected' : '' }}>Chemicals</option>
-                    <option value="Diary" {{ $user->industry === 'Diary' ? ' selected' : '' }}>Diary</option>
-                    <option value="E-commerce" {{ $user->industry === 'E-commerce' ? ' selected' : '' }}>E-commerce</option>
-                    <option value="FMCG"  {{ $user->industry === 'FMCG' ? ' selected' : '' }}>FMCG</option>
-                    <option value="Food Industry" {{ $user->industry === 'Food Industry' ? ' selected' : '' }}>Food Industry</option>
-                    <option value="Healthcare" {{ $user->industry === 'Healthcare' ? ' selected' : '' }}>Healthcare</option>
-                    <option value="Iron&Steel" {{ $user->industry === 'Iron&Steel' ? ' selected' : '' }}>Iron & Steel</option>
-                    <option value="IT" {{ $user->industry === 'IT' ? ' selected' : '' }}>IT Industry</option>
-                    <option value="Mining" {{ $user->industry === 'Mining' ? ' selected' : '' }}>Mining</option>
-                    <option value="Poultry" {{ $user->industry === 'Poultry' ? ' selected' : '' }}>Poultry</option>
-                    <option value="Real Estate" {{ $user->industry === 'Real Estate' ? ' selected' : '' }}>Real Estate</option>
-                    <option value="Textile" {{ $user->industry === 'Textile' ? ' selected' : '' }}>Textile</option>
-                    <option value="Others" {{ $user->industry === 'Others' ? ' selected' : '' }}>Others</option>
+                    <option value="Baking" {{ $user->	industry === 'Baking' ? ' selected' : '' }}>Baking</option>
+                    <option value="Cement" {{ $user->	industry === 'Cement' ? ' selected' : '' }}>Cement</option>
+                    <option value="Chemicals" {{ $user->	industry === 'Chemicals' ? ' selected' : '' }}>Chemicals</option>
+                    <option value="Diary" {{ $user->	industry === 'Diary' ? ' selected' : '' }}>Diary</option>
+                    <option value="E-commerce" {{ $user->	industry === 'E-commerce' ? ' selected' : '' }}>E-commerce</option>
+                    <option value="FMCG"  {{ $user->	industry === 'FMCG' ? ' selected' : '' }}>FMCG</option>
+                    <option value="Food Industry" {{ $user->	industry === 'Food Industry' ? ' selected' : '' }}>Food Industry</option>
+                    <option value="Healthcare" {{ $user->	industry === 'Healthcare' ? ' selected' : '' }}>Healthcare</option>
+                    <option value="Iron&Steel" {{ $user->	industry === 'Iron&Steel' ? ' selected' : '' }}>Iron & Steel</option>
+                    <option value="IT" {{ $user->	industry === 'IT' ? ' selected' : '' }}>IT Industry</option>
+                    <option value="Mining" {{ $user->	industry === 'Mining' ? ' selected' : '' }}>Mining</option>
+                    <option value="Poultry" {{ $user->	industry === 'Poultry' ? ' selected' : '' }}>Poultry</option>
+                    <option value="Real Estate" {{ $user->	industry === 'Real Estate' ? ' selected' : '' }}>Real Estate</option>
+                    <option value="Textile" {{ $user->	industry === 'Textile' ? ' selected' : '' }}>Textile</option>
+                    <option value="Others" {{ $user->	industry === 'Others' ? ' selected' : '' }}>Others</option>
        
     </select></td>
   </tr>
@@ -427,15 +432,21 @@ closeToastBtn.addEventListener("click", closeToast);
   </tr>
   <tr>
     <th>CIN :</th>
-    <td><input type="text" id="CIN" name="CIN" value="{{$user->CIN}}" ></td>
+    <td><input type="text" id="CIN" name="CIN" value="{{$user->CIN}}" pattern="^[A-Z]{1}[0-9]{5}[A-Z]{2}[0-9]{4}[A-Z]{3}[0-9]{6}$" 
+           title="Please enter a valid CIN number (e.g., L01631KA2010PTC096843)" 
+           maxlength="21" required></td>
   </tr>
   <tr>
     <th>PAN :</th>
-    <td><input type="text" id="PAN" name="PAN"  value="{{$user->PAN}}"> </td>
+    <td><input type="text" id="PAN" name="PAN"  value="{{$user->PAN}}" pattern="^[A-Z]{5}[0-9]{4}[A-Z]{1}$" 
+           title="Please enter a valid PAN number (e.g., ABCDE1234F)" 
+           required> </td>
   </tr>
   <tr>
     <th>Email :</th>
-    <td><input type="text" id="Email" name="Email" value="{{$user->backupemail}}" > </td>
+    <td><input type="text" id="Email" name="Email" value="{{$user->backupemail}}" pattern="^[a-zA-Z0-9][a-zA-Z0-9._%+-]*@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$" 
+       title="Please enter a valid email address (e.g., user@example.com)" 
+       required> </td>
   </tr>
   <tr>
     <th>Phone :</th>
@@ -487,6 +498,75 @@ closeToastBtn.addEventListener("click", closeToast);
 <!-- edit mode code start -->
 
    <!-- save mode code start -->
+   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+
+
+<script>
+$(document).ready(function() {
+    let emailExists = false;
+    let phoneExists = false;
+
+    // Check email on blur
+    $('#Email').on('blur', function() {
+        let email = $(this).val();
+
+        // Make AJAX request to check email existence
+        $.ajax({
+            url: "{{ route('checkUserExistence') }}",
+            method: "POST",
+            data: {
+                email: email,
+                _token: '{{ csrf_token() }}'
+            },
+            success: function(response) {
+                if (response.emailExists) {
+                    toastr.error("Email already exists!");  // Toastr error notification
+                    $('#Email').addClass('is-invalid');  // Add invalid class for styling
+                    emailExists = true;  // Set flag to true if email exists
+                } else {
+                    $('#Email').removeClass('is-invalid');  // Remove invalid class if valid
+                    emailExists = false;  // Set flag to false if email is valid
+                }
+            }
+        });
+    });
+
+    // Check phone on blur
+    $('#phone').on('blur', function() {
+        let phone = $(this).val();
+
+        // Make AJAX request to check phone existence
+        $.ajax({
+            url: "{{ route('checkUserExistence') }}",
+            method: "POST",
+            data: {
+                phone: phone,
+                _token: '{{ csrf_token() }}'
+            },
+            success: function(response) {
+                if (response.phoneExists) {
+                    toastr.error("Phone number already exists!");  // Toastr error notification
+                    $('#phone').addClass('is-invalid');  // Add invalid class for styling
+                    phoneExists = true;  // Set flag to true if phone exists
+                } else {
+                    $('#phone').removeClass('is-invalid');  // Remove invalid class if valid
+                    phoneExists = false;  // Set flag to false if phone is valid
+                }
+            }
+        });
+    });
+
+    // Prevent form submission if email or phone exists
+    $('#companystore').on('submit', function(event) {
+        if (emailExists || phoneExists) {
+            event.preventDefault();  // Prevent form submission
+            toastr.error("Please fix the errors before submitting the form.");
+        }
+    });
+});
+</script>
+
 
 
 </div>

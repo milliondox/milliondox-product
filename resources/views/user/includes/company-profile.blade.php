@@ -69,7 +69,7 @@
     <script src="/../assets/js/datatable/datatables/datatable.custom.js"></script>
     <script src="../assets/js/script.js"></script>
 
-    <script>
+    <!-- <script>
     // Function to set the progress
     function setProgress(value) {
         var progressBar = document.getElementById("progress");
@@ -78,7 +78,7 @@
 
     // Example usage: set progress to 60%
     setProgress(75); // Change this value to set the progress
-</script>
+</script> -->
 
 <script>
   $(".save_start .hide_save").click(function(){

@@ -264,7 +264,7 @@
 
               <div class="both_wraap">
                 <div class="gropu_form">
-<select id="Registered" name="Registered" required>
+<select id="state" name="state" required>
     <option value="" disabled selected>Select State/UT</option>
     <option value="Andhra Pradesh">Andhra Pradesh</option>
     <option value="Arunachal Pradesh">Arunachal Pradesh</option>
@@ -653,7 +653,7 @@
           <div class="col-md-3 col-sm-6">
             <div class="head_profile nt_profile">
               <div class="left_profile">
-                <h2><span>Profile Completion</span>0%</h2>
+                <h2><span>Profile Completion</span>{{$progressPercentage}}%</h2>
               </div>
               <div class="right_pro_icon">
                 <div id="wrapper_progress" class="center">
@@ -662,11 +662,30 @@
                   <!--  <path class="fill" d="M5,40a35,35 0 1,0 70,0a35,35 0 1,0 -70,0" />-->
                   <!--</svg>-->
                   
-                  <svg class="progresss" data-progresss="0" x="0px" y="0px" viewBox="0 0 80 80">
+                  <svg class="progresss" data-progresss="{{$progressPercentage}}" x="0px" y="0px" viewBox="0 0 80 80">
     <path class="track" d="M5,40a35,35 0 1,0 70,0a35,35 0 1,0 -70,0" />
-    <path class="fill" d="M5,40a35,35 0 1,0 70,0a35,35 0 1,0 -70,0" />
+    <path class="fill"  id="progressFill" d="M5,40a35,35 0 1,0 70,0a35,35 0 1,0 -70,0" />
 </svg>
                   <span class="span_dott"></span>
+
+                  <script>
+    // Update the SVG fill based on progress percentage
+    const progressPercentage = {{$progressPercentage}};
+    const svg = document.getElementById('progresss');
+    const fillPath = document.getElementById('progressFill');
+
+    // Calculate the stroke-dasharray based on the percentage
+    const radius = 35; // Radius of the circle
+    const circumference = 2 * Math.PI * radius; // Circumference of the circle
+    const offset = circumference - (progressPercentage / 100) * circumference; // Calculate the offset
+
+    // Set the fill path attributes
+    fillPath.style.strokeDasharray = `${circumference} ${circumference}`;
+    fillPath.style.strokeDashoffset = offset;
+
+    // Optionally, you can add classes or styles to animate the fill
+    fillPath.classList.add('animate-fill'); // Add this class to animate (if you have CSS for animation)
+</script>
                 </div>
 
               </div>
