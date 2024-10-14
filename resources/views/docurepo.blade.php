@@ -6755,18 +6755,47 @@ checkFolderConditions();
 </script>
 
 <script>
-    document.querySelectorAll('.down_box').forEach((box) => {
-    box.addEventListener('click', function() {
-        // Toggle 'active' class on the clicked '.down_box'
-        this.classList.toggle('active');
+//     document.querySelectorAll('.down_box').forEach((box) => {
+//     box.addEventListener('click', function() {
+//         // Toggle 'active' class on the clicked '.down_box'
+//         this.classList.toggle('active');
 
-        // Toggle 'active' class on the corresponding '.progree_cont_nt'
-        const progressContainer = document.querySelector('.progree_cont_nt');
-        if (progressContainer) {
-            progressContainer.classList.toggle('active');
-        }
+//         // Toggle 'active' class on the corresponding '.progree_cont_nt'
+//         const progressContainer = document.querySelector('.progree_cont_nt');
+//         if (progressContainer) {
+//             progressContainer.classList.toggle('active');
+//         }
+//     });
+// });
+
+    document.querySelectorAll('.down_box').forEach((box) => {
+        box.addEventListener('click', function() {
+            // Toggle 'active' class on the clicked '.down_box'
+            this.classList.toggle('active');
+
+            // Get the .progree_cont_nt element and calculate height
+            const progressContainer = document.querySelector('.progree_cont_nt');
+            const progressWrap = document.querySelector('.progress_repeat_wrap');
+
+            if (progressContainer && progressWrap) {
+                // Calculate the height of .progress_repeat_wrap
+                const wrapHeight = progressWrap.scrollHeight;
+
+                // Adjust bottom position based on 'active' status
+                if (progressContainer.classList.contains('active')) {
+                    // If already active, reset bottom position to show
+                    progressContainer.style.bottom = `0px`;
+                } else {
+                    // Move down based on wrap height when active
+                    progressContainer.style.bottom = `-${wrapHeight}px`;
+                }
+
+                // Toggle active class
+                progressContainer.classList.toggle('active');
+            }
+        });
     });
-});
+
 
 </script>
 
