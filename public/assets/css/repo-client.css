@@ -4528,7 +4528,13 @@ td.file_dess {
     border-top-right-radius: 15px;
     overflow: hidden;
     z-index: 99;
+    transition: all .50s ease-out;
 }
+
+.progree_cont_nt.active {
+    bottom: -60px;
+}
+
 
 .progree_cont_nt .progress_header {
     display: flex;
@@ -4580,6 +4586,14 @@ td.file_dess {
 
 .progree_cont_nt .progress_header .down_arroww .close_down_box svg rect {
     width: 7px;
+}
+
+.progree_cont_nt .progress_header .down_arroww .down_box.active {
+    transform: rotateX(180deg);
+}
+
+.progree_cont_nt .progress_header .down_arroww button:focus {
+    background: #E7E9EB;
 }
 
 /*******/
@@ -4686,6 +4700,30 @@ td.file_dess {
     background: #E3E3E3;
       border-radius:50px;
   }
+
+  .dark-only .progree_cont_nt .progress_header {
+    background: #dde6d5;
+}
+
+.dark-only  .progree_cont_nt .progress_header h2 {
+    color: #434442;
+}
+
+.dark-only  .progree_cont_nt .progress_repeat .file_name {
+    color: #434442;
+}
+
+.dark-only  .progree_cont_nt .progress_repeat {
+    background: #f0f6eacf;
+}
+
+.dark-only  #wrapper_progreess .progresss {
+    height: 100%;
+    fill: #f2f7ed;
+}
+
+
+
 
 /******progress bar bottom css end*******/
 

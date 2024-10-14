@@ -5395,7 +5395,7 @@ $(window).on('load', function() {
   </script>
 
   <!-- Progress Bar Container -->
-<div id="progress-container" class="progree_cont_nt" style=" display:none;">
+<div id="progress-container" class="progree_cont_nt" style="display:block;">
     <div class="progress_header">
         <h2>1 upload completed</h2>
         <div class="down_arroww">
@@ -5414,6 +5414,8 @@ $(window).on('load', function() {
     </div>
 
     <div class="progress_repeat_wrap">
+
+    <!--  -->
     <div class="progress_repeat">
         <h2 class="file_name">vikram.pdf</h2>
         <div class="progress_circle">
@@ -5430,6 +5432,8 @@ $(window).on('load', function() {
             </div>
         </div>
     </div>
+ <!--  -->
+
     </div>
 
 </div>
@@ -6747,6 +6751,22 @@ observer.observe(document.querySelector('.folder-container'), config);
 // Initial check when the script first runs
 checkFolderConditions();
 
+
+</script>
+
+<script>
+    document.querySelectorAll('.down_box').forEach((box) => {
+    box.addEventListener('click', function() {
+        // Toggle 'active' class on the clicked '.down_box'
+        this.classList.toggle('active');
+
+        // Toggle 'active' class on the corresponding '.progree_cont_nt'
+        const progressContainer = document.querySelector('.progree_cont_nt');
+        if (progressContainer) {
+            progressContainer.classList.toggle('active');
+        }
+    });
+});
 
 </script>
 
