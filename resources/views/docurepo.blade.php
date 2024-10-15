@@ -6136,16 +6136,20 @@ $(document).ready(function() {
     });
 
     let successCounter = 0; // Initialize a counter for successful uploads
+    let globalFileIndex = 0; // Global index to ensure unique indices across sessions
+    let isUploading = false; // Flag to track if file uploads are in progress
+    let activeUploads = []; // Array to track the status of each file upload (true = active)
+
 
     $('#common_file_upload_form').on('submit', function(e) {
         e.preventDefault();
         $('.progree_cont_nt').css('display', 'block');
-        // $().click();
         $('#common_file_upload_pop').modal('hide');
 
         
         let files = $('#fileCommon')[0].files;
         let xhrRequests = []; // Array to hold XMLHttpRequest objects for cancellation
+        isUploading = true; // Set flag to true when upload starts
         
         $.each(files, function(i, file) {
             let individualFormData = new FormData(); // Create a new FormData for each file
@@ -6162,7 +6166,9 @@ $(document).ready(function() {
                 }
             });
 
-            addProgressIndicator(file.name, i); // Add progress indicator for each file
+            let currentFileIndex = globalFileIndex; // Capture the global file index
+            addProgressIndicator(file.name, currentFileIndex); // Add progress indicator for each file
+            activeUploads[currentFileIndex] = true; // Mark this file upload as active
 
             let xhr = $.ajax({
                 url: '/PredefinedCommonUploadFiles',
@@ -6176,7 +6182,7 @@ $(document).ready(function() {
                     xhrUpload.upload.addEventListener("progress", function(evt) {
                         if (evt.lengthComputable) {
                             let percentComplete = evt.loaded / evt.total;
-                            updateProgress(percentComplete, i); // Update the progress for the current file
+                            updateProgress(percentComplete, currentFileIndex); // Update the progress for the current file
                         }
                     }, false);
 
@@ -6189,18 +6195,34 @@ $(document).ready(function() {
                         $(`#progress_${i} .cancle_file`).hide(); // Hide cancel button on success
                         $(`#progress_${i} .done_tick`).show(); // Hide cancel button on success
 
+                        activeUploads[currentFileIndex] = false; // Mark this file as completed
+                        checkAllUploadsComplete(); // Check if all uploads are done
+
                     } else {
-                        alert(response.message);
+                        toastr.error(response.message);
                     }
                 },
                 error: function(xhr, textStatus) {
                     if (textStatus !== 'abort') {
-                        alert('An error occurred while uploading files: ' + xhr.responseText);
+                        toastr.error('An error occurred while uploading files: ' + xhr.responseText);
                     }
+
+                    activeUploads[currentFileIndex] = false; // Mark this file as completed or failed
+                    checkAllUploadsComplete(); // Check if all uploads are done
                 }
+                // ,
+                // complete: function() {
+                //     // Check if all files are uploaded and no more files are pending
+                //     let allCompleted = xhrRequests.every(req => req.readyState === 4);
+                //     if (allCompleted) {
+                //         isUploading = false; // Reset the flag once all uploads are completed
+                //     }
+                // }
+
             });
 
             xhrRequests.push(xhr); // Store the xhr object in the array
+            globalFileIndex++; // Increment global index for the next file
         });
 
         // Store the requests globally to be able to cancel them
@@ -6246,8 +6268,14 @@ $(document).ready(function() {
     window.cancelUpload = function(index) {
         if (window.xhrRequests && window.xhrRequests[index]) {
             window.xhrRequests[index].abort(); // Abort the AJAX request
-            alert(`Cancelled upload for file: ${index}`);
-            $(`#progress_${index}`).remove(); // Remove the progress indicator
+            // alert(`Cancelled upload for file: ${index}`);
+            // toastr.info(`Upload cancelled for file: ${index}`);
+            // $(`#progress_${index}`).remove(); // Remove the progress indicator
+
+            $(`#progress_${index}`).fadeOut(500, function() {
+                $(this).remove();
+            });
+            // toastr.info(`Upload cancelled for file: ${index}`);
         }
     };
 
@@ -6255,6 +6283,23 @@ $(document).ready(function() {
     function updateSuccessCount() {
         $('#uploadSuccessCount').text(`${successCounter} upload(s) completed`); // Update the success count
     }
+
+    // Function to check if all uploads are complete (either canceled or finished)
+    function checkAllUploadsComplete() {
+        // Check if there are any active uploads (true means it's still uploading)
+        isUploading = activeUploads.some(upload => upload === true);
+    }
+
+    // Warn the user if they attempt to leave the page during file upload
+    window.addEventListener('beforeunload', function(e) {
+        if (isUploading) {
+            // Standard message across browsers
+            const message = "You have ongoing uploads. If you leave, your progress will be lost.";
+            e.returnValue = message; // This is the standard way to set the prompt
+            return message; // For older browsers
+        }
+    });
+
 });
 
 
@@ -6468,6 +6513,8 @@ function hideprogressdiv() {
     </div>
 </div>
 <!-- upload file model  common bank end -->
+
+
 
   
 {{-- common pop for file upload from outside end--}}
