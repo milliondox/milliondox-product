@@ -6224,7 +6224,7 @@ $(document).ready(function() {
                         <button class="remove-btnn" onclick="cancelUpload(${index})">X</button>
                     </div>
                     <div class="done_tick" style="display:none;">
-                       done
+                       <svg class="progress_done" width="24px" height="24px" viewBox="0 0 24 24" fill="#0F9D58"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"></path></svg>
                     </div>
                 </div>
             </div>
@@ -7321,49 +7321,40 @@ checkFolderConditions();
 </script>
 
 <script>
-//     document.querySelectorAll('.down_box').forEach((box) => {
-//     box.addEventListener('click', function() {
-//         // Toggle 'active' class on the clicked '.down_box'
-//         this.classList.toggle('active');
-
-//         // Toggle 'active' class on the corresponding '.progree_cont_nt'
-//         const progressContainer = document.querySelector('.progree_cont_nt');
-//         if (progressContainer) {
-//             progressContainer.classList.toggle('active');
-//         }
-//     });
-// });
-
     document.querySelectorAll('.down_box').forEach((box) => {
         box.addEventListener('click', function() {
             // Toggle 'active' class on the clicked '.down_box'
             this.classList.toggle('active');
 
-            // Get the .progree_cont_nt element and calculate height
+            // Get the .progree_cont_nt element and calculate height of up to three .progress_repeat elements
             const progressContainer = document.querySelector('.progree_cont_nt');
-            const progressWrap = document.querySelector('.progress_repeat_wrap');
+            const progressRepeats = document.querySelectorAll('.progress_repeat_wrap .progress_repeat');
 
-            if (progressContainer && progressWrap) {
-                // Calculate the height of .progress_repeat_wrap
-                const wrapHeight = progressWrap.scrollHeight;
-
-                // Adjust bottom position based on 'active' status
-                if (progressContainer.classList.contains('active')) {
-                    // If already active, reset bottom position to show
-                    progressContainer.style.bottom = `0px`;
-                } else {
-                    // Move down based on wrap height when active
-                    progressContainer.style.bottom = `-${wrapHeight}px`;
+            if (progressContainer) {
+                // Calculate total height for up to 3 .progress_repeat elements
+                let totalHeight = 0;
+                for (let i = 0; i < Math.min(3, progressRepeats.length); i++) {
+                    totalHeight += progressRepeats[i].offsetHeight;
                 }
 
-                // Toggle active class
+                // Set max height to 180 if it exceeds
+                const calculatedHeight = Math.min(totalHeight, 180);
+
+                // Toggle active state
+                if (progressContainer.classList.contains('active')) {
+                    progressContainer.style.bottom = `0px`;
+                } else {
+                    // Move down based on calculated height
+                    progressContainer.style.bottom = `-${calculatedHeight}px`;
+                }
+
+                // Toggle the active class
                 progressContainer.classList.toggle('active');
             }
         });
     });
-
-
 </script>
+
 
 
 @endsection
