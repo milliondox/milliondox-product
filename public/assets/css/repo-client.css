@@ -3890,6 +3890,24 @@ ul.setting_opt li a {
     background: transparent;
     border-radius: 0;
     justify-content: flex-start;
+    border-bottom: 1px solid #2b2b2b;
+    padding-bottom: 12px;
+    margin-bottom: 6px;
+}
+.custom_table_wraap .dropdown .dropdown-content .dropdown-itemm:last-child {
+    border: 0;
+    padding-bottom: 0;
+    margin-bottom: 0;
+}
+.custom_table_wraap .dropdown .dropdown-content .dropdown-itemm:hover {
+    color: #FFF;
+}
+
+.dark-only .custom_table_wraap .dropdown .dropdown-content .dropdown-itemm {
+    border-color: #a9a9a9;
+}
+.dark-only .custom_table_wraap .dropdown .dropdown-content .dropdown-itemm:hover {
+    color: #6d6d68;
 }
 
 .quick_access .dropdown {
@@ -4528,13 +4546,17 @@ td.file_dess {
     border-top-right-radius: 15px;
     overflow: hidden;
     z-index: 99;
+    transition: all .50s ease-out;
 }
+
+
+
 
 .progree_cont_nt .progress_header {
     display: flex;
     justify-content: space-between;
     padding: 10px 15px;
-    background: #F8FAFD;
+    background: #dfdfdf;
     align-items: center;
 }
 
@@ -4582,12 +4604,20 @@ td.file_dess {
     width: 7px;
 }
 
+.progree_cont_nt .progress_header .down_arroww .down_box.active {
+    transform: rotateX(180deg);
+}
+
+.progree_cont_nt .progress_header .down_arroww button:focus {
+    background: #E7E9EB;
+}
+
 /*******/
 .progree_cont_nt .progress_repeat {
     display: flex;
     align-items: center;
     padding: 10px 20px;
-    background: #FFF;
+    background: #eaeaea;
     justify-content: space-between;
     border-bottom: 1px solid #f4f4f4;
 }
@@ -4609,7 +4639,39 @@ td.file_dess {
     transition: all .25s ease-out;
 }
 
-.progree_cont_nt .progress_circle .cancle_file {position: absolute;left: 0;top: 0;width: 100%;height: 100%;border: 1px solid #e4e4e4;display: flex;align-items: center;justify-content: center;transition: all .25s ease-out;z-index: 9;border-radius: 50px;background: #FFF;opacity: 0;visibility: hidden;}
+.progree_cont_nt .progress_circle .cancle_file {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    border: 1px solid #e4e4e4;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all .25s ease-out;
+    z-index: 9;
+    border-radius: 50px;
+    background: #FFF;
+    opacity: 0;
+    visibility: hidden;
+}
+
+.progree_cont_nt .progress_circle .done_tick {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    border: 1px solid #e4e4e4;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all .25s ease-out;
+    z-index: 9;
+    border-radius: 50px;
+    background: #FFF;
+}
 
 #wrapper_progreess {
     width: 40px;
@@ -4619,11 +4681,11 @@ td.file_dess {
 #wrapper_progreess .progresss {
     width: 100%;
     height: 100%;
-    fill: #ffffff;
+    fill: #eaeaea;
     stroke-width: 3px;
 }
 #wrapper_progreess .progresss .track {
-    stroke: #e4e4e4;
+    stroke: #cfcfcf;
 }
 #wrapper_progreess .progresss .fill {
     stroke: rgb(104, 153, 247);
@@ -4686,6 +4748,30 @@ td.file_dess {
     background: #E3E3E3;
       border-radius:50px;
   }
+
+  .dark-only .progree_cont_nt .progress_header {
+    background: #dde6d5;
+}
+
+.dark-only  .progree_cont_nt .progress_header h2 {
+    color: #434442;
+}
+
+.dark-only  .progree_cont_nt .progress_repeat .file_name {
+    color: #434442;
+}
+
+.dark-only  .progree_cont_nt .progress_repeat {
+    background: #f0f6eacf;
+}
+
+.dark-only  #wrapper_progreess .progresss {
+    height: 100%;
+    fill: #f2f7ed;
+}
+
+
+
 
 /******progress bar bottom css end*******/
 
@@ -4903,6 +4989,11 @@ td.file_dess {
 .tost_wrap #toast {
     max-width: 280px;
     width: 100%;
+}
+
+.progree_cont_nt {
+    right: 10px;
+    width: 320px;
 }
 
 }
