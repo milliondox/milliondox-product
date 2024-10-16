@@ -4639,7 +4639,39 @@ td.file_dess {
     transition: all .25s ease-out;
 }
 
-.progree_cont_nt .progress_circle .cancle_file {position: absolute;left: 0;top: 0;width: 100%;height: 100%;border: 1px solid #e4e4e4;display: flex;align-items: center;justify-content: center;transition: all .25s ease-out;z-index: 9;border-radius: 50px;background: #FFF;opacity: 0;visibility: hidden;}
+.progree_cont_nt .progress_circle .cancle_file {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    border: 1px solid #e4e4e4;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all .25s ease-out;
+    z-index: 9;
+    border-radius: 50px;
+    background: #FFF;
+    opacity: 0;
+    visibility: hidden;
+}
+
+.progree_cont_nt .progress_circle .done_tick {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    border: 1px solid #e4e4e4;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all .25s ease-out;
+    z-index: 9;
+    border-radius: 50px;
+    background: #FFF;
+}
 
 #wrapper_progreess {
     width: 40px;
@@ -4649,11 +4681,11 @@ td.file_dess {
 #wrapper_progreess .progresss {
     width: 100%;
     height: 100%;
-    fill: #ffffff;
+    fill: #eaeaea;
     stroke-width: 3px;
 }
 #wrapper_progreess .progresss .track {
-    stroke: #e4e4e4;
+    stroke: #cfcfcf;
 }
 #wrapper_progreess .progresss .fill {
     stroke: rgb(104, 153, 247);
