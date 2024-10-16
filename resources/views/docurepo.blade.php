@@ -1894,7 +1894,7 @@ $(document).ready(function() {
         var folderPath = $(this).data('folder-path');
 
         // Show a loading spinner or message
-        var loadingMessage = $("<div>Preparing your download...</div>");
+        var loadingMessage = $("<div class='loading-message'>Preparing your download...</div>");
         $('body').append(loadingMessage);
 
         // Send AJAX request to download the folder
@@ -1912,6 +1912,7 @@ $(document).ready(function() {
                 } else {
                     console.log(response); // Log the entire response to debug
                     alert('Error: ' + (response.message || 'An unknown error occurred.'));
+                    console.log(response.message);
                 }
             },
             error: function(xhr, status, error) {
@@ -1919,6 +1920,7 @@ $(document).ready(function() {
                 loadingMessage.remove();
                 console.error('Error details:', status, error, xhr.responseText); // Log the full error for debugging
                 alert('An error occurred while downloading the folder. Please try again.');
+                console.log(response.message);
             }
         });
     });
@@ -1928,6 +1930,11 @@ $(document).ready(function() {
 
 
 </script>
+<style>
+    div#progress-container {
+    display: none !important;
+}
+</style>
 <script>
     $(document).ready(function() {
     // When the rename link is clicked
