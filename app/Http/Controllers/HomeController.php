@@ -13651,7 +13651,7 @@ public function PredefinedCommonUploadFilesBank(Request $request)
             }
 
             // Compile overall success message
-            $user = auth()->user();
+            // $user = auth()->user();
 //             $entries = CommonTable::where('user_id', $user->id)
 //     ->where('is_delete', 0)
 //    ->where('location', 'LIKE', '%Bank Account Statements%')
@@ -13660,15 +13660,15 @@ public function PredefinedCommonUploadFilesBank(Request $request)
 //             $count = $entries->count(); // Count of entries
 //             $totalSizeKB = round($totalSize / 1024, 2); // Convert to KB and round
 
-            return redirect()->back()->with('success2', 'File Uploaded successfully.');
+            // return redirect()->back()->with('success2', 'File Uploaded successfully.');
 
-            // return response()->json([
-            //     'success' => true,
-            //     'count' => $count,
-            //     'totalSize' => $totalSizeKB,
-            //     'successMessages' => $successMessages,
-            //     'errorMessages' => $errorMessages,
-            // ]);
+            return response()->json([
+                'success' => true,
+                // 'count' => $count,
+                // 'totalSize' => $totalSizeKB,
+                'successMessages' => $successMessages,
+                'errorMessages' => $errorMessages,
+            ]);
 
         } catch (\Exception $e) {
             // Handle any exceptions that occur during file upload or database saving
