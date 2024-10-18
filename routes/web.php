@@ -125,6 +125,43 @@ Route::get('/fetch-hrkycaddressproof-file-data', [App\Http\Controllers\HomeContr
 
 Route::get('/fetch-hrkyccontactdetails-file-data', [App\Http\Controllers\HomeController::class, 'fetchhrkyccontactdetailsfFileData'])->name('fetch-hrkyccontactdetails-file-data');
 
+Route::get('/fetch-hrpayrims-file-data', [App\Http\Controllers\HomeController::class, 'fetchhrpayrimfFileDatas'])->name('fetch-hrpayrims-file-data');
+
+Route::get('/fetch-hrpayrimapprove-file-data', [App\Http\Controllers\HomeController::class, 'fetchhrpayrimapprovefFileData'])->name('fetch-hrpayrimapprove-file-data');
+
+Route::get('/fetch-hrempdec-file-data', [App\Http\Controllers\HomeController::class, 'fetchhrempdecfFileData'])->name('fetch-hrempdec-file-data');
+
+Route::get('/fetch-hrempdecmaster-file-data', [App\Http\Controllers\HomeController::class, 'fetchhrempdecmasterfFileData'])->name('fetch-hrempdecmaster-file-data');
+
+Route::get('/fetch-hrpaymoney1-file-data', [App\Http\Controllers\HomeController::class, 'fetchhrpaymoney1fFileData'])->name('fetch-hrpaymoney1-file-data');
+
+Route::get('/fetch-hrpaymoney2-file-data', [App\Http\Controllers\HomeController::class, 'fetchhrpaymoney2fFileData'])->name('fetch-hrpaymoney2-file-data');
+
+Route::get('/fetch-hrpaymoney3-file-data', [App\Http\Controllers\HomeController::class, 'fetchhrpaymoney3fFileData'])->name('fetch-hrpaymoney3-file-data');
+
+Route::get('/fetch-hrpaymoney4-file-data', [App\Http\Controllers\HomeController::class, 'fetchhrpaymoney4fFileData'])->name('fetch-hrpaymoney4-file-data');
+
+Route::get('/fetch-hrpaymoney5-file-data', [App\Http\Controllers\HomeController::class, 'fetchhrpaymoney5fFileData'])->name('fetch-hrpaymoney5-file-data');
+
+
+Route::get('/fetch-hremppol1-file-data', [App\Http\Controllers\HomeController::class, 'fetchhremppol1fFileData'])->name('fetch-hremppol1-file-data');
+
+Route::get('/fetch-hremppol2-file-data', [App\Http\Controllers\HomeController::class, 'fetchhremppol2fFileData'])->name('fetch-hremppol2-file-data');
+
+Route::get('/fetch-hremppol3-file-data', [App\Http\Controllers\HomeController::class, 'fetchhremppol3fFileData'])->name('fetch-hremppol3-file-data');
+
+Route::get('/fetch-hremppol4-file-data', [App\Http\Controllers\HomeController::class, 'fetchhremppol4fFileData'])->name('fetch-hremppol4-file-data');
+
+
+Route::get('/fetch-hrempoff1-file-data', [App\Http\Controllers\HomeController::class, 'fetchhrempoff1fFileData'])->name('fetch-hrempoff1-file-data');
+
+Route::get('/fetch-hrempoff2-file-data', [App\Http\Controllers\HomeController::class, 'fetchhrempoff2fFileData'])->name('fetch-hrempoff2-file-data');
+
+Route::get('/fetch-hrempoff3-file-data', [App\Http\Controllers\HomeController::class, 'fetchhrempoff3fFileData'])->name('fetch-hrempoff3-file-data');
+
+Route::get('/fetch-hrempoff4-file-data', [App\Http\Controllers\HomeController::class, 'fetchhrempoff4fFileData'])->name('fetch-hrempoff4-file-data');
+
+
 
 // Save folder ID and URL to the session
 Route::post('/save-breadcrumb', [App\Http\Controllers\HomeController::class, 'saveBreadcrumb'])->name('save.breadcrumb');

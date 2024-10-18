@@ -2,6 +2,7 @@
 @extends('user.includes.document-repository') @section('content')
  @include('script1')
  @include('script2')
+ @include('hr_on_board')
     <!-- tap on top starts-->
   <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 <script>window.jQuery || document.write('<script src="{{ asset('assets/js/jquerylocal.js') }}"><\/script>')</script>
@@ -4344,6 +4345,18 @@ function bindFolderClickEvents() {
         navigateToFolder(folderPath);
     });
 }
+function removeDynamicPrefix(path) {
+    // Extract the first segment before the first underscore (_) as the dynamic prefix
+    let dynamicPrefix = path.match(/^\d{4}-\d{4}[A-Za-z]+\d+_/);
+    
+    if (dynamicPrefix) {
+        // Replace all occurrences of the dynamic prefix from the path
+        let cleanedPath = path.replace(new RegExp(dynamicPrefix[0], 'g'), '');
+        return cleanedPath;
+    } else {
+        return path;  // If no dynamic prefix is found, return the original path
+    }
+}
  function fetchFolderContents(folderPath) {
         showLoader(); // Ensure the loader is shown when the request starts
        
@@ -4364,6 +4377,7 @@ function bindFolderClickEvents() {
         
           const decodedFolderPath = folderPaths ? decodeURIComponent(folderPaths) : null;
         const pathToUse = decodedFolderPath ? decodedFolderPath : folderPath;
+        let resultto = removeDynamicPrefix(pathToUse);
         
         // console.log("Path to use ::  "+pathToUse);
         if(pathToUse===undefined || pathToUse=== null){
@@ -4442,6 +4456,47 @@ function bindFolderClickEvents() {
                     insertcharterdocumentsRegistrationsTableAppendedTable();
                     charterdocumentsRegistrationsTableAppended = true;
                 }
+                else if (resultto.includes("Employee Database/Onboarding documents") && !hronboarTableAppended) {
+                    // alert(resultto);  // Display the result
+                    inserthronboarTableAppended();  // Call the function to append the table
+                    hronboarTableAppended = true;  // Set the flag to true to prevent further appends
+                }
+                else if (resultto.includes("Employee Database/KYC Documents") && !hrkycTableAppended) {
+                    // alert(resultto);  // Display the result
+                    inserthrkycTableAppended();  // Call the function to append the table
+                    hrkycTableAppended = true;  // Set the flag to true to prevent further appends
+                }
+
+                else if (resultto.includes("Employee Database/Declarations") && !hrdecTableAppended) {
+                    // alert(resultto);  // Display the result
+                    inserthrdecTableAppended();  // Call the function to append the table
+                    hrdecTableAppended = true;  // Set the flag to true to prevent further appends
+                }
+
+
+                else if (resultto.includes("Employee Database/Offboarding") && !hroffboardTableAppended) {
+                    // alert(resultto);  // Display the result
+                    inserthroffboardTableAppended();  // Call the function to append the table
+                    hroffboardTableAppended = true;  // Set the flag to true to prevent further appends
+                }
+
+                else if (resultto.includes("Employee Database/ESOP") && !hresopTableAppended) {
+                    // alert(resultto);  // Display the result
+                    inserthresopTableAppended();  // Call the function to append the table
+                    hresopTableAppended = true;  // Set the flag to true to prevent further appends
+                }
+
+                else if (resultto.includes("Pay Registers/Monthly Payrun") && !hrmpTableAppended) {
+                    // alert(resultto);  // Display the result
+                    inserthrmpTableAppended();  // Call the function to append the table
+                    hrmpTableAppended = true;  // Set the flag to true to prevent further appends
+                }
+
+                else if (resultto.includes("Pay Registers/Reimbursements") && !hrreimbTableAppended) {
+                    // alert(resultto);  // Display the result
+                    inserthrreimTableAppended();  // Call the function to append the table
+                    hrreimbTableAppended = true;  // Set the flag to true to prevent further appends
+                }
 
                 bindFolderClickEvents();
                 updateBreadcrumb(pathToUse);
@@ -4478,6 +4533,7 @@ function bindFolderClickEvents() {
         
           const decodedFolderPath = folderPaths ? decodeURIComponent(folderPaths) : null;
         const pathToUse = decodedFolderPath ? decodedFolderPath : folderPath;
+        let resultto = removeDynamicPrefix(pathToUse);
         // Directly use the folderPath as it's already decoded when passed from above
         $.ajax({
             url: '/fetch-folder-contents',
@@ -4600,6 +4656,47 @@ function bindFolderClickEvents() {
                     insertcharterdocumentsRegistrationsTableAppendedTable();
                     charterdocumentsRegistrationsTableAppended = true;
                 }
+                else if (resultto.includes("Employee Database/Onboarding documents") && !hronboarTableAppended) {
+                    
+                    inserthronboarTableAppended();  // Call the function to append the table
+                    hronboarTableAppended = true;  // Set the flag to true to prevent further appends
+                }
+
+                else if (resultto.includes("Employee Database/KYC Documents") && !hrkycTableAppended) {
+                    // alert(resultto);  // Display the result
+                    inserthrkycTableAppended();  // Call the function to append the table
+                    hrkycTableAppended = true;  // Set the flag to true to prevent further appends
+                }
+
+                else if (resultto.includes("Employee Database/Declarations") && !hrdecTableAppended) {
+                    // alert(resultto);  // Display the result
+                    inserthrdecTableAppended();  // Call the function to append the table
+                    hrdecTableAppended = true;  // Set the flag to true to prevent further appends
+                }
+
+                else if (resultto.includes("Employee Database/Offboarding") && !hroffboardTableAppended) {
+                    // alert(resultto);  // Display the result
+                    inserthroffboardTableAppended();  // Call the function to append the table
+                    hroffboardTableAppended = true;  // Set the flag to true to prevent further appends
+                }
+
+                else if (resultto.includes("Employee Database/ESOP") && !hresopTableAppended) {
+                    // alert(resultto);  // Display the result
+                    inserthresopTableAppended();  // Call the function to append the table
+                    hresopTableAppended = true;  // Set the flag to true to prevent further appends
+                }
+
+                else if (resultto.includes("Pay Registers/Monthly Payrun") && !hrmpTableAppended) {
+                    // alert(resultto);  // Display the result
+                    inserthrmpTableAppended();  // Call the function to append the table
+                    hrmpTableAppended = true;  // Set the flag to true to prevent further appends
+                }
+
+                else if (resultto.includes("Pay Registers/Reimbursements") && !hrreimbTableAppended) {
+                    // alert(resultto);  // Display the result
+                    inserthrreimTableAppended();  // Call the function to append the table
+                    hrreimbTableAppended = true;  // Set the flag to true to prevent further appends
+                }
 
                 bindFolderClickEvents();
                 updateBreadcrumb(pathToUse);
@@ -4632,6 +4729,13 @@ function bindFolderClickEvents() {
     var charterdocumentsDirectordetatilsDirector2TableAppended = false;
     var charterdocumentsIncorporationTableAppended = false;
     var charterdocumentsRegistrationsTableAppended = false;
+    var hronboarTableAppended = false;
+    var hrkycTableAppended = false; 
+    var hrdecTableAppended = false;
+    var hroffboardTableAppended = false;
+    var hresopTableAppended = false; 
+    var hrmpTableAppended = false;
+    var hrreimbTableAppended = false;
     
 
 
@@ -4768,6 +4872,46 @@ function handleFolderPath(folderPath) {
         insertcharterdocumentsRegistrationsTableAppendedTable();
         charterdocumentsRegistrationsTableAppended = true;
     }
+    else if  ("Employee Database/Onboarding documents" && !hronboarTableAppended) {
+     
+     inserthronboarTableAppended();  
+     hronboarTableAppended = true;  
+ }
+ 
+ else if (folderPath === "Employee Database/KYC Documents" && !hrkycTableAppended) {
+                     // alert(resultto);  // Display the result
+                     inserthrkycTableAppended();  // Call the function to append the table
+                     hrkycTableAppended = true;  // Set the flag to true to prevent further appends
+                 }
+ 
+                 else if (folderPath === "Employee Database/Declarations" && !hrdecTableAppended) {
+                     // alert(resultto);  // Display the result
+                     inserthrdecTableAppended();  // Call the function to append the table
+                     hrdecTableAppended = true;  // Set the flag to true to prevent further appends
+                 }
+ 
+                 else if (folderPath === "Employee Database/Offboarding" && !hroffboardTableAppended) {
+                     // alert(resultto);  // Display the result
+                     inserthroffboardTableAppended();  // Call the function to append the table
+                     hroffboardTableAppended = true;  // Set the flag to true to prevent further appends
+                 }
+                 else if (folderPath === "Employee Database/ESOP" && !hresopTableAppended) {
+                     // alert(resultto);  // Display the result
+                     inserthresopTableAppended();  // Call the function to append the table
+                     hresopTableAppended = true;  // Set the flag to true to prevent further appends
+                 }
+ 
+                 else if (folderPath === "Pay Registers/Monthly Payrun" && !hrmpTableAppended) {
+                     // alert(resultto);  // Display the result
+                     inserthrmpTableAppended();  // Call the function to append the table
+                     hrmpTableAppended = true;  // Set the flag to true to prevent further appends
+                 }
+ 
+                 else if (folderPath === "Pay Registers/Reimbursements" && !hrreimbTableAppended) {
+                     // alert(resultto);  // Display the result
+                     inserthrreimTableAppended();  // Call the function to append the table
+                     hrreimbTableAppended = true;  // Set the flag to true to prevent further appends
+                 }
 }
 
 // Fetch folder contents
@@ -4792,6 +4936,13 @@ function handleFolderPath(folderPath) {
         charterdocumentsDirectordetatilsDirector2TableAppended = false;
         charterdocumentsIncorporationTableAppended = false;
         charterdocumentsRegistrationsTableAppended = false;
+        hronboarTableAppended = false;
+        hrkycTableAppended = false;
+        hrdecTableAppended = false;
+        hroffboardTableAppended = false;
+        hresopTableAppended = false;
+        hrmpTableAppended = false;
+        hrreimbTableAppended = false;
     }
     
     
@@ -8357,7 +8508,33 @@ checkFolderConditions();
     });
 </script>
 
+<script>
+    $(document).ready(function() {
+        // Function to dynamically get the 'folder' parameter from the URL
+        function getFolderFromURL() {
+            // Get the current URL query parameters
+            const urlParams = new URLSearchParams(window.location.search);
 
+            // Extract the 'folder' parameter from the URL
+            const encodedFolder = urlParams.get('folder');
+
+            if (encodedFolder) {
+                // Decode the encoded folder value
+                const decodedFolder = decodeURIComponent(encodedFolder);
+
+                // Dynamically set the 'data-location' attribute on the button element
+                $('.getparm').attr('data-location', decodedFolder);
+                
+                console.log("Decoded Folder Path: ", decodedFolder); // For debugging
+            } else {
+                console.log('No folder parameter found in the URL.');
+            }
+        }
+
+        // Call the function every second (1000 milliseconds)
+        setInterval(getFolderFromURL, 100);
+    });
+</script>
 
 @endsection
    

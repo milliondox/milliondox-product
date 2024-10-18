@@ -12616,6 +12616,325 @@ public function fetchhrkyccontactdetailsfFileData(Request $request)
     // Return the fetched files as a JSON response
     return response()->json(['files' => $files]);
 }
+
+public function fetchhrpayrimfFileDatas(Request $request)
+{
+    // Get the location value
+    $location = $request->input('location');
+    $user = auth()->user();
+
+    
+// dd($location);
+    // Fetch files based on the user ID and decoded folder location
+    $files = CommonTable::where('user_id', $user->id)
+        ->where('is_delete', 0)
+        ->where('location', $location) // Using the decoded folder parameter
+        ->where('real_file_name', 'Reimbursement forms & Invoices')
+        ->get();
+
+    // Return the fetched files as a JSON response
+    return response()->json(['files' => $files]);
+}
+public function fetchhrpayrimapprovefFileData(Request $request)
+{
+    // Get the location value
+    $location = $request->input('location');
+    $user = auth()->user();
+
+    
+// dd($location);
+    // Fetch files based on the user ID and decoded folder location
+    $files = CommonTable::where('user_id', $user->id)
+        ->where('is_delete', 0)
+        ->where('location', $location) // Using the decoded folder parameter
+        ->where('real_file_name', 'Approvals')
+        ->get();
+
+    // Return the fetched files as a JSON response
+    return response()->json(['files' => $files]);
+}
+public function fetchhrempdecfFileData(Request $request)
+{
+    // Get the location value
+    $location = $request->input('location');
+    $user = auth()->user();
+
+    
+// dd($location);
+    // Fetch files based on the user ID and decoded folder location
+    $files = CommonTable::where('user_id', $user->id)
+        ->where('is_delete', 0)
+        ->where('location', $location) // Using the decoded folder parameter
+        ->where('real_file_name', 'Asset Declaration Forms')
+        ->get();
+
+    // Return the fetched files as a JSON response
+    return response()->json(['files' => $files]);
+}
+
+public function fetchhrempdecmasterfFileData(Request $request)
+{
+    // Get the location value
+    $location = $request->input('location');
+    $user = auth()->user();
+
+    
+// dd($location);
+    // Fetch files based on the user ID and decoded folder location
+    $files = CommonTable::where('user_id', $user->id)
+        ->where('is_delete', 0)
+        ->where('location', $location) // Using the decoded folder parameter
+        ->where('real_file_name', 'Employee Master')
+        ->get();
+
+    // Return the fetched files as a JSON response
+    return response()->json(['files' => $files]);
+}
+
+public function fetchhrpaymoney1fFileData(Request $request)
+{
+    // Get the location value
+    $location = $request->input('location');
+    $user = auth()->user();
+
+    
+// dd($location);
+    // Fetch files based on the user ID and decoded folder location
+    $files = CommonTable::where('user_id', $user->id)
+        ->where('is_delete', 0)
+        ->where('location', $location) // Using the decoded folder parameter
+        ->where('real_file_name', 'Attendance log')
+        ->get();
+
+    // Return the fetched files as a JSON response
+    return response()->json(['files' => $files]);
+}
+
+public function fetchhrpaymoney2fFileData(Request $request)
+{
+    // Get the location value
+    $location = $request->input('location');
+    $user = auth()->user();
+
+    
+// dd($location);
+    // Fetch files based on the user ID and decoded folder location
+    $files = CommonTable::where('user_id', $user->id)
+        ->where('is_delete', 0)
+        ->where('location', $location) // Using the decoded folder parameter
+        ->where('real_file_name', 'Variable pays')
+        ->get();
+
+    // Return the fetched files as a JSON response
+    return response()->json(['files' => $files]);
+}
+public function fetchhrpaymoney3fFileData(Request $request)
+{
+    // Get the location value
+    $location = $request->input('location');
+    $user = auth()->user();
+
+    
+// dd($location);
+    // Fetch files based on the user ID and decoded folder location
+    $files = CommonTable::where('user_id', $user->id)
+        ->where('is_delete', 0)
+        ->where('location', $location) // Using the decoded folder parameter
+        ->where('real_file_name', 'Terminations/ Exits')
+        ->get();
+
+    // Return the fetched files as a JSON response
+    return response()->json(['files' => $files]);
+}
+public function fetchhrpaymoney4fFileData(Request $request)
+{
+    // Get the location value
+    $location = $request->input('location');
+    $user = auth()->user();
+
+    
+// dd($location);
+    // Fetch files based on the user ID and decoded folder location
+    $files = CommonTable::where('user_id', $user->id)
+        ->where('is_delete', 0)
+        ->where('location', $location) // Using the decoded folder parameter
+        ->where('real_file_name', 'New Hires')
+        ->get();
+
+    // Return the fetched files as a JSON response
+    return response()->json(['files' => $files]);
+}
+public function fetchhrpaymoney5fFileData(Request $request)
+{
+    // Get the location value
+    $location = $request->input('location');
+    $user = auth()->user();
+
+    
+// dd($location);
+    // Fetch files based on the user ID and decoded folder location
+    $files = CommonTable::where('user_id', $user->id)
+        ->where('is_delete', 0)
+        ->where('location', $location) // Using the decoded folder parameter
+        ->where('real_file_name', 'Pay Register')
+        ->get();
+
+    // Return the fetched files as a JSON response
+    return response()->json(['files' => $files]);
+}
+
+public function fetchhremppol1fFileData(Request $request)
+{
+    // Get the location value
+    $location = $request->input('location');
+    $user = auth()->user();
+
+    
+// dd($location);
+    // Fetch files based on the user ID and decoded folder location
+    $files = CommonTable::where('user_id', $user->id)
+        ->where('is_delete', 0)
+        ->where('location', $location) // Using the decoded folder parameter
+        ->where('real_file_name', 'Policy')
+        ->get();
+
+    // Return the fetched files as a JSON response
+    return response()->json(['files' => $files]);
+}
+
+public function fetchhremppol2fFileData(Request $request)
+{
+    // Get the location value
+    $location = $request->input('location');
+    $user = auth()->user();
+
+    
+// dd($location);
+    // Fetch files based on the user ID and decoded folder location
+    $files = CommonTable::where('user_id', $user->id)
+        ->where('is_delete', 0)
+        ->where('location', $location) // Using the decoded folder parameter
+        ->where('real_file_name', 'Grant Letters')
+        ->get();
+
+    // Return the fetched files as a JSON response
+    return response()->json(['files' => $files]);
+}
+
+public function fetchhremppol3fFileData(Request $request)
+{
+    // Get the location value
+    $location = $request->input('location');
+    $user = auth()->user();
+
+    
+// dd($location);
+    // Fetch files based on the user ID and decoded folder location
+    $files = CommonTable::where('user_id', $user->id)
+        ->where('is_delete', 0)
+        ->where('location', $location) // Using the decoded folder parameter
+        ->where('real_file_name', 'Acceptance Letters')
+        ->get();
+
+    // Return the fetched files as a JSON response
+    return response()->json(['files' => $files]);
+}
+
+public function fetchhremppol4fFileData(Request $request)
+{
+    // Get the location value
+    $location = $request->input('location');
+    $user = auth()->user();
+
+    
+// dd($location);
+    // Fetch files based on the user ID and decoded folder location
+    $files = CommonTable::where('user_id', $user->id)
+        ->where('is_delete', 0)
+        ->where('location', $location) // Using the decoded folder parameter
+        ->where('real_file_name', 'Nominations')
+        ->get();
+
+    // Return the fetched files as a JSON response
+    return response()->json(['files' => $files]);
+}
+
+public function fetchhrempoff1fFileData(Request $request)
+{
+    // Get the location value
+    $location = $request->input('location');
+    $user = auth()->user();
+
+    
+// dd($location);
+    // Fetch files based on the user ID and decoded folder location
+    $files = CommonTable::where('user_id', $user->id)
+        ->where('is_delete', 0)
+        ->where('location', $location) // Using the decoded folder parameter
+        ->where('real_file_name', 'Resignation letter')
+        ->get();
+
+    // Return the fetched files as a JSON response
+    return response()->json(['files' => $files]);
+}
+
+public function fetchhrempoff2fFileData(Request $request)
+{
+    // Get the location value
+    $location = $request->input('location');
+    $user = auth()->user();
+
+    
+// dd($location);
+    // Fetch files based on the user ID and decoded folder location
+    $files = CommonTable::where('user_id', $user->id)
+        ->where('is_delete', 0)
+        ->where('location', $location) // Using the decoded folder parameter
+        ->where('real_file_name', 'Experience Letter')
+        ->get();
+
+    // Return the fetched files as a JSON response
+    return response()->json(['files' => $files]);
+}
+
+public function fetchhrempoff3fFileData(Request $request)
+{
+    // Get the location value
+    $location = $request->input('location');
+    $user = auth()->user();
+
+    
+// dd($location);
+    // Fetch files based on the user ID and decoded folder location
+    $files = CommonTable::where('user_id', $user->id)
+        ->where('is_delete', 0)
+        ->where('location', $location) // Using the decoded folder parameter
+        ->where('real_file_name', 'No Dues certificate')
+        ->get();
+
+    // Return the fetched files as a JSON response
+    return response()->json(['files' => $files]);
+}
+
+public function fetchhrempoff4fFileData(Request $request)
+{
+    // Get the location value
+    $location = $request->input('location');
+    $user = auth()->user();
+
+    
+// dd($location);
+    // Fetch files based on the user ID and decoded folder location
+    $files = CommonTable::where('user_id', $user->id)
+        ->where('is_delete', 0)
+        ->where('location', $location) // Using the decoded folder parameter
+        ->where('real_file_name', 'Character certificate')
+        ->get();
+
+    // Return the fetched files as a JSON response
+    return response()->json(['files' => $files]);
+}
+
 public function SecretarialAuditorAppointmentSR(Request $request)
 {
     $request->validate([
@@ -17144,7 +17463,7 @@ private function generateUniqueUsername($fname, $lname)
     //     return view('user.Document-Repository.document-repository', compact('cli_announcements', 'folders'));
     // }
 
-     public function docurepo()
+    public function docurepo()
     {
         
         $user = auth()->user();
@@ -18391,6 +18710,198 @@ $entriesinc9 = CommonTable::where('user_id', $user->id)
         $countkyccontactdetails = $entrieskyccontactdetails->count();
         $totalSizeByteskyccontactdetails = $entrieskyccontactdetails->sum('file_size');
         $totalSizeKBkyccontactdetails = round($totalSizeByteskyccontactdetails  / 1024, 2);
+
+
+
+        $entrieshrpayrim = CommonTable::where('user_id', $user->id)
+        ->where('is_delete', 0)
+        ->where('location', $decodedFolderLocation) // Use the decoded folder parameter here
+        ->where('real_file_name', 'Reimbursement forms & Invoices')
+        ->get();
+            // dd($decodedFolderLocation);
+        $counthrpayrim = $entrieshrpayrim->count();
+        $totalSizeByteshrpayrim = $entrieshrpayrim->sum('file_size');
+        $totalSizeKBhrpayrim = round($totalSizeByteshrpayrim  / 1024, 2);
+
+        $entrieshrpayrimapprove = CommonTable::where('user_id', $user->id)
+        ->where('is_delete', 0)
+        ->where('location', $decodedFolderLocation) // Use the decoded folder parameter here
+        ->where('real_file_name', 'Approvals')
+        ->get();
+            // dd($decodedFolderLocation);
+        $counthrpayrimapprove = $entrieshrpayrimapprove->count();
+        $totalSizeByteshrpayrimapprove = $entrieshrpayrimapprove->sum('file_size');
+        $totalSizeKBhrpayrimapprove = round($totalSizeByteshrpayrimapprove  / 1024, 2);
+
+        $entrieshrempdec = CommonTable::where('user_id', $user->id)
+        ->where('is_delete', 0)
+        ->where('location', $decodedFolderLocation) // Use the decoded folder parameter here
+        ->where('real_file_name', 'Asset Declaration Forms')
+        ->get();
+            // dd($decodedFolderLocation);
+        $counthrhrempdec = $entrieshrempdec->count();
+        $totalSizeByteshrempdec = $entrieshrempdec->sum('file_size');
+        $totalSizeKBhrempdec = round($totalSizeByteshrempdec  / 1024, 2);
+
+        $entrieshrempdecmaster = CommonTable::where('user_id', $user->id)
+        ->where('is_delete', 0)
+        ->where('location', $decodedFolderLocation) // Use the decoded folder parameter here
+        ->where('real_file_name', 'Employee Master')
+        ->get();
+            // dd($decodedFolderLocation);
+        $counthrhrempdecmaster = $entrieshrempdecmaster->count();
+        $totalSizeByteshrempdecmaster = $entrieshrempdecmaster->sum('file_size');
+        $totalSizeKBhrempdecmaster = round($totalSizeByteshrempdecmaster  / 1024, 2);
+
+
+        $entrieshrpaymoney1 = CommonTable::where('user_id', $user->id)
+        ->where('is_delete', 0)
+        ->where('location', $decodedFolderLocation) // Use the decoded folder parameter here
+        ->where('real_file_name', 'Attendance log')
+        ->get();
+            // dd($decodedFolderLocation);
+        $counthrhrpaymoney1 = $entrieshrpaymoney1->count();
+        $totalSizeByteshrpaymoney1 = $entrieshrpaymoney1->sum('file_size');
+        $totalSizeKBhrpaymoney1 = round($totalSizeByteshrpaymoney1  / 1024, 2);
+
+
+        $entrieshrpaymoney2 = CommonTable::where('user_id', $user->id)
+        ->where('is_delete', 0)
+        ->where('location', $decodedFolderLocation) // Use the decoded folder parameter here
+        ->where('real_file_name', 'Variable pays')
+        ->get();
+            // dd($decodedFolderLocation);
+        $counthrhrpaymoney2 = $entrieshrpaymoney2->count();
+        $totalSizeByteshrpaymoney2 = $entrieshrpaymoney2->sum('file_size');
+        $totalSizeKBhrpaymoney2 = round($totalSizeByteshrpaymoney2  / 1024, 2);
+
+
+        $entrieshrpaymoney3 = CommonTable::where('user_id', $user->id)
+        ->where('is_delete', 0)
+        ->where('location', $decodedFolderLocation) // Use the decoded folder parameter here
+        ->where('real_file_name', 'Terminations/ Exits')
+        ->get();
+            // dd($decodedFolderLocation);
+        $counthrhrpaymoney3 = $entrieshrpaymoney3->count();
+        $totalSizeByteshrpaymoney3 = $entrieshrpaymoney3->sum('file_size');
+        $totalSizeKBhrpaymoney3 = round($totalSizeByteshrpaymoney3  / 1024, 2);
+
+
+        $entrieshrpaymoney4 = CommonTable::where('user_id', $user->id)
+        ->where('is_delete', 0)
+        ->where('location', $decodedFolderLocation) // Use the decoded folder parameter here
+        ->where('real_file_name', 'New Hires')
+        ->get();
+            // dd($decodedFolderLocation);
+        $counthrhrpaymoney4 = $entrieshrpaymoney4->count();
+        $totalSizeByteshrpaymoney4 = $entrieshrpaymoney4->sum('file_size');
+        $totalSizeKBhrpaymoney4 = round($totalSizeByteshrpaymoney4  / 1024, 2);
+
+
+        $entrieshrpaymoney5 = CommonTable::where('user_id', $user->id)
+        ->where('is_delete', 0)
+        ->where('location', $decodedFolderLocation) // Use the decoded folder parameter here
+        ->where('real_file_name', 'Attendance log')
+        ->get();
+            // dd($decodedFolderLocation);
+        $counthrhrpaymoney5 = $entrieshrpaymoney5->count();
+        $totalSizeByteshrpaymoney5 = $entrieshrpaymoney5->sum('file_size');
+        $totalSizeKBhrpaymoney5 = round($totalSizeByteshrpaymoney5  / 1024, 2);
+
+
+
+        $entrieshremppol1 = CommonTable::where('user_id', $user->id)
+        ->where('is_delete', 0)
+        ->where('location', $decodedFolderLocation) // Use the decoded folder parameter here
+        ->where('real_file_name', 'Policy')
+        ->get();
+            // dd($decodedFolderLocation);
+        $counthremppol1 = $entrieshremppol1->count();
+        $totalSizeByteshremppol1 = $entrieshremppol1->sum('file_size');
+        $totalSizeKBhremppol1 = round($totalSizeByteshremppol1  / 1024, 2);
+
+
+        $entrieshremppol2 = CommonTable::where('user_id', $user->id)
+        ->where('is_delete', 0)
+        ->where('location', $decodedFolderLocation) // Use the decoded folder parameter here
+        ->where('real_file_name', 'Grant Letters')
+        ->get();
+            // dd($decodedFolderLocation);
+        $counthremppol2 = $entrieshremppol2->count();
+        $totalSizeByteshremppol2 = $entrieshremppol2->sum('file_size');
+        $totalSizeKBhremppol2 = round($totalSizeByteshremppol2  / 1024, 2);
+
+
+        $entrieshremppol3 = CommonTable::where('user_id', $user->id)
+        ->where('is_delete', 0)
+        ->where('location', $decodedFolderLocation) // Use the decoded folder parameter here
+        ->where('real_file_name', 'Acceptance Letters')
+        ->get();
+            // dd($decodedFolderLocation);
+        $counthremppol3 = $entrieshremppol3->count();
+        $totalSizeByteshremppol3 = $entrieshremppol3->sum('file_size');
+        $totalSizeKBhremppol3 = round($totalSizeByteshremppol3  / 1024, 2);
+
+
+        $entrieshremppol4 = CommonTable::where('user_id', $user->id)
+        ->where('is_delete', 0)
+        ->where('location', $decodedFolderLocation) // Use the decoded folder parameter here
+        ->where('real_file_name', 'Nominations')
+        ->get();
+            // dd($decodedFolderLocation);
+        $counthremppol4 = $entrieshremppol4->count();
+        $totalSizeByteshremppol4 = $entrieshremppol4->sum('file_size');
+        $totalSizeKBhremppol4 = round($totalSizeByteshremppol4  / 1024, 2);
+
+
+
+        $entrieshroff1 = CommonTable::where('user_id', $user->id)
+        ->where('is_delete', 0)
+        ->where('location', $decodedFolderLocation) // Use the decoded folder parameter here
+        ->where('real_file_name', 'Resignation letter')
+        ->get();
+            // dd($decodedFolderLocation);
+        $counthroff1 = $entrieshroff1->count();
+        $totalSizeByteshroff1 = $entrieshroff1->sum('file_size');
+        $totalSizeKBhroff1 = round($totalSizeByteshroff1  / 1024, 2);
+
+
+        $entrieshroff2 = CommonTable::where('user_id', $user->id)
+        ->where('is_delete', 0)
+        ->where('location', $decodedFolderLocation) // Use the decoded folder parameter here
+        ->where('real_file_name', 'Experience Letter')
+        ->get();
+            // dd($decodedFolderLocation);
+        $counthroff2 = $entrieshroff2->count();
+        $totalSizeByteshroff2 = $entrieshroff2->sum('file_size');
+        $totalSizeKBhroff2 = round($totalSizeByteshroff2  / 1024, 2);
+
+
+        $entrieshroff3 = CommonTable::where('user_id', $user->id)
+        ->where('is_delete', 0)
+        ->where('location', $decodedFolderLocation) // Use the decoded folder parameter here
+        ->where('real_file_name', 'No Dues certificate')
+        ->get();
+            // dd($decodedFolderLocation);
+        $counthroff3 = $entrieshroff3->count();
+        $totalSizeByteshroff3 = $entrieshroff3->sum('file_size');
+        $totalSizeKBhroff3 = round($totalSizeByteshroff3  / 1024, 2);
+
+
+        $entrieshroff4 = CommonTable::where('user_id', $user->id)
+        ->where('is_delete', 0)
+        ->where('location', $decodedFolderLocation) // Use the decoded folder parameter here
+        ->where('real_file_name', 'Character certificate')
+        ->get();
+            // dd($decodedFolderLocation);
+        $counthroff4 = $entrieshroff4->count();
+        $totalSizeByteshroff4 = $entrieshroff4->sum('file_size');
+        $totalSizeKBhroff4 = round($totalSizeByteshroff4  / 1024, 2);
+
+
+
+
+
         
         $user = auth()->user();
          $userRole = $user->role; // Ensure 'role' field exists in the users table
@@ -18405,7 +18916,7 @@ $entriesinc9 = CommonTable::where('user_id', $user->id)
     $userRoleRecord = UserRole::where('role', $userRole)->first();
         
         
-        return view('docurepo', compact('countkyccontactdetails','totalSizeKBkyccontactdetails','countkycaddressproof','totalSizeKBkycaddressproof','countkycpan','totalSizeKBkycpan','countkycaadhar','totalSizeKBkycaadhar','countkycphoto','totalSizeKBkycphoto','countemponboardincometax','totalSizeKBemponboardincometax','countemponboardepf','totalSizeKBemponboardepf','countemponboardcb','totalSizeKBemponboardcb','countemponboardnc','totalSizeKBemponboardnc','countemponboardnda','totalSizeKBemponboardnda','countemponboardea','totalSizeKBemponboardea','countemponboardal','totalSizeKBemponboardal','totalSizeKBemponboard','countemponboard','totalSizeKBdirectorappointmentsdir3din','countdirectorappointmentsdir3din','cli_announcements','fileCount','fileCount1','user','commondataroom','countSECAASR','totalSizeKBSECAASR','countSECAAALA','totalSizeKBSECAAALA','countSECAACRCAA','totalSizeKBSECAACRCAA','countSECAALA','totalSizeKBSECAALA','countSECAAIA','totalSizeKBSECAAIA','countSECAABRAA','totalSizeKBSECAABRAA','countcharregPP','totalSizeKBcharregPP','countcharregLWFC','totalSizeKBcharregLWFC','countcharregPTC','totalSizeKBcharregPTC','countcharregESIC','totalSizeKBcharregESIC','countcharregPFC','totalSizeKBcharregPFC','countcharregTrademark','totalSizeKBcharregTrademark','countcharregMSME','totalSizeKBcharregMSME','countcharregGSTIN','totalSizeKBcharregGSTIN','countcharregtan','totalSizeKBcharregtan','countcharregpan','totalSizeKBcharregpan','countIncorporationSharecertifF',
+        return view('docurepo', compact('counthroff4','totalSizeKBhroff4','counthroff3','totalSizeKBhroff3','counthroff2','totalSizeKBhroff2','counthroff1','totalSizeKBhroff1','counthremppol4','totalSizeKBhremppol4','counthremppol3','totalSizeKBhremppol3','counthremppol2','totalSizeKBhremppol2','counthremppol1','totalSizeKBhremppol1','counthrhrpaymoney5','totalSizeKBhrpaymoney5','counthrhrpaymoney4','totalSizeKBhrpaymoney4','counthrhrpaymoney3','totalSizeKBhrpaymoney3','counthrhrpaymoney2','totalSizeKBhrpaymoney2','counthrhrpaymoney1','totalSizeKBhrpaymoney1','counthrhrempdecmaster','totalSizeKBhrempdecmaster','counthrhrempdec','totalSizeKBhrempdec','counthrpayrimapprove','totalSizeKBhrpayrimapprove','counthrpayrim','totalSizeKBhrpayrim','countkyccontactdetails','totalSizeKBkyccontactdetails','countkycaddressproof','totalSizeKBkycaddressproof','countkycpan','totalSizeKBkycpan','countkycaadhar','totalSizeKBkycaadhar','countkycphoto','totalSizeKBkycphoto','countemponboardincometax','totalSizeKBemponboardincometax','countemponboardepf','totalSizeKBemponboardepf','countemponboardcb','totalSizeKBemponboardcb','countemponboardnc','totalSizeKBemponboardnc','countemponboardnda','totalSizeKBemponboardnda','countemponboardea','totalSizeKBemponboardea','countemponboardal','totalSizeKBemponboardal','totalSizeKBemponboard','countemponboard','totalSizeKBdirectorappointmentsdir3din','countdirectorappointmentsdir3din','cli_announcements','fileCount','fileCount1','user','commondataroom','countSECAASR','totalSizeKBSECAASR','countSECAAALA','totalSizeKBSECAAALA','countSECAACRCAA','totalSizeKBSECAACRCAA','countSECAALA','totalSizeKBSECAALA','countSECAAIA','totalSizeKBSECAAIA','countSECAABRAA','totalSizeKBSECAABRAA','countcharregPP','totalSizeKBcharregPP','countcharregLWFC','totalSizeKBcharregLWFC','countcharregPTC','totalSizeKBcharregPTC','countcharregESIC','totalSizeKBcharregESIC','countcharregPFC','totalSizeKBcharregPFC','countcharregTrademark','totalSizeKBcharregTrademark','countcharregMSME','totalSizeKBcharregMSME','countcharregGSTIN','totalSizeKBcharregGSTIN','countcharregtan','totalSizeKBcharregtan','countcharregpan','totalSizeKBcharregpan','countIncorporationSharecertifF',
         'totalSizeKBIncorporationSharecertifF','countIncorporationTrustDeed'
         ,'totalSizeKBIncorporationTrustDeed','countIncorporationLLPAgreement',
         'totalSizeKBIncorporationLLPAgreement','countIncorporationPartnerdeed',
