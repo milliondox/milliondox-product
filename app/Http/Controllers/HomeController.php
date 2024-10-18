@@ -12522,6 +12522,100 @@ public function fetchhremponboardincometaxFileData(Request $request)
     return response()->json(['files' => $files]);
 }
 
+public function fetchhrkycphotoFileData(Request $request)
+{
+    // Get the location value
+    $location = $request->input('location');
+    $user = auth()->user();
+
+    
+// dd($location);
+    // Fetch files based on the user ID and decoded folder location
+    $files = CommonTable::where('user_id', $user->id)
+        ->where('is_delete', 0)
+        ->where('location', $location) // Using the decoded folder parameter
+        ->where('real_file_name', 'Photo')
+        ->get();
+
+    // Return the fetched files as a JSON response
+    return response()->json(['files' => $files]);
+}
+
+public function fetchhrkycaadharFileData(Request $request)
+{
+    // Get the location value
+    $location = $request->input('location');
+    $user = auth()->user();
+
+    
+// dd($location);
+    // Fetch files based on the user ID and decoded folder location
+    $files = CommonTable::where('user_id', $user->id)
+        ->where('is_delete', 0)
+        ->where('location', $location) // Using the decoded folder parameter
+        ->where('real_file_name', 'Aadhar KYC')
+        ->get();
+
+    // Return the fetched files as a JSON response
+    return response()->json(['files' => $files]);
+}
+
+public function fetchhrkycpanFileData(Request $request)
+{
+    // Get the location value
+    $location = $request->input('location');
+    $user = auth()->user();
+
+    
+// dd($location);
+    // Fetch files based on the user ID and decoded folder location
+    $files = CommonTable::where('user_id', $user->id)
+        ->where('is_delete', 0)
+        ->where('location', $location) // Using the decoded folder parameter
+        ->where('real_file_name', 'PAN KYC')
+        ->get();
+
+    // Return the fetched files as a JSON response
+    return response()->json(['files' => $files]);
+}
+
+public function fetchhrkycaddressproofFileData(Request $request)
+{
+    // Get the location value
+    $location = $request->input('location');
+    $user = auth()->user();
+
+    
+// dd($location);
+    // Fetch files based on the user ID and decoded folder location
+    $files = CommonTable::where('user_id', $user->id)
+        ->where('is_delete', 0)
+        ->where('location', $location) // Using the decoded folder parameter
+        ->where('real_file_name', 'Address Proof')
+        ->get();
+
+    // Return the fetched files as a JSON response
+    return response()->json(['files' => $files]);
+}
+
+public function fetchhrkyccontactdetailsfFileData(Request $request)
+{
+    // Get the location value
+    $location = $request->input('location');
+    $user = auth()->user();
+
+    
+// dd($location);
+    // Fetch files based on the user ID and decoded folder location
+    $files = CommonTable::where('user_id', $user->id)
+        ->where('is_delete', 0)
+        ->where('location', $location) // Using the decoded folder parameter
+        ->where('real_file_name', 'Contact Details')
+        ->get();
+
+    // Return the fetched files as a JSON response
+    return response()->json(['files' => $files]);
+}
 public function SecretarialAuditorAppointmentSR(Request $request)
 {
     $request->validate([
@@ -18108,10 +18202,7 @@ $entriesinc9 = CommonTable::where('user_id', $user->id)
         $folderLocation = request()->query('folder');
 
     // Ensure the parameter is not null or empty before proceeding
-    if (!$folderLocation) {
-        // Handle the case when the parameter is not provided
-        return response()->json(['error' => 'No folder parameter found.'], 400);
-    }
+
 
     // Decode the folder parameter
     $decodedFolderLocation = urldecode($folderLocation);
@@ -18205,6 +18296,60 @@ $entriesinc9 = CommonTable::where('user_id', $user->id)
         $countemponboardincometax = $entriesemponboardincometax->count();
         $totalSizeBytesemponboardincometax = $entriesemponboardincometax->sum('file_size');
         $totalSizeKBemponboardincometax = round($totalSizeBytesemponboardincometax / 1024, 2);
+
+
+        $entrieskycphoto = CommonTable::where('user_id', $user->id)
+        ->where('is_delete', 0)
+        ->where('location', $decodedFolderLocation) // Use the decoded folder parameter here
+        ->where('real_file_name', 'Photo')
+        ->get();
+            // dd($decodedFolderLocation);
+        $countkycphoto = $entrieskycphoto->count();
+        $totalSizeByteskycphoto = $entrieskycphoto->sum('file_size');
+        $totalSizeKBkycphoto = round($totalSizeByteskycphoto / 1024, 2);
+
+        $entrieskycaadhar = CommonTable::where('user_id', $user->id)
+        ->where('is_delete', 0)
+        ->where('location', $decodedFolderLocation) // Use the decoded folder parameter here
+        ->where('real_file_name', 'Aadhar KYC')
+        ->get();
+            // dd($decodedFolderLocation);
+        $countkycaadhar = $entrieskycaadhar->count();
+        $totalSizeByteskycaadhar = $entrieskycaadhar->sum('file_size');
+        $totalSizeKBkycaadhar = round($totalSizeByteskycaadhar / 1024, 2);
+
+
+        $entrieskycpan = CommonTable::where('user_id', $user->id)
+        ->where('is_delete', 0)
+        ->where('location', $decodedFolderLocation) // Use the decoded folder parameter here
+        ->where('real_file_name', 'PAN KYC')
+        ->get();
+            // dd($decodedFolderLocation);
+        $countkycpan = $entrieskycpan->count();
+        $totalSizeByteskycpan = $entrieskycpan->sum('file_size');
+        $totalSizeKBkycpan = round($totalSizeByteskycpan / 1024, 2);
+
+
+        $entrieskycaddressproof = CommonTable::where('user_id', $user->id)
+        ->where('is_delete', 0)
+        ->where('location', $decodedFolderLocation) // Use the decoded folder parameter here
+        ->where('real_file_name', 'Address Proof')
+        ->get();
+            // dd($decodedFolderLocation);
+        $countkycaddressproof = $entrieskycaddressproof->count();
+        $totalSizeByteskycaddressproof = $entrieskycaddressproof->sum('file_size');
+        $totalSizeKBkycaddressproof = round($totalSizeByteskycaddressproof / 1024, 2);
+
+
+        $entrieskyccontactdetails = CommonTable::where('user_id', $user->id)
+        ->where('is_delete', 0)
+        ->where('location', $decodedFolderLocation) // Use the decoded folder parameter here
+        ->where('real_file_name', 'Contact Details')
+        ->get();
+            // dd($decodedFolderLocation);
+        $countkyccontactdetails = $entrieskyccontactdetails->count();
+        $totalSizeByteskyccontactdetails = $entrieskyccontactdetails->sum('file_size');
+        $totalSizeKBkyccontactdetails = round($totalSizeByteskyccontactdetails  / 1024, 2);
         
         $user = auth()->user();
          $userRole = $user->role; // Ensure 'role' field exists in the users table
@@ -18219,7 +18364,7 @@ $entriesinc9 = CommonTable::where('user_id', $user->id)
     $userRoleRecord = UserRole::where('role', $userRole)->first();
         
         
-        return view('docurepo', compact('countemponboardincometax','totalSizeKBemponboardincometax','countemponboardepf','totalSizeKBemponboardepf','countemponboardcb','totalSizeKBemponboardcb','countemponboardnc','totalSizeKBemponboardnc','countemponboardnda','totalSizeKBemponboardnda','countemponboardea','totalSizeKBemponboardea','countemponboardal','totalSizeKBemponboardal','totalSizeKBemponboard','countemponboard','totalSizeKBdirectorappointmentsdir3din','countdirectorappointmentsdir3din','cli_announcements','fileCount','fileCount1','user','commondataroom','countSECAASR','totalSizeKBSECAASR','countSECAAALA','totalSizeKBSECAAALA','countSECAACRCAA','totalSizeKBSECAACRCAA','countSECAALA','totalSizeKBSECAALA','countSECAAIA','totalSizeKBSECAAIA','countSECAABRAA','totalSizeKBSECAABRAA','countcharregPP','totalSizeKBcharregPP','countcharregLWFC','totalSizeKBcharregLWFC','countcharregPTC','totalSizeKBcharregPTC','countcharregESIC','totalSizeKBcharregESIC','countcharregPFC','totalSizeKBcharregPFC','countcharregTrademark','totalSizeKBcharregTrademark','countcharregMSME','totalSizeKBcharregMSME','countcharregGSTIN','totalSizeKBcharregGSTIN','countcharregtan','totalSizeKBcharregtan','countcharregpan','totalSizeKBcharregpan','countIncorporationSharecertifF',
+        return view('docurepo', compact('countkyccontactdetails','totalSizeKBkyccontactdetails','countkycaddressproof','totalSizeKBkycaddressproof','countkycpan','totalSizeKBkycpan','countkycaadhar','totalSizeKBkycaadhar','countkycphoto','totalSizeKBkycphoto','countemponboardincometax','totalSizeKBemponboardincometax','countemponboardepf','totalSizeKBemponboardepf','countemponboardcb','totalSizeKBemponboardcb','countemponboardnc','totalSizeKBemponboardnc','countemponboardnda','totalSizeKBemponboardnda','countemponboardea','totalSizeKBemponboardea','countemponboardal','totalSizeKBemponboardal','totalSizeKBemponboard','countemponboard','totalSizeKBdirectorappointmentsdir3din','countdirectorappointmentsdir3din','cli_announcements','fileCount','fileCount1','user','commondataroom','countSECAASR','totalSizeKBSECAASR','countSECAAALA','totalSizeKBSECAAALA','countSECAACRCAA','totalSizeKBSECAACRCAA','countSECAALA','totalSizeKBSECAALA','countSECAAIA','totalSizeKBSECAAIA','countSECAABRAA','totalSizeKBSECAABRAA','countcharregPP','totalSizeKBcharregPP','countcharregLWFC','totalSizeKBcharregLWFC','countcharregPTC','totalSizeKBcharregPTC','countcharregESIC','totalSizeKBcharregESIC','countcharregPFC','totalSizeKBcharregPFC','countcharregTrademark','totalSizeKBcharregTrademark','countcharregMSME','totalSizeKBcharregMSME','countcharregGSTIN','totalSizeKBcharregGSTIN','countcharregtan','totalSizeKBcharregtan','countcharregpan','totalSizeKBcharregpan','countIncorporationSharecertifF',
         'totalSizeKBIncorporationSharecertifF','countIncorporationTrustDeed'
         ,'totalSizeKBIncorporationTrustDeed','countIncorporationLLPAgreement',
         'totalSizeKBIncorporationLLPAgreement','countIncorporationPartnerdeed',
@@ -19359,7 +19504,7 @@ public function downloadFile($id)
 
     public function uploadFile(Request $request)
     {
-    
+    // dd($request);
     
         // Validate the request
         $request->validate([

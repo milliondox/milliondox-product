@@ -115,6 +115,17 @@ Route::get('/fetch-hremponboardepf-file-data', [App\Http\Controllers\HomeControl
 Route::get('/fetch-hremponboardincometax-file-data', [App\Http\Controllers\HomeController::class, 'fetchhremponboardincometaxFileData'])->name('fetch-hremponboardincometax-file-data');
 
 
+Route::get('/fetch-hrkycphoto-file-data', [App\Http\Controllers\HomeController::class, 'fetchhrkycphotoFileData'])->name('fetch-hrkycphoto-file-data');
+
+Route::get('/fetch-hrkycaadhar-file-data', [App\Http\Controllers\HomeController::class, 'fetchhrkycaadharFileData'])->name('fetch-hrkycaadhar-file-data');
+
+Route::get('/fetch-hrkycpan-file-data', [App\Http\Controllers\HomeController::class, 'fetchhrkycpanFileData'])->name('fetch-hrkycpan-file-data');
+
+Route::get('/fetch-hrkycaddressproof-file-data', [App\Http\Controllers\HomeController::class, 'fetchhrkycaddressproofFileData'])->name('fetch-hrkycaddressproof-file-data');
+
+Route::get('/fetch-hrkyccontactdetails-file-data', [App\Http\Controllers\HomeController::class, 'fetchhrkyccontactdetailsfFileData'])->name('fetch-hrkyccontactdetails-file-data');
+
+
 // Save folder ID and URL to the session
 Route::post('/save-breadcrumb', [App\Http\Controllers\HomeController::class, 'saveBreadcrumb'])->name('save.breadcrumb');
 
