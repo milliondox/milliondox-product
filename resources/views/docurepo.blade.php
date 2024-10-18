@@ -1,12 +1,13 @@
 @extends('user.includes.document-repository') @section('content')
  @include('script1')
  @include('script2')
+ @include('hr_on_board')
     <!-- tap on top starts-->
   <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 <script>window.jQuery || document.write('<script src="{{ asset('assets/js/jquerylocal.js') }}"><\/script>')</script>
 
      <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-     
+ 
 
      <script>
     (function() {
@@ -1889,41 +1890,89 @@ $(document).ready(function() {
     </div>
 </div>
 <script>
+//     $(document).on('click', '.download_nt', function(e) {
+//     e.preventDefault();
+
+//     var folderId = $(this).data('id');
+//     var folderPath = $(this).data('folder-path');
+
+//     // Send AJAX request to download the folder
+//     $.ajax({
+//         url: '/downloadFolders',  // Update this with the correct route
+//         type: 'POST',
+//         data: {
+//             folder_id: folderId,
+//             folder_path: folderPath,
+//             _token: $('meta[name="csrf-token"]').attr('content') // Include CSRF token
+//         },
+//         xhrFields: {
+//             responseType: 'blob' // Important for file download
+//         },
+//         success: function(data) {
+//             // Create a temporary link to download the file
+//             var blob = new Blob([data], { type: 'application/zip' });
+//             var link = document.createElement('a');
+//             link.href = window.URL.createObjectURL(blob);
+//             link.download = 'folder_' + folderId + '.zip'; // The name of the file
+//             link.click();
+//         },
+//         error: function(xhr, status, error) {
+//             console.error('Error downloading folder:', error);
+//         }
+//     });
+// });
+
+</script>
+<script>
 $(document).ready(function() {
     $(document).on('click', '.download_nt', function() {
-        var folderPath = $(this).data('folder-path');
+        var folderPath = $(this).data('id');
 
         // Show a loading spinner or message
         var loadingMessage = $("<div class='loading-message'>Preparing your download...</div>");
         $('body').append(loadingMessage);
+        // alert(folderPath);
 
         // Send AJAX request to download the folder
         $.ajax({
-            url: '/download-folder/' + encodeURIComponent(folderPath), // URL-encode the folder path
+            url: '/download-folder/' + (folderPath), // URL-encode the folder path
             type: 'GET',
             success: function(response) {
                 // Remove loading message
-                loadingMessage.remove();
+                Swal.close();
 
-                // Check if the response contains a valid success message
-                if (response && response.success) {
-                    // Trigger file download using the URL of the ZIP file
-                    window.location.href = response.zipFileUrl; // Ensure zipFileUrl is correctly set
-                } else {
-                    console.log(response); // Log the entire response to debug
-                    alert('Error: ' + (response.message || 'An unknown error occurred.'));
-                    console.log(response.message);
-                }
-            },
-            error: function(xhr, status, error) {
-                // Remove loading message
-                loadingMessage.remove();
-                console.error('Error details:', status, error, xhr.responseText); // Log the full error for debugging
-                alert('An error occurred while downloading the folder. Please try again.');
-                console.log(response.message);
-            }
-        });
+// Check if the response contains a valid success message
+if (response && response.success) {
+    // Trigger file download using the URL of the ZIP file
+    window.location.href = response.zipFileUrl; // Ensure zipFileUrl is correctly set
+    Swal.fire({
+        icon: 'success',
+        title: 'Download Ready',
+        text: 'Your folder is ready to download!',
+        timer: 2000,
+        showConfirmButton: false
     });
+} else {
+    Swal.fire({
+        icon: 'error',
+        title: 'Error',
+        text: response.message || 'An unknown error occurred while preparing the folder.'
+    });
+}
+},
+error: function(xhr, status, error) {
+// Close the loading message
+Swal.close();
+
+console.error('Error details:', status, error, xhr.responseText); // Log the full error for debugging
+Swal.fire({
+    icon: 'error',
+    title: 'Download Failed',
+    text: 'An error occurred while downloading the folder. Please try again.'
+});
+}
+});
+});
 });
 
 
@@ -3935,1153 +3984,8 @@ $(document).ready(function() {
                 </form>
 
      <meta name="csrf-token" content="{{ csrf_token() }}">
-
-<script defer>
-function getQueryParamf(param) {
-    const queryString = window.location.search.substring(1);
-    const params = queryString.split('&');
-    for (let i = 0; i < params.length; i++) {
-        const pair = params[i].split('=');
-        if (pair[0] === param) {
-            return pair[1] ? decodeURIComponent(pair[1]) : null;
-        }
-    }
-    return null;
-}
-document.addEventListener('DOMContentLoaded', function() {
-    // Custom function to parse query parameters
-    function getQueryParam(param) {
-        const params = new URLSearchParams(window.location.search);
-        return params.get(param);
-    }
-    // Retrieve and decode the folder path from the URL parameters
-    const folderPath = getQueryParam('folder');
-
-    if (folderPath) {
-        const decodedFolderPath = decodeURIComponent(folderPath);
-        // Trigger a success alert with the decoded folder path
-        // Swal.fire({
-        //     title: 'Success!',
-        //     text: `Navigated to folder: ${decodedFolderPath}`,
-        //     icon: 'success',
-        //     confirmButtonText: 'OK'
-        // });
-        // Fetch the folder contents and navigate to the folder
-    }
-});
-
-// Now use it inside your event listener
-$(document).on('change', '#sortOptions', function() {
-    let sortOption = $(this).val();   // Get the selected sorting option
-     const encodedString = getQueryParamf('folder');
-     const decodedString = decodeURIComponent(encodedString);
-     
-
-    $.ajax({
-        url: '/fetch-folder-contents',  // Adjust the URL to your route
-        method: 'GET',
-        data: {
-            folderName: decodedString,
-            sortOption: sortOption
-        },
-        beforeSend: function() {
-            // Optionally show a loader while fetching the data
-            $('.folder-contents').html('<p>Loading...</p>');
-        },
-        success: function(response) {
-            // Update folder contents with the response
-            $('.folder-contents').html(response.folderHtml);
-        },
-        error: function() {
-            // Handle any errors
-            $('.folder-contents').html('<p>Something went wrong. Please try again.</p>');
-        }
-    });
-});
-
-
-$(document).on('change', '#sortOptions', function() {
-    let sortOption = $(this).val();   // Get the selected sorting option
-    const encodedString = getQueryParamf('folder');
-    const decodedString = decodeURIComponent(encodedString);
-
-    $.ajax({
-        url: '/fetch-subfolders2',  // Adjust the URL to your route
-        method: 'GET',
-        data: {
-            folderName: decodedString,
-            sortOption: sortOption
-        },
-        beforeSend: function() {
-            // Show loader before sending request
-            $('.loader').show();  // Display the loader
-            $('.folder-contents').html(''); // Clear previous contents
-        },
-        success: function(response) {
-            console.log(response.html);
-            // Update folder contents with the response
-            $('.folder-contents').html(response.html);
-        },
-        error: function() {
-            // Handle any errors
-            $('.folder-contents').html('<p>Something went wrong. Please try again.</p>');
-        },
-        complete: function() {
-            // Hide loader after request completes (whether success or error)
-            $('.loader').hide();  // Hide the loader
-        }
-    });
-});
-
-
-
-
-//   document.addEventListener('DOMContentLoaded', function() {
-//         // Custom function to parse query parameters
-//         function getQueryParam(param) {
-//             const queryString = window.location.search.substring(1);
-//             const params = queryString.split('&');
-//             for (let i = 0; i < params.length; i++) {
-//                 const pair = params[i].split('=');
-//                 if (pair[0] === param) {
-//                     return pair[1] ? decodeURIComponent(pair[1]) : null;
-//                 }
-//             }
-//             return null;
-//         }
-
-        // Retrieve the folder path from the URL parameters
-    //     const folderPath = getQueryParam('folder');
-        
-    //       const decodedFolderPath = decodeURIComponent(folderPath);
-
-    //     if (folderPath) {
-    //         // Decode the folder path to handle any encoded characters
-    //         const decodedFolderPath = decodeURIComponent(folderPath);
-
-    //         // Trigger a success alert with the decoded folder path
-    //         // Swal.fire({
-    //         //     title: 'Success!',
-    //         //     text: `Navigated to folder: ${decodedFolderPath}`,
-    //         //     icon: 'success',
-    //         //     confirmButtonText: 'OK'
-    //         // });
-            
-
-    //         // Fetch the folder contents and navigate to the folder
-            
-    //     }
-    // });
-
-   
-
-$(document).ready(function() {
-    function showLoader() {
-        $('.comman_loderr').show();
-        $('.folder-contents, .file-container').hide();
-    }
-
-    function hideLoader() {
-        $('.comman_loderr').hide();
-        $('.folder-contents, .file-container').show();
-    }
-
-
-
-    //  // Function to fetch subfolders and handle incorporation table appending
-    function fetchSubfolders(folderPath, callback) {
-        $.ajax({
-            url: '/fetch-subfolders',
-            method: 'GET',
-            data: { path: folderPath },
-            success: function(response) {
-                const subfolderHtml = response.html;
-                const $parentFolder = $(`[data-folder-path="${folderPath}"]`).parent();
-                const $dropdownMenu = $parentFolder.find('.dropdown-menu');
-                // Clear existing content and populate with new subfolder HTML
-                $dropdownMenu.html(subfolderHtml);
-                // Fetch folder contents and ensure visibility
-                fetchFolderContents2(folderPath, false);
-                // Invoke callback with the latest folder path if provided
-                // if (callback) callback(response.latestFolderPath);
-            },
-            error: function(xhr) {
-                console.error('Error fetching subfolder data:', xhr.responseText);
-            }
-        });
-    }
-
-function updateFolderList(newFolderPath) {
-    if (newFolderPath) {
-        openNewFolder(newFolderPath);
-    }
-}
-
-function openNewFolder(folderPath) {
-    const $newFolderLink = $(`[data-folder-path="${folderPath}"]`);
-    if ($newFolderLink.length) {
-        fetchSubfolders(folderPath, updateFolderList);
-    } else {
-        console.warn(`Folder link not found for path: ${folderPath}`);
-    }
-}
-
- function updateBreadcrumb(folderPath) {
-    function getQueryParam(param) {
-        const params = new URLSearchParams(window.location.search);
-        return params.get(param);
-    }
-
-    // Retrieve the folder path from the URL parameters
-    const folderPaths = getQueryParam('folder');
-    const decodedFolderPath = folderPaths ? decodeURIComponent(folderPaths) : null;
-    const pathToUse = decodedFolderPath || folderPath;
-
-    // let breadcrumbHtml = '';
-    // const folderNames = pathToUse.split('/');
-    // let fullPath = '';
-
-    // folderNames.forEach((folderName, index) => {
-    //     fullPath += (index > 0 ? '/' : '') + folderName;
-
-    //     if (index === folderNames.length - 1) {
-            
-    //         if (strpos(${folderName}, '_') !== false) {
-    //             // Find the position of the '-' character
-    //              let dash_position_name = strpos(${folderName}, '_');
-                
-    //             // Get the substring after the '-'
-    //             let replacedName = substr(${folderName}, dash_position_name + 1);
-    //             ${folderName} = replacedName ;
-                
-    //         }
-    //         else{
-    //             ${folderName} = ${folderName};
-    //         }
-            
-            
-    //         breadcrumbHtml += `<span>${folderName}</span>`;
-    //     } else {
-    //         breadcrumbHtml += `<a href="#" class="breadcrumb-link" data-folder-path="${fullPath}">${folderName}</a> <span>/</span>`;
-    //     }
-    // });
-    
-            let breadcrumbHtml = '';
-            const folderNames = pathToUse.split('/');
-            let fullPath = '';
-            
-            folderNames.forEach((folderName, index) => {
-                fullPath += (index > 0 ? '/' : '') + folderName;
-            
-                // Check if the folderName contains '2024-2025October240_'
-                const pattern = /^\d{4}-\d{4}(January|February|March|April|May|June|July|August|September|October|November|December)\d{1,}_/;
-            
-                if (pattern.test(folderName)) {
-                    // Extract the substring after '2024-2025October240_'
-                    let underscorePosition = folderName.indexOf('_');
-                    folderName = folderName.slice(underscorePosition + 1);
-                }
-            
-                if (index === folderNames.length - 1) {
-                    // Add the last part of the breadcrumb as a plain span
-                    breadcrumbHtml += `<span>${folderName}</span>`;
-                } else {
-                    // Add intermediate breadcrumb links
-                    breadcrumbHtml += `<a href="#" class="breadcrumb-link" data-folder-path="${fullPath}">${folderName}</a> <span>/</span>`;
-                }
-            });
-            
-            
- if (!breadcrumbHtml.trim() || breadcrumbHtml === '<span></span>') {
-        breadcrumbHtml = '<span>Home</span>'; // Set to Home if breadcrumb is empty
-    }
-
-    // Update the breadcrumb navigation path
-    $('.nav-path').html(breadcrumbHtml);
-    console.log("FDgfdgfdgdfgfd :" + breadcrumbHtml); // Log the actual breadcrumbHtml
-
-    // Show or hide select_path_view based on breadcrumb content
-    if (!breadcrumbHtml.trim() || breadcrumbHtml === '<span>Home</span>') {
-        // Hide the select_path_view if breadcrumbHtml is empty or is just "Home"
-        $('.select_path_view').hide();
-    } else {
-        // Show the select_path_view if breadcrumbHtml has content
-        $('.select_path_view').show();
-    }
-
-
-    // Attach click event handler to breadcrumb links
-    $(document).off('click', '.breadcrumb-link').on('click', '.breadcrumb-link', function(e) {
-        e.preventDefault();
-        const folderPath = $(this).data('folder-path');
- console.log("gjkhgjhgfgjjhghjghjgjhgjhgjhgjhgjhghjghjgjhgjyg: "+folderPath);
-        console.log("Navigating to folder: " + folderPath);
-        navigateToFolder(folderPath); // Function to handle navigation
-    });
-}
-
-function toggleLabelWrap() {
-    if ($('#parent-folder').val() || $('#parent-folders').val()) {
-        $('.label_wrap').show();
-    } else {
-        $('.label_wrap').hide();
-    }
-}
-
-// $(document).on('click', '.breadcrumb-link', function(e) {
-//     e.preventDefault();
-//     var folderPath = $(this).data('folder-path');
-//     navigateToFolder(folderPath);
-// });
-
-$(document).on('click', '.breadcrumb-link', function(e) {
-    e.preventDefault(); // Ensure this is used only when you intend to stop the browser's default behavior
-    const folderPath = $(this).data('folder-path');
-    console.log("gjkhgjhgfgjjhghjghjgjhgjhgjhgjhgjhghjghjgjhgjyg: "+folderPath);
-    navigateToFolder(folderPath);
-});
-
-$(document).on('click', '.folder-link', function(e) {
-    e.preventDefault();
-    e.stopPropagation();
-    var $this = $(this);
-    var folderPath = $this.data('folder-path');
-    
-    
-    
-    // Remove 'selected-folder' class from all folder links and toggle icons
-    $('.folder-link').removeClass('selected-folder');
-    $('.toggle_icconn').removeClass('selected-folder');
-
-    // Toggle 'selected-folder' class on the clicked element
-    if ($this.hasClass('selected-folder')) {
-        $this.removeClass('selected-folder');
-    } else {
-        navigateToFolder(folderPath);
-        $this.addClass('selected-folder');
-    }
-});
-
-$(document).on('click', '.toggle_icconn', function(e) {
-    e.preventDefault();
-    e.stopPropagation();
-    var $this = $(this);
-    var folderPath = $this.data('folder-path');
-    
     
 
-    // Remove 'active' class from all other toggle icons
-    $('.toggle_icconn').removeClass('active');
-    
-    // Toggle 'active' class on the clicked element
-    if ($this.hasClass('active')) {
-        $this.removeClass('active'); // Remove 'active' class if it's already active
-    } else {
-        navigateToFolder1(folderPath);
-        $this.addClass('active'); // Add 'active' class
-    }
-});
-
-
-function navigateToFolder1(folderPath) {
-  
-    openNewFolder(folderPath);
-    
-    $('li a').removeClass('active');
-    $(`[data-folder-path="${folderPath}"]`).addClass('active');
-    $('#parent-folder, #parent-folders').val(folderPath);
-    toggleLabelWrap();
-}
-
-function navigateToFolder(folderPath) {
-    showLoader();
-
-    // Decode the folder path to remove unwanted encoding
-    folderPath = decodeURIComponent(folderPath);
-
-   
-        updateBreadcrumb(folderPath);
-        fetchFolderContents(folderPath, false);
-        openNewFolder(folderPath);
-        $('li a').removeClass('selected-folder');
-        $(`[data-folder-path="${folderPath}"]`).addClass('selected-folder');
-        $('#parent-folder, #parent-folders').val(folderPath);
-        toggleLabelWrap();
-        
-        // Save breadcrumb to session (implement this part as needed)
-
-        // Trigger a success alert with the folder path
-      
-
- 
-
-    if (folderPath) {
-        const newUrl = new URL(window.location);
-        newUrl.searchParams.set('folder', encodeURIComponent(folderPath));
-        window.history.pushState({ path: newUrl.href }, '', newUrl.href);
-    }
-}
-
-// Listen for browser navigation (back/forward buttons)
-window.addEventListener('popstate', function(event) {
-    // Check if the event has state information (this is your folderPath)
-    if (event.state && event.state.folderPath) {
-        // Update the page based on the state stored in the history
-        updateBreadcrumb(event.state.folderPath);
-        fetchSubfolders(event.state.folderPath);
-    } else {
-        // Handle the case where there's no state (for example, the initial page load)
-        const initialFolderPath = getQueryParamSKY('folder') || '/'; // Default to root if no folder is in the URL
-        updateBreadcrumb(initialFolderPath);
-        fetchSubfolders(initialFolderPath);
-    }
-});
-function getQueryParamSKY(param) {
-    const params = new URLSearchParams(window.location.search);
-    return params.get(param);
-}
-
-
-function bindFolderClickEvents() {
-    $('.folder-link').off('click').on('click', function(e) {
-        e.preventDefault();
-        var folderPath = $(this).data('folder-path');
-        navigateToFolder(folderPath);
-    });
-}
- function fetchFolderContents(folderPath) {
-        showLoader(); // Ensure the loader is shown when the request starts
-       
-         function getQueryParam(param) {
-            const queryString = window.location.search.substring(1);
-            const params = queryString.split('&');
-            for (let i = 0; i < params.length; i++) {
-                const pair = params[i].split('=');
-                if (pair[0] === param) {
-                    return pair[1] ? decodeURIComponent(pair[1]) : null;
-                }
-            }
-            return null;
-        }
-
-        // Retrieve the folder path from the URL parameters
-        const folderPaths = getQueryParam('folder');
-        
-          const decodedFolderPath = folderPaths ? decodeURIComponent(folderPaths) : null;
-        const pathToUse = decodedFolderPath ? decodedFolderPath : folderPath;
-        
-        // Directly use the folderPath as it's already decoded when passed from above
-        $.ajax({
-            url: '/fetch-folder-contents',
-            method: 'GET',
-            data: { folderName: pathToUse },  // Use the folderPath as is
-            success: function(response) {
-                $('.folder-contents').html(response.folderHtml);
-                $('.file-container').html(response.fileHtml);
-
-                clearAppendedTables();
-
-                if (pathToUse === 'Legal/Secretarial/Board Meetings' && !incorporationTableAppended) {
-                    insertIncorporationTable();
-                    incorporationTableAppended = true;
-                } else if (pathToUse === 'Legal/Secretarial/Annual General Meeting' && !meetingTableAppended) {
-                    insertMeetingTable();
-                    meetingTableAppended = true;
-                } else if (pathToUse === 'Legal/Secretarial/Extra Ordinary General Meeting' && !orderTableAppended) {
-                    insertOrderTable();
-                    orderTableAppended = true;
-                } else if (pathToUse === 'Legal/Secretarial/Incorporation' && !incTableAppended) {
-                    insertINCTable();
-                    incTableAppended = true;
-                } else if (pathToUse === 'Legal/Secretarial/Annual Filings' && !annTableAppended) {
-                    insertANNTable();
-                    annTableAppended = true;
-                } else if (pathToUse === 'Legal/Secretarial/Director Appointments' && !directTableAppended) {
-                    insertDirectTable();
-                    directTableAppended = true;
-                } else if (pathToUse === 'Legal/Secretarial/Director Resignation' && !directexitTableAppended) {
-                    insertDirectexitTable();
-                    directexitTableAppended = true;
-                } else if (pathToUse === 'Legal/Secretarial/Auditor Appointment' && !auditappTableAppended) {
-                    insertauditappTable();
-                    auditappTableAppended = true;
-                } else if (pathToUse === 'Legal/Secretarial/Auditor Exits' && !auditexitTableAppended) {
-                    insertauditexitTable();
-                    auditexitTableAppended = true;
-                } else if (pathToUse === 'Legal/Secretarial/Statutory Registers' && !staturegiTableAppended) {
-                    insertstaturegiTable();
-                    staturegiTableAppended = true;
-                } else if (pathToUse === 'Legal/Secretarial/Deposit Undertakings' && !undertakingTableAppended) {
-                    insertundertakingTable();
-                    undertakingTableAppended = true;
-                } else if (pathToUse === 'Accounting & Taxation/Book-Keeping/Bank Account Statements' && !bankAccountStatementsTableAppended) {
-                    insertbankAccountStatementsTable();
-                    bankAccountStatementsTableAppended = true;
-                } else if (pathToUse === 'Accounting & Taxation/Book-Keeping/Fixed Deposit Statements' && !bankFixedDepositStatementsTableAppended) {
-                    insertbankFixedDepositStatementsTable();
-                    bankFixedDepositStatementsTableAppended = true;
-                } else if (pathToUse === 'Accounting & Taxation/Book-Keeping/Credit Card Statements' && !bankCreditCardStatementsTableAppended) {
-                    insertbankCreditCardStatementsTable();
-                    bankCreditCardStatementsTableAppended = true;
-                } else if (pathToUse === 'Accounting & Taxation/Book-Keeping/Mutual Fund Statements' && !bankMutualFundStatementsTableAppended) {
-                    insertbankMutualFundStatementsTable();
-                    bankMutualFundStatementsTableAppended = true;
-                } else if (pathToUse === 'Accounting & Taxation/Charter documents/Director Details/Director 1' && !charterdocumentsDirectordetatilsDirector1TableAppended) {
-                    insertcharterdocumentsDirectordetatilsDirector1Table();
-                    charterdocumentsDirectordetatilsDirector1TableAppended = true;
-                } else if (pathToUse === 'Accounting & Taxation/Charter documents/Director Details/Director 2' && !charterdocumentsDirectordetatilsDirector2TableAppended) {
-                    insertcharterdocumentsDirectordetatilsDirector2Table();
-                    charterdocumentsDirectordetatilsDirector2TableAppended = true;
-                } else if (pathToUse === 'Accounting & Taxation/Charter documents/Incorporation' && !charterdocumentsIncorporationTableAppended) {
-                    insertcharterdocumentsIncorporationTableAppendedTable();
-                    charterdocumentsIncorporationTableAppended = true;
-                } else if (pathToUse === 'Accounting & Taxation/Charter documents/Registrations' && !charterdocumentsRegistrationsTableAppended) {
-                    insertcharterdocumentsRegistrationsTableAppendedTable();
-                    charterdocumentsRegistrationsTableAppended = true;
-                }
-
-                bindFolderClickEvents();
-                updateBreadcrumb(pathToUse);
-                hideLoader(); // Hide loader after contents are updated
-            },
-            error: function(xhr) {
-                console.error('Error fetching folder contents:', xhr.responseText);
-                hideLoader(); // Hide loader in case of error
-            }
-        });
-    }
-//   $('#sortOptions').on('change', function() {
-//     const folderPath = getQueryParamf('folder');
-//     fetchFolderContents(folderPath);  // Call the function with the selected sorting option
-//     });
-    
-    function fetchFolderContents2(folderPath) {
-        // showLoader(); // Ensure the loader is shown when the request starts
-       
-         function getQueryParam(param) {
-            const queryString = window.location.search.substring(1);
-            const params = queryString.split('&');
-            for (let i = 0; i < params.length; i++) {
-                const pair = params[i].split('=');
-                if (pair[0] === param) {
-                    return pair[1] ? decodeURIComponent(pair[1]) : null;
-                }
-            }
-            return null;
-        }
-
-        // Retrieve the folder path from the URL parameters
-        const folderPaths = getQueryParam('folder');
-        
-          const decodedFolderPath = folderPaths ? decodeURIComponent(folderPaths) : null;
-        const pathToUse = decodedFolderPath ? decodedFolderPath : folderPath;
-        // Directly use the folderPath as it's already decoded when passed from above
-        $.ajax({
-            url: '/fetch-folder-contents',
-            method: 'GET',
-            data: { folderName: pathToUse },  // Use the folderPath as is
-            success: function(response) {
-                $('.folder-contents').html(response.folderHtml);
-                $('.file-container').html(response.fileHtml);
-                
-                // console.log("path to use in fetch folder content 2 : "+pathToUse);
-                
-                // let pathToUse = 'Accounting & Taxation /Charter documents /Director Details /Director 1';
-
-                // Split the string by '/' and trim spaces
-                
-                // const parts = pathToUse.split('/').map(part => part.trim());
-    
-                // let incrementalPaths = [];
-                
-                // // Loop through the parts and create incremental paths
-                // let currentPath = '';
-                // // console.log("parts is ss: "+parts);
-                
-                // parts.forEach((part, index) => {
-                //     // Append the current part to the growing path
-                //     currentPath = currentPath ? currentPath + '/' + part : part;
-                //     // console.log("nanananananananaaaaaaaa:::::: "+currentPath);
-                    
-                //     const element = $(`.toggle_icconn[data-folder-path="${currentPath}"]`);
-                //     // const element = $(`b.toggle_icconn[data-folder-path="${currentPath}"]`);
-
-                // if (element.length) {
-                // // Add the 'show' class to its sibling <ul> element with class 'dropdown-menu'
-                // element.closest('li').find('ul.dropdown-menu').addClass('show');
-                // // element.closest('li').find('a.folder-link').addClass('show');
-                    
-                // }
-    
-                // // Ensure the click event is attached only once and click the element programmatically
-                // if (!element.hasClass('clicked-once')) {
-                //     element.addClass('clicked-once').on('click', function() {
-                //         // console.log("Element clicked once!");
-                //     }).trigger('click'); // Trigger the click programmatically
-                // }
-                // // 
-                
-                
-                    
-                //     // Push the incremental path to the array
-                //     // incrementalPaths.push(currentPath);
-                // });
-                
-                // $(`a[data-folder-path="${pathToUse}"]`).addClass('selected-folder');
-                
-                
-                
-                // console.log(incrementalPaths);
-
-                
-                
-                // -------------------------------------------------
-
-                clearAppendedTables();
-
-                if (pathToUse === 'Legal/Secretarial/Board Meetings' && !incorporationTableAppended) {
-                    insertIncorporationTable();
-                    incorporationTableAppended = true;
-                } else if (pathToUse === 'Legal/Secretarial/Annual General Meeting' && !meetingTableAppended) {
-                    insertMeetingTable();
-                    meetingTableAppended = true;
-                } else if (pathToUse === 'Legal/Secretarial/Extra Ordinary General Meeting' && !orderTableAppended) {
-                    insertOrderTable();
-                    orderTableAppended = true;
-                } else if (pathToUse === 'Legal/Secretarial/Incorporation' && !incTableAppended) {
-                    insertINCTable();
-                    incTableAppended = true;
-                } else if (pathToUse === 'Legal/Secretarial/Annual Filings' && !annTableAppended) {
-                    insertANNTable();
-                    annTableAppended = true;
-                } else if (pathToUse === 'Legal/Secretarial/Director Appointments' && !directTableAppended) {
-                    insertDirectTable();
-                    directTableAppended = true;
-                } else if (pathToUse === 'Legal/Secretarial/Director Resignation' && !directexitTableAppended) {
-                    insertDirectexitTable();
-                    directexitTableAppended = true;
-                } else if (pathToUse === 'Legal/Secretarial/Auditor Appointment' && !auditappTableAppended) {
-                    insertauditappTable();
-                    auditappTableAppended = true;
-                } else if (pathToUse === 'Legal/Secretarial/Auditor Exits' && !auditexitTableAppended) {
-                    insertauditexitTable();
-                    auditexitTableAppended = true;
-                } else if (pathToUse === 'Legal/Secretarial/Statutory Registers' && !staturegiTableAppended) {
-                    insertstaturegiTable();
-                    staturegiTableAppended = true;
-                } else if (pathToUse === 'Legal/Secretarial/Deposit Undertakings' && !undertakingTableAppended) {
-                    insertundertakingTable();
-                    undertakingTableAppended = true;
-                } else if (pathToUse === 'Accounting & Taxation/Book-Keeping/Bank Account Statements' && !bankAccountStatementsTableAppended) {
-                    insertbankAccountStatementsTable();
-                    bankAccountStatementsTableAppended = true;
-                } else if (pathToUse === 'Accounting & Taxation/Book-Keeping/Fixed Deposit Statements' && !bankFixedDepositStatementsTableAppended) {
-                    insertbankFixedDepositStatementsTable();
-                    bankFixedDepositStatementsTableAppended = true;
-                } else if (pathToUse === 'Accounting & Taxation/Book-Keeping/Credit Card Statements' && !bankCreditCardStatementsTableAppended) {
-                    insertbankCreditCardStatementsTable();
-                    bankCreditCardStatementsTableAppended = true;
-                } else if (pathToUse === 'Accounting & Taxation/Book-Keeping/Mutual Fund Statements' && !bankMutualFundStatementsTableAppended) {
-                    insertbankMutualFundStatementsTable();
-                    bankMutualFundStatementsTableAppended = true;
-                } else if (pathToUse === 'Accounting & Taxation/Charter documents/Director Details/Director 1' && !charterdocumentsDirectordetatilsDirector1TableAppended) {
-                    insertcharterdocumentsDirectordetatilsDirector1Table();
-                    charterdocumentsDirectordetatilsDirector1TableAppended = true;
-                } else if (pathToUse === 'Accounting & Taxation/Charter documents/Director Details/Director 2' && !charterdocumentsDirectordetatilsDirector2TableAppended) {
-                    insertcharterdocumentsDirectordetatilsDirector2Table();
-                    charterdocumentsDirectordetatilsDirector2TableAppended = true;
-                } else if (pathToUse === 'Accounting & Taxation/Charter documents/Incorporation' && !charterdocumentsIncorporationTableAppended) {
-                    insertcharterdocumentsIncorporationTableAppendedTable();
-                    charterdocumentsIncorporationTableAppended = true;
-                } else if (pathToUse === 'Accounting & Taxation/Charter documents/Registrations' && !charterdocumentsRegistrationsTableAppended) {
-                    insertcharterdocumentsRegistrationsTableAppendedTable();
-                    charterdocumentsRegistrationsTableAppended = true;
-                }
-
-                bindFolderClickEvents();
-                updateBreadcrumb(pathToUse);
-                // hideLoader(); // Hide loader after contents are updated
-            },
-            error: function(xhr) {
-                console.error('Error fetching folder contents:', xhr.responseText);
-                // hideLoader(); // Hide loader in case of error
-            }
-        });
-    }
-
-
-    var incorporationTableAppended = false;
-    var meetingTableAppended = false;
-    var orderTableAppended = false;
-    var incTableAppended = false;
-    var annTableAppended = false;
-    var directTableAppended = false;
-    var directexitTableAppended = false;
-    var auditappTableAppended = false;
-    var auditexitTableAppended = false;
-    var staturegiTableAppended = false;
-    var undertakingTableAppended = false;
-    var bankAccountStatementsTableAppended = false;
-    var bankFixedDepositStatementsTableAppended = false;
-    var bankCreditCardStatementsTableAppended = false;
-    var bankMutualFundStatementsTableAppended = false;
-    var charterdocumentsDirectordetatilsDirector1TableAppended = false;
-    var charterdocumentsDirectordetatilsDirector2TableAppended = false;
-    var charterdocumentsIncorporationTableAppended = false;
-    var charterdocumentsRegistrationsTableAppended = false;
-    
-
-
-
-// Define the folder-to-function mappings and appended status
-const tableFunctions = {
-    'Legal/Secretarial/Board Meetings': ['insertIncorporationTable', 'incorporationTableAppended'],
-    'Legal/Secretarial/Annual General Meeting': ['insertMeetingTable', 'meetingTableAppended'],
-    'Legal/Secretarial/Extra Ordinary General Meeting': ['insertOrderTable', 'orderTableAppended'],
-    'Legal/Secretarial/Incorporation': ['insertINCTable', 'incTableAppended'],
-    'Legal/Secretarial/Annual Filings': ['insertANNTable', 'annTableAppended'],
-    'Legal/Secretarial/Director Appointments': ['insertDirectTable', 'directTableAppended'],
-    'Legal/Secretarial/Director Resignation': ['insertDirectexitTable', 'directexitTableAppended'],
-    'Legal/Secretarial/Auditor Appointment': ['insertauditappTable', 'auditappTableAppended'],
-    'Legal/Secretarial/Auditor Exits': ['insertauditexitTable', 'auditexitTableAppended'],
-    'Legal/Secretarial/Statutory Registers': ['insertstaturegiTable', 'staturegiTableAppended'],
-    'Legal/Secretarial/Deposit Undertakings': ['insertundertakingTable', 'undertakingTableAppended'],
-    'Accounting & Taxation/Book-Keeping/Bank Account Statements': ['insertbankAccountStatementsTable', 'bankAccountStatementsTableAppended'],
-    'Accounting & Taxation/Book-Keeping/Fixed Deposit Statements': ['insertbankFixedDepositStatementsTable', 'bankFixedDepositStatementsTableAppended'],
-    'Accounting & Taxation/Book-Keeping/Credit Card Statements': ['insertbankCreditCardStatementsTable', 'bankCreditCardStatementsTableAppended'],
-    'Accounting & Taxation/Book-Keeping/Mutual Fund Statements': ['insertbankMutualFundStatementsTable', 'bankMutualFundStatementsTableAppended'],
-    'Accounting & Taxation/Charter documents/Director Details/Director 1': ['insertcharterdocumentsDirectordetatilsDirector1Table', 'charterdocumentsDirectordetatilsDirector1TableAppended'],
-    'Accounting & Taxation/Charter documents/Director Details/Director 2': ['insertcharterdocumentsDirectordetatilsDirector2Table', 'charterdocumentsDirectordetatilsDirector2TableAppended'],
-    'Accounting & Taxation/Charter documents/Incorporation': ['insertcharterdocumentsIncorporationTable', 'charterdocumentsIncorporationTableAppended'],
-    'Accounting & Taxation/Charter documents/Registrations': ['insertcharterdocumentsRegistrationsTable', 'charterdocumentsRegistrationsTableAppended']
-};
-
-// Function to check if the table is already appended
-function isTableAppended(folderPath) {
-    const tableFuncEntry = tableFunctions[folderPath];
-    if (tableFuncEntry) {
-        const flagName = tableFuncEntry[1];
-        return JSON.parse(localStorage.getItem(flagName) || 'false');
-    }
-    return false;
-}
-
-// Function to set table appended status in localStorage
-function setTableAppended(folderPath, status) {
-    const tableFuncEntry = tableFunctions[folderPath];
-    if (tableFuncEntry) {
-        const flagName = tableFuncEntry[1];
-        localStorage.setItem(flagName, JSON.stringify(status));
-    }
-}
-
-// Clear appended table status
-function clearAppendedTables() {
-    for (let folderPath in tableFunctions) {
-        const flagName = tableFunctions[folderPath][1];
-        localStorage.removeItem(flagName);
-    }
-}
-
-// Function to handle table insertion
-function handleFolderPath(folderPath) {
-    console.log("Handling folder path:", folderPath);
-    clearAppendedTables();
-
-    if (folderPath === 'Legal/Secretarial/Board Meetings' && !incorporationTableAppended) {
-        console.log("Inserting Incorporation Table");
-        insertIncorporationTable();
-        incorporationTableAppended = true;
-    } else if (folderPath === 'Legal/Secretarial/Annual General Meeting' && !meetingTableAppended) {
-        console.log("Inserting Meeting Table");
-        insertMeetingTable();
-        meetingTableAppended = true;
-    } else if (folderPath === 'Legal/Secretarial/Extra Ordinary General Meeting' && !orderTableAppended) {
-        console.log("Inserting Order Table");
-        insertOrderTable();
-        orderTableAppended = true;
-    } else if (folderPath === 'Legal/Secretarial/Incorporation' && !incTableAppended) {
-        console.log("Inserting INC Table");
-        insertINCTable();
-        incTableAppended = true;
-    } else if (folderPath === 'Legal/Secretarial/Annual Filings' && !annTableAppended) {
-        console.log("Inserting ANN Table");
-        insertANNTable();
-        annTableAppended = true;
-    } else if (folderPath === 'Legal/Secretarial/Director Appointments' && !directTableAppended) {
-        console.log("Inserting Direct Table");
-        insertDirectTable();
-        directTableAppended = true;
-    } else if (folderPath === 'Legal/Secretarial/Director Resignation' && !directexitTableAppended) {
-        console.log("Inserting Direct Exit Table");
-        insertDirectexitTable();
-        directexitTableAppended = true;
-    } else if (folderPath === 'Legal/Secretarial/Auditor Appointment' && !auditappTableAppended) {
-        console.log("Inserting Audit App Table");
-        insertauditappTable();
-        auditappTableAppended = true;
-    } else if (folderPath === 'Legal/Secretarial/Auditor Exits' && !auditexitTableAppended) {
-        console.log("Inserting Audit Exit Table");
-        insertauditexitTable();
-        auditexitTableAppended = true;
-    } else if (folderPath === 'Legal/Secretarial/Statutory Registers' && !staturegiTableAppended) {
-        console.log("Inserting Statutory Registers Table");
-        insertstaturegiTable();
-        staturegiTableAppended = true;
-    } else if (folderPath === 'Legal/Secretarial/Deposit Undertakings' && !undertakingTableAppended) {
-        console.log("Inserting Undertaking Table");
-        insertundertakingTable();
-        undertakingTableAppended = true;
-    } else if (folderPath === 'Accounting & Taxation/Book-Keeping/Bank Account Statements' && !bankAccountStatementsTableAppended) {
-        console.log("Inserting Bank Account Statements Table");
-        insertbankAccountStatementsTable();
-        bankAccountStatementsTableAppended = true;
-    } else if (folderPath === 'Accounting & Taxation/Book-Keeping/Fixed Deposit Statements' && !bankFixedDepositStatementsTableAppended) {
-        console.log("Inserting Fixed Deposit Statements Table");
-        insertbankFixedDepositStatementsTable();
-        bankFixedDepositStatementsTableAppended = true;
-    } else if (folderPath === 'Accounting & Taxation/Book-Keeping/Credit Card Statements' && !bankCreditCardStatementsTableAppended) {
-        console.log("Inserting Credit Card Statements Table");
-        insertbankCreditCardStatementsTable();
-        bankCreditCardStatementsTableAppended = true;
-    } else if (folderPath === 'Accounting & Taxation/Book-Keeping/Mutual Fund Statements' && !bankMutualFundStatementsTableAppended) {
-        console.log("Inserting Mutual Fund Statements Table");
-        insertbankMutualFundStatementsTable();
-        bankMutualFundStatementsTableAppended = true;
-    } else if (folderPath === 'Accounting & Taxation/Charter documents/Director Details/Director 1' && !charterdocumentsDirectordetatilsDirector1TableAppended) {
-        console.log("Inserting Director 1 Table");
-        insertcharterdocumentsDirectordetatilsDirector1Table();
-        charterdocumentsDirectordetatilsDirector1TableAppended = true;
-    } else if (folderPath === 'Accounting & Taxation/Charter documents/Director Details/Director 2' && !charterdocumentsDirectordetatilsDirector2TableAppended) {
-        console.log("Inserting Director 2 Table");
-        insertcharterdocumentsDirectordetatilsDirector2Table();
-        charterdocumentsDirectordetatilsDirector2TableAppended = true;
-    } else if (folderPath === 'Accounting & Taxation/Charter documents/Incorporation' && !charterdocumentsIncorporationTableAppended) {
-        console.log("Inserting Incorporation Table");
-        insertcharterdocumentsIncorporationTableAppendedTable();
-        charterdocumentsIncorporationTableAppended = true;
-    } else if (folderPath === 'Accounting & Taxation/Charter documents/Registrations' && !charterdocumentsRegistrationsTableAppended) {
-        console.log("Inserting Registrations Table");
-        insertcharterdocumentsRegistrationsTableAppendedTable();
-        charterdocumentsRegistrationsTableAppended = true;
-    }
-}
-
-// Fetch folder contents
-
-    function clearAppendedTables() {
-        incorporationTableAppended = false;
-        meetingTableAppended = false;
-        orderTableAppended = false;
-        incTableAppended = false;
-        annTableAppended = false;
-        directTableAppended = false;
-        directexitTableAppended = false;
-        auditappTableAppended = false;
-        auditexitTableAppended = false;
-        staturegiTableAppended = false;
-        undertakingTableAppended = false;
-        bankAccountStatementsTableAppended = false;
-        bankFixedDepositStatementsTableAppended = false;
-        bankCreditCardStatementsTableAppended = false;
-        bankMutualFundStatementsTableAppended = false;
-        charterdocumentsDirectordetatilsDirector1TableAppended = false;
-        charterdocumentsDirectordetatilsDirector2TableAppended = false;
-        charterdocumentsIncorporationTableAppended = false;
-        charterdocumentsRegistrationsTableAppended = false;
-    }
-    
-    
-    
-     function insertcharterdocumentsRegistrationsTableAppendedTable() {
-        const tableHtml = `
-            @include('Charter_documents_Registrations')
-        `;
-        $('.file-container').append(tableHtml);
-    }
-    
-    
-     function insertcharterdocumentsIncorporationTableAppendedTable() {
-        const tableHtml = `
-            @include('Charter_documents_Incorporation')
-        `;
-        $('.file-container').append(tableHtml);
-    }
-    
-    function insertcharterdocumentsDirectordetatilsDirector2Table() {
-        const tableHtml = `
-            @include('Charter_documents_Director_Details_Director_2')
-        `;
-        $('.file-container').append(tableHtml);
-    }
-    
-     function insertcharterdocumentsDirectordetatilsDirector1Table() {
-        const tableHtml = `
-            @include('Charter_documents_Director_Details_Director_1')
-        `;
-        $('.file-container').append(tableHtml);
-    }
-    
-    function insertbankMutualFundStatementsTable() {
-        const tableHtml = `
-            @include('Book-Keeping_Mutual_Fund_Statements')
-        `;
-        $('.file-container').append(tableHtml);
-    }
-    
-     function insertbankCreditCardStatementsTable() {
-        const tableHtml = `
-            @include('Book-Keeping_Credit_Card_Statements')
-        `;
-        $('.file-container').append(tableHtml);
-    }
-    
-    function insertbankFixedDepositStatementsTable() {
-        const tableHtml = `
-            @include('Book-Keeping_Fixed_Deposit_Statements')
-        `;
-        $('.file-container').append(tableHtml);
-    }
-    
-    function insertbankAccountStatementsTable() {
-        const tableHtml = `
-            @include('Book-Keeping_Bank_Account_Statements')
-        `;
-        $('.file-container').append(tableHtml);
-    }
-
-    function insertundertakingTable() {
-        const tableHtml = `
-            @include('Secretarial_Deposit_Undertakings')
-        `;
-        $('.file-container').append(tableHtml);
-    }
-
-    function insertstaturegiTable() {
-        const tableHtml = `
-            @include('Secretarial_Statutory_Registers')
-        `;
-        $('.file-container').append(tableHtml);
-    }
-
-    function insertauditexitTable() {
-        const tableHtml = `
-            @include('Secretarial_Auditor_Exits')
-        `;
-        $('.file-container').append(tableHtml);
-    }
-
-    function insertauditappTable() {
-        const tableHtml = `
-            @include('Secretarial_Auditor_Appointment')
-        `;
-        $('.file-container').append(tableHtml);
-    }
-
-    function insertDirectexitTable() {
-        const tableHtml = `
-            @include('Secretarial_Director_Exits')
-        `;
-        $('.file-container').append(tableHtml);
-    }
-
-    function insertDirectTable() {
-        const tableHtml = `
-            @include('Secretarial_Director_Appointments')
-        `;
-        $('.file-container').append(tableHtml);
-    }
-
-    function insertANNTable() {
-        const tableHtml = `
-            @include('Secretarial_Annual_Filings')
-        `;
-        $('.file-container').append(tableHtml);
-    }
-
-    function insertINCTable() {
-        const tableHtml = `
-            @include('Secretarial_Incorporation')
-        `;
-        $('.file-container').append(tableHtml);
-    }
-
-    function insertOrderTable() {
-        const tableHtml = `
-            @include('Secretarial_Extra_Ordinary_General_Meeting')
-        `;
-        $('.file-container').append(tableHtml);
-    }
-
-    function insertMeetingTable() {
-        const tableHtml = `
-            @include('Secretarial_Annual_General_Meeting')
-        `;
-        $('.file-container').append(tableHtml);
-    }
-
-    function insertIncorporationTable() {
-        const tableHtml = `
-            @include('Secretarial_Board_Meetings')
-        `;
-        $('.file-container').append(tableHtml);
-    }
-
-    $('.hidebdnotice').on('click', function() {
-        alert('hello');
-        console.log("clicked");
-    });
-
-    $('#create-folder-form').on('submit', function(e) {
-        e.preventDefault();
-        var $submitButton = $(this).find('button[type="submit"]');
-        $submitButton.prop('disabled', true).append('<span class="button-spinner"></span>');
-        var formData = $(this).serialize();
-        
-        var parentFolderValue = $('#parent-folder').val();
-
-        $.ajax({
-            url: $(this).attr('action'),
-            type: 'POST',
-            data: formData,
-            success: function(response) {
-                setTimeout(function() {
-                    $('.button-spinner').remove();
-                    toastr.success(response.message);
-                   
-                        window.location.reload(true);
-                        exit;
-                    if (response.success) {
-                        $('#create_folder').modal('hide');
-                        fetchFolderContents(parentFolderValue);
-                        $('#create_folderr').modal('hide');
-                        if (!parentFolderValue) {
-                            $("#fresponsive").load(" #fresponsive > *");
-                        } else {
-                            fetchSubfolders(parentFolderValue, function(latestFolderPath) {
-                                // Additional actions if needed after fetching subfolders
-                            });
-                        }
-                        $('.ba-we-love-subscribers').removeClass("open");
-                        $('.ba-we-love-subscribers-fab').removeClass("gray");
-                        $('.img-fab.img').removeClass("close");
-                    }
-                    $('input[name="folder_name"]').val('');
-                    $submitButton.prop('disabled', false);
-                }, 5000); // Show loader for 5 seconds
-            },
-            error: function(xhr) {
-                $('.button-spinner').remove();
-                let response = JSON.parse(xhr.responseText);
-                toastr.error('Error: ' + response.message);
-                $('input[name="folder_name"]').val('');
-                $submitButton.prop('disabled', false);
-                $('.ba-we-love-subscribers').removeClass("open");
-                $('.ba-we-love-subscribers-fab').removeClass("gray");
-                $('.img-fab.img').removeClass("close");
-            }
-        });
-    });
-
- $('#upload-file-form').on('submit', function(e) {
-    e.preventDefault();
-    var $submitButton = $(this).find('button[type="submit"]');
-    $submitButton.prop('disabled', true).append('<span class="button-spinner"></span>'); // Disable and append spinner
-
-    var formData = new FormData(this);
-
-    $.ajax({
-        url: $(this).attr('action'),
-        type: 'POST',
-        data: formData,
-        processData: false,
-        contentType: false,
-        success: function(response) {
-            $('.button-spinner').remove(); // Remove spinner
-
-            if (response.success) {
-                // toastr.success('File uploaded successfully!'); // Display success toaster message
-                if (response.successMessages.length) {
-                    response.successMessages.forEach(function(msg) {
-                        toastr.success(msg);
-                    });
-                }
-                if (response.errorMessages.length) {
-                    response.errorMessages.forEach(function(msg) {
-                        toastr.warning(msg);
-                    });
-                }
-                $('#upload_file').modal('hide');
-                $('#upload_filee').modal('hide');
-                fetchFolderContents($('#parent-folder').val());
-                resetFileInput($('input[name="file"]'));
-                window.location.reload(true);
-                exit;
-            } else {
-                toastr.error('Failed to upload file: ' + response.message);
-                
-            }
-            
-            $submitButton.prop('disabled', false); // Re-enable submit button
-        },
-        error: function(xhr) {
-            $('.button-spinner').remove(); // Remove spinner
-            $submitButton.prop('disabled', false); // Re-enable submit button
-
-            if (xhr.status === 400 || xhr.status === 500) {
-                let response = JSON.parse(xhr.responseText);
-                toastr.error('Error: ' + response.message);
-                
-            } else {
-                toastr.error('An unknown error occurred.');
-               
-            }
-        }
-    });
-});
-
-
-    function resetFileInput($fileInput) {
-        $fileInput.val('');
-        var fileArea = $fileInput.closest('.modal-content');
-        var selectedFileDiv = fileArea.find('.selected-file');
-        selectedFileDiv.text('');
-
-        fileArea.removeClass('green-outline');
-        fileArea.css('outline', '2px dashed #D2DBE5');
-        $fileInput.closest('.file-dummy').find('.fille').css('display', 'inline');
-    }
-
-    function fetchFirstParentFolderContents() {
-        var firstParentPath = $('.folder-link:first').data('folder-path');
-        if (firstParentPath) {
-            fetchFolderContents(firstParentPath);
-        } else {
-            $('.folder-contents').html('No folders available.');
-            $('.file-contents').html('No files available.');
-        }
-    }
-
-    fetchFirstParentFolderContents();
-    bindFolderClickEvents();
-
-    var firstFolderPath = '{{ $folders->where("parent_name", null)->first()->path ?? '' }}';
-    const encodedString = getQueryParamf('folder');
-    const decodedString = decodeURIComponent(encodedString);
-    
-    $('#parent-folder').val(folder );
-    $('#parent-folders').val(firstFolderPath);
-
-    toggleLabelWrap();
-});
-
-// Simulating document loading
-$(window).on('load', function() {
-    // After everything is loaded, hide the loader
-    hideLoader();
-});
-
-</script>
 <!-- Ensure you have jQuery included -->
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
@@ -7410,6 +6314,33 @@ checkFolderConditions();
 </script>
 
 
+<script>
+    $(document).ready(function() {
+        // Function to dynamically get the 'folder' parameter from the URL
+        function getFolderFromURL() {
+            // Get the current URL query parameters
+            const urlParams = new URLSearchParams(window.location.search);
+
+            // Extract the 'folder' parameter from the URL
+            const encodedFolder = urlParams.get('folder');
+
+            if (encodedFolder) {
+                // Decode the encoded folder value
+                const decodedFolder = decodeURIComponent(encodedFolder);
+
+                // Dynamically set the 'data-location' attribute on the button element
+                $('.getparm').attr('data-location', decodedFolder);
+                
+                console.log("Decoded Folder Path: ", decodedFolder); // For debugging
+            } else {
+                console.log('No folder parameter found in the URL.');
+            }
+        }
+
+        // Call the function every second (1000 milliseconds)
+        setInterval(getFolderFromURL, 100);
+    });
+</script>
 
 @endsection
    

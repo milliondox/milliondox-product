@@ -793,6 +793,117 @@ public function storecompanyemployee(Request $request)
         'emp_code' => $request->emp_code,
     ]);
 
+    $employeeName = $request->name;
+   
+
+    // Get current year and month
+    $currentYear = now()->year;
+    $currentMonth = now()->format('F'); // Full month name (e.g., 'October')
+
+    // Determine fiscal year
+    if (now()->month < 4) {
+        $fiscalYear = ($currentYear - 1) . '-' . $currentYear;
+    } else {
+        $fiscalYear = $currentYear . '-' . ($currentYear + 1);
+    }
+
+    // Step 1: Create Human Resources folder
+    $hrFolderName = "{$fiscalYear}{$currentMonth}{$userId}_Human Resources";
+    $hrFolderPath = "{$hrFolderName}";
+
+    if (!Storage::exists($hrFolderPath)) {
+        Storage::makeDirectory($hrFolderPath);
+        // Store in database
+        $hrFolder = new Folder();
+        $hrFolder->name = basename($hrFolderPath);
+        $hrFolder->path = $hrFolderPath;
+        $hrFolder->parent_name = null;
+        $hrFolder->user_id = $userId;
+        $hrFolder->common_folder = 1;
+        $hrFolder->save();
+    }
+
+    // Step 2: Create Employee folder inside Human Resources folder
+    $employeeFolderName = "{$fiscalYear}{$currentMonth}{$userId}_{$employeeName}";
+    $employeeFolderPath = "{$hrFolderPath}/{$employeeFolderName}";
+
+    if (!Storage::exists($employeeFolderPath)) {
+        Storage::makeDirectory($employeeFolderPath);
+        // Store in database
+        $employeeFolder = new Folder();
+        $employeeFolder->name = basename($employeeFolderPath);
+        $employeeFolder->path = $employeeFolderPath;
+        $employeeFolder->parent_name = $hrFolderPath;
+        $employeeFolder->user_id = $userId;
+        $employeeFolder->common_folder = 1;
+        $employeeFolder->save();
+    }
+
+    // Define the folder structures for Employee Database, Pay Registers, Policies & Handbook, and Appraisals
+    $folders = [
+        'Employee Database' => [
+            'Onboarding documents',
+            'KYC Documents',
+            'Offboarding',
+            'Reference Checks',
+            'ESOP',
+            'Declarations',
+        ],
+        'Pay Registers' => [
+            'Monthly Payrun',
+            'Reimbursements',
+            'Salary Slips',
+        ],
+        'Policies & Handbook' => [
+            'Leave policy',
+            'Attendance policy',
+            'Reimbursement policy',
+            'Organisation Chart',
+            'Code of conduct',
+            'Health Insurance',
+            'Asset Allocation & Usage Policy',
+        ],
+        'Appraisals' => [
+            'Appraisals forms',
+            'Management approvals',
+            'KRAs and OKRs',
+        ],
+    ];
+
+    // Create folders dynamically based on the defined structure
+    foreach ($folders as $mainFolder => $subFolders) {
+        $mainFolderPath = "{$employeeFolderPath}/{$fiscalYear}{$currentMonth}{$userId}_{$mainFolder}";
+
+        if (!Storage::exists($mainFolderPath)) {
+            Storage::makeDirectory($mainFolderPath);
+            // Store in database
+            $mainFolderDb = new Folder();
+            $mainFolderDb->name = basename($mainFolderPath);
+            $mainFolderDb->path = $mainFolderPath;
+            $mainFolderDb->parent_name = $employeeFolderPath;
+            $mainFolderDb->user_id = $userId;
+            $mainFolderDb->common_folder = 1;
+            $mainFolderDb->save();
+        }
+
+        // Create subfolders inside each main folder
+        foreach ($subFolders as $subFolder) {
+            $subFolderPath = "{$mainFolderPath}/{$fiscalYear}{$currentMonth}{$userId}_{$subFolder}";
+
+            if (!Storage::exists($subFolderPath)) {
+                Storage::makeDirectory($subFolderPath);
+                // Store in database
+                $subFolderDb = new Folder();
+                $subFolderDb->name = basename($subFolderPath);
+                $subFolderDb->path = $subFolderPath;
+                $subFolderDb->parent_name = $mainFolderPath;
+                $subFolderDb->user_id = $userId;
+                $subFolderDb->common_folder = 1;
+                $subFolderDb->save();
+            }
+        }
+    }
+
     // Return a success response (optional)
     return response()->json([
         'message' => 'Employee details stored successfully!',
@@ -874,6 +985,69 @@ public function downloadCsv()
 
 
 
+// public function uploadempcsv(Request $request)
+// {
+//     // Validate the uploaded CSV file
+//     $validator = Validator::make($request->all(), [
+//         'csv_file' => 'required|mimes:csv,txt|max:200048',
+//     ]);
+
+//     if ($validator->fails()) {
+//         // Redirect back with validation errors
+//         return redirect()->back()->withErrors($validator)->withInput();
+//     }
+
+//     // Get the authenticated user's ID
+//     $userId = Auth::id();
+
+//     // Get the uploaded file
+//     $file = $request->file('csv_file');
+
+//     // Open the CSV file for reading
+//     $file_handle = fopen($file->getRealPath(), 'r');
+    
+//     // Skip the header row
+//     $header = fgetcsv($file_handle); 
+
+//     $employeesToInsert = [];
+//     $existingEmpCodes = [];
+//     $skippedRecords = 0;
+
+//     // Process the CSV file row by row
+//     while (($row = fgetcsv($file_handle, 1000, ",")) !== FALSE) {
+//         $emp_code = $row[3];
+
+//         // Check if the emp_code already exists in the database
+//         if (StoreCompanyEmployee::where('emp_code', $emp_code)->exists()) {
+//             // If the emp_code exists, increment the skipped record count
+//             $skippedRecords++;
+//         } else {
+//             // If it's unique, prepare it for insertion
+//             $employeesToInsert[] = [
+//                 'user_id' => $userId,
+//                 'name' => $row[0],
+//                 'app_date' => \Carbon\Carbon::parse($row[1])->format('Y-m-d'), // Convert date to Y-m-d format
+//                 'termi_date' => !empty($row[2]) ? \Carbon\Carbon::parse($row[2])->format('Y-m-d') : null,
+//                 'emp_code' => $emp_code,
+//                 'created_at' => now(), // Set the created_at timestamp
+//                 'updated_at' => now(), // Set the updated_at timestamp
+//             ];
+//         }
+//     }
+
+//     fclose($file_handle);
+
+//     // Insert only the unique employee records into the database
+//     $storedRecords = count($employeesToInsert);
+//     if ($storedRecords > 0) {
+//         StoreCompanyEmployee::insert($employeesToInsert);
+//     }
+
+//     // Return a success message with the count of stored and skipped records
+//     return redirect()->back()->with('success', "{$storedRecords} employees stored successfully and {$skippedRecords} duplicate employees were skipped.");
+// }
+
+
 public function uploadempcsv(Request $request)
 {
     // Validate the uploaded CSV file
@@ -921,6 +1095,10 @@ public function uploadempcsv(Request $request)
                 'created_at' => now(), // Set the created_at timestamp
                 'updated_at' => now(), // Set the updated_at timestamp
             ];
+
+            // Create the folder structure for each employee
+            $employeeName = $row[0];
+            $this->createFolderStructure($employeeName, $userId);
         }
     }
 
@@ -935,6 +1113,121 @@ public function uploadempcsv(Request $request)
     // Return a success message with the count of stored and skipped records
     return redirect()->back()->with('success', "{$storedRecords} employees stored successfully and {$skippedRecords} duplicate employees were skipped.");
 }
+
+/**
+ * Create folder structure for the employee
+ */
+protected function createFolderStructure($employeeName, $userId)
+{
+    // Get current year and month
+    $currentYear = now()->year;
+    $currentMonth = now()->format('F'); // Full month name (e.g., 'October')
+
+    // Determine fiscal year
+    if (now()->month < 4) {
+        $fiscalYear = ($currentYear - 1) . '-' . $currentYear;
+    } else {
+        $fiscalYear = $currentYear . '-' . ($currentYear + 1);
+    }
+
+    // Step 1: Create Human Resources folder
+    $hrFolderName = "{$fiscalYear}{$currentMonth}{$userId}_Human Resources";
+    $hrFolderPath = "{$hrFolderName}";
+
+    if (!Storage::exists($hrFolderPath)) {
+        Storage::makeDirectory($hrFolderPath);
+        // Store in database
+        $hrFolder = new Folder();
+        $hrFolder->name = basename($hrFolderPath);
+        $hrFolder->path = $hrFolderPath;
+        $hrFolder->parent_name = null;
+        $hrFolder->user_id = $userId;
+        $hrFolder->common_folder = 1;
+        $hrFolder->save();
+    }
+
+    // Step 2: Create Employee folder inside Human Resources folder
+    $employeeFolderName = "{$fiscalYear}{$currentMonth}{$userId}_{$employeeName}";
+    $employeeFolderPath = "{$hrFolderPath}/{$employeeFolderName}";
+
+    if (!Storage::exists($employeeFolderPath)) {
+        Storage::makeDirectory($employeeFolderPath);
+        // Store in database
+        $employeeFolder = new Folder();
+        $employeeFolder->name = basename($employeeFolderPath);
+        $employeeFolder->path = $employeeFolderPath;
+        $employeeFolder->parent_name = $hrFolderPath;
+        $employeeFolder->user_id = $userId;
+        $employeeFolder->common_folder = 1;
+        $employeeFolder->save();
+    }
+
+    // Define the folder structures for Employee Database, Pay Registers, Policies & Handbook, and Appraisals
+    $folders = [
+        'Employee Database' => [
+            'Onboarding documents',
+            'KYC Documents',
+            'Offboarding',
+            'Reference Checks',
+            'ESOP',
+            'Declarations',
+        ],
+        'Pay Registers' => [
+            'Monthly Payrun',
+            'Reimbursements',
+            'Salary Slips',
+        ],
+        'Policies & Handbook' => [
+            'Leave policy',
+            'Attendance policy',
+            'Reimbursement policy',
+            'Organisation Chart',
+            'Code of conduct',
+            'Health Insurance',
+            'Asset Allocation & Usage Policy',
+        ],
+        'Appraisals' => [
+            'Appraisals forms',
+            'Management approvals',
+            'KRAs and OKRs',
+        ],
+    ];
+
+    // Create folders dynamically based on the defined structure
+    foreach ($folders as $mainFolder => $subFolders) {
+        $mainFolderPath = "{$employeeFolderPath}/{$fiscalYear}{$currentMonth}{$userId}_{$mainFolder}";
+
+        if (!Storage::exists($mainFolderPath)) {
+            Storage::makeDirectory($mainFolderPath);
+            // Store in database
+            $mainFolderDb = new Folder();
+            $mainFolderDb->name = basename($mainFolderPath);
+            $mainFolderDb->path = $mainFolderPath;
+            $mainFolderDb->parent_name = $employeeFolderPath;
+            $mainFolderDb->user_id = $userId;
+            $mainFolderDb->common_folder = 1;
+            $mainFolderDb->save();
+        }
+
+        // Create subfolders inside each main folder
+        foreach ($subFolders as $subFolder) {
+            $subFolderPath = "{$mainFolderPath}/{$fiscalYear}{$currentMonth}{$userId}_{$subFolder}";
+
+            if (!Storage::exists($subFolderPath)) {
+                Storage::makeDirectory($subFolderPath);
+                // Store in database
+                $subFolderDb = new Folder();
+                $subFolderDb->name = basename($subFolderPath);
+                $subFolderDb->path = $subFolderPath;
+                $subFolderDb->parent_name = $mainFolderPath;
+                $subFolderDb->user_id = $userId;
+                $subFolderDb->common_folder = 1;
+                $subFolderDb->save();
+            }
+        }
+    }
+}
+
 
 
 public function getEventWithDate(Request $request, $eventDate)
@@ -12077,7 +12370,157 @@ public function fetchSecretarialAuditorAppointmentALAFileData()
 
     return response()->json(['files' => $files]);
 }
+public function fetchHremponboardFileData(Request $request)
+{
+    // Get the location value
+    $location = $request->input('location');
+    $user = auth()->user();
 
+    
+// dd($location);
+    // Fetch files based on the user ID and decoded folder location
+    $files = CommonTable::where('user_id', $user->id)
+        ->where('is_delete', 0)
+        ->where('location', $location) // Using the decoded folder parameter
+        ->where('real_file_name', 'Offer Letter')
+        ->get();
+
+    // Return the fetched files as a JSON response
+    return response()->json(['files' => $files]);
+}
+public function fetchhremponboardalFileData(Request $request)
+{
+    // Get the location value
+    $location = $request->input('location');
+    $user = auth()->user();
+
+    
+// dd($location);
+    // Fetch files based on the user ID and decoded folder location
+    $files = CommonTable::where('user_id', $user->id)
+        ->where('is_delete', 0)
+        ->where('location', $location) // Using the decoded folder parameter
+        ->where('real_file_name', 'Acceptance Letter')
+        ->get();
+
+    // Return the fetched files as a JSON response
+    return response()->json(['files' => $files]);
+}
+
+public function fetchhremponboardeaFileData(Request $request)
+{
+    // Get the location value
+    $location = $request->input('location');
+    $user = auth()->user();
+
+    
+// dd($location);
+    // Fetch files based on the user ID and decoded folder location
+    $files = CommonTable::where('user_id', $user->id)
+        ->where('is_delete', 0)
+        ->where('location', $location) // Using the decoded folder parameter
+        ->where('real_file_name', 'Employment Agreement')
+        ->get();
+
+    // Return the fetched files as a JSON response
+    return response()->json(['files' => $files]);
+}
+
+public function fetchhremponboardndaFileData(Request $request)
+{
+    // Get the location value
+    $location = $request->input('location');
+    $user = auth()->user();
+
+    
+// dd($location);
+    // Fetch files based on the user ID and decoded folder location
+    $files = CommonTable::where('user_id', $user->id)
+        ->where('is_delete', 0)
+        ->where('location', $location) // Using the decoded folder parameter
+        ->where('real_file_name', 'Non Disclosure Agreement')
+        ->get();
+
+    // Return the fetched files as a JSON response
+    return response()->json(['files' => $files]);
+}
+public function fetchhremponboardncFileData(Request $request)
+{
+    // Get the location value
+    $location = $request->input('location');
+    $user = auth()->user();
+
+    
+// dd($location);
+    // Fetch files based on the user ID and decoded folder location
+    $files = CommonTable::where('user_id', $user->id)
+        ->where('is_delete', 0)
+        ->where('location', $location) // Using the decoded folder parameter
+        ->where('real_file_name', 'Non-compete')
+        ->get();
+
+    // Return the fetched files as a JSON response
+    return response()->json(['files' => $files]);
+}
+
+public function fetchhremponboardcbFileData(Request $request)
+{
+    // Get the location value
+    $location = $request->input('location');
+    $user = auth()->user();
+
+    
+// dd($location);
+    // Fetch files based on the user ID and decoded folder location
+    $files = CommonTable::where('user_id', $user->id)
+        ->where('is_delete', 0)
+        ->where('location', $location) // Using the decoded folder parameter
+        ->where('real_file_name', 'Contractual Bond')
+        ->get();
+
+    // Return the fetched files as a JSON response
+    return response()->json(['files' => $files]);
+}
+
+
+public function fetchhremponboardepfFileData(Request $request)
+{
+    // Get the location value
+    $location = $request->input('location');
+    $user = auth()->user();
+
+    
+// dd($location);
+    // Fetch files based on the user ID and decoded folder location
+    $files = CommonTable::where('user_id', $user->id)
+        ->where('is_delete', 0)
+        ->where('location', $location) // Using the decoded folder parameter
+        ->where('real_file_name', 'Form 11 - EPF')
+        ->get();
+
+    // Return the fetched files as a JSON response
+    return response()->json(['files' => $files]);
+}
+
+
+public function fetchhremponboardincometaxFileData(Request $request)
+{
+    // Get the location value
+    $location = $request->input('location');
+    $user = auth()->user();
+
+    
+// dd($location);
+    // Fetch files based on the user ID and decoded folder location
+    $files = CommonTable::where('user_id', $user->id)
+        ->where('is_delete', 0)
+        ->where('location', $location) // Using the decoded folder parameter
+        ->where('real_file_name', 'Form 12BB - Income Tax')
+        ->get();
+
+    // Return the fetched files as a JSON response
+    return response()->json(['files' => $files]);
+}
 
 public function SecretarialAuditorAppointmentSR(Request $request)
 {
@@ -17662,12 +18105,106 @@ $entriesinc9 = CommonTable::where('user_id', $user->id)
         $totalSizeKBSECSRRPB = round($totalSizeBytesSECSRRPB / 1024, 2);
         
 
+        $folderLocation = request()->query('folder');
+
+    // Ensure the parameter is not null or empty before proceeding
+    if (!$folderLocation) {
+        // Handle the case when the parameter is not provided
+        return response()->json(['error' => 'No folder parameter found.'], 400);
+    }
+
+    // Decode the folder parameter
+    $decodedFolderLocation = urldecode($folderLocation);
+
+    // Fetch entries from the database based on the user ID, is_delete status, location, and real_file_name
+    $entriesemponboard = CommonTable::where('user_id', $user->id)
+        ->where('is_delete', 0)
+        ->where('location', $decodedFolderLocation) // Use the decoded folder parameter here
+        ->where('real_file_name', 'Offer Letter')
+        ->get();
+            // dd($decodedFolderLocation);
+        $countemponboard = $entriesemponboard->count();
+        $totalSizeBytesemponboard = $entriesemponboard->sum('file_size');
+        $totalSizeKBemponboard = round($totalSizeBytesemponboard / 1024, 2);
+
+        // dd($totalSizeKBemponboard);
         
-        
-        
+       
         // sandeep end here 30 sept 2024
         
-        
+        $entriesemponboardal = CommonTable::where('user_id', $user->id)
+        ->where('is_delete', 0)
+        ->where('location', $decodedFolderLocation) // Use the decoded folder parameter here
+        ->where('real_file_name', 'Acceptance Letter')
+        ->get();
+            // dd($decodedFolderLocation);
+        $countemponboardal = $entriesemponboardal->count();
+        $totalSizeBytesemponboardal = $entriesemponboardal->sum('file_size');
+        $totalSizeKBemponboardal = round($totalSizeBytesemponboardal / 1024, 2);
+
+        $entriesemponboardea = CommonTable::where('user_id', $user->id)
+        ->where('is_delete', 0)
+        ->where('location', $decodedFolderLocation) // Use the decoded folder parameter here
+        ->where('real_file_name', 'Employment Agreement')
+        ->get();
+            // dd($decodedFolderLocation);
+        $countemponboardea = $entriesemponboardea->count();
+        $totalSizeBytesemponboardea = $entriesemponboardea->sum('file_size');
+        $totalSizeKBemponboardea = round($totalSizeBytesemponboardea / 1024, 2);
+
+
+        $entriesemponboardnda = CommonTable::where('user_id', $user->id)
+        ->where('is_delete', 0)
+        ->where('location', $decodedFolderLocation) // Use the decoded folder parameter here
+        ->where('real_file_name', 'Non Disclosure Agreement')
+        ->get();
+            // dd($decodedFolderLocation);
+        $countemponboardnda = $entriesemponboardnda->count();
+        $totalSizeBytesemponboardnda = $entriesemponboardnda->sum('file_size');
+        $totalSizeKBemponboardnda = round($totalSizeBytesemponboardnda / 1024, 2);
+
+        $entriesemponboardnc = CommonTable::where('user_id', $user->id)
+        ->where('is_delete', 0)
+        ->where('location', $decodedFolderLocation) // Use the decoded folder parameter here
+        ->where('real_file_name', 'Non-compete')
+        ->get();
+            // dd($decodedFolderLocation);
+        $countemponboardnc = $entriesemponboardnc->count();
+        $totalSizeBytesemponboardnc = $entriesemponboardnc->sum('file_size');
+        $totalSizeKBemponboardnc = round($totalSizeBytesemponboardnc / 1024, 2);
+
+
+        $entriesemponboardcb = CommonTable::where('user_id', $user->id)
+        ->where('is_delete', 0)
+        ->where('location', $decodedFolderLocation) // Use the decoded folder parameter here
+        ->where('real_file_name', 'Contractual Bond')
+        ->get();
+            // dd($decodedFolderLocation);
+        $countemponboardcb = $entriesemponboardcb->count();
+        $totalSizeBytesemponboardcb = $entriesemponboardcb->sum('file_size');
+        $totalSizeKBemponboardcb = round($totalSizeBytesemponboardcb / 1024, 2);
+
+
+        $entriesemponboardepf = CommonTable::where('user_id', $user->id)
+        ->where('is_delete', 0)
+        ->where('location', $decodedFolderLocation) // Use the decoded folder parameter here
+        ->where('real_file_name', 'Form 11 - EPF')
+        ->get();
+            // dd($decodedFolderLocation);
+        $countemponboardepf = $entriesemponboardepf->count();
+        $totalSizeBytesemponboardepf = $entriesemponboardepf->sum('file_size');
+        $totalSizeKBemponboardepf = round($totalSizeBytesemponboardepf / 1024, 2);
+
+
+        $entriesemponboardincometax = CommonTable::where('user_id', $user->id)
+        ->where('is_delete', 0)
+        ->where('location', $decodedFolderLocation) // Use the decoded folder parameter here
+        ->where('real_file_name', 'Form 12BB - Income Tax')
+        ->get();
+            // dd($decodedFolderLocation);
+        $countemponboardincometax = $entriesemponboardincometax->count();
+        $totalSizeBytesemponboardincometax = $entriesemponboardincometax->sum('file_size');
+        $totalSizeKBemponboardincometax = round($totalSizeBytesemponboardincometax / 1024, 2);
         
         $user = auth()->user();
          $userRole = $user->role; // Ensure 'role' field exists in the users table
@@ -17682,7 +18219,7 @@ $entriesinc9 = CommonTable::where('user_id', $user->id)
     $userRoleRecord = UserRole::where('role', $userRole)->first();
         
         
-        return view('docurepo', compact('totalSizeKBdirectorappointmentsdir3din','countdirectorappointmentsdir3din','cli_announcements','fileCount','fileCount1','user','commondataroom','countSECAASR','totalSizeKBSECAASR','countSECAAALA','totalSizeKBSECAAALA','countSECAACRCAA','totalSizeKBSECAACRCAA','countSECAALA','totalSizeKBSECAALA','countSECAAIA','totalSizeKBSECAAIA','countSECAABRAA','totalSizeKBSECAABRAA','countcharregPP','totalSizeKBcharregPP','countcharregLWFC','totalSizeKBcharregLWFC','countcharregPTC','totalSizeKBcharregPTC','countcharregESIC','totalSizeKBcharregESIC','countcharregPFC','totalSizeKBcharregPFC','countcharregTrademark','totalSizeKBcharregTrademark','countcharregMSME','totalSizeKBcharregMSME','countcharregGSTIN','totalSizeKBcharregGSTIN','countcharregtan','totalSizeKBcharregtan','countcharregpan','totalSizeKBcharregpan','countIncorporationSharecertifF',
+        return view('docurepo', compact('countemponboardincometax','totalSizeKBemponboardincometax','countemponboardepf','totalSizeKBemponboardepf','countemponboardcb','totalSizeKBemponboardcb','countemponboardnc','totalSizeKBemponboardnc','countemponboardnda','totalSizeKBemponboardnda','countemponboardea','totalSizeKBemponboardea','countemponboardal','totalSizeKBemponboardal','totalSizeKBemponboard','countemponboard','totalSizeKBdirectorappointmentsdir3din','countdirectorappointmentsdir3din','cli_announcements','fileCount','fileCount1','user','commondataroom','countSECAASR','totalSizeKBSECAASR','countSECAAALA','totalSizeKBSECAAALA','countSECAACRCAA','totalSizeKBSECAACRCAA','countSECAALA','totalSizeKBSECAALA','countSECAAIA','totalSizeKBSECAAIA','countSECAABRAA','totalSizeKBSECAABRAA','countcharregPP','totalSizeKBcharregPP','countcharregLWFC','totalSizeKBcharregLWFC','countcharregPTC','totalSizeKBcharregPTC','countcharregESIC','totalSizeKBcharregESIC','countcharregPFC','totalSizeKBcharregPFC','countcharregTrademark','totalSizeKBcharregTrademark','countcharregMSME','totalSizeKBcharregMSME','countcharregGSTIN','totalSizeKBcharregGSTIN','countcharregtan','totalSizeKBcharregtan','countcharregpan','totalSizeKBcharregpan','countIncorporationSharecertifF',
         'totalSizeKBIncorporationSharecertifF','countIncorporationTrustDeed'
         ,'totalSizeKBIncorporationTrustDeed','countIncorporationLLPAgreement',
         'totalSizeKBIncorporationLLPAgreement','countIncorporationPartnerdeed',
@@ -18006,6 +18543,7 @@ public function shareFolder(Request $request)
    public function fetchFolderContents(Request $request)
     {
           $folderPath = $request->get('folderName');
+          $folderPaths = preg_replace('/\//', ' / ', $folderPath);
         //   dd($folderPath);
     $sortOption = $request->get('sortOption');  // Get the selected sorting option
     
@@ -18048,9 +18586,11 @@ public function shareFolder(Request $request)
         $folderContents = ($sortOption === 'a-to-z') ? $folderContents->sortBy('name') : $folderContents->sortByDesc('name');
     }
 
-        $fileContents = CommonTable::where('location', $folderPath)->where('user_id', Auth::id())->where('is_delete', 0 )->get();
+
+        $fileContents = CommonTable::where('location', $folderPaths)->where('user_id', Auth::id())->where('is_delete', 0 )->get();
         // dd($fileContents);
-        $foldername = "Incorporation";
+        // Legal/Secretarial/Board Meetings
+        // dd($folderPath);
         $files = UploadedFile::all();
         // Generate the HTML for folders
           if (!$folderContents->isEmpty()) {
@@ -18353,6 +18893,36 @@ public function shareFolder(Request $request)
     
         return response()->json(['folderHtml' => $folderHtml,  'fileHtml' => $fileHtml]);
     }
+//     public function downloadFolders(Request $request)
+// {
+//     $folderId = $request->input('folder_id');
+//     $folderPath = $request->input('folder_path');
+
+//     // Define the folder's full path
+//     $folder = Storage::disk('local')->path($folderPath);
+
+//     // Create a zip file
+//     $zipFileName = 'folder_' . $folderId . '.zip';
+//     $zipFilePath = storage_path('app/public/' . $zipFileName);
+
+//     $zip = new ZipArchive;
+//     if ($zip->open($zipFilePath, ZipArchive::CREATE | ZipArchive::OVERWRITE) === true) {
+//         $files = new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator($folder));
+
+//         foreach ($files as $file) {
+//             // Skip directories (they would be added automatically)
+//             if (!$file->isDir()) {
+//                 $filePath = $file->getRealPath();
+//                 // Add the file to the zip, preserving the folder structure
+//                 $relativePath = substr($filePath, strlen($folder) + 1);
+//                 $zip->addFile($filePath, $relativePath);
+//             }
+//         }
+//         $zip->close();
+//     }
+
+//     return response()->download($zipFilePath)->deleteFileAfterSend(true);
+// }
     public function showfile($id)
     {
         // Get the authenticated user's ID
@@ -18381,19 +18951,19 @@ public function shareFolder(Request $request)
     public function downloadFolder($folderPath)
 {
     // Decode the folder path since it was URL-encoded in the request
-    $folderPath = urldecode($folderPath);
+    $folderPaths = $folderPath;
     
     // Fetch the folder based on the folder path
-    $folder = Folder::where('path', $folderPath)->first();
+    $folder = Folder::where('id', $folderPaths)->first();
     // dd($folder);
     
     if (!$folder) {
-        \Log::error("Folder not found for path: " . $folderPath);
+        \Log::error("Folder not found for path: " . $folderPaths);
         return response()->json(['success' => false, 'message' => 'Folder not found.']);
     }
 
     // Create a unique ZIP file name using folder id or name
-    $zipFileName = 'folder_' . $folder->id . '.zip'; // Unique ZIP filename
+    $zipFileName = $folder->name . $folder->id . '.zip'; // Unique ZIP filename
     $zipFilePath = storage_path('app/public/' . $zipFileName); // Save in the storage/app/public directory
 
     // Initialize the ZipArchive object
@@ -18406,7 +18976,7 @@ public function shareFolder(Request $request)
     }
 
     // Recursively add the folder and its contents to the ZIP file
-    $folderFullPath = storage_path('app/' . $folderPath);
+    $folderFullPath = storage_path('app/' . $folder->path);
     if (is_dir($folderFullPath)) {
         $this->addFolderToZip($zip, $folderFullPath, $folder->name);
     } else {
@@ -18436,20 +19006,20 @@ public function shareFolder(Request $request)
  * @param string $folderPath The path to the folder being added.
  * @param string $folderName The name to be used inside the ZIP.
  */
-private function addFolderToZip($zip, $folderPath, $folderName)
+private function addFolderToZip($zip, $folderPaths, $folderName)
 {
     // Add the folder itself
     $zip->addEmptyDir($folderName);
 
     // Get the files and subfolders inside this folder
-    $files = scandir($folderPath);
+    $files = scandir($folderPaths);
 
     foreach ($files as $file) {
         if ($file == '.' || $file == '..') {
             continue; // Skip special directories
         }
 
-        $filePath = $folderPath . '/' . $file;
+        $filePath = $folderPaths . '/' . $file;
         $zipPath = $folderName . '/' . $file; // Path inside the ZIP
 
         if (is_dir($filePath)) {

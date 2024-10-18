@@ -91,6 +91,30 @@ Route::get('/fetch-board-notice-data', [App\Http\Controllers\HomeController::cla
 Route::get('/fetch-board-file-notice-data', [App\Http\Controllers\HomeController::class, 'fetchBoardFileNoticeData'])->name('fetch-board-file-notice-data');
 
 
+
+Route::get('/fetch-hremponboard-file-data', [App\Http\Controllers\HomeController::class, 'fetchhremponboardFileData'])->name('fetch-hremponboard-file-data');
+
+Route::get('/fetch-hremponboardal-file-data', [App\Http\Controllers\HomeController::class, 'fetchhremponboardalFileData'])->name('fetch-hremponboardal-file-data');
+
+Route::get('/fetch-hremponboardea-file-data', [App\Http\Controllers\HomeController::class, 'fetchhremponboardeaFileData'])->name('fetch-hremponboardea-file-data');
+
+Route::get('/fetch-hremponboardnda-file-data', [App\Http\Controllers\HomeController::class, 'fetchhremponboardndaFileData'])->name('fetch-hremponboardnda-file-data');
+
+Route::get('/fetch-hremponboardnc-file-data', [App\Http\Controllers\HomeController::class, 'fetchhremponboardncFileData'])->name('fetch-hremponboardnc-file-data');
+
+
+
+
+
+Route::get('/fetch-hremponboardcb-file-data', [App\Http\Controllers\HomeController::class, 'fetchhremponboardcbFileData'])->name('fetch-hremponboardcb-file-data');
+
+
+Route::get('/fetch-hremponboardepf-file-data', [App\Http\Controllers\HomeController::class, 'fetchhremponboardepfFileData'])->name('fetch-hremponboardepf-file-data');
+
+
+Route::get('/fetch-hremponboardincometax-file-data', [App\Http\Controllers\HomeController::class, 'fetchhremponboardincometaxFileData'])->name('fetch-hremponboardincometax-file-data');
+
+
 // Save folder ID and URL to the session
 Route::post('/save-breadcrumb', [App\Http\Controllers\HomeController::class, 'saveBreadcrumb'])->name('save.breadcrumb');
 
@@ -194,6 +218,8 @@ Route::delete('/file/{id}', [App\Http\Controllers\HomeController::class, 'delete
 Route::put('/file/{id}/restore', [App\Http\Controllers\HomeController::class, 'restore'])->name('file.restore');
 
 Route::get('/download-folder/{folderPath}', [App\Http\Controllers\HomeController::class, 'downloadFolder']);
+// Route::post('/downloadFolders', [App\Http\Controllers\HomeController::class, 'downloadFolders'])->name('downloadFolders');
+
 
 Route::put('/file/{id}/restorefile', [App\Http\Controllers\HomeController::class, 'restorefile'])->name('file.restorefile');
 
