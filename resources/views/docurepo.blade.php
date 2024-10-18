@@ -3986,6 +3986,7 @@ $(document).ready(function() {
      <meta name="csrf-token" content="{{ csrf_token() }}">
     
 
+
 <!-- Ensure you have jQuery included -->
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
@@ -4237,7 +4238,7 @@ $(document).ready(function() {
                           <label for="fname">Upload File</label>
 
                           <div class="file-area">      
-                          <input type="file" class="dragfile" id="file" name="files[]" multiple  required>    
+                          <input type="file" class="dragfile" id="fileU" name="files[]" multiple  required>    
                           
   <div class="file-dummy">
     <div class="success">Great, your files are selected. Keep on.</div>
@@ -5038,180 +5039,288 @@ $(document).ready(function() {
 
 ////////////////////////////////////////////
 
-$(document).ready(function() {
-    // Ensure CSRF token is included in all AJAX requests
-    $.ajaxSetup({
-        headers: {
-            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-        }
-    });
+// $(document).ready(function() {
+//     // Ensure CSRF token is included in all AJAX requests
+//     $.ajaxSetup({
+//         headers: {
+//             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+//         }
+//     });
 
-    let successCounter = 0; // Initialize a counter for successful uploads
-    let globalFileIndex = 0; // Global index to ensure unique indices across sessions
-    let isUploading = false; // Flag to track if file uploads are in progress
-    let activeUploads = []; // Array to track the status of each file upload (true = active)
+//     // var successCounter = 0; // Initialize a counter for successful uploads
+//     // // let globalFileIndex = 0; // Global index to ensure unique indices across sessions
+//     // var isUploading = false; // Flag to track if file uploads are in progress
+//     // var activeUploads = []; // Array to track the status of each file upload (true = active)
 
 
-    $('#common_file_upload_form').on('submit', function(e) {
-        e.preventDefault();
-        $('.progree_cont_nt').css('display', 'block');
-        $('#common_file_upload_pop').modal('hide');
+
+
+
+//     $('#common_file_upload_form').on('submit', function(e) {
+//         e.preventDefault();
+//         $('.progree_cont_nt').css('display', 'block');
+//         $('#common_file_upload_pop').modal('hide');
+//         $('.side_panel_wraap').removeClass('active');
+//         $('.side_panel_wraap_overlay').removeClass('active');
 
         
-        let files = $('#fileCommon')[0].files;
-        let xhrRequests = []; // Array to hold XMLHttpRequest objects for cancellation
-        isUploading = true; // Set flag to true when upload starts
-        
-        $.each(files, function(i, file) {
-            let individualFormData = new FormData(); // Create a new FormData for each file
-            individualFormData.append('files[]', file); // Append the file
+//         let files = $('#fileCommon')[0].files;
+//         let xhrRequests = {}; // Change to an object to use unique identifiers as keys
+//         // let xhrRequests = []; // Array to hold XMLHttpRequest objects for cancellation
+//         isUploading = true; // Set flag to true when upload starts
 
-            // Loop through form data and append other form fields to FormData
-            $('#common_file_upload_form').find('input, select, textarea').each(function() {
-                let inputName = $(this).attr('name');
-                let inputValue = $(this).val();
+        
+        
+//         $.each(files, function(i, file) {
+//             let individualFormData = new FormData(); // Create a new FormData for each file
+//             individualFormData.append('files[]', file); // Append the file
+
+//             // Loop through form data and append other form fields to FormData
+//             $('#common_file_upload_form').find('input, select, textarea').each(function() {
+//                 let inputName = $(this).attr('name');
+//                 let inputValue = $(this).val();
                 
-                // Skip if the input field is the file input
-                if (inputName && inputName !== 'files[]') {
-                    individualFormData.append(inputName, inputValue);
-                }
-            });
+//                 // Skip if the input field is the file input
+//                 if (inputName && inputName !== 'files[]') {
+//                     individualFormData.append(inputName, inputValue);
+//                 }
+//             });
 
-            let currentFileIndex = globalFileIndex; // Capture the global file index
-            addProgressIndicator(file.name, currentFileIndex); // Add progress indicator for each file
-            activeUploads[currentFileIndex] = true; // Mark this file upload as active
+//             // let currentFileIndex = globalFileIndex; // Capture the global file index
+//             let currentFileIndex = getSecureRandomString(16); // Capture the global file index
 
-            let xhr = $.ajax({
-                url: '/PredefinedCommonUploadFiles',
-                method: 'POST',
-                data: individualFormData,
-                contentType: false,
-                processData: false,
-                xhr: function() {
-                    let xhrUpload = new window.XMLHttpRequest();
+//             addProgressIndicator(file.name, currentFileIndex); // Add progress indicator for each file
+//             activeUploads[currentFileIndex] = true; // Mark this file upload as active
 
-                    xhrUpload.upload.addEventListener("progress", function(evt) {
-                        if (evt.lengthComputable) {
-                            let percentComplete = evt.loaded / evt.total;
-                            updateProgress(percentComplete, currentFileIndex); // Update the progress for the current file
-                        }
-                    }, false);
+//             let xhr = $.ajax({
+//                 url: '/PredefinedCommonUploadFiles',
+//                 method: 'POST',
+//                 data: individualFormData,
+//                 contentType: false,
+//                 processData: false,
+//                 xhr: function() {
+//                     let xhrUpload = new window.XMLHttpRequest();
 
-                    return xhrUpload;
-                },
-                success: function(response) {
-                    if (response.success) {
-                        successCounter++; // Increment the success counter
-                        updateSuccessCount(); // Update the displayed success count
-                        $(`#progress_${i} .cancle_file`).hide(); // Hide cancel button on success
-                        $(`#progress_${i} .done_tick`).show(); // Hide cancel button on success
+//                     xhrUpload.upload.addEventListener("progress", function(evt) {
+//                         if (evt.lengthComputable) {
+//                             let percentComplete = evt.loaded / evt.total;
+//                             updateProgress(percentComplete, currentFileIndex); // Update the progress for the current file
+//                         }
+//                     }, false);
 
-                        activeUploads[currentFileIndex] = false; // Mark this file as completed
-                        checkAllUploadsComplete(); // Check if all uploads are done
+//                     return xhrUpload;
+//                 },
+//                 success: function(response) {
+//                     if (response.success) {
+//                         successCounter++; // Increment the success counter
+//                         updateSuccessCount(); // Update the displayed success count
+//                         $(`#progress_${currentFileIndex} .cancle_file`).hide(); // Hide cancel button on success
+//                         $(`#progress_${currentFileIndex} .done_tick`).show(); // Hide cancel button on success
 
-                    } else {
-                        toastr.error(response.message);
-                    }
-                },
-                error: function(xhr, textStatus) {
-                    if (textStatus !== 'abort') {
-                        toastr.error('An error occurred while uploading files: ' + xhr.responseText);
-                    }
+//                         activeUploads[currentFileIndex] = false; // Mark this file as completed
+//                         checkAllUploadsComplete(); // Check if all uploads are done
 
-                    activeUploads[currentFileIndex] = false; // Mark this file as completed or failed
-                    checkAllUploadsComplete(); // Check if all uploads are done
-                }
-                // ,
-                // complete: function() {
-                //     // Check if all files are uploaded and no more files are pending
-                //     let allCompleted = xhrRequests.every(req => req.readyState === 4);
-                //     if (allCompleted) {
-                //         isUploading = false; // Reset the flag once all uploads are completed
-                //     }
-                // }
+//                     } else {
+//                         toastr.error(response.message);
+//                     }
+//                 },
+//                 error: function(xhr, textStatus) {
+//                     if (textStatus !== 'abort') {
+//                         toastr.error('An error occurred while uploading files: ' + xhr.responseText);
+//                     }
 
-            });
+//                     activeUploads[currentFileIndex] = false; // Mark this file as completed or failed
+//                     checkAllUploadsComplete(); // Check if all uploads are done
+//                 }
+//             });
 
-            xhrRequests.push(xhr); // Store the xhr object in the array
-            globalFileIndex++; // Increment global index for the next file
-        });
+//             // Store xhr object with the unique index
+//             xhrRequests[currentFileIndex] = xhr;
 
-        // Store the requests globally to be able to cancel them
-        window.xhrRequests = xhrRequests;
-    });
+//             // xhrRequests.push(xhr); // Store the xhr object in the array
+//             // globalFileIndex++; // Increment global index for the next file
+//         });
 
-    // Function to add a progress indicator for each file
-    function addProgressIndicator(fileName, index) {
-        const progressHtml = `
-            <div class="progress_repeat" id="progress_${index}">
-                <h2 class="file_name">${fileName}</h2>
-                <div class="progress_circle">
-                    <div id="wrapper_progreess" class="center">                  
-                        <svg class="progresss" x="0px" y="0px" viewBox="0 0 80 80">
-                            <path class="track" d="M5,40a35,35 0 1,0 70,0a35,35 0 1,0 -70,0" />
-                            <path class="fill" id="progressFill_${index}" d="M5,40a35,35 0 1,0 70,0a35,35 0 1,0 -70,0" />
-                        </svg>
-                        <span class="span_dott"></span>
-                    </div>
-                    <div class="cancle_file">
-                        <button class="remove-btnn" onclick="cancelUpload(${index})">X</button>
-                    </div>
-                    <div class="done_tick" style="display:none;">
-                       <svg class="progress_done" width="24px" height="24px" viewBox="0 0 24 24" fill="#0F9D58"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"></path></svg>
-                    </div>
-                </div>
-            </div>
-        `;
+//         // Store the requests globally to be able to cancel them
+//         window.xhrRequests = xhrRequests;
+//     });
 
-        $('.progress_repeat_wrap').append(progressHtml);
-    }
+//     // for the bank form upload progress bar predefined 16 october 2024 sandeep 
 
-    // Function to update progress
-    function updateProgress(percentComplete, index) {
-        const progressFill = $(`#progressFill_${index}`);
-        const circumference = 2 * Math.PI * 35; // Radius is 35
-        const offset = circumference - (percentComplete * circumference);
-        progressFill.css('stroke-dasharray', circumference);
-        progressFill.css('stroke-dashoffset', offset);
-    }
+//     $('#common_file_upload_form_bank').on('submit', function(e) {
+//         e.preventDefault();
+//         $('.progree_cont_nt').css('display', 'block');
+//         $('#common_file_upload_pop_bank').modal('hide');
+//         $('.side_panel_wraap').removeClass('active');
+//         $('.side_panel_wraap_overlay').removeClass('active');
 
-    // Function to handle upload cancellation
-    window.cancelUpload = function(index) {
-        if (window.xhrRequests && window.xhrRequests[index]) {
-            window.xhrRequests[index].abort(); // Abort the AJAX request
-            // alert(`Cancelled upload for file: ${index}`);
-            // toastr.info(`Upload cancelled for file: ${index}`);
-            // $(`#progress_${index}`).remove(); // Remove the progress indicator
+        
+//         let files = $('#fileCommonB')[0].files;
+//         let xhrRequests = {}; // Change to an object to use unique identifiers as keys
+//         // let xhrRequests = []; // Array to hold XMLHttpRequest objects for cancellation
+//         isUploading = true; // Set flag to true when upload starts
+        
+//         $.each(files, function(i, file) {
+//             let individualFormData = new FormData(); // Create a new FormData for each file
+//             individualFormData.append('files[]', file); // Append the file
 
-            $(`#progress_${index}`).fadeOut(500, function() {
-                $(this).remove();
-            });
-            // toastr.info(`Upload cancelled for file: ${index}`);
-        }
-    };
+//             // Loop through form data and append other form fields to FormData
+//             $('#common_file_upload_form_bank').find('input, select, textarea').each(function() {
+//                 let inputName = $(this).attr('name');
+//                 let inputValue = $(this).val();
+                
+//                 // Skip if the input field is the file input
+//                 if (inputName && inputName !== 'files[]') {
+//                     individualFormData.append(inputName, inputValue);
+//                 }
+//             });
 
-    // Function to update the success count display
-    function updateSuccessCount() {
-        $('#uploadSuccessCount').text(`${successCounter} upload(s) completed`); // Update the success count
-    }
+//             // let currentFileIndex = globalFileIndex; // Capture the global file index
+//             let currentFileIndex = getSecureRandomString(16); // Capture the global file index
 
-    // Function to check if all uploads are complete (either canceled or finished)
-    function checkAllUploadsComplete() {
-        // Check if there are any active uploads (true means it's still uploading)
-        isUploading = activeUploads.some(upload => upload === true);
-    }
+//             addProgressIndicator(file.name, currentFileIndex); // Add progress indicator for each file
+//             activeUploads[currentFileIndex] = true; // Mark this file upload as active
 
-    // Warn the user if they attempt to leave the page during file upload
-    window.addEventListener('beforeunload', function(e) {
-        if (isUploading) {
-            // Standard message across browsers
-            const message = "You have ongoing uploads. If you leave, your progress will be lost.";
-            e.returnValue = message; // This is the standard way to set the prompt
-            return message; // For older browsers
-        }
-    });
+//             let xhr = $.ajax({
+//                 url: '/PredefinedCommonUploadFilesBank',
+//                 method: 'POST',
+//                 data: individualFormData,
+//                 contentType: false,
+//                 processData: false,
+//                 xhr: function() {
+//                     let xhrUpload = new window.XMLHttpRequest();
 
-});
+//                     xhrUpload.upload.addEventListener("progress", function(evt) {
+//                         if (evt.lengthComputable) {
+//                             let percentComplete = evt.loaded / evt.total;
+//                             updateProgress(percentComplete, currentFileIndex); // Update the progress for the current file
+//                         }
+//                     }, false);
+
+//                     return xhrUpload;
+//                 },
+//                 success: function(response) {
+//                     if (response.success) {
+//                         successCounter++; // Increment the success counter
+//                         updateSuccessCount(); // Update the displayed success count
+//                         $(`#progress_${currentFileIndex} .cancle_file`).hide(); // Hide cancel button on success
+//                         $(`#progress_${currentFileIndex} .done_tick`).show(); // Hide cancel button on success
+
+//                         activeUploads[currentFileIndex] = false; // Mark this file as completed
+//                         checkAllUploadsComplete(); // Check if all uploads are done
+
+//                     } else {
+//                         toastr.error(response.message);
+//                     }
+//                 },
+//                 error: function(xhr, textStatus) {
+//                     if (textStatus !== 'abort') {
+//                         toastr.error('An error occurred while uploading files: ' + xhr.responseText);
+//                     }
+
+//                     activeUploads[currentFileIndex] = false; // Mark this file as completed or failed
+//                     checkAllUploadsComplete(); // Check if all uploads are done
+//                 }
+//             });
+//             // Store xhr object with the unique index
+//             xhrRequests[currentFileIndex] = xhr;
+
+//             // xhrRequests.push(xhr); // Store the xhr object in the array
+//             // globalFileIndex++; // Increment global index for the next file
+//         });
+
+//         // Store the requests globally to be able to cancel them
+//         window.xhrRequests = xhrRequests;
+//     }
+
+//     // starts for upload common files
+
+
+//     // end for common upload files
+//  );
+
+//     // Function to add a progress indicator for each file
+//     function addProgressIndicator(fileName, index) {
+//         const progressHtml = `
+//             <div class="progress_repeat" id="progress_${index}">
+//                 <h2 class="file_name">${fileName}</h2>
+//                 <div class="progress_circle">
+//                     <div id="wrapper_progreess" class="center">                  
+//                         <svg class="progresss" x="0px" y="0px" viewBox="0 0 80 80">
+//                             <path class="track" d="M5,40a35,35 0 1,0 70,0a35,35 0 1,0 -70,0" />
+//                             <path class="fill" id="progressFill_${index}" d="M5,40a35,35 0 1,0 70,0a35,35 0 1,0 -70,0" />
+//                         </svg>
+//                         <span class="span_dott"></span>
+//                     </div>
+//                     <div class="cancle_file">
+//                         <button class="remove-btnn" onclick="cancelUpload('${index}')">X</button>
+//                     </div>
+//                     <div class="done_tick" style="display:none;">
+//                        <svg class="progress_done" width="24px" height="24px" viewBox="0 0 24 24" fill="#0F9D58"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"></path></svg>
+//                     </div>
+//                 </div>
+//             </div>
+//         `;
+
+//         $('.progress_repeat_wrap').append(progressHtml);
+//     }
+
+//     // Function to update progress
+//     function updateProgress(percentComplete, index) {
+//         const progressFill = $(`#progressFill_${index}`);
+//         const circumference = 2 * Math.PI * 35; // Radius is 35
+//         const offset = circumference - (percentComplete * circumference);
+//         progressFill.css('stroke-dasharray', circumference);
+//         progressFill.css('stroke-dashoffset', offset);
+//     }
+
+//     // Function to handle upload cancellation
+//     window.cancelUpload = function(currentFileIndex) {
+//         if (window.xhrRequests && window.xhrRequests[currentFileIndex]) {
+//             window.xhrRequests[currentFileIndex].abort(); // Abort the AJAX request
+
+//             // alert(`Cancelled upload for file: ${index}`);
+//             // toastr.info(`Upload cancelled for file: ${index}`);
+//             // $(`#progress_${index}`).remove(); // Remove the progress indicator
+
+//             $(`#progress_${currentFileIndex}`).fadeOut(500, function() {
+//                 $(this).remove();
+//             });
+//             // toastr.info(`Upload cancelled for file: ${index}`);
+
+//             // Optionally, remove from the xhrRequests to clean up memory
+//              delete window.xhrRequests[currentFileIndex];
+//         }
+//     }
+
+//     // Function to update the success count display
+//     function updateSuccessCount() {
+//         $('#uploadSuccessCount').text(`${successCounter} upload(s) completed`); // Update the success count
+//     }
+
+//     // Function to check if all uploads are complete (either canceled or finished)
+//     function checkAllUploadsComplete() {
+//         // Check if there are any active uploads (true means it's still uploading)
+//         isUploading = activeUploads.some(upload => upload === true);
+//     }
+
+//     function getSecureRandomString(length) {
+//         const array = new Uint8Array(length);
+//         window.crypto.getRandomValues(array);
+//         return Array.from(array, byte => byte.toString(36)).join('').substring(0, length);
+//     }
+
+//     // Warn the user if they attempt to leave the page during file upload
+//     window.addEventListener('beforeunload', function(e) {
+//         if (isUploading) {
+//             // Standard message across browsers
+//             const message = "You have ongoing uploads. If you leave, your progress will be lost.";
+//             e.returnValue = message; // This is the standard way to set the prompt
+//             return message; // For older browsers
+//         }
+//     });
+
+// });
 
 
 function hideprogressdiv() {
@@ -5384,7 +5493,7 @@ function hideprogressdiv() {
 
                         <div class="file-area_cover">
                             <div class="file-area">
-                                <input type="file" class="dragfile" id="file" name="files[]" multiple required>
+                                <input type="file" class="dragfile" id="fileCommonB" name="files[]" multiple required>
                                 <input type="hidden" id="real_file_name3" name="real_file_name" value="">
                                 <input type="hidden" id="location3" name="location" value="">
                                 <input type="hidden" id="file_status" name="file_status" value="0">
