@@ -4363,6 +4363,14 @@ function bindFolderClickEvents() {
           const decodedFolderPath = folderPaths ? decodeURIComponent(folderPaths) : null;
         const pathToUse = decodedFolderPath ? decodedFolderPath : folderPath;
         
+        // console.log("Path to use ::  "+pathToUse);
+        if(pathToUse===undefined || pathToUse=== null){
+            // console.log("inside null undefined");
+            // setTimeout(() => {
+            
+                hideLoader();
+            // }, 1000);
+        }
         // Directly use the folderPath as it's already decoded when passed from above
         $.ajax({
             url: '/fetch-folder-contents',
@@ -5753,6 +5761,8 @@ $('#upload-file-form').on('submit', function(e) {
                     checkAllUploadsComplete1(); // Check if all uploads are done
 
                     fetchFolderContents($('#parent-folder').val());
+                    console.log("i am looking ::");
+                    console.log($('#parent-folder').val());
                     resetFileInput($('input[name="file"]'));
                 } else {
                     toastr.error('Failed to upload file: ' + response.message);

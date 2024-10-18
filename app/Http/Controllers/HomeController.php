@@ -13435,12 +13435,51 @@ public function PredefinedCommonUploadFiles(Request $request)
     $request->validate([
         'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
         'tagList' => 'nullable', // Allow tagList to be nullable
+        'location' => 'required|string', // Require location
+        'real_file_name' => 'required|string', // Require real file name
+        'fyear' => 'required|string', // Require real file name
+        'Month' => 'required|string', // Require real file name
+
+
     ], [
         'files.*.required' => 'Each file is required.',
         'files.*.file' => 'The uploaded item must be a valid file.',
         'files.*.max' => 'Each file may not be larger than 100MB.',
         'files.*.mimes' => 'The file type must be one of the following: PDF, ODP, ODS, PPT, DOC, ODT, RTF, CSV, JSON, XML, HTML, ICO, SVG, WEBP, ZIP, XLS, DOCX, WAV, OGG, MP3, AVI, MOV, WMV, WEBM, TIFF, MP4, JPG, PNG, GIF, JPEG, 3GP, MKV, FLV.',
+        'location.required' => 'Location is required.',
+        'real_file_name.required' => 'Real File name is required.',
+        'fyear.required' => 'Financial Year is required.',
+        'Month.required' => 'Month is required.',
+
     ]);
+
+
+    // Legal / Secretarial / Deposit Undertakings
+
+    $user = auth()->user();
+
+    // Query your table to validate the location and real_file_name
+    // $temp_location = $request->input('location');
+
+    // // dd($temp_location);
+    // // $temp_location = "Accounting & Taxation / Charter documents / Registrations";
+    // $final_location = preg_replace('/\s*\/\s*/', '/', $temp_location);
+    // // "Accounting & Taxation/Charter documents/Registrations"
+
+    // $entry = Folder::where('path', $final_location)
+    //                     // ->where('real_file_name', $request->input('real_file_name'))
+    //                     // ->where('user_id', $user->id)
+    //                     ->where('is_delete', 0)
+    //                     ->first();
+
+    // if (!$entry) {
+    //     // Return an error if the location and real_file_name are not valid
+    //     return response()->json([
+    //         'success' => false,
+    //         'message' => 'Invalid location or file name. Please check and try again.',
+    //     ], 400);
+    // }
+
 
     if ($request->hasFile('files')) {
         try {
@@ -13450,6 +13489,8 @@ public function PredefinedCommonUploadFiles(Request $request)
             // Store success and error messages for individual files
             $successMessages = [];
             $errorMessages = [];
+
+            
             
             // 22 August code added by sandeep ---- default tags added -- reference excel sheet shared by sir;
                     // Default tags
