@@ -3537,6 +3537,7 @@ $(document).ready(function() {
     </svg>
     </button>
 </li>
+{{--  --}}
 
 <li>
     <span>Legal / Secretarial / Statutory Registers / Register of Investments not held in Company’s name</span>
@@ -4367,7 +4368,7 @@ function bindFolderClickEvents() {
         if(pathToUse===undefined || pathToUse=== null){
             // console.log("inside null undefined");
             // setTimeout(() => {
-            
+
                 hideLoader();
             // }, 1000);
         }
