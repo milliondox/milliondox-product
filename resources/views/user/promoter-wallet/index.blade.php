@@ -111,11 +111,29 @@
     initialCountry: "in" // Set initial country to India
   });
 </script>
+<script>
+$('body').on('ready', function() {
+    // Check if the current URL path is '/user/wallet'
+    if (window.location.pathname === '/user/wallet') {
+        // Get the value from the input field immediately when the page loads
+        var phoneValue = $('#phoneNumber').val();
+
+        // Remove all spaces and leading zeros
+        phoneValue = phoneValue.replace(/^0+|\s+/g, '');
+
+        // Update the input field with the cleaned value
+        $('#phoneNumber').val(phoneValue);
+    }
+});
+
+
+</script>
                   </div>
                 </div>
-                <div id="recaptcha-container"></div>
+                <!-- <div id="recaptcha-container"></div> -->
                 <div class="botto_btn_nt">
-                  <button type="button" onclick="sendOTP()" id="submit-button" class="btn btn-primary btn-block btn-square" style="border-radius:5px;">Send OTP <span>
+                  <!-- <button type="button" onclick="sendOTP()" id="submit-button" class="btn btn-primary btn-block btn-square" style="border-radius:5px;">Send OTP <span> -->
+                  <button type="button"  id="submit-button" class="btn btn-primary btn-block btn-square" style="border-radius:5px;">Send OTP <span>
                       <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <path d="M14.0625 9.5625L2.8125 9.5625C2.66332 9.5625 2.52024 9.50324 2.41475 9.39775C2.30926 9.29226 2.25 9.14918 2.25 9C2.25 8.85082 2.30926 8.70774 2.41475 8.60225C2.52024 8.49676 2.66332 8.4375 2.8125 8.4375L14.0625 8.4375C14.2117 8.4375 14.3548 8.49676 14.4602 8.60225C14.5657 8.70774 14.625 8.85082 14.625 9C14.625 9.14918 14.5657 9.29226 14.4602 9.39775C14.3548 9.50324 14.2117 9.5625 14.0625 9.5625Z" fill="white"></path>
                         <path d="M13.8296 8.99999L9.16422 4.33574C9.0586 4.23012 8.99926 4.08686 8.99926 3.93749C8.99926 3.78812 9.0586 3.64486 9.16422 3.53924C9.26984 3.43362 9.4131 3.37428 9.56247 3.37428C9.71184 3.37428 9.8551 3.43362 9.96072 3.53924L15.0232 8.60174C15.0756 8.65399 15.1172 8.71607 15.1455 8.7844C15.1739 8.85274 15.1885 8.926 15.1885 8.99999C15.1885 9.07398 15.1739 9.14724 15.1455 9.21558C15.1172 9.28392 15.0756 9.34599 15.0232 9.39824L9.96072 14.4607C9.8551 14.5664 9.71184 14.6257 9.56247 14.6257C9.4131 14.6257 9.26984 14.5664 9.16422 14.4607C9.0586 14.3551 8.99926 14.2119 8.99926 14.0625C8.99926 13.9131 9.0586 13.7699 9.16422 13.6642L13.8296 8.99999Z" fill="white"></path>

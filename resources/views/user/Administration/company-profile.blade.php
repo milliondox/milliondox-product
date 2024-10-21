@@ -452,18 +452,60 @@ closeToastBtn.addEventListener("click", closeToast);
     <th>Phone :</th>
     <td>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/css/intlTelInput.css" />
-                  <script src="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/js/intlTelInput.min.js"></script>
-                  <input id="phone" class="form-control @error('phone') is-invalid @enderror" type="tel" pattern="[2-9]{1}[0-9]{9}" title="Phone number with 2-9 and remaing 9 digit with 0-9" placeholder="Contact no" name="phone" value="{{$user->phone}}"> @error('phone') <span class="invalid-feedback" role="alert">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/js/intlTelInput.min.js"></script>
 
-                    <strong>{{ $message }}</strong>
-                  </span> @enderror
-                  <script>
-                    const phoneInputField = document.querySelector("#phone");
-                    const phoneInput = window.intlTelInput(phoneInputField, {
-                      utilsScript: "https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/js/utils.js",
-                      initialCountry: "in" // Set initial country to India
-                    });
-                  </script>  
+<!-- Phone input field -->
+<input id="phone" class="form-control @error('phone') is-invalid @enderror" type="tel" placeholder="Contact no" name="phone" value="{{ $user->phone }}">
+@error('phone')
+    <span class="invalid-feedback" role="alert">
+        <strong>{{ $message }}</strong>
+    </span>
+@enderror
+<script>
+  $(document).on('click', '.hvr-rotate', function() {
+    // Get the value from the input field
+    var phoneValue = $('#phone').val();
+    
+    // Remove all spaces and leading zeros
+    phoneValue = phoneValue.replace(/^0+|\s+/g, '');
+    
+    // Update the input field with the cleaned value
+    $('#phone').val(phoneValue);
+  });
+</script>
+<script>
+  // Initialize the intl-tel-input plugin
+  const phoneInputField = document.querySelector("#phone");
+  const phoneInput = window.intlTelInput(phoneInputField, {
+    utilsScript: "https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/js/utils.js",
+    initialCountry: "in",  // Set initial country to India
+    nationalMode: false,   // Ensures the number is always international
+    formatOnDisplay: true, // Optional: display the formatted version on the input
+  });
+
+  // On form submission
+  document.querySelector('form').addEventListener('submit', function(e) {
+    e.preventDefault();  // Prevent default form submission
+
+    // Get the full international number without spaces
+    const phoneNumber = phoneInput.getNumber(intlTelInputUtils.numberFormat.E164);
+    
+    // Check if the phone number is valid
+    if (phoneInput.isValidNumber()) {
+      console.log('Valid phone number:', phoneNumber);
+      
+      // Optionally set this phone number into a hidden input or handle the form submission
+      // You can directly update the input field value if you want:
+      phoneInputField.value = phoneNumber;
+
+      // Submit the form
+      this.submit();
+    } else {
+      console.error('Invalid phone number');
+      alert('Please enter a valid phone number.');
+    }
+  });
+</script> 
     <!-- <input type="text" id="Phone" name="Phone"  value="{{$user->Phone}}"> </td> -->
     <input type="hidden" id="user_id" name="user_id" value="{{$user->id}}"  >
   </tr>

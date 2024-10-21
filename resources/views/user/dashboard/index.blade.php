@@ -361,6 +361,82 @@
         </div>
       </div>
       <script>
+$(document).ready(function () {
+    // Function to validate the image file
+    function validateImage(file) {
+        var validTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/svg+xml'];
+        var maxSize = 2048 * 1024; // 2MB
+
+        // Check if the file type is valid
+        if ($.inArray(file.type, validTypes) === -1) {
+            toastr.error('Invalid file type. Please upload a JPEG, PNG, GIF, or SVG image.', 'Error');
+            return false;
+        }
+
+        // Check if the file size exceeds the limit
+        if (file.size > maxSize) {
+            toastr.error('File size exceeds 2MB. Please upload a smaller image.', 'Error');
+            return false;
+        }
+
+        return true;
+    }
+
+    // Function to display image preview
+    function previewImage(file) {
+        var reader = new FileReader();
+        reader.onload = function (e) {
+            $('#previewImage').attr('src', e.target.result);
+        };
+        reader.readAsDataURL(file);
+    }
+
+    // Handle file input change (when a file is selected)
+    $('#profile_picture').on('change', function () {
+        var file = this.files[0];
+
+        if (file) {
+            // Validate the image file
+            if (validateImage(file)) {
+                // If valid, show the image preview
+                previewImage(file);
+            } else {
+                // Reset the file input and image preview if invalid
+                $('#profile_picture').val('');
+                $('#previewImage').attr('src', '../assets/images/Logo_profille.png');
+            }
+        }
+    });
+
+    // Handle real-time validation on 'blur' (click outside the file input)
+    $('#profile_picture').on('blur', function () {
+        var file = this.files[0];
+
+        if (file) {
+            // Validate the image file
+            if (!validateImage(file)) {
+                // Reset the file input and image preview if invalid
+                $('#profile_picture').val('');
+                $('#previewImage').attr('src', '../assets/images/Logo_profille.png');
+            }
+        }
+    });
+
+    // Handle form submission validation
+    $('.compuserprofile').on('submit', function (e) {
+        var file = $('#profile_picture')[0].files[0];
+
+        // If a profile picture is uploaded, validate it
+        if (file && !validateImage(file)) {
+            e.preventDefault(); // Prevent form submission
+            toastr.error('Please upload a valid profile picture before submitting the form.', 'Error');
+        }
+    });
+});
+</script>
+
+
+      <script>
   $(document).ready(function () {
     // Handle form submission
     $('.compuserprofile').on('submit', function (e) {

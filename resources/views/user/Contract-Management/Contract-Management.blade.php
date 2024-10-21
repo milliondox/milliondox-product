@@ -397,11 +397,42 @@
                 </div>
 
                 <div class="root_btn">                        
-                          <button class="btn btn-primary"  style="border-radius:5px;" type="submit">Upload</button>
+                          <button class="btn btn-primary" id="submitButton" style="border-radius:5px;" type="submit">Upload</button>
 </div>
 </div>
 				
                                     </form>
+
+                                    <script>
+                                      $(document).ready(function() {
+    // Disable submit button initially
+    $('#submitButton').prop('disabled', true);
+
+    // Function to check if all required fields are filled
+    function checkRequiredFields() {
+        let allFilled = true;
+
+        // Iterate over each required field
+        $('form#contractForm [required]').each(function() {
+            if ($(this).val() === '') {
+                allFilled = false;
+            }
+        });
+
+        // Enable or disable the submit button based on field validity
+        $('#submitButton').prop('disabled', !allFilled);
+    }
+
+    // Run the check on page load
+    checkRequiredFields();
+
+    // Bind the change and input events to required fields to check when values are updated
+    $('form#contractForm [required]').on('input change', function() {
+        checkRequiredFields();
+    });
+});
+
+                                    </script>
                                   </div>
                                 </div>
                               </div>
@@ -500,7 +531,7 @@
                                     <h3>upload contract</h3>
 
 
-                                    <form action="{{ route('storecontract') }}" method="POST" enctype="multipart/form-data" class="upload-form rers_pages_hide"> 
+                                    <form action="{{ route('storecontract') }}" id="contractForms" method="POST" enctype="multipart/form-data" class="upload-form rers_pages_hide"> 
                                       @csrf
 									  
 									    <div class="rers_pages">
@@ -679,11 +710,41 @@
                 </div>
 
                 <div class="root_btn">                        
-                          <button class="btn btn-primary"  style="border-radius:5px;" type="submit">Upload</button>
+                          <button class="btn btn-primary"  style="border-radius:5px;" id="submitButtons" type="submit">Upload</button>
 </div>
 </div>
 				
                                     </form>
+                                    <script>
+                                      $(document).ready(function() {
+    // Disable submit button initially
+    $('#submitButtons').prop('disabled', true);
+
+    // Function to check if all required fields are filled
+    function checkRequiredFields() {
+        let allFilled = true;
+
+        // Iterate over each required field
+        $('form#contractForms [required]').each(function() {
+            if ($(this).val() === '') {
+                allFilled = false;
+            }
+        });
+
+        // Enable or disable the submit button based on field validity
+        $('#submitButtons').prop('disabled', !allFilled);
+    }
+
+    // Run the check on page load
+    checkRequiredFields();
+
+    // Bind the change and input events to required fields to check when values are updated
+    $('form#contractForms [required]').on('input change', function() {
+        checkRequiredFields();
+    });
+});
+
+                                    </script>
                                   </div>
                                 </div>
                               </div>
