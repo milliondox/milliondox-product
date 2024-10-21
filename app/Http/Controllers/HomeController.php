@@ -793,6 +793,122 @@ public function storecompanyemployee(Request $request)
         'emp_code' => $request->emp_code,
     ]);
 
+    $employeeName = $request->name;
+    // $userId = $request->user_id;  // Assuming this comes from the request
+    
+    // Get current year and month
+    $currentYear = now()->year;
+    $currentMonth = now()->format('F'); // Full month name (e.g., 'October')
+    
+    // Determine fiscal year
+    if (now()->month < 4) {
+        $fiscalYear = ($currentYear - 1) . '-' . $currentYear;
+    } else {
+        $fiscalYear = $currentYear . '-' . ($currentYear + 1);
+    }
+    
+    // Step 1: Create a common Human Resources folder for all users
+    $hrFolderName = "{$fiscalYear}{$currentMonth}0_Human Resources";  // Common folder for all users
+    $hrFolderPath = "{$hrFolderName}";
+    
+    // Check if Human Resources folder exists and create it if not
+    if (!Storage::exists($hrFolderPath)) {
+        Storage::makeDirectory($hrFolderPath);
+    
+        // Store the folder details in the database (if necessary)
+        $hrFolder = new Folder();
+        $hrFolder->name = basename($hrFolderPath);
+        $hrFolder->path = $hrFolderPath;
+        $hrFolder->parent_name = null;
+        $hrFolder->user_id =  $userId;  // No specific user; common for all
+        $hrFolder->common_folder = 1;
+        $hrFolder->save();
+    }
+    
+    // Step 2: Create Employee folder inside Human Resources folder
+    $employeeFolderName = "{$fiscalYear}{$currentMonth}{$userId}_{$employeeName}";
+    $employeeFolderPath = "{$hrFolderPath}/{$employeeFolderName}";
+    
+    // Check if Employee folder exists and create it if not
+    if (!Storage::exists($employeeFolderPath)) {
+        Storage::makeDirectory($employeeFolderPath);
+    
+        // Store the Employee folder details in the database
+        $employeeFolder = new Folder();
+        $employeeFolder->name = basename($employeeFolderPath);
+        $employeeFolder->path = $employeeFolderPath;
+        $employeeFolder->parent_name = $hrFolderPath;
+        $employeeFolder->user_id = $userId;
+        $employeeFolder->save();
+    }
+    
+    // Step 3: Create subfolders dynamically within Employee folder
+    $folders = [
+        'Employee Database' => [
+            'Onboarding documents',
+            'KYC Documents',
+            'Offboarding',
+            'Reference Checks',
+            'ESOP',
+            'Declarations',
+        ],
+        'Pay Registers' => [
+            'Monthly Payrun',
+            'Reimbursements',
+            'Salary Slips',
+        ],
+        'Policies & Handbook' => [
+            'Leave policy',
+            'Attendance policy',
+            'Reimbursement policy',
+            'Organisation Chart',
+            'Code of conduct',
+            'Health Insurance',
+            'Asset Allocation & Usage Policy',
+        ],
+        'Appraisals' => [
+            'Appraisals forms',
+            'Management approvals',
+            'KRAs and OKRs',
+        ],
+    ];
+    
+    // Loop through the folders and create them if they don't exist
+    foreach ($folders as $mainFolder => $subFolders) {
+        $mainFolderPath = "{$employeeFolderPath}/{$fiscalYear}{$currentMonth}{$userId}_{$mainFolder}";
+    
+        if (!Storage::exists($mainFolderPath)) {
+            Storage::makeDirectory($mainFolderPath);
+    
+            // Store the main folder details in the database
+            $mainFolderDb = new Folder();
+            $mainFolderDb->name = basename($mainFolderPath);
+            $mainFolderDb->path = $mainFolderPath;
+            $mainFolderDb->parent_name = $employeeFolderPath;
+            $mainFolderDb->user_id = $userId;
+            // $mainFolderDb->common_folder = 1;
+            $mainFolderDb->save();
+        }
+    
+        // Create subfolders inside each main folder
+        foreach ($subFolders as $subFolder) {
+            $subFolderPath = "{$mainFolderPath}/{$fiscalYear}{$currentMonth}{$userId}_{$subFolder}";
+    
+            if (!Storage::exists($subFolderPath)) {
+                Storage::makeDirectory($subFolderPath);
+    
+                // Store the subfolder details in the database
+                $subFolderDb = new Folder();
+                $subFolderDb->name = basename($subFolderPath);
+                $subFolderDb->path = $subFolderPath;
+                $subFolderDb->parent_name = $mainFolderPath;
+                $subFolderDb->user_id = $userId;
+                // $subFolderDb->common_folder = 1;
+                $subFolderDb->save();
+            }
+        }
+    }
+
     // Return a success response (optional)
     return response()->json([
         'message' => 'Employee details stored successfully!',
@@ -874,6 +990,69 @@ public function downloadCsv()
 
 
 
+// public function uploadempcsv(Request $request)
+// {
+//     // Validate the uploaded CSV file
+//     $validator = Validator::make($request->all(), [
+//         'csv_file' => 'required|mimes:csv,txt|max:200048',
+//     ]);
+
+//     if ($validator->fails()) {
+//         // Redirect back with validation errors
+//         return redirect()->back()->withErrors($validator)->withInput();
+//     }
+
+//     // Get the authenticated user's ID
+//     $userId = Auth::id();
+
+//     // Get the uploaded file
+//     $file = $request->file('csv_file');
+
+//     // Open the CSV file for reading
+//     $file_handle = fopen($file->getRealPath(), 'r');
+    
+//     // Skip the header row
+//     $header = fgetcsv($file_handle); 
+
+//     $employeesToInsert = [];
+//     $existingEmpCodes = [];
+//     $skippedRecords = 0;
+
+//     // Process the CSV file row by row
+//     while (($row = fgetcsv($file_handle, 1000, ",")) !== FALSE) {
+//         $emp_code = $row[3];
+
+//         // Check if the emp_code already exists in the database
+//         if (StoreCompanyEmployee::where('emp_code', $emp_code)->exists()) {
+//             // If the emp_code exists, increment the skipped record count
+//             $skippedRecords++;
+//         } else {
+//             // If it's unique, prepare it for insertion
+//             $employeesToInsert[] = [
+//                 'user_id' => $userId,
+//                 'name' => $row[0],
+//                 'app_date' => \Carbon\Carbon::parse($row[1])->format('Y-m-d'), // Convert date to Y-m-d format
+//                 'termi_date' => !empty($row[2]) ? \Carbon\Carbon::parse($row[2])->format('Y-m-d') : null,
+//                 'emp_code' => $emp_code,
+//                 'created_at' => now(), // Set the created_at timestamp
+//                 'updated_at' => now(), // Set the updated_at timestamp
+//             ];
+//         }
+//     }
+
+//     fclose($file_handle);
+
+//     // Insert only the unique employee records into the database
+//     $storedRecords = count($employeesToInsert);
+//     if ($storedRecords > 0) {
+//         StoreCompanyEmployee::insert($employeesToInsert);
+//     }
+
+//     // Return a success message with the count of stored and skipped records
+//     return redirect()->back()->with('success', "{$storedRecords} employees stored successfully and {$skippedRecords} duplicate employees were skipped.");
+// }
+
+
 public function uploadempcsv(Request $request)
 {
     // Validate the uploaded CSV file
@@ -921,6 +1100,10 @@ public function uploadempcsv(Request $request)
                 'created_at' => now(), // Set the created_at timestamp
                 'updated_at' => now(), // Set the updated_at timestamp
             ];
+
+            // Create the folder structure for each employee
+            $employeeName = $row[0];
+            $this->createFolderStructure($employeeName, $userId);
         }
     }
 
@@ -935,6 +1118,121 @@ public function uploadempcsv(Request $request)
     // Return a success message with the count of stored and skipped records
     return redirect()->back()->with('success', "{$storedRecords} employees stored successfully and {$skippedRecords} duplicate employees were skipped.");
 }
+
+/**
+ * Create folder structure for the employee
+ */
+protected function createFolderStructure($employeeName, $userId)
+{
+    // Get current year and month
+    $currentYear = now()->year;
+    $currentMonth = now()->format('F'); // Full month name (e.g., 'October')
+
+    // Determine fiscal year
+    if (now()->month < 4) {
+        $fiscalYear = ($currentYear - 1) . '-' . $currentYear;
+    } else {
+        $fiscalYear = $currentYear . '-' . ($currentYear + 1);
+    }
+
+    // Step 1: Create Human Resources folder
+    $hrFolderName = "{$fiscalYear}{$currentMonth}0_Human Resources";
+    $hrFolderPath = "{$hrFolderName}";
+
+    if (!Storage::exists($hrFolderPath)) {
+        Storage::makeDirectory($hrFolderPath);
+        // Store in database
+        $hrFolder = new Folder();
+        $hrFolder->name = basename($hrFolderPath);
+        $hrFolder->path = $hrFolderPath;
+        $hrFolder->parent_name = null;
+        $hrFolder->user_id = $userId;
+        $hrFolder->common_folder = 1;
+        $hrFolder->save();
+    }
+
+    // Step 2: Create Employee folder inside Human Resources folder
+    $employeeFolderName = "{$fiscalYear}{$currentMonth}{$userId}_{$employeeName}";
+    $employeeFolderPath = "{$hrFolderPath}/{$employeeFolderName}";
+
+    if (!Storage::exists($employeeFolderPath)) {
+        Storage::makeDirectory($employeeFolderPath);
+        // Store in database
+        $employeeFolder = new Folder();
+        $employeeFolder->name = basename($employeeFolderPath);
+        $employeeFolder->path = $employeeFolderPath;
+        $employeeFolder->parent_name = $hrFolderPath;
+        $employeeFolder->user_id = $userId;
+        // $employeeFolder->common_folder = 1;
+        $employeeFolder->save();
+    }
+
+    // Define the folder structures for Employee Database, Pay Registers, Policies & Handbook, and Appraisals
+    $folders = [
+        'Employee Database' => [
+            'Onboarding documents',
+            'KYC Documents',
+            'Offboarding',
+            'Reference Checks',
+            'ESOP',
+            'Declarations',
+        ],
+        'Pay Registers' => [
+            'Monthly Payrun',
+            'Reimbursements',
+            'Salary Slips',
+        ],
+        'Policies & Handbook' => [
+            'Leave policy',
+            'Attendance policy',
+            'Reimbursement policy',
+            'Organisation Chart',
+            'Code of conduct',
+            'Health Insurance',
+            'Asset Allocation & Usage Policy',
+        ],
+        'Appraisals' => [
+            'Appraisals forms',
+            'Management approvals',
+            'KRAs and OKRs',
+        ],
+    ];
+
+    // Create folders dynamically based on the defined structure
+    foreach ($folders as $mainFolder => $subFolders) {
+        $mainFolderPath = "{$employeeFolderPath}/{$fiscalYear}{$currentMonth}{$userId}_{$mainFolder}";
+
+        if (!Storage::exists($mainFolderPath)) {
+            Storage::makeDirectory($mainFolderPath);
+            // Store in database
+            $mainFolderDb = new Folder();
+            $mainFolderDb->name = basename($mainFolderPath);
+            $mainFolderDb->path = $mainFolderPath;
+            $mainFolderDb->parent_name = $employeeFolderPath;
+            $mainFolderDb->user_id = $userId;
+            // $mainFolderDb->common_folder = 1;
+            $mainFolderDb->save();
+        }
+
+        // Create subfolders inside each main folder
+        foreach ($subFolders as $subFolder) {
+            $subFolderPath = "{$mainFolderPath}/{$fiscalYear}{$currentMonth}{$userId}_{$subFolder}";
+
+            if (!Storage::exists($subFolderPath)) {
+                Storage::makeDirectory($subFolderPath);
+                // Store in database
+                $subFolderDb = new Folder();
+                $subFolderDb->name = basename($subFolderPath);
+                $subFolderDb->path = $subFolderPath;
+                $subFolderDb->parent_name = $mainFolderPath;
+                $subFolderDb->user_id = $userId;
+                // $subFolderDb->common_folder = 1;
+                $subFolderDb->save();
+            }
+        }
+    }
+}
+
 
 
 public function getEventWithDate(Request $request, $eventDate)
@@ -1457,7 +1755,7 @@ public function getUsersByRole($role)
     return response()->download($filePath, $fileName);
 }
 
- public function boradnotice(Request $request)
+public function boradnotice(Request $request)
 {
     $request->validate([
         'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
@@ -1470,40 +1768,39 @@ public function getUsersByRole($role)
     ]);
 
     if ($request->hasFile('files')) {
+        // dd('inside request for file');
         try {
+            // dd('inside try');
+            // dd($request);
             // Initialize counters
             $totalSize = 0;
 
             // Store success and error messages for individual files
             $successMessages = [];
             $errorMessages = [];
-            
-            // 22 August code added by sandeep ---- default tags added -- reference excel sheet shared by sir;
-                    // Default tags
-                    $tag_list = ['Secretarial', 'Meeting', 'Board', 'Notice'];
 
-                    // Handle tagList whether it's an array, a comma-separated string, or empty
-                    $userTags = $request->input('tagList', []);
-                    
-                    // Convert to array if it's a comma-separated string
-                    if (is_string($userTags)) {
-                        $userTags = explode(',', $userTags);
-                    }
-                    // Ensure $userTags is an array and remove any empty values
-                    if (is_array($userTags)) {
-                        $userTags = array_filter($userTags); // Remove empty values
-                    } else {
-                        $userTags = []; // Fallback to empty array if not an array
-                    }
-                    
-                    // Merge with default tags
-                    $tag_list = array_merge($tag_list, $userTags);
-                    $tags = empty($tag_list) ? NULL : json_encode($tag_list);
+            // Default tags
+            $tag_list = ['Secretarial', 'Meeting', 'Board', 'Notice'];
 
+            // Handle tagList whether it's an array, a comma-separated string, or empty
+            $userTags = $request->input('tagList', []);
+            if (is_string($userTags)) {
+                $userTags = explode(',', $userTags);
+            }
+            $userTags = is_array($userTags) ? array_filter($userTags) : [];
+            $tag_list = array_merge($tag_list, $userTags);
+            $tags = empty($tag_list) ? NULL : json_encode($tag_list);
+
+            // Get the dynamic location from request
+            $location = preg_replace('/\s*\/\s*/', '/', trim($request->input('location')));
+            // "Legal/Secretarial/Board Meetings" 
+
+            // Legal/Secretarial/Board Meetings/rtR2ORS7jdMq05zW6c704CUXesvrqkZ59ZNNWOib.pdf
             foreach ($request->file('files') as $file) {
                 try {
-                    $filePath = $file->store('uploads');
-
+                    // Store file inside the dynamically created folder
+                   
+                    $filePath = $file->store($location);
                     // Create a new entry for each file
                     CommonTable::create([
                         'file_type' => $file->getClientMimeType(),
@@ -1517,9 +1814,8 @@ public function getUsersByRole($role)
                         'fyear' => $request->input('fyear'),
                         'month' => $request->input('Month'),
                         'tags' => $tags, // Store tags as JSON
-                        'location' => $request->input('location'),
+                        'location' => $request->input('location'), // Store the dynamic location
                         'descp' => $request->input('desc'),
-                        
                     ]);
 
                     $totalSize += $file->getSize();
@@ -1530,23 +1826,24 @@ public function getUsersByRole($role)
             }
 
             // Compile overall success message
-            $user = auth()->user();
-            $entries = CommonTable::where('user_id', $user->id)
-    ->where('is_delete', 0)
-    ->where('location', 'Legal / Secretarial / Board Meetings')
-    ->where('real_file_name', 'Notices')
-    ->get();
-            $count = $entries->count();
+            // $user = auth()->user();
+            // $entries = CommonTable::where('user_id', $user->id)
+            //     ->where('is_delete', 0)
+            //     ->where('location', 'Legal / Secretarial / Board Meetings') // Ensure base directory is used
+            //     ->where('real_file_name', 'Notices')
+            //     ->get();
+            // $count = $entries->count();
 
             return response()->json([
                 'success' => true,
-                'count' => $count,
+                // 'count' => $count,
                 'totalSize' => $totalSize,
                 'successMessages' => $successMessages,
                 'errorMessages' => $errorMessages,
             ]);
 
         } catch (\Exception $e) {
+            dd('inside catch');
             // Handle any exceptions that occur during file upload or database saving
             return response()->json(['success' => false, 'message' => 'Failed to process file uploads.'], 500);
         }
@@ -1698,33 +1995,38 @@ public function getUsersByRole($role)
                     $tag_list = array_merge($tag_list, $userTags);
                     $tags = empty($tag_list) ? NULL : json_encode($tag_list);
 
-            foreach ($request->file('files') as $file) {
-                try {
-                    $filePath = $file->store('uploads');
-
-                    // Create a new entry for each file
-                    CommonTable::create([
-                        'file_type' => $file->getClientMimeType(),
-                        'file_name' => $file->getClientOriginalName(),
-                        'real_file_name' => $request->input('real_file_name'),
-                        'file_size' => $file->getSize(),
-                        'file_path' => $filePath,
-                        'user_name' => auth()->user()->name, // Assuming user is authenticated
-                        'user_id' => auth()->user()->id,
-                        'file_status' => $request->input('file_status', 0),
-                        'fyear' => $request->input('fyear'),
-                        'month' => $request->input('Month'),
-                        'tags' => $tags, // Store tags as JSON
-                        'location' => $request->input('location'),
-                        'descp' => $request->input('desc'),
-                    ]);
-
-                    $totalSize += $file->getSize();
-                    $successMessages[] = "File {$file->getClientOriginalName()} uploaded successfully.";
-                } catch (\Exception $e) {
-                    $errorMessages[] = "Failed to save file {$file->getClientOriginalName()} to database.";
-                }
-            }
+                    $location = preg_replace('/\s*\/\s*/', '/', trim($request->input('location')));
+                    // "Legal/Secretarial/Board Meetings" 
+        
+                    // Legal/Secretarial/Board Meetings/rtR2ORS7jdMq05zW6c704CUXesvrqkZ59ZNNWOib.pdf
+                    foreach ($request->file('files') as $file) {
+                        try {
+                            // Store file inside the dynamically created folder
+                           
+                            $filePath = $file->store($location);
+                            // Create a new entry for each file
+                            CommonTable::create([
+                                'file_type' => $file->getClientMimeType(),
+                                'file_name' => $file->getClientOriginalName(),
+                                'real_file_name' => $request->input('real_file_name'),
+                                'file_size' => $file->getSize(),
+                                'file_path' => $filePath,
+                                'user_name' => auth()->user()->name, // Assuming user is authenticated
+                                'user_id' => auth()->user()->id,
+                                'file_status' => $request->input('file_status', 0),
+                                'fyear' => $request->input('fyear'),
+                                'month' => $request->input('Month'),
+                                'tags' => $tags, // Store tags as JSON
+                                'location' => $request->input('location'), // Store the dynamic location
+                                'descp' => $request->input('desc'),
+                            ]);
+        
+                            $totalSize += $file->getSize();
+                            $successMessages[] = "File {$file->getClientOriginalName()} uploaded successfully.";
+                        } catch (\Exception $e) {
+                            $errorMessages[] = "Failed to save file {$file->getClientOriginalName()} to database.";
+                        }
+                    }
 
             // Compile overall success message
             $user = auth()->user();
@@ -1795,33 +2097,38 @@ public function boradmintuebook(Request $request)
                     $tag_list = array_merge($tag_list, $userTags);
                     $tags = empty($tag_list) ? NULL : json_encode($tag_list);
 
-            foreach ($request->file('files') as $file) {
-                try {
-                    $filePath = $file->store('uploads');
-
-                    // Create a new entry for each file
-                    CommonTable::create([
-                        'file_type' => $file->getClientMimeType(),
-                        'file_name' => $file->getClientOriginalName(),
-                        'real_file_name' => $request->input('real_file_name'),
-                        'file_size' => $file->getSize(),
-                        'file_path' => $filePath,
-                        'user_name' => auth()->user()->name, // Assuming user is authenticated
-                        'user_id' => auth()->user()->id,
-                        'file_status' => $request->input('file_status', 0),
-                        'fyear' => $request->input('fyear'),
-                        'month' => $request->input('Month'),
-                        'tags' => $tags, // Store tags as JSON
-                        'location' => $request->input('location'),
-                        'descp' => $request->input('desc'),
-                    ]);
-
-                    $totalSize += $file->getSize();
-                    $successMessages[] = "File {$file->getClientOriginalName()} uploaded successfully.";
-                } catch (\Exception $e) {
-                    $errorMessages[] = "Failed to save file {$file->getClientOriginalName()} to database.";
-                }
-            }
+                    $location = preg_replace('/\s*\/\s*/', '/', trim($request->input('location')));
+                    // "Legal/Secretarial/Board Meetings" 
+        
+                    // Legal/Secretarial/Board Meetings/rtR2ORS7jdMq05zW6c704CUXesvrqkZ59ZNNWOib.pdf
+                    foreach ($request->file('files') as $file) {
+                        try {
+                            // Store file inside the dynamically created folder
+                           
+                            $filePath = $file->store($location);
+                            // Create a new entry for each file
+                            CommonTable::create([
+                                'file_type' => $file->getClientMimeType(),
+                                'file_name' => $file->getClientOriginalName(),
+                                'real_file_name' => $request->input('real_file_name'),
+                                'file_size' => $file->getSize(),
+                                'file_path' => $filePath,
+                                'user_name' => auth()->user()->name, // Assuming user is authenticated
+                                'user_id' => auth()->user()->id,
+                                'file_status' => $request->input('file_status', 0),
+                                'fyear' => $request->input('fyear'),
+                                'month' => $request->input('Month'),
+                                'tags' => $tags, // Store tags as JSON
+                                'location' => $request->input('location'), // Store the dynamic location
+                                'descp' => $request->input('desc'),
+                            ]);
+        
+                            $totalSize += $file->getSize();
+                            $successMessages[] = "File {$file->getClientOriginalName()} uploaded successfully.";
+                        } catch (\Exception $e) {
+                            $errorMessages[] = "Failed to save file {$file->getClientOriginalName()} to database.";
+                        }
+                    }
 
             // Compile overall success message
             $user = auth()->user();
@@ -2193,33 +2500,38 @@ public function innerruns(Request $request)
                     $tag_list = array_merge($tag_list, $userTags);
                     $tags = empty($tag_list) ? NULL : json_encode($tag_list);
 
-            foreach ($request->file('files') as $file) {
-                try {
-                    $filePath = $file->store('uploads');
-
-                    // Create a new entry for each file
-                    CommonTable::create([
-                        'file_type' => $file->getClientMimeType(),
-                        'file_name' => $file->getClientOriginalName(),
-                        'real_file_name' => $request->input('real_file_name'),
-                        'file_size' => $file->getSize(),
-                        'file_path' => $filePath,
-                        'user_name' => auth()->user()->name, // Assuming user is authenticated
-                        'user_id' => auth()->user()->id,
-                        'file_status' => $request->input('file_status', 0),
-                        'fyear' => $request->input('fyear'),
-                        'month' => $request->input('Month'),
-                        'tags' => $tags, // Store tags as JSON
-                        'location' => $request->input('location'),
-                        'descp' => $request->input('desc'),
-                    ]);
-
-                    $totalSize += $file->getSize();
-                    $successMessages[] = "File {$file->getClientOriginalName()} uploaded successfully.";
-                } catch (\Exception $e) {
-                    $errorMessages[] = "Failed to save file {$file->getClientOriginalName()} to database.";
-                }
-            }
+                    $location = preg_replace('/\s*\/\s*/', '/', trim($request->input('location')));
+                    // "Legal/Secretarial/Board Meetings" 
+        
+                    // Legal/Secretarial/Board Meetings/rtR2ORS7jdMq05zW6c704CUXesvrqkZ59ZNNWOib.pdf
+                    foreach ($request->file('files') as $file) {
+                        try {
+                            // Store file inside the dynamically created folder
+                           
+                            $filePath = $file->store($location);
+                            // Create a new entry for each file
+                            CommonTable::create([
+                                'file_type' => $file->getClientMimeType(),
+                                'file_name' => $file->getClientOriginalName(),
+                                'real_file_name' => $request->input('real_file_name'),
+                                'file_size' => $file->getSize(),
+                                'file_path' => $filePath,
+                                'user_name' => auth()->user()->name, // Assuming user is authenticated
+                                'user_id' => auth()->user()->id,
+                                'file_status' => $request->input('file_status', 0),
+                                'fyear' => $request->input('fyear'),
+                                'month' => $request->input('Month'),
+                                'tags' => $tags, // Store tags as JSON
+                                'location' => $request->input('location'), // Store the dynamic location
+                                'descp' => $request->input('desc'),
+                            ]);
+        
+                            $totalSize += $file->getSize();
+                            $successMessages[] = "File {$file->getClientOriginalName()} uploaded successfully.";
+                        } catch (\Exception $e) {
+                            $errorMessages[] = "Failed to save file {$file->getClientOriginalName()} to database.";
+                        }
+                    }
 
             // Compile overall success message
             $user = auth()->user();
@@ -2434,34 +2746,38 @@ public function fetchBoardFileMinBookData()
                     $tag_list = array_merge($tag_list, $userTags);
                     $tags = empty($tag_list) ? NULL : json_encode($tag_list);
 
-            foreach ($request->file('files') as $file) {
-                try {
-                    $filePath = $file->store('uploads');
-
-                    // Create a new entry for each file
-                    CommonTable::create([
-                        'file_type' => $file->getClientMimeType(),
-                        'file_name' => $file->getClientOriginalName(),
-                        'real_file_name' => $request->input('real_file_name'),
-                        'file_size' => $file->getSize(),
-                        'file_path' => $filePath,
-                        'user_name' => auth()->user()->name, // Assuming user is authenticated
-                        'user_id' => auth()->user()->id,
-                        'file_status' => $request->input('file_status', 0),
-                        'fyear' => $request->input('fyear'),
-                        'month' => $request->input('Month'),
-                        'tags' => $tags, // Store tags as JSON
-                        'location' => $request->input('location'),
-                        'descp' => $request->input('desc'),
-                        
-                    ]);
-
-                    $totalSize += $file->getSize();
-                    $successMessages[] = "File {$file->getClientOriginalName()} uploaded successfully.";
-                } catch (\Exception $e) {
-                    $errorMessages[] = "Failed to save file {$file->getClientOriginalName()} to database.";
-                }
-            }
+                    $location = preg_replace('/\s*\/\s*/', '/', trim($request->input('location')));
+                    // "Legal/Secretarial/Board Meetings" 
+        
+                    // Legal/Secretarial/Board Meetings/rtR2ORS7jdMq05zW6c704CUXesvrqkZ59ZNNWOib.pdf
+                    foreach ($request->file('files') as $file) {
+                        try {
+                            // Store file inside the dynamically created folder
+                           
+                            $filePath = $file->store($location);
+                            // Create a new entry for each file
+                            CommonTable::create([
+                                'file_type' => $file->getClientMimeType(),
+                                'file_name' => $file->getClientOriginalName(),
+                                'real_file_name' => $request->input('real_file_name'),
+                                'file_size' => $file->getSize(),
+                                'file_path' => $filePath,
+                                'user_name' => auth()->user()->name, // Assuming user is authenticated
+                                'user_id' => auth()->user()->id,
+                                'file_status' => $request->input('file_status', 0),
+                                'fyear' => $request->input('fyear'),
+                                'month' => $request->input('Month'),
+                                'tags' => $tags, // Store tags as JSON
+                                'location' => $request->input('location'), // Store the dynamic location
+                                'descp' => $request->input('desc'),
+                            ]);
+        
+                            $totalSize += $file->getSize();
+                            $successMessages[] = "File {$file->getClientOriginalName()} uploaded successfully.";
+                        } catch (\Exception $e) {
+                            $errorMessages[] = "Failed to save file {$file->getClientOriginalName()} to database.";
+                        }
+                    }
 
             // Compile overall success message
             $user = auth()->user();
@@ -2567,33 +2883,38 @@ public function meetas(Request $request)
                     $tag_list = array_merge($tag_list, $userTags);
                     $tags = empty($tag_list) ? NULL : json_encode($tag_list);
 
-            foreach ($request->file('files') as $file) {
-                try {
-                    $filePath = $file->store('uploads');
-
-                    // Create a new entry for each file
-                    CommonTable::create([
-                        'file_type' => $file->getClientMimeType(),
-                        'file_name' => $file->getClientOriginalName(),
-                        'real_file_name' => $request->input('real_file_name'),
-                        'file_size' => $file->getSize(),
-                        'file_path' => $filePath,
-                        'user_name' => auth()->user()->name, // Assuming user is authenticated
-                        'user_id' => auth()->user()->id,
-                        'file_status' => $request->input('file_status', 0),
-                        'fyear' => $request->input('fyear'),
-                        'month' => $request->input('Month'),
-                        'tags' => $tags, // Store tags as JSON
-                        'location' => $request->input('location'),
-                        'descp' => $request->input('desc'),
-                    ]);
-
-                    $totalSize += $file->getSize();
-                    $successMessages[] = "File {$file->getClientOriginalName()} uploaded successfully.";
-                } catch (\Exception $e) {
-                    $errorMessages[] = "Failed to save file {$file->getClientOriginalName()} to database.";
-                }
-            }
+                    $location = preg_replace('/\s*\/\s*/', '/', trim($request->input('location')));
+                    // "Legal/Secretarial/Board Meetings" 
+        
+                    // Legal/Secretarial/Board Meetings/rtR2ORS7jdMq05zW6c704CUXesvrqkZ59ZNNWOib.pdf
+                    foreach ($request->file('files') as $file) {
+                        try {
+                            // Store file inside the dynamically created folder
+                           
+                            $filePath = $file->store($location);
+                            // Create a new entry for each file
+                            CommonTable::create([
+                                'file_type' => $file->getClientMimeType(),
+                                'file_name' => $file->getClientOriginalName(),
+                                'real_file_name' => $request->input('real_file_name'),
+                                'file_size' => $file->getSize(),
+                                'file_path' => $filePath,
+                                'user_name' => auth()->user()->name, // Assuming user is authenticated
+                                'user_id' => auth()->user()->id,
+                                'file_status' => $request->input('file_status', 0),
+                                'fyear' => $request->input('fyear'),
+                                'month' => $request->input('Month'),
+                                'tags' => $tags, // Store tags as JSON
+                                'location' => $request->input('location'), // Store the dynamic location
+                                'descp' => $request->input('desc'),
+                            ]);
+        
+                            $totalSize += $file->getSize();
+                            $successMessages[] = "File {$file->getClientOriginalName()} uploaded successfully.";
+                        } catch (\Exception $e) {
+                            $errorMessages[] = "Failed to save file {$file->getClientOriginalName()} to database.";
+                        }
+                    }
 
             // Compile overall success message
             $user = auth()->user();
@@ -2700,33 +3021,38 @@ public function meetreso(Request $request)
                     $tag_list = array_merge($tag_list, $userTags);
                     $tags = empty($tag_list) ? NULL : json_encode($tag_list);
 
-            foreach ($request->file('files') as $file) {
-                try {
-                    $filePath = $file->store('uploads');
-
-                    // Create a new entry for each file
-                    CommonTable::create([
-                        'file_type' => $file->getClientMimeType(),
-                        'file_name' => $file->getClientOriginalName(),
-                        'real_file_name' => $request->input('real_file_name'),
-                        'file_size' => $file->getSize(),
-                        'file_path' => $filePath,
-                        'user_name' => auth()->user()->name, // Assuming user is authenticated
-                        'user_id' => auth()->user()->id,
-                        'file_status' => $request->input('file_status', 0),
-                        'fyear' => $request->input('fyear'),
-                        'month' => $request->input('Month'),
-                        'tags' => $tags, // Store tags as JSON
-                        'location' => $request->input('location'),
-                        'descp' => $request->input('desc'),
-                    ]);
-
-                    $totalSize += $file->getSize();
-                    $successMessages[] = "File {$file->getClientOriginalName()} uploaded successfully.";
-                } catch (\Exception $e) {
-                    $errorMessages[] = "Failed to save file {$file->getClientOriginalName()} to database.";
-                }
-            }
+                    $location = preg_replace('/\s*\/\s*/', '/', trim($request->input('location')));
+                    // "Legal/Secretarial/Board Meetings" 
+        
+                    // Legal/Secretarial/Board Meetings/rtR2ORS7jdMq05zW6c704CUXesvrqkZ59ZNNWOib.pdf
+                    foreach ($request->file('files') as $file) {
+                        try {
+                            // Store file inside the dynamically created folder
+                           
+                            $filePath = $file->store($location);
+                            // Create a new entry for each file
+                            CommonTable::create([
+                                'file_type' => $file->getClientMimeType(),
+                                'file_name' => $file->getClientOriginalName(),
+                                'real_file_name' => $request->input('real_file_name'),
+                                'file_size' => $file->getSize(),
+                                'file_path' => $filePath,
+                                'user_name' => auth()->user()->name, // Assuming user is authenticated
+                                'user_id' => auth()->user()->id,
+                                'file_status' => $request->input('file_status', 0),
+                                'fyear' => $request->input('fyear'),
+                                'month' => $request->input('Month'),
+                                'tags' => $tags, // Store tags as JSON
+                                'location' => $request->input('location'), // Store the dynamic location
+                                'descp' => $request->input('desc'),
+                            ]);
+        
+                            $totalSize += $file->getSize();
+                            $successMessages[] = "File {$file->getClientOriginalName()} uploaded successfully.";
+                        } catch (\Exception $e) {
+                            $errorMessages[] = "Failed to save file {$file->getClientOriginalName()} to database.";
+                        }
+                    }
 
             // Compile overall success message
             $user = auth()->user();
@@ -2835,33 +3161,38 @@ public function ordernotice(Request $request)
                     $tag_list = array_merge($tag_list, $userTags);
                     $tags = empty($tag_list) ? NULL : json_encode($tag_list);
 
-            foreach ($request->file('files') as $file) {
-                try {
-                    $filePath = $file->store('uploads');
-
-                    // Create a new entry for each file
-                    CommonTable::create([
-                        'file_type' => $file->getClientMimeType(),
-                        'file_name' => $file->getClientOriginalName(),
-                        'real_file_name' => $request->input('real_file_name'),
-                        'file_size' => $file->getSize(),
-                        'file_path' => $filePath,
-                        'user_name' => auth()->user()->name, // Assuming user is authenticated
-                        'user_id' => auth()->user()->id,
-                        'file_status' => $request->input('file_status', 0),
-                        'fyear' => $request->input('fyear'),
-                        'month' => $request->input('Month'),
-                        'tags' => $tags, // Store tags as JSON
-                        'location' => $request->input('location'),
-                        'descp' => $request->input('desc'),
-                    ]);
-
-                    $totalSize += $file->getSize();
-                    $successMessages[] = "File {$file->getClientOriginalName()} uploaded successfully.";
-                } catch (\Exception $e) {
-                    $errorMessages[] = "Failed to save file {$file->getClientOriginalName()} to database.";
-                }
-            }
+                    $location = preg_replace('/\s*\/\s*/', '/', trim($request->input('location')));
+                    // "Legal/Secretarial/Board Meetings" 
+        
+                    // Legal/Secretarial/Board Meetings/rtR2ORS7jdMq05zW6c704CUXesvrqkZ59ZNNWOib.pdf
+                    foreach ($request->file('files') as $file) {
+                        try {
+                            // Store file inside the dynamically created folder
+                           
+                            $filePath = $file->store($location);
+                            // Create a new entry for each file
+                            CommonTable::create([
+                                'file_type' => $file->getClientMimeType(),
+                                'file_name' => $file->getClientOriginalName(),
+                                'real_file_name' => $request->input('real_file_name'),
+                                'file_size' => $file->getSize(),
+                                'file_path' => $filePath,
+                                'user_name' => auth()->user()->name, // Assuming user is authenticated
+                                'user_id' => auth()->user()->id,
+                                'file_status' => $request->input('file_status', 0),
+                                'fyear' => $request->input('fyear'),
+                                'month' => $request->input('Month'),
+                                'tags' => $tags, // Store tags as JSON
+                                'location' => $request->input('location'), // Store the dynamic location
+                                'descp' => $request->input('desc'),
+                            ]);
+        
+                            $totalSize += $file->getSize();
+                            $successMessages[] = "File {$file->getClientOriginalName()} uploaded successfully.";
+                        } catch (\Exception $e) {
+                            $errorMessages[] = "Failed to save file {$file->getClientOriginalName()} to database.";
+                        }
+                    }
 
             // Compile overall success message
             $user = auth()->user();
@@ -2969,33 +3300,38 @@ public function orderminbook(Request $request)
                     $tag_list = array_merge($tag_list, $userTags);
                     $tags = empty($tag_list) ? NULL : json_encode($tag_list);
 
-            foreach ($request->file('files') as $file) {
-                try {
-                    $filePath = $file->store('uploads');
-
-                    // Create a new entry for each file
-                    CommonTable::create([
-                        'file_type' => $file->getClientMimeType(),
-                        'file_name' => $file->getClientOriginalName(),
-                        'real_file_name' => $request->input('real_file_name'),
-                        'file_size' => $file->getSize(),
-                        'file_path' => $filePath,
-                        'user_name' => auth()->user()->name, // Assuming user is authenticated
-                        'user_id' => auth()->user()->id,
-                        'file_status' => $request->input('file_status', 0),
-                        'fyear' => $request->input('fyear'),
-                        'month' => $request->input('Month'),
-                        'tags' => $tags, // Store tags as JSON
-                        'location' => $request->input('location'),
-                        'descp' => $request->input('desc'),
-                    ]);
-
-                    $totalSize += $file->getSize();
-                    $successMessages[] = "File {$file->getClientOriginalName()} uploaded successfully.";
-                } catch (\Exception $e) {
-                    $errorMessages[] = "Failed to save file {$file->getClientOriginalName()} to database.";
-                }
-            }
+                    $location = preg_replace('/\s*\/\s*/', '/', trim($request->input('location')));
+                    // "Legal/Secretarial/Board Meetings" 
+        
+                    // Legal/Secretarial/Board Meetings/rtR2ORS7jdMq05zW6c704CUXesvrqkZ59ZNNWOib.pdf
+                    foreach ($request->file('files') as $file) {
+                        try {
+                            // Store file inside the dynamically created folder
+                           
+                            $filePath = $file->store($location);
+                            // Create a new entry for each file
+                            CommonTable::create([
+                                'file_type' => $file->getClientMimeType(),
+                                'file_name' => $file->getClientOriginalName(),
+                                'real_file_name' => $request->input('real_file_name'),
+                                'file_size' => $file->getSize(),
+                                'file_path' => $filePath,
+                                'user_name' => auth()->user()->name, // Assuming user is authenticated
+                                'user_id' => auth()->user()->id,
+                                'file_status' => $request->input('file_status', 0),
+                                'fyear' => $request->input('fyear'),
+                                'month' => $request->input('Month'),
+                                'tags' => $tags, // Store tags as JSON
+                                'location' => $request->input('location'), // Store the dynamic location
+                                'descp' => $request->input('desc'),
+                            ]);
+        
+                            $totalSize += $file->getSize();
+                            $successMessages[] = "File {$file->getClientOriginalName()} uploaded successfully.";
+                        } catch (\Exception $e) {
+                            $errorMessages[] = "Failed to save file {$file->getClientOriginalName()} to database.";
+                        }
+                    }
 
             // Compile overall success message
             $user = auth()->user();
@@ -3105,33 +3441,38 @@ public function orderAttend(Request $request)
                     $tags = empty($tag_list) ? NULL : json_encode($tag_list);
 
 
-            foreach ($request->file('files') as $file) {
-                try {
-                    $filePath = $file->store('uploads');
-
-                    // Create a new entry for each file
-                    CommonTable::create([
-                        'file_type' => $file->getClientMimeType(),
-                        'file_name' => $file->getClientOriginalName(),
-                        'real_file_name' => $request->input('real_file_name'),
-                        'file_size' => $file->getSize(),
-                        'file_path' => $filePath,
-                        'user_name' => auth()->user()->name, // Assuming user is authenticated
-                        'user_id' => auth()->user()->id,
-                        'file_status' => $request->input('file_status', 0),
-                        'fyear' => $request->input('fyear'),
-                        'month' => $request->input('Month'),
-                        'tags' => $tags, // Store tags as JSON
-                        'location' => $request->input('location'),
-                        'descp' => $request->input('desc'),
-                    ]);
-
-                    $totalSize += $file->getSize();
-                    $successMessages[] = "File {$file->getClientOriginalName()} uploaded successfully.";
-                } catch (\Exception $e) {
-                    $errorMessages[] = "Failed to save file {$file->getClientOriginalName()} to database.";
-                }
-            }
+                    $location = preg_replace('/\s*\/\s*/', '/', trim($request->input('location')));
+                    // "Legal/Secretarial/Board Meetings" 
+        
+                    // Legal/Secretarial/Board Meetings/rtR2ORS7jdMq05zW6c704CUXesvrqkZ59ZNNWOib.pdf
+                    foreach ($request->file('files') as $file) {
+                        try {
+                            // Store file inside the dynamically created folder
+                           
+                            $filePath = $file->store($location);
+                            // Create a new entry for each file
+                            CommonTable::create([
+                                'file_type' => $file->getClientMimeType(),
+                                'file_name' => $file->getClientOriginalName(),
+                                'real_file_name' => $request->input('real_file_name'),
+                                'file_size' => $file->getSize(),
+                                'file_path' => $filePath,
+                                'user_name' => auth()->user()->name, // Assuming user is authenticated
+                                'user_id' => auth()->user()->id,
+                                'file_status' => $request->input('file_status', 0),
+                                'fyear' => $request->input('fyear'),
+                                'month' => $request->input('Month'),
+                                'tags' => $tags, // Store tags as JSON
+                                'location' => $request->input('location'), // Store the dynamic location
+                                'descp' => $request->input('desc'),
+                            ]);
+        
+                            $totalSize += $file->getSize();
+                            $successMessages[] = "File {$file->getClientOriginalName()} uploaded successfully.";
+                        } catch (\Exception $e) {
+                            $errorMessages[] = "Failed to save file {$file->getClientOriginalName()} to database.";
+                        }
+                    }
 
             // Compile overall success message
             $user = auth()->user();
@@ -3239,34 +3580,38 @@ public function orderreso(Request $request)
                     $tag_list = array_merge($tag_list, $userTags);
                     $tags = empty($tag_list) ? NULL : json_encode($tag_list);
 
-            foreach ($request->file('files') as $file) {
-                try {
-                    $filePath = $file->store('uploads');
-
-                    // Create a new entry for each file
-                    CommonTable::create([
-                        'file_type' => $file->getClientMimeType(),
-                        'file_name' => $file->getClientOriginalName(),
-                        'real_file_name' => $request->input('real_file_name'),
-                        'file_size' => $file->getSize(),
-                        'file_path' => $filePath,
-                        'user_name' => auth()->user()->name, // Assuming user is authenticated
-                        'user_id' => auth()->user()->id,
-                        'file_status' => $request->input('file_status', 0),
-                        'fyear' => $request->input('fyear'),
-                        'month' => $request->input('Month'),
-                        'tags' => $tags, // Store tags as JSON
-                        'location' => $request->input('location'),
-                        'descp' => $request->input('desc'),
-                        
-                    ]);
-
-                    $totalSize += $file->getSize();
-                    $successMessages[] = "File {$file->getClientOriginalName()} uploaded successfully.";
-                } catch (\Exception $e) {
-                    $errorMessages[] = "Failed to save file {$file->getClientOriginalName()} to database.";
-                }
-            }
+                    $location = preg_replace('/\s*\/\s*/', '/', trim($request->input('location')));
+                    // "Legal/Secretarial/Board Meetings" 
+        
+                    // Legal/Secretarial/Board Meetings/rtR2ORS7jdMq05zW6c704CUXesvrqkZ59ZNNWOib.pdf
+                    foreach ($request->file('files') as $file) {
+                        try {
+                            // Store file inside the dynamically created folder
+                           
+                            $filePath = $file->store($location);
+                            // Create a new entry for each file
+                            CommonTable::create([
+                                'file_type' => $file->getClientMimeType(),
+                                'file_name' => $file->getClientOriginalName(),
+                                'real_file_name' => $request->input('real_file_name'),
+                                'file_size' => $file->getSize(),
+                                'file_path' => $filePath,
+                                'user_name' => auth()->user()->name, // Assuming user is authenticated
+                                'user_id' => auth()->user()->id,
+                                'file_status' => $request->input('file_status', 0),
+                                'fyear' => $request->input('fyear'),
+                                'month' => $request->input('Month'),
+                                'tags' => $tags, // Store tags as JSON
+                                'location' => $request->input('location'), // Store the dynamic location
+                                'descp' => $request->input('desc'),
+                            ]);
+        
+                            $totalSize += $file->getSize();
+                            $successMessages[] = "File {$file->getClientOriginalName()} uploaded successfully.";
+                        } catch (\Exception $e) {
+                            $errorMessages[] = "Failed to save file {$file->getClientOriginalName()} to database.";
+                        }
+                    }
 
             // Compile overall success message
             $user = auth()->user();
@@ -3375,33 +3720,38 @@ public function innerincnine(Request $request)
                     $tag_list = array_merge($tag_list, $userTags);
                     $tags = empty($tag_list) ? NULL : json_encode($tag_list);
 
-            foreach ($request->file('files') as $file) {
-                try {
-                    $filePath = $file->store('uploads');
-
-                    // Create a new entry for each file
-                    CommonTable::create([
-                        'file_type' => $file->getClientMimeType(),
-                        'file_name' => $file->getClientOriginalName(),
-                        'real_file_name' => $request->input('real_file_name'),
-                        'file_size' => $file->getSize(),
-                        'file_path' => $filePath,
-                        'user_name' => auth()->user()->name, // Assuming user is authenticated
-                        'user_id' => auth()->user()->id,
-                        'file_status' => $request->input('file_status', 0),
-                        'fyear' => $request->input('fyear'),
-                        'month' => $request->input('Month'),
-                        'tags' => $tags, // Store tags as JSON
-                        'location' => $request->input('location'),
-                        'descp' => $request->input('desc'),
-                    ]);
-
-                    $totalSize += $file->getSize();
-                    $successMessages[] = "File {$file->getClientOriginalName()} uploaded successfully.";
-                } catch (\Exception $e) {
-                    $errorMessages[] = "Failed to save file {$file->getClientOriginalName()} to database.";
-                }
-            }
+                    $location = preg_replace('/\s*\/\s*/', '/', trim($request->input('location')));
+                    // "Legal/Secretarial/Board Meetings" 
+        
+                    // Legal/Secretarial/Board Meetings/rtR2ORS7jdMq05zW6c704CUXesvrqkZ59ZNNWOib.pdf
+                    foreach ($request->file('files') as $file) {
+                        try {
+                            // Store file inside the dynamically created folder
+                           
+                            $filePath = $file->store($location);
+                            // Create a new entry for each file
+                            CommonTable::create([
+                                'file_type' => $file->getClientMimeType(),
+                                'file_name' => $file->getClientOriginalName(),
+                                'real_file_name' => $request->input('real_file_name'),
+                                'file_size' => $file->getSize(),
+                                'file_path' => $filePath,
+                                'user_name' => auth()->user()->name, // Assuming user is authenticated
+                                'user_id' => auth()->user()->id,
+                                'file_status' => $request->input('file_status', 0),
+                                'fyear' => $request->input('fyear'),
+                                'month' => $request->input('Month'),
+                                'tags' => $tags, // Store tags as JSON
+                                'location' => $request->input('location'), // Store the dynamic location
+                                'descp' => $request->input('desc'),
+                            ]);
+        
+                            $totalSize += $file->getSize();
+                            $successMessages[] = "File {$file->getClientOriginalName()} uploaded successfully.";
+                        } catch (\Exception $e) {
+                            $errorMessages[] = "Failed to save file {$file->getClientOriginalName()} to database.";
+                        }
+                    }
 
             // Compile overall success message
             $user = auth()->user();
@@ -3509,33 +3859,38 @@ public function innerspice(Request $request)
                     $tag_list = array_merge($tag_list, $userTags);
                     $tags = empty($tag_list) ? NULL : json_encode($tag_list);
 
-            foreach ($request->file('files') as $file) {
-                try {
-                    $filePath = $file->store('uploads');
-
-                    // Create a new entry for each file
-                    CommonTable::create([
-                        'file_type' => $file->getClientMimeType(),
-                        'file_name' => $file->getClientOriginalName(),
-                        'real_file_name' => $request->input('real_file_name'),
-                        'file_size' => $file->getSize(),
-                        'file_path' => $filePath,
-                        'user_name' => auth()->user()->name, // Assuming user is authenticated
-                        'user_id' => auth()->user()->id,
-                        'file_status' => $request->input('file_status', 0),
-                        'fyear' => $request->input('fyear'),
-                        'month' => $request->input('Month'),
-                        'tags' => $tags, // Store tags as JSON
-                        'location' => $request->input('location'),
-                        'descp' => $request->input('desc'),
-                    ]);
-
-                    $totalSize += $file->getSize();
-                    $successMessages[] = "File {$file->getClientOriginalName()} uploaded successfully.";
-                } catch (\Exception $e) {
-                    $errorMessages[] = "Failed to save file {$file->getClientOriginalName()} to database.";
-                }
-            }
+                    $location = preg_replace('/\s*\/\s*/', '/', trim($request->input('location')));
+                    // "Legal/Secretarial/Board Meetings" 
+        
+                    // Legal/Secretarial/Board Meetings/rtR2ORS7jdMq05zW6c704CUXesvrqkZ59ZNNWOib.pdf
+                    foreach ($request->file('files') as $file) {
+                        try {
+                            // Store file inside the dynamically created folder
+                           
+                            $filePath = $file->store($location);
+                            // Create a new entry for each file
+                            CommonTable::create([
+                                'file_type' => $file->getClientMimeType(),
+                                'file_name' => $file->getClientOriginalName(),
+                                'real_file_name' => $request->input('real_file_name'),
+                                'file_size' => $file->getSize(),
+                                'file_path' => $filePath,
+                                'user_name' => auth()->user()->name, // Assuming user is authenticated
+                                'user_id' => auth()->user()->id,
+                                'file_status' => $request->input('file_status', 0),
+                                'fyear' => $request->input('fyear'),
+                                'month' => $request->input('Month'),
+                                'tags' => $tags, // Store tags as JSON
+                                'location' => $request->input('location'), // Store the dynamic location
+                                'descp' => $request->input('desc'),
+                            ]);
+        
+                            $totalSize += $file->getSize();
+                            $successMessages[] = "File {$file->getClientOriginalName()} uploaded successfully.";
+                        } catch (\Exception $e) {
+                            $errorMessages[] = "Failed to save file {$file->getClientOriginalName()} to database.";
+                        }
+                    }
 
             // Compile overall success message
             $user = auth()->user();
@@ -3644,33 +3999,38 @@ public function innerINC33(Request $request)
                     $tag_list = array_merge($tag_list, $userTags);
                     $tags = empty($tag_list) ? NULL : json_encode($tag_list);
 
-            foreach ($request->file('files') as $file) {
-                try {
-                    $filePath = $file->store('uploads');
-
-                    // Create a new entry for each file
-                    CommonTable::create([
-                        'file_type' => $file->getClientMimeType(),
-                        'file_name' => $file->getClientOriginalName(),
-                        'real_file_name' => $request->input('real_file_name'),
-                        'file_size' => $file->getSize(),
-                        'file_path' => $filePath,
-                        'user_name' => auth()->user()->name, // Assuming user is authenticated
-                        'user_id' => auth()->user()->id,
-                        'file_status' => $request->input('file_status', 0),
-                        'fyear' => $request->input('fyear'),
-                        'month' => $request->input('Month'),
-                        'tags' => $tags, // Store tags as JSON
-                        'location' => $request->input('location'),
-                        'descp' => $request->input('desc'),
-                    ]);
-
-                    $totalSize += $file->getSize();
-                    $successMessages[] = "File {$file->getClientOriginalName()} uploaded successfully.";
-                } catch (\Exception $e) {
-                    $errorMessages[] = "Failed to save file {$file->getClientOriginalName()} to database.";
-                }
-            }
+                    $location = preg_replace('/\s*\/\s*/', '/', trim($request->input('location')));
+                    // "Legal/Secretarial/Board Meetings" 
+        
+                    // Legal/Secretarial/Board Meetings/rtR2ORS7jdMq05zW6c704CUXesvrqkZ59ZNNWOib.pdf
+                    foreach ($request->file('files') as $file) {
+                        try {
+                            // Store file inside the dynamically created folder
+                           
+                            $filePath = $file->store($location);
+                            // Create a new entry for each file
+                            CommonTable::create([
+                                'file_type' => $file->getClientMimeType(),
+                                'file_name' => $file->getClientOriginalName(),
+                                'real_file_name' => $request->input('real_file_name'),
+                                'file_size' => $file->getSize(),
+                                'file_path' => $filePath,
+                                'user_name' => auth()->user()->name, // Assuming user is authenticated
+                                'user_id' => auth()->user()->id,
+                                'file_status' => $request->input('file_status', 0),
+                                'fyear' => $request->input('fyear'),
+                                'month' => $request->input('Month'),
+                                'tags' => $tags, // Store tags as JSON
+                                'location' => $request->input('location'), // Store the dynamic location
+                                'descp' => $request->input('desc'),
+                            ]);
+        
+                            $totalSize += $file->getSize();
+                            $successMessages[] = "File {$file->getClientOriginalName()} uploaded successfully.";
+                        } catch (\Exception $e) {
+                            $errorMessages[] = "Failed to save file {$file->getClientOriginalName()} to database.";
+                        }
+                    }
 
             // Compile overall success message
             $user = auth()->user();
@@ -3778,33 +4138,38 @@ public function innerINC34(Request $request)
                     $tag_list = array_merge($tag_list, $userTags);
                     $tags = empty($tag_list) ? NULL : json_encode($tag_list);
 
-            foreach ($request->file('files') as $file) {
-                try {
-                    $filePath = $file->store('uploads');
-
-                    // Create a new entry for each file
-                    CommonTable::create([
-                        'file_type' => $file->getClientMimeType(),
-                        'file_name' => $file->getClientOriginalName(),
-                        'real_file_name' => $request->input('real_file_name'),
-                        'file_size' => $file->getSize(),
-                        'file_path' => $filePath,
-                        'user_name' => auth()->user()->name, // Assuming user is authenticated
-                        'user_id' => auth()->user()->id,
-                        'file_status' => $request->input('file_status', 0),
-                        'fyear' => $request->input('fyear'),
-                        'month' => $request->input('Month'),
-                        'tags' => $tags, // Store tags as JSON
-                        'location' => $request->input('location'),
-                        'descp' => $request->input('desc'),
-                    ]);
-
-                    $totalSize += $file->getSize();
-                    $successMessages[] = "File {$file->getClientOriginalName()} uploaded successfully.";
-                } catch (\Exception $e) {
-                    $errorMessages[] = "Failed to save file {$file->getClientOriginalName()} to database.";
-                }
-            }
+                    $location = preg_replace('/\s*\/\s*/', '/', trim($request->input('location')));
+                    // "Legal/Secretarial/Board Meetings" 
+        
+                    // Legal/Secretarial/Board Meetings/rtR2ORS7jdMq05zW6c704CUXesvrqkZ59ZNNWOib.pdf
+                    foreach ($request->file('files') as $file) {
+                        try {
+                            // Store file inside the dynamically created folder
+                           
+                            $filePath = $file->store($location);
+                            // Create a new entry for each file
+                            CommonTable::create([
+                                'file_type' => $file->getClientMimeType(),
+                                'file_name' => $file->getClientOriginalName(),
+                                'real_file_name' => $request->input('real_file_name'),
+                                'file_size' => $file->getSize(),
+                                'file_path' => $filePath,
+                                'user_name' => auth()->user()->name, // Assuming user is authenticated
+                                'user_id' => auth()->user()->id,
+                                'file_status' => $request->input('file_status', 0),
+                                'fyear' => $request->input('fyear'),
+                                'month' => $request->input('Month'),
+                                'tags' => $tags, // Store tags as JSON
+                                'location' => $request->input('location'), // Store the dynamic location
+                                'descp' => $request->input('desc'),
+                            ]);
+        
+                            $totalSize += $file->getSize();
+                            $successMessages[] = "File {$file->getClientOriginalName()} uploaded successfully.";
+                        } catch (\Exception $e) {
+                            $errorMessages[] = "Failed to save file {$file->getClientOriginalName()} to database.";
+                        }
+                    }
 
             // Compile overall success message
             $user = auth()->user();
@@ -3912,33 +4277,38 @@ public function innerINC35(Request $request)
                     $tag_list = array_merge($tag_list, $userTags);
                     $tags = empty($tag_list) ? NULL : json_encode($tag_list);
 
-            foreach ($request->file('files') as $file) {
-                try {
-                    $filePath = $file->store('uploads');
-
-                    // Create a new entry for each file
-                    CommonTable::create([
-                        'file_type' => $file->getClientMimeType(),
-                        'file_name' => $file->getClientOriginalName(),
-                        'real_file_name' => $request->input('real_file_name'),
-                        'file_size' => $file->getSize(),
-                        'file_path' => $filePath,
-                        'user_name' => auth()->user()->name, // Assuming user is authenticated
-                        'user_id' => auth()->user()->id,
-                        'file_status' => $request->input('file_status', 0),
-                        'fyear' => $request->input('fyear'),
-                        'month' => $request->input('Month'),
-                        'tags' => $tags, // Store tags as JSON
-                        'location' => $request->input('location'),
-                        'descp' => $request->input('desc'),
-                    ]);
-
-                    $totalSize += $file->getSize();
-                    $successMessages[] = "File {$file->getClientOriginalName()} uploaded successfully.";
-                } catch (\Exception $e) {
-                    $errorMessages[] = "Failed to save file {$file->getClientOriginalName()} to database.";
-                }
-            }
+                    $location = preg_replace('/\s*\/\s*/', '/', trim($request->input('location')));
+                    // "Legal/Secretarial/Board Meetings" 
+        
+                    // Legal/Secretarial/Board Meetings/rtR2ORS7jdMq05zW6c704CUXesvrqkZ59ZNNWOib.pdf
+                    foreach ($request->file('files') as $file) {
+                        try {
+                            // Store file inside the dynamically created folder
+                           
+                            $filePath = $file->store($location);
+                            // Create a new entry for each file
+                            CommonTable::create([
+                                'file_type' => $file->getClientMimeType(),
+                                'file_name' => $file->getClientOriginalName(),
+                                'real_file_name' => $request->input('real_file_name'),
+                                'file_size' => $file->getSize(),
+                                'file_path' => $filePath,
+                                'user_name' => auth()->user()->name, // Assuming user is authenticated
+                                'user_id' => auth()->user()->id,
+                                'file_status' => $request->input('file_status', 0),
+                                'fyear' => $request->input('fyear'),
+                                'month' => $request->input('Month'),
+                                'tags' => $tags, // Store tags as JSON
+                                'location' => $request->input('location'), // Store the dynamic location
+                                'descp' => $request->input('desc'),
+                            ]);
+        
+                            $totalSize += $file->getSize();
+                            $successMessages[] = "File {$file->getClientOriginalName()} uploaded successfully.";
+                        } catch (\Exception $e) {
+                            $errorMessages[] = "Failed to save file {$file->getClientOriginalName()} to database.";
+                        }
+                    }
 
             // Compile overall success message
             $user = auth()->user();
@@ -4045,33 +4415,38 @@ public function innerINC22(Request $request)
                     $tag_list = array_merge($tag_list, $userTags);
                     $tags = empty($tag_list) ? NULL : json_encode($tag_list);
 
-            foreach ($request->file('files') as $file) {
-                try {
-                    $filePath = $file->store('uploads');
-
-                    // Create a new entry for each file
-                    CommonTable::create([
-                        'file_type' => $file->getClientMimeType(),
-                        'file_name' => $file->getClientOriginalName(),
-                        'real_file_name' => $request->input('real_file_name'),
-                        'file_size' => $file->getSize(),
-                        'file_path' => $filePath,
-                        'user_name' => auth()->user()->name, // Assuming user is authenticated
-                        'user_id' => auth()->user()->id,
-                        'file_status' => $request->input('file_status', 0),
-                        'fyear' => $request->input('fyear'),
-                        'month' => $request->input('Month'),
-                        'tags' => $tags, // Store tags as JSON
-                        'location' => $request->input('location'),
-                        'descp' => $request->input('desc'),
-                    ]);
-
-                    $totalSize += $file->getSize();
-                    $successMessages[] = "File {$file->getClientOriginalName()} uploaded successfully.";
-                } catch (\Exception $e) {
-                    $errorMessages[] = "Failed to save file {$file->getClientOriginalName()} to database.";
-                }
-            }
+                    $location = preg_replace('/\s*\/\s*/', '/', trim($request->input('location')));
+                    // "Legal/Secretarial/Board Meetings" 
+        
+                    // Legal/Secretarial/Board Meetings/rtR2ORS7jdMq05zW6c704CUXesvrqkZ59ZNNWOib.pdf
+                    foreach ($request->file('files') as $file) {
+                        try {
+                            // Store file inside the dynamically created folder
+                           
+                            $filePath = $file->store($location);
+                            // Create a new entry for each file
+                            CommonTable::create([
+                                'file_type' => $file->getClientMimeType(),
+                                'file_name' => $file->getClientOriginalName(),
+                                'real_file_name' => $request->input('real_file_name'),
+                                'file_size' => $file->getSize(),
+                                'file_path' => $filePath,
+                                'user_name' => auth()->user()->name, // Assuming user is authenticated
+                                'user_id' => auth()->user()->id,
+                                'file_status' => $request->input('file_status', 0),
+                                'fyear' => $request->input('fyear'),
+                                'month' => $request->input('Month'),
+                                'tags' => $tags, // Store tags as JSON
+                                'location' => $request->input('location'), // Store the dynamic location
+                                'descp' => $request->input('desc'),
+                            ]);
+        
+                            $totalSize += $file->getSize();
+                            $successMessages[] = "File {$file->getClientOriginalName()} uploaded successfully.";
+                        } catch (\Exception $e) {
+                            $errorMessages[] = "Failed to save file {$file->getClientOriginalName()} to database.";
+                        }
+                    }
 
             // Compile overall success message
             $user = auth()->user();
@@ -4179,33 +4554,38 @@ public function innerINC20A(Request $request)
                     $tag_list = array_merge($tag_list, $userTags);
                     $tags = empty($tag_list) ? NULL : json_encode($tag_list);
 
-            foreach ($request->file('files') as $file) {
-                try {
-                    $filePath = $file->store('uploads');
-
-                    // Create a new entry for each file
-                    CommonTable::create([
-                        'file_type' => $file->getClientMimeType(),
-                        'file_name' => $file->getClientOriginalName(),
-                        'real_file_name' => $request->input('real_file_name'),
-                        'file_size' => $file->getSize(),
-                        'file_path' => $filePath,
-                        'user_name' => auth()->user()->name, // Assuming user is authenticated
-                        'user_id' => auth()->user()->id,
-                        'file_status' => $request->input('file_status', 0),
-                        'fyear' => $request->input('fyear'),
-                        'month' => $request->input('Month'),
-                        'tags' => $tags, // Store tags as JSON
-                        'location' => $request->input('location'),
-                        'descp' => $request->input('desc'),
-                    ]);
-
-                    $totalSize += $file->getSize();
-                    $successMessages[] = "File {$file->getClientOriginalName()} uploaded successfully.";
-                } catch (\Exception $e) {
-                    $errorMessages[] = "Failed to save file {$file->getClientOriginalName()} to database.";
-                }
-            }
+                    $location = preg_replace('/\s*\/\s*/', '/', trim($request->input('location')));
+                    // "Legal/Secretarial/Board Meetings" 
+        
+                    // Legal/Secretarial/Board Meetings/rtR2ORS7jdMq05zW6c704CUXesvrqkZ59ZNNWOib.pdf
+                    foreach ($request->file('files') as $file) {
+                        try {
+                            // Store file inside the dynamically created folder
+                           
+                            $filePath = $file->store($location);
+                            // Create a new entry for each file
+                            CommonTable::create([
+                                'file_type' => $file->getClientMimeType(),
+                                'file_name' => $file->getClientOriginalName(),
+                                'real_file_name' => $request->input('real_file_name'),
+                                'file_size' => $file->getSize(),
+                                'file_path' => $filePath,
+                                'user_name' => auth()->user()->name, // Assuming user is authenticated
+                                'user_id' => auth()->user()->id,
+                                'file_status' => $request->input('file_status', 0),
+                                'fyear' => $request->input('fyear'),
+                                'month' => $request->input('Month'),
+                                'tags' => $tags, // Store tags as JSON
+                                'location' => $request->input('location'), // Store the dynamic location
+                                'descp' => $request->input('desc'),
+                            ]);
+        
+                            $totalSize += $file->getSize();
+                            $successMessages[] = "File {$file->getClientOriginalName()} uploaded successfully.";
+                        } catch (\Exception $e) {
+                            $errorMessages[] = "Failed to save file {$file->getClientOriginalName()} to database.";
+                        }
+                    }
 
             // Compile overall success message
             $user = auth()->user();
@@ -4314,33 +4694,38 @@ public function annaoc4afs(Request $request)
                     $tag_list = array_merge($tag_list, $userTags);
                     $tags = empty($tag_list) ? NULL : json_encode($tag_list);
 
-            foreach ($request->file('files') as $file) {
-                try {
-                    $filePath = $file->store('uploads');
-
-                    // Create a new entry for each file
-                    CommonTable::create([
-                        'file_type' => $file->getClientMimeType(),
-                        'file_name' => $file->getClientOriginalName(),
-                        'real_file_name' => $request->input('real_file_name'),
-                        'file_size' => $file->getSize(),
-                        'file_path' => $filePath,
-                        'user_name' => auth()->user()->name, // Assuming user is authenticated
-                        'user_id' => auth()->user()->id,
-                        'file_status' => $request->input('file_status', 0),
-                        'fyear' => $request->input('fyear'),
-                        'month' => $request->input('Month'),
-                        'tags' => $tags, // Store tags as JSON
-                        'location' => $request->input('location'),
-                        'descp' => $request->input('desc'),
-                    ]);
-
-                    $totalSize += $file->getSize();
-                    $successMessages[] = "File {$file->getClientOriginalName()} uploaded successfully.";
-                } catch (\Exception $e) {
-                    $errorMessages[] = "Failed to save file {$file->getClientOriginalName()} to database.";
-                }
-            }
+                    $location = preg_replace('/\s*\/\s*/', '/', trim($request->input('location')));
+                    // "Legal/Secretarial/Board Meetings" 
+        
+                    // Legal/Secretarial/Board Meetings/rtR2ORS7jdMq05zW6c704CUXesvrqkZ59ZNNWOib.pdf
+                    foreach ($request->file('files') as $file) {
+                        try {
+                            // Store file inside the dynamically created folder
+                           
+                            $filePath = $file->store($location);
+                            // Create a new entry for each file
+                            CommonTable::create([
+                                'file_type' => $file->getClientMimeType(),
+                                'file_name' => $file->getClientOriginalName(),
+                                'real_file_name' => $request->input('real_file_name'),
+                                'file_size' => $file->getSize(),
+                                'file_path' => $filePath,
+                                'user_name' => auth()->user()->name, // Assuming user is authenticated
+                                'user_id' => auth()->user()->id,
+                                'file_status' => $request->input('file_status', 0),
+                                'fyear' => $request->input('fyear'),
+                                'month' => $request->input('Month'),
+                                'tags' => $tags, // Store tags as JSON
+                                'location' => $request->input('location'), // Store the dynamic location
+                                'descp' => $request->input('desc'),
+                            ]);
+        
+                            $totalSize += $file->getSize();
+                            $successMessages[] = "File {$file->getClientOriginalName()} uploaded successfully.";
+                        } catch (\Exception $e) {
+                            $errorMessages[] = "Failed to save file {$file->getClientOriginalName()} to database.";
+                        }
+                    }
 
             // Compile overall success message
             $user = auth()->user();
@@ -4448,33 +4833,38 @@ public function annaoc4Cfs(Request $request)
                     $tag_list = array_merge($tag_list, $userTags);
                     $tags = empty($tag_list) ? NULL : json_encode($tag_list);
 
-            foreach ($request->file('files') as $file) {
-                try {
-                    $filePath = $file->store('uploads');
-
-                    // Create a new entry for each file
-                    CommonTable::create([
-                        'file_type' => $file->getClientMimeType(),
-                        'file_name' => $file->getClientOriginalName(),
-                        'real_file_name' => $request->input('real_file_name'),
-                        'file_size' => $file->getSize(),
-                        'file_path' => $filePath,
-                        'user_name' => auth()->user()->name, // Assuming user is authenticated
-                        'user_id' => auth()->user()->id,
-                        'file_status' => $request->input('file_status', 0),
-                        'fyear' => $request->input('fyear'),
-                        'month' => $request->input('Month'),
-                        'tags' => $tags, // Store tags as JSON
-                        'location' => $request->input('location'),
-                        'descp' => $request->input('desc'),
-                    ]);
-
-                    $totalSize += $file->getSize();
-                    $successMessages[] = "File {$file->getClientOriginalName()} uploaded successfully.";
-                } catch (\Exception $e) {
-                    $errorMessages[] = "Failed to save file {$file->getClientOriginalName()} to database.";
-                }
-            }
+                    $location = preg_replace('/\s*\/\s*/', '/', trim($request->input('location')));
+                    // "Legal/Secretarial/Board Meetings" 
+        
+                    // Legal/Secretarial/Board Meetings/rtR2ORS7jdMq05zW6c704CUXesvrqkZ59ZNNWOib.pdf
+                    foreach ($request->file('files') as $file) {
+                        try {
+                            // Store file inside the dynamically created folder
+                           
+                            $filePath = $file->store($location);
+                            // Create a new entry for each file
+                            CommonTable::create([
+                                'file_type' => $file->getClientMimeType(),
+                                'file_name' => $file->getClientOriginalName(),
+                                'real_file_name' => $request->input('real_file_name'),
+                                'file_size' => $file->getSize(),
+                                'file_path' => $filePath,
+                                'user_name' => auth()->user()->name, // Assuming user is authenticated
+                                'user_id' => auth()->user()->id,
+                                'file_status' => $request->input('file_status', 0),
+                                'fyear' => $request->input('fyear'),
+                                'month' => $request->input('Month'),
+                                'tags' => $tags, // Store tags as JSON
+                                'location' => $request->input('location'), // Store the dynamic location
+                                'descp' => $request->input('desc'),
+                            ]);
+        
+                            $totalSize += $file->getSize();
+                            $successMessages[] = "File {$file->getClientOriginalName()} uploaded successfully.";
+                        } catch (\Exception $e) {
+                            $errorMessages[] = "Failed to save file {$file->getClientOriginalName()} to database.";
+                        }
+                    }
 
             // Compile overall success message
             $user = auth()->user();
@@ -4583,33 +4973,38 @@ public function annmgt7(Request $request)
                     $tag_list = array_merge($tag_list, $userTags);
                     $tags = empty($tag_list) ? NULL : json_encode($tag_list);
 
-            foreach ($request->file('files') as $file) {
-                try {
-                    $filePath = $file->store('uploads');
-
-                    // Create a new entry for each file
-                    CommonTable::create([
-                        'file_type' => $file->getClientMimeType(),
-                        'file_name' => $file->getClientOriginalName(),
-                        'real_file_name' => $request->input('real_file_name'),
-                        'file_size' => $file->getSize(),
-                        'file_path' => $filePath,
-                        'user_name' => auth()->user()->name, // Assuming user is authenticated
-                        'user_id' => auth()->user()->id,
-                        'file_status' => $request->input('file_status', 0),
-                        'fyear' => $request->input('fyear'),
-                        'month' => $request->input('Month'),
-                        'tags' => $tags, // Store tags as JSON
-                        'location' => $request->input('location'),
-                        'descp' => $request->input('desc'),
-                    ]);
-
-                    $totalSize += $file->getSize();
-                    $successMessages[] = "File {$file->getClientOriginalName()} uploaded successfully.";
-                } catch (\Exception $e) {
-                    $errorMessages[] = "Failed to save file {$file->getClientOriginalName()} to database.";
-                }
-            }
+                    $location = preg_replace('/\s*\/\s*/', '/', trim($request->input('location')));
+                    // "Legal/Secretarial/Board Meetings" 
+        
+                    // Legal/Secretarial/Board Meetings/rtR2ORS7jdMq05zW6c704CUXesvrqkZ59ZNNWOib.pdf
+                    foreach ($request->file('files') as $file) {
+                        try {
+                            // Store file inside the dynamically created folder
+                           
+                            $filePath = $file->store($location);
+                            // Create a new entry for each file
+                            CommonTable::create([
+                                'file_type' => $file->getClientMimeType(),
+                                'file_name' => $file->getClientOriginalName(),
+                                'real_file_name' => $request->input('real_file_name'),
+                                'file_size' => $file->getSize(),
+                                'file_path' => $filePath,
+                                'user_name' => auth()->user()->name, // Assuming user is authenticated
+                                'user_id' => auth()->user()->id,
+                                'file_status' => $request->input('file_status', 0),
+                                'fyear' => $request->input('fyear'),
+                                'month' => $request->input('Month'),
+                                'tags' => $tags, // Store tags as JSON
+                                'location' => $request->input('location'), // Store the dynamic location
+                                'descp' => $request->input('desc'),
+                            ]);
+        
+                            $totalSize += $file->getSize();
+                            $successMessages[] = "File {$file->getClientOriginalName()} uploaded successfully.";
+                        } catch (\Exception $e) {
+                            $errorMessages[] = "Failed to save file {$file->getClientOriginalName()} to database.";
+                        }
+                    }
 
             // Compile overall success message
             $user = auth()->user();
@@ -4717,33 +5112,38 @@ public function annmgt7a(Request $request)
                     $tag_list = array_merge($tag_list, $userTags);
                     $tags = empty($tag_list) ? NULL : json_encode($tag_list);
 
-            foreach ($request->file('files') as $file) {
-                try {
-                    $filePath = $file->store('uploads');
-
-                    // Create a new entry for each file
-                    CommonTable::create([
-                        'file_type' => $file->getClientMimeType(),
-                        'file_name' => $file->getClientOriginalName(),
-                        'real_file_name' => $request->input('real_file_name'),
-                        'file_size' => $file->getSize(),
-                        'file_path' => $filePath,
-                        'user_name' => auth()->user()->name, // Assuming user is authenticated
-                        'user_id' => auth()->user()->id,
-                        'file_status' => $request->input('file_status', 0),
-                        'fyear' => $request->input('fyear'),
-                        'month' => $request->input('Month'),
-                        'tags' => $tags, // Store tags as JSON
-                        'location' => $request->input('location'),
-                        'descp' => $request->input('desc'),
-                    ]);
-
-                    $totalSize += $file->getSize();
-                    $successMessages[] = "File {$file->getClientOriginalName()} uploaded successfully.";
-                } catch (\Exception $e) {
-                    $errorMessages[] = "Failed to save file {$file->getClientOriginalName()} to database.";
-                }
-            }
+                    $location = preg_replace('/\s*\/\s*/', '/', trim($request->input('location')));
+                    // "Legal/Secretarial/Board Meetings" 
+        
+                    // Legal/Secretarial/Board Meetings/rtR2ORS7jdMq05zW6c704CUXesvrqkZ59ZNNWOib.pdf
+                    foreach ($request->file('files') as $file) {
+                        try {
+                            // Store file inside the dynamically created folder
+                           
+                            $filePath = $file->store($location);
+                            // Create a new entry for each file
+                            CommonTable::create([
+                                'file_type' => $file->getClientMimeType(),
+                                'file_name' => $file->getClientOriginalName(),
+                                'real_file_name' => $request->input('real_file_name'),
+                                'file_size' => $file->getSize(),
+                                'file_path' => $filePath,
+                                'user_name' => auth()->user()->name, // Assuming user is authenticated
+                                'user_id' => auth()->user()->id,
+                                'file_status' => $request->input('file_status', 0),
+                                'fyear' => $request->input('fyear'),
+                                'month' => $request->input('Month'),
+                                'tags' => $tags, // Store tags as JSON
+                                'location' => $request->input('location'), // Store the dynamic location
+                                'descp' => $request->input('desc'),
+                            ]);
+        
+                            $totalSize += $file->getSize();
+                            $successMessages[] = "File {$file->getClientOriginalName()} uploaded successfully.";
+                        } catch (\Exception $e) {
+                            $errorMessages[] = "Failed to save file {$file->getClientOriginalName()} to database.";
+                        }
+                    }
 
             // Compile overall success message
             $user = auth()->user();
@@ -4898,33 +5298,38 @@ public function meetnotice(Request $request)
                     $tag_list = array_merge($tag_list, $userTags);
                     $tags = empty($tag_list) ? NULL : json_encode($tag_list);
 
-            foreach ($request->file('files') as $file) {
-                try {
-                    $filePath = $file->store('uploads');
-
-                    // Create a new entry for each file
-                    CommonTable::create([
-                        'file_type' => $file->getClientMimeType(),
-                        'file_name' => $file->getClientOriginalName(),
-                        'real_file_name' => $request->input('real_file_name'),
-                        'file_size' => $file->getSize(),
-                        'file_path' => $filePath,
-                        'user_name' => auth()->user()->name, // Assuming user is authenticated
-                        'user_id' => auth()->user()->id,
-                        'file_status' => $request->input('file_status', 0),
-                        'fyear' => $request->input('fyear'),
-                        'month' => $request->input('Month'),
-                        'tags' => $tags, // Store tags as JSON
-                        'location' => $request->input('location'),
-                        'descp' => $request->input('desc'),
-                    ]);
-
-                    $totalSize += $file->getSize();
-                    $successMessages[] = "File {$file->getClientOriginalName()} uploaded successfully.";
-                } catch (\Exception $e) {
-                    $errorMessages[] = "Failed to save file {$file->getClientOriginalName()} to database.";
-                }
-            }
+                    $location = preg_replace('/\s*\/\s*/', '/', trim($request->input('location')));
+                    // "Legal/Secretarial/Board Meetings" 
+        
+                    // Legal/Secretarial/Board Meetings/rtR2ORS7jdMq05zW6c704CUXesvrqkZ59ZNNWOib.pdf
+                    foreach ($request->file('files') as $file) {
+                        try {
+                            // Store file inside the dynamically created folder
+                           
+                            $filePath = $file->store($location);
+                            // Create a new entry for each file
+                            CommonTable::create([
+                                'file_type' => $file->getClientMimeType(),
+                                'file_name' => $file->getClientOriginalName(),
+                                'real_file_name' => $request->input('real_file_name'),
+                                'file_size' => $file->getSize(),
+                                'file_path' => $filePath,
+                                'user_name' => auth()->user()->name, // Assuming user is authenticated
+                                'user_id' => auth()->user()->id,
+                                'file_status' => $request->input('file_status', 0),
+                                'fyear' => $request->input('fyear'),
+                                'month' => $request->input('Month'),
+                                'tags' => $tags, // Store tags as JSON
+                                'location' => $request->input('location'), // Store the dynamic location
+                                'descp' => $request->input('desc'),
+                            ]);
+        
+                            $totalSize += $file->getSize();
+                            $successMessages[] = "File {$file->getClientOriginalName()} uploaded successfully.";
+                        } catch (\Exception $e) {
+                            $errorMessages[] = "Failed to save file {$file->getClientOriginalName()} to database.";
+                        }
+                    }
 
             // Compile overall success message
             $user = auth()->user();
@@ -5030,34 +5435,38 @@ public function bankaccountstatement(Request $request)
                     $tag_list = array_merge($tag_list, $userTags);
                     $tags = empty($tag_list) ? NULL : json_encode($tag_list);
 
-            foreach ($request->file('files') as $file) {
-                try {
-                    $filePath = $file->store('uploads');
-
-                    // Create a new entry for each file
-                    CommonTable::create([
-                        'file_type' => $file->getClientMimeType(),
-                        'file_name' => $file->getClientOriginalName(),
-                        'real_file_name' => $request->input('real_file_name'),
-                        'file_size' => $file->getSize(),
-                        'file_path' => $filePath,
-                        'user_name' => auth()->user()->name, // Assuming user is authenticated
-                        'user_id' => auth()->user()->id,
-                        'file_status' => $request->input('file_status', 0),
-                        'fyear' => $request->input('fyear'),
-                        'month' => $request->input('Month'),
-                        'tags' => $tags, // Store tags as JSON
-                        'bank_name' => $request->input('bank_name'),
-                        'location' => $request->input('location'),
-                        'descp' => $request->input('desc'),
-                    ]);
-
-                    $totalSize += $file->getSize();
-                    $successMessages[] = "File {$file->getClientOriginalName()} uploaded successfully.";
-                } catch (\Exception $e) {
-                    $errorMessages[] = "Failed to save file {$file->getClientOriginalName()} to the database.";
-                }
-            }
+                    $location = preg_replace('/\s*\/\s*/', '/', trim($request->input('location')));
+                    // "Legal/Secretarial/Board Meetings" 
+        
+                    // Legal/Secretarial/Board Meetings/rtR2ORS7jdMq05zW6c704CUXesvrqkZ59ZNNWOib.pdf
+                    foreach ($request->file('files') as $file) {
+                        try {
+                            // Store file inside the dynamically created folder
+                           
+                            $filePath = $file->store($location);
+                            // Create a new entry for each file
+                            CommonTable::create([
+                                'file_type' => $file->getClientMimeType(),
+                                'file_name' => $file->getClientOriginalName(),
+                                'real_file_name' => $request->input('real_file_name'),
+                                'file_size' => $file->getSize(),
+                                'file_path' => $filePath,
+                                'user_name' => auth()->user()->name, // Assuming user is authenticated
+                                'user_id' => auth()->user()->id,
+                                'file_status' => $request->input('file_status', 0),
+                                'fyear' => $request->input('fyear'),
+                                'month' => $request->input('Month'),
+                                'tags' => $tags, // Store tags as JSON
+                                'location' => $request->input('location'), // Store the dynamic location
+                                'descp' => $request->input('desc'),
+                            ]);
+        
+                            $totalSize += $file->getSize();
+                            $successMessages[] = "File {$file->getClientOriginalName()} uploaded successfully.";
+                        } catch (\Exception $e) {
+                            $errorMessages[] = "Failed to save file {$file->getClientOriginalName()} to database.";
+                        }
+                    }
 
             // Compile overall success message
             $user = auth()->user();
@@ -5171,34 +5580,38 @@ public function directorappointmentsdir3(Request $request)
                     $tag_list = array_merge($tag_list, $userTags);
                     $tags = empty($tag_list) ? NULL : json_encode($tag_list);
 
-            foreach ($request->file('files') as $file) {
-                try {
-                    $filePath = $file->store('uploads');
-
-                    // Create a new entry for each file
-                    CommonTable::create([
-                        'file_type' => $file->getClientMimeType(),
-                        'file_name' => $file->getClientOriginalName(),
-                        'real_file_name' => $request->input('real_file_name'),
-                        'file_size' => $file->getSize(),
-                        'file_path' => $filePath,
-                        'user_name' => auth()->user()->name, // Assuming user is authenticated
-                        'user_id' => auth()->user()->id,
-                        'file_status' => $request->input('file_status', 0),
-                        'fyear' => $request->input('fyear'),
-                        'month' => $request->input('Month'),
-                        'tags' => $tags, // Store tags as JSON
-                        'bank_name' => $request->input('bank_name'),
-                        'location' => $request->input('location'),
-                        'descp' => $request->input('desc'),
-                    ]);
-
-                    $totalSize += $file->getSize();
-                    $successMessages[] = "File {$file->getClientOriginalName()} uploaded successfully.";
-                } catch (\Exception $e) {
-                    $errorMessages[] = "Failed to save file {$file->getClientOriginalName()} to database.";
-                }
-            }
+                    $location = preg_replace('/\s*\/\s*/', '/', trim($request->input('location')));
+                    // "Legal/Secretarial/Board Meetings" 
+        
+                    // Legal/Secretarial/Board Meetings/rtR2ORS7jdMq05zW6c704CUXesvrqkZ59ZNNWOib.pdf
+                    foreach ($request->file('files') as $file) {
+                        try {
+                            // Store file inside the dynamically created folder
+                           
+                            $filePath = $file->store($location);
+                            // Create a new entry for each file
+                            CommonTable::create([
+                                'file_type' => $file->getClientMimeType(),
+                                'file_name' => $file->getClientOriginalName(),
+                                'real_file_name' => $request->input('real_file_name'),
+                                'file_size' => $file->getSize(),
+                                'file_path' => $filePath,
+                                'user_name' => auth()->user()->name, // Assuming user is authenticated
+                                'user_id' => auth()->user()->id,
+                                'file_status' => $request->input('file_status', 0),
+                                'fyear' => $request->input('fyear'),
+                                'month' => $request->input('Month'),
+                                'tags' => $tags, // Store tags as JSON
+                                'location' => $request->input('location'), // Store the dynamic location
+                                'descp' => $request->input('desc'),
+                            ]);
+        
+                            $totalSize += $file->getSize();
+                            $successMessages[] = "File {$file->getClientOriginalName()} uploaded successfully.";
+                        } catch (\Exception $e) {
+                            $errorMessages[] = "Failed to save file {$file->getClientOriginalName()} to database.";
+                        }
+                    }
 
             // Compile overall success message
             $user = auth()->user();
@@ -5308,34 +5721,38 @@ public function directorappointmentsdir3din(Request $request)
                     $tag_list = array_merge($tag_list, $userTags);
                     $tags = empty($tag_list) ? NULL : json_encode($tag_list);
 
-            foreach ($request->file('files') as $file) {
-                try {
-                    $filePath = $file->store('uploads');
-
-                    // Create a new entry for each file
-                    CommonTable::create([
-                        'file_type' => $file->getClientMimeType(),
-                        'file_name' => $file->getClientOriginalName(),
-                        'real_file_name' => $request->input('real_file_name'),
-                        'file_size' => $file->getSize(),
-                        'file_path' => $filePath,
-                        'user_name' => auth()->user()->name, // Assuming user is authenticated
-                        'user_id' => auth()->user()->id,
-                        'file_status' => $request->input('file_status', 0),
-                        'fyear' => $request->input('fyear'),
-                        'month' => $request->input('Month'),
-                        'tags' => $tags, // Store tags as JSON
-                        'bank_name' => $request->input('bank_name'),
-                        'location' => $request->input('location'),
-                        'descp' => $request->input('desc'),
-                    ]);
-
-                    $totalSize += $file->getSize();
-                    $successMessages[] = "File {$file->getClientOriginalName()} uploaded successfully.";
-                } catch (\Exception $e) {
-                    $errorMessages[] = "Failed to save file {$file->getClientOriginalName()} to database.";
-                }
-            }
+                    $location = preg_replace('/\s*\/\s*/', '/', trim($request->input('location')));
+                    // "Legal/Secretarial/Board Meetings" 
+        
+                    // Legal/Secretarial/Board Meetings/rtR2ORS7jdMq05zW6c704CUXesvrqkZ59ZNNWOib.pdf
+                    foreach ($request->file('files') as $file) {
+                        try {
+                            // Store file inside the dynamically created folder
+                           
+                            $filePath = $file->store($location);
+                            // Create a new entry for each file
+                            CommonTable::create([
+                                'file_type' => $file->getClientMimeType(),
+                                'file_name' => $file->getClientOriginalName(),
+                                'real_file_name' => $request->input('real_file_name'),
+                                'file_size' => $file->getSize(),
+                                'file_path' => $filePath,
+                                'user_name' => auth()->user()->name, // Assuming user is authenticated
+                                'user_id' => auth()->user()->id,
+                                'file_status' => $request->input('file_status', 0),
+                                'fyear' => $request->input('fyear'),
+                                'month' => $request->input('Month'),
+                                'tags' => $tags, // Store tags as JSON
+                                'location' => $request->input('location'), // Store the dynamic location
+                                'descp' => $request->input('desc'),
+                            ]);
+        
+                            $totalSize += $file->getSize();
+                            $successMessages[] = "File {$file->getClientOriginalName()} uploaded successfully.";
+                        } catch (\Exception $e) {
+                            $errorMessages[] = "Failed to save file {$file->getClientOriginalName()} to database.";
+                        }
+                    }
 
             // Compile overall success message
             $user = auth()->user();
@@ -5444,34 +5861,38 @@ public function directorappointmentsdir6(Request $request)
                     $tag_list = array_merge($tag_list, $userTags);
                     $tags = empty($tag_list) ? NULL : json_encode($tag_list);
 
-            foreach ($request->file('files') as $file) {
-                try {
-                    $filePath = $file->store('uploads');
-
-                    // Create a new entry for each file
-                    CommonTable::create([
-                        'file_type' => $file->getClientMimeType(),
-                        'file_name' => $file->getClientOriginalName(),
-                        'real_file_name' => $request->input('real_file_name'),
-                        'file_size' => $file->getSize(),
-                        'file_path' => $filePath,
-                        'user_name' => auth()->user()->name, // Assuming user is authenticated
-                        'user_id' => auth()->user()->id,
-                        'file_status' => $request->input('file_status', 0),
-                        'fyear' => $request->input('fyear'),
-                        'month' => $request->input('Month'),
-                        'tags' => $tags, // Store tags as JSON
-                        'bank_name' => $request->input('bank_name'),
-                        'location' => $request->input('location'),
-                        'descp' => $request->input('desc'),
-                    ]);
-
-                    $totalSize += $file->getSize();
-                    $successMessages[] = "File {$file->getClientOriginalName()} uploaded successfully.";
-                } catch (\Exception $e) {
-                    $errorMessages[] = "Failed to save file {$file->getClientOriginalName()} to database.";
-                }
-            }
+                    $location = preg_replace('/\s*\/\s*/', '/', trim($request->input('location')));
+                    // "Legal/Secretarial/Board Meetings" 
+        
+                    // Legal/Secretarial/Board Meetings/rtR2ORS7jdMq05zW6c704CUXesvrqkZ59ZNNWOib.pdf
+                    foreach ($request->file('files') as $file) {
+                        try {
+                            // Store file inside the dynamically created folder
+                           
+                            $filePath = $file->store($location);
+                            // Create a new entry for each file
+                            CommonTable::create([
+                                'file_type' => $file->getClientMimeType(),
+                                'file_name' => $file->getClientOriginalName(),
+                                'real_file_name' => $request->input('real_file_name'),
+                                'file_size' => $file->getSize(),
+                                'file_path' => $filePath,
+                                'user_name' => auth()->user()->name, // Assuming user is authenticated
+                                'user_id' => auth()->user()->id,
+                                'file_status' => $request->input('file_status', 0),
+                                'fyear' => $request->input('fyear'),
+                                'month' => $request->input('Month'),
+                                'tags' => $tags, // Store tags as JSON
+                                'location' => $request->input('location'), // Store the dynamic location
+                                'descp' => $request->input('desc'),
+                            ]);
+        
+                            $totalSize += $file->getSize();
+                            $successMessages[] = "File {$file->getClientOriginalName()} uploaded successfully.";
+                        } catch (\Exception $e) {
+                            $errorMessages[] = "Failed to save file {$file->getClientOriginalName()} to database.";
+                        }
+                    }
 
             // Compile overall success message
             $user = auth()->user();
@@ -5581,34 +6002,38 @@ public function directorappointmentsdir12(Request $request)
                     $tag_list = array_merge($tag_list, $userTags);
                     $tags = empty($tag_list) ? NULL : json_encode($tag_list);
 
-            foreach ($request->file('files') as $file) {
-                try {
-                    $filePath = $file->store('uploads');
-
-                    // Create a new entry for each file
-                    CommonTable::create([
-                        'file_type' => $file->getClientMimeType(),
-                        'file_name' => $file->getClientOriginalName(),
-                        'real_file_name' => $request->input('real_file_name'),
-                        'file_size' => $file->getSize(),
-                        'file_path' => $filePath,
-                        'user_name' => auth()->user()->name, // Assuming user is authenticated
-                        'user_id' => auth()->user()->id,
-                        'file_status' => $request->input('file_status', 0),
-                        'fyear' => $request->input('fyear'),
-                        'month' => $request->input('Month'),
-                        'tags' => $tags, // Store tags as JSON
-                        'bank_name' => $request->input('bank_name'),
-                        'location' => $request->input('location'),
-                        'descp' => $request->input('desc'),
-                    ]);
-
-                    $totalSize += $file->getSize();
-                    $successMessages[] = "File {$file->getClientOriginalName()} uploaded successfully.";
-                } catch (\Exception $e) {
-                    $errorMessages[] = "Failed to save file {$file->getClientOriginalName()} to database.";
-                }
-            }
+                    $location = preg_replace('/\s*\/\s*/', '/', trim($request->input('location')));
+                    // "Legal/Secretarial/Board Meetings" 
+        
+                    // Legal/Secretarial/Board Meetings/rtR2ORS7jdMq05zW6c704CUXesvrqkZ59ZNNWOib.pdf
+                    foreach ($request->file('files') as $file) {
+                        try {
+                            // Store file inside the dynamically created folder
+                           
+                            $filePath = $file->store($location);
+                            // Create a new entry for each file
+                            CommonTable::create([
+                                'file_type' => $file->getClientMimeType(),
+                                'file_name' => $file->getClientOriginalName(),
+                                'real_file_name' => $request->input('real_file_name'),
+                                'file_size' => $file->getSize(),
+                                'file_path' => $filePath,
+                                'user_name' => auth()->user()->name, // Assuming user is authenticated
+                                'user_id' => auth()->user()->id,
+                                'file_status' => $request->input('file_status', 0),
+                                'fyear' => $request->input('fyear'),
+                                'month' => $request->input('Month'),
+                                'tags' => $tags, // Store tags as JSON
+                                'location' => $request->input('location'), // Store the dynamic location
+                                'descp' => $request->input('desc'),
+                            ]);
+        
+                            $totalSize += $file->getSize();
+                            $successMessages[] = "File {$file->getClientOriginalName()} uploaded successfully.";
+                        } catch (\Exception $e) {
+                            $errorMessages[] = "Failed to save file {$file->getClientOriginalName()} to database.";
+                        }
+                    }
 
             // Compile overall success message
             $user = auth()->user();
@@ -5717,34 +6142,38 @@ public function creditcardstatement(Request $request)
                     $tag_list = array_merge($tag_list, $userTags);
                     $tags = empty($tag_list) ? NULL : json_encode($tag_list);
 
-            foreach ($request->file('files') as $file) {
-                try {
-                    $filePath = $file->store('uploads');
-
-                    // Create a new entry for each file
-                    CommonTable::create([
-                        'file_type' => $file->getClientMimeType(),
-                        'file_name' => $file->getClientOriginalName(),
-                        'real_file_name' => $request->input('real_file_name'),
-                        'file_size' => $file->getSize(),
-                        'file_path' => $filePath,
-                        'user_name' => auth()->user()->name, // Assuming user is authenticated
-                        'user_id' => auth()->user()->id,
-                        'file_status' => $request->input('file_status', 0),
-                        'fyear' => $request->input('fyear'),
-                        'month' => $request->input('Month'),
-                        'tags' => $tags, // Store tags as JSON
-                        'bank_name' => $request->input('bank_name'),
-                        'location' => $request->input('location'),
-                        'descp' => $request->input('desc'),
-                    ]);
-
-                    $totalSize += $file->getSize();
-                    $successMessages[] = "File {$file->getClientOriginalName()} uploaded successfully.";
-                } catch (\Exception $e) {
-                    $errorMessages[] = "Failed to save file {$file->getClientOriginalName()} to the database.";
-                }
-            }
+                    $location = preg_replace('/\s*\/\s*/', '/', trim($request->input('location')));
+                    // "Legal/Secretarial/Board Meetings" 
+        
+                    // Legal/Secretarial/Board Meetings/rtR2ORS7jdMq05zW6c704CUXesvrqkZ59ZNNWOib.pdf
+                    foreach ($request->file('files') as $file) {
+                        try {
+                            // Store file inside the dynamically created folder
+                           
+                            $filePath = $file->store($location);
+                            // Create a new entry for each file
+                            CommonTable::create([
+                                'file_type' => $file->getClientMimeType(),
+                                'file_name' => $file->getClientOriginalName(),
+                                'real_file_name' => $request->input('real_file_name'),
+                                'file_size' => $file->getSize(),
+                                'file_path' => $filePath,
+                                'user_name' => auth()->user()->name, // Assuming user is authenticated
+                                'user_id' => auth()->user()->id,
+                                'file_status' => $request->input('file_status', 0),
+                                'fyear' => $request->input('fyear'),
+                                'month' => $request->input('Month'),
+                                'tags' => $tags, // Store tags as JSON
+                                'location' => $request->input('location'), // Store the dynamic location
+                                'descp' => $request->input('desc'),
+                            ]);
+        
+                            $totalSize += $file->getSize();
+                            $successMessages[] = "File {$file->getClientOriginalName()} uploaded successfully.";
+                        } catch (\Exception $e) {
+                            $errorMessages[] = "Failed to save file {$file->getClientOriginalName()} to database.";
+                        }
+                    }
 
             // Compile overall success message
             $user = auth()->user();
@@ -5857,34 +6286,38 @@ public function mutualfundstatement(Request $request)
                     $tag_list = array_merge($tag_list, $userTags);
                     $tags = empty($tag_list) ? NULL : json_encode($tag_list);
 
-            foreach ($request->file('files') as $file) {
-                try {
-                    $filePath = $file->store('uploads');
-
-                    // Create a new entry for each file
-                    CommonTable::create([
-                        'file_type' => $file->getClientMimeType(),
-                        'file_name' => $file->getClientOriginalName(),
-                        'real_file_name' => $request->input('real_file_name'),
-                        'file_size' => $file->getSize(),
-                        'file_path' => $filePath,
-                        'user_name' => auth()->user()->name, // Assuming user is authenticated
-                        'user_id' => auth()->user()->id,
-                        'file_status' => $request->input('file_status', 0),
-                        'fyear' => $request->input('fyear'),
-                        'month' => $request->input('Month'),
-                        'tags' => $tags, // Store tags as JSON
-                        'bank_name' => $request->input('bank_name'),
-                        'location' => $request->input('location'),
-                        'descp' => $request->input('desc'),
-                    ]);
-
-                    $totalSize += $file->getSize();
-                    $successMessages[] = "File {$file->getClientOriginalName()} uploaded successfully.";
-                } catch (\Exception $e) {
-                    $errorMessages[] = "Failed to save file {$file->getClientOriginalName()} to the database.";
-                }
-            }
+                    $location = preg_replace('/\s*\/\s*/', '/', trim($request->input('location')));
+                    // "Legal/Secretarial/Board Meetings" 
+        
+                    // Legal/Secretarial/Board Meetings/rtR2ORS7jdMq05zW6c704CUXesvrqkZ59ZNNWOib.pdf
+                    foreach ($request->file('files') as $file) {
+                        try {
+                            // Store file inside the dynamically created folder
+                           
+                            $filePath = $file->store($location);
+                            // Create a new entry for each file
+                            CommonTable::create([
+                                'file_type' => $file->getClientMimeType(),
+                                'file_name' => $file->getClientOriginalName(),
+                                'real_file_name' => $request->input('real_file_name'),
+                                'file_size' => $file->getSize(),
+                                'file_path' => $filePath,
+                                'user_name' => auth()->user()->name, // Assuming user is authenticated
+                                'user_id' => auth()->user()->id,
+                                'file_status' => $request->input('file_status', 0),
+                                'fyear' => $request->input('fyear'),
+                                'month' => $request->input('Month'),
+                                'tags' => $tags, // Store tags as JSON
+                                'location' => $request->input('location'), // Store the dynamic location
+                                'descp' => $request->input('desc'),
+                            ]);
+        
+                            $totalSize += $file->getSize();
+                            $successMessages[] = "File {$file->getClientOriginalName()} uploaded successfully.";
+                        } catch (\Exception $e) {
+                            $errorMessages[] = "Failed to save file {$file->getClientOriginalName()} to database.";
+                        }
+                    }
 
             // Compile overall success message
             $user = auth()->user();
@@ -5992,34 +6425,38 @@ public function fixeddepoiststatement(Request $request)
                     $tag_list = array_merge($tag_list, $userTags);
                     $tags = empty($tag_list) ? NULL : json_encode($tag_list);
 
-            foreach ($request->file('files') as $file) {
-                try {
-                    $filePath = $file->store('uploads');
-
-                    // Create a new entry for each file
-                    CommonTable::create([
-                        'file_type' => $file->getClientMimeType(),
-                        'file_name' => $file->getClientOriginalName(),
-                        'real_file_name' => $request->input('real_file_name'),
-                        'file_size' => $file->getSize(),
-                        'file_path' => $filePath,
-                        'user_name' => auth()->user()->name, // Assuming user is authenticated
-                        'user_id' => auth()->user()->id,
-                        'file_status' => $request->input('file_status', 0),
-                        'fyear' => $request->input('fyear'),
-                        'month' => $request->input('Month'),
-                        'tags' => $tags, // Store tags as JSON
-                        'bank_name' => $request->input('bank_name'),
-                        'location' => $request->input('location'),
-                        'descp' => $request->input('desc'),
-                    ]);
-
-                    $totalSize += $file->getSize();
-                    $successMessages[] = "File {$file->getClientOriginalName()} uploaded successfully.";
-                } catch (\Exception $e) {
-                    $errorMessages[] = "Failed to save file {$file->getClientOriginalName()} to the database.";
-                }
-            }
+                    $location = preg_replace('/\s*\/\s*/', '/', trim($request->input('location')));
+                    // "Legal/Secretarial/Board Meetings" 
+        
+                    // Legal/Secretarial/Board Meetings/rtR2ORS7jdMq05zW6c704CUXesvrqkZ59ZNNWOib.pdf
+                    foreach ($request->file('files') as $file) {
+                        try {
+                            // Store file inside the dynamically created folder
+                           
+                            $filePath = $file->store($location);
+                            // Create a new entry for each file
+                            CommonTable::create([
+                                'file_type' => $file->getClientMimeType(),
+                                'file_name' => $file->getClientOriginalName(),
+                                'real_file_name' => $request->input('real_file_name'),
+                                'file_size' => $file->getSize(),
+                                'file_path' => $filePath,
+                                'user_name' => auth()->user()->name, // Assuming user is authenticated
+                                'user_id' => auth()->user()->id,
+                                'file_status' => $request->input('file_status', 0),
+                                'fyear' => $request->input('fyear'),
+                                'month' => $request->input('Month'),
+                                'tags' => $tags, // Store tags as JSON
+                                'location' => $request->input('location'), // Store the dynamic location
+                                'descp' => $request->input('desc'),
+                            ]);
+        
+                            $totalSize += $file->getSize();
+                            $successMessages[] = "File {$file->getClientOriginalName()} uploaded successfully.";
+                        } catch (\Exception $e) {
+                            $errorMessages[] = "Failed to save file {$file->getClientOriginalName()} to database.";
+                        }
+                    }
 
             // Compile overall success message
             $user = auth()->user();
@@ -6129,34 +6566,38 @@ public function directorresignationdir11(Request $request)
                     $tag_list = array_merge($tag_list, $userTags);
                     $tags = empty($tag_list) ? NULL : json_encode($tag_list);
 
-            foreach ($request->file('files') as $file) {
-                try {
-                    $filePath = $file->store('uploads');
-
-                    // Create a new entry for each file
-                    CommonTable::create([
-                        'file_type' => $file->getClientMimeType(),
-                        'file_name' => $file->getClientOriginalName(),
-                        'real_file_name' => $request->input('real_file_name'),
-                        'file_size' => $file->getSize(),
-                        'file_path' => $filePath,
-                        'user_name' => auth()->user()->name, // Assuming user is authenticated
-                        'user_id' => auth()->user()->id,
-                        'file_status' => $request->input('file_status', 0),
-                        'fyear' => $request->input('fyear'),
-                        'month' => $request->input('Month'),
-                        'tags' => $tags, // Store tags as JSON
-                        'bank_name' => $request->input('bank_name'),
-                        'location' => $request->input('location'),
-                        'descp' => $request->input('desc'),
-                    ]);
-
-                    $totalSize += $file->getSize();
-                    $successMessages[] = "File {$file->getClientOriginalName()} uploaded successfully.";
-                } catch (\Exception $e) {
-                    $errorMessages[] = "Failed to save file {$file->getClientOriginalName()} to database.";
-                }
-            }
+                    $location = preg_replace('/\s*\/\s*/', '/', trim($request->input('location')));
+                    // "Legal/Secretarial/Board Meetings" 
+        
+                    // Legal/Secretarial/Board Meetings/rtR2ORS7jdMq05zW6c704CUXesvrqkZ59ZNNWOib.pdf
+                    foreach ($request->file('files') as $file) {
+                        try {
+                            // Store file inside the dynamically created folder
+                           
+                            $filePath = $file->store($location);
+                            // Create a new entry for each file
+                            CommonTable::create([
+                                'file_type' => $file->getClientMimeType(),
+                                'file_name' => $file->getClientOriginalName(),
+                                'real_file_name' => $request->input('real_file_name'),
+                                'file_size' => $file->getSize(),
+                                'file_path' => $filePath,
+                                'user_name' => auth()->user()->name, // Assuming user is authenticated
+                                'user_id' => auth()->user()->id,
+                                'file_status' => $request->input('file_status', 0),
+                                'fyear' => $request->input('fyear'),
+                                'month' => $request->input('Month'),
+                                'tags' => $tags, // Store tags as JSON
+                                'location' => $request->input('location'), // Store the dynamic location
+                                'descp' => $request->input('desc'),
+                            ]);
+        
+                            $totalSize += $file->getSize();
+                            $successMessages[] = "File {$file->getClientOriginalName()} uploaded successfully.";
+                        } catch (\Exception $e) {
+                            $errorMessages[] = "Failed to save file {$file->getClientOriginalName()} to database.";
+                        }
+                    }
 
             // Compile overall success message
             $user = auth()->user();
@@ -6268,34 +6709,38 @@ public function directorresignationdir12(Request $request)
                     $tag_list = array_merge($tag_list, $userTags);
                     $tags = empty($tag_list) ? NULL : json_encode($tag_list);
 
-            foreach ($request->file('files') as $file) {
-                try {
-                    $filePath = $file->store('uploads');
-
-                    // Create a new entry for each file
-                    CommonTable::create([
-                        'file_type' => $file->getClientMimeType(),
-                        'file_name' => $file->getClientOriginalName(),
-                        'real_file_name' => $request->input('real_file_name'),
-                        'file_size' => $file->getSize(),
-                        'file_path' => $filePath,
-                        'user_name' => auth()->user()->name, // Assuming user is authenticated
-                        'user_id' => auth()->user()->id,
-                        'file_status' => $request->input('file_status', 0),
-                        'fyear' => $request->input('fyear'),
-                        'month' => $request->input('Month'),
-                        'tags' => $tags, // Store tags as JSON
-                        'bank_name' => $request->input('bank_name'),
-                        'location' => $request->input('location'),
-                        'descp' => $request->input('desc'),
-                    ]);
-
-                    $totalSize += $file->getSize();
-                    $successMessages[] = "File {$file->getClientOriginalName()} uploaded successfully.";
-                } catch (\Exception $e) {
-                    $errorMessages[] = "Failed to save file {$file->getClientOriginalName()} to database.";
-                }
-            }
+                    $location = preg_replace('/\s*\/\s*/', '/', trim($request->input('location')));
+                    // "Legal/Secretarial/Board Meetings" 
+        
+                    // Legal/Secretarial/Board Meetings/rtR2ORS7jdMq05zW6c704CUXesvrqkZ59ZNNWOib.pdf
+                    foreach ($request->file('files') as $file) {
+                        try {
+                            // Store file inside the dynamically created folder
+                           
+                            $filePath = $file->store($location);
+                            // Create a new entry for each file
+                            CommonTable::create([
+                                'file_type' => $file->getClientMimeType(),
+                                'file_name' => $file->getClientOriginalName(),
+                                'real_file_name' => $request->input('real_file_name'),
+                                'file_size' => $file->getSize(),
+                                'file_path' => $filePath,
+                                'user_name' => auth()->user()->name, // Assuming user is authenticated
+                                'user_id' => auth()->user()->id,
+                                'file_status' => $request->input('file_status', 0),
+                                'fyear' => $request->input('fyear'),
+                                'month' => $request->input('Month'),
+                                'tags' => $tags, // Store tags as JSON
+                                'location' => $request->input('location'), // Store the dynamic location
+                                'descp' => $request->input('desc'),
+                            ]);
+        
+                            $totalSize += $file->getSize();
+                            $successMessages[] = "File {$file->getClientOriginalName()} uploaded successfully.";
+                        } catch (\Exception $e) {
+                            $errorMessages[] = "Failed to save file {$file->getClientOriginalName()} to database.";
+                        }
+                    }
 
             // Compile overall success message
             $user = auth()->user();
@@ -6408,34 +6853,38 @@ public function depositundertakingsFormDPT3(Request $request)
                     $tag_list = array_merge($tag_list, $userTags);
                     $tags = empty($tag_list) ? NULL : json_encode($tag_list);
 
-            foreach ($request->file('files') as $file) {
-                try {
-                    $filePath = $file->store('uploads');
-
-                    // Create a new entry for each file
-                    CommonTable::create([
-                        'file_type' => $file->getClientMimeType(),
-                        'file_name' => $file->getClientOriginalName(),
-                        'real_file_name' => $request->input('real_file_name'),
-                        'file_size' => $file->getSize(),
-                        'file_path' => $filePath,
-                        'user_name' => auth()->user()->name, // Assuming user is authenticated
-                        'user_id' => auth()->user()->id,
-                        'file_status' => $request->input('file_status', 0),
-                        'fyear' => $request->input('fyear'),
-                        'month' => $request->input('Month'),
-                        'tags' => $tags, // Store tags as JSON
-                        'bank_name' => $request->input('bank_name'),
-                        'location' => $request->input('location'),
-                        'descp' => $request->input('desc'),
-                    ]);
-
-                    $totalSize += $file->getSize();
-                    $successMessages[] = "File {$file->getClientOriginalName()} uploaded successfully.";
-                } catch (\Exception $e) {
-                    $errorMessages[] = "Failed to save file {$file->getClientOriginalName()} to database.";
-                }
-            }
+                    $location = preg_replace('/\s*\/\s*/', '/', trim($request->input('location')));
+                    // "Legal/Secretarial/Board Meetings" 
+        
+                    // Legal/Secretarial/Board Meetings/rtR2ORS7jdMq05zW6c704CUXesvrqkZ59ZNNWOib.pdf
+                    foreach ($request->file('files') as $file) {
+                        try {
+                            // Store file inside the dynamically created folder
+                           
+                            $filePath = $file->store($location);
+                            // Create a new entry for each file
+                            CommonTable::create([
+                                'file_type' => $file->getClientMimeType(),
+                                'file_name' => $file->getClientOriginalName(),
+                                'real_file_name' => $request->input('real_file_name'),
+                                'file_size' => $file->getSize(),
+                                'file_path' => $filePath,
+                                'user_name' => auth()->user()->name, // Assuming user is authenticated
+                                'user_id' => auth()->user()->id,
+                                'file_status' => $request->input('file_status', 0),
+                                'fyear' => $request->input('fyear'),
+                                'month' => $request->input('Month'),
+                                'tags' => $tags, // Store tags as JSON
+                                'location' => $request->input('location'), // Store the dynamic location
+                                'descp' => $request->input('desc'),
+                            ]);
+        
+                            $totalSize += $file->getSize();
+                            $successMessages[] = "File {$file->getClientOriginalName()} uploaded successfully.";
+                        } catch (\Exception $e) {
+                            $errorMessages[] = "Failed to save file {$file->getClientOriginalName()} to database.";
+                        }
+                    }
 
             // Compile overall success message
             $user = auth()->user();
@@ -6546,34 +6995,38 @@ public function AuditorExitsADT3Form(Request $request)
                     $tag_list = array_merge($tag_list, $userTags);
                     $tags = empty($tag_list) ? NULL : json_encode($tag_list);
 
-            foreach ($request->file('files') as $file) {
-                try {
-                    $filePath = $file->store('uploads');
-
-                    // Create a new entry for each file
-                    CommonTable::create([
-                        'file_type' => $file->getClientMimeType(),
-                        'file_name' => $file->getClientOriginalName(),
-                        'real_file_name' => $request->input('real_file_name'),
-                        'file_size' => $file->getSize(),
-                        'file_path' => $filePath,
-                        'user_name' => auth()->user()->name, // Assuming user is authenticated
-                        'user_id' => auth()->user()->id,
-                        'file_status' => $request->input('file_status', 0),
-                        'fyear' => $request->input('fyear'),
-                        'month' => $request->input('Month'),
-                        'tags' => $tags, // Store tags as JSON
-                        'bank_name' => $request->input('bank_name'),
-                        'location' => $request->input('location'),
-                        'descp' => $request->input('desc'),
-                    ]);
-
-                    $totalSize += $file->getSize();
-                    $successMessages[] = "File {$file->getClientOriginalName()} uploaded successfully.";
-                } catch (\Exception $e) {
-                    $errorMessages[] = "Failed to save file {$file->getClientOriginalName()} to database.";
-                }
-            }
+                    $location = preg_replace('/\s*\/\s*/', '/', trim($request->input('location')));
+                    // "Legal/Secretarial/Board Meetings" 
+        
+                    // Legal/Secretarial/Board Meetings/rtR2ORS7jdMq05zW6c704CUXesvrqkZ59ZNNWOib.pdf
+                    foreach ($request->file('files') as $file) {
+                        try {
+                            // Store file inside the dynamically created folder
+                           
+                            $filePath = $file->store($location);
+                            // Create a new entry for each file
+                            CommonTable::create([
+                                'file_type' => $file->getClientMimeType(),
+                                'file_name' => $file->getClientOriginalName(),
+                                'real_file_name' => $request->input('real_file_name'),
+                                'file_size' => $file->getSize(),
+                                'file_path' => $filePath,
+                                'user_name' => auth()->user()->name, // Assuming user is authenticated
+                                'user_id' => auth()->user()->id,
+                                'file_status' => $request->input('file_status', 0),
+                                'fyear' => $request->input('fyear'),
+                                'month' => $request->input('Month'),
+                                'tags' => $tags, // Store tags as JSON
+                                'location' => $request->input('location'), // Store the dynamic location
+                                'descp' => $request->input('desc'),
+                            ]);
+        
+                            $totalSize += $file->getSize();
+                            $successMessages[] = "File {$file->getClientOriginalName()} uploaded successfully.";
+                        } catch (\Exception $e) {
+                            $errorMessages[] = "Failed to save file {$file->getClientOriginalName()} to database.";
+                        }
+                    }
 
             // Compile overall success message
             $user = auth()->user();
@@ -6684,34 +7137,38 @@ public function AuditorExitsResignletteraudF(Request $request)
                     $tag_list = array_merge($tag_list, $userTags);
                     $tags = empty($tag_list) ? NULL : json_encode($tag_list);
 
-            foreach ($request->file('files') as $file) {
-                try {
-                    $filePath = $file->store('uploads');
-
-                    // Create a new entry for each file
-                    CommonTable::create([
-                        'file_type' => $file->getClientMimeType(),
-                        'file_name' => $file->getClientOriginalName(),
-                        'real_file_name' => $request->input('real_file_name'),
-                        'file_size' => $file->getSize(),
-                        'file_path' => $filePath,
-                        'user_name' => auth()->user()->name, // Assuming user is authenticated
-                        'user_id' => auth()->user()->id,
-                        'file_status' => $request->input('file_status', 0),
-                        'fyear' => $request->input('fyear'),
-                        'month' => $request->input('Month'),
-                        'tags' => $tags, // Store tags as JSON
-                        'bank_name' => $request->input('bank_name'),
-                        'location' => $request->input('location'),
-                        'descp' => $request->input('desc'),
-                    ]);
-
-                    $totalSize += $file->getSize();
-                    $successMessages[] = "File {$file->getClientOriginalName()} uploaded successfully.";
-                } catch (\Exception $e) {
-                    $errorMessages[] = "Failed to save file {$file->getClientOriginalName()} to database.";
-                }
-            }
+                    $location = preg_replace('/\s*\/\s*/', '/', trim($request->input('location')));
+                    // "Legal/Secretarial/Board Meetings" 
+        
+                    // Legal/Secretarial/Board Meetings/rtR2ORS7jdMq05zW6c704CUXesvrqkZ59ZNNWOib.pdf
+                    foreach ($request->file('files') as $file) {
+                        try {
+                            // Store file inside the dynamically created folder
+                           
+                            $filePath = $file->store($location);
+                            // Create a new entry for each file
+                            CommonTable::create([
+                                'file_type' => $file->getClientMimeType(),
+                                'file_name' => $file->getClientOriginalName(),
+                                'real_file_name' => $request->input('real_file_name'),
+                                'file_size' => $file->getSize(),
+                                'file_path' => $filePath,
+                                'user_name' => auth()->user()->name, // Assuming user is authenticated
+                                'user_id' => auth()->user()->id,
+                                'file_status' => $request->input('file_status', 0),
+                                'fyear' => $request->input('fyear'),
+                                'month' => $request->input('Month'),
+                                'tags' => $tags, // Store tags as JSON
+                                'location' => $request->input('location'), // Store the dynamic location
+                                'descp' => $request->input('desc'),
+                            ]);
+        
+                            $totalSize += $file->getSize();
+                            $successMessages[] = "File {$file->getClientOriginalName()} uploaded successfully.";
+                        } catch (\Exception $e) {
+                            $errorMessages[] = "Failed to save file {$file->getClientOriginalName()} to database.";
+                        }
+                    }
 
             // Compile overall success message
             $user = auth()->user();
@@ -6822,34 +7279,38 @@ public function AuditorExitsResignDetofgroundsseekremaudF(Request $request)
                     $tag_list = array_merge($tag_list, $userTags);
                     $tags = empty($tag_list) ? NULL : json_encode($tag_list);
 
-            foreach ($request->file('files') as $file) {
-                try {
-                    $filePath = $file->store('uploads');
-
-                    // Create a new entry for each file
-                    CommonTable::create([
-                        'file_type' => $file->getClientMimeType(),
-                        'file_name' => $file->getClientOriginalName(),
-                        'real_file_name' => $request->input('real_file_name'),
-                        'file_size' => $file->getSize(),
-                        'file_path' => $filePath,
-                        'user_name' => auth()->user()->name, // Assuming user is authenticated
-                        'user_id' => auth()->user()->id,
-                        'file_status' => $request->input('file_status', 0),
-                        'fyear' => $request->input('fyear'),
-                        'month' => $request->input('Month'),
-                        'tags' => $tags, // Store tags as JSON
-                        'bank_name' => $request->input('bank_name'),
-                        'location' => $request->input('location'),
-                        'descp' => $request->input('desc'),
-                    ]);
-
-                    $totalSize += $file->getSize();
-                    $successMessages[] = "File {$file->getClientOriginalName()} uploaded successfully.";
-                } catch (\Exception $e) {
-                    $errorMessages[] = "Failed to save file {$file->getClientOriginalName()} to database.";
-                }
-            }
+                    $location = preg_replace('/\s*\/\s*/', '/', trim($request->input('location')));
+                    // "Legal/Secretarial/Board Meetings" 
+        
+                    // Legal/Secretarial/Board Meetings/rtR2ORS7jdMq05zW6c704CUXesvrqkZ59ZNNWOib.pdf
+                    foreach ($request->file('files') as $file) {
+                        try {
+                            // Store file inside the dynamically created folder
+                           
+                            $filePath = $file->store($location);
+                            // Create a new entry for each file
+                            CommonTable::create([
+                                'file_type' => $file->getClientMimeType(),
+                                'file_name' => $file->getClientOriginalName(),
+                                'real_file_name' => $request->input('real_file_name'),
+                                'file_size' => $file->getSize(),
+                                'file_path' => $filePath,
+                                'user_name' => auth()->user()->name, // Assuming user is authenticated
+                                'user_id' => auth()->user()->id,
+                                'file_status' => $request->input('file_status', 0),
+                                'fyear' => $request->input('fyear'),
+                                'month' => $request->input('Month'),
+                                'tags' => $tags, // Store tags as JSON
+                                'location' => $request->input('location'), // Store the dynamic location
+                                'descp' => $request->input('desc'),
+                            ]);
+        
+                            $totalSize += $file->getSize();
+                            $successMessages[] = "File {$file->getClientOriginalName()} uploaded successfully.";
+                        } catch (\Exception $e) {
+                            $errorMessages[] = "Failed to save file {$file->getClientOriginalName()} to database.";
+                        }
+                    }
 
             // Compile overall success message
             $user = auth()->user();
@@ -6959,34 +7420,38 @@ public function AuditorExitsSpecialResolF(Request $request)
                     $tag_list = array_merge($tag_list, $userTags);
                     $tags = empty($tag_list) ? NULL : json_encode($tag_list);
 
-            foreach ($request->file('files') as $file) {
-                try {
-                    $filePath = $file->store('uploads');
-
-                    // Create a new entry for each file
-                    CommonTable::create([
-                        'file_type' => $file->getClientMimeType(),
-                        'file_name' => $file->getClientOriginalName(),
-                        'real_file_name' => $request->input('real_file_name'),
-                        'file_size' => $file->getSize(),
-                        'file_path' => $filePath,
-                        'user_name' => auth()->user()->name, // Assuming user is authenticated
-                        'user_id' => auth()->user()->id,
-                        'file_status' => $request->input('file_status', 0),
-                        'fyear' => $request->input('fyear'),
-                        'month' => $request->input('Month'),
-                        'tags' => $tags, // Store tags as JSON
-                        'bank_name' => $request->input('bank_name'),
-                        'location' => $request->input('location'),
-                        'descp' => $request->input('desc'),
-                    ]);
-
-                    $totalSize += $file->getSize();
-                    $successMessages[] = "File {$file->getClientOriginalName()} uploaded successfully.";
-                } catch (\Exception $e) {
-                    $errorMessages[] = "Failed to save file {$file->getClientOriginalName()} to database.";
-                }
-            }
+                    $location = preg_replace('/\s*\/\s*/', '/', trim($request->input('location')));
+                    // "Legal/Secretarial/Board Meetings" 
+        
+                    // Legal/Secretarial/Board Meetings/rtR2ORS7jdMq05zW6c704CUXesvrqkZ59ZNNWOib.pdf
+                    foreach ($request->file('files') as $file) {
+                        try {
+                            // Store file inside the dynamically created folder
+                           
+                            $filePath = $file->store($location);
+                            // Create a new entry for each file
+                            CommonTable::create([
+                                'file_type' => $file->getClientMimeType(),
+                                'file_name' => $file->getClientOriginalName(),
+                                'real_file_name' => $request->input('real_file_name'),
+                                'file_size' => $file->getSize(),
+                                'file_path' => $filePath,
+                                'user_name' => auth()->user()->name, // Assuming user is authenticated
+                                'user_id' => auth()->user()->id,
+                                'file_status' => $request->input('file_status', 0),
+                                'fyear' => $request->input('fyear'),
+                                'month' => $request->input('Month'),
+                                'tags' => $tags, // Store tags as JSON
+                                'location' => $request->input('location'), // Store the dynamic location
+                                'descp' => $request->input('desc'),
+                            ]);
+        
+                            $totalSize += $file->getSize();
+                            $successMessages[] = "File {$file->getClientOriginalName()} uploaded successfully.";
+                        } catch (\Exception $e) {
+                            $errorMessages[] = "Failed to save file {$file->getClientOriginalName()} to database.";
+                        }
+                    }
 
             // Compile overall success message
             $user = auth()->user();
@@ -7097,34 +7562,38 @@ public function AuditorExitsADT2Form(Request $request)
                     $tag_list = array_merge($tag_list, $userTags);
                     $tags = empty($tag_list) ? NULL : json_encode($tag_list);
 
-            foreach ($request->file('files') as $file) {
-                try {
-                    $filePath = $file->store('uploads');
-
-                    // Create a new entry for each file
-                    CommonTable::create([
-                        'file_type' => $file->getClientMimeType(),
-                        'file_name' => $file->getClientOriginalName(),
-                        'real_file_name' => $request->input('real_file_name'),
-                        'file_size' => $file->getSize(),
-                        'file_path' => $filePath,
-                        'user_name' => auth()->user()->name, // Assuming user is authenticated
-                        'user_id' => auth()->user()->id,
-                        'file_status' => $request->input('file_status', 0),
-                        'fyear' => $request->input('fyear'),
-                        'month' => $request->input('Month'),
-                        'tags' => $tags, // Store tags as JSON
-                        'bank_name' => $request->input('bank_name'),
-                        'location' => $request->input('location'),
-                        'descp' => $request->input('desc'),
-                    ]);
-
-                    $totalSize += $file->getSize();
-                    $successMessages[] = "File {$file->getClientOriginalName()} uploaded successfully.";
-                } catch (\Exception $e) {
-                    $errorMessages[] = "Failed to save file {$file->getClientOriginalName()} to database.";
-                }
-            }
+                    $location = preg_replace('/\s*\/\s*/', '/', trim($request->input('location')));
+                    // "Legal/Secretarial/Board Meetings" 
+        
+                    // Legal/Secretarial/Board Meetings/rtR2ORS7jdMq05zW6c704CUXesvrqkZ59ZNNWOib.pdf
+                    foreach ($request->file('files') as $file) {
+                        try {
+                            // Store file inside the dynamically created folder
+                           
+                            $filePath = $file->store($location);
+                            // Create a new entry for each file
+                            CommonTable::create([
+                                'file_type' => $file->getClientMimeType(),
+                                'file_name' => $file->getClientOriginalName(),
+                                'real_file_name' => $request->input('real_file_name'),
+                                'file_size' => $file->getSize(),
+                                'file_path' => $filePath,
+                                'user_name' => auth()->user()->name, // Assuming user is authenticated
+                                'user_id' => auth()->user()->id,
+                                'file_status' => $request->input('file_status', 0),
+                                'fyear' => $request->input('fyear'),
+                                'month' => $request->input('Month'),
+                                'tags' => $tags, // Store tags as JSON
+                                'location' => $request->input('location'), // Store the dynamic location
+                                'descp' => $request->input('desc'),
+                            ]);
+        
+                            $totalSize += $file->getSize();
+                            $successMessages[] = "File {$file->getClientOriginalName()} uploaded successfully.";
+                        } catch (\Exception $e) {
+                            $errorMessages[] = "Failed to save file {$file->getClientOriginalName()} to database.";
+                        }
+                    }
 
             // Compile overall success message
             $user = auth()->user();
@@ -7233,34 +7702,38 @@ public function Director1AadharKYCF(Request $request)
                     $tag_list = array_merge($tag_list, $userTags);
                     $tags = empty($tag_list) ? NULL : json_encode($tag_list);
 
-            foreach ($request->file('files') as $file) {
-                try {
-                    $filePath = $file->store('uploads');
-
-                    // Create a new entry for each file
-                    CommonTable::create([
-                        'file_type' => $file->getClientMimeType(),
-                        'file_name' => $file->getClientOriginalName(),
-                        'real_file_name' => $request->input('real_file_name'),
-                        'file_size' => $file->getSize(),
-                        'file_path' => $filePath,
-                        'user_name' => auth()->user()->name, // Assuming user is authenticated
-                        'user_id' => auth()->user()->id,
-                        'file_status' => $request->input('file_status', 0),
-                        'fyear' => $request->input('fyear'),
-                        'month' => $request->input('Month'),
-                        'tags' => $tags, // Store tags as JSON
-                        'bank_name' => $request->input('bank_name'),
-                        'location' => $request->input('location'),
-                        'descp' => $request->input('desc'),
-                    ]);
-
-                    $totalSize += $file->getSize();
-                    $successMessages[] = "File {$file->getClientOriginalName()} uploaded successfully.";
-                } catch (\Exception $e) {
-                    $errorMessages[] = "Failed to save file {$file->getClientOriginalName()} to the database.";
-                }
-            }
+                    $location = preg_replace('/\s*\/\s*/', '/', trim($request->input('location')));
+                    // "Legal/Secretarial/Board Meetings" 
+        
+                    // Legal/Secretarial/Board Meetings/rtR2ORS7jdMq05zW6c704CUXesvrqkZ59ZNNWOib.pdf
+                    foreach ($request->file('files') as $file) {
+                        try {
+                            // Store file inside the dynamically created folder
+                           
+                            $filePath = $file->store($location);
+                            // Create a new entry for each file
+                            CommonTable::create([
+                                'file_type' => $file->getClientMimeType(),
+                                'file_name' => $file->getClientOriginalName(),
+                                'real_file_name' => $request->input('real_file_name'),
+                                'file_size' => $file->getSize(),
+                                'file_path' => $filePath,
+                                'user_name' => auth()->user()->name, // Assuming user is authenticated
+                                'user_id' => auth()->user()->id,
+                                'file_status' => $request->input('file_status', 0),
+                                'fyear' => $request->input('fyear'),
+                                'month' => $request->input('Month'),
+                                'tags' => $tags, // Store tags as JSON
+                                'location' => $request->input('location'), // Store the dynamic location
+                                'descp' => $request->input('desc'),
+                            ]);
+        
+                            $totalSize += $file->getSize();
+                            $successMessages[] = "File {$file->getClientOriginalName()} uploaded successfully.";
+                        } catch (\Exception $e) {
+                            $errorMessages[] = "Failed to save file {$file->getClientOriginalName()} to database.";
+                        }
+                    }
 
             // Compile overall success message
             $user = auth()->user();
@@ -7367,34 +7840,38 @@ public function Director1AddressProofF(Request $request)
                     $tag_list = array_merge($tag_list, $userTags);
                     $tags = empty($tag_list) ? NULL : json_encode($tag_list);
 
-            foreach ($request->file('files') as $file) {
-                try {
-                    $filePath = $file->store('uploads');
-
-                    // Create a new entry for each file
-                    CommonTable::create([
-                        'file_type' => $file->getClientMimeType(),
-                        'file_name' => $file->getClientOriginalName(),
-                        'real_file_name' => $request->input('real_file_name'),
-                        'file_size' => $file->getSize(),
-                        'file_path' => $filePath,
-                        'user_name' => auth()->user()->name, // Assuming user is authenticated
-                        'user_id' => auth()->user()->id,
-                        'file_status' => $request->input('file_status', 0),
-                        'fyear' => $request->input('fyear'),
-                        'month' => $request->input('Month'),
-                        'tags' => $tags, // Store tags as JSON
-                        'bank_name' => $request->input('bank_name'),
-                        'location' => $request->input('location'),
-                        'descp' => $request->input('desc'),
-                    ]);
-
-                    $totalSize += $file->getSize();
-                    $successMessages[] = "File {$file->getClientOriginalName()} uploaded successfully.";
-                } catch (\Exception $e) {
-                    $errorMessages[] = "Failed to save file {$file->getClientOriginalName()} to the database.";
-                }
-            }
+                    $location = preg_replace('/\s*\/\s*/', '/', trim($request->input('location')));
+                    // "Legal/Secretarial/Board Meetings" 
+        
+                    // Legal/Secretarial/Board Meetings/rtR2ORS7jdMq05zW6c704CUXesvrqkZ59ZNNWOib.pdf
+                    foreach ($request->file('files') as $file) {
+                        try {
+                            // Store file inside the dynamically created folder
+                           
+                            $filePath = $file->store($location);
+                            // Create a new entry for each file
+                            CommonTable::create([
+                                'file_type' => $file->getClientMimeType(),
+                                'file_name' => $file->getClientOriginalName(),
+                                'real_file_name' => $request->input('real_file_name'),
+                                'file_size' => $file->getSize(),
+                                'file_path' => $filePath,
+                                'user_name' => auth()->user()->name, // Assuming user is authenticated
+                                'user_id' => auth()->user()->id,
+                                'file_status' => $request->input('file_status', 0),
+                                'fyear' => $request->input('fyear'),
+                                'month' => $request->input('Month'),
+                                'tags' => $tags, // Store tags as JSON
+                                'location' => $request->input('location'), // Store the dynamic location
+                                'descp' => $request->input('desc'),
+                            ]);
+        
+                            $totalSize += $file->getSize();
+                            $successMessages[] = "File {$file->getClientOriginalName()} uploaded successfully.";
+                        } catch (\Exception $e) {
+                            $errorMessages[] = "Failed to save file {$file->getClientOriginalName()} to database.";
+                        }
+                    }
 
             // Compile overall success message
             $user = auth()->user();
@@ -7501,34 +7978,38 @@ public function Director1ContactDetailsF(Request $request)
                     $tag_list = array_merge($tag_list, $userTags);
                     $tags = empty($tag_list) ? NULL : json_encode($tag_list);
 
-            foreach ($request->file('files') as $file) {
-                try {
-                    $filePath = $file->store('uploads');
-
-                    // Create a new entry for each file
-                    CommonTable::create([
-                        'file_type' => $file->getClientMimeType(),
-                        'file_name' => $file->getClientOriginalName(),
-                        'real_file_name' => $request->input('real_file_name'),
-                        'file_size' => $file->getSize(),
-                        'file_path' => $filePath,
-                        'user_name' => auth()->user()->name, // Assuming user is authenticated
-                        'user_id' => auth()->user()->id,
-                        'file_status' => $request->input('file_status', 0),
-                        'fyear' => $request->input('fyear'),
-                        'month' => $request->input('Month'),
-                        'tags' => $tags, // Store tags as JSON
-                        'bank_name' => $request->input('bank_name'),
-                        'location' => $request->input('location'),
-                        'descp' => $request->input('desc'),
-                    ]);
-
-                    $totalSize += $file->getSize();
-                    $successMessages[] = "File {$file->getClientOriginalName()} uploaded successfully.";
-                } catch (\Exception $e) {
-                    $errorMessages[] = "Failed to save file {$file->getClientOriginalName()} to the database.";
-                }
-            }
+                    $location = preg_replace('/\s*\/\s*/', '/', trim($request->input('location')));
+                    // "Legal/Secretarial/Board Meetings" 
+        
+                    // Legal/Secretarial/Board Meetings/rtR2ORS7jdMq05zW6c704CUXesvrqkZ59ZNNWOib.pdf
+                    foreach ($request->file('files') as $file) {
+                        try {
+                            // Store file inside the dynamically created folder
+                           
+                            $filePath = $file->store($location);
+                            // Create a new entry for each file
+                            CommonTable::create([
+                                'file_type' => $file->getClientMimeType(),
+                                'file_name' => $file->getClientOriginalName(),
+                                'real_file_name' => $request->input('real_file_name'),
+                                'file_size' => $file->getSize(),
+                                'file_path' => $filePath,
+                                'user_name' => auth()->user()->name, // Assuming user is authenticated
+                                'user_id' => auth()->user()->id,
+                                'file_status' => $request->input('file_status', 0),
+                                'fyear' => $request->input('fyear'),
+                                'month' => $request->input('Month'),
+                                'tags' => $tags, // Store tags as JSON
+                                'location' => $request->input('location'), // Store the dynamic location
+                                'descp' => $request->input('desc'),
+                            ]);
+        
+                            $totalSize += $file->getSize();
+                            $successMessages[] = "File {$file->getClientOriginalName()} uploaded successfully.";
+                        } catch (\Exception $e) {
+                            $errorMessages[] = "Failed to save file {$file->getClientOriginalName()} to database.";
+                        }
+                    }
 
             // Compile overall success message
             $user = auth()->user();
@@ -7636,34 +8117,38 @@ public function Director1PANKYCF(Request $request)
                     $tag_list = array_merge($tag_list, $userTags);
                     $tags = empty($tag_list) ? NULL : json_encode($tag_list);
 
-            foreach ($request->file('files') as $file) {
-                try {
-                    $filePath = $file->store('uploads');
-
-                    // Create a new entry for each file
-                    CommonTable::create([
-                        'file_type' => $file->getClientMimeType(),
-                        'file_name' => $file->getClientOriginalName(),
-                        'real_file_name' => $request->input('real_file_name'),
-                        'file_size' => $file->getSize(),
-                        'file_path' => $filePath,
-                        'user_name' => auth()->user()->name, // Assuming user is authenticated
-                        'user_id' => auth()->user()->id,
-                        'file_status' => $request->input('file_status', 0),
-                        'fyear' => $request->input('fyear'),
-                        'month' => $request->input('Month'),
-                        'tags' => $tags, // Store tags as JSON
-                        'bank_name' => $request->input('bank_name'),
-                        'location' => $request->input('location'),
-                        'descp' => $request->input('desc'),
-                    ]);
-
-                    $totalSize += $file->getSize();
-                    $successMessages[] = "File {$file->getClientOriginalName()} uploaded successfully.";
-                } catch (\Exception $e) {
-                    $errorMessages[] = "Failed to save file {$file->getClientOriginalName()} to the database.";
-                }
-            }
+                    $location = preg_replace('/\s*\/\s*/', '/', trim($request->input('location')));
+                    // "Legal/Secretarial/Board Meetings" 
+        
+                    // Legal/Secretarial/Board Meetings/rtR2ORS7jdMq05zW6c704CUXesvrqkZ59ZNNWOib.pdf
+                    foreach ($request->file('files') as $file) {
+                        try {
+                            // Store file inside the dynamically created folder
+                           
+                            $filePath = $file->store($location);
+                            // Create a new entry for each file
+                            CommonTable::create([
+                                'file_type' => $file->getClientMimeType(),
+                                'file_name' => $file->getClientOriginalName(),
+                                'real_file_name' => $request->input('real_file_name'),
+                                'file_size' => $file->getSize(),
+                                'file_path' => $filePath,
+                                'user_name' => auth()->user()->name, // Assuming user is authenticated
+                                'user_id' => auth()->user()->id,
+                                'file_status' => $request->input('file_status', 0),
+                                'fyear' => $request->input('fyear'),
+                                'month' => $request->input('Month'),
+                                'tags' => $tags, // Store tags as JSON
+                                'location' => $request->input('location'), // Store the dynamic location
+                                'descp' => $request->input('desc'),
+                            ]);
+        
+                            $totalSize += $file->getSize();
+                            $successMessages[] = "File {$file->getClientOriginalName()} uploaded successfully.";
+                        } catch (\Exception $e) {
+                            $errorMessages[] = "Failed to save file {$file->getClientOriginalName()} to database.";
+                        }
+                    }
 
             // Compile overall success message
             $user = auth()->user();
@@ -7770,34 +8255,38 @@ public function Director1PhotoF(Request $request)
                     $tag_list = array_merge($tag_list, $userTags);
                     $tags = empty($tag_list) ? NULL : json_encode($tag_list);
 
-            foreach ($request->file('files') as $file) {
-                try {
-                    $filePath = $file->store('uploads');
-
-                    // Create a new entry for each file
-                    CommonTable::create([
-                        'file_type' => $file->getClientMimeType(),
-                        'file_name' => $file->getClientOriginalName(),
-                        'real_file_name' => $request->input('real_file_name'),
-                        'file_size' => $file->getSize(),
-                        'file_path' => $filePath,
-                        'user_name' => auth()->user()->name, // Assuming user is authenticated
-                        'user_id' => auth()->user()->id,
-                        'file_status' => $request->input('file_status', 0),
-                        'fyear' => $request->input('fyear'),
-                        'month' => $request->input('Month'),
-                        'tags' => $tags, // Store tags as JSON
-                        'bank_name' => $request->input('bank_name'),
-                        'location' => $request->input('location'),
-                        'descp' => $request->input('desc'),
-                    ]);
-
-                    $totalSize += $file->getSize();
-                    $successMessages[] = "File {$file->getClientOriginalName()} uploaded successfully.";
-                } catch (\Exception $e) {
-                    $errorMessages[] = "Failed to save file {$file->getClientOriginalName()} to database.";
-                }
-            }
+                    $location = preg_replace('/\s*\/\s*/', '/', trim($request->input('location')));
+                    // "Legal/Secretarial/Board Meetings" 
+        
+                    // Legal/Secretarial/Board Meetings/rtR2ORS7jdMq05zW6c704CUXesvrqkZ59ZNNWOib.pdf
+                    foreach ($request->file('files') as $file) {
+                        try {
+                            // Store file inside the dynamically created folder
+                           
+                            $filePath = $file->store($location);
+                            // Create a new entry for each file
+                            CommonTable::create([
+                                'file_type' => $file->getClientMimeType(),
+                                'file_name' => $file->getClientOriginalName(),
+                                'real_file_name' => $request->input('real_file_name'),
+                                'file_size' => $file->getSize(),
+                                'file_path' => $filePath,
+                                'user_name' => auth()->user()->name, // Assuming user is authenticated
+                                'user_id' => auth()->user()->id,
+                                'file_status' => $request->input('file_status', 0),
+                                'fyear' => $request->input('fyear'),
+                                'month' => $request->input('Month'),
+                                'tags' => $tags, // Store tags as JSON
+                                'location' => $request->input('location'), // Store the dynamic location
+                                'descp' => $request->input('desc'),
+                            ]);
+        
+                            $totalSize += $file->getSize();
+                            $successMessages[] = "File {$file->getClientOriginalName()} uploaded successfully.";
+                        } catch (\Exception $e) {
+                            $errorMessages[] = "Failed to save file {$file->getClientOriginalName()} to database.";
+                        }
+                    }
 
             // Compile overall success message
             $user = auth()->user();
@@ -7904,34 +8393,38 @@ public function Director1SignimgF(Request $request)
                     $tag_list = array_merge($tag_list, $userTags);
                     $tags = empty($tag_list) ? NULL : json_encode($tag_list);
 
-            foreach ($request->file('files') as $file) {
-                try {
-                    $filePath = $file->store('uploads');
-
-                    // Create a new entry for each file
-                    CommonTable::create([
-                        'file_type' => $file->getClientMimeType(),
-                        'file_name' => $file->getClientOriginalName(),
-                        'real_file_name' => $request->input('real_file_name'),
-                        'file_size' => $file->getSize(),
-                        'file_path' => $filePath,
-                        'user_name' => auth()->user()->name, // Assuming user is authenticated
-                        'user_id' => auth()->user()->id,
-                        'file_status' => $request->input('file_status', 0),
-                        'fyear' => $request->input('fyear'),
-                        'month' => $request->input('Month'),
-                        'tags' => $tags, // Store tags as JSON
-                        'bank_name' => $request->input('bank_name'),
-                        'location' => $request->input('location'),
-                        'descp' => $request->input('desc'),
-                    ]);
-
-                    $totalSize += $file->getSize();
-                    $successMessages[] = "File {$file->getClientOriginalName()} uploaded successfully.";
-                } catch (\Exception $e) {
-                    $errorMessages[] = "Failed to save file {$file->getClientOriginalName()} to database.";
-                }
-            }
+                    $location = preg_replace('/\s*\/\s*/', '/', trim($request->input('location')));
+                    // "Legal/Secretarial/Board Meetings" 
+        
+                    // Legal/Secretarial/Board Meetings/rtR2ORS7jdMq05zW6c704CUXesvrqkZ59ZNNWOib.pdf
+                    foreach ($request->file('files') as $file) {
+                        try {
+                            // Store file inside the dynamically created folder
+                           
+                            $filePath = $file->store($location);
+                            // Create a new entry for each file
+                            CommonTable::create([
+                                'file_type' => $file->getClientMimeType(),
+                                'file_name' => $file->getClientOriginalName(),
+                                'real_file_name' => $request->input('real_file_name'),
+                                'file_size' => $file->getSize(),
+                                'file_path' => $filePath,
+                                'user_name' => auth()->user()->name, // Assuming user is authenticated
+                                'user_id' => auth()->user()->id,
+                                'file_status' => $request->input('file_status', 0),
+                                'fyear' => $request->input('fyear'),
+                                'month' => $request->input('Month'),
+                                'tags' => $tags, // Store tags as JSON
+                                'location' => $request->input('location'), // Store the dynamic location
+                                'descp' => $request->input('desc'),
+                            ]);
+        
+                            $totalSize += $file->getSize();
+                            $successMessages[] = "File {$file->getClientOriginalName()} uploaded successfully.";
+                        } catch (\Exception $e) {
+                            $errorMessages[] = "Failed to save file {$file->getClientOriginalName()} to database.";
+                        }
+                    }
 
             // Compile overall success message
             $user = auth()->user();
@@ -8037,34 +8530,38 @@ public function Director2SignimgF(Request $request)
                     $tag_list = array_merge($tag_list, $userTags);
                     $tags = empty($tag_list) ? NULL : json_encode($tag_list);
 
-            foreach ($request->file('files') as $file) {
-                try {
-                    $filePath = $file->store('uploads');
-
-                    // Create a new entry for each file
-                    CommonTable::create([
-                        'file_type' => $file->getClientMimeType(),
-                        'file_name' => $file->getClientOriginalName(),
-                        'real_file_name' => $request->input('real_file_name'),
-                        'file_size' => $file->getSize(),
-                        'file_path' => $filePath,
-                        'user_name' => auth()->user()->name, // Assuming user is authenticated
-                        'user_id' => auth()->user()->id,
-                        'file_status' => $request->input('file_status', 0),
-                        'fyear' => $request->input('fyear'),
-                        'month' => $request->input('Month'),
-                        'tags' => $tags, // Store tags as JSON
-                        'bank_name' => $request->input('bank_name'),
-                        'location' => $request->input('location'),
-                        'descp' => $request->input('desc'),
-                    ]);
-
-                    $totalSize += $file->getSize();
-                    $successMessages[] = "File {$file->getClientOriginalName()} uploaded successfully.";
-                } catch (\Exception $e) {
-                    $errorMessages[] = "Failed to save file {$file->getClientOriginalName()} to the database.";
-                }
-            }
+                    $location = preg_replace('/\s*\/\s*/', '/', trim($request->input('location')));
+                    // "Legal/Secretarial/Board Meetings" 
+        
+                    // Legal/Secretarial/Board Meetings/rtR2ORS7jdMq05zW6c704CUXesvrqkZ59ZNNWOib.pdf
+                    foreach ($request->file('files') as $file) {
+                        try {
+                            // Store file inside the dynamically created folder
+                           
+                            $filePath = $file->store($location);
+                            // Create a new entry for each file
+                            CommonTable::create([
+                                'file_type' => $file->getClientMimeType(),
+                                'file_name' => $file->getClientOriginalName(),
+                                'real_file_name' => $request->input('real_file_name'),
+                                'file_size' => $file->getSize(),
+                                'file_path' => $filePath,
+                                'user_name' => auth()->user()->name, // Assuming user is authenticated
+                                'user_id' => auth()->user()->id,
+                                'file_status' => $request->input('file_status', 0),
+                                'fyear' => $request->input('fyear'),
+                                'month' => $request->input('Month'),
+                                'tags' => $tags, // Store tags as JSON
+                                'location' => $request->input('location'), // Store the dynamic location
+                                'descp' => $request->input('desc'),
+                            ]);
+        
+                            $totalSize += $file->getSize();
+                            $successMessages[] = "File {$file->getClientOriginalName()} uploaded successfully.";
+                        } catch (\Exception $e) {
+                            $errorMessages[] = "Failed to save file {$file->getClientOriginalName()} to database.";
+                        }
+                    }
 
             // Compile overall success message
             $user = auth()->user();
@@ -8172,34 +8669,38 @@ public function Director2PhotoF(Request $request)
                     $tag_list = array_merge($tag_list, $userTags);
                     $tags = empty($tag_list) ? NULL : json_encode($tag_list);
 
-            foreach ($request->file('files') as $file) {
-                try {
-                    $filePath = $file->store('uploads');
-
-                    // Create a new entry for each file
-                    CommonTable::create([
-                        'file_type' => $file->getClientMimeType(),
-                        'file_name' => $file->getClientOriginalName(),
-                        'real_file_name' => $request->input('real_file_name'),
-                        'file_size' => $file->getSize(),
-                        'file_path' => $filePath,
-                        'user_name' => auth()->user()->name, // Assuming user is authenticated
-                        'user_id' => auth()->user()->id,
-                        'file_status' => $request->input('file_status', 0),
-                        'fyear' => $request->input('fyear'),
-                        'month' => $request->input('Month'),
-                        'tags' => $tags, // Store tags as JSON
-                        'bank_name' => $request->input('bank_name'),
-                        'location' => $request->input('location'),
-                        'descp' => $request->input('desc'),
-                    ]);
-
-                    $totalSize += $file->getSize();
-                    $successMessages[] = "File {$file->getClientOriginalName()} uploaded successfully.";
-                } catch (\Exception $e) {
-                    $errorMessages[] = "Failed to save file {$file->getClientOriginalName()} to the database.";
-                }
-            }
+                    $location = preg_replace('/\s*\/\s*/', '/', trim($request->input('location')));
+                    // "Legal/Secretarial/Board Meetings" 
+        
+                    // Legal/Secretarial/Board Meetings/rtR2ORS7jdMq05zW6c704CUXesvrqkZ59ZNNWOib.pdf
+                    foreach ($request->file('files') as $file) {
+                        try {
+                            // Store file inside the dynamically created folder
+                           
+                            $filePath = $file->store($location);
+                            // Create a new entry for each file
+                            CommonTable::create([
+                                'file_type' => $file->getClientMimeType(),
+                                'file_name' => $file->getClientOriginalName(),
+                                'real_file_name' => $request->input('real_file_name'),
+                                'file_size' => $file->getSize(),
+                                'file_path' => $filePath,
+                                'user_name' => auth()->user()->name, // Assuming user is authenticated
+                                'user_id' => auth()->user()->id,
+                                'file_status' => $request->input('file_status', 0),
+                                'fyear' => $request->input('fyear'),
+                                'month' => $request->input('Month'),
+                                'tags' => $tags, // Store tags as JSON
+                                'location' => $request->input('location'), // Store the dynamic location
+                                'descp' => $request->input('desc'),
+                            ]);
+        
+                            $totalSize += $file->getSize();
+                            $successMessages[] = "File {$file->getClientOriginalName()} uploaded successfully.";
+                        } catch (\Exception $e) {
+                            $errorMessages[] = "Failed to save file {$file->getClientOriginalName()} to database.";
+                        }
+                    }
 
             // Compile overall success message
             $user = auth()->user();
@@ -8307,34 +8808,38 @@ public function Director2PANKYCF(Request $request)
                     $tag_list = array_merge($tag_list, $userTags);
                     $tags = empty($tag_list) ? NULL : json_encode($tag_list);
 
-            foreach ($request->file('files') as $file) {
-                try {
-                    $filePath = $file->store('uploads');
-
-                    // Create a new entry for each file
-                    CommonTable::create([
-                        'file_type' => $file->getClientMimeType(),
-                        'file_name' => $file->getClientOriginalName(),
-                        'real_file_name' => $request->input('real_file_name'),
-                        'file_size' => $file->getSize(),
-                        'file_path' => $filePath,
-                        'user_name' => auth()->user()->name, // Assuming user is authenticated
-                        'user_id' => auth()->user()->id,
-                        'file_status' => $request->input('file_status', 0),
-                        'fyear' => $request->input('fyear'),
-                        'month' => $request->input('Month'),
-                        'tags' => $tags, // Store tags as JSON
-                        'bank_name' => $request->input('bank_name'),
-                        'location' => $request->input('location'),
-                        'descp' => $request->input('desc'),
-                    ]);
-
-                    $totalSize += $file->getSize();
-                    $successMessages[] = "File {$file->getClientOriginalName()} uploaded successfully.";
-                } catch (\Exception $e) {
-                    $errorMessages[] = "Failed to save file {$file->getClientOriginalName()} to the database.";
-                }
-            }
+                    $location = preg_replace('/\s*\/\s*/', '/', trim($request->input('location')));
+                    // "Legal/Secretarial/Board Meetings" 
+        
+                    // Legal/Secretarial/Board Meetings/rtR2ORS7jdMq05zW6c704CUXesvrqkZ59ZNNWOib.pdf
+                    foreach ($request->file('files') as $file) {
+                        try {
+                            // Store file inside the dynamically created folder
+                           
+                            $filePath = $file->store($location);
+                            // Create a new entry for each file
+                            CommonTable::create([
+                                'file_type' => $file->getClientMimeType(),
+                                'file_name' => $file->getClientOriginalName(),
+                                'real_file_name' => $request->input('real_file_name'),
+                                'file_size' => $file->getSize(),
+                                'file_path' => $filePath,
+                                'user_name' => auth()->user()->name, // Assuming user is authenticated
+                                'user_id' => auth()->user()->id,
+                                'file_status' => $request->input('file_status', 0),
+                                'fyear' => $request->input('fyear'),
+                                'month' => $request->input('Month'),
+                                'tags' => $tags, // Store tags as JSON
+                                'location' => $request->input('location'), // Store the dynamic location
+                                'descp' => $request->input('desc'),
+                            ]);
+        
+                            $totalSize += $file->getSize();
+                            $successMessages[] = "File {$file->getClientOriginalName()} uploaded successfully.";
+                        } catch (\Exception $e) {
+                            $errorMessages[] = "Failed to save file {$file->getClientOriginalName()} to database.";
+                        }
+                    }
 
             // Compile overall success message
             $user = auth()->user();
@@ -8441,35 +8946,38 @@ public function Director2ContactDetailsF(Request $request)
                     // Merge with default tags
                     $tag_list = array_merge($tag_list, $userTags);
                     $tags = empty($tag_list) ? NULL : json_encode($tag_list);
-
-            foreach ($request->file('files') as $file) {
-                try {
-                    $filePath = $file->store('uploads');
-
-                    // Create a new entry for each file
-                    CommonTable::create([
-                        'file_type' => $file->getClientMimeType(),
-                        'file_name' => $file->getClientOriginalName(),
-                        'real_file_name' => $request->input('real_file_name'),
-                        'file_size' => $file->getSize(),
-                        'file_path' => $filePath,
-                        'user_name' => auth()->user()->name, // Assuming user is authenticated
-                        'user_id' => auth()->user()->id,
-                        'file_status' => $request->input('file_status', 0),
-                        'fyear' => $request->input('fyear'),
-                        'month' => $request->input('Month'),
-                        'tags' => $tags, // Store tags as JSON
-                        'bank_name' => $request->input('bank_name'),
-                        'location' => $request->input('location'),
-                        'descp' => $request->input('desc'),
-                    ]);
-
-                    $totalSize += $file->getSize();
-                    $successMessages[] = "File {$file->getClientOriginalName()} uploaded successfully.";
-                } catch (\Exception $e) {
-                    $errorMessages[] = "Failed to save file {$file->getClientOriginalName()} to the database.";
-                }
-            }
+                    $location = preg_replace('/\s*\/\s*/', '/', trim($request->input('location')));
+                    // "Legal/Secretarial/Board Meetings" 
+        
+                    // Legal/Secretarial/Board Meetings/rtR2ORS7jdMq05zW6c704CUXesvrqkZ59ZNNWOib.pdf
+                    foreach ($request->file('files') as $file) {
+                        try {
+                            // Store file inside the dynamically created folder
+                           
+                            $filePath = $file->store($location);
+                            // Create a new entry for each file
+                            CommonTable::create([
+                                'file_type' => $file->getClientMimeType(),
+                                'file_name' => $file->getClientOriginalName(),
+                                'real_file_name' => $request->input('real_file_name'),
+                                'file_size' => $file->getSize(),
+                                'file_path' => $filePath,
+                                'user_name' => auth()->user()->name, // Assuming user is authenticated
+                                'user_id' => auth()->user()->id,
+                                'file_status' => $request->input('file_status', 0),
+                                'fyear' => $request->input('fyear'),
+                                'month' => $request->input('Month'),
+                                'tags' => $tags, // Store tags as JSON
+                                'location' => $request->input('location'), // Store the dynamic location
+                                'descp' => $request->input('desc'),
+                            ]);
+        
+                            $totalSize += $file->getSize();
+                            $successMessages[] = "File {$file->getClientOriginalName()} uploaded successfully.";
+                        } catch (\Exception $e) {
+                            $errorMessages[] = "Failed to save file {$file->getClientOriginalName()} to database.";
+                        }
+                    }
 
             // Compile overall success message
             $user = auth()->user();
@@ -8576,34 +9084,38 @@ public function Director2AddressProofF(Request $request)
                     $tag_list = array_merge($tag_list, $userTags);
                     $tags = empty($tag_list) ? NULL : json_encode($tag_list);
 
-            foreach ($request->file('files') as $file) {
-                try {
-                    $filePath = $file->store('uploads');
-
-                    // Create a new entry for each file
-                    CommonTable::create([
-                        'file_type' => $file->getClientMimeType(),
-                        'file_name' => $file->getClientOriginalName(),
-                        'real_file_name' => $request->input('real_file_name'),
-                        'file_size' => $file->getSize(),
-                        'file_path' => $filePath,
-                        'user_name' => auth()->user()->name, // Assuming user is authenticated
-                        'user_id' => auth()->user()->id,
-                        'file_status' => $request->input('file_status', 0),
-                        'fyear' => $request->input('fyear'),
-                        'month' => $request->input('Month'),
-                        'tags' => $tags, // Store tags as JSON
-                        'bank_name' => $request->input('bank_name'),
-                        'location' => $request->input('location'),
-                        'descp' => $request->input('desc'),
-                    ]);
-
-                    $totalSize += $file->getSize();
-                    $successMessages[] = "File {$file->getClientOriginalName()} uploaded successfully.";
-                } catch (\Exception $e) {
-                    $errorMessages[] = "Failed to save file {$file->getClientOriginalName()} to the database.";
-                }
-            }
+                    $location = preg_replace('/\s*\/\s*/', '/', trim($request->input('location')));
+                    // "Legal/Secretarial/Board Meetings" 
+        
+                    // Legal/Secretarial/Board Meetings/rtR2ORS7jdMq05zW6c704CUXesvrqkZ59ZNNWOib.pdf
+                    foreach ($request->file('files') as $file) {
+                        try {
+                            // Store file inside the dynamically created folder
+                           
+                            $filePath = $file->store($location);
+                            // Create a new entry for each file
+                            CommonTable::create([
+                                'file_type' => $file->getClientMimeType(),
+                                'file_name' => $file->getClientOriginalName(),
+                                'real_file_name' => $request->input('real_file_name'),
+                                'file_size' => $file->getSize(),
+                                'file_path' => $filePath,
+                                'user_name' => auth()->user()->name, // Assuming user is authenticated
+                                'user_id' => auth()->user()->id,
+                                'file_status' => $request->input('file_status', 0),
+                                'fyear' => $request->input('fyear'),
+                                'month' => $request->input('Month'),
+                                'tags' => $tags, // Store tags as JSON
+                                'location' => $request->input('location'), // Store the dynamic location
+                                'descp' => $request->input('desc'),
+                            ]);
+        
+                            $totalSize += $file->getSize();
+                            $successMessages[] = "File {$file->getClientOriginalName()} uploaded successfully.";
+                        } catch (\Exception $e) {
+                            $errorMessages[] = "Failed to save file {$file->getClientOriginalName()} to database.";
+                        }
+                    }
 
             // Compile overall success message
             $user = auth()->user();
@@ -8710,34 +9222,38 @@ public function Director2AadharKYCF(Request $request)
                     $tag_list = array_merge($tag_list, $userTags);
                     $tags = empty($tag_list) ? NULL : json_encode($tag_list);
 
-            foreach ($request->file('files') as $file) {
-                try {
-                    $filePath = $file->store('uploads');
-
-                    // Create a new entry for each file
-                    CommonTable::create([
-                        'file_type' => $file->getClientMimeType(),
-                        'file_name' => $file->getClientOriginalName(),
-                        'real_file_name' => $request->input('real_file_name'),
-                        'file_size' => $file->getSize(),
-                        'file_path' => $filePath,
-                        'user_name' => auth()->user()->name, // Assuming user is authenticated
-                        'user_id' => auth()->user()->id,
-                        'file_status' => $request->input('file_status', 0),
-                        'fyear' => $request->input('fyear'),
-                        'month' => $request->input('Month'),
-                        'tags' => $tags, // Store tags as JSON
-                        'bank_name' => $request->input('bank_name'),
-                        'location' => $request->input('location'),
-                        'descp' => $request->input('desc'),
-                    ]);
-
-                    $totalSize += $file->getSize();
-                    $successMessages[] = "File {$file->getClientOriginalName()} uploaded successfully.";
-                } catch (\Exception $e) {
-                    $errorMessages[] = "Failed to save file {$file->getClientOriginalName()} to the database.";
-                }
-            }
+                    $location = preg_replace('/\s*\/\s*/', '/', trim($request->input('location')));
+                    // "Legal/Secretarial/Board Meetings" 
+        
+                    // Legal/Secretarial/Board Meetings/rtR2ORS7jdMq05zW6c704CUXesvrqkZ59ZNNWOib.pdf
+                    foreach ($request->file('files') as $file) {
+                        try {
+                            // Store file inside the dynamically created folder
+                           
+                            $filePath = $file->store($location);
+                            // Create a new entry for each file
+                            CommonTable::create([
+                                'file_type' => $file->getClientMimeType(),
+                                'file_name' => $file->getClientOriginalName(),
+                                'real_file_name' => $request->input('real_file_name'),
+                                'file_size' => $file->getSize(),
+                                'file_path' => $filePath,
+                                'user_name' => auth()->user()->name, // Assuming user is authenticated
+                                'user_id' => auth()->user()->id,
+                                'file_status' => $request->input('file_status', 0),
+                                'fyear' => $request->input('fyear'),
+                                'month' => $request->input('Month'),
+                                'tags' => $tags, // Store tags as JSON
+                                'location' => $request->input('location'), // Store the dynamic location
+                                'descp' => $request->input('desc'),
+                            ]);
+        
+                            $totalSize += $file->getSize();
+                            $successMessages[] = "File {$file->getClientOriginalName()} uploaded successfully.";
+                        } catch (\Exception $e) {
+                            $errorMessages[] = "Failed to save file {$file->getClientOriginalName()} to database.";
+                        }
+                    }
 
             // Compile overall success message
             $user = auth()->user();
@@ -8844,34 +9360,38 @@ public function IncorporationArtofAssocF(Request $request)
                     $tag_list = array_merge($tag_list, $userTags);
                     $tags = empty($tag_list) ? NULL : json_encode($tag_list);
 
-            foreach ($request->file('files') as $file) {
-                try {
-                    $filePath = $file->store('uploads');
-
-                    // Create a new entry for each file
-                    CommonTable::create([
-                        'file_type' => $file->getClientMimeType(),
-                        'file_name' => $file->getClientOriginalName(),
-                        'real_file_name' => $request->input('real_file_name'),
-                        'file_size' => $file->getSize(),
-                        'file_path' => $filePath,
-                        'user_name' => auth()->user()->name, // Assuming user is authenticated
-                        'user_id' => auth()->user()->id,
-                        'file_status' => $request->input('file_status', 0),
-                        'fyear' => $request->input('fyear'),
-                        'month' => $request->input('Month'),
-                        'tags' => $tags, // Store tags as JSON
-                        'bank_name' => $request->input('bank_name'),
-                        'location' => $request->input('location'),
-                        'descp' => $request->input('desc'),
-                    ]);
-
-                    $totalSize += $file->getSize();
-                    $successMessages[] = "File {$file->getClientOriginalName()} uploaded successfully.";
-                } catch (\Exception $e) {
-                    $errorMessages[] = "Failed to save file {$file->getClientOriginalName()} to the database.";
-                }
-            }
+                    $location = preg_replace('/\s*\/\s*/', '/', trim($request->input('location')));
+                    // "Legal/Secretarial/Board Meetings" 
+        
+                    // Legal/Secretarial/Board Meetings/rtR2ORS7jdMq05zW6c704CUXesvrqkZ59ZNNWOib.pdf
+                    foreach ($request->file('files') as $file) {
+                        try {
+                            // Store file inside the dynamically created folder
+                           
+                            $filePath = $file->store($location);
+                            // Create a new entry for each file
+                            CommonTable::create([
+                                'file_type' => $file->getClientMimeType(),
+                                'file_name' => $file->getClientOriginalName(),
+                                'real_file_name' => $request->input('real_file_name'),
+                                'file_size' => $file->getSize(),
+                                'file_path' => $filePath,
+                                'user_name' => auth()->user()->name, // Assuming user is authenticated
+                                'user_id' => auth()->user()->id,
+                                'file_status' => $request->input('file_status', 0),
+                                'fyear' => $request->input('fyear'),
+                                'month' => $request->input('Month'),
+                                'tags' => $tags, // Store tags as JSON
+                                'location' => $request->input('location'), // Store the dynamic location
+                                'descp' => $request->input('desc'),
+                            ]);
+        
+                            $totalSize += $file->getSize();
+                            $successMessages[] = "File {$file->getClientOriginalName()} uploaded successfully.";
+                        } catch (\Exception $e) {
+                            $errorMessages[] = "Failed to save file {$file->getClientOriginalName()} to database.";
+                        }
+                    }
 
             // Compile overall success message
             $user = auth()->user();
@@ -8977,34 +9497,38 @@ public function IncorporationCertifofincorpF(Request $request)
                     $tag_list = array_merge($tag_list, $userTags);
                     $tags = empty($tag_list) ? NULL : json_encode($tag_list);
 
-            foreach ($request->file('files') as $file) {
-                try {
-                    $filePath = $file->store('uploads');
-
-                    // Create a new entry for each file
-                    CommonTable::create([
-                        'file_type' => $file->getClientMimeType(),
-                        'file_name' => $file->getClientOriginalName(),
-                        'real_file_name' => $request->input('real_file_name'),
-                        'file_size' => $file->getSize(),
-                        'file_path' => $filePath,
-                        'user_name' => auth()->user()->name, // Assuming user is authenticated
-                        'user_id' => auth()->user()->id,
-                        'file_status' => $request->input('file_status', 0),
-                        'fyear' => $request->input('fyear'),
-                        'month' => $request->input('Month'),
-                        'tags' => $tags, // Store tags as JSON
-                        'bank_name' => $request->input('bank_name'),
-                        'location' => $request->input('location'),
-                        'descp' => $request->input('desc'),
-                    ]);
-
-                    $totalSize += $file->getSize();
-                    $successMessages[] = "File {$file->getClientOriginalName()} uploaded successfully.";
-                } catch (\Exception $e) {
-                    $errorMessages[] = "Failed to save file {$file->getClientOriginalName()} to the database.";
-                }
-            }
+                    $location = preg_replace('/\s*\/\s*/', '/', trim($request->input('location')));
+                    // "Legal/Secretarial/Board Meetings" 
+        
+                    // Legal/Secretarial/Board Meetings/rtR2ORS7jdMq05zW6c704CUXesvrqkZ59ZNNWOib.pdf
+                    foreach ($request->file('files') as $file) {
+                        try {
+                            // Store file inside the dynamically created folder
+                           
+                            $filePath = $file->store($location);
+                            // Create a new entry for each file
+                            CommonTable::create([
+                                'file_type' => $file->getClientMimeType(),
+                                'file_name' => $file->getClientOriginalName(),
+                                'real_file_name' => $request->input('real_file_name'),
+                                'file_size' => $file->getSize(),
+                                'file_path' => $filePath,
+                                'user_name' => auth()->user()->name, // Assuming user is authenticated
+                                'user_id' => auth()->user()->id,
+                                'file_status' => $request->input('file_status', 0),
+                                'fyear' => $request->input('fyear'),
+                                'month' => $request->input('Month'),
+                                'tags' => $tags, // Store tags as JSON
+                                'location' => $request->input('location'), // Store the dynamic location
+                                'descp' => $request->input('desc'),
+                            ]);
+        
+                            $totalSize += $file->getSize();
+                            $successMessages[] = "File {$file->getClientOriginalName()} uploaded successfully.";
+                        } catch (\Exception $e) {
+                            $errorMessages[] = "Failed to save file {$file->getClientOriginalName()} to database.";
+                        }
+                    }
 
             // Compile overall success message
             $user = auth()->user();
@@ -9113,34 +9637,38 @@ public function CharterdocumentsIncorporationMemorandumofAssociation(Request $re
                     $tag_list = array_merge($tag_list, $userTags);
                     $tags = empty($tag_list) ? NULL : json_encode($tag_list);
 
-            foreach ($request->file('files') as $file) {
-                try {
-                    $filePath = $file->store('uploads');
-
-                    // Create a new entry for each file
-                    CommonTable::create([
-                        'file_type' => $file->getClientMimeType(),
-                        'file_name' => $file->getClientOriginalName(),
-                        'real_file_name' => $request->input('real_file_name'),
-                        'file_size' => $file->getSize(),
-                        'file_path' => $filePath,
-                        'user_name' => auth()->user()->name, // Assuming user is authenticated
-                        'user_id' => auth()->user()->id,
-                        'file_status' => $request->input('file_status', 0),
-                        'fyear' => $request->input('fyear'),
-                        'month' => $request->input('Month'),
-                        'tags' => $tags, // Store tags as JSON
-                        'bank_name' => $request->input('bank_name'),
-                        'location' => $request->input('location'),
-                        'descp' => $request->input('desc'),
-                    ]);
-
-                    $totalSize += $file->getSize();
-                    $successMessages[] = "File {$file->getClientOriginalName()} uploaded successfully.";
-                } catch (\Exception $e) {
-                    $errorMessages[] = "Failed to save file {$file->getClientOriginalName()} to the database.";
-                }
-            }
+                    $location = preg_replace('/\s*\/\s*/', '/', trim($request->input('location')));
+                    // "Legal/Secretarial/Board Meetings" 
+        
+                    // Legal/Secretarial/Board Meetings/rtR2ORS7jdMq05zW6c704CUXesvrqkZ59ZNNWOib.pdf
+                    foreach ($request->file('files') as $file) {
+                        try {
+                            // Store file inside the dynamically created folder
+                           
+                            $filePath = $file->store($location);
+                            // Create a new entry for each file
+                            CommonTable::create([
+                                'file_type' => $file->getClientMimeType(),
+                                'file_name' => $file->getClientOriginalName(),
+                                'real_file_name' => $request->input('real_file_name'),
+                                'file_size' => $file->getSize(),
+                                'file_path' => $filePath,
+                                'user_name' => auth()->user()->name, // Assuming user is authenticated
+                                'user_id' => auth()->user()->id,
+                                'file_status' => $request->input('file_status', 0),
+                                'fyear' => $request->input('fyear'),
+                                'month' => $request->input('Month'),
+                                'tags' => $tags, // Store tags as JSON
+                                'location' => $request->input('location'), // Store the dynamic location
+                                'descp' => $request->input('desc'),
+                            ]);
+        
+                            $totalSize += $file->getSize();
+                            $successMessages[] = "File {$file->getClientOriginalName()} uploaded successfully.";
+                        } catch (\Exception $e) {
+                            $errorMessages[] = "Failed to save file {$file->getClientOriginalName()} to database.";
+                        }
+                    }
 
             // Compile overall success message
             $user = auth()->user();
@@ -9247,34 +9775,38 @@ public function IncorporationPartnerdeedF(Request $request)
                     $tag_list = array_merge($tag_list, $userTags);
                     $tags = empty($tag_list) ? NULL : json_encode($tag_list);
 
-            foreach ($request->file('files') as $file) {
-                try {
-                    $filePath = $file->store('uploads');
-
-                    // Create a new entry for each file
-                    CommonTable::create([
-                        'file_type' => $file->getClientMimeType(),
-                        'file_name' => $file->getClientOriginalName(),
-                        'real_file_name' => $request->input('real_file_name'),
-                        'file_size' => $file->getSize(),
-                        'file_path' => $filePath,
-                        'user_name' => auth()->user()->name, // Assuming user is authenticated
-                        'user_id' => auth()->user()->id,
-                        'file_status' => $request->input('file_status', 0),
-                        'fyear' => $request->input('fyear'),
-                        'month' => $request->input('Month'),
-                        'tags' => $tags, // Store tags as JSON
-                        'bank_name' => $request->input('bank_name'),
-                        'location' => $request->input('location'),
-                        'descp' => $request->input('desc'),
-                    ]);
-
-                    $totalSize += $file->getSize();
-                    $successMessages[] = "File {$file->getClientOriginalName()} uploaded successfully.";
-                } catch (\Exception $e) {
-                    $errorMessages[] = "Failed to save file {$file->getClientOriginalName()} to the database.";
-                }
-            }
+                    $location = preg_replace('/\s*\/\s*/', '/', trim($request->input('location')));
+                    // "Legal/Secretarial/Board Meetings" 
+        
+                    // Legal/Secretarial/Board Meetings/rtR2ORS7jdMq05zW6c704CUXesvrqkZ59ZNNWOib.pdf
+                    foreach ($request->file('files') as $file) {
+                        try {
+                            // Store file inside the dynamically created folder
+                           
+                            $filePath = $file->store($location);
+                            // Create a new entry for each file
+                            CommonTable::create([
+                                'file_type' => $file->getClientMimeType(),
+                                'file_name' => $file->getClientOriginalName(),
+                                'real_file_name' => $request->input('real_file_name'),
+                                'file_size' => $file->getSize(),
+                                'file_path' => $filePath,
+                                'user_name' => auth()->user()->name, // Assuming user is authenticated
+                                'user_id' => auth()->user()->id,
+                                'file_status' => $request->input('file_status', 0),
+                                'fyear' => $request->input('fyear'),
+                                'month' => $request->input('Month'),
+                                'tags' => $tags, // Store tags as JSON
+                                'location' => $request->input('location'), // Store the dynamic location
+                                'descp' => $request->input('desc'),
+                            ]);
+        
+                            $totalSize += $file->getSize();
+                            $successMessages[] = "File {$file->getClientOriginalName()} uploaded successfully.";
+                        } catch (\Exception $e) {
+                            $errorMessages[] = "Failed to save file {$file->getClientOriginalName()} to database.";
+                        }
+                    }
 
             // Compile overall success message
             $user = auth()->user();
@@ -9382,34 +9914,38 @@ public function IncorporationLLPAgreementF(Request $request)
                     $tag_list = array_merge($tag_list, $userTags);
                     $tags = empty($tag_list) ? NULL : json_encode($tag_list);
 
-            foreach ($request->file('files') as $file) {
-                try {
-                    $filePath = $file->store('uploads');
-
-                    // Create a new entry for each file
-                    CommonTable::create([
-                        'file_type' => $file->getClientMimeType(),
-                        'file_name' => $file->getClientOriginalName(),
-                        'real_file_name' => $request->input('real_file_name'),
-                        'file_size' => $file->getSize(),
-                        'file_path' => $filePath,
-                        'user_name' => auth()->user()->name, // Assuming user is authenticated
-                        'user_id' => auth()->user()->id,
-                        'file_status' => $request->input('file_status', 0),
-                        'fyear' => $request->input('fyear'),
-                        'month' => $request->input('Month'),
-                        'tags' => $tags, // Store tags as JSON
-                        'bank_name' => $request->input('bank_name'),
-                        'location' => $request->input('location'),
-                        'descp' => $request->input('desc'),
-                    ]);
-
-                    $totalSize += $file->getSize();
-                    $successMessages[] = "File {$file->getClientOriginalName()} uploaded successfully.";
-                } catch (\Exception $e) {
-                    $errorMessages[] = "Failed to save file {$file->getClientOriginalName()} to the database.";
-                }
-            }
+                    $location = preg_replace('/\s*\/\s*/', '/', trim($request->input('location')));
+                    // "Legal/Secretarial/Board Meetings" 
+        
+                    // Legal/Secretarial/Board Meetings/rtR2ORS7jdMq05zW6c704CUXesvrqkZ59ZNNWOib.pdf
+                    foreach ($request->file('files') as $file) {
+                        try {
+                            // Store file inside the dynamically created folder
+                           
+                            $filePath = $file->store($location);
+                            // Create a new entry for each file
+                            CommonTable::create([
+                                'file_type' => $file->getClientMimeType(),
+                                'file_name' => $file->getClientOriginalName(),
+                                'real_file_name' => $request->input('real_file_name'),
+                                'file_size' => $file->getSize(),
+                                'file_path' => $filePath,
+                                'user_name' => auth()->user()->name, // Assuming user is authenticated
+                                'user_id' => auth()->user()->id,
+                                'file_status' => $request->input('file_status', 0),
+                                'fyear' => $request->input('fyear'),
+                                'month' => $request->input('Month'),
+                                'tags' => $tags, // Store tags as JSON
+                                'location' => $request->input('location'), // Store the dynamic location
+                                'descp' => $request->input('desc'),
+                            ]);
+        
+                            $totalSize += $file->getSize();
+                            $successMessages[] = "File {$file->getClientOriginalName()} uploaded successfully.";
+                        } catch (\Exception $e) {
+                            $errorMessages[] = "Failed to save file {$file->getClientOriginalName()} to database.";
+                        }
+                    }
 
             // Compile overall success message
             $user = auth()->user();
@@ -9517,34 +10053,38 @@ public function IncorporationTrustDeedF(Request $request)
                     $tag_list = array_merge($tag_list, $userTags);
                     $tags = empty($tag_list) ? NULL : json_encode($tag_list);
 
-            foreach ($request->file('files') as $file) {
-                try {
-                    $filePath = $file->store('uploads');
-
-                    // Create a new entry for each file
-                    CommonTable::create([
-                        'file_type' => $file->getClientMimeType(),
-                        'file_name' => $file->getClientOriginalName(),
-                        'real_file_name' => $request->input('real_file_name'),
-                        'file_size' => $file->getSize(),
-                        'file_path' => $filePath,
-                        'user_name' => auth()->user()->name, // Assuming user is authenticated
-                        'user_id' => auth()->user()->id,
-                        'file_status' => $request->input('file_status', 0),
-                        'fyear' => $request->input('fyear'),
-                        'month' => $request->input('Month'),
-                        'tags' => $tags, // Store tags as JSON
-                        'bank_name' => $request->input('bank_name'),
-                        'location' => $request->input('location'),
-                        'descp' => $request->input('desc'),
-                    ]);
-
-                    $totalSize += $file->getSize();
-                    $successMessages[] = "File {$file->getClientOriginalName()} uploaded successfully.";
-                } catch (\Exception $e) {
-                    $errorMessages[] = "Failed to save file {$file->getClientOriginalName()} to the database.";
-                }
-            }
+                    $location = preg_replace('/\s*\/\s*/', '/', trim($request->input('location')));
+                    // "Legal/Secretarial/Board Meetings" 
+        
+                    // Legal/Secretarial/Board Meetings/rtR2ORS7jdMq05zW6c704CUXesvrqkZ59ZNNWOib.pdf
+                    foreach ($request->file('files') as $file) {
+                        try {
+                            // Store file inside the dynamically created folder
+                           
+                            $filePath = $file->store($location);
+                            // Create a new entry for each file
+                            CommonTable::create([
+                                'file_type' => $file->getClientMimeType(),
+                                'file_name' => $file->getClientOriginalName(),
+                                'real_file_name' => $request->input('real_file_name'),
+                                'file_size' => $file->getSize(),
+                                'file_path' => $filePath,
+                                'user_name' => auth()->user()->name, // Assuming user is authenticated
+                                'user_id' => auth()->user()->id,
+                                'file_status' => $request->input('file_status', 0),
+                                'fyear' => $request->input('fyear'),
+                                'month' => $request->input('Month'),
+                                'tags' => $tags, // Store tags as JSON
+                                'location' => $request->input('location'), // Store the dynamic location
+                                'descp' => $request->input('desc'),
+                            ]);
+        
+                            $totalSize += $file->getSize();
+                            $successMessages[] = "File {$file->getClientOriginalName()} uploaded successfully.";
+                        } catch (\Exception $e) {
+                            $errorMessages[] = "Failed to save file {$file->getClientOriginalName()} to database.";
+                        }
+                    }
 
             // Compile overall success message
             $user = auth()->user();
@@ -9651,34 +10191,38 @@ public function IncorporationSharecertifF(Request $request)
                     $tag_list = array_merge($tag_list, $userTags);
                     $tags = empty($tag_list) ? NULL : json_encode($tag_list);
 
-            foreach ($request->file('files') as $file) {
-                try {
-                    $filePath = $file->store('uploads');
-
-                    // Create a new entry for each file
-                    CommonTable::create([
-                        'file_type' => $file->getClientMimeType(),
-                        'file_name' => $file->getClientOriginalName(),
-                        'real_file_name' => $request->input('real_file_name'),
-                        'file_size' => $file->getSize(),
-                        'file_path' => $filePath,
-                        'user_name' => auth()->user()->name, // Assuming user is authenticated
-                        'user_id' => auth()->user()->id,
-                        'file_status' => $request->input('file_status', 0),
-                        'fyear' => $request->input('fyear'),
-                        'month' => $request->input('Month'),
-                        'tags' => $tags, // Store tags as JSON
-                        'bank_name' => $request->input('bank_name'),
-                        'location' => $request->input('location'),
-                        'descp' => $request->input('desc'),
-                    ]);
-
-                    $totalSize += $file->getSize();
-                    $successMessages[] = "File {$file->getClientOriginalName()} uploaded successfully.";
-                } catch (\Exception $e) {
-                    $errorMessages[] = "Failed to save file {$file->getClientOriginalName()} to the database.";
-                }
-            }
+                    $location = preg_replace('/\s*\/\s*/', '/', trim($request->input('location')));
+                    // "Legal/Secretarial/Board Meetings" 
+        
+                    // Legal/Secretarial/Board Meetings/rtR2ORS7jdMq05zW6c704CUXesvrqkZ59ZNNWOib.pdf
+                    foreach ($request->file('files') as $file) {
+                        try {
+                            // Store file inside the dynamically created folder
+                           
+                            $filePath = $file->store($location);
+                            // Create a new entry for each file
+                            CommonTable::create([
+                                'file_type' => $file->getClientMimeType(),
+                                'file_name' => $file->getClientOriginalName(),
+                                'real_file_name' => $request->input('real_file_name'),
+                                'file_size' => $file->getSize(),
+                                'file_path' => $filePath,
+                                'user_name' => auth()->user()->name, // Assuming user is authenticated
+                                'user_id' => auth()->user()->id,
+                                'file_status' => $request->input('file_status', 0),
+                                'fyear' => $request->input('fyear'),
+                                'month' => $request->input('Month'),
+                                'tags' => $tags, // Store tags as JSON
+                                'location' => $request->input('location'), // Store the dynamic location
+                                'descp' => $request->input('desc'),
+                            ]);
+        
+                            $totalSize += $file->getSize();
+                            $successMessages[] = "File {$file->getClientOriginalName()} uploaded successfully.";
+                        } catch (\Exception $e) {
+                            $errorMessages[] = "Failed to save file {$file->getClientOriginalName()} to database.";
+                        }
+                    }
 
             // Compile overall success message
             $user = auth()->user();
@@ -9787,34 +10331,38 @@ public function CharterdocumentsRegistrationsPAN(Request $request)
                     $tags = empty($tag_list) ? NULL : json_encode($tag_list);
 
 
-            foreach ($request->file('files') as $file) {
-                try {
-                    $filePath = $file->store('uploads');
-
-                    // Create a new entry for each file
-                    CommonTable::create([
-                        'file_type' => $file->getClientMimeType(),
-                        'file_name' => $file->getClientOriginalName(),
-                        'real_file_name' => $request->input('real_file_name'),
-                        'file_size' => $file->getSize(),
-                        'file_path' => $filePath,
-                        'user_name' => auth()->user()->name, // Assuming user is authenticated
-                        'user_id' => auth()->user()->id,
-                        'file_status' => $request->input('file_status', 0),
-                        'fyear' => $request->input('fyear'),
-                        'month' => $request->input('Month'),
-                        'tags' => $tags, // Store tags as JSON
-                        'bank_name' => $request->input('bank_name'),
-                        'location' => $request->input('location'),
-                        'descp' => $request->input('desc'),
-                    ]);
-
-                    $totalSize += $file->getSize();
-                    $successMessages[] = "File {$file->getClientOriginalName()} uploaded successfully.";
-                } catch (\Exception $e) {
-                    $errorMessages[] = "Failed to save file {$file->getClientOriginalName()} to the database.";
-                }
-            }
+                    $location = preg_replace('/\s*\/\s*/', '/', trim($request->input('location')));
+                    // "Legal/Secretarial/Board Meetings" 
+        
+                    // Legal/Secretarial/Board Meetings/rtR2ORS7jdMq05zW6c704CUXesvrqkZ59ZNNWOib.pdf
+                    foreach ($request->file('files') as $file) {
+                        try {
+                            // Store file inside the dynamically created folder
+                           
+                            $filePath = $file->store($location);
+                            // Create a new entry for each file
+                            CommonTable::create([
+                                'file_type' => $file->getClientMimeType(),
+                                'file_name' => $file->getClientOriginalName(),
+                                'real_file_name' => $request->input('real_file_name'),
+                                'file_size' => $file->getSize(),
+                                'file_path' => $filePath,
+                                'user_name' => auth()->user()->name, // Assuming user is authenticated
+                                'user_id' => auth()->user()->id,
+                                'file_status' => $request->input('file_status', 0),
+                                'fyear' => $request->input('fyear'),
+                                'month' => $request->input('Month'),
+                                'tags' => $tags, // Store tags as JSON
+                                'location' => $request->input('location'), // Store the dynamic location
+                                'descp' => $request->input('desc'),
+                            ]);
+        
+                            $totalSize += $file->getSize();
+                            $successMessages[] = "File {$file->getClientOriginalName()} uploaded successfully.";
+                        } catch (\Exception $e) {
+                            $errorMessages[] = "Failed to save file {$file->getClientOriginalName()} to database.";
+                        }
+                    }
 
             // Compile overall success message
             $user = auth()->user();
@@ -9922,34 +10470,38 @@ public function CharterdocumentsRegistrationsTAN(Request $request)
                     $tag_list = array_merge($tag_list, $userTags);
                     $tags = empty($tag_list) ? NULL : json_encode($tag_list);
 
-            foreach ($request->file('files') as $file) {
-                try {
-                    $filePath = $file->store('uploads');
-
-                    // Create a new entry for each file
-                    CommonTable::create([
-                        'file_type' => $file->getClientMimeType(),
-                        'file_name' => $file->getClientOriginalName(),
-                        'real_file_name' => $request->input('real_file_name'),
-                        'file_size' => $file->getSize(),
-                        'file_path' => $filePath,
-                        'user_name' => auth()->user()->name, // Assuming user is authenticated
-                        'user_id' => auth()->user()->id,
-                        'file_status' => $request->input('file_status', 0),
-                        'fyear' => $request->input('fyear'),
-                        'month' => $request->input('Month'),
-                        'tags' => $tags, // Store tags as JSON
-                        'bank_name' => $request->input('bank_name'),
-                        'location' => $request->input('location'),
-                        'descp' => $request->input('desc'),
-                    ]);
-
-                    $totalSize += $file->getSize();
-                    $successMessages[] = "File {$file->getClientOriginalName()} uploaded successfully.";
-                } catch (\Exception $e) {
-                    $errorMessages[] = "Failed to save file {$file->getClientOriginalName()} to the database.";
-                }
-            }
+                    $location = preg_replace('/\s*\/\s*/', '/', trim($request->input('location')));
+                    // "Legal/Secretarial/Board Meetings" 
+        
+                    // Legal/Secretarial/Board Meetings/rtR2ORS7jdMq05zW6c704CUXesvrqkZ59ZNNWOib.pdf
+                    foreach ($request->file('files') as $file) {
+                        try {
+                            // Store file inside the dynamically created folder
+                           
+                            $filePath = $file->store($location);
+                            // Create a new entry for each file
+                            CommonTable::create([
+                                'file_type' => $file->getClientMimeType(),
+                                'file_name' => $file->getClientOriginalName(),
+                                'real_file_name' => $request->input('real_file_name'),
+                                'file_size' => $file->getSize(),
+                                'file_path' => $filePath,
+                                'user_name' => auth()->user()->name, // Assuming user is authenticated
+                                'user_id' => auth()->user()->id,
+                                'file_status' => $request->input('file_status', 0),
+                                'fyear' => $request->input('fyear'),
+                                'month' => $request->input('Month'),
+                                'tags' => $tags, // Store tags as JSON
+                                'location' => $request->input('location'), // Store the dynamic location
+                                'descp' => $request->input('desc'),
+                            ]);
+        
+                            $totalSize += $file->getSize();
+                            $successMessages[] = "File {$file->getClientOriginalName()} uploaded successfully.";
+                        } catch (\Exception $e) {
+                            $errorMessages[] = "Failed to save file {$file->getClientOriginalName()} to database.";
+                        }
+                    }
 
             // Compile overall success message
             $user = auth()->user();
@@ -10059,34 +10611,38 @@ public function CharterdocumentsRegistrationsGSTIN(Request $request)
                     $tag_list = array_merge($tag_list, $userTags);
                     $tags = empty($tag_list) ? NULL : json_encode($tag_list);
 
-            foreach ($request->file('files') as $file) {
-                try {
-                    $filePath = $file->store('uploads');
-
-                    // Create a new entry for each file
-                    CommonTable::create([
-                        'file_type' => $file->getClientMimeType(),
-                        'file_name' => $file->getClientOriginalName(),
-                        'real_file_name' => $request->input('real_file_name'),
-                        'file_size' => $file->getSize(),
-                        'file_path' => $filePath,
-                        'user_name' => auth()->user()->name, // Assuming user is authenticated
-                        'user_id' => auth()->user()->id,
-                        'file_status' => $request->input('file_status', 0),
-                        'fyear' => $request->input('fyear'),
-                        'month' => $request->input('Month'),
-                        'tags' => $tags, // Store tags as JSON
-                        'bank_name' => $request->input('bank_name'),
-                        'location' => $request->input('location'),
-                        'descp' => $request->input('desc'),
-                    ]);
-
-                    $totalSize += $file->getSize();
-                    $successMessages[] = "File {$file->getClientOriginalName()} uploaded successfully.";
-                } catch (\Exception $e) {
-                    $errorMessages[] = "Failed to save file {$file->getClientOriginalName()} to the database.";
-                }
-            }
+                    $location = preg_replace('/\s*\/\s*/', '/', trim($request->input('location')));
+                    // "Legal/Secretarial/Board Meetings" 
+        
+                    // Legal/Secretarial/Board Meetings/rtR2ORS7jdMq05zW6c704CUXesvrqkZ59ZNNWOib.pdf
+                    foreach ($request->file('files') as $file) {
+                        try {
+                            // Store file inside the dynamically created folder
+                           
+                            $filePath = $file->store($location);
+                            // Create a new entry for each file
+                            CommonTable::create([
+                                'file_type' => $file->getClientMimeType(),
+                                'file_name' => $file->getClientOriginalName(),
+                                'real_file_name' => $request->input('real_file_name'),
+                                'file_size' => $file->getSize(),
+                                'file_path' => $filePath,
+                                'user_name' => auth()->user()->name, // Assuming user is authenticated
+                                'user_id' => auth()->user()->id,
+                                'file_status' => $request->input('file_status', 0),
+                                'fyear' => $request->input('fyear'),
+                                'month' => $request->input('Month'),
+                                'tags' => $tags, // Store tags as JSON
+                                'location' => $request->input('location'), // Store the dynamic location
+                                'descp' => $request->input('desc'),
+                            ]);
+        
+                            $totalSize += $file->getSize();
+                            $successMessages[] = "File {$file->getClientOriginalName()} uploaded successfully.";
+                        } catch (\Exception $e) {
+                            $errorMessages[] = "Failed to save file {$file->getClientOriginalName()} to database.";
+                        }
+                    }
 
             // Compile overall success message
             $user = auth()->user();
@@ -10194,34 +10750,38 @@ public function CharterdocumentsRegistrationsMSME(Request $request)
                     $tag_list = array_merge($tag_list, $userTags);
                     $tags = empty($tag_list) ? NULL : json_encode($tag_list);
 
-            foreach ($request->file('files') as $file) {
-                try {
-                    $filePath = $file->store('uploads');
-
-                    // Create a new entry for each file
-                    CommonTable::create([
-                        'file_type' => $file->getClientMimeType(),
-                        'file_name' => $file->getClientOriginalName(),
-                        'real_file_name' => $request->input('real_file_name'),
-                        'file_size' => $file->getSize(),
-                        'file_path' => $filePath,
-                        'user_name' => auth()->user()->name, // Assuming user is authenticated
-                        'user_id' => auth()->user()->id,
-                        'file_status' => $request->input('file_status', 0),
-                        'fyear' => $request->input('fyear'),
-                        'month' => $request->input('Month'),
-                        'tags' => $tags, // Store tags as JSON
-                        'bank_name' => $request->input('bank_name'),
-                        'location' => $request->input('location'),
-                        'descp' => $request->input('desc'),
-                    ]);
-
-                    $totalSize += $file->getSize();
-                    $successMessages[] = "File {$file->getClientOriginalName()} uploaded successfully.";
-                } catch (\Exception $e) {
-                    $errorMessages[] = "Failed to save file {$file->getClientOriginalName()} to the database.";
-                }
-            }
+                    $location = preg_replace('/\s*\/\s*/', '/', trim($request->input('location')));
+                    // "Legal/Secretarial/Board Meetings" 
+        
+                    // Legal/Secretarial/Board Meetings/rtR2ORS7jdMq05zW6c704CUXesvrqkZ59ZNNWOib.pdf
+                    foreach ($request->file('files') as $file) {
+                        try {
+                            // Store file inside the dynamically created folder
+                           
+                            $filePath = $file->store($location);
+                            // Create a new entry for each file
+                            CommonTable::create([
+                                'file_type' => $file->getClientMimeType(),
+                                'file_name' => $file->getClientOriginalName(),
+                                'real_file_name' => $request->input('real_file_name'),
+                                'file_size' => $file->getSize(),
+                                'file_path' => $filePath,
+                                'user_name' => auth()->user()->name, // Assuming user is authenticated
+                                'user_id' => auth()->user()->id,
+                                'file_status' => $request->input('file_status', 0),
+                                'fyear' => $request->input('fyear'),
+                                'month' => $request->input('Month'),
+                                'tags' => $tags, // Store tags as JSON
+                                'location' => $request->input('location'), // Store the dynamic location
+                                'descp' => $request->input('desc'),
+                            ]);
+        
+                            $totalSize += $file->getSize();
+                            $successMessages[] = "File {$file->getClientOriginalName()} uploaded successfully.";
+                        } catch (\Exception $e) {
+                            $errorMessages[] = "Failed to save file {$file->getClientOriginalName()} to database.";
+                        }
+                    }
 
             // Compile overall success message
             $user = auth()->user();
@@ -10328,34 +10888,38 @@ public function CharterdocumentsRegistrationsTrademark(Request $request)
                     $tag_list = array_merge($tag_list, $userTags);
                     $tags = empty($tag_list) ? NULL : json_encode($tag_list);
 
-            foreach ($request->file('files') as $file) {
-                try {
-                    $filePath = $file->store('uploads');
-
-                    // Create a new entry for each file
-                    CommonTable::create([
-                        'file_type' => $file->getClientMimeType(),
-                        'file_name' => $file->getClientOriginalName(),
-                        'real_file_name' => $request->input('real_file_name'),
-                        'file_size' => $file->getSize(),
-                        'file_path' => $filePath,
-                        'user_name' => auth()->user()->name, // Assuming user is authenticated
-                        'user_id' => auth()->user()->id,
-                        'file_status' => $request->input('file_status', 0),
-                        'fyear' => $request->input('fyear'),
-                        'month' => $request->input('Month'),
-                        'tags' => $tags, // Store tags as JSON
-                        'bank_name' => $request->input('bank_name'),
-                        'location' => $request->input('location'),
-                        'descp' => $request->input('desc'),
-                    ]);
-
-                    $totalSize += $file->getSize();
-                    $successMessages[] = "File {$file->getClientOriginalName()} uploaded successfully.";
-                } catch (\Exception $e) {
-                    $errorMessages[] = "Failed to save file {$file->getClientOriginalName()} to the database.";
-                }
-            }
+                    $location = preg_replace('/\s*\/\s*/', '/', trim($request->input('location')));
+                    // "Legal/Secretarial/Board Meetings" 
+        
+                    // Legal/Secretarial/Board Meetings/rtR2ORS7jdMq05zW6c704CUXesvrqkZ59ZNNWOib.pdf
+                    foreach ($request->file('files') as $file) {
+                        try {
+                            // Store file inside the dynamically created folder
+                           
+                            $filePath = $file->store($location);
+                            // Create a new entry for each file
+                            CommonTable::create([
+                                'file_type' => $file->getClientMimeType(),
+                                'file_name' => $file->getClientOriginalName(),
+                                'real_file_name' => $request->input('real_file_name'),
+                                'file_size' => $file->getSize(),
+                                'file_path' => $filePath,
+                                'user_name' => auth()->user()->name, // Assuming user is authenticated
+                                'user_id' => auth()->user()->id,
+                                'file_status' => $request->input('file_status', 0),
+                                'fyear' => $request->input('fyear'),
+                                'month' => $request->input('Month'),
+                                'tags' => $tags, // Store tags as JSON
+                                'location' => $request->input('location'), // Store the dynamic location
+                                'descp' => $request->input('desc'),
+                            ]);
+        
+                            $totalSize += $file->getSize();
+                            $successMessages[] = "File {$file->getClientOriginalName()} uploaded successfully.";
+                        } catch (\Exception $e) {
+                            $errorMessages[] = "Failed to save file {$file->getClientOriginalName()} to database.";
+                        }
+                    }
 
             // Compile overall success message
             $user = auth()->user();
@@ -10463,34 +11027,38 @@ public function CharterdocumentsRegistrationsPFC(Request $request)
                     $tag_list = array_merge($tag_list, $userTags);
                     $tags = empty($tag_list) ? NULL : json_encode($tag_list);
 
-            foreach ($request->file('files') as $file) {
-                try {
-                    $filePath = $file->store('uploads');
-
-                    // Create a new entry for each file
-                    CommonTable::create([
-                        'file_type' => $file->getClientMimeType(),
-                        'file_name' => $file->getClientOriginalName(),
-                        'real_file_name' => $request->input('real_file_name'),
-                        'file_size' => $file->getSize(),
-                        'file_path' => $filePath,
-                        'user_name' => auth()->user()->name, // Assuming user is authenticated
-                        'user_id' => auth()->user()->id,
-                        'file_status' => $request->input('file_status', 0),
-                        'fyear' => $request->input('fyear'),
-                        'month' => $request->input('Month'),
-                        'tags' => $tags, // Store tags as JSON
-                        'bank_name' => $request->input('bank_name'),
-                        'location' => $request->input('location'),
-                        'descp' => $request->input('desc'),
-                    ]);
-
-                    $totalSize += $file->getSize();
-                    $successMessages[] = "File {$file->getClientOriginalName()} uploaded successfully.";
-                } catch (\Exception $e) {
-                    $errorMessages[] = "Failed to save file {$file->getClientOriginalName()} to the database.";
-                }
-            }
+                    $location = preg_replace('/\s*\/\s*/', '/', trim($request->input('location')));
+                    // "Legal/Secretarial/Board Meetings" 
+        
+                    // Legal/Secretarial/Board Meetings/rtR2ORS7jdMq05zW6c704CUXesvrqkZ59ZNNWOib.pdf
+                    foreach ($request->file('files') as $file) {
+                        try {
+                            // Store file inside the dynamically created folder
+                           
+                            $filePath = $file->store($location);
+                            // Create a new entry for each file
+                            CommonTable::create([
+                                'file_type' => $file->getClientMimeType(),
+                                'file_name' => $file->getClientOriginalName(),
+                                'real_file_name' => $request->input('real_file_name'),
+                                'file_size' => $file->getSize(),
+                                'file_path' => $filePath,
+                                'user_name' => auth()->user()->name, // Assuming user is authenticated
+                                'user_id' => auth()->user()->id,
+                                'file_status' => $request->input('file_status', 0),
+                                'fyear' => $request->input('fyear'),
+                                'month' => $request->input('Month'),
+                                'tags' => $tags, // Store tags as JSON
+                                'location' => $request->input('location'), // Store the dynamic location
+                                'descp' => $request->input('desc'),
+                            ]);
+        
+                            $totalSize += $file->getSize();
+                            $successMessages[] = "File {$file->getClientOriginalName()} uploaded successfully.";
+                        } catch (\Exception $e) {
+                            $errorMessages[] = "Failed to save file {$file->getClientOriginalName()} to database.";
+                        }
+                    }
 
             // Compile overall success message
             $user = auth()->user();
@@ -10599,34 +11167,38 @@ public function CharterdocumentsRegistrationsESIC(Request $request)
                     $tag_list = array_merge($tag_list, $userTags);
                     $tags = empty($tag_list) ? NULL : json_encode($tag_list);
 
-            foreach ($request->file('files') as $file) {
-                try {
-                    $filePath = $file->store('uploads');
-
-                    // Create a new entry for each file
-                    CommonTable::create([
-                        'file_type' => $file->getClientMimeType(),
-                        'file_name' => $file->getClientOriginalName(),
-                        'real_file_name' => $request->input('real_file_name'),
-                        'file_size' => $file->getSize(),
-                        'file_path' => $filePath,
-                        'user_name' => auth()->user()->name, // Assuming user is authenticated
-                        'user_id' => auth()->user()->id,
-                        'file_status' => $request->input('file_status', 0),
-                        'fyear' => $request->input('fyear'),
-                        'month' => $request->input('Month'),
-                        'tags' => $tags, // Store tags as JSON
-                        'bank_name' => $request->input('bank_name'),
-                        'location' => $request->input('location'),
-                        'descp' => $request->input('desc'),
-                    ]);
-
-                    $totalSize += $file->getSize();
-                    $successMessages[] = "File {$file->getClientOriginalName()} uploaded successfully.";
-                } catch (\Exception $e) {
-                    $errorMessages[] = "Failed to save file {$file->getClientOriginalName()} to the database.";
-                }
-            }
+                    $location = preg_replace('/\s*\/\s*/', '/', trim($request->input('location')));
+                    // "Legal/Secretarial/Board Meetings" 
+        
+                    // Legal/Secretarial/Board Meetings/rtR2ORS7jdMq05zW6c704CUXesvrqkZ59ZNNWOib.pdf
+                    foreach ($request->file('files') as $file) {
+                        try {
+                            // Store file inside the dynamically created folder
+                           
+                            $filePath = $file->store($location);
+                            // Create a new entry for each file
+                            CommonTable::create([
+                                'file_type' => $file->getClientMimeType(),
+                                'file_name' => $file->getClientOriginalName(),
+                                'real_file_name' => $request->input('real_file_name'),
+                                'file_size' => $file->getSize(),
+                                'file_path' => $filePath,
+                                'user_name' => auth()->user()->name, // Assuming user is authenticated
+                                'user_id' => auth()->user()->id,
+                                'file_status' => $request->input('file_status', 0),
+                                'fyear' => $request->input('fyear'),
+                                'month' => $request->input('Month'),
+                                'tags' => $tags, // Store tags as JSON
+                                'location' => $request->input('location'), // Store the dynamic location
+                                'descp' => $request->input('desc'),
+                            ]);
+        
+                            $totalSize += $file->getSize();
+                            $successMessages[] = "File {$file->getClientOriginalName()} uploaded successfully.";
+                        } catch (\Exception $e) {
+                            $errorMessages[] = "Failed to save file {$file->getClientOriginalName()} to database.";
+                        }
+                    }
 
             // Compile overall success message
             $user = auth()->user();
@@ -10733,34 +11305,38 @@ public function CharterdocumentsRegistrationsPTC(Request $request)
                     $tag_list = array_merge($tag_list, $userTags);
                     $tags = empty($tag_list) ? NULL : json_encode($tag_list);
 
-            foreach ($request->file('files') as $file) {
-                try {
-                    $filePath = $file->store('uploads');
-
-                    // Create a new entry for each file
-                    CommonTable::create([
-                        'file_type' => $file->getClientMimeType(),
-                        'file_name' => $file->getClientOriginalName(),
-                        'real_file_name' => $request->input('real_file_name'),
-                        'file_size' => $file->getSize(),
-                        'file_path' => $filePath,
-                        'user_name' => auth()->user()->name, // Assuming user is authenticated
-                        'user_id' => auth()->user()->id,
-                        'file_status' => $request->input('file_status', 0),
-                        'fyear' => $request->input('fyear'),
-                        'month' => $request->input('Month'),
-                        'tags' => $tags, // Store tags as JSON
-                        'bank_name' => $request->input('bank_name'),
-                        'location' => $request->input('location'),
-                        'descp' => $request->input('desc'),
-                    ]);
-
-                    $totalSize += $file->getSize();
-                    $successMessages[] = "File {$file->getClientOriginalName()} uploaded successfully.";
-                } catch (\Exception $e) {
-                    $errorMessages[] = "Failed to save file {$file->getClientOriginalName()} to the database.";
-                }
-            }
+                    $location = preg_replace('/\s*\/\s*/', '/', trim($request->input('location')));
+                    // "Legal/Secretarial/Board Meetings" 
+        
+                    // Legal/Secretarial/Board Meetings/rtR2ORS7jdMq05zW6c704CUXesvrqkZ59ZNNWOib.pdf
+                    foreach ($request->file('files') as $file) {
+                        try {
+                            // Store file inside the dynamically created folder
+                           
+                            $filePath = $file->store($location);
+                            // Create a new entry for each file
+                            CommonTable::create([
+                                'file_type' => $file->getClientMimeType(),
+                                'file_name' => $file->getClientOriginalName(),
+                                'real_file_name' => $request->input('real_file_name'),
+                                'file_size' => $file->getSize(),
+                                'file_path' => $filePath,
+                                'user_name' => auth()->user()->name, // Assuming user is authenticated
+                                'user_id' => auth()->user()->id,
+                                'file_status' => $request->input('file_status', 0),
+                                'fyear' => $request->input('fyear'),
+                                'month' => $request->input('Month'),
+                                'tags' => $tags, // Store tags as JSON
+                                'location' => $request->input('location'), // Store the dynamic location
+                                'descp' => $request->input('desc'),
+                            ]);
+        
+                            $totalSize += $file->getSize();
+                            $successMessages[] = "File {$file->getClientOriginalName()} uploaded successfully.";
+                        } catch (\Exception $e) {
+                            $errorMessages[] = "Failed to save file {$file->getClientOriginalName()} to database.";
+                        }
+                    }
 
             // Compile overall success message
             $user = auth()->user();
@@ -10867,34 +11443,38 @@ public function CharterdocumentsRegistrationsLWFC(Request $request)
                     $tag_list = array_merge($tag_list, $userTags);
                     $tags = empty($tag_list) ? NULL : json_encode($tag_list);
 
-            foreach ($request->file('files') as $file) {
-                try {
-                    $filePath = $file->store('uploads');
-
-                    // Create a new entry for each file
-                    CommonTable::create([
-                        'file_type' => $file->getClientMimeType(),
-                        'file_name' => $file->getClientOriginalName(),
-                        'real_file_name' => $request->input('real_file_name'),
-                        'file_size' => $file->getSize(),
-                        'file_path' => $filePath,
-                        'user_name' => auth()->user()->name, // Assuming user is authenticated
-                        'user_id' => auth()->user()->id,
-                        'file_status' => $request->input('file_status', 0),
-                        'fyear' => $request->input('fyear'),
-                        'month' => $request->input('Month'),
-                        'tags' => $tags, // Store tags as JSON
-                        'bank_name' => $request->input('bank_name'),
-                        'location' => $request->input('location'),
-                        'descp' => $request->input('desc'),
-                    ]);
-
-                    $totalSize += $file->getSize();
-                    $successMessages[] = "File {$file->getClientOriginalName()} uploaded successfully.";
-                } catch (\Exception $e) {
-                    $errorMessages[] = "Failed to save file {$file->getClientOriginalName()} to the database.";
-                }
-            }
+                    $location = preg_replace('/\s*\/\s*/', '/', trim($request->input('location')));
+                    // "Legal/Secretarial/Board Meetings" 
+        
+                    // Legal/Secretarial/Board Meetings/rtR2ORS7jdMq05zW6c704CUXesvrqkZ59ZNNWOib.pdf
+                    foreach ($request->file('files') as $file) {
+                        try {
+                            // Store file inside the dynamically created folder
+                           
+                            $filePath = $file->store($location);
+                            // Create a new entry for each file
+                            CommonTable::create([
+                                'file_type' => $file->getClientMimeType(),
+                                'file_name' => $file->getClientOriginalName(),
+                                'real_file_name' => $request->input('real_file_name'),
+                                'file_size' => $file->getSize(),
+                                'file_path' => $filePath,
+                                'user_name' => auth()->user()->name, // Assuming user is authenticated
+                                'user_id' => auth()->user()->id,
+                                'file_status' => $request->input('file_status', 0),
+                                'fyear' => $request->input('fyear'),
+                                'month' => $request->input('Month'),
+                                'tags' => $tags, // Store tags as JSON
+                                'location' => $request->input('location'), // Store the dynamic location
+                                'descp' => $request->input('desc'),
+                            ]);
+        
+                            $totalSize += $file->getSize();
+                            $successMessages[] = "File {$file->getClientOriginalName()} uploaded successfully.";
+                        } catch (\Exception $e) {
+                            $errorMessages[] = "Failed to save file {$file->getClientOriginalName()} to database.";
+                        }
+                    }
 
             // Compile overall success message
             $user = auth()->user();
@@ -11001,34 +11581,38 @@ public function CharterdocumentsRegistrationsPOSHPolicy(Request $request)
                     $tag_list = array_merge($tag_list, $userTags);
                     $tags = empty($tag_list) ? NULL : json_encode($tag_list);
 
-            foreach ($request->file('files') as $file) {
-                try {
-                    $filePath = $file->store('uploads');
-
-                    // Create a new entry for each file
-                    CommonTable::create([
-                        'file_type' => $file->getClientMimeType(),
-                        'file_name' => $file->getClientOriginalName(),
-                        'real_file_name' => $request->input('real_file_name'),
-                        'file_size' => $file->getSize(),
-                        'file_path' => $filePath,
-                        'user_name' => auth()->user()->name, // Assuming user is authenticated
-                        'user_id' => auth()->user()->id,
-                        'file_status' => $request->input('file_status', 0),
-                        'fyear' => $request->input('fyear'),
-                        'month' => $request->input('Month'),
-                        'tags' => $tags, // Store tags as JSON
-                        'bank_name' => $request->input('bank_name'),
-                        'location' => $request->input('location'),
-                        'descp' => $request->input('desc'),
-                    ]);
-
-                    $totalSize += $file->getSize();
-                    $successMessages[] = "File {$file->getClientOriginalName()} uploaded successfully.";
-                } catch (\Exception $e) {
-                    $errorMessages[] = "Failed to save file {$file->getClientOriginalName()} to the database.";
-                }
-            }
+                    $location = preg_replace('/\s*\/\s*/', '/', trim($request->input('location')));
+                    // "Legal/Secretarial/Board Meetings" 
+        
+                    // Legal/Secretarial/Board Meetings/rtR2ORS7jdMq05zW6c704CUXesvrqkZ59ZNNWOib.pdf
+                    foreach ($request->file('files') as $file) {
+                        try {
+                            // Store file inside the dynamically created folder
+                           
+                            $filePath = $file->store($location);
+                            // Create a new entry for each file
+                            CommonTable::create([
+                                'file_type' => $file->getClientMimeType(),
+                                'file_name' => $file->getClientOriginalName(),
+                                'real_file_name' => $request->input('real_file_name'),
+                                'file_size' => $file->getSize(),
+                                'file_path' => $filePath,
+                                'user_name' => auth()->user()->name, // Assuming user is authenticated
+                                'user_id' => auth()->user()->id,
+                                'file_status' => $request->input('file_status', 0),
+                                'fyear' => $request->input('fyear'),
+                                'month' => $request->input('Month'),
+                                'tags' => $tags, // Store tags as JSON
+                                'location' => $request->input('location'), // Store the dynamic location
+                                'descp' => $request->input('desc'),
+                            ]);
+        
+                            $totalSize += $file->getSize();
+                            $successMessages[] = "File {$file->getClientOriginalName()} uploaded successfully.";
+                        } catch (\Exception $e) {
+                            $errorMessages[] = "Failed to save file {$file->getClientOriginalName()} to database.";
+                        }
+                    }
 
             // Compile overall success message
             $user = auth()->user();
@@ -11141,34 +11725,38 @@ public function SecretarialAuditorAppointmentBRAA(Request $request)
                     $tag_list = array_merge($tag_list, $userTags);
                     $tags = empty($tag_list) ? NULL : json_encode($tag_list);
 
-            foreach ($request->file('files') as $file) {
-                try {
-                    $filePath = $file->store('uploads');
-
-                    // Create a new entry for each file
-                    CommonTable::create([
-                        'file_type' => $file->getClientMimeType(),
-                        'file_name' => $file->getClientOriginalName(),
-                        'real_file_name' => $request->input('real_file_name'),
-                        'file_size' => $file->getSize(),
-                        'file_path' => $filePath,
-                        'user_name' => auth()->user()->name, // Assuming user is authenticated
-                        'user_id' => auth()->user()->id,
-                        'file_status' => $request->input('file_status', 0),
-                        'fyear' => $request->input('fyear'),
-                        'month' => $request->input('Month'),
-                        'tags' => $tags, // Store tags as JSON
-                        'bank_name' => $request->input('bank_name'),
-                        'location' => $request->input('location'),
-                        'descp' => $request->input('desc'),
-                    ]);
-
-                    $totalSize += $file->getSize();
-                    $successMessages[] = "File {$file->getClientOriginalName()} uploaded successfully.";
-                } catch (\Exception $e) {
-                    $errorMessages[] = "Failed to save file {$file->getClientOriginalName()} to the database.";
-                }
-            }
+                    $location = preg_replace('/\s*\/\s*/', '/', trim($request->input('location')));
+                    // "Legal/Secretarial/Board Meetings" 
+        
+                    // Legal/Secretarial/Board Meetings/rtR2ORS7jdMq05zW6c704CUXesvrqkZ59ZNNWOib.pdf
+                    foreach ($request->file('files') as $file) {
+                        try {
+                            // Store file inside the dynamically created folder
+                           
+                            $filePath = $file->store($location);
+                            // Create a new entry for each file
+                            CommonTable::create([
+                                'file_type' => $file->getClientMimeType(),
+                                'file_name' => $file->getClientOriginalName(),
+                                'real_file_name' => $request->input('real_file_name'),
+                                'file_size' => $file->getSize(),
+                                'file_path' => $filePath,
+                                'user_name' => auth()->user()->name, // Assuming user is authenticated
+                                'user_id' => auth()->user()->id,
+                                'file_status' => $request->input('file_status', 0),
+                                'fyear' => $request->input('fyear'),
+                                'month' => $request->input('Month'),
+                                'tags' => $tags, // Store tags as JSON
+                                'location' => $request->input('location'), // Store the dynamic location
+                                'descp' => $request->input('desc'),
+                            ]);
+        
+                            $totalSize += $file->getSize();
+                            $successMessages[] = "File {$file->getClientOriginalName()} uploaded successfully.";
+                        } catch (\Exception $e) {
+                            $errorMessages[] = "Failed to save file {$file->getClientOriginalName()} to database.";
+                        }
+                    }
 
             // Compile overall success message
             $user = auth()->user();
@@ -11276,34 +11864,38 @@ public function SecretarialAuditorAppointmentIA(Request $request)
                     $tag_list = array_merge($tag_list, $userTags);
                     $tags = empty($tag_list) ? NULL : json_encode($tag_list);
 
-            foreach ($request->file('files') as $file) {
-                try {
-                    $filePath = $file->store('uploads');
-
-                    // Create a new entry for each file
-                    CommonTable::create([
-                        'file_type' => $file->getClientMimeType(),
-                        'file_name' => $file->getClientOriginalName(),
-                        'real_file_name' => $request->input('real_file_name'),
-                        'file_size' => $file->getSize(),
-                        'file_path' => $filePath,
-                        'user_name' => auth()->user()->name, // Assuming user is authenticated
-                        'user_id' => auth()->user()->id,
-                        'file_status' => $request->input('file_status', 0),
-                        'fyear' => $request->input('fyear'),
-                        'month' => $request->input('Month'),
-                        'tags' => $tags, // Store tags as JSON
-                        'bank_name' => $request->input('bank_name'),
-                        'location' => $request->input('location'),
-                        'descp' => $request->input('desc'),
-                    ]);
-
-                    $totalSize += $file->getSize();
-                    $successMessages[] = "File {$file->getClientOriginalName()} uploaded successfully.";
-                } catch (\Exception $e) {
-                    $errorMessages[] = "Failed to save file {$file->getClientOriginalName()} to the database.";
-                }
-            }
+                    $location = preg_replace('/\s*\/\s*/', '/', trim($request->input('location')));
+                    // "Legal/Secretarial/Board Meetings" 
+        
+                    // Legal/Secretarial/Board Meetings/rtR2ORS7jdMq05zW6c704CUXesvrqkZ59ZNNWOib.pdf
+                    foreach ($request->file('files') as $file) {
+                        try {
+                            // Store file inside the dynamically created folder
+                           
+                            $filePath = $file->store($location);
+                            // Create a new entry for each file
+                            CommonTable::create([
+                                'file_type' => $file->getClientMimeType(),
+                                'file_name' => $file->getClientOriginalName(),
+                                'real_file_name' => $request->input('real_file_name'),
+                                'file_size' => $file->getSize(),
+                                'file_path' => $filePath,
+                                'user_name' => auth()->user()->name, // Assuming user is authenticated
+                                'user_id' => auth()->user()->id,
+                                'file_status' => $request->input('file_status', 0),
+                                'fyear' => $request->input('fyear'),
+                                'month' => $request->input('Month'),
+                                'tags' => $tags, // Store tags as JSON
+                                'location' => $request->input('location'), // Store the dynamic location
+                                'descp' => $request->input('desc'),
+                            ]);
+        
+                            $totalSize += $file->getSize();
+                            $successMessages[] = "File {$file->getClientOriginalName()} uploaded successfully.";
+                        } catch (\Exception $e) {
+                            $errorMessages[] = "Failed to save file {$file->getClientOriginalName()} to database.";
+                        }
+                    }
 
             // Compile overall success message
             $user = auth()->user();
@@ -11413,34 +12005,38 @@ public function SecretarialAuditorAppointmentLA(Request $request)
                     $tag_list = array_merge($tag_list, $userTags);
                     $tags = empty($tag_list) ? NULL : json_encode($tag_list);
 
-            foreach ($request->file('files') as $file) {
-                try {
-                    $filePath = $file->store('uploads');
-
-                    // Create a new entry for each file
-                    CommonTable::create([
-                        'file_type' => $file->getClientMimeType(),
-                        'file_name' => $file->getClientOriginalName(),
-                        'real_file_name' => $request->input('real_file_name'),
-                        'file_size' => $file->getSize(),
-                        'file_path' => $filePath,
-                        'user_name' => auth()->user()->name, // Assuming user is authenticated
-                        'user_id' => auth()->user()->id,
-                        'file_status' => $request->input('file_status', 0),
-                        'fyear' => $request->input('fyear'),
-                        'month' => $request->input('Month'),
-                        'tags' => $tags, // Store tags as JSON
-                        'bank_name' => $request->input('bank_name'),
-                        'location' => $request->input('location'),
-                        'descp' => $request->input('desc'),
-                    ]);
-
-                    $totalSize += $file->getSize();
-                    $successMessages[] = "File {$file->getClientOriginalName()} uploaded successfully.";
-                } catch (\Exception $e) {
-                    $errorMessages[] = "Failed to save file {$file->getClientOriginalName()} to the database.";
-                }
-            }
+                    $location = preg_replace('/\s*\/\s*/', '/', trim($request->input('location')));
+                    // "Legal/Secretarial/Board Meetings" 
+        
+                    // Legal/Secretarial/Board Meetings/rtR2ORS7jdMq05zW6c704CUXesvrqkZ59ZNNWOib.pdf
+                    foreach ($request->file('files') as $file) {
+                        try {
+                            // Store file inside the dynamically created folder
+                           
+                            $filePath = $file->store($location);
+                            // Create a new entry for each file
+                            CommonTable::create([
+                                'file_type' => $file->getClientMimeType(),
+                                'file_name' => $file->getClientOriginalName(),
+                                'real_file_name' => $request->input('real_file_name'),
+                                'file_size' => $file->getSize(),
+                                'file_path' => $filePath,
+                                'user_name' => auth()->user()->name, // Assuming user is authenticated
+                                'user_id' => auth()->user()->id,
+                                'file_status' => $request->input('file_status', 0),
+                                'fyear' => $request->input('fyear'),
+                                'month' => $request->input('Month'),
+                                'tags' => $tags, // Store tags as JSON
+                                'location' => $request->input('location'), // Store the dynamic location
+                                'descp' => $request->input('desc'),
+                            ]);
+        
+                            $totalSize += $file->getSize();
+                            $successMessages[] = "File {$file->getClientOriginalName()} uploaded successfully.";
+                        } catch (\Exception $e) {
+                            $errorMessages[] = "Failed to save file {$file->getClientOriginalName()} to database.";
+                        }
+                    }
 
             // Compile overall success message
             $user = auth()->user();
@@ -11547,34 +12143,38 @@ public function SecretarialAuditorAppointmentCRCAA(Request $request)
                     $tag_list = array_merge($tag_list, $userTags);
                     $tags = empty($tag_list) ? NULL : json_encode($tag_list);
 
-            foreach ($request->file('files') as $file) {
-                try {
-                    $filePath = $file->store('uploads');
-
-                    // Create a new entry for each file
-                    CommonTable::create([
-                        'file_type' => $file->getClientMimeType(),
-                        'file_name' => $file->getClientOriginalName(),
-                        'real_file_name' => $request->input('real_file_name'),
-                        'file_size' => $file->getSize(),
-                        'file_path' => $filePath,
-                        'user_name' => auth()->user()->name, // Assuming user is authenticated
-                        'user_id' => auth()->user()->id,
-                        'file_status' => $request->input('file_status', 0),
-                        'fyear' => $request->input('fyear'),
-                        'month' => $request->input('Month'),
-                        'tags' => $tags, // Store tags as JSON
-                        'bank_name' => $request->input('bank_name'),
-                        'location' => $request->input('location'),
-                        'descp' => $request->input('desc'),
-                    ]);
-
-                    $totalSize += $file->getSize();
-                    $successMessages[] = "File {$file->getClientOriginalName()} uploaded successfully.";
-                } catch (\Exception $e) {
-                    $errorMessages[] = "Failed to save file {$file->getClientOriginalName()} to the database.";
-                }
-            }
+                    $location = preg_replace('/\s*\/\s*/', '/', trim($request->input('location')));
+                    // "Legal/Secretarial/Board Meetings" 
+        
+                    // Legal/Secretarial/Board Meetings/rtR2ORS7jdMq05zW6c704CUXesvrqkZ59ZNNWOib.pdf
+                    foreach ($request->file('files') as $file) {
+                        try {
+                            // Store file inside the dynamically created folder
+                           
+                            $filePath = $file->store($location);
+                            // Create a new entry for each file
+                            CommonTable::create([
+                                'file_type' => $file->getClientMimeType(),
+                                'file_name' => $file->getClientOriginalName(),
+                                'real_file_name' => $request->input('real_file_name'),
+                                'file_size' => $file->getSize(),
+                                'file_path' => $filePath,
+                                'user_name' => auth()->user()->name, // Assuming user is authenticated
+                                'user_id' => auth()->user()->id,
+                                'file_status' => $request->input('file_status', 0),
+                                'fyear' => $request->input('fyear'),
+                                'month' => $request->input('Month'),
+                                'tags' => $tags, // Store tags as JSON
+                                'location' => $request->input('location'), // Store the dynamic location
+                                'descp' => $request->input('desc'),
+                            ]);
+        
+                            $totalSize += $file->getSize();
+                            $successMessages[] = "File {$file->getClientOriginalName()} uploaded successfully.";
+                        } catch (\Exception $e) {
+                            $errorMessages[] = "Failed to save file {$file->getClientOriginalName()} to database.";
+                        }
+                    }
 
             // Compile overall success message
             $user = auth()->user();
@@ -11680,34 +12280,38 @@ public function SecretarialAuditorAppointmentALA(Request $request)
                     $tag_list = array_merge($tag_list, $userTags);
                     $tags = empty($tag_list) ? NULL : json_encode($tag_list);
 
-            foreach ($request->file('files') as $file) {
-                try {
-                    $filePath = $file->store('uploads');
-
-                    // Create a new entry for each file
-                    CommonTable::create([
-                        'file_type' => $file->getClientMimeType(),
-                        'file_name' => $file->getClientOriginalName(),
-                        'real_file_name' => $request->input('real_file_name'),
-                        'file_size' => $file->getSize(),
-                        'file_path' => $filePath,
-                        'user_name' => auth()->user()->name, // Assuming user is authenticated
-                        'user_id' => auth()->user()->id,
-                        'file_status' => $request->input('file_status', 0),
-                        'fyear' => $request->input('fyear'),
-                        'month' => $request->input('Month'),
-                        'tags' => $tags, // Store tags as JSON
-                        'bank_name' => $request->input('bank_name'),
-                        'location' => $request->input('location'),
-                        'descp' => $request->input('desc'),
-                    ]);
-
-                    $totalSize += $file->getSize();
-                    $successMessages[] = "File {$file->getClientOriginalName()} uploaded successfully.";
-                } catch (\Exception $e) {
-                    $errorMessages[] = "Failed to save file {$file->getClientOriginalName()} to the database.";
-                }
-            }
+                    $location = preg_replace('/\s*\/\s*/', '/', trim($request->input('location')));
+                    // "Legal/Secretarial/Board Meetings" 
+        
+                    // Legal/Secretarial/Board Meetings/rtR2ORS7jdMq05zW6c704CUXesvrqkZ59ZNNWOib.pdf
+                    foreach ($request->file('files') as $file) {
+                        try {
+                            // Store file inside the dynamically created folder
+                           
+                            $filePath = $file->store($location);
+                            // Create a new entry for each file
+                            CommonTable::create([
+                                'file_type' => $file->getClientMimeType(),
+                                'file_name' => $file->getClientOriginalName(),
+                                'real_file_name' => $request->input('real_file_name'),
+                                'file_size' => $file->getSize(),
+                                'file_path' => $filePath,
+                                'user_name' => auth()->user()->name, // Assuming user is authenticated
+                                'user_id' => auth()->user()->id,
+                                'file_status' => $request->input('file_status', 0),
+                                'fyear' => $request->input('fyear'),
+                                'month' => $request->input('Month'),
+                                'tags' => $tags, // Store tags as JSON
+                                'location' => $request->input('location'), // Store the dynamic location
+                                'descp' => $request->input('desc'),
+                            ]);
+        
+                            $totalSize += $file->getSize();
+                            $successMessages[] = "File {$file->getClientOriginalName()} uploaded successfully.";
+                        } catch (\Exception $e) {
+                            $errorMessages[] = "Failed to save file {$file->getClientOriginalName()} to database.";
+                        }
+                    }
 
             // Compile overall success message
             $user = auth()->user();
@@ -11771,7 +12375,570 @@ public function fetchSecretarialAuditorAppointmentALAFileData()
 
     return response()->json(['files' => $files]);
 }
+public function fetchHremponboardFileData(Request $request)
+{
+    // Get the location value
+    $location = $request->input('location');
+    $user = auth()->user();
 
+    
+// dd($location);
+    // Fetch files based on the user ID and decoded folder location
+    $files = CommonTable::where('user_id', $user->id)
+        ->where('is_delete', 0)
+        ->where('location', $location) // Using the decoded folder parameter
+        ->where('real_file_name', 'Offer Letter')
+        ->get();
+
+    // Return the fetched files as a JSON response
+    return response()->json(['files' => $files]);
+}
+public function fetchhremponboardalFileData(Request $request)
+{
+    // Get the location value
+    $location = $request->input('location');
+    $user = auth()->user();
+
+    
+// dd($location);
+    // Fetch files based on the user ID and decoded folder location
+    $files = CommonTable::where('user_id', $user->id)
+        ->where('is_delete', 0)
+        ->where('location', $location) // Using the decoded folder parameter
+        ->where('real_file_name', 'Acceptance Letter')
+        ->get();
+
+    // Return the fetched files as a JSON response
+    return response()->json(['files' => $files]);
+}
+
+public function fetchhremponboardeaFileData(Request $request)
+{
+    // Get the location value
+    $location = $request->input('location');
+    $user = auth()->user();
+
+    
+// dd($location);
+    // Fetch files based on the user ID and decoded folder location
+    $files = CommonTable::where('user_id', $user->id)
+        ->where('is_delete', 0)
+        ->where('location', $location) // Using the decoded folder parameter
+        ->where('real_file_name', 'Employment Agreement')
+        ->get();
+
+    // Return the fetched files as a JSON response
+    return response()->json(['files' => $files]);
+}
+
+public function fetchhremponboardndaFileData(Request $request)
+{
+    // Get the location value
+    $location = $request->input('location');
+    $user = auth()->user();
+
+    
+// dd($location);
+    // Fetch files based on the user ID and decoded folder location
+    $files = CommonTable::where('user_id', $user->id)
+        ->where('is_delete', 0)
+        ->where('location', $location) // Using the decoded folder parameter
+        ->where('real_file_name', 'Non Disclosure Agreement')
+        ->get();
+
+    // Return the fetched files as a JSON response
+    return response()->json(['files' => $files]);
+}
+public function fetchhremponboardncFileData(Request $request)
+{
+    // Get the location value
+    $location = $request->input('location');
+    $user = auth()->user();
+
+    
+// dd($location);
+    // Fetch files based on the user ID and decoded folder location
+    $files = CommonTable::where('user_id', $user->id)
+        ->where('is_delete', 0)
+        ->where('location', $location) // Using the decoded folder parameter
+        ->where('real_file_name', 'Non-compete')
+        ->get();
+
+    // Return the fetched files as a JSON response
+    return response()->json(['files' => $files]);
+}
+
+public function fetchhremponboardcbFileData(Request $request)
+{
+    // Get the location value
+    $location = $request->input('location');
+    $user = auth()->user();
+
+    
+// dd($location);
+    // Fetch files based on the user ID and decoded folder location
+    $files = CommonTable::where('user_id', $user->id)
+        ->where('is_delete', 0)
+        ->where('location', $location) // Using the decoded folder parameter
+        ->where('real_file_name', 'Contractual Bond')
+        ->get();
+
+    // Return the fetched files as a JSON response
+    return response()->json(['files' => $files]);
+}
+
+
+public function fetchhremponboardepfFileData(Request $request)
+{
+    // Get the location value
+    $location = $request->input('location');
+    $user = auth()->user();
+
+    
+// dd($location);
+    // Fetch files based on the user ID and decoded folder location
+    $files = CommonTable::where('user_id', $user->id)
+        ->where('is_delete', 0)
+        ->where('location', $location) // Using the decoded folder parameter
+        ->where('real_file_name', 'Form 11 - EPF')
+        ->get();
+
+    // Return the fetched files as a JSON response
+    return response()->json(['files' => $files]);
+}
+
+
+public function fetchhremponboardincometaxFileData(Request $request)
+{
+    // Get the location value
+    $location = $request->input('location');
+    $user = auth()->user();
+
+    
+// dd($location);
+    // Fetch files based on the user ID and decoded folder location
+    $files = CommonTable::where('user_id', $user->id)
+        ->where('is_delete', 0)
+        ->where('location', $location) // Using the decoded folder parameter
+        ->where('real_file_name', 'Form 12BB - Income Tax')
+        ->get();
+
+    // Return the fetched files as a JSON response
+    return response()->json(['files' => $files]);
+}
+
+public function fetchhrkycphotoFileData(Request $request)
+{
+    // Get the location value
+    $location = $request->input('location');
+    $user = auth()->user();
+
+    
+// dd($location);
+    // Fetch files based on the user ID and decoded folder location
+    $files = CommonTable::where('user_id', $user->id)
+        ->where('is_delete', 0)
+        ->where('location', $location) // Using the decoded folder parameter
+        ->where('real_file_name', 'Photo')
+        ->get();
+
+    // Return the fetched files as a JSON response
+    return response()->json(['files' => $files]);
+}
+
+public function fetchhrkycaadharFileData(Request $request)
+{
+    // Get the location value
+    $location = $request->input('location');
+    $user = auth()->user();
+
+    
+// dd($location);
+    // Fetch files based on the user ID and decoded folder location
+    $files = CommonTable::where('user_id', $user->id)
+        ->where('is_delete', 0)
+        ->where('location', $location) // Using the decoded folder parameter
+        ->where('real_file_name', 'Aadhar KYC')
+        ->get();
+
+    // Return the fetched files as a JSON response
+    return response()->json(['files' => $files]);
+}
+
+public function fetchhrkycpanFileData(Request $request)
+{
+    // Get the location value
+    $location = $request->input('location');
+    $user = auth()->user();
+
+    
+// dd($location);
+    // Fetch files based on the user ID and decoded folder location
+    $files = CommonTable::where('user_id', $user->id)
+        ->where('is_delete', 0)
+        ->where('location', $location) // Using the decoded folder parameter
+        ->where('real_file_name', 'PAN KYC')
+        ->get();
+
+    // Return the fetched files as a JSON response
+    return response()->json(['files' => $files]);
+}
+
+public function fetchhrkycaddressproofFileData(Request $request)
+{
+    // Get the location value
+    $location = $request->input('location');
+    $user = auth()->user();
+
+    
+// dd($location);
+    // Fetch files based on the user ID and decoded folder location
+    $files = CommonTable::where('user_id', $user->id)
+        ->where('is_delete', 0)
+        ->where('location', $location) // Using the decoded folder parameter
+        ->where('real_file_name', 'Address Proof')
+        ->get();
+
+    // Return the fetched files as a JSON response
+    return response()->json(['files' => $files]);
+}
+
+public function fetchhrkyccontactdetailsfFileData(Request $request)
+{
+    // Get the location value
+    $location = $request->input('location');
+    $user = auth()->user();
+
+    
+// dd($location);
+    // Fetch files based on the user ID and decoded folder location
+    $files = CommonTable::where('user_id', $user->id)
+        ->where('is_delete', 0)
+        ->where('location', $location) // Using the decoded folder parameter
+        ->where('real_file_name', 'Contact Details')
+        ->get();
+
+    // Return the fetched files as a JSON response
+    return response()->json(['files' => $files]);
+}
+
+public function fetchhrpayrimfFileDatas(Request $request)
+{
+    // Get the location value
+    $location = $request->input('location');
+    $user = auth()->user();
+
+    
+// dd($location);
+    // Fetch files based on the user ID and decoded folder location
+    $files = CommonTable::where('user_id', $user->id)
+        ->where('is_delete', 0)
+        ->where('location', $location) // Using the decoded folder parameter
+        ->where('real_file_name', 'Reimbursement forms & Invoices')
+        ->get();
+
+    // Return the fetched files as a JSON response
+    return response()->json(['files' => $files]);
+}
+public function fetchhrpayrimapprovefFileData(Request $request)
+{
+    // Get the location value
+    $location = $request->input('location');
+    $user = auth()->user();
+
+    
+// dd($location);
+    // Fetch files based on the user ID and decoded folder location
+    $files = CommonTable::where('user_id', $user->id)
+        ->where('is_delete', 0)
+        ->where('location', $location) // Using the decoded folder parameter
+        ->where('real_file_name', 'Approvals')
+        ->get();
+
+    // Return the fetched files as a JSON response
+    return response()->json(['files' => $files]);
+}
+public function fetchhrempdecfFileData(Request $request)
+{
+    // Get the location value
+    $location = $request->input('location');
+    $user = auth()->user();
+
+    
+// dd($location);
+    // Fetch files based on the user ID and decoded folder location
+    $files = CommonTable::where('user_id', $user->id)
+        ->where('is_delete', 0)
+        ->where('location', $location) // Using the decoded folder parameter
+        ->where('real_file_name', 'Asset Declaration Forms')
+        ->get();
+
+    // Return the fetched files as a JSON response
+    return response()->json(['files' => $files]);
+}
+
+public function fetchhrempdecmasterfFileData(Request $request)
+{
+    // Get the location value
+    $location = $request->input('location');
+    $user = auth()->user();
+
+    
+// dd($location);
+    // Fetch files based on the user ID and decoded folder location
+    $files = CommonTable::where('user_id', $user->id)
+        ->where('is_delete', 0)
+        ->where('location', $location) // Using the decoded folder parameter
+        ->where('real_file_name', 'Employee Master')
+        ->get();
+
+    // Return the fetched files as a JSON response
+    return response()->json(['files' => $files]);
+}
+
+public function fetchhrpaymoney1fFileData(Request $request)
+{
+    // Get the location value
+    $location = $request->input('location');
+    $user = auth()->user();
+
+    
+// dd($location);
+    // Fetch files based on the user ID and decoded folder location
+    $files = CommonTable::where('user_id', $user->id)
+        ->where('is_delete', 0)
+        ->where('location', $location) // Using the decoded folder parameter
+        ->where('real_file_name', 'Attendance log')
+        ->get();
+
+    // Return the fetched files as a JSON response
+    return response()->json(['files' => $files]);
+}
+
+public function fetchhrpaymoney2fFileData(Request $request)
+{
+    // Get the location value
+    $location = $request->input('location');
+    $user = auth()->user();
+
+    
+// dd($location);
+    // Fetch files based on the user ID and decoded folder location
+    $files = CommonTable::where('user_id', $user->id)
+        ->where('is_delete', 0)
+        ->where('location', $location) // Using the decoded folder parameter
+        ->where('real_file_name', 'Variable pays')
+        ->get();
+
+    // Return the fetched files as a JSON response
+    return response()->json(['files' => $files]);
+}
+public function fetchhrpaymoney3fFileData(Request $request)
+{
+    // Get the location value
+    $location = $request->input('location');
+    $user = auth()->user();
+
+    
+// dd($location);
+    // Fetch files based on the user ID and decoded folder location
+    $files = CommonTable::where('user_id', $user->id)
+        ->where('is_delete', 0)
+        ->where('location', $location) // Using the decoded folder parameter
+        ->where('real_file_name', 'Terminations/ Exits')
+        ->get();
+
+    // Return the fetched files as a JSON response
+    return response()->json(['files' => $files]);
+}
+public function fetchhrpaymoney4fFileData(Request $request)
+{
+    // Get the location value
+    $location = $request->input('location');
+    $user = auth()->user();
+
+    
+// dd($location);
+    // Fetch files based on the user ID and decoded folder location
+    $files = CommonTable::where('user_id', $user->id)
+        ->where('is_delete', 0)
+        ->where('location', $location) // Using the decoded folder parameter
+        ->where('real_file_name', 'New Hires')
+        ->get();
+
+    // Return the fetched files as a JSON response
+    return response()->json(['files' => $files]);
+}
+public function fetchhrpaymoney5fFileData(Request $request)
+{
+    // Get the location value
+    $location = $request->input('location');
+    $user = auth()->user();
+
+    
+// dd($location);
+    // Fetch files based on the user ID and decoded folder location
+    $files = CommonTable::where('user_id', $user->id)
+        ->where('is_delete', 0)
+        ->where('location', $location) // Using the decoded folder parameter
+        ->where('real_file_name', 'Pay Register')
+        ->get();
+
+    // Return the fetched files as a JSON response
+    return response()->json(['files' => $files]);
+}
+
+public function fetchhremppol1fFileData(Request $request)
+{
+    // Get the location value
+    $location = $request->input('location');
+    $user = auth()->user();
+
+    
+// dd($location);
+    // Fetch files based on the user ID and decoded folder location
+    $files = CommonTable::where('user_id', $user->id)
+        ->where('is_delete', 0)
+        ->where('location', $location) // Using the decoded folder parameter
+        ->where('real_file_name', 'Policy')
+        ->get();
+
+    // Return the fetched files as a JSON response
+    return response()->json(['files' => $files]);
+}
+
+public function fetchhremppol2fFileData(Request $request)
+{
+    // Get the location value
+    $location = $request->input('location');
+    $user = auth()->user();
+
+    
+// dd($location);
+    // Fetch files based on the user ID and decoded folder location
+    $files = CommonTable::where('user_id', $user->id)
+        ->where('is_delete', 0)
+        ->where('location', $location) // Using the decoded folder parameter
+        ->where('real_file_name', 'Grant Letters')
+        ->get();
+
+    // Return the fetched files as a JSON response
+    return response()->json(['files' => $files]);
+}
+
+public function fetchhremppol3fFileData(Request $request)
+{
+    // Get the location value
+    $location = $request->input('location');
+    $user = auth()->user();
+
+    
+// dd($location);
+    // Fetch files based on the user ID and decoded folder location
+    $files = CommonTable::where('user_id', $user->id)
+        ->where('is_delete', 0)
+        ->where('location', $location) // Using the decoded folder parameter
+        ->where('real_file_name', 'Acceptance Letters')
+        ->get();
+
+    // Return the fetched files as a JSON response
+    return response()->json(['files' => $files]);
+}
+
+public function fetchhremppol4fFileData(Request $request)
+{
+    // Get the location value
+    $location = $request->input('location');
+    $user = auth()->user();
+
+    
+// dd($location);
+    // Fetch files based on the user ID and decoded folder location
+    $files = CommonTable::where('user_id', $user->id)
+        ->where('is_delete', 0)
+        ->where('location', $location) // Using the decoded folder parameter
+        ->where('real_file_name', 'Nominations')
+        ->get();
+
+    // Return the fetched files as a JSON response
+    return response()->json(['files' => $files]);
+}
+
+public function fetchhrempoff1fFileData(Request $request)
+{
+    // Get the location value
+    $location = $request->input('location');
+    $user = auth()->user();
+
+    
+// dd($location);
+    // Fetch files based on the user ID and decoded folder location
+    $files = CommonTable::where('user_id', $user->id)
+        ->where('is_delete', 0)
+        ->where('location', $location) // Using the decoded folder parameter
+        ->where('real_file_name', 'Resignation letter')
+        ->get();
+
+    // Return the fetched files as a JSON response
+    return response()->json(['files' => $files]);
+}
+
+public function fetchhrempoff2fFileData(Request $request)
+{
+    // Get the location value
+    $location = $request->input('location');
+    $user = auth()->user();
+
+    
+// dd($location);
+    // Fetch files based on the user ID and decoded folder location
+    $files = CommonTable::where('user_id', $user->id)
+        ->where('is_delete', 0)
+        ->where('location', $location) // Using the decoded folder parameter
+        ->where('real_file_name', 'Experience Letter')
+        ->get();
+
+    // Return the fetched files as a JSON response
+    return response()->json(['files' => $files]);
+}
+
+public function fetchhrempoff3fFileData(Request $request)
+{
+    // Get the location value
+    $location = $request->input('location');
+    $user = auth()->user();
+
+    
+// dd($location);
+    // Fetch files based on the user ID and decoded folder location
+    $files = CommonTable::where('user_id', $user->id)
+        ->where('is_delete', 0)
+        ->where('location', $location) // Using the decoded folder parameter
+        ->where('real_file_name', 'No Dues certificate')
+        ->get();
+
+    // Return the fetched files as a JSON response
+    return response()->json(['files' => $files]);
+}
+
+public function fetchhrempoff4fFileData(Request $request)
+{
+    // Get the location value
+    $location = $request->input('location');
+    $user = auth()->user();
+
+    
+// dd($location);
+    // Fetch files based on the user ID and decoded folder location
+    $files = CommonTable::where('user_id', $user->id)
+        ->where('is_delete', 0)
+        ->where('location', $location) // Using the decoded folder parameter
+        ->where('real_file_name', 'Character certificate')
+        ->get();
+
+    // Return the fetched files as a JSON response
+    return response()->json(['files' => $files]);
+}
 
 public function SecretarialAuditorAppointmentSR(Request $request)
 {
@@ -11814,34 +12981,38 @@ public function SecretarialAuditorAppointmentSR(Request $request)
                     $tag_list = array_merge($tag_list, $userTags);
                     $tags = empty($tag_list) ? NULL : json_encode($tag_list);
 
-            foreach ($request->file('files') as $file) {
-                try {
-                    $filePath = $file->store('uploads');
-
-                    // Create a new entry for each file
-                    CommonTable::create([
-                        'file_type' => $file->getClientMimeType(),
-                        'file_name' => $file->getClientOriginalName(),
-                        'real_file_name' => $request->input('real_file_name'),
-                        'file_size' => $file->getSize(),
-                        'file_path' => $filePath,
-                        'user_name' => auth()->user()->name, // Assuming user is authenticated
-                        'user_id' => auth()->user()->id,
-                        'file_status' => $request->input('file_status', 0),
-                        'fyear' => $request->input('fyear'),
-                        'month' => $request->input('Month'),
-                        'tags' => $tags, // Store tags as JSON
-                        'bank_name' => $request->input('bank_name'),
-                        'location' => $request->input('location'),
-                        'descp' => $request->input('desc'),
-                    ]);
-
-                    $totalSize += $file->getSize();
-                    $successMessages[] = "File {$file->getClientOriginalName()} uploaded successfully.";
-                } catch (\Exception $e) {
-                    $errorMessages[] = "Failed to save file {$file->getClientOriginalName()} to the database.";
-                }
-            }
+                    $location = preg_replace('/\s*\/\s*/', '/', trim($request->input('location')));
+                    // "Legal/Secretarial/Board Meetings" 
+        
+                    // Legal/Secretarial/Board Meetings/rtR2ORS7jdMq05zW6c704CUXesvrqkZ59ZNNWOib.pdf
+                    foreach ($request->file('files') as $file) {
+                        try {
+                            // Store file inside the dynamically created folder
+                           
+                            $filePath = $file->store($location);
+                            // Create a new entry for each file
+                            CommonTable::create([
+                                'file_type' => $file->getClientMimeType(),
+                                'file_name' => $file->getClientOriginalName(),
+                                'real_file_name' => $request->input('real_file_name'),
+                                'file_size' => $file->getSize(),
+                                'file_path' => $filePath,
+                                'user_name' => auth()->user()->name, // Assuming user is authenticated
+                                'user_id' => auth()->user()->id,
+                                'file_status' => $request->input('file_status', 0),
+                                'fyear' => $request->input('fyear'),
+                                'month' => $request->input('Month'),
+                                'tags' => $tags, // Store tags as JSON
+                                'location' => $request->input('location'), // Store the dynamic location
+                                'descp' => $request->input('desc'),
+                            ]);
+        
+                            $totalSize += $file->getSize();
+                            $successMessages[] = "File {$file->getClientOriginalName()} uploaded successfully.";
+                        } catch (\Exception $e) {
+                            $errorMessages[] = "Failed to save file {$file->getClientOriginalName()} to database.";
+                        }
+                    }
 
             // Compile overall success message
             $user = auth()->user();
@@ -11951,34 +13122,38 @@ public function SecretarialStatutoryRegistersRM(Request $request)
                     $tag_list = array_merge($tag_list, $userTags);
                     $tags = empty($tag_list) ? NULL : json_encode($tag_list);
 
-            foreach ($request->file('files') as $file) {
-                try {
-                    $filePath = $file->store('uploads');
-
-                    // Create a new entry for each file
-                    CommonTable::create([
-                        'file_type' => $file->getClientMimeType(),
-                        'file_name' => $file->getClientOriginalName(),
-                        'real_file_name' => $request->input('real_file_name'),
-                        'file_size' => $file->getSize(),
-                        'file_path' => $filePath,
-                        'user_name' => auth()->user()->name, // Assuming user is authenticated
-                        'user_id' => auth()->user()->id,
-                        'file_status' => $request->input('file_status', 0),
-                        'fyear' => $request->input('fyear'),
-                        'month' => $request->input('Month'),
-                        'tags' => $tags, // Store tags as JSON
-                        'location' => $request->input('location'),
-                        'descp' => $request->input('desc'),
-                        
-                    ]);
-
-                    $totalSize += $file->getSize();
-                    $successMessages[] = "File {$file->getClientOriginalName()} uploaded successfully.";
-                } catch (\Exception $e) {
-                    $errorMessages[] = "Failed to save file {$file->getClientOriginalName()} to database.";
-                }
-            }
+                    $location = preg_replace('/\s*\/\s*/', '/', trim($request->input('location')));
+                    // "Legal/Secretarial/Board Meetings" 
+        
+                    // Legal/Secretarial/Board Meetings/rtR2ORS7jdMq05zW6c704CUXesvrqkZ59ZNNWOib.pdf
+                    foreach ($request->file('files') as $file) {
+                        try {
+                            // Store file inside the dynamically created folder
+                           
+                            $filePath = $file->store($location);
+                            // Create a new entry for each file
+                            CommonTable::create([
+                                'file_type' => $file->getClientMimeType(),
+                                'file_name' => $file->getClientOriginalName(),
+                                'real_file_name' => $request->input('real_file_name'),
+                                'file_size' => $file->getSize(),
+                                'file_path' => $filePath,
+                                'user_name' => auth()->user()->name, // Assuming user is authenticated
+                                'user_id' => auth()->user()->id,
+                                'file_status' => $request->input('file_status', 0),
+                                'fyear' => $request->input('fyear'),
+                                'month' => $request->input('Month'),
+                                'tags' => $tags, // Store tags as JSON
+                                'location' => $request->input('location'), // Store the dynamic location
+                                'descp' => $request->input('desc'),
+                            ]);
+        
+                            $totalSize += $file->getSize();
+                            $successMessages[] = "File {$file->getClientOriginalName()} uploaded successfully.";
+                        } catch (\Exception $e) {
+                            $errorMessages[] = "Failed to save file {$file->getClientOriginalName()} to database.";
+                        }
+                    }
 
             // Compile overall success message
             $user = auth()->user();
@@ -12052,34 +13227,38 @@ public function SecretarialStatutoryRegistersROSH(Request $request)
                     $tag_list = array_merge($tag_list, $userTags);
                     $tags = empty($tag_list) ? NULL : json_encode($tag_list);
 
-            foreach ($request->file('files') as $file) {
-                try {
-                    $filePath = $file->store('uploads');
-
-                    // Create a new entry for each file
-                    CommonTable::create([
-                        'file_type' => $file->getClientMimeType(),
-                        'file_name' => $file->getClientOriginalName(),
-                        'real_file_name' => $request->input('real_file_name'),
-                        'file_size' => $file->getSize(),
-                        'file_path' => $filePath,
-                        'user_name' => auth()->user()->name, // Assuming user is authenticated
-                        'user_id' => auth()->user()->id,
-                        'file_status' => $request->input('file_status', 0),
-                        'fyear' => $request->input('fyear'),
-                        'month' => $request->input('Month'),
-                        'tags' => $tags, // Store tags as JSON
-                        'location' => $request->input('location'),
-                        'descp' => $request->input('desc'),
-                        
-                    ]);
-
-                    $totalSize += $file->getSize();
-                    $successMessages[] = "File {$file->getClientOriginalName()} uploaded successfully.";
-                } catch (\Exception $e) {
-                    $errorMessages[] = "Failed to save file {$file->getClientOriginalName()} to database.";
-                }
-            }
+                    $location = preg_replace('/\s*\/\s*/', '/', trim($request->input('location')));
+                    // "Legal/Secretarial/Board Meetings" 
+        
+                    // Legal/Secretarial/Board Meetings/rtR2ORS7jdMq05zW6c704CUXesvrqkZ59ZNNWOib.pdf
+                    foreach ($request->file('files') as $file) {
+                        try {
+                            // Store file inside the dynamically created folder
+                           
+                            $filePath = $file->store($location);
+                            // Create a new entry for each file
+                            CommonTable::create([
+                                'file_type' => $file->getClientMimeType(),
+                                'file_name' => $file->getClientOriginalName(),
+                                'real_file_name' => $request->input('real_file_name'),
+                                'file_size' => $file->getSize(),
+                                'file_path' => $filePath,
+                                'user_name' => auth()->user()->name, // Assuming user is authenticated
+                                'user_id' => auth()->user()->id,
+                                'file_status' => $request->input('file_status', 0),
+                                'fyear' => $request->input('fyear'),
+                                'month' => $request->input('Month'),
+                                'tags' => $tags, // Store tags as JSON
+                                'location' => $request->input('location'), // Store the dynamic location
+                                'descp' => $request->input('desc'),
+                            ]);
+        
+                            $totalSize += $file->getSize();
+                            $successMessages[] = "File {$file->getClientOriginalName()} uploaded successfully.";
+                        } catch (\Exception $e) {
+                            $errorMessages[] = "Failed to save file {$file->getClientOriginalName()} to database.";
+                        }
+                    }
 
             // Compile overall success message
             $user = auth()->user();
@@ -12153,34 +13332,38 @@ public function SecretarialStatutoryRegistersFR(Request $request)
                     $tag_list = array_merge($tag_list, $userTags);
                     $tags = empty($tag_list) ? NULL : json_encode($tag_list);
 
-            foreach ($request->file('files') as $file) {
-                try {
-                    $filePath = $file->store('uploads');
-
-                    // Create a new entry for each file
-                    CommonTable::create([
-                        'file_type' => $file->getClientMimeType(),
-                        'file_name' => $file->getClientOriginalName(),
-                        'real_file_name' => $request->input('real_file_name'),
-                        'file_size' => $file->getSize(),
-                        'file_path' => $filePath,
-                        'user_name' => auth()->user()->name, // Assuming user is authenticated
-                        'user_id' => auth()->user()->id,
-                        'file_status' => $request->input('file_status', 0),
-                        'fyear' => $request->input('fyear'),
-                        'month' => $request->input('Month'),
-                        'tags' => $tags, // Store tags as JSON
-                        'location' => $request->input('location'),
-                        'descp' => $request->input('desc'),
-                        
-                    ]);
-
-                    $totalSize += $file->getSize();
-                    $successMessages[] = "File {$file->getClientOriginalName()} uploaded successfully.";
-                } catch (\Exception $e) {
-                    $errorMessages[] = "Failed to save file {$file->getClientOriginalName()} to database.";
-                }
-            }
+                    $location = preg_replace('/\s*\/\s*/', '/', trim($request->input('location')));
+                    // "Legal/Secretarial/Board Meetings" 
+        
+                    // Legal/Secretarial/Board Meetings/rtR2ORS7jdMq05zW6c704CUXesvrqkZ59ZNNWOib.pdf
+                    foreach ($request->file('files') as $file) {
+                        try {
+                            // Store file inside the dynamically created folder
+                           
+                            $filePath = $file->store($location);
+                            // Create a new entry for each file
+                            CommonTable::create([
+                                'file_type' => $file->getClientMimeType(),
+                                'file_name' => $file->getClientOriginalName(),
+                                'real_file_name' => $request->input('real_file_name'),
+                                'file_size' => $file->getSize(),
+                                'file_path' => $filePath,
+                                'user_name' => auth()->user()->name, // Assuming user is authenticated
+                                'user_id' => auth()->user()->id,
+                                'file_status' => $request->input('file_status', 0),
+                                'fyear' => $request->input('fyear'),
+                                'month' => $request->input('Month'),
+                                'tags' => $tags, // Store tags as JSON
+                                'location' => $request->input('location'), // Store the dynamic location
+                                'descp' => $request->input('desc'),
+                            ]);
+        
+                            $totalSize += $file->getSize();
+                            $successMessages[] = "File {$file->getClientOriginalName()} uploaded successfully.";
+                        } catch (\Exception $e) {
+                            $errorMessages[] = "Failed to save file {$file->getClientOriginalName()} to database.";
+                        }
+                    }
 
             // Compile overall success message
             $user = auth()->user();
@@ -12255,34 +13438,38 @@ public function SecretarialStatutoryRegistersRDK(Request $request)
                     $tag_list = array_merge($tag_list, $userTags);
                     $tags = empty($tag_list) ? NULL : json_encode($tag_list);
 
-            foreach ($request->file('files') as $file) {
-                try {
-                    $filePath = $file->store('uploads');
-
-                    // Create a new entry for each file
-                    CommonTable::create([
-                        'file_type' => $file->getClientMimeType(),
-                        'file_name' => $file->getClientOriginalName(),
-                        'real_file_name' => $request->input('real_file_name'),
-                        'file_size' => $file->getSize(),
-                        'file_path' => $filePath,
-                        'user_name' => auth()->user()->name, // Assuming user is authenticated
-                        'user_id' => auth()->user()->id,
-                        'file_status' => $request->input('file_status', 0),
-                        'fyear' => $request->input('fyear'),
-                        'month' => $request->input('Month'),
-                        'tags' => $tags, // Store tags as JSON
-                        'location' => $request->input('location'),
-                        'descp' => $request->input('desc'),
-                        
-                    ]);
-
-                    $totalSize += $file->getSize();
-                    $successMessages[] = "File {$file->getClientOriginalName()} uploaded successfully.";
-                } catch (\Exception $e) {
-                    $errorMessages[] = "Failed to save file {$file->getClientOriginalName()} to database.";
-                }
-            }
+                    $location = preg_replace('/\s*\/\s*/', '/', trim($request->input('location')));
+                    // "Legal/Secretarial/Board Meetings" 
+        
+                    // Legal/Secretarial/Board Meetings/rtR2ORS7jdMq05zW6c704CUXesvrqkZ59ZNNWOib.pdf
+                    foreach ($request->file('files') as $file) {
+                        try {
+                            // Store file inside the dynamically created folder
+                           
+                            $filePath = $file->store($location);
+                            // Create a new entry for each file
+                            CommonTable::create([
+                                'file_type' => $file->getClientMimeType(),
+                                'file_name' => $file->getClientOriginalName(),
+                                'real_file_name' => $request->input('real_file_name'),
+                                'file_size' => $file->getSize(),
+                                'file_path' => $filePath,
+                                'user_name' => auth()->user()->name, // Assuming user is authenticated
+                                'user_id' => auth()->user()->id,
+                                'file_status' => $request->input('file_status', 0),
+                                'fyear' => $request->input('fyear'),
+                                'month' => $request->input('Month'),
+                                'tags' => $tags, // Store tags as JSON
+                                'location' => $request->input('location'), // Store the dynamic location
+                                'descp' => $request->input('desc'),
+                            ]);
+        
+                            $totalSize += $file->getSize();
+                            $successMessages[] = "File {$file->getClientOriginalName()} uploaded successfully.";
+                        } catch (\Exception $e) {
+                            $errorMessages[] = "Failed to save file {$file->getClientOriginalName()} to database.";
+                        }
+                    }
 
             // Compile overall success message
             $user = auth()->user();
@@ -12357,34 +13544,38 @@ public function SecretarialStatutoryRegistersRC(Request $request)
                     $tag_list = array_merge($tag_list, $userTags);
                     $tags = empty($tag_list) ? NULL : json_encode($tag_list);
 
-            foreach ($request->file('files') as $file) {
-                try {
-                    $filePath = $file->store('uploads');
-
-                    // Create a new entry for each file
-                    CommonTable::create([
-                        'file_type' => $file->getClientMimeType(),
-                        'file_name' => $file->getClientOriginalName(),
-                        'real_file_name' => $request->input('real_file_name'),
-                        'file_size' => $file->getSize(),
-                        'file_path' => $filePath,
-                        'user_name' => auth()->user()->name, // Assuming user is authenticated
-                        'user_id' => auth()->user()->id,
-                        'file_status' => $request->input('file_status', 0),
-                        'fyear' => $request->input('fyear'),
-                        'month' => $request->input('Month'),
-                        'tags' => $tags, // Store tags as JSON
-                        'location' => $request->input('location'),
-                        'descp' => $request->input('desc'),
-                        
-                    ]);
-
-                    $totalSize += $file->getSize();
-                    $successMessages[] = "File {$file->getClientOriginalName()} uploaded successfully.";
-                } catch (\Exception $e) {
-                    $errorMessages[] = "Failed to save file {$file->getClientOriginalName()} to database.";
-                }
-            }
+                    $location = preg_replace('/\s*\/\s*/', '/', trim($request->input('location')));
+                    // "Legal/Secretarial/Board Meetings" 
+        
+                    // Legal/Secretarial/Board Meetings/rtR2ORS7jdMq05zW6c704CUXesvrqkZ59ZNNWOib.pdf
+                    foreach ($request->file('files') as $file) {
+                        try {
+                            // Store file inside the dynamically created folder
+                           
+                            $filePath = $file->store($location);
+                            // Create a new entry for each file
+                            CommonTable::create([
+                                'file_type' => $file->getClientMimeType(),
+                                'file_name' => $file->getClientOriginalName(),
+                                'real_file_name' => $request->input('real_file_name'),
+                                'file_size' => $file->getSize(),
+                                'file_path' => $filePath,
+                                'user_name' => auth()->user()->name, // Assuming user is authenticated
+                                'user_id' => auth()->user()->id,
+                                'file_status' => $request->input('file_status', 0),
+                                'fyear' => $request->input('fyear'),
+                                'month' => $request->input('Month'),
+                                'tags' => $tags, // Store tags as JSON
+                                'location' => $request->input('location'), // Store the dynamic location
+                                'descp' => $request->input('desc'),
+                            ]);
+        
+                            $totalSize += $file->getSize();
+                            $successMessages[] = "File {$file->getClientOriginalName()} uploaded successfully.";
+                        } catch (\Exception $e) {
+                            $errorMessages[] = "Failed to save file {$file->getClientOriginalName()} to database.";
+                        }
+                    }
 
             // Compile overall success message
             $user = auth()->user();
@@ -12458,34 +13649,38 @@ public function SecretarialStatutoryRegistersRD(Request $request)
                     $tag_list = array_merge($tag_list, $userTags);
                     $tags = empty($tag_list) ? NULL : json_encode($tag_list);
 
-            foreach ($request->file('files') as $file) {
-                try {
-                    $filePath = $file->store('uploads');
-
-                    // Create a new entry for each file
-                    CommonTable::create([
-                        'file_type' => $file->getClientMimeType(),
-                        'file_name' => $file->getClientOriginalName(),
-                        'real_file_name' => $request->input('real_file_name'),
-                        'file_size' => $file->getSize(),
-                        'file_path' => $filePath,
-                        'user_name' => auth()->user()->name, // Assuming user is authenticated
-                        'user_id' => auth()->user()->id,
-                        'file_status' => $request->input('file_status', 0),
-                        'fyear' => $request->input('fyear'),
-                        'month' => $request->input('Month'),
-                        'tags' => $tags, // Store tags as JSON
-                        'location' => $request->input('location'),
-                        'descp' => $request->input('desc'),
-                        
-                    ]);
-
-                    $totalSize += $file->getSize();
-                    $successMessages[] = "File {$file->getClientOriginalName()} uploaded successfully.";
-                } catch (\Exception $e) {
-                    $errorMessages[] = "Failed to save file {$file->getClientOriginalName()} to database.";
-                }
-            }
+                    $location = preg_replace('/\s*\/\s*/', '/', trim($request->input('location')));
+                    // "Legal/Secretarial/Board Meetings" 
+        
+                    // Legal/Secretarial/Board Meetings/rtR2ORS7jdMq05zW6c704CUXesvrqkZ59ZNNWOib.pdf
+                    foreach ($request->file('files') as $file) {
+                        try {
+                            // Store file inside the dynamically created folder
+                           
+                            $filePath = $file->store($location);
+                            // Create a new entry for each file
+                            CommonTable::create([
+                                'file_type' => $file->getClientMimeType(),
+                                'file_name' => $file->getClientOriginalName(),
+                                'real_file_name' => $request->input('real_file_name'),
+                                'file_size' => $file->getSize(),
+                                'file_path' => $filePath,
+                                'user_name' => auth()->user()->name, // Assuming user is authenticated
+                                'user_id' => auth()->user()->id,
+                                'file_status' => $request->input('file_status', 0),
+                                'fyear' => $request->input('fyear'),
+                                'month' => $request->input('Month'),
+                                'tags' => $tags, // Store tags as JSON
+                                'location' => $request->input('location'), // Store the dynamic location
+                                'descp' => $request->input('desc'),
+                            ]);
+        
+                            $totalSize += $file->getSize();
+                            $successMessages[] = "File {$file->getClientOriginalName()} uploaded successfully.";
+                        } catch (\Exception $e) {
+                            $errorMessages[] = "Failed to save file {$file->getClientOriginalName()} to database.";
+                        }
+                    }
 
             // Compile overall success message
             $user = auth()->user();
@@ -12559,34 +13754,38 @@ public function SecretarialStatutoryRegistersRLGS(Request $request)
                     $tag_list = array_merge($tag_list, $userTags);
                     $tags = empty($tag_list) ? NULL : json_encode($tag_list);
 
-            foreach ($request->file('files') as $file) {
-                try {
-                    $filePath = $file->store('uploads');
-
-                    // Create a new entry for each file
-                    CommonTable::create([
-                        'file_type' => $file->getClientMimeType(),
-                        'file_name' => $file->getClientOriginalName(),
-                        'real_file_name' => $request->input('real_file_name'),
-                        'file_size' => $file->getSize(),
-                        'file_path' => $filePath,
-                        'user_name' => auth()->user()->name, // Assuming user is authenticated
-                        'user_id' => auth()->user()->id,
-                        'file_status' => $request->input('file_status', 0),
-                        'fyear' => $request->input('fyear'),
-                        'month' => $request->input('Month'),
-                        'tags' => $tags, // Store tags as JSON
-                        'location' => $request->input('location'),
-                        'descp' => $request->input('desc'),
-                        
-                    ]);
-
-                    $totalSize += $file->getSize();
-                    $successMessages[] = "File {$file->getClientOriginalName()} uploaded successfully.";
-                } catch (\Exception $e) {
-                    $errorMessages[] = "Failed to save file {$file->getClientOriginalName()} to database.";
-                }
-            }
+                    $location = preg_replace('/\s*\/\s*/', '/', trim($request->input('location')));
+                    // "Legal/Secretarial/Board Meetings" 
+        
+                    // Legal/Secretarial/Board Meetings/rtR2ORS7jdMq05zW6c704CUXesvrqkZ59ZNNWOib.pdf
+                    foreach ($request->file('files') as $file) {
+                        try {
+                            // Store file inside the dynamically created folder
+                           
+                            $filePath = $file->store($location);
+                            // Create a new entry for each file
+                            CommonTable::create([
+                                'file_type' => $file->getClientMimeType(),
+                                'file_name' => $file->getClientOriginalName(),
+                                'real_file_name' => $request->input('real_file_name'),
+                                'file_size' => $file->getSize(),
+                                'file_path' => $filePath,
+                                'user_name' => auth()->user()->name, // Assuming user is authenticated
+                                'user_id' => auth()->user()->id,
+                                'file_status' => $request->input('file_status', 0),
+                                'fyear' => $request->input('fyear'),
+                                'month' => $request->input('Month'),
+                                'tags' => $tags, // Store tags as JSON
+                                'location' => $request->input('location'), // Store the dynamic location
+                                'descp' => $request->input('desc'),
+                            ]);
+        
+                            $totalSize += $file->getSize();
+                            $successMessages[] = "File {$file->getClientOriginalName()} uploaded successfully.";
+                        } catch (\Exception $e) {
+                            $errorMessages[] = "Failed to save file {$file->getClientOriginalName()} to database.";
+                        }
+                    }
 
             // Compile overall success message
             $user = auth()->user();
@@ -12660,34 +13859,38 @@ public function SecretarialStatutoryRegistersRCD(Request $request)
                     $tag_list = array_merge($tag_list, $userTags);
                     $tags = empty($tag_list) ? NULL : json_encode($tag_list);
 
-            foreach ($request->file('files') as $file) {
-                try {
-                    $filePath = $file->store('uploads');
-
-                    // Create a new entry for each file
-                    CommonTable::create([
-                        'file_type' => $file->getClientMimeType(),
-                        'file_name' => $file->getClientOriginalName(),
-                        'real_file_name' => $request->input('real_file_name'),
-                        'file_size' => $file->getSize(),
-                        'file_path' => $filePath,
-                        'user_name' => auth()->user()->name, // Assuming user is authenticated
-                        'user_id' => auth()->user()->id,
-                        'file_status' => $request->input('file_status', 0),
-                        'fyear' => $request->input('fyear'),
-                        'month' => $request->input('Month'),
-                        'tags' => $tags, // Store tags as JSON
-                        'location' => $request->input('location'),
-                        'descp' => $request->input('desc'),
-                        
-                    ]);
-
-                    $totalSize += $file->getSize();
-                    $successMessages[] = "File {$file->getClientOriginalName()} uploaded successfully.";
-                } catch (\Exception $e) {
-                    $errorMessages[] = "Failed to save file {$file->getClientOriginalName()} to database.";
-                }
-            }
+                    $location = preg_replace('/\s*\/\s*/', '/', trim($request->input('location')));
+                    // "Legal/Secretarial/Board Meetings" 
+        
+                    // Legal/Secretarial/Board Meetings/rtR2ORS7jdMq05zW6c704CUXesvrqkZ59ZNNWOib.pdf
+                    foreach ($request->file('files') as $file) {
+                        try {
+                            // Store file inside the dynamically created folder
+                           
+                            $filePath = $file->store($location);
+                            // Create a new entry for each file
+                            CommonTable::create([
+                                'file_type' => $file->getClientMimeType(),
+                                'file_name' => $file->getClientOriginalName(),
+                                'real_file_name' => $request->input('real_file_name'),
+                                'file_size' => $file->getSize(),
+                                'file_path' => $filePath,
+                                'user_name' => auth()->user()->name, // Assuming user is authenticated
+                                'user_id' => auth()->user()->id,
+                                'file_status' => $request->input('file_status', 0),
+                                'fyear' => $request->input('fyear'),
+                                'month' => $request->input('Month'),
+                                'tags' => $tags, // Store tags as JSON
+                                'location' => $request->input('location'), // Store the dynamic location
+                                'descp' => $request->input('desc'),
+                            ]);
+        
+                            $totalSize += $file->getSize();
+                            $successMessages[] = "File {$file->getClientOriginalName()} uploaded successfully.";
+                        } catch (\Exception $e) {
+                            $errorMessages[] = "Failed to save file {$file->getClientOriginalName()} to database.";
+                        }
+                    }
 
             // Compile overall success message
             $user = auth()->user();
@@ -12761,34 +13964,38 @@ public function SecretarialStatutoryRegistersRCDI(Request $request)
                     $tag_list = array_merge($tag_list, $userTags);
                     $tags = empty($tag_list) ? NULL : json_encode($tag_list);
 
-            foreach ($request->file('files') as $file) {
-                try {
-                    $filePath = $file->store('uploads');
-
-                    // Create a new entry for each file
-                    CommonTable::create([
-                        'file_type' => $file->getClientMimeType(),
-                        'file_name' => $file->getClientOriginalName(),
-                        'real_file_name' => $request->input('real_file_name'),
-                        'file_size' => $file->getSize(),
-                        'file_path' => $filePath,
-                        'user_name' => auth()->user()->name, // Assuming user is authenticated
-                        'user_id' => auth()->user()->id,
-                        'file_status' => $request->input('file_status', 0),
-                        'fyear' => $request->input('fyear'),
-                        'month' => $request->input('Month'),
-                        'tags' => $tags, // Store tags as JSON
-                        'location' => $request->input('location'),
-                        'descp' => $request->input('desc'),
-                        
-                    ]);
-
-                    $totalSize += $file->getSize();
-                    $successMessages[] = "File {$file->getClientOriginalName()} uploaded successfully.";
-                } catch (\Exception $e) {
-                    $errorMessages[] = "Failed to save file {$file->getClientOriginalName()} to database.";
-                }
-            }
+                    $location = preg_replace('/\s*\/\s*/', '/', trim($request->input('location')));
+                    // "Legal/Secretarial/Board Meetings" 
+        
+                    // Legal/Secretarial/Board Meetings/rtR2ORS7jdMq05zW6c704CUXesvrqkZ59ZNNWOib.pdf
+                    foreach ($request->file('files') as $file) {
+                        try {
+                            // Store file inside the dynamically created folder
+                           
+                            $filePath = $file->store($location);
+                            // Create a new entry for each file
+                            CommonTable::create([
+                                'file_type' => $file->getClientMimeType(),
+                                'file_name' => $file->getClientOriginalName(),
+                                'real_file_name' => $request->input('real_file_name'),
+                                'file_size' => $file->getSize(),
+                                'file_path' => $filePath,
+                                'user_name' => auth()->user()->name, // Assuming user is authenticated
+                                'user_id' => auth()->user()->id,
+                                'file_status' => $request->input('file_status', 0),
+                                'fyear' => $request->input('fyear'),
+                                'month' => $request->input('Month'),
+                                'tags' => $tags, // Store tags as JSON
+                                'location' => $request->input('location'), // Store the dynamic location
+                                'descp' => $request->input('desc'),
+                            ]);
+        
+                            $totalSize += $file->getSize();
+                            $successMessages[] = "File {$file->getClientOriginalName()} uploaded successfully.";
+                        } catch (\Exception $e) {
+                            $errorMessages[] = "Failed to save file {$file->getClientOriginalName()} to database.";
+                        }
+                    }
 
             // Compile overall success message
             $user = auth()->user();
@@ -12862,34 +14069,38 @@ public function SecretarialStatutoryRegistersRSES(Request $request)
                     $tag_list = array_merge($tag_list, $userTags);
                     $tags = empty($tag_list) ? NULL : json_encode($tag_list);
 
-            foreach ($request->file('files') as $file) {
-                try {
-                    $filePath = $file->store('uploads');
-
-                    // Create a new entry for each file
-                    CommonTable::create([
-                        'file_type' => $file->getClientMimeType(),
-                        'file_name' => $file->getClientOriginalName(),
-                        'real_file_name' => $request->input('real_file_name'),
-                        'file_size' => $file->getSize(),
-                        'file_path' => $filePath,
-                        'user_name' => auth()->user()->name, // Assuming user is authenticated
-                        'user_id' => auth()->user()->id,
-                        'file_status' => $request->input('file_status', 0),
-                        'fyear' => $request->input('fyear'),
-                        'month' => $request->input('Month'),
-                        'tags' => $tags, // Store tags as JSON
-                        'location' => $request->input('location'),
-                        'descp' => $request->input('desc'),
-                        
-                    ]);
-
-                    $totalSize += $file->getSize();
-                    $successMessages[] = "File {$file->getClientOriginalName()} uploaded successfully.";
-                } catch (\Exception $e) {
-                    $errorMessages[] = "Failed to save file {$file->getClientOriginalName()} to database.";
-                }
-            }
+                    $location = preg_replace('/\s*\/\s*/', '/', trim($request->input('location')));
+                    // "Legal/Secretarial/Board Meetings" 
+        
+                    // Legal/Secretarial/Board Meetings/rtR2ORS7jdMq05zW6c704CUXesvrqkZ59ZNNWOib.pdf
+                    foreach ($request->file('files') as $file) {
+                        try {
+                            // Store file inside the dynamically created folder
+                           
+                            $filePath = $file->store($location);
+                            // Create a new entry for each file
+                            CommonTable::create([
+                                'file_type' => $file->getClientMimeType(),
+                                'file_name' => $file->getClientOriginalName(),
+                                'real_file_name' => $request->input('real_file_name'),
+                                'file_size' => $file->getSize(),
+                                'file_path' => $filePath,
+                                'user_name' => auth()->user()->name, // Assuming user is authenticated
+                                'user_id' => auth()->user()->id,
+                                'file_status' => $request->input('file_status', 0),
+                                'fyear' => $request->input('fyear'),
+                                'month' => $request->input('Month'),
+                                'tags' => $tags, // Store tags as JSON
+                                'location' => $request->input('location'), // Store the dynamic location
+                                'descp' => $request->input('desc'),
+                            ]);
+        
+                            $totalSize += $file->getSize();
+                            $successMessages[] = "File {$file->getClientOriginalName()} uploaded successfully.";
+                        } catch (\Exception $e) {
+                            $errorMessages[] = "Failed to save file {$file->getClientOriginalName()} to database.";
+                        }
+                    }
 
             // Compile overall success message
             $user = auth()->user();
@@ -12963,34 +14174,38 @@ public function SecretarialStatutoryRegistersRESO(Request $request)
                     $tag_list = array_merge($tag_list, $userTags);
                     $tags = empty($tag_list) ? NULL : json_encode($tag_list);
 
-            foreach ($request->file('files') as $file) {
-                try {
-                    $filePath = $file->store('uploads');
-
-                    // Create a new entry for each file
-                    CommonTable::create([
-                        'file_type' => $file->getClientMimeType(),
-                        'file_name' => $file->getClientOriginalName(),
-                        'real_file_name' => $request->input('real_file_name'),
-                        'file_size' => $file->getSize(),
-                        'file_path' => $filePath,
-                        'user_name' => auth()->user()->name, // Assuming user is authenticated
-                        'user_id' => auth()->user()->id,
-                        'file_status' => $request->input('file_status', 0),
-                        'fyear' => $request->input('fyear'),
-                        'month' => $request->input('Month'),
-                        'tags' => $tags, // Store tags as JSON
-                        'location' => $request->input('location'),
-                        'descp' => $request->input('desc'),
-                        
-                    ]);
-
-                    $totalSize += $file->getSize();
-                    $successMessages[] = "File {$file->getClientOriginalName()} uploaded successfully.";
-                } catch (\Exception $e) {
-                    $errorMessages[] = "Failed to save file {$file->getClientOriginalName()} to database.";
-                }
-            }
+                    $location = preg_replace('/\s*\/\s*/', '/', trim($request->input('location')));
+                    // "Legal/Secretarial/Board Meetings" 
+        
+                    // Legal/Secretarial/Board Meetings/rtR2ORS7jdMq05zW6c704CUXesvrqkZ59ZNNWOib.pdf
+                    foreach ($request->file('files') as $file) {
+                        try {
+                            // Store file inside the dynamically created folder
+                           
+                            $filePath = $file->store($location);
+                            // Create a new entry for each file
+                            CommonTable::create([
+                                'file_type' => $file->getClientMimeType(),
+                                'file_name' => $file->getClientOriginalName(),
+                                'real_file_name' => $request->input('real_file_name'),
+                                'file_size' => $file->getSize(),
+                                'file_path' => $filePath,
+                                'user_name' => auth()->user()->name, // Assuming user is authenticated
+                                'user_id' => auth()->user()->id,
+                                'file_status' => $request->input('file_status', 0),
+                                'fyear' => $request->input('fyear'),
+                                'month' => $request->input('Month'),
+                                'tags' => $tags, // Store tags as JSON
+                                'location' => $request->input('location'), // Store the dynamic location
+                                'descp' => $request->input('desc'),
+                            ]);
+        
+                            $totalSize += $file->getSize();
+                            $successMessages[] = "File {$file->getClientOriginalName()} uploaded successfully.";
+                        } catch (\Exception $e) {
+                            $errorMessages[] = "Failed to save file {$file->getClientOriginalName()} to database.";
+                        }
+                    }
 
             // Compile overall success message
             $user = auth()->user();
@@ -13064,34 +14279,38 @@ public function SecretarialStatutoryRegistersRSBB(Request $request)
                     $tag_list = array_merge($tag_list, $userTags);
                     $tags = empty($tag_list) ? NULL : json_encode($tag_list);
 
-            foreach ($request->file('files') as $file) {
-                try {
-                    $filePath = $file->store('uploads');
-
-                    // Create a new entry for each file
-                    CommonTable::create([
-                        'file_type' => $file->getClientMimeType(),
-                        'file_name' => $file->getClientOriginalName(),
-                        'real_file_name' => $request->input('real_file_name'),
-                        'file_size' => $file->getSize(),
-                        'file_path' => $filePath,
-                        'user_name' => auth()->user()->name, // Assuming user is authenticated
-                        'user_id' => auth()->user()->id,
-                        'file_status' => $request->input('file_status', 0),
-                        'fyear' => $request->input('fyear'),
-                        'month' => $request->input('Month'),
-                        'tags' => $tags, // Store tags as JSON
-                        'location' => $request->input('location'),
-                        'descp' => $request->input('desc'),
-                        
-                    ]);
-
-                    $totalSize += $file->getSize();
-                    $successMessages[] = "File {$file->getClientOriginalName()} uploaded successfully.";
-                } catch (\Exception $e) {
-                    $errorMessages[] = "Failed to save file {$file->getClientOriginalName()} to database.";
-                }
-            }
+                    $location = preg_replace('/\s*\/\s*/', '/', trim($request->input('location')));
+                    // "Legal/Secretarial/Board Meetings" 
+        
+                    // Legal/Secretarial/Board Meetings/rtR2ORS7jdMq05zW6c704CUXesvrqkZ59ZNNWOib.pdf
+                    foreach ($request->file('files') as $file) {
+                        try {
+                            // Store file inside the dynamically created folder
+                           
+                            $filePath = $file->store($location);
+                            // Create a new entry for each file
+                            CommonTable::create([
+                                'file_type' => $file->getClientMimeType(),
+                                'file_name' => $file->getClientOriginalName(),
+                                'real_file_name' => $request->input('real_file_name'),
+                                'file_size' => $file->getSize(),
+                                'file_path' => $filePath,
+                                'user_name' => auth()->user()->name, // Assuming user is authenticated
+                                'user_id' => auth()->user()->id,
+                                'file_status' => $request->input('file_status', 0),
+                                'fyear' => $request->input('fyear'),
+                                'month' => $request->input('Month'),
+                                'tags' => $tags, // Store tags as JSON
+                                'location' => $request->input('location'), // Store the dynamic location
+                                'descp' => $request->input('desc'),
+                            ]);
+        
+                            $totalSize += $file->getSize();
+                            $successMessages[] = "File {$file->getClientOriginalName()} uploaded successfully.";
+                        } catch (\Exception $e) {
+                            $errorMessages[] = "Failed to save file {$file->getClientOriginalName()} to database.";
+                        }
+                    }
 
             // Compile overall success message
             $user = auth()->user();
@@ -13166,34 +14385,38 @@ public function SecretarialStatutoryRegistersRRDSC(Request $request)
                     $tag_list = array_merge($tag_list, $userTags);
                     $tags = empty($tag_list) ? NULL : json_encode($tag_list);
 
-            foreach ($request->file('files') as $file) {
-                try {
-                    $filePath = $file->store('uploads');
-
-                    // Create a new entry for each file
-                    CommonTable::create([
-                        'file_type' => $file->getClientMimeType(),
-                        'file_name' => $file->getClientOriginalName(),
-                        'real_file_name' => $request->input('real_file_name'),
-                        'file_size' => $file->getSize(),
-                        'file_path' => $filePath,
-                        'user_name' => auth()->user()->name, // Assuming user is authenticated
-                        'user_id' => auth()->user()->id,
-                        'file_status' => $request->input('file_status', 0),
-                        'fyear' => $request->input('fyear'),
-                        'month' => $request->input('Month'),
-                        'tags' => $tags, // Store tags as JSON
-                        'location' => $request->input('location'),
-                        'descp' => $request->input('desc'),
-                        
-                    ]);
-
-                    $totalSize += $file->getSize();
-                    $successMessages[] = "File {$file->getClientOriginalName()} uploaded successfully.";
-                } catch (\Exception $e) {
-                    $errorMessages[] = "Failed to save file {$file->getClientOriginalName()} to database.";
-                }
-            }
+                    $location = preg_replace('/\s*\/\s*/', '/', trim($request->input('location')));
+                    // "Legal/Secretarial/Board Meetings" 
+        
+                    // Legal/Secretarial/Board Meetings/rtR2ORS7jdMq05zW6c704CUXesvrqkZ59ZNNWOib.pdf
+                    foreach ($request->file('files') as $file) {
+                        try {
+                            // Store file inside the dynamically created folder
+                           
+                            $filePath = $file->store($location);
+                            // Create a new entry for each file
+                            CommonTable::create([
+                                'file_type' => $file->getClientMimeType(),
+                                'file_name' => $file->getClientOriginalName(),
+                                'real_file_name' => $request->input('real_file_name'),
+                                'file_size' => $file->getSize(),
+                                'file_path' => $filePath,
+                                'user_name' => auth()->user()->name, // Assuming user is authenticated
+                                'user_id' => auth()->user()->id,
+                                'file_status' => $request->input('file_status', 0),
+                                'fyear' => $request->input('fyear'),
+                                'month' => $request->input('Month'),
+                                'tags' => $tags, // Store tags as JSON
+                                'location' => $request->input('location'), // Store the dynamic location
+                                'descp' => $request->input('desc'),
+                            ]);
+        
+                            $totalSize += $file->getSize();
+                            $successMessages[] = "File {$file->getClientOriginalName()} uploaded successfully.";
+                        } catch (\Exception $e) {
+                            $errorMessages[] = "Failed to save file {$file->getClientOriginalName()} to database.";
+                        }
+                    }
 
             // Compile overall success message
             $user = auth()->user();
@@ -13268,34 +14491,38 @@ public function SecretarialStatutoryRegistersSBO(Request $request)
                     $tag_list = array_merge($tag_list, $userTags);
                     $tags = empty($tag_list) ? NULL : json_encode($tag_list);
 
-            foreach ($request->file('files') as $file) {
-                try {
-                    $filePath = $file->store('uploads');
-
-                    // Create a new entry for each file
-                    CommonTable::create([
-                        'file_type' => $file->getClientMimeType(),
-                        'file_name' => $file->getClientOriginalName(),
-                        'real_file_name' => $request->input('real_file_name'),
-                        'file_size' => $file->getSize(),
-                        'file_path' => $filePath,
-                        'user_name' => auth()->user()->name, // Assuming user is authenticated
-                        'user_id' => auth()->user()->id,
-                        'file_status' => $request->input('file_status', 0),
-                        'fyear' => $request->input('fyear'),
-                        'month' => $request->input('Month'),
-                        'tags' => $tags, // Store tags as JSON
-                        'location' => $request->input('location'),
-                        'descp' => $request->input('desc'),
-                        
-                    ]);
-
-                    $totalSize += $file->getSize();
-                    $successMessages[] = "File {$file->getClientOriginalName()} uploaded successfully.";
-                } catch (\Exception $e) {
-                    $errorMessages[] = "Failed to save file {$file->getClientOriginalName()} to database.";
-                }
-            }
+                    $location = preg_replace('/\s*\/\s*/', '/', trim($request->input('location')));
+                    // "Legal/Secretarial/Board Meetings" 
+        
+                    // Legal/Secretarial/Board Meetings/rtR2ORS7jdMq05zW6c704CUXesvrqkZ59ZNNWOib.pdf
+                    foreach ($request->file('files') as $file) {
+                        try {
+                            // Store file inside the dynamically created folder
+                           
+                            $filePath = $file->store($location);
+                            // Create a new entry for each file
+                            CommonTable::create([
+                                'file_type' => $file->getClientMimeType(),
+                                'file_name' => $file->getClientOriginalName(),
+                                'real_file_name' => $request->input('real_file_name'),
+                                'file_size' => $file->getSize(),
+                                'file_path' => $filePath,
+                                'user_name' => auth()->user()->name, // Assuming user is authenticated
+                                'user_id' => auth()->user()->id,
+                                'file_status' => $request->input('file_status', 0),
+                                'fyear' => $request->input('fyear'),
+                                'month' => $request->input('Month'),
+                                'tags' => $tags, // Store tags as JSON
+                                'location' => $request->input('location'), // Store the dynamic location
+                                'descp' => $request->input('desc'),
+                            ]);
+        
+                            $totalSize += $file->getSize();
+                            $successMessages[] = "File {$file->getClientOriginalName()} uploaded successfully.";
+                        } catch (\Exception $e) {
+                            $errorMessages[] = "Failed to save file {$file->getClientOriginalName()} to database.";
+                        }
+                    }
 
             // Compile overall success message
             $user = auth()->user();
@@ -13370,34 +14597,38 @@ public function SecretarialStatutoryRegistersRPB(Request $request)
                     $tag_list = array_merge($tag_list, $userTags);
                     $tags = empty($tag_list) ? NULL : json_encode($tag_list);
 
-            foreach ($request->file('files') as $file) {
-                try {
-                    $filePath = $file->store('uploads');
-
-                    // Create a new entry for each file
-                    CommonTable::create([
-                        'file_type' => $file->getClientMimeType(),
-                        'file_name' => $file->getClientOriginalName(),
-                        'real_file_name' => $request->input('real_file_name'),
-                        'file_size' => $file->getSize(),
-                        'file_path' => $filePath,
-                        'user_name' => auth()->user()->name, // Assuming user is authenticated
-                        'user_id' => auth()->user()->id,
-                        'file_status' => $request->input('file_status', 0),
-                        'fyear' => $request->input('fyear'),
-                        'month' => $request->input('Month'),
-                        'tags' => $tags, // Store tags as JSON
-                        'location' => $request->input('location'),
-                        'descp' => $request->input('desc'),
-                        
-                    ]);
-
-                    $totalSize += $file->getSize();
-                    $successMessages[] = "File {$file->getClientOriginalName()} uploaded successfully.";
-                } catch (\Exception $e) {
-                    $errorMessages[] = "Failed to save file {$file->getClientOriginalName()} to database.";
-                }
-            }
+                    $location = preg_replace('/\s*\/\s*/', '/', trim($request->input('location')));
+                    // "Legal/Secretarial/Board Meetings" 
+        
+                    // Legal/Secretarial/Board Meetings/rtR2ORS7jdMq05zW6c704CUXesvrqkZ59ZNNWOib.pdf
+                    foreach ($request->file('files') as $file) {
+                        try {
+                            // Store file inside the dynamically created folder
+                           
+                            $filePath = $file->store($location);
+                            // Create a new entry for each file
+                            CommonTable::create([
+                                'file_type' => $file->getClientMimeType(),
+                                'file_name' => $file->getClientOriginalName(),
+                                'real_file_name' => $request->input('real_file_name'),
+                                'file_size' => $file->getSize(),
+                                'file_path' => $filePath,
+                                'user_name' => auth()->user()->name, // Assuming user is authenticated
+                                'user_id' => auth()->user()->id,
+                                'file_status' => $request->input('file_status', 0),
+                                'fyear' => $request->input('fyear'),
+                                'month' => $request->input('Month'),
+                                'tags' => $tags, // Store tags as JSON
+                                'location' => $request->input('location'), // Store the dynamic location
+                                'descp' => $request->input('desc'),
+                            ]);
+        
+                            $totalSize += $file->getSize();
+                            $successMessages[] = "File {$file->getClientOriginalName()} uploaded successfully.";
+                        } catch (\Exception $e) {
+                            $errorMessages[] = "Failed to save file {$file->getClientOriginalName()} to database.";
+                        }
+                    }
 
             // Compile overall success message
             $user = auth()->user();
@@ -13435,12 +14666,51 @@ public function PredefinedCommonUploadFiles(Request $request)
     $request->validate([
         'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
         'tagList' => 'nullable', // Allow tagList to be nullable
+        'location' => 'required|string', // Require location
+        'real_file_name' => 'required|string', // Require real file name
+        'fyear' => 'required|string', // Require real file name
+        'Month' => 'required|string', // Require real file name
+
+
     ], [
         'files.*.required' => 'Each file is required.',
         'files.*.file' => 'The uploaded item must be a valid file.',
         'files.*.max' => 'Each file may not be larger than 100MB.',
         'files.*.mimes' => 'The file type must be one of the following: PDF, ODP, ODS, PPT, DOC, ODT, RTF, CSV, JSON, XML, HTML, ICO, SVG, WEBP, ZIP, XLS, DOCX, WAV, OGG, MP3, AVI, MOV, WMV, WEBM, TIFF, MP4, JPG, PNG, GIF, JPEG, 3GP, MKV, FLV.',
+        'location.required' => 'Location is required.',
+        'real_file_name.required' => 'Real File name is required.',
+        'fyear.required' => 'Financial Year is required.',
+        'Month.required' => 'Month is required.',
+
     ]);
+
+
+    // Legal / Secretarial / Deposit Undertakings
+
+    $user = auth()->user();
+
+    // Query your table to validate the location and real_file_name
+    // $temp_location = $request->input('location');
+
+    // // dd($temp_location);
+    // // $temp_location = "Accounting & Taxation / Charter documents / Registrations";
+    // $final_location = preg_replace('/\s*\/\s*/', '/', $temp_location);
+    // // "Accounting & Taxation/Charter documents/Registrations"
+
+    // $entry = Folder::where('path', $final_location)
+    //                     // ->where('real_file_name', $request->input('real_file_name'))
+    //                     // ->where('user_id', $user->id)
+    //                     ->where('is_delete', 0)
+    //                     ->first();
+
+    // if (!$entry) {
+    //     // Return an error if the location and real_file_name are not valid
+    //     return response()->json([
+    //         'success' => false,
+    //         'message' => 'Invalid location or file name. Please check and try again.',
+    //     ], 400);
+    // }
+
 
     if ($request->hasFile('files')) {
         try {
@@ -13450,6 +14720,8 @@ public function PredefinedCommonUploadFiles(Request $request)
             // Store success and error messages for individual files
             $successMessages = [];
             $errorMessages = [];
+
+            
             
             // 22 August code added by sandeep ---- default tags added -- reference excel sheet shared by sir;
                     // Default tags
@@ -13496,34 +14768,38 @@ public function PredefinedCommonUploadFiles(Request $request)
                     // $tags = empty($tag_list) ? NULL : json_encode($tag_list);
                     $tags = empty($final_automated_tags) ? NULL : json_encode($final_automated_tags);
 
-            foreach ($request->file('files') as $file) {
-                try {
-                    $filePath = $file->store('uploads');
-
-                    // Create a new entry for each file
-                    CommonTable::create([
-                        'file_type' => $file->getClientMimeType(),
-                        'file_name' => $file->getClientOriginalName(),
-                        'real_file_name' => $request->input('real_file_name'),
-                        'file_size' => $file->getSize(),
-                        'file_path' => $filePath,
-                        'user_name' => auth()->user()->name, // Assuming user is authenticated
-                        'user_id' => auth()->user()->id,
-                        'file_status' => $request->input('file_status', 0),
-                        'fyear' => $request->input('fyear'),
-                        'month' => $request->input('Month'),
-                        'tags' => $tags, // Store tags as JSON
-                        'location' => $request->input('location'),
-                        'descp' => $request->input('desc'),
-                        
-                    ]);
-
-                    $totalSize += $file->getSize();
-                    $successMessages[] = "File {$file->getClientOriginalName()} uploaded successfully.";
-                } catch (\Exception $e) {
-                    $errorMessages[] = "Failed to save file {$file->getClientOriginalName()} to database.";
-                }
-            }
+                    $location = preg_replace('/\s*\/\s*/', '/', trim($request->input('location')));
+                    // "Legal/Secretarial/Board Meetings" 
+        
+                    // Legal/Secretarial/Board Meetings/rtR2ORS7jdMq05zW6c704CUXesvrqkZ59ZNNWOib.pdf
+                    foreach ($request->file('files') as $file) {
+                        try {
+                            // Store file inside the dynamically created folder
+                           
+                            $filePath = $file->store($location);
+                            // Create a new entry for each file
+                            CommonTable::create([
+                                'file_type' => $file->getClientMimeType(),
+                                'file_name' => $file->getClientOriginalName(),
+                                'real_file_name' => $request->input('real_file_name'),
+                                'file_size' => $file->getSize(),
+                                'file_path' => $filePath,
+                                'user_name' => auth()->user()->name, // Assuming user is authenticated
+                                'user_id' => auth()->user()->id,
+                                'file_status' => $request->input('file_status', 0),
+                                'fyear' => $request->input('fyear'),
+                                'month' => $request->input('Month'),
+                                'tags' => $tags, // Store tags as JSON
+                                'location' => $request->input('location'), // Store the dynamic location
+                                'descp' => $request->input('desc'),
+                            ]);
+        
+                            $totalSize += $file->getSize();
+                            $successMessages[] = "File {$file->getClientOriginalName()} uploaded successfully.";
+                        } catch (\Exception $e) {
+                            $errorMessages[] = "Failed to save file {$file->getClientOriginalName()} to database.";
+                        }
+                    }
             
             
 
@@ -13621,37 +14897,41 @@ public function PredefinedCommonUploadFilesBank(Request $request)
                     // $tags = empty($tag_list) ? NULL : json_encode($tag_list);
                     $tags = empty($final_automated_tags) ? NULL : json_encode($final_automated_tags);
 
-            foreach ($request->file('files') as $file) {
-                try {
-                    $filePath = $file->store('uploads');
-
-                    // Create a new entry for each file
-                    CommonTable::create([
-                        'file_type' => $file->getClientMimeType(),
-                        'file_name' => $file->getClientOriginalName(),
-                        'real_file_name' => $request->input('real_file_name'),
-                        'file_size' => $file->getSize(),
-                        'file_path' => $filePath,
-                        'user_name' => auth()->user()->name, // Assuming user is authenticated
-                        'user_id' => auth()->user()->id,
-                        'file_status' => $request->input('file_status', 0),
-                        'fyear' => $request->input('fyear'),
-                        'month' => $request->input('Month'),
-                        'tags' => $tags, // Store tags as JSON
-                        'bank_name' => $request->input('bank_name'),
-                        'location' => $request->input('location'),
-                        'descp' => $request->input('desc'),
-                    ]);
-
-                    $totalSize += $file->getSize();
-                    $successMessages[] = "File {$file->getClientOriginalName()} uploaded successfully.";
-                } catch (\Exception $e) {
-                    $errorMessages[] = "Failed to save file {$file->getClientOriginalName()} to the database.";
-                }
-            }
+                    $location = preg_replace('/\s*\/\s*/', '/', trim($request->input('location')));
+                    // "Legal/Secretarial/Board Meetings" 
+        
+                    // Legal/Secretarial/Board Meetings/rtR2ORS7jdMq05zW6c704CUXesvrqkZ59ZNNWOib.pdf
+                    foreach ($request->file('files') as $file) {
+                        try {
+                            // Store file inside the dynamically created folder
+                           
+                            $filePath = $file->store($location);
+                            // Create a new entry for each file
+                            CommonTable::create([
+                                'file_type' => $file->getClientMimeType(),
+                                'file_name' => $file->getClientOriginalName(),
+                                'real_file_name' => $request->input('real_file_name'),
+                                'file_size' => $file->getSize(),
+                                'file_path' => $filePath,
+                                'user_name' => auth()->user()->name, // Assuming user is authenticated
+                                'user_id' => auth()->user()->id,
+                                'file_status' => $request->input('file_status', 0),
+                                'fyear' => $request->input('fyear'),
+                                'month' => $request->input('Month'),
+                                'tags' => $tags, // Store tags as JSON
+                                'location' => $request->input('location'), // Store the dynamic location
+                                'descp' => $request->input('desc'),
+                            ]);
+        
+                            $totalSize += $file->getSize();
+                            $successMessages[] = "File {$file->getClientOriginalName()} uploaded successfully.";
+                        } catch (\Exception $e) {
+                            $errorMessages[] = "Failed to save file {$file->getClientOriginalName()} to database.";
+                        }
+                    }
 
             // Compile overall success message
-            $user = auth()->user();
+            // $user = auth()->user();
 //             $entries = CommonTable::where('user_id', $user->id)
 //     ->where('is_delete', 0)
 //    ->where('location', 'LIKE', '%Bank Account Statements%')
@@ -13660,15 +14940,15 @@ public function PredefinedCommonUploadFilesBank(Request $request)
 //             $count = $entries->count(); // Count of entries
 //             $totalSizeKB = round($totalSize / 1024, 2); // Convert to KB and round
 
-            return redirect()->back()->with('success2', 'File Uploaded successfully.');
+            // return redirect()->back()->with('success2', 'File Uploaded successfully.');
 
-            // return response()->json([
-            //     'success' => true,
-            //     'count' => $count,
-            //     'totalSize' => $totalSizeKB,
-            //     'successMessages' => $successMessages,
-            //     'errorMessages' => $errorMessages,
-            // ]);
+            return response()->json([
+                'success' => true,
+                // 'count' => $count,
+                // 'totalSize' => $totalSizeKB,
+                'successMessages' => $successMessages,
+                'errorMessages' => $errorMessages,
+            ]);
 
         } catch (\Exception $e) {
             // Handle any exceptions that occur during file upload or database saving
@@ -13927,7 +15207,7 @@ public function updateuserprofile(Request $request)
     // Validate the input data
     $validatedData = $request->validate([
         'user_id' => 'required|exists:users,id',
-        'profile_picture' => 'nullable|image|max:2048',
+        'profile_picture' => 'nullable|mimes:jpeg,jpg,png,gif,svg|max:2048', // MIME type validation added
         'phone' => 'required|string|max:15|unique:users,phone,' . $request->user_id,
         'backupemail' => 'nullable|email|unique:users,backupemail,' . $request->user_id,
     ]);
@@ -16188,7 +17468,7 @@ private function generateUniqueUsername($fname, $lname)
     //     return view('user.Document-Repository.document-repository', compact('cli_announcements', 'folders'));
     // }
 
-     public function docurepo()
+    public function docurepo()
     {
         
         $user = auth()->user();
@@ -17284,12 +18564,349 @@ $entriesinc9 = CommonTable::where('user_id', $user->id)
         $totalSizeKBSECSRRPB = round($totalSizeBytesSECSRRPB / 1024, 2);
         
 
+        $folderLocation = request()->query('folder');
+
+    // Ensure the parameter is not null or empty before proceeding
+
+
+    // Decode the folder parameter
+    $decodedFolderLocation = urldecode($folderLocation);
+
+    // Fetch entries from the database based on the user ID, is_delete status, location, and real_file_name
+    $entriesemponboard = CommonTable::where('user_id', $user->id)
+        ->where('is_delete', 0)
+        ->where('location', $decodedFolderLocation) // Use the decoded folder parameter here
+        ->where('real_file_name', 'Offer Letter')
+        ->get();
+            // dd($decodedFolderLocation);
+        $countemponboard = $entriesemponboard->count();
+        $totalSizeBytesemponboard = $entriesemponboard->sum('file_size');
+        $totalSizeKBemponboard = round($totalSizeBytesemponboard / 1024, 2);
+
+        // dd($totalSizeKBemponboard);
         
-        
-        
+       
         // sandeep end here 30 sept 2024
         
-        
+        $entriesemponboardal = CommonTable::where('user_id', $user->id)
+        ->where('is_delete', 0)
+        ->where('location', $decodedFolderLocation) // Use the decoded folder parameter here
+        ->where('real_file_name', 'Acceptance Letter')
+        ->get();
+            // dd($decodedFolderLocation);
+        $countemponboardal = $entriesemponboardal->count();
+        $totalSizeBytesemponboardal = $entriesemponboardal->sum('file_size');
+        $totalSizeKBemponboardal = round($totalSizeBytesemponboardal / 1024, 2);
+
+        $entriesemponboardea = CommonTable::where('user_id', $user->id)
+        ->where('is_delete', 0)
+        ->where('location', $decodedFolderLocation) // Use the decoded folder parameter here
+        ->where('real_file_name', 'Employment Agreement')
+        ->get();
+            // dd($decodedFolderLocation);
+        $countemponboardea = $entriesemponboardea->count();
+        $totalSizeBytesemponboardea = $entriesemponboardea->sum('file_size');
+        $totalSizeKBemponboardea = round($totalSizeBytesemponboardea / 1024, 2);
+
+
+        $entriesemponboardnda = CommonTable::where('user_id', $user->id)
+        ->where('is_delete', 0)
+        ->where('location', $decodedFolderLocation) // Use the decoded folder parameter here
+        ->where('real_file_name', 'Non Disclosure Agreement')
+        ->get();
+            // dd($decodedFolderLocation);
+        $countemponboardnda = $entriesemponboardnda->count();
+        $totalSizeBytesemponboardnda = $entriesemponboardnda->sum('file_size');
+        $totalSizeKBemponboardnda = round($totalSizeBytesemponboardnda / 1024, 2);
+
+        $entriesemponboardnc = CommonTable::where('user_id', $user->id)
+        ->where('is_delete', 0)
+        ->where('location', $decodedFolderLocation) // Use the decoded folder parameter here
+        ->where('real_file_name', 'Non-compete')
+        ->get();
+            // dd($decodedFolderLocation);
+        $countemponboardnc = $entriesemponboardnc->count();
+        $totalSizeBytesemponboardnc = $entriesemponboardnc->sum('file_size');
+        $totalSizeKBemponboardnc = round($totalSizeBytesemponboardnc / 1024, 2);
+
+
+        $entriesemponboardcb = CommonTable::where('user_id', $user->id)
+        ->where('is_delete', 0)
+        ->where('location', $decodedFolderLocation) // Use the decoded folder parameter here
+        ->where('real_file_name', 'Contractual Bond')
+        ->get();
+            // dd($decodedFolderLocation);
+        $countemponboardcb = $entriesemponboardcb->count();
+        $totalSizeBytesemponboardcb = $entriesemponboardcb->sum('file_size');
+        $totalSizeKBemponboardcb = round($totalSizeBytesemponboardcb / 1024, 2);
+
+
+        $entriesemponboardepf = CommonTable::where('user_id', $user->id)
+        ->where('is_delete', 0)
+        ->where('location', $decodedFolderLocation) // Use the decoded folder parameter here
+        ->where('real_file_name', 'Form 11 - EPF')
+        ->get();
+            // dd($decodedFolderLocation);
+        $countemponboardepf = $entriesemponboardepf->count();
+        $totalSizeBytesemponboardepf = $entriesemponboardepf->sum('file_size');
+        $totalSizeKBemponboardepf = round($totalSizeBytesemponboardepf / 1024, 2);
+
+
+        $entriesemponboardincometax = CommonTable::where('user_id', $user->id)
+        ->where('is_delete', 0)
+        ->where('location', $decodedFolderLocation) // Use the decoded folder parameter here
+        ->where('real_file_name', 'Form 12BB - Income Tax')
+        ->get();
+            // dd($decodedFolderLocation);
+        $countemponboardincometax = $entriesemponboardincometax->count();
+        $totalSizeBytesemponboardincometax = $entriesemponboardincometax->sum('file_size');
+        $totalSizeKBemponboardincometax = round($totalSizeBytesemponboardincometax / 1024, 2);
+
+
+        $entrieskycphoto = CommonTable::where('user_id', $user->id)
+        ->where('is_delete', 0)
+        ->where('location', $decodedFolderLocation) // Use the decoded folder parameter here
+        ->where('real_file_name', 'Photo')
+        ->get();
+            // dd($decodedFolderLocation);
+        $countkycphoto = $entrieskycphoto->count();
+        $totalSizeByteskycphoto = $entrieskycphoto->sum('file_size');
+        $totalSizeKBkycphoto = round($totalSizeByteskycphoto / 1024, 2);
+
+        $entrieskycaadhar = CommonTable::where('user_id', $user->id)
+        ->where('is_delete', 0)
+        ->where('location', $decodedFolderLocation) // Use the decoded folder parameter here
+        ->where('real_file_name', 'Aadhar KYC')
+        ->get();
+            // dd($decodedFolderLocation);
+        $countkycaadhar = $entrieskycaadhar->count();
+        $totalSizeByteskycaadhar = $entrieskycaadhar->sum('file_size');
+        $totalSizeKBkycaadhar = round($totalSizeByteskycaadhar / 1024, 2);
+
+
+        $entrieskycpan = CommonTable::where('user_id', $user->id)
+        ->where('is_delete', 0)
+        ->where('location', $decodedFolderLocation) // Use the decoded folder parameter here
+        ->where('real_file_name', 'PAN KYC')
+        ->get();
+            // dd($decodedFolderLocation);
+        $countkycpan = $entrieskycpan->count();
+        $totalSizeByteskycpan = $entrieskycpan->sum('file_size');
+        $totalSizeKBkycpan = round($totalSizeByteskycpan / 1024, 2);
+
+
+        $entrieskycaddressproof = CommonTable::where('user_id', $user->id)
+        ->where('is_delete', 0)
+        ->where('location', $decodedFolderLocation) // Use the decoded folder parameter here
+        ->where('real_file_name', 'Address Proof')
+        ->get();
+            // dd($decodedFolderLocation);
+        $countkycaddressproof = $entrieskycaddressproof->count();
+        $totalSizeByteskycaddressproof = $entrieskycaddressproof->sum('file_size');
+        $totalSizeKBkycaddressproof = round($totalSizeByteskycaddressproof / 1024, 2);
+
+
+        $entrieskyccontactdetails = CommonTable::where('user_id', $user->id)
+        ->where('is_delete', 0)
+        ->where('location', $decodedFolderLocation) // Use the decoded folder parameter here
+        ->where('real_file_name', 'Contact Details')
+        ->get();
+            // dd($decodedFolderLocation);
+        $countkyccontactdetails = $entrieskyccontactdetails->count();
+        $totalSizeByteskyccontactdetails = $entrieskyccontactdetails->sum('file_size');
+        $totalSizeKBkyccontactdetails = round($totalSizeByteskyccontactdetails  / 1024, 2);
+
+
+
+        $entrieshrpayrim = CommonTable::where('user_id', $user->id)
+        ->where('is_delete', 0)
+        ->where('location', $decodedFolderLocation) // Use the decoded folder parameter here
+        ->where('real_file_name', 'Reimbursement forms & Invoices')
+        ->get();
+            // dd($decodedFolderLocation);
+        $counthrpayrim = $entrieshrpayrim->count();
+        $totalSizeByteshrpayrim = $entrieshrpayrim->sum('file_size');
+        $totalSizeKBhrpayrim = round($totalSizeByteshrpayrim  / 1024, 2);
+
+        $entrieshrpayrimapprove = CommonTable::where('user_id', $user->id)
+        ->where('is_delete', 0)
+        ->where('location', $decodedFolderLocation) // Use the decoded folder parameter here
+        ->where('real_file_name', 'Approvals')
+        ->get();
+            // dd($decodedFolderLocation);
+        $counthrpayrimapprove = $entrieshrpayrimapprove->count();
+        $totalSizeByteshrpayrimapprove = $entrieshrpayrimapprove->sum('file_size');
+        $totalSizeKBhrpayrimapprove = round($totalSizeByteshrpayrimapprove  / 1024, 2);
+
+        $entrieshrempdec = CommonTable::where('user_id', $user->id)
+        ->where('is_delete', 0)
+        ->where('location', $decodedFolderLocation) // Use the decoded folder parameter here
+        ->where('real_file_name', 'Asset Declaration Forms')
+        ->get();
+            // dd($decodedFolderLocation);
+        $counthrhrempdec = $entrieshrempdec->count();
+        $totalSizeByteshrempdec = $entrieshrempdec->sum('file_size');
+        $totalSizeKBhrempdec = round($totalSizeByteshrempdec  / 1024, 2);
+
+        $entrieshrempdecmaster = CommonTable::where('user_id', $user->id)
+        ->where('is_delete', 0)
+        ->where('location', $decodedFolderLocation) // Use the decoded folder parameter here
+        ->where('real_file_name', 'Employee Master')
+        ->get();
+            // dd($decodedFolderLocation);
+        $counthrhrempdecmaster = $entrieshrempdecmaster->count();
+        $totalSizeByteshrempdecmaster = $entrieshrempdecmaster->sum('file_size');
+        $totalSizeKBhrempdecmaster = round($totalSizeByteshrempdecmaster  / 1024, 2);
+
+
+        $entrieshrpaymoney1 = CommonTable::where('user_id', $user->id)
+        ->where('is_delete', 0)
+        ->where('location', $decodedFolderLocation) // Use the decoded folder parameter here
+        ->where('real_file_name', 'Attendance log')
+        ->get();
+            // dd($decodedFolderLocation);
+        $counthrhrpaymoney1 = $entrieshrpaymoney1->count();
+        $totalSizeByteshrpaymoney1 = $entrieshrpaymoney1->sum('file_size');
+        $totalSizeKBhrpaymoney1 = round($totalSizeByteshrpaymoney1  / 1024, 2);
+
+
+        $entrieshrpaymoney2 = CommonTable::where('user_id', $user->id)
+        ->where('is_delete', 0)
+        ->where('location', $decodedFolderLocation) // Use the decoded folder parameter here
+        ->where('real_file_name', 'Variable pays')
+        ->get();
+            // dd($decodedFolderLocation);
+        $counthrhrpaymoney2 = $entrieshrpaymoney2->count();
+        $totalSizeByteshrpaymoney2 = $entrieshrpaymoney2->sum('file_size');
+        $totalSizeKBhrpaymoney2 = round($totalSizeByteshrpaymoney2  / 1024, 2);
+
+
+        $entrieshrpaymoney3 = CommonTable::where('user_id', $user->id)
+        ->where('is_delete', 0)
+        ->where('location', $decodedFolderLocation) // Use the decoded folder parameter here
+        ->where('real_file_name', 'Terminations/ Exits')
+        ->get();
+            // dd($decodedFolderLocation);
+        $counthrhrpaymoney3 = $entrieshrpaymoney3->count();
+        $totalSizeByteshrpaymoney3 = $entrieshrpaymoney3->sum('file_size');
+        $totalSizeKBhrpaymoney3 = round($totalSizeByteshrpaymoney3  / 1024, 2);
+
+
+        $entrieshrpaymoney4 = CommonTable::where('user_id', $user->id)
+        ->where('is_delete', 0)
+        ->where('location', $decodedFolderLocation) // Use the decoded folder parameter here
+        ->where('real_file_name', 'New Hires')
+        ->get();
+            // dd($decodedFolderLocation);
+        $counthrhrpaymoney4 = $entrieshrpaymoney4->count();
+        $totalSizeByteshrpaymoney4 = $entrieshrpaymoney4->sum('file_size');
+        $totalSizeKBhrpaymoney4 = round($totalSizeByteshrpaymoney4  / 1024, 2);
+
+
+        $entrieshrpaymoney5 = CommonTable::where('user_id', $user->id)
+        ->where('is_delete', 0)
+        ->where('location', $decodedFolderLocation) // Use the decoded folder parameter here
+        ->where('real_file_name', 'Attendance log')
+        ->get();
+            // dd($decodedFolderLocation);
+        $counthrhrpaymoney5 = $entrieshrpaymoney5->count();
+        $totalSizeByteshrpaymoney5 = $entrieshrpaymoney5->sum('file_size');
+        $totalSizeKBhrpaymoney5 = round($totalSizeByteshrpaymoney5  / 1024, 2);
+
+
+
+        $entrieshremppol1 = CommonTable::where('user_id', $user->id)
+        ->where('is_delete', 0)
+        ->where('location', $decodedFolderLocation) // Use the decoded folder parameter here
+        ->where('real_file_name', 'Policy')
+        ->get();
+            // dd($decodedFolderLocation);
+        $counthremppol1 = $entrieshremppol1->count();
+        $totalSizeByteshremppol1 = $entrieshremppol1->sum('file_size');
+        $totalSizeKBhremppol1 = round($totalSizeByteshremppol1  / 1024, 2);
+
+
+        $entrieshremppol2 = CommonTable::where('user_id', $user->id)
+        ->where('is_delete', 0)
+        ->where('location', $decodedFolderLocation) // Use the decoded folder parameter here
+        ->where('real_file_name', 'Grant Letters')
+        ->get();
+            // dd($decodedFolderLocation);
+        $counthremppol2 = $entrieshremppol2->count();
+        $totalSizeByteshremppol2 = $entrieshremppol2->sum('file_size');
+        $totalSizeKBhremppol2 = round($totalSizeByteshremppol2  / 1024, 2);
+
+
+        $entrieshremppol3 = CommonTable::where('user_id', $user->id)
+        ->where('is_delete', 0)
+        ->where('location', $decodedFolderLocation) // Use the decoded folder parameter here
+        ->where('real_file_name', 'Acceptance Letters')
+        ->get();
+            // dd($decodedFolderLocation);
+        $counthremppol3 = $entrieshremppol3->count();
+        $totalSizeByteshremppol3 = $entrieshremppol3->sum('file_size');
+        $totalSizeKBhremppol3 = round($totalSizeByteshremppol3  / 1024, 2);
+
+
+        $entrieshremppol4 = CommonTable::where('user_id', $user->id)
+        ->where('is_delete', 0)
+        ->where('location', $decodedFolderLocation) // Use the decoded folder parameter here
+        ->where('real_file_name', 'Nominations')
+        ->get();
+            // dd($decodedFolderLocation);
+        $counthremppol4 = $entrieshremppol4->count();
+        $totalSizeByteshremppol4 = $entrieshremppol4->sum('file_size');
+        $totalSizeKBhremppol4 = round($totalSizeByteshremppol4  / 1024, 2);
+
+
+
+        $entrieshroff1 = CommonTable::where('user_id', $user->id)
+        ->where('is_delete', 0)
+        ->where('location', $decodedFolderLocation) // Use the decoded folder parameter here
+        ->where('real_file_name', 'Resignation letter')
+        ->get();
+            // dd($decodedFolderLocation);
+        $counthroff1 = $entrieshroff1->count();
+        $totalSizeByteshroff1 = $entrieshroff1->sum('file_size');
+        $totalSizeKBhroff1 = round($totalSizeByteshroff1  / 1024, 2);
+
+
+        $entrieshroff2 = CommonTable::where('user_id', $user->id)
+        ->where('is_delete', 0)
+        ->where('location', $decodedFolderLocation) // Use the decoded folder parameter here
+        ->where('real_file_name', 'Experience Letter')
+        ->get();
+            // dd($decodedFolderLocation);
+        $counthroff2 = $entrieshroff2->count();
+        $totalSizeByteshroff2 = $entrieshroff2->sum('file_size');
+        $totalSizeKBhroff2 = round($totalSizeByteshroff2  / 1024, 2);
+
+
+        $entrieshroff3 = CommonTable::where('user_id', $user->id)
+        ->where('is_delete', 0)
+        ->where('location', $decodedFolderLocation) // Use the decoded folder parameter here
+        ->where('real_file_name', 'No Dues certificate')
+        ->get();
+            // dd($decodedFolderLocation);
+        $counthroff3 = $entrieshroff3->count();
+        $totalSizeByteshroff3 = $entrieshroff3->sum('file_size');
+        $totalSizeKBhroff3 = round($totalSizeByteshroff3  / 1024, 2);
+
+
+        $entrieshroff4 = CommonTable::where('user_id', $user->id)
+        ->where('is_delete', 0)
+        ->where('location', $decodedFolderLocation) // Use the decoded folder parameter here
+        ->where('real_file_name', 'Character certificate')
+        ->get();
+            // dd($decodedFolderLocation);
+        $counthroff4 = $entrieshroff4->count();
+        $totalSizeByteshroff4 = $entrieshroff4->sum('file_size');
+        $totalSizeKBhroff4 = round($totalSizeByteshroff4  / 1024, 2);
+
+
+
+
+
         
         $user = auth()->user();
          $userRole = $user->role; // Ensure 'role' field exists in the users table
@@ -17304,7 +18921,7 @@ $entriesinc9 = CommonTable::where('user_id', $user->id)
     $userRoleRecord = UserRole::where('role', $userRole)->first();
         
         
-        return view('docurepo', compact('totalSizeKBdirectorappointmentsdir3din','countdirectorappointmentsdir3din','cli_announcements','fileCount','fileCount1','user','commondataroom','countSECAASR','totalSizeKBSECAASR','countSECAAALA','totalSizeKBSECAAALA','countSECAACRCAA','totalSizeKBSECAACRCAA','countSECAALA','totalSizeKBSECAALA','countSECAAIA','totalSizeKBSECAAIA','countSECAABRAA','totalSizeKBSECAABRAA','countcharregPP','totalSizeKBcharregPP','countcharregLWFC','totalSizeKBcharregLWFC','countcharregPTC','totalSizeKBcharregPTC','countcharregESIC','totalSizeKBcharregESIC','countcharregPFC','totalSizeKBcharregPFC','countcharregTrademark','totalSizeKBcharregTrademark','countcharregMSME','totalSizeKBcharregMSME','countcharregGSTIN','totalSizeKBcharregGSTIN','countcharregtan','totalSizeKBcharregtan','countcharregpan','totalSizeKBcharregpan','countIncorporationSharecertifF',
+        return view('docurepo', compact('counthroff4','totalSizeKBhroff4','counthroff3','totalSizeKBhroff3','counthroff2','totalSizeKBhroff2','counthroff1','totalSizeKBhroff1','counthremppol4','totalSizeKBhremppol4','counthremppol3','totalSizeKBhremppol3','counthremppol2','totalSizeKBhremppol2','counthremppol1','totalSizeKBhremppol1','counthrhrpaymoney5','totalSizeKBhrpaymoney5','counthrhrpaymoney4','totalSizeKBhrpaymoney4','counthrhrpaymoney3','totalSizeKBhrpaymoney3','counthrhrpaymoney2','totalSizeKBhrpaymoney2','counthrhrpaymoney1','totalSizeKBhrpaymoney1','counthrhrempdecmaster','totalSizeKBhrempdecmaster','counthrhrempdec','totalSizeKBhrempdec','counthrpayrimapprove','totalSizeKBhrpayrimapprove','counthrpayrim','totalSizeKBhrpayrim','countkyccontactdetails','totalSizeKBkyccontactdetails','countkycaddressproof','totalSizeKBkycaddressproof','countkycpan','totalSizeKBkycpan','countkycaadhar','totalSizeKBkycaadhar','countkycphoto','totalSizeKBkycphoto','countemponboardincometax','totalSizeKBemponboardincometax','countemponboardepf','totalSizeKBemponboardepf','countemponboardcb','totalSizeKBemponboardcb','countemponboardnc','totalSizeKBemponboardnc','countemponboardnda','totalSizeKBemponboardnda','countemponboardea','totalSizeKBemponboardea','countemponboardal','totalSizeKBemponboardal','totalSizeKBemponboard','countemponboard','totalSizeKBdirectorappointmentsdir3din','countdirectorappointmentsdir3din','cli_announcements','fileCount','fileCount1','user','commondataroom','countSECAASR','totalSizeKBSECAASR','countSECAAALA','totalSizeKBSECAAALA','countSECAACRCAA','totalSizeKBSECAACRCAA','countSECAALA','totalSizeKBSECAALA','countSECAAIA','totalSizeKBSECAAIA','countSECAABRAA','totalSizeKBSECAABRAA','countcharregPP','totalSizeKBcharregPP','countcharregLWFC','totalSizeKBcharregLWFC','countcharregPTC','totalSizeKBcharregPTC','countcharregESIC','totalSizeKBcharregESIC','countcharregPFC','totalSizeKBcharregPFC','countcharregTrademark','totalSizeKBcharregTrademark','countcharregMSME','totalSizeKBcharregMSME','countcharregGSTIN','totalSizeKBcharregGSTIN','countcharregtan','totalSizeKBcharregtan','countcharregpan','totalSizeKBcharregpan','countIncorporationSharecertifF',
         'totalSizeKBIncorporationSharecertifF','countIncorporationTrustDeed'
         ,'totalSizeKBIncorporationTrustDeed','countIncorporationLLPAgreement',
         'totalSizeKBIncorporationLLPAgreement','countIncorporationPartnerdeed',
@@ -17628,6 +19245,7 @@ public function shareFolder(Request $request)
    public function fetchFolderContents(Request $request)
     {
           $folderPath = $request->get('folderName');
+          $folderPaths = preg_replace('/\//', ' / ', $folderPath);
         //   dd($folderPath);
     $sortOption = $request->get('sortOption');  // Get the selected sorting option
     
@@ -17670,9 +19288,11 @@ public function shareFolder(Request $request)
         $folderContents = ($sortOption === 'a-to-z') ? $folderContents->sortBy('name') : $folderContents->sortByDesc('name');
     }
 
-        $fileContents = CommonTable::where('location', $folderPath)->where('user_id', Auth::id())->where('is_delete', 0 )->get();
+
+        $fileContents = CommonTable::where('location', $folderPaths)->where('user_id', Auth::id())->where('is_delete', 0 )->get();
         // dd($fileContents);
-        $foldername = "Incorporation";
+        // Legal/Secretarial/Board Meetings
+        // dd($folderPath);
         $files = UploadedFile::all();
         // Generate the HTML for folders
           if (!$folderContents->isEmpty()) {
@@ -17975,6 +19595,36 @@ public function shareFolder(Request $request)
     
         return response()->json(['folderHtml' => $folderHtml,  'fileHtml' => $fileHtml]);
     }
+//     public function downloadFolders(Request $request)
+// {
+//     $folderId = $request->input('folder_id');
+//     $folderPath = $request->input('folder_path');
+
+//     // Define the folder's full path
+//     $folder = Storage::disk('local')->path($folderPath);
+
+//     // Create a zip file
+//     $zipFileName = 'folder_' . $folderId . '.zip';
+//     $zipFilePath = storage_path('app/public/' . $zipFileName);
+
+//     $zip = new ZipArchive;
+//     if ($zip->open($zipFilePath, ZipArchive::CREATE | ZipArchive::OVERWRITE) === true) {
+//         $files = new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator($folder));
+
+//         foreach ($files as $file) {
+//             // Skip directories (they would be added automatically)
+//             if (!$file->isDir()) {
+//                 $filePath = $file->getRealPath();
+//                 // Add the file to the zip, preserving the folder structure
+//                 $relativePath = substr($filePath, strlen($folder) + 1);
+//                 $zip->addFile($filePath, $relativePath);
+//             }
+//         }
+//         $zip->close();
+//     }
+
+//     return response()->download($zipFilePath)->deleteFileAfterSend(true);
+// }
     public function showfile($id)
     {
         // Get the authenticated user's ID
@@ -18003,18 +19653,19 @@ public function shareFolder(Request $request)
     public function downloadFolder($folderPath)
 {
     // Decode the folder path since it was URL-encoded in the request
-    $folderPath = urldecode($folderPath);
+    $folderPaths = $folderPath;
     
     // Fetch the folder based on the folder path
-    $folder = Folder::where('path', $folderPath)->first();
+    $folder = Folder::where('id', $folderPaths)->first();
+    // dd($folder);
     
     if (!$folder) {
-        \Log::error("Folder not found for path: " . $folderPath);
+        \Log::error("Folder not found for path: " . $folderPaths);
         return response()->json(['success' => false, 'message' => 'Folder not found.']);
     }
 
     // Create a unique ZIP file name using folder id or name
-    $zipFileName = 'folder_' . $folder->id . '.zip'; // Unique ZIP filename
+    $zipFileName = $folder->name . $folder->id . '.zip'; // Unique ZIP filename
     $zipFilePath = storage_path('app/public/' . $zipFileName); // Save in the storage/app/public directory
 
     // Initialize the ZipArchive object
@@ -18027,7 +19678,7 @@ public function shareFolder(Request $request)
     }
 
     // Recursively add the folder and its contents to the ZIP file
-    $folderFullPath = storage_path('app/' . $folderPath);
+    $folderFullPath = storage_path('app/' . $folder->path);
     if (is_dir($folderFullPath)) {
         $this->addFolderToZip($zip, $folderFullPath, $folder->name);
     } else {
@@ -18057,20 +19708,20 @@ public function shareFolder(Request $request)
  * @param string $folderPath The path to the folder being added.
  * @param string $folderName The name to be used inside the ZIP.
  */
-private function addFolderToZip($zip, $folderPath, $folderName)
+private function addFolderToZip($zip, $folderPaths, $folderName)
 {
     // Add the folder itself
     $zip->addEmptyDir($folderName);
 
     // Get the files and subfolders inside this folder
-    $files = scandir($folderPath);
+    $files = scandir($folderPaths);
 
     foreach ($files as $file) {
         if ($file == '.' || $file == '..') {
             continue; // Skip special directories
         }
 
-        $filePath = $folderPath . '/' . $file;
+        $filePath = $folderPaths . '/' . $file;
         $zipPath = $folderName . '/' . $file; // Path inside the ZIP
 
         if (is_dir($filePath)) {
@@ -18410,7 +20061,7 @@ public function downloadFile($id)
 
     public function uploadFile(Request $request)
     {
-    
+    // dd($request);
     
         // Validate the request
         $request->validate([
@@ -18425,6 +20076,7 @@ public function downloadFile($id)
     
         // Check if folder path is provided
         $folderPath = $request->input('parent_folder');
+        $folderPaths = preg_replace('/\s*\/\s*/', ' / ', $folderPath);
         // if (!$folderPath) {
         //     return response()->json(['success' => false, 'message' => 'Folder path is required.'], 400);
         // }
@@ -18472,7 +20124,7 @@ public function downloadFile($id)
                             'fyear' => $request->input('fyear'),
                             'month' => $request->input('Month'),
                             'tags' => $tags, // Store tags as JSON
-                            'location' => $folderPath,
+                            'location' => $folderPaths,
                             'descp' => $request->input('desc'),
                         ]);
     

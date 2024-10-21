@@ -880,7 +880,7 @@ Read the policy <a data-bs-toggle="modal" data-bs-target="#term_regester">Click 
 }
 
 .iframe_contennt {
-    height: 100vh;
+    height: 100%;
     position: relative;
 }
 .iframe_contennt embed {
@@ -901,6 +901,10 @@ Read the policy <a data-bs-toggle="modal" data-bs-target="#term_regester">Click 
     justify-content: center;
     padding: 40px 0px;
     gap: 0px 10px;
+    position: sticky;
+    bottom: -2px;
+    background: #ffffff;
+    box-shadow: 0px 0px 20px rgba(1, 41, 112, 0.1);
 }
 
 .btn_access_reg button {
