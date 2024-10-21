@@ -794,52 +794,55 @@ public function storecompanyemployee(Request $request)
     ]);
 
     $employeeName = $request->name;
-   
-
+    // $userId = $request->user_id;  // Assuming this comes from the request
+    
     // Get current year and month
     $currentYear = now()->year;
     $currentMonth = now()->format('F'); // Full month name (e.g., 'October')
-
+    
     // Determine fiscal year
     if (now()->month < 4) {
         $fiscalYear = ($currentYear - 1) . '-' . $currentYear;
     } else {
         $fiscalYear = $currentYear . '-' . ($currentYear + 1);
     }
-
-    // Step 1: Create Human Resources folder
-    $hrFolderName = "{$fiscalYear}{$currentMonth}{$userId}_Human Resources";
+    
+    // Step 1: Create a common Human Resources folder for all users
+    $hrFolderName = "{$fiscalYear}{$currentMonth}0_Human Resources";  // Common folder for all users
     $hrFolderPath = "{$hrFolderName}";
-
+    
+    // Check if Human Resources folder exists and create it if not
     if (!Storage::exists($hrFolderPath)) {
         Storage::makeDirectory($hrFolderPath);
-        // Store in database
+    
+        // Store the folder details in the database (if necessary)
         $hrFolder = new Folder();
         $hrFolder->name = basename($hrFolderPath);
         $hrFolder->path = $hrFolderPath;
         $hrFolder->parent_name = null;
-        $hrFolder->user_id = $userId;
+        $hrFolder->user_id =  $userId;  // No specific user; common for all
         $hrFolder->common_folder = 1;
         $hrFolder->save();
     }
-
+    
     // Step 2: Create Employee folder inside Human Resources folder
     $employeeFolderName = "{$fiscalYear}{$currentMonth}{$userId}_{$employeeName}";
     $employeeFolderPath = "{$hrFolderPath}/{$employeeFolderName}";
-
+    
+    // Check if Employee folder exists and create it if not
     if (!Storage::exists($employeeFolderPath)) {
         Storage::makeDirectory($employeeFolderPath);
-        // Store in database
+    
+        // Store the Employee folder details in the database
         $employeeFolder = new Folder();
         $employeeFolder->name = basename($employeeFolderPath);
         $employeeFolder->path = $employeeFolderPath;
         $employeeFolder->parent_name = $hrFolderPath;
         $employeeFolder->user_id = $userId;
-        $employeeFolder->common_folder = 1;
         $employeeFolder->save();
     }
-
-    // Define the folder structures for Employee Database, Pay Registers, Policies & Handbook, and Appraisals
+    
+    // Step 3: Create subfolders dynamically within Employee folder
     $folders = [
         'Employee Database' => [
             'Onboarding documents',
@@ -869,36 +872,38 @@ public function storecompanyemployee(Request $request)
             'KRAs and OKRs',
         ],
     ];
-
-    // Create folders dynamically based on the defined structure
+    
+    // Loop through the folders and create them if they don't exist
     foreach ($folders as $mainFolder => $subFolders) {
         $mainFolderPath = "{$employeeFolderPath}/{$fiscalYear}{$currentMonth}{$userId}_{$mainFolder}";
-
+    
         if (!Storage::exists($mainFolderPath)) {
             Storage::makeDirectory($mainFolderPath);
-            // Store in database
+    
+            // Store the main folder details in the database
             $mainFolderDb = new Folder();
             $mainFolderDb->name = basename($mainFolderPath);
             $mainFolderDb->path = $mainFolderPath;
             $mainFolderDb->parent_name = $employeeFolderPath;
             $mainFolderDb->user_id = $userId;
-            $mainFolderDb->common_folder = 1;
+            // $mainFolderDb->common_folder = 1;
             $mainFolderDb->save();
         }
-
+    
         // Create subfolders inside each main folder
         foreach ($subFolders as $subFolder) {
             $subFolderPath = "{$mainFolderPath}/{$fiscalYear}{$currentMonth}{$userId}_{$subFolder}";
-
+    
             if (!Storage::exists($subFolderPath)) {
                 Storage::makeDirectory($subFolderPath);
-                // Store in database
+    
+                // Store the subfolder details in the database
                 $subFolderDb = new Folder();
                 $subFolderDb->name = basename($subFolderPath);
                 $subFolderDb->path = $subFolderPath;
                 $subFolderDb->parent_name = $mainFolderPath;
                 $subFolderDb->user_id = $userId;
-                $subFolderDb->common_folder = 1;
+                // $subFolderDb->common_folder = 1;
                 $subFolderDb->save();
             }
         }
@@ -1131,7 +1136,7 @@ protected function createFolderStructure($employeeName, $userId)
     }
 
     // Step 1: Create Human Resources folder
-    $hrFolderName = "{$fiscalYear}{$currentMonth}{$userId}_Human Resources";
+    $hrFolderName = "{$fiscalYear}{$currentMonth}0_Human Resources";
     $hrFolderPath = "{$hrFolderName}";
 
     if (!Storage::exists($hrFolderPath)) {
@@ -1158,7 +1163,7 @@ protected function createFolderStructure($employeeName, $userId)
         $employeeFolder->path = $employeeFolderPath;
         $employeeFolder->parent_name = $hrFolderPath;
         $employeeFolder->user_id = $userId;
-        $employeeFolder->common_folder = 1;
+        // $employeeFolder->common_folder = 1;
         $employeeFolder->save();
     }
 
@@ -1205,7 +1210,7 @@ protected function createFolderStructure($employeeName, $userId)
             $mainFolderDb->path = $mainFolderPath;
             $mainFolderDb->parent_name = $employeeFolderPath;
             $mainFolderDb->user_id = $userId;
-            $mainFolderDb->common_folder = 1;
+            // $mainFolderDb->common_folder = 1;
             $mainFolderDb->save();
         }
 
@@ -1221,7 +1226,7 @@ protected function createFolderStructure($employeeName, $userId)
                 $subFolderDb->path = $subFolderPath;
                 $subFolderDb->parent_name = $mainFolderPath;
                 $subFolderDb->user_id = $userId;
-                $subFolderDb->common_folder = 1;
+                // $subFolderDb->common_folder = 1;
                 $subFolderDb->save();
             }
         }
@@ -15202,7 +15207,7 @@ public function updateuserprofile(Request $request)
     // Validate the input data
     $validatedData = $request->validate([
         'user_id' => 'required|exists:users,id',
-        'profile_picture' => 'nullable|image|max:2048',
+        'profile_picture' => 'nullable|mimes:jpeg,jpg,png,gif,svg|max:2048', // MIME type validation added
         'phone' => 'required|string|max:15|unique:users,phone,' . $request->user_id,
         'backupemail' => 'nullable|email|unique:users,backupemail,' . $request->user_id,
     ]);

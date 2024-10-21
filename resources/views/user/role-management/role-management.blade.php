@@ -485,10 +485,22 @@ function fetchUsersByRole(role, tabId) {
         if (users.length > 0) {
             var userHtml = '';
             $.each(users, function(index, user) {
+                var profilePictureHtml;
+            
+            // If profile picture exists, show image; otherwise, show the first letter of the name in a circle.
+            if (user.profile_picture) {
+                profilePictureHtml = `<img src="{{ asset('uploads/profile_images/') }}/${user.profile_picture}" alt="Profile Picture">`;
+            } else {
+                var firstLetter = user.name.charAt(0).toUpperCase(); // Get the first letter of the user's name
+                profilePictureHtml = `
+                    <div class="name-initial" style="width: 40px; height: 40px; border-radius: 50%; background-color: #ccc; color: #fff; display: flex; align-items: center; justify-content: center; font-size: 20px; font-weight: bold;">
+                        ${firstLetter}
+                    </div>`;
+            }
                 userHtml += `
                 <li><div class="left_embers_detail">
         <div class="ig_mem">
-         <img src="${user.profile_picture ? '{{ asset('uploads/profile_images/') }}'+'/' + user.profile_picture : '{{ asset('assets/images/default.png') }}'}" alt="Profile Picture">
+          ${profilePictureHtml}
 </div>
 <h3>${user.name}</h3>
 <b>|</b>
