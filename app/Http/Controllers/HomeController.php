@@ -186,6 +186,7 @@ use App\Models\DataRoom;
 use MailerSend\MailerSend;
 use MailerSend\Helpers\Builder\Recipient;
 use MailerSend\Helpers\Builder\EmailParams;
+use MailerSend\Helpers\Builder\SmsParams;
 
 
 use App\Models\Tasks;
@@ -14805,21 +14806,39 @@ public function PredefinedCommonUploadFiles(Request $request)
 
             // Compile overall success message
             $user = auth()->user();
-    //         $entries = CommonTable::where('user_id', $user->id)
-    // ->where('is_delete', 0)
-    // ->where('location', $request->input('location'))
-    // ->where('real_file_name', $request->input('real_file_name'))
-    // ->get();
-    //         $count = $entries->count();
+            $entries = CommonTable::where('user_id', $user->id)
+            ->where('is_delete', 0)
+            ->where('location', $request->input('location'))
+            ->where('real_file_name', $request->input('real_file_name'))
+            ->get();
+            $count = $entries->count();
+            $totalFileSize = $entries->sum('file_size');
+
+            $totalSizeKB = round($totalFileSize / 1024, 2); // Convert to KB
+
+            if ($totalSizeKB > 1024) {
+                $totalSizeMB = round($totalSizeKB / 1024, 2); // Convert to MB
+                if ($totalSizeMB > 1024) {
+                    $totalSizeGB = round($totalSizeMB / 1024, 2); // Convert to GB
+                    $totalSizef = $totalSizeGB . ' GB';
+                } else {
+                    $totalSizef = $totalSizeMB . ' MB';
+                }
+            } else {
+                $totalSizef = $totalSizeKB . ' KB';
+            }
+            
+            
             
             // return redirect()->back()->with('success2', 'File Uploaded successfully.');
 
             return response()->json([
                 'success' => true,
-                // 'count' => $count,
-                'totalSize' => $totalSize,
+                'count' => $count,
+                'totalSize' => $totalSizef,
                 'successMessages' => $successMessages,
                 'errorMessages' => $errorMessages,
+                'real_file_name' => $request->input('real_file_name'),
             ]);
 
         } catch (\Exception $e) {
@@ -19253,11 +19272,14 @@ public function shareFolder(Request $request)
 
     // Base query for fetching folders
     $commonFoldersQuery = Folder::where('parent_name', $folderPath)
-                                ->where('common_folder', 1);
+                                ->where('common_folder', 1)
+                                ->where('real_file_name', NULL);
+
 
                                 $userFoldersQuery = Folder::where('parent_name', $folderPath)
                                 ->where('user_id', Auth::id())
-                                ->where('is_delete', 0);
+                                ->where('is_delete', 0)
+                                ->where('real_file_name', NULL);
 
     // Apply sorting logic based on the selected sort option
     switch ($sortOption) {
@@ -19927,21 +19949,21 @@ public function downloadFile($id)
     public function createFolder(Request $request)
     {
         
-        $request->validate([
-            'folder_name' => ['required', 'regex:/^[a-zA-Z0-9\s\-\(\):]+$/'],
-            // 'parent_folder' => ['nullable', 'regex:/^[a-zA-Z0-9\s\/&_]+$/'],
-            // 'parent_folder' =>  ['nullable', 'regex:/^(\/?(?:\d{4}-\d{4}(January|February|March|April|May|June|July|August|September|October|November|December)\d+_[a-zA-Z0-9]+))*$/'],
-            // 'parent_folder' =>  ['nullable', 'regex:/^(\/?(?:\d{4}-\d{4}(January|February|March|April|May|June|July|August|September|October|November|December)\d+_[a-zA-Z0-9]+|[a-zA-Z0-9\s&]+))*$/'],
-            // 'parent_folder' =>  ['nullable', 'regex:/^(\/?(?:\d{4}-\d{4}(January|February|March|April|May|June|July|August|September|October|November|December)\d+_[a-zA-Z0-9-]+|[a-zA-Z0-9\s&]+))*$/'],
-            'parent_folder' =>  ['nullable','regex:/^(\/?(?:\d{4}-\d{4}(January|February|March|April|May|June|July|August|September|October|November|December)\d+_[a-zA-Z0-9\-\(\):]+|[a-zA-Z0-9\s&\(\):]+))*$/'],
-            'fyear' => ['required', 'regex:/^\d{4}-\d{4}$/'], // Ensures format like "2013-2014"
-            'Month' => ['required', 'in:January,February,March,April,May,June,July,August,September,October,November,December'], // Ensures a valid month name
-        ],
-        ['parent_folder.regex' => 'The parent folder must follow the specified format: either a year-month format or a simple folder name.',
-         'folder_name.regex' => 'The folder name can only contain letters, numbers, spaces, and hyphens.',
-         'fyear.regex' => 'The financial year must be in the format "YYYY-YYYY", e.g., "2023-2024".',
-         'Month.regex' => 'The Month must be in the format e.g., "January".',
-         ]);
+        // $request->validate([
+        //     'folder_name' => ['required', 'regex:/^[a-zA-Z0-9\s\-\(\):]+$/'],
+        //     // 'parent_folder' => ['nullable', 'regex:/^[a-zA-Z0-9\s\/&_]+$/'],
+        //     // 'parent_folder' =>  ['nullable', 'regex:/^(\/?(?:\d{4}-\d{4}(January|February|March|April|May|June|July|August|September|October|November|December)\d+_[a-zA-Z0-9]+))*$/'],
+        //     // 'parent_folder' =>  ['nullable', 'regex:/^(\/?(?:\d{4}-\d{4}(January|February|March|April|May|June|July|August|September|October|November|December)\d+_[a-zA-Z0-9]+|[a-zA-Z0-9\s&]+))*$/'],
+        //     // 'parent_folder' =>  ['nullable', 'regex:/^(\/?(?:\d{4}-\d{4}(January|February|March|April|May|June|July|August|September|October|November|December)\d+_[a-zA-Z0-9-]+|[a-zA-Z0-9\s&]+))*$/'],
+        //     'parent_folder' =>  ['nullable','regex:/^(\/?(?:\d{4}-\d{4}(January|February|March|April|May|June|July|August|September|October|November|December)\d+_[a-zA-Z0-9\-\(\):]+|[a-zA-Z0-9\s&\(\):]+))*$/'],
+        //     'fyear' => ['required', 'regex:/^\d{4}-\d{4}$/'], // Ensures format like "2013-2014"
+        //     'Month' => ['required', 'in:January,February,March,April,May,June,July,August,September,October,November,December'], // Ensures a valid month name
+        // ],
+        // ['parent_folder.regex' => 'The parent folder must follow the specified format: either a year-month format or a simple folder name.',
+        //  'folder_name.regex' => 'The folder name can only contain letters, numbers, spaces, and hyphens.',
+        //  'fyear.regex' => 'The financial year must be in the format "YYYY-YYYY", e.g., "2023-2024".',
+        //  'Month.regex' => 'The Month must be in the format e.g., "January".',
+        //  ]);
         
         $folderName = $request->input('folder_name');
         $new_folderName = $request->input('fyear').$request->input('Month').Auth::id()."_".$folderName;
@@ -22456,15 +22478,57 @@ public function ticktingdetails()
 
 public function sendOtp(Request $request)
     {
+        // Validate the phone number
+        $request->validate([
+            'phone' => 'required',
+        ]);
+// dd($request);
+        $phoneNumber = $request->input('phone');
+        $phoneNumber = preg_replace('/\s+/', '', $phoneNumber); // Remove spaces
        
-        $otp = $request->input('otp');
-
         
-       $sessionotp =  $request->session()->put('otp', $otp);
-
+        // Add country code if not present
+        if (substr($phoneNumber, 0, 2) !== '91' && substr($phoneNumber, 0, 1) !== '+') {
+            $phoneNumber = '+91' . $phoneNumber; // Prepend +91 for Indian numbers
+        }
         
+        // Validate the phone number format
+        if (!preg_match('/^\+91\d{10}$/', $phoneNumber)) {
+            return response()->json(['error' => 'Invalid phone number format.'], 400);
+        }
+
+
+
+        // Initialize MailerSend with the API key
+        $mailersend = new MailerSend(['api_key' => 'mlsn.6f53e35987ae3b1eda59fb972692d11b6a6169abf5fe123df15969ba2298e7e2']);
         
 
-        return response()->json(['success' => true, 'message' => 'OTP sent successfully']);
+        // Generate OTP (example: 6-digit random number)
+        $otp = rand(100000, 999999);
+
+        // Store OTP in session or database if required (for verification)
+        session(['otp' => $otp]);
+        // dd($phoneNumber);
+        // Build SMS params
+    
+
+       // Build SMS params
+$smsParams = (new SmsParams())
+->setFrom('+18332552485') // Ensure this is a valid sender number
+// ->setTo($phoneNumber) // Use setTo for all recipients
+->addRecipient($phoneNumber)
+->setText('Text'); // Include the OTP in the message text
+// dd($smsParams);
+// Send SMS
+try {
+$sms = $mailersend->sms->send($smsParams);
+// Handle success (e.g., log the response, show a success message)
+} catch (\MailerSend\Exceptions\MailerSendValidationException $e) {
+// Handle validation error (log the error message)
+dd($e->getMessage());
+} catch (\Exception $e) {
+// Handle general errors
+dd($e->getMessage());
+}
     }
 }

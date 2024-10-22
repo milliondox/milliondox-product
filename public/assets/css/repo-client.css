@@ -1357,7 +1357,8 @@ ul.dropdown-menu .toggle_icconn {
 }
 
 .all_locations .customulli {
-    height: 15vh;
+    max-height: 15vh;
+    min-height: 50px;
     overflow: auto;
     border: 1px solid #646464;
     border-radius: 0px;
@@ -2636,6 +2637,26 @@ ul.dropdown-menu {
     background: #5f5f5f;
     border-color: #424242;
     right: 0 !important;
+    flex-wrap: wrap;
+    z-index: 999;
+}
+
+.depo-ress .setting_munal .setting_opt .need_hellp {
+    margin-bottom: 10px;
+}
+
+.depo-ress .setting_munal .setting_opt .need_hellp svg {
+    width: 25px !important;
+    height: 25px ! IMPORTANT;
+}
+
+.depo-ress .setting_munal .setting_opt .need_hellp svg path {
+    stroke: #c8c8c8;
+    fill: none ! IMPORTANT;
+}
+
+.dark-only .depo-ress .setting_munal .setting_opt .need_hellp svg path {
+    stroke: #737372;
 }
 
 .depo-ress .volt_headd-filter {
