@@ -14805,21 +14805,22 @@ public function PredefinedCommonUploadFiles(Request $request)
 
             // Compile overall success message
             $user = auth()->user();
-    //         $entries = CommonTable::where('user_id', $user->id)
-    // ->where('is_delete', 0)
-    // ->where('location', $request->input('location'))
-    // ->where('real_file_name', $request->input('real_file_name'))
-    // ->get();
-    //         $count = $entries->count();
+            $entries = CommonTable::where('user_id', $user->id)
+            ->where('is_delete', 0)
+            ->where('location', $request->input('location'))
+            ->where('real_file_name', $request->input('real_file_name'))
+            ->get();
+            $count = $entries->count();
             
             // return redirect()->back()->with('success2', 'File Uploaded successfully.');
 
             return response()->json([
                 'success' => true,
-                // 'count' => $count,
+                'count' => $count,
                 'totalSize' => $totalSize,
                 'successMessages' => $successMessages,
                 'errorMessages' => $errorMessages,
+                'real_file_name' => $request->input('real_file_name'),
             ]);
 
         } catch (\Exception $e) {
@@ -19253,11 +19254,14 @@ public function shareFolder(Request $request)
 
     // Base query for fetching folders
     $commonFoldersQuery = Folder::where('parent_name', $folderPath)
-                                ->where('common_folder', 1);
+                                ->where('common_folder', 1)
+                                ->where('real_file_name', NULL);
+
 
                                 $userFoldersQuery = Folder::where('parent_name', $folderPath)
                                 ->where('user_id', Auth::id())
-                                ->where('is_delete', 0);
+                                ->where('is_delete', 0)
+                                ->where('real_file_name', NULL);
 
     // Apply sorting logic based on the selected sort option
     switch ($sortOption) {

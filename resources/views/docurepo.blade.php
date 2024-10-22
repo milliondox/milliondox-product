@@ -5538,7 +5538,13 @@ function handleFolderPath(folderPath) {
 
 
 
+    // let clickedButton = null; // Variable to store the clicked button
 
+    // // Capture the click event on the element with class .getparm
+    // $('.getparm').on('click', function() {
+    //     clickedButton = $(this); // Store the clicked button reference
+    //     console.log("Clicked element stored:", clickedButton); // Debugging log
+    // });
 
     $('#common_file_upload_form').on('submit', function(e) {
         e.preventDefault();
@@ -5547,13 +5553,15 @@ function handleFolderPath(folderPath) {
         $('.side_panel_wraap').removeClass('active');
         $('.side_panel_wraap_overlay').removeClass('active');
 
+
+
+
         
         let files = $('#fileCommon')[0].files;
         let xhrRequests = {}; // Change to an object to use unique identifiers as keys
         // let xhrRequests = []; // Array to hold XMLHttpRequest objects for cancellation
         isUploading = true; // Set flag to true when upload starts
 
-        
         
         $.each(files, function(i, file) {
             let individualFormData = new FormData(); // Create a new FormData for each file
@@ -5600,6 +5608,20 @@ function handleFolderPath(folderPath) {
                         updateSuccessCount(); // Update the displayed success count
                         $(`#progress_${currentFileIndex} .cancle_file`).hide(); // Hide cancel button on success
                         $(`#progress_${currentFileIndex} .done_tick`).show(); // Hide cancel button on success
+                        // $('.getparm').find('svg').next('span').children('span').text(response.count);
+
+                        // $('.comm_count').text(response.count);
+                        // $('.comm_size').text(response.totalSize);
+
+                        // Find the <td> with "Offer Letter" text
+                        let $offerLetterRow = $('td').filter(function() {
+                            return $(this).text().trim() === response.real_file_name; // response.real_file_name should match "Offer Letter"
+                        }).closest('tr'); // Get the closest row (tr) that contains the td
+
+                        // Update the .comm_count and .comm_size in the same row
+                        $offerLetterRow.find('.comm_count').text(response.count);
+                        $offerLetterRow.find('.comm_size').text(response.totalSize + ' KB');
+
 
                         activeUploads[currentFileIndex] = false; // Mark this file as completed
                         checkAllUploadsComplete(); // Check if all uploads are done
@@ -5625,6 +5647,10 @@ function handleFolderPath(folderPath) {
             // globalFileIndex++; // Increment global index for the next file
         });
 
+        $('#common_file_upload_pop .close').click();    
+
+        
+
         // Store the requests globally to be able to cancel them
         window.xhrRequests = xhrRequests;
     });
@@ -5637,8 +5663,6 @@ function handleFolderPath(folderPath) {
         $('#common_file_upload_pop_bank').modal('hide');
         $('.side_panel_wraap').removeClass('active');
         $('.side_panel_wraap_overlay').removeClass('active');
-
-        // $('.close').click();
 
         
         let files = $('#fileCommonB')[0].files;
@@ -5714,6 +5738,9 @@ function handleFolderPath(folderPath) {
             // xhrRequests.push(xhr); // Store the xhr object in the array
             // globalFileIndex++; // Increment global index for the next file
         });
+
+        $('#common_file_upload_pop_bank .close').click(); 
+
 
         // Store the requests globally to be able to cancel them
         window.xhrRequests = xhrRequests;
@@ -5838,6 +5865,8 @@ $('#upload-file-form').on('submit', function(e) {
     // Access the file input element and its files
     var fileInput = $('#fileU')[0]; // Ensure this matches your file input field
     var files = fileInput.files; // Get all the selected files
+
+    // $('#upload_filee .close').click(); 
     
     // Check if files are selected
     if (files.length === 0) {
@@ -5873,6 +5902,7 @@ $('#upload-file-form').on('submit', function(e) {
 
         // Append the individual file to FormData as 'files[]'
         formData.append('files[]', file);
+
 
         let xhrUpload = $.ajax({
             url: $('#upload-file-form').attr('action'), // URL from the form's action attribute
@@ -5928,7 +5958,7 @@ $('#upload-file-form').on('submit', function(e) {
                     let response = JSON.parse(xhr.responseText);
                     toastr.error('Error: ' + response.message);
                 } else {
-                    // toastr.error('An unknown error occurred.');
+                    toastr.error('Something went wrong during upload.');
                 }
                 activeUploads[currentFileIndex] = false; // Mark this file as completed or failed
                     checkAllUploadsComplete1(); // Check if all uploads are done
@@ -5939,6 +5969,9 @@ $('#upload-file-form').on('submit', function(e) {
         // Store the xhr request to allow cancellation later
         xhrRequests[currentFileIndex] = xhrUpload;
     });
+
+    $('#upload_filee .close').click(); 
+
 
     // Function to add progress bar for each file
     function addProgressIndicator1(fileName, index) {
@@ -8392,7 +8425,9 @@ document.addEventListener("DOMContentLoaded", function() {
             const form = $(this);
             if (!areAllRequiredFieldsFilled(form)) {
                 e.preventDefault();
-                toastr.error('Please fill out all required fields before submitting.'); // Display error toaster message
+                // toastr.error('Please fill out all required fields before submitting.'); // Display error toaster message
+                // above toastr line commented by sandeep because button is already disabled 
+                // until all form fields are filled and its shows an error while we reset the form after submit request
             } else {
                 // Disable the submit button after form submission to prevent double submit
                 const submitButton = form.find('button[type="submit"], input[type="submit"]');
@@ -8525,7 +8560,7 @@ checkFolderConditions();
                 // Dynamically set the 'data-location' attribute on the button element
                 $('.getparm').attr('data-location', decodedFolder);
                 
-                console.log("Decoded Folder Path: ", decodedFolder); // For debugging
+                // console.log("Decoded Folder Path: ", decodedFolder); // For debugging
             } else {
                 console.log('No folder parameter found in the URL.');
             }
