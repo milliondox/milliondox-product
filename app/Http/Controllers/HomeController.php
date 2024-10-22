@@ -186,6 +186,7 @@ use App\Models\DataRoom;
 use MailerSend\MailerSend;
 use MailerSend\Helpers\Builder\Recipient;
 use MailerSend\Helpers\Builder\EmailParams;
+use MailerSend\Helpers\Builder\SmsParams;
 
 
 use App\Models\Tasks;
@@ -22460,15 +22461,57 @@ public function ticktingdetails()
 
 public function sendOtp(Request $request)
     {
+        // Validate the phone number
+        $request->validate([
+            'phone' => 'required',
+        ]);
+// dd($request);
+        $phoneNumber = $request->input('phone');
+        $phoneNumber = preg_replace('/\s+/', '', $phoneNumber); // Remove spaces
        
-        $otp = $request->input('otp');
-
         
-       $sessionotp =  $request->session()->put('otp', $otp);
-
+        // Add country code if not present
+        if (substr($phoneNumber, 0, 2) !== '91' && substr($phoneNumber, 0, 1) !== '+') {
+            $phoneNumber = '+91' . $phoneNumber; // Prepend +91 for Indian numbers
+        }
         
+        // Validate the phone number format
+        if (!preg_match('/^\+91\d{10}$/', $phoneNumber)) {
+            return response()->json(['error' => 'Invalid phone number format.'], 400);
+        }
+
+
+
+        // Initialize MailerSend with the API key
+        $mailersend = new MailerSend(['api_key' => 'mlsn.6f53e35987ae3b1eda59fb972692d11b6a6169abf5fe123df15969ba2298e7e2']);
         
 
-        return response()->json(['success' => true, 'message' => 'OTP sent successfully']);
+        // Generate OTP (example: 6-digit random number)
+        $otp = rand(100000, 999999);
+
+        // Store OTP in session or database if required (for verification)
+        session(['otp' => $otp]);
+        // dd($phoneNumber);
+        // Build SMS params
+    
+
+       // Build SMS params
+$smsParams = (new SmsParams())
+->setFrom('+18332552485') // Ensure this is a valid sender number
+// ->setTo($phoneNumber) // Use setTo for all recipients
+->addRecipient($phoneNumber)
+->setText('Text'); // Include the OTP in the message text
+// dd($smsParams);
+// Send SMS
+try {
+$sms = $mailersend->sms->send($smsParams);
+// Handle success (e.g., log the response, show a success message)
+} catch (\MailerSend\Exceptions\MailerSendValidationException $e) {
+// Handle validation error (log the error message)
+dd($e->getMessage());
+} catch (\Exception $e) {
+// Handle general errors
+dd($e->getMessage());
+}
     }
 }
