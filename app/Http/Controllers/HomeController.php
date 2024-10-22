@@ -19932,21 +19932,21 @@ public function downloadFile($id)
     public function createFolder(Request $request)
     {
         
-        $request->validate([
-            'folder_name' => ['required', 'regex:/^[a-zA-Z0-9\s\-\(\):]+$/'],
-            // 'parent_folder' => ['nullable', 'regex:/^[a-zA-Z0-9\s\/&_]+$/'],
-            // 'parent_folder' =>  ['nullable', 'regex:/^(\/?(?:\d{4}-\d{4}(January|February|March|April|May|June|July|August|September|October|November|December)\d+_[a-zA-Z0-9]+))*$/'],
-            // 'parent_folder' =>  ['nullable', 'regex:/^(\/?(?:\d{4}-\d{4}(January|February|March|April|May|June|July|August|September|October|November|December)\d+_[a-zA-Z0-9]+|[a-zA-Z0-9\s&]+))*$/'],
-            // 'parent_folder' =>  ['nullable', 'regex:/^(\/?(?:\d{4}-\d{4}(January|February|March|April|May|June|July|August|September|October|November|December)\d+_[a-zA-Z0-9-]+|[a-zA-Z0-9\s&]+))*$/'],
-            'parent_folder' =>  ['nullable','regex:/^(\/?(?:\d{4}-\d{4}(January|February|March|April|May|June|July|August|September|October|November|December)\d+_[a-zA-Z0-9\-\(\):]+|[a-zA-Z0-9\s&\(\):]+))*$/'],
-            'fyear' => ['required', 'regex:/^\d{4}-\d{4}$/'], // Ensures format like "2013-2014"
-            'Month' => ['required', 'in:January,February,March,April,May,June,July,August,September,October,November,December'], // Ensures a valid month name
-        ],
-        ['parent_folder.regex' => 'The parent folder must follow the specified format: either a year-month format or a simple folder name.',
-         'folder_name.regex' => 'The folder name can only contain letters, numbers, spaces, and hyphens.',
-         'fyear.regex' => 'The financial year must be in the format "YYYY-YYYY", e.g., "2023-2024".',
-         'Month.regex' => 'The Month must be in the format e.g., "January".',
-         ]);
+        // $request->validate([
+        //     'folder_name' => ['required', 'regex:/^[a-zA-Z0-9\s\-\(\):]+$/'],
+        //     // 'parent_folder' => ['nullable', 'regex:/^[a-zA-Z0-9\s\/&_]+$/'],
+        //     // 'parent_folder' =>  ['nullable', 'regex:/^(\/?(?:\d{4}-\d{4}(January|February|March|April|May|June|July|August|September|October|November|December)\d+_[a-zA-Z0-9]+))*$/'],
+        //     // 'parent_folder' =>  ['nullable', 'regex:/^(\/?(?:\d{4}-\d{4}(January|February|March|April|May|June|July|August|September|October|November|December)\d+_[a-zA-Z0-9]+|[a-zA-Z0-9\s&]+))*$/'],
+        //     // 'parent_folder' =>  ['nullable', 'regex:/^(\/?(?:\d{4}-\d{4}(January|February|March|April|May|June|July|August|September|October|November|December)\d+_[a-zA-Z0-9-]+|[a-zA-Z0-9\s&]+))*$/'],
+        //     'parent_folder' =>  ['nullable','regex:/^(\/?(?:\d{4}-\d{4}(January|February|March|April|May|June|July|August|September|October|November|December)\d+_[a-zA-Z0-9\-\(\):]+|[a-zA-Z0-9\s&\(\):]+))*$/'],
+        //     'fyear' => ['required', 'regex:/^\d{4}-\d{4}$/'], // Ensures format like "2013-2014"
+        //     'Month' => ['required', 'in:January,February,March,April,May,June,July,August,September,October,November,December'], // Ensures a valid month name
+        // ],
+        // ['parent_folder.regex' => 'The parent folder must follow the specified format: either a year-month format or a simple folder name.',
+        //  'folder_name.regex' => 'The folder name can only contain letters, numbers, spaces, and hyphens.',
+        //  'fyear.regex' => 'The financial year must be in the format "YYYY-YYYY", e.g., "2023-2024".',
+        //  'Month.regex' => 'The Month must be in the format e.g., "January".',
+        //  ]);
         
         $folderName = $request->input('folder_name');
         $new_folderName = $request->input('fyear').$request->input('Month').Auth::id()."_".$folderName;
