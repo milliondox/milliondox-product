@@ -23752,6 +23752,10 @@ display: block;
     margin: 0px 3px 0px 0px;
 }
 
+.dark-only .setting_munal .setting_opt li.need_hellp svg path {
+    fill: none !IMPORTANT;
+}
+
 .dark-only .setting_munal .setting_opt li svg {
     stroke: none !IMPORTANT;
     fill: none !important;
