@@ -14812,13 +14812,30 @@ public function PredefinedCommonUploadFiles(Request $request)
             ->where('real_file_name', $request->input('real_file_name'))
             ->get();
             $count = $entries->count();
+            $totalFileSize = $entries->sum('file_size');
+
+            $totalSizeKB = round($totalFileSize / 1024, 2); // Convert to KB
+
+            if ($totalSizeKB > 1024) {
+                $totalSizeMB = round($totalSizeKB / 1024, 2); // Convert to MB
+                if ($totalSizeMB > 1024) {
+                    $totalSizeGB = round($totalSizeMB / 1024, 2); // Convert to GB
+                    $totalSizef = $totalSizeGB . ' GB';
+                } else {
+                    $totalSizef = $totalSizeMB . ' MB';
+                }
+            } else {
+                $totalSizef = $totalSizeKB . ' KB';
+            }
+            
+            
             
             // return redirect()->back()->with('success2', 'File Uploaded successfully.');
 
             return response()->json([
                 'success' => true,
                 'count' => $count,
-                'totalSize' => $totalSize,
+                'totalSize' => $totalSizef,
                 'successMessages' => $successMessages,
                 'errorMessages' => $errorMessages,
                 'real_file_name' => $request->input('real_file_name'),

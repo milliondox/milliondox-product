@@ -5673,16 +5673,37 @@ function handleFolderPath(folderPath) {
                         $(`#progress_${currentFileIndex} .cancle_file`).hide(); // Hide cancel button on success
                         $(`#progress_${currentFileIndex} .done_tick`).show(); // Hide cancel button on success
 
+                        // $('.getparm').find('svg').next('span').children('span').text(response.count);
+
+                        // $('.comm_count').text(response.count);
+                        // $('.comm_size').text(response.totalSize);
+
+                        // Find the <td> with "Offer Letter" text
+                        let $offerLetterRow = $('td').filter(function() {
+                            return $(this).text().trim() === response.real_file_name; // response.real_file_name should match "Offer Letter"
+                        }).closest('tr'); // Get the closest row (tr) that contains the td
+
+                        // Update the .comm_count and .comm_size in the same row
+                        $offerLetterRow.find('.comm_count').text(response.count);
+                        // $offerLetterRow.find('.comm_size').text(response.totalSize + ' KB');
+                        $offerLetterRow.find('.comm_size').text(response.totalSize);
+
+
+
+
                         activeUploads[currentFileIndex] = false; // Mark this file as completed
                         checkAllUploadsComplete(); // Check if all uploads are done
 
                     } else {
                         toastr.error(response.message);
+                        $('#common_file_upload_pop .close').click();    
                     }
                 },
                 error: function(xhr, textStatus) {
                     if (textStatus !== 'abort') {
                         toastr.error('An error occurred while uploading files: ' + xhr.responseText);
+                        $('#common_file_upload_pop .close').click();    
+                        
                     }
 
                     activeUploads[currentFileIndex] = false; // Mark this file as completed or failed
@@ -5769,11 +5790,14 @@ function handleFolderPath(folderPath) {
 
                     } else {
                         toastr.error(response.message);
+                        $('#common_file_upload_pop_bank .close').click(); 
+
                     }
                 },
                 error: function(xhr, textStatus) {
                     if (textStatus !== 'abort') {
                         toastr.error('An error occurred while uploading files: ' + xhr.responseText);
+                        $('#common_file_upload_pop_bank .close').click(); 
                     }
 
                     activeUploads[currentFileIndex] = false; // Mark this file as completed or failed
@@ -5978,7 +6002,7 @@ $('#upload-file-form').on('submit', function(e) {
                     }
                     if (response.errorMessages.length) {
                         response.errorMessages.forEach(function(msg) {
-                            toastr.warning(msg);
+                            // toastr.warning(msg);
                         });
                     }
 
@@ -5991,20 +6015,32 @@ $('#upload-file-form').on('submit', function(e) {
                     resetFileInput($('input[name="file"]'));
                 } else {
                     toastr.error('Failed to upload file: ' + response.message);
+                    $('#upload_filee .close').click(); 
+
                 }
 
+                $('.button-spinner').remove();
                 $submitButton.prop('disabled', false); // Re-enable submit button
             },
             error: function(xhr) {
                 if (xhr.status === 400 || xhr.status === 500) {
                     let response = JSON.parse(xhr.responseText);
                     toastr.error('Error: ' + response.message);
+                    $('#upload_filee .close').click(); 
+
                 } else {
-                    // toastr.error('An unknown error occurred.');
+
+                   $('#upload_filee .close').click(); 
+
+
                 }
                 activeUploads[currentFileIndex] = false; // Mark this file as completed or failed
                     checkAllUploadsComplete1(); // Check if all uploads are done
                 $submitButton.prop('disabled', false); // Re-enable submit button
+                $('#upload_filee .close').click(); 
+                $('.button-spinner').remove();
+
+
             }
         });
 
@@ -6054,6 +6090,8 @@ $('#upload-file-form').on('submit', function(e) {
             $(`#progress_${currentFileIndex}`).fadeOut(500, function() {
                 $(this).remove();
             });
+            $('.button-spinner').remove();
+
 
             // toastr.info(`Upload cancelled for file: ${currentFileIndex}`);
 
@@ -6071,9 +6109,6 @@ $('#upload-file-form').on('submit', function(e) {
      function checkAllUploadsComplete1() {
         // Check if there are any active uploads (true means it's still uploading)
         isUploading = activeUploads.some(upload => upload === true);
-        if (!isUploading) {
-            $('#upload_filee .close').click(); 
-        }
     }
 
     // Function to generate secure random strings
