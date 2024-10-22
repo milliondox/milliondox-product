@@ -103,31 +103,35 @@
                     <script src="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/js/intlTelInput.min.js"></script>
                     <form id="registration-form" class="formpaddsettingss logss" method="POST"  action="{{ route('sendOtp') }}">
                         	@csrf
-                          <input id="phoneNumber" type="text" readonly name="phone" value="{{$user->phone}}" Placeholder="9988776655" onkeyup="if (event.keyCode === 13) sendOTP()" />
+                          <input id="phoneNumber" type="text" readonly name="phone" value="{{$user->phone}}" Placeholder="9988776655"  onkeyup="if (event.keyCode === 13)" />
 <script>
   const phoneInputField = document.querySelector("#phoneNumber");
   const phoneInput = window.intlTelInput(phoneInputField, {
     utilsScript: "https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/js/utils.js",
     initialCountry: "in" // Set initial country to India
   });
+
 </script>
 <script>
-$('body').on('ready', function() {
-    // Check if the current URL path is '/user/wallet'
-    if (window.location.pathname === '/user/wallet') {
-        // Get the value from the input field immediately when the page loads
-        var phoneValue = $('#phoneNumber').val();
+    // Function to clean the phone number value
+    function cleanPhoneNumber() {
+        // Get the input field
+        var phoneNumberField = document.getElementById('phoneNumber');
+        
+        // Get the current value of the input
+        var phoneValue = phoneNumberField.value;
 
-        // Remove all spaces and leading zeros
-        phoneValue = phoneValue.replace(/^0+|\s+/g, '');
+        // Remove leading zeros and spaces from the phone number
+        var cleanedPhoneValue = phoneValue.replace(/^0+|\s+/g, '');
 
         // Update the input field with the cleaned value
-        $('#phoneNumber').val(phoneValue);
+        phoneNumberField.value = cleanedPhoneValue;
     }
-});
 
-
+    // Run the function every second
+    setInterval(cleanPhoneNumber, 1000);
 </script>
+
                   </div>
                 </div>
                 <!-- <div id="recaptcha-container"></div> -->
@@ -185,26 +189,39 @@ $('body').on('ready', function() {
 
     </div>
               </div>
-              <script src="https://www.gstatic.com/firebasejs/8.9.1/firebase-app.js"></script>
-<script src="https://www.gstatic.com/firebasejs/8.9.1/firebase-auth.js"></script>
-<script src="https://www.gstatic.com/firebasejs/8.9.1/firebase-firestore.js"></script>
-<script src="https://www.gstatic.com/firebasejs/8.9.1/firebase-database.js"></script>
 
-<!-- Firebase Configuration -->
-<script type="text/javascript">
-    const config = {
-     apiKey: "AIzaSyAHfkQSzWD_lgjoXpWadxpgqGwIJ1IHR2o",
-  authDomain: "milliondox-8f317.firebaseapp.com",
-  projectId: "milliondox-8f317",
-  storageBucket: "milliondox-8f317.appspot.com",
-  messagingSenderId: "343881907988",
-  appId: "1:343881907988:web:b1713f48ceaf6cd41dcc01",
-  measurementId: "G-C0YHD88M2D"
-    };
-
-    firebase.initializeApp(config);
+              <script>
+  $(document).ready(function() {
+    // Send OTP on button click
+    $('#submit-button').on('click', function() {
+      var phoneNumber = $('#phoneNumber').val();
+      
+      // AJAX request to send OTP
+      $.ajax({
+        url: '{{ route("sendOtp") }}',
+        type: 'POST',
+        data: {
+          _token: '{{ csrf_token() }}',
+          phone: phoneNumber
+        },
+        success: function(response) {
+          Swal.fire({
+            icon: 'success',
+            title: 'OTP Sent',
+            text: response.message
+          });
+        },
+        error: function(xhr) {
+          Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: xhr.responseJSON.message
+          });
+        }
+      });
+    });
+  });
 </script>
-
 <script>
 function showLoader() {
   document.getElementById('customLoader').style.display = 'block';
@@ -218,54 +235,19 @@ document.getElementById('phoneNumber').addEventListener('keypress', function(eve
     if (event.key === 'Enter') {
         // Prevent the default form submission behavior
         event.preventDefault();
-        // Trigger the Recaptcha verification
-        renderRecaptcha();
+       
     }
 });
 document.getElementById('phoneNumbers').addEventListener('keypress', function(event) {
     if (event.key === 'Enter') {
         // Prevent the default form submission behavior
         event.preventDefault();
-        // Trigger the Recaptcha verification
-        renderRecaptcha();
+       
     }
 });
-function sendOTP() {
-    const phoneNumberInput = document.getElementById('phoneNumber').value;
-
-    // Simple validation: Check if the phone number length is correct
-    // if (phoneNumberInput.length !== 10) {
-    //     alert('Please enter a valid 10-digit phone number.');
-    //     return; // Stop execution if the number is not valid
-    // }
-
-    const phoneNumber = "+91" + phoneNumberInput;
-
-    // Render the reCAPTCHA if not rendered already
-    const appVerifier = new firebase.auth.RecaptchaVerifier('recaptcha-container');
-    
-    firebase.auth().signInWithPhoneNumber(phoneNumber, appVerifier)
-        .then((confirmationResult) => {
-            window.confirmationResult = confirmationResult;
-            document.getElementById('loginverify').style.display = 'none';
-            document.getElementById('otpVerification').style.display = 'block';
-        })
-        .catch((error) => {
-            console.error("Failed to send OTP. Error:", error);
-            alert("Failed to send OTP. Error: " + error.message);
-        })
-        .finally(() => {
-            // Re-enable the submit button after request completes
-            document.getElementById('submit-button').disabled = false;
-            document.getElementById('submit-button').style.backgroundColor = ''; // Reset button color
-        });
-}
 
 
-function renderRecaptcha() {
-    // Render Recaptcha here
-    // Replace this with your Recaptcha rendering code
-}
+
 
 
   function showToaster(message) {
