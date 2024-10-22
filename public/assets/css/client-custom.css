@@ -15227,6 +15227,12 @@ body.dark-only .page-wrapper .page-header .header-wrapper .nav-right>ul>li:nth-c
     margin-bottom: 0px;
 }
 
+.reinder_an_history ul li .icon_his_ani {
+    display: flex;
+    align-items: center;
+    gap: 0px 5px;
+}
+
 .reinder_an_history ul li .icon_his_ani svg {
     width: 15px;
     height: 15px;
@@ -16354,6 +16360,12 @@ body.dark-only .page-wrapper .page-header .header-wrapper .nav-right>ul>li:nth-c
     width: 17px;
     height: 17px;
 }
+
+.right_event .event_repet .cake_et .cake_text ul li.brday svg {
+    width: 15px;
+    height: 15px;
+}
+
 
 .marquee-container {
     height: 260px; /* Adjust the height as needed */
@@ -23738,6 +23750,10 @@ display: block;
     width: 22px !IMPORTANT;
     height: 22px;
     margin: 0px 3px 0px 0px;
+}
+
+.dark-only .setting_munal .setting_opt li.need_hellp svg path {
+    fill: none !IMPORTANT;
 }
 
 .dark-only .setting_munal .setting_opt li svg {

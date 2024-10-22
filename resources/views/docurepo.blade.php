@@ -441,7 +441,24 @@ document.addEventListener('DOMContentLoaded', function() {
 </svg>
 </div>
 <ul class="setting_opt">
-    
+<li class="need_hellp">
+    <a href="#" id="need_help"> 
+    <svg width="20" height="18" viewBox="0 0 20 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M7.33814 12.9905C10.4946 12.8151 13 10.2003 13 7C13 3.68629 10.3137 1 7 1C3.68629 1 1 3.68629 1 7C1 8.18071 1.34094 9.2817 1.92989 10.21L1.50586 11.482L1.50518 11.4839C1.34278 11.9711 1.26154 12.2149 1.31938 12.3771C1.36979 12.5184 1.48169 12.6299 1.62305 12.6803C1.78472 12.7379 2.02675 12.6573 2.51069 12.4959L2.51758 12.4939L3.79004 12.0698C4.7183 12.6588 5.81935 12.9998 7.00006 12.9998C7.11352 12.9998 7.22624 12.9967 7.33814 12.9905ZM7.33814 12.9905V12.9905ZM7.33814 12.9905C8.15907 15.3259 10.3841 17.0002 13.0001 17.0002C14.1808 17.0002 15.2817 16.6588 16.2099 16.0698L17.482 16.4939L17.4845 16.4944C17.9717 16.6567 18.2158 16.7381 18.378 16.6803C18.5194 16.6299 18.6299 16.5184 18.6803 16.3771C18.7382 16.2146 18.6572 15.9706 18.4943 15.4821L18.0703 14.21L18.2123 13.9746C18.7138 13.0979 18.9995 12.0823 18.9995 11C18.9995 7.6863 16.3137 5 13 5L12.7754 5.00414L12.6621 5.00967" stroke="#707070" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+</svg> Need Help?
+    </a>
+</li>
+
+<script>
+document.getElementById('need_help').addEventListener('click', function(event) {
+    event.preventDefault();
+    // WhatsApp URL with phone number and pre-filled custom message
+    const whatsappURL = 'https://wa.me/919910200287?text=Hello%2C%20I%20need%20assistance%20with%20MillionDox!';
+    window.location.href = whatsappURL;
+});
+
+</script>
+
                     <li class="logout_out">
                     <a class="logou_inn" href="{{ route('logout') }}"
                     onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
@@ -1451,7 +1468,22 @@ closeToastBtn.addEventListener("click", closeToast);
 </svg>
 </div>
 <ul class="setting_opt">
-    
+<li class="need_hellp">
+    <a href="#" id="need_help"> 
+    <svg width="20" height="18" viewBox="0 0 20 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M7.33814 12.9905C10.4946 12.8151 13 10.2003 13 7C13 3.68629 10.3137 1 7 1C3.68629 1 1 3.68629 1 7C1 8.18071 1.34094 9.2817 1.92989 10.21L1.50586 11.482L1.50518 11.4839C1.34278 11.9711 1.26154 12.2149 1.31938 12.3771C1.36979 12.5184 1.48169 12.6299 1.62305 12.6803C1.78472 12.7379 2.02675 12.6573 2.51069 12.4959L2.51758 12.4939L3.79004 12.0698C4.7183 12.6588 5.81935 12.9998 7.00006 12.9998C7.11352 12.9998 7.22624 12.9967 7.33814 12.9905ZM7.33814 12.9905V12.9905ZM7.33814 12.9905C8.15907 15.3259 10.3841 17.0002 13.0001 17.0002C14.1808 17.0002 15.2817 16.6588 16.2099 16.0698L17.482 16.4939L17.4845 16.4944C17.9717 16.6567 18.2158 16.7381 18.378 16.6803C18.5194 16.6299 18.6299 16.5184 18.6803 16.3771C18.7382 16.2146 18.6572 15.9706 18.4943 15.4821L18.0703 14.21L18.2123 13.9746C18.7138 13.0979 18.9995 12.0823 18.9995 11C18.9995 7.6863 16.3137 5 13 5L12.7754 5.00414L12.6621 5.00967" stroke="#707070" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+</svg> Need Help?
+    </a>
+</li>
+
+<script>
+$('body').on('click', '#need_help', function(event) {
+    event.preventDefault();
+    // WhatsApp URL with phone number and pre-filled custom message
+    const whatsappURL = 'https://wa.me/919910200287?text=Hello%2C%20I%20need%20assistance%20with%20MillionDox!';
+    window.location.href = whatsappURL;
+});
+</script>
                     <li class="logout_out">
                     <a class="logou_inn" href="{{ route('logout') }}"
                     onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
@@ -4357,6 +4389,22 @@ function removeDynamicPrefix(path) {
         return path;  // If no dynamic prefix is found, return the original path
     }
 }
+function decodeAndFormatUrl(url) {
+    // Step 1: Decode the URL (if necessary)
+    const decodedUrl = decodeURIComponent(url);
+
+    // Step 2: Remove the extra parts like '2024-2025October0_', '2024-2025October100000000000000_', etc.
+    // The updated regex now matches any number of digits
+    const cleanedUrl = decodedUrl.replace(/\d{4}-\d{4}October\d+_/g, '').trim();
+
+    // Step 3: Split the cleaned path by '/' and join without extra spaces
+    const formattedPath = cleanedUrl.split('/').map(part => part.trim()).join('/');
+
+    return formattedPath;
+}
+
+// Example usage
+
  function fetchFolderContents(folderPath) {
         showLoader(); // Ensure the loader is shown when the request starts
        
@@ -4374,19 +4422,33 @@ function removeDynamicPrefix(path) {
 
         // Retrieve the folder path from the URL parameters
         const folderPaths = getQueryParam('folder');
-        
-          const decodedFolderPath = folderPaths ? decodeURIComponent(folderPaths) : null;
-        const pathToUse = decodedFolderPath ? decodedFolderPath : folderPath;
-        let resultto = removeDynamicPrefix(pathToUse);
+
+// Decode the folder path if it exists, otherwise use 'folderPath'
+const decodedFolderPath = folderPaths ? decodeURIComponent(folderPaths) : null;
+const pathToUse = decodedFolderPath ? decodedFolderPath : folderPath;
+
+// Make sure to use backticks (`) for the template literal
+let url = `${pathToUse}`;
+
+// Format the decoded URL
+let result = decodeAndFormatUrl(url);
+// alert(result);
+setInterval(function() {
+    let result = decodeAndFormatUrl(url);
+    console.log(result);  // Output: formatted URL every second
+}, 100); 
+        // let resultto = removeDynamicPrefix(pathToUse);
+
+     
         
         // console.log("Path to use ::  "+pathToUse);
-        if(pathToUse===undefined || pathToUse=== null){
-            // console.log("inside null undefined");
-            // setTimeout(() => {
+        // if(pathToUse===undefined || pathToUse=== null){
+        //     // console.log("inside null undefined");
+        //     // setTimeout(() => {
 
-                hideLoader();
-            // }, 1000);
-        }
+        //         hideLoader();
+        //     // }, 1000);
+        // }
         // Directly use the folderPath as it's already decoded when passed from above
         $.ajax({
             url: '/fetch-folder-contents',
@@ -4456,44 +4518,44 @@ function removeDynamicPrefix(path) {
                     insertcharterdocumentsRegistrationsTableAppendedTable();
                     charterdocumentsRegistrationsTableAppended = true;
                 }
-                else if (resultto.includes("Employee Database/Onboarding documents") && !hronboarTableAppended) {
-                    // alert(resultto);  // Display the result
+                else if (result.includes("Employee Database/Onboarding documents") && !hronboarTableAppended) {
+                   
                     inserthronboarTableAppended();  // Call the function to append the table
                     hronboarTableAppended = true;  // Set the flag to true to prevent further appends
                 }
-                else if (resultto.includes("Employee Database/KYC Documents") && !hrkycTableAppended) {
-                    // alert(resultto);  // Display the result
+                else if (result.includes("Employee Database/KYC Documents") && !hrkycTableAppended) {
+                  
                     inserthrkycTableAppended();  // Call the function to append the table
                     hrkycTableAppended = true;  // Set the flag to true to prevent further appends
                 }
 
-                else if (resultto.includes("Employee Database/Declarations") && !hrdecTableAppended) {
-                    // alert(resultto);  // Display the result
+                else if (result.includes("Employee Database/Declarations") && !hrdecTableAppended) {
+                  
                     inserthrdecTableAppended();  // Call the function to append the table
                     hrdecTableAppended = true;  // Set the flag to true to prevent further appends
                 }
 
 
-                else if (resultto.includes("Employee Database/Offboarding") && !hroffboardTableAppended) {
-                    // alert(resultto);  // Display the result
+                else if (result.includes("Employee Database/Offboarding") && !hroffboardTableAppended) {
+                   
                     inserthroffboardTableAppended();  // Call the function to append the table
                     hroffboardTableAppended = true;  // Set the flag to true to prevent further appends
                 }
 
-                else if (resultto.includes("Employee Database/ESOP") && !hresopTableAppended) {
-                    // alert(resultto);  // Display the result
+                else if (result.includes("Employee Database/ESOP") && !hresopTableAppended) {
+
                     inserthresopTableAppended();  // Call the function to append the table
                     hresopTableAppended = true;  // Set the flag to true to prevent further appends
                 }
 
-                else if (resultto.includes("Pay Registers/Monthly Payrun") && !hrmpTableAppended) {
-                    // alert(resultto);  // Display the result
+                else if (result.includes("Pay Registers/Monthly Payrun") && !hrmpTableAppended) {
+                   
                     inserthrmpTableAppended();  // Call the function to append the table
                     hrmpTableAppended = true;  // Set the flag to true to prevent further appends
                 }
 
-                else if (resultto.includes("Pay Registers/Reimbursements") && !hrreimbTableAppended) {
-                    // alert(resultto);  // Display the result
+                else if (result.includes("Pay Registers/Reimbursements") && !hrreimbTableAppended) {
+                   
                     inserthrreimTableAppended();  // Call the function to append the table
                     hrreimbTableAppended = true;  // Set the flag to true to prevent further appends
                 }
@@ -4533,7 +4595,16 @@ function removeDynamicPrefix(path) {
         
           const decodedFolderPath = folderPaths ? decodeURIComponent(folderPaths) : null;
         const pathToUse = decodedFolderPath ? decodedFolderPath : folderPath;
-        let resultto = removeDynamicPrefix(pathToUse);
+       
+        let url = `${pathToUse}`;
+
+        setInterval(function() {
+    let result = decodeAndFormatUrl(url);
+    console.log(result);  // Output: formatted URL every second
+}, 100); 
+
+// Format the decoded URL
+let result = decodeAndFormatUrl(url);
         // Directly use the folderPath as it's already decoded when passed from above
         $.ajax({
             url: '/fetch-folder-contents',
@@ -4656,44 +4727,45 @@ function removeDynamicPrefix(path) {
                     insertcharterdocumentsRegistrationsTableAppendedTable();
                     charterdocumentsRegistrationsTableAppended = true;
                 }
-                else if (resultto.includes("Employee Database/Onboarding documents") && !hronboarTableAppended) {
+                else if (result.includes("Employee Database/Onboarding documents") && !hronboarTableAppended) {
                     
+                   
                     inserthronboarTableAppended();  // Call the function to append the table
                     hronboarTableAppended = true;  // Set the flag to true to prevent further appends
                 }
 
-                else if (resultto.includes("Employee Database/KYC Documents") && !hrkycTableAppended) {
-                    // alert(resultto);  // Display the result
+                else if (result.includes("Employee Database/KYC Documents") && !hrkycTableAppended) {
+                   
                     inserthrkycTableAppended();  // Call the function to append the table
                     hrkycTableAppended = true;  // Set the flag to true to prevent further appends
                 }
 
-                else if (resultto.includes("Employee Database/Declarations") && !hrdecTableAppended) {
-                    // alert(resultto);  // Display the result
+                else if (result.includes("Employee Database/Declarations") && !hrdecTableAppended) {
+                  
                     inserthrdecTableAppended();  // Call the function to append the table
                     hrdecTableAppended = true;  // Set the flag to true to prevent further appends
                 }
 
-                else if (resultto.includes("Employee Database/Offboarding") && !hroffboardTableAppended) {
-                    // alert(resultto);  // Display the result
+                else if (result.includes("Employee Database/Offboarding") && !hroffboardTableAppended) {
+                   
                     inserthroffboardTableAppended();  // Call the function to append the table
                     hroffboardTableAppended = true;  // Set the flag to true to prevent further appends
                 }
 
-                else if (resultto.includes("Employee Database/ESOP") && !hresopTableAppended) {
-                    // alert(resultto);  // Display the result
+                else if (result.includes("Employee Database/ESOP") && !hresopTableAppended) {
+                   
                     inserthresopTableAppended();  // Call the function to append the table
                     hresopTableAppended = true;  // Set the flag to true to prevent further appends
                 }
 
-                else if (resultto.includes("Pay Registers/Monthly Payrun") && !hrmpTableAppended) {
-                    // alert(resultto);  // Display the result
+                else if (result.includes("Pay Registers/Monthly Payrun") && !hrmpTableAppended) {
+                   
                     inserthrmpTableAppended();  // Call the function to append the table
                     hrmpTableAppended = true;  // Set the flag to true to prevent further appends
                 }
 
-                else if (resultto.includes("Pay Registers/Reimbursements") && !hrreimbTableAppended) {
-                    // alert(resultto);  // Display the result
+                else if (result.includes("Pay Registers/Reimbursements") && !hrreimbTableAppended) {
+                   
                     inserthrreimTableAppended();  // Call the function to append the table
                     hrreimbTableAppended = true;  // Set the flag to true to prevent further appends
                 }
@@ -5538,13 +5610,7 @@ function handleFolderPath(folderPath) {
 
 
 
-    // let clickedButton = null; // Variable to store the clicked button
 
-    // // Capture the click event on the element with class .getparm
-    // $('.getparm').on('click', function() {
-    //     clickedButton = $(this); // Store the clicked button reference
-    //     console.log("Clicked element stored:", clickedButton); // Debugging log
-    // });
 
     $('#common_file_upload_form').on('submit', function(e) {
         e.preventDefault();
@@ -5553,15 +5619,13 @@ function handleFolderPath(folderPath) {
         $('.side_panel_wraap').removeClass('active');
         $('.side_panel_wraap_overlay').removeClass('active');
 
-
-
-
         
         let files = $('#fileCommon')[0].files;
         let xhrRequests = {}; // Change to an object to use unique identifiers as keys
         // let xhrRequests = []; // Array to hold XMLHttpRequest objects for cancellation
         isUploading = true; // Set flag to true when upload starts
 
+        
         
         $.each(files, function(i, file) {
             let individualFormData = new FormData(); // Create a new FormData for each file
@@ -5608,6 +5672,7 @@ function handleFolderPath(folderPath) {
                         updateSuccessCount(); // Update the displayed success count
                         $(`#progress_${currentFileIndex} .cancle_file`).hide(); // Hide cancel button on success
                         $(`#progress_${currentFileIndex} .done_tick`).show(); // Hide cancel button on success
+
                         // $('.getparm').find('svg').next('span').children('span').text(response.count);
 
                         // $('.comm_count').text(response.count);
@@ -5622,6 +5687,7 @@ function handleFolderPath(folderPath) {
                         $offerLetterRow.find('.comm_count').text(response.count);
                         // $offerLetterRow.find('.comm_size').text(response.totalSize + ' KB');
                         $offerLetterRow.find('.comm_size').text(response.totalSize);
+
 
 
 
@@ -5652,10 +5718,6 @@ function handleFolderPath(folderPath) {
             // globalFileIndex++; // Increment global index for the next file
         });
 
-        $('#common_file_upload_pop .close').click();    
-
-        
-
         // Store the requests globally to be able to cancel them
         window.xhrRequests = xhrRequests;
     });
@@ -5668,6 +5730,8 @@ function handleFolderPath(folderPath) {
         $('#common_file_upload_pop_bank').modal('hide');
         $('.side_panel_wraap').removeClass('active');
         $('.side_panel_wraap_overlay').removeClass('active');
+
+        // $('.close').click();
 
         
         let files = $('#fileCommonB')[0].files;
@@ -5746,9 +5810,6 @@ function handleFolderPath(folderPath) {
             // xhrRequests.push(xhr); // Store the xhr object in the array
             // globalFileIndex++; // Increment global index for the next file
         });
-
-        $('#common_file_upload_pop_bank .close').click(); 
-
 
         // Store the requests globally to be able to cancel them
         window.xhrRequests = xhrRequests;
@@ -5873,8 +5934,6 @@ $('#upload-file-form').on('submit', function(e) {
     // Access the file input element and its files
     var fileInput = $('#fileU')[0]; // Ensure this matches your file input field
     var files = fileInput.files; // Get all the selected files
-
-    // $('#upload_filee .close').click(); 
     
     // Check if files are selected
     if (files.length === 0) {
@@ -5910,7 +5969,6 @@ $('#upload-file-form').on('submit', function(e) {
 
         // Append the individual file to FormData as 'files[]'
         formData.append('files[]', file);
-
 
         let xhrUpload = $.ajax({
             url: $('#upload-file-form').attr('action'), // URL from the form's action attribute
@@ -5971,8 +6029,9 @@ $('#upload-file-form').on('submit', function(e) {
                     $('#upload_filee .close').click(); 
 
                 } else {
-                    // toastr.error('Something went wrong during upload.');
+
                    $('#upload_filee .close').click(); 
+
 
                 }
                 activeUploads[currentFileIndex] = false; // Mark this file as completed or failed
@@ -5988,9 +6047,6 @@ $('#upload-file-form').on('submit', function(e) {
         // Store the xhr request to allow cancellation later
         xhrRequests[currentFileIndex] = xhrUpload;
     });
-
-    $('#upload_filee .close').click(); 
-
 
     // Function to add progress bar for each file
     function addProgressIndicator1(fileName, index) {
@@ -8443,9 +8499,7 @@ document.addEventListener("DOMContentLoaded", function() {
             const form = $(this);
             if (!areAllRequiredFieldsFilled(form)) {
                 e.preventDefault();
-                // toastr.error('Please fill out all required fields before submitting.'); // Display error toaster message
-                // above toastr line commented by sandeep because button is already disabled 
-                // until all form fields are filled and its shows an error while we reset the form after submit request
+                toastr.error('Please fill out all required fields before submitting.'); // Display error toaster message
             } else {
                 // Disable the submit button after form submission to prevent double submit
                 const submitButton = form.find('button[type="submit"], input[type="submit"]');
@@ -8578,7 +8632,7 @@ checkFolderConditions();
                 // Dynamically set the 'data-location' attribute on the button element
                 $('.getparm').attr('data-location', decodedFolder);
                 
-                // console.log("Decoded Folder Path: ", decodedFolder); // For debugging
+                console.log("Decoded Folder Path: ", decodedFolder); // For debugging
             } else {
                 console.log('No folder parameter found in the URL.');
             }
