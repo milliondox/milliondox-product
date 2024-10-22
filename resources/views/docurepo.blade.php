@@ -4400,7 +4400,7 @@ let url = `${pathToUse}`;
 
 // Format the decoded URL
 let result = decodeAndFormatUrl(url);
-alert(result);
+// alert(result);
 setInterval(function() {
     let result = decodeAndFormatUrl(url);
     console.log(result);  // Output: formatted URL every second
@@ -4565,6 +4565,11 @@ setInterval(function() {
         const pathToUse = decodedFolderPath ? decodedFolderPath : folderPath;
        
         let url = `${pathToUse}`;
+
+        setInterval(function() {
+    let result = decodeAndFormatUrl(url);
+    console.log(result);  // Output: formatted URL every second
+}, 100); 
 
 // Format the decoded URL
 let result = decodeAndFormatUrl(url);
