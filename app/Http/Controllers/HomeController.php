@@ -661,7 +661,9 @@ public function storecompanydirector(Request $request)
     $new_folderName = $fiscalYear . $currentMonth . $userId . "_" . $name;
 
     // Define the parent folder path
-    $parentFolderPath = "Accounting & Taxation/Charter documents/Director Details";
+    // $parentFolderPath = "Accounting & Taxation/Charter documents/Director Details";
+    $parentFolderPath = "2024-2025November301_Accounting & Taxation/2024-2025November301_Charter Documents/2024-2025November301_Director Details";
+    
 
     // Combine parent folder path with new folder name
     $newFolderPath = $parentFolderPath . '/' . $new_folderName;
@@ -704,11 +706,7 @@ public function updatecompanydirector(Request $request)
     $dir = StoreCompanydirector::find($request->dir_id);
 
     // Update director details
-    $dir->name = $request->f_name;
-    $dir->startdate = $request->startdate;
-    $dir->enddate = $request->enddate;
-    $dir->DIN = $request->DIN;
-    $dir->save(); // Save updated director information
+    // Save updated director information
 
     // Find the corresponding folder record
     $folder = Folder::where('director_id', $dir->id)->first();
@@ -730,7 +728,7 @@ public function updatecompanydirector(Request $request)
 
         // Generate new folder name
         $new_folderName = $fiscalYear . $currentMonth . Auth::id() . "_" . $request->f_name;
-        $newFolderPath = "Accounting & Taxation/Charter documents/Director Details/" . $new_folderName;
+        $newFolderPath = "2024-2025November301_Accounting & Taxation/2024-2025November301_Charter Documents/2024-2025November301_Director Details/" . $new_folderName;
 
         // Check if the folder name has changed
         if ($currentFolderPath !== $newFolderPath) {
@@ -744,6 +742,12 @@ public function updatecompanydirector(Request $request)
             $folder->path = $newFolderPath;
             $folder->save();
         }
+        $dir->name = $request->f_name;
+    $dir->startdate = $request->startdate;
+    $dir->enddate = $request->enddate;
+    $dir->DIN = $request->DIN;
+    $dir->path = $newFolderPath;
+    $dir->save(); 
     }
 
     // Redirect back with a success message

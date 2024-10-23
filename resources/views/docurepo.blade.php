@@ -4393,12 +4393,11 @@ function decodeAndFormatUrl(url) {
     // Step 1: Decode the URL (if necessary)
     const decodedUrl = decodeURIComponent(url);
 
-    // Step 2: Remove the extra parts like '2024-2025October0_', '2024-2025October100000000000000_', etc.
-    // The updated regex now matches any number of digits
-    const cleanedUrl = decodedUrl.replace(/\d{4}-\d{4}October\d+_/g, '').trim();
+    // Step 2: Remove the extra parts like '2024-2025November301_', '2024-2025October100000000_', etc.
+    const cleanedUrl = decodedUrl.replace(/\d{4}-\d{4}[A-Za-z]+\d+_/g, '').trim();
 
-    // Step 3: Split the cleaned path by '/' and join without extra spaces
-    const formattedPath = cleanedUrl.split('/').map(part => part.trim()).join('/');
+    // Step 3: Split the cleaned path by '/' and join without spaces around slashes
+    const formattedPath = cleanedUrl.split('/').map(part => part.trim()).filter(part => part).join('/');
 
     return formattedPath;
 }
@@ -4432,11 +4431,22 @@ let url = `${pathToUse}`;
 
 // Format the decoded URL
 let result = decodeAndFormatUrl(url);
+
+let fullPath = `${result}`;
+
+// The base path you want to cut off
+let basePath = "Accounting & Taxation/Charter Documents/Director Details/";
+
+// Extract the part after the base path
+let newPermitter = fullPath.replace(basePath, '');
+// alert(`${basePath}${newPermitter}`);
+// alert(newPermitter);
 // alert(result);
-setInterval(function() {
-    let result = decodeAndFormatUrl(url);
-    console.log(result);  // Output: formatted URL every second
-}, 100); 
+// setInterval(function() {
+//     let result = decodeAndFormatUrl(url);
+//     console.log(result);  // Output: formatted URL every second
+// }, 1000); 
+//  alert(result);
         // let resultto = removeDynamicPrefix(pathToUse);
 
      
@@ -4459,62 +4469,62 @@ setInterval(function() {
                 $('.file-container').html(response.fileHtml);
 
                 clearAppendedTables();
-
-                if (pathToUse === 'Legal/Secretarial/Board Meetings' && !incorporationTableAppended) {
+                if (result.includes("Secretarial/Board Meetings") && !incorporationTableAppended) {
                     insertIncorporationTable();
                     incorporationTableAppended = true;
-                } else if (pathToUse === 'Legal/Secretarial/Annual General Meeting' && !meetingTableAppended) {
+                } else if (result.includes("Secretarial/Annual General Meeting") && !meetingTableAppended){
                     insertMeetingTable();
                     meetingTableAppended = true;
-                } else if (pathToUse === 'Legal/Secretarial/Extra Ordinary General Meeting' && !orderTableAppended) {
+                } else if (result.includes("Secretarial/Extra Ordinary General Meeting") && !orderTableAppended)  {
                     insertOrderTable();
                     orderTableAppended = true;
-                } else if (pathToUse === 'Legal/Secretarial/Incorporation' && !incTableAppended) {
+                } else if (result.includes("Secretarial/Incorporation") && !incTableAppended)  {
                     insertINCTable();
                     incTableAppended = true;
-                } else if (pathToUse === 'Legal/Secretarial/Annual Filings' && !annTableAppended) {
+                } else if (result.includes("Secretarial/Annual Filings") && !annTableAppended)  {
                     insertANNTable();
                     annTableAppended = true;
-                } else if (pathToUse === 'Legal/Secretarial/Director Appointments' && !directTableAppended) {
+                } else if (result.includes("Secretarial/Director Appointments") && !directTableAppended)  {
                     insertDirectTable();
                     directTableAppended = true;
-                } else if (pathToUse === 'Legal/Secretarial/Director Resignation' && !directexitTableAppended) {
+                } else if (result.includes("Secretarial/Director Resignation") && !directexitTableAppended)  {
                     insertDirectexitTable();
                     directexitTableAppended = true;
-                } else if (pathToUse === 'Legal/Secretarial/Auditor Appointment' && !auditappTableAppended) {
+                } else if (result.includes("Secretarial/Auditor Appointment") && !auditappTableAppended)  {
                     insertauditappTable();
                     auditappTableAppended = true;
-                } else if (pathToUse === 'Legal/Secretarial/Auditor Exits' && !auditexitTableAppended) {
+                } else if (result.includes("Secretarial/Auditor Exits") && !auditexitTableAppended)  {
                     insertauditexitTable();
                     auditexitTableAppended = true;
-                } else if (pathToUse === 'Legal/Secretarial/Statutory Registers' && !staturegiTableAppended) {
+                } else if (result.includes("Secretarial/Statutory Registers") && !staturegiTableAppended)  {
                     insertstaturegiTable();
                     staturegiTableAppended = true;
-                } else if (pathToUse === 'Legal/Secretarial/Deposit Undertakings' && !undertakingTableAppended) {
+                } else if (result.includes("Secretarial/Deposit Undertakings") && !undertakingTableAppended) {
                     insertundertakingTable();
                     undertakingTableAppended = true;
-                } else if (pathToUse === 'Accounting & Taxation/Book-Keeping/Bank Account Statements' && !bankAccountStatementsTableAppended) {
+                } else if (result.includes("Accounting & Taxation/Book-keeping/Bank Account Statements") && !bankAccountStatementsTableAppended)  {
                     insertbankAccountStatementsTable();
                     bankAccountStatementsTableAppended = true;
-                } else if (pathToUse === 'Accounting & Taxation/Book-Keeping/Fixed Deposit Statements' && !bankFixedDepositStatementsTableAppended) {
+                } else if (result.includes("Accounting & Taxation/Book-keeping/Fixed Deposit Statements") && !bankFixedDepositStatementsTableAppended)  {
                     insertbankFixedDepositStatementsTable();
                     bankFixedDepositStatementsTableAppended = true;
-                } else if (pathToUse === 'Accounting & Taxation/Book-Keeping/Credit Card Statements' && !bankCreditCardStatementsTableAppended) {
+                } else if (result.includes("Accounting & Taxation/Book-keeping/Credit Card Statements") && !bankCreditCardStatementsTableAppended)  {
                     insertbankCreditCardStatementsTable();
                     bankCreditCardStatementsTableAppended = true;
-                } else if (pathToUse === 'Accounting & Taxation/Book-Keeping/Mutual Fund Statements' && !bankMutualFundStatementsTableAppended) {
+                } else if (result.includes("Accounting & Taxation/Book-keeping/Mutual Fund Statements") && !bankMutualFundStatementsTableAppended)  {
                     insertbankMutualFundStatementsTable();
                     bankMutualFundStatementsTableAppended = true;
-                } else if (pathToUse === 'Accounting & Taxation/Charter documents/Director Details/Director 1' && !charterdocumentsDirectordetatilsDirector1TableAppended) {
+                } else if (result.includes(`Accounting & Taxation/Charter Documents/Director Details/${newPermitter}`) && !charterdocumentsDirectordetatilsDirector1TableAppended) {
+                    
                     insertcharterdocumentsDirectordetatilsDirector1Table();
                     charterdocumentsDirectordetatilsDirector1TableAppended = true;
-                } else if (pathToUse === 'Accounting & Taxation/Charter documents/Director Details/Director 2' && !charterdocumentsDirectordetatilsDirector2TableAppended) {
-                    insertcharterdocumentsDirectordetatilsDirector2Table();
-                    charterdocumentsDirectordetatilsDirector2TableAppended = true;
-                } else if (pathToUse === 'Accounting & Taxation/Charter documents/Incorporation' && !charterdocumentsIncorporationTableAppended) {
+                } 
+                
+                else if (result.includes("Accounting & Taxation/Charter Documents/Incorporation") && !charterdocumentsIncorporationTableAppended)  {
+                // alert(result);
                     insertcharterdocumentsIncorporationTableAppendedTable();
                     charterdocumentsIncorporationTableAppended = true;
-                } else if (pathToUse === 'Accounting & Taxation/Charter documents/Registrations' && !charterdocumentsRegistrationsTableAppended) {
+                } else if (result.includes("Accounting & Taxation/Charter Documents/Registrations") && !charterdocumentsRegistrationsTableAppended)  {
                     insertcharterdocumentsRegistrationsTableAppendedTable();
                     charterdocumentsRegistrationsTableAppended = true;
                 }
@@ -4597,14 +4607,16 @@ setInterval(function() {
         const pathToUse = decodedFolderPath ? decodedFolderPath : folderPath;
        
         let url = `${pathToUse}`;
+        let result = decodeAndFormatUrl(url);
 
-        setInterval(function() {
-    let result = decodeAndFormatUrl(url);
-    console.log(result);  // Output: formatted URL every second
-}, 100); 
+
+//         setInterval(function() {
+//     let result = decodeAndFormatUrl(url);
+//     console.log(result);  // Output: formatted URL every second
+// }, 100); 
 
 // Format the decoded URL
-let result = decodeAndFormatUrl(url);
+
         // Directly use the folderPath as it's already decoded when passed from above
         $.ajax({
             url: '/fetch-folder-contents',
@@ -4669,61 +4681,61 @@ let result = decodeAndFormatUrl(url);
 
                 clearAppendedTables();
 
-                if (pathToUse === 'Legal/Secretarial/Board Meetings' && !incorporationTableAppended) {
+                if (result.includes("Secretarial/Board Meetings") && !incorporationTableAppended) {
                     insertIncorporationTable();
                     incorporationTableAppended = true;
-                } else if (pathToUse === 'Legal/Secretarial/Annual General Meeting' && !meetingTableAppended) {
+                } else if (result.includes("Secretarial/Annual General Meeting") && !meetingTableAppended){
                     insertMeetingTable();
                     meetingTableAppended = true;
-                } else if (pathToUse === 'Legal/Secretarial/Extra Ordinary General Meeting' && !orderTableAppended) {
+                } else if (result.includes("Secretarial/Extra Ordinary General Meeting") && !orderTableAppended)  {
                     insertOrderTable();
                     orderTableAppended = true;
-                } else if (pathToUse === 'Legal/Secretarial/Incorporation' && !incTableAppended) {
+                } else if (result.includes("Secretarial/Incorporation") && !incTableAppended)  {
                     insertINCTable();
                     incTableAppended = true;
-                } else if (pathToUse === 'Legal/Secretarial/Annual Filings' && !annTableAppended) {
+                } else if (result.includes("Secretarial/Annual Filings") && !annTableAppended)  {
                     insertANNTable();
                     annTableAppended = true;
-                } else if (pathToUse === 'Legal/Secretarial/Director Appointments' && !directTableAppended) {
+                } else if (result.includes("Secretarial/Director Appointments") && !directTableAppended)  {
                     insertDirectTable();
                     directTableAppended = true;
-                } else if (pathToUse === 'Legal/Secretarial/Director Resignation' && !directexitTableAppended) {
+                } else if (result.includes("Secretarial/Director Resignation") && !directexitTableAppended)  {
                     insertDirectexitTable();
                     directexitTableAppended = true;
-                } else if (pathToUse === 'Legal/Secretarial/Auditor Appointment' && !auditappTableAppended) {
+                } else if (result.includes("Secretarial/Auditor Appointment") && !auditappTableAppended)  {
                     insertauditappTable();
                     auditappTableAppended = true;
-                } else if (pathToUse === 'Legal/Secretarial/Auditor Exits' && !auditexitTableAppended) {
+                } else if (result.includes("Secretarial/Auditor Exits") && !auditexitTableAppended)  {
                     insertauditexitTable();
                     auditexitTableAppended = true;
-                } else if (pathToUse === 'Legal/Secretarial/Statutory Registers' && !staturegiTableAppended) {
+                } else if (result.includes("Secretarial/Statutory Registers") && !staturegiTableAppended)  {
                     insertstaturegiTable();
                     staturegiTableAppended = true;
-                } else if (pathToUse === 'Legal/Secretarial/Deposit Undertakings' && !undertakingTableAppended) {
+                } else if (result.includes("Secretarial/Deposit Undertakings") && !undertakingTableAppended) {
                     insertundertakingTable();
                     undertakingTableAppended = true;
-                } else if (pathToUse === 'Accounting & Taxation/Book-Keeping/Bank Account Statements' && !bankAccountStatementsTableAppended) {
+                } else if (result.includes("Accounting & Taxation/Book-keeping/Bank Account Statements") && !bankAccountStatementsTableAppended)  {
                     insertbankAccountStatementsTable();
                     bankAccountStatementsTableAppended = true;
-                } else if (pathToUse === 'Accounting & Taxation/Book-Keeping/Fixed Deposit Statements' && !bankFixedDepositStatementsTableAppended) {
+                } else if (result.includes("Accounting & Taxation/Book-keeping/Fixed Deposit Statements") && !bankFixedDepositStatementsTableAppended)  {
                     insertbankFixedDepositStatementsTable();
                     bankFixedDepositStatementsTableAppended = true;
-                } else if (pathToUse === 'Accounting & Taxation/Book-Keeping/Credit Card Statements' && !bankCreditCardStatementsTableAppended) {
+                } else if (result.includes("Accounting & Taxation/Book-keeping/Credit Card Statements") && !bankCreditCardStatementsTableAppended)  {
                     insertbankCreditCardStatementsTable();
                     bankCreditCardStatementsTableAppended = true;
-                } else if (pathToUse === 'Accounting & Taxation/Book-Keeping/Mutual Fund Statements' && !bankMutualFundStatementsTableAppended) {
+                } else if (result.includes("Accounting & Taxation/Book-keeping/Mutual Fund Statements") && !bankMutualFundStatementsTableAppended)  {
                     insertbankMutualFundStatementsTable();
                     bankMutualFundStatementsTableAppended = true;
-                } else if (pathToUse === 'Accounting & Taxation/Charter documents/Director Details/Director 1' && !charterdocumentsDirectordetatilsDirector1TableAppended) {
+                } else if (result.includes(`Accounting & Taxation/Charter Documents/Director Details/${newPermitter}`) && !charterdocumentsDirectordetatilsDirector1TableAppended) {
                     insertcharterdocumentsDirectordetatilsDirector1Table();
                     charterdocumentsDirectordetatilsDirector1TableAppended = true;
-                } else if (pathToUse === 'Accounting & Taxation/Charter documents/Director Details/Director 2' && !charterdocumentsDirectordetatilsDirector2TableAppended) {
-                    insertcharterdocumentsDirectordetatilsDirector2Table();
-                    charterdocumentsDirectordetatilsDirector2TableAppended = true;
-                } else if (pathToUse === 'Accounting & Taxation/Charter documents/Incorporation' && !charterdocumentsIncorporationTableAppended) {
+                }  
+                
+                else if (result.includes("Accounting & Taxation/Charter Documents/Incorporation") && !charterdocumentsIncorporationTableAppended)  {
+                // alert(result);
                     insertcharterdocumentsIncorporationTableAppendedTable();
                     charterdocumentsIncorporationTableAppended = true;
-                } else if (pathToUse === 'Accounting & Taxation/Charter documents/Registrations' && !charterdocumentsRegistrationsTableAppended) {
+                } else if (result.includes("Accounting & Taxation/Charter Documents/Registrations") && !charterdocumentsRegistrationsTableAppended)  {
                     insertcharterdocumentsRegistrationsTableAppendedTable();
                     charterdocumentsRegistrationsTableAppended = true;
                 }
@@ -4927,15 +4939,14 @@ function handleFolderPath(folderPath) {
         console.log("Inserting Mutual Fund Statements Table");
         insertbankMutualFundStatementsTable();
         bankMutualFundStatementsTableAppended = true;
-    } else if (folderPath === 'Accounting & Taxation/Charter documents/Director Details/Director 1' && !charterdocumentsDirectordetatilsDirector1TableAppended) {
+    } else if (folderPath === `Accounting & Taxation/Charter Documents/Director Details/${newPermitter}` && !charterdocumentsDirectordetatilsDirector1TableAppended) {
         console.log("Inserting Director 1 Table");
         insertcharterdocumentsDirectordetatilsDirector1Table();
         charterdocumentsDirectordetatilsDirector1TableAppended = true;
-    } else if (folderPath === 'Accounting & Taxation/Charter documents/Director Details/Director 2' && !charterdocumentsDirectordetatilsDirector2TableAppended) {
-        console.log("Inserting Director 2 Table");
-        insertcharterdocumentsDirectordetatilsDirector2Table();
-        charterdocumentsDirectordetatilsDirector2TableAppended = true;
-    } else if (folderPath === 'Accounting & Taxation/Charter documents/Incorporation' && !charterdocumentsIncorporationTableAppended) {
+    } 
+     
+   
+    else if (folderPath === 'Accounting & Taxation/Charter documents/Incorporation' && !charterdocumentsIncorporationTableAppended) {
         console.log("Inserting Incorporation Table");
         insertcharterdocumentsIncorporationTableAppendedTable();
         charterdocumentsIncorporationTableAppended = true;
