@@ -5462,6 +5462,7 @@ public function bankaccountstatement(Request $request)
                                 'fyear' => $request->input('fyear'),
                                 'month' => $request->input('Month'),
                                 'tags' => $tags, // Store tags as JSON
+                                'bank_name'=>$request->input('bank_name'),
                                 'location' => $request->input('location'), // Store the dynamic location
                                 'descp' => $request->input('desc'),
                             ]);
@@ -6169,6 +6170,7 @@ public function creditcardstatement(Request $request)
                                 'fyear' => $request->input('fyear'),
                                 'month' => $request->input('Month'),
                                 'tags' => $tags, // Store tags as JSON
+                                'bank_name'=>$request->input('bank_name'),
                                 'location' => $request->input('location'), // Store the dynamic location
                                 'descp' => $request->input('desc'),
                             ]);
@@ -6313,6 +6315,7 @@ public function mutualfundstatement(Request $request)
                                 'fyear' => $request->input('fyear'),
                                 'month' => $request->input('Month'),
                                 'tags' => $tags, // Store tags as JSON
+                                'bank_name'=>$request->input('bank_name'),
                                 'location' => $request->input('location'), // Store the dynamic location
                                 'descp' => $request->input('desc'),
                             ]);
@@ -6452,6 +6455,7 @@ public function fixeddepoiststatement(Request $request)
                                 'fyear' => $request->input('fyear'),
                                 'month' => $request->input('Month'),
                                 'tags' => $tags, // Store tags as JSON
+                                'bank_name'=>$request->input('bank_name'),
                                 'location' => $request->input('location'), // Store the dynamic location
                                 'descp' => $request->input('desc'),
                             ]);
@@ -14942,6 +14946,7 @@ public function PredefinedCommonUploadFilesBank(Request $request)
                                 'fyear' => $request->input('fyear'),
                                 'month' => $request->input('Month'),
                                 'tags' => $tags, // Store tags as JSON
+                                'bank_name'=>$request->input('bank_name'),
                                 'location' => $request->input('location'), // Store the dynamic location
                                 'descp' => $request->input('desc'),
                             ]);
