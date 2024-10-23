@@ -4442,10 +4442,10 @@ let newPermitter = fullPath.replace(basePath, '');
 // alert(`${basePath}${newPermitter}`);
 // alert(newPermitter);
 // alert(result);
-// setInterval(function() {
-//     let result = decodeAndFormatUrl(url);
-//     console.log(result);  // Output: formatted URL every second
-// }, 1000); 
+setInterval(function() {
+    let result = decodeAndFormatUrl(url);
+    console.log(result);  // Output: formatted URL every second
+}, 1000); 
 //  alert(result);
         // let resultto = removeDynamicPrefix(pathToUse);
 
@@ -4607,13 +4607,21 @@ let newPermitter = fullPath.replace(basePath, '');
         const pathToUse = decodedFolderPath ? decodedFolderPath : folderPath;
        
         let url = `${pathToUse}`;
+        // let result = decodeAndFormatUrl(url);
+
         let result = decodeAndFormatUrl(url);
 
+let fullPath = `${result}`;
 
-//         setInterval(function() {
-//     let result = decodeAndFormatUrl(url);
-//     console.log(result);  // Output: formatted URL every second
-// }, 100); 
+// The base path you want to cut off
+let basePath = "Accounting & Taxation/Charter Documents/Director Details/";
+
+// Extract the part after the base path
+let newPermitter = fullPath.replace(basePath, '');
+        setInterval(function() {
+    let result = decodeAndFormatUrl(url);
+    console.log(result);  // Output: formatted URL every second
+}, 100); 
 
 // Format the decoded URL
 
