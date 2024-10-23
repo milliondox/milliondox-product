@@ -5736,6 +5736,7 @@ function handleFolderPath(folderPath) {
             // xhrRequests.push(xhr); // Store the xhr object in the array
             // globalFileIndex++; // Increment global index for the next file
         });
+        $('#common_file_upload_pop .close').click();    
 
         // Store the requests globally to be able to cancel them
         window.xhrRequests = xhrRequests;
@@ -5829,6 +5830,8 @@ function handleFolderPath(folderPath) {
             // xhrRequests.push(xhr); // Store the xhr object in the array
             // globalFileIndex++; // Increment global index for the next file
         });
+        $('#common_file_upload_pop_bank .close').click(); 
+
 
         // Store the requests globally to be able to cancel them
         window.xhrRequests = xhrRequests;
@@ -6066,6 +6069,8 @@ $('#upload-file-form').on('submit', function(e) {
         // Store the xhr request to allow cancellation later
         xhrRequests[currentFileIndex] = xhrUpload;
     });
+    $('#upload_filee .close').click(); 
+
 
     // Function to add progress bar for each file
     function addProgressIndicator1(fileName, index) {
@@ -8518,7 +8523,7 @@ document.addEventListener("DOMContentLoaded", function() {
             const form = $(this);
             if (!areAllRequiredFieldsFilled(form)) {
                 e.preventDefault();
-                toastr.error('Please fill out all required fields before submitting.'); // Display error toaster message
+                // toastr.error('Please fill out all required fields before submitting.'); // Display error toaster message
             } else {
                 // Disable the submit button after form submission to prevent double submit
                 const submitButton = form.find('button[type="submit"], input[type="submit"]');
