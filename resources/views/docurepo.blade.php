@@ -5720,7 +5720,8 @@ function handleFolderPath(folderPath) {
                 },
                 error: function(xhr, textStatus) {
                     if (textStatus !== 'abort') {
-                        toastr.error('An error occurred while uploading files: ' + xhr.responseText);
+                        toastr.error('An error occurred while uploading files');
+                        // toastr.error('An error occurred while uploading files: ' + xhr.responseText);
                         $('#common_file_upload_pop .close').click();    
                         
                     }
@@ -5805,6 +5806,21 @@ function handleFolderPath(folderPath) {
                         $(`#progress_${currentFileIndex} .cancle_file`).hide(); // Hide cancel button on success
                         $(`#progress_${currentFileIndex} .done_tick`).show(); // Hide cancel button on success
 
+                        // $('.getparm').find('svg').next('span').children('span').text(response.count);
+
+                        // $('.comm_count').text(response.count);
+                        // $('.comm_size').text(response.totalSize);
+
+                        // Find the <td> with "Offer Letter" text
+                            let $offerLetterRow = $('td').filter(function() {
+                            return $(this).text().trim() === response.real_file_name; // response.real_file_name should match "Offer Letter"
+                        }).closest('tr'); // Get the closest row (tr) that contains the td
+
+                        // Update the .comm_count and .comm_size in the same row
+                        $offerLetterRow.find('.comm_count').text(response.count);
+                        // $offerLetterRow.find('.comm_size').text(response.totalSize + ' KB');
+                        $offerLetterRow.find('.comm_size').text(response.totalSize);
+
                         activeUploads[currentFileIndex] = false; // Mark this file as completed
                         checkAllUploadsComplete(); // Check if all uploads are done
 
@@ -5816,7 +5832,8 @@ function handleFolderPath(folderPath) {
                 },
                 error: function(xhr, textStatus) {
                     if (textStatus !== 'abort') {
-                        toastr.error('An error occurred while uploading files: ' + xhr.responseText);
+                        toastr.error('An error occurred while uploading files');
+                        // toastr.error('An error occurred while uploading files: ' + xhr.responseText);
                         $('#common_file_upload_pop_bank .close').click(); 
                     }
 
@@ -6025,6 +6042,9 @@ $('#upload-file-form').on('submit', function(e) {
                     if (response.errorMessages.length) {
                         response.errorMessages.forEach(function(msg) {
                             // toastr.warning(msg);
+                        toastr.error('An error occurred while uploading files');
+
+
                         });
                     }
 

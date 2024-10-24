@@ -5515,7 +5515,7 @@ public function bankaccountstatement(Request $request)
         $entries = CommonTable::where('user_id', $user->id)
     ->where('is_delete', 0)
     ->where('location', 'LIKE', '%Bank Account Statements%')
-        ->where('real_file_name', 'Bank account statement')
+        ->where('real_file_name', 'Bank Account Statement')
     ->get();
 
         // Calculate count and total size of files
@@ -5530,14 +5530,14 @@ public function bankaccountstatement(Request $request)
 }
 public function fetchBankFileAccsData(Request $request)
 {
-    $location = $request->input('location');
+    // $location = $request->input('location');
     $user = auth()->user();
     // dd($request);
     // Get the query without executing it
     $query = CommonTable::where('user_id', $user->id)
         ->where('is_delete', 0)
-    //    ->where('location', 'LIKE', '%Bank Account Statements%')
-       ->where('location', $location)
+       ->where('location', 'LIKE', '%Bank Account Statements%')
+    //    ->where('location', $location)
         ->where('real_file_name', 'Bank Account Statement');
 
    
@@ -14976,12 +14976,37 @@ public function PredefinedCommonUploadFilesBank(Request $request)
 
             // return redirect()->back()->with('success2', 'File Uploaded successfully.');
 
+            $user = auth()->user();
+            $entries = CommonTable::where('user_id', $user->id)
+            ->where('is_delete', 0)
+            ->where('location', 'LIKE', $request->input('location'))
+            ->where('real_file_name', $request->input('real_file_name'))
+            ->get();
+            $count = $entries->count();
+            $totalFileSize = $entries->sum('file_size');
+
+            $totalSizeKB = round($totalFileSize / 1024, 2); // Convert to KB
+
+            if ($totalSizeKB > 1024) {
+                $totalSizeMB = round($totalSizeKB / 1024, 2); // Convert to MB
+                if ($totalSizeMB > 1024) {
+                    $totalSizeGB = round($totalSizeMB / 1024, 2); // Convert to GB
+                    $totalSizef = $totalSizeGB . ' GB';
+                } else {
+                    $totalSizef = $totalSizeMB . ' MB';
+                }
+            } else {
+                $totalSizef = $totalSizeKB . ' KB';
+            }
+
+
             return response()->json([
                 'success' => true,
-                // 'count' => $count,
-                // 'totalSize' => $totalSizeKB,
+                'count' => $count,
+                'totalSize' => $totalSizef,
                 'successMessages' => $successMessages,
                 'errorMessages' => $errorMessages,
+                'real_file_name' => $request->input('real_file_name'),
             ]);
 
         } catch (\Exception $e) {
@@ -17914,8 +17939,8 @@ $entriesinc9 = CommonTable::where('user_id', $user->id)
         
         $entriesbank = CommonTable::where('user_id', $user->id)
     ->where('is_delete', 0)
-    // ->where('location', 'LIKE', '%Bank Account Statements%')
-    ->where('location', $decodedFolderLocation)
+    ->where('location', 'LIKE', '%Bank Account Statements%')
+    // ->where('location', $decodedFolderLocation)
    
         ->where('real_file_name', 'Bank account statement')
     ->get();
@@ -17969,8 +17994,8 @@ $entriesinc9 = CommonTable::where('user_id', $user->id)
         
          $entriescreditcardstatement = CommonTable::where('user_id', $user->id)
     ->where('is_delete', 0)
-    // ->where('location', 'LIKE', '%Credit Card Statement%')
-    ->where('location', $decodedFolderLocation)
+    ->where('location', 'LIKE', '%Credit Card Statement%')
+    // ->where('location', $decodedFolderLocation)
     
         ->where('real_file_name', 'Add Credit Card Statements')
     ->get();
@@ -17980,8 +18005,8 @@ $entriesinc9 = CommonTable::where('user_id', $user->id)
         
         $entriesfixeddepoiststatement = CommonTable::where('user_id', $user->id)
     ->where('is_delete', 0)
-    // ->where('location', 'LIKE', '%Fixed Deposit Statements%')
-    ->where('location', 'LIKE', $decodedFolderLocation)
+    ->where('location', 'LIKE', '%Fixed Deposit Statements%')
+    // ->where('location', 'LIKE', $decodedFolderLocation)
     
     ->where('real_file_name', 'Fixed Deposit Account Statement')
     ->get();
@@ -17992,8 +18017,8 @@ $entriesinc9 = CommonTable::where('user_id', $user->id)
         
         $entriesmutualfundstatement = CommonTable::where('user_id', $user->id)
     ->where('is_delete', 0)
-    // ->where('location', 'LIKE', '%Mutual Fund Statements%')
-    ->where('location', 'LIKE', $decodedFolderLocation)
+    ->where('location', 'LIKE', '%Mutual Fund Statements%')
+    // ->where('location', 'LIKE', $decodedFolderLocation)
     ->where('real_file_name', 'Add Mutual Fund Statements')
     ->get();
         $countmutualfundstatement = $entriesmutualfundstatement->count();
