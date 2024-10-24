@@ -18909,7 +18909,7 @@ $entriesinc9 = CommonTable::where('user_id', $user->id)
         $entrieshrpaymoney5 = CommonTable::where('user_id', $user->id)
         ->where('is_delete', 0)
         ->where('location', $decodedFolderLocation) // Use the decoded folder parameter here
-        ->where('real_file_name', 'Attendance log')
+        ->where('real_file_name', 'Pay Register')
         ->get();
             // dd($decodedFolderLocation);
         $counthrhrpaymoney5 = $entrieshrpaymoney5->count();
