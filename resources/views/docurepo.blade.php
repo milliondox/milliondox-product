@@ -4215,7 +4215,7 @@ function openNewFolder(folderPath) {
                     breadcrumbHtml += `<span>${folderName}</span>`;
                 } else {
                     // Add intermediate breadcrumb links
-                    breadcrumbHtml += `<a href="#" class="breadcrumb-link" data-folder-path="${fullPath}">${folderName}</a> <span>/</span>`;
+                    breadcrumbHtml += `<a href="#" class="breadcrumb-link" data-folder-path="${fullPath}">${folderName}</a> <span> > </span>`;
                 }
             });
             
