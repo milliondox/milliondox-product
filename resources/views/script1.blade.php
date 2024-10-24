@@ -176,11 +176,13 @@
 
      
  <script>
-     function fetchBoardFileNoticeData() {
+    $(document).ready(function() {
+     function fetchBoardFileNoticeData(location) {
         
         $.ajax({
             url: '{{ route('fetch-board-file-notice-data') }}',
             type: 'GET',
+            data: { location: location }, // Pass the location parameter
             success: function(response) {
                 if (response && Array.isArray(response.files)) {
                     const tableBody = $('#filesTableboard tbody');
@@ -299,9 +301,10 @@ function toggleMoveToDataRoomButton() {
     
     
     // Use event delegation to handle click on #board_Notices_countt
-    $(document).ready(function() {
+   
         $('body').on('click', '#board_Notices_countt', function() {
-            fetchBoardFileNoticeData();
+            const location  = $(this).data('location');
+            fetchBoardFileNoticeData(location);
         });
     });
 $(document).ready(function() {
@@ -600,10 +603,11 @@ $(document).ready(function() {
   
   
   
-  function fetchBoardFileMinBookData() {
+  function fetchBoardFileMinBookData(location) {
       $.ajax({
           url: '{{ route('fetch-board-file-minbook-data') }}',
           type: 'GET',
+          data: { location: location },
           success: function(response) {
               if (response && Array.isArray(response.files)) {
                   const tableBody = $('#filesTableboardminbook tbody');
@@ -715,7 +719,8 @@ function toggleMoveToDataRoomButton() {
     });
 
     $('body').on('click', '#board_minut_countt', function() {
-            fetchBoardFileMinBookData();
+        const location  = $(this).data('location');
+            fetchBoardFileMinBookData(location);
         });
 
 });
@@ -960,10 +965,11 @@ $(document).ready(function() {
 
    <script>
    $(document).ready(function() {
-       function fetchBoardFileAttendencesheetData() {
+       function fetchBoardFileAttendencesheetData(location) {
            $.ajax({
                url: '{{ route('fetch-board-file-as-data') }}',
                type: 'GET',
+               data: { location: location }, // Pass the location parameter
                success: function(response) {
                    if (response && Array.isArray(response.files)) {
                        const tableBody = $('#filesTableas tbody');
@@ -1077,7 +1083,8 @@ function toggleMoveToDataRoomButton() {
     
      
         $('body').on('click', '#board_atandence_countt', function() {
-            fetchBoardFileAttendencesheetData();
+            const location  = $(this).data('location');
+            fetchBoardFileAttendencesheetData(location);
         });
    
    
@@ -1324,10 +1331,11 @@ $(document).ready(function() {
 
 <script>
 $(document).ready(function() {
-    function fetchBoardFileResolutionData() {
+    function fetchBoardFileResolutionData(location) {
         $.ajax({
             url: '{{ route('fetch-board-file-reso-data') }}',
             type: 'GET',
+            data: { location: location }, // Pass the location parameter
             success: function(response) {
                 if (response && Array.isArray(response.files)) {
                     const tableBody = $('#filesTablereso tbody');
@@ -1441,7 +1449,8 @@ function toggleMoveToDataRoomButton() {
         showDataRoomModal(selectedFiles);
     });
         $('body').on('click', '#board_Resolutions_countt', function() {
-            fetchBoardFileResolutionData();
+            const location  = $(this).data('location');
+            fetchBoardFileResolutionData(location);
         });
   
   
