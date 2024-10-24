@@ -2185,12 +2185,13 @@ public function boradmintuebook(Request $request)
             'totalSize' => $totalSize,
         ]);
 }
-public function fetchBoardFileNoticeData()
+public function fetchBoardFileNoticeData(Request $request)
 {
+    $location = $request->input('location');
     $user = auth()->user();
    $files = CommonTable::where('user_id', $user->id)
     ->where('is_delete', 0)
-    ->where('location', 'Legal / Secretarial / Board Meetings')
+    ->where('location', $location)
     ->where('real_file_name', 'Notices')
     ->get();
 
@@ -2622,12 +2623,13 @@ public function fetchBoardAttendencesheetData()
             'totalSize' => $totalSize,
         ]);
 }
-public function fetchBoardFileAttendencesheetData()
+public function fetchBoardFileAttendencesheetData(Request $request)
 {
+    $location = $request->input('location');
     $user = auth()->user();
     $files = CommonTable::where('user_id', $user->id)
     ->where('is_delete', 0)
-    ->where('location', 'Legal / Secretarial / Board Meetings')
+    ->where('location', $location)
     ->where('real_file_name', 'Attendance sheet')
     ->get();
    
@@ -2659,12 +2661,13 @@ public function fetchBoardResolutionData()
             'totalSize' => $totalSize,
         ]);
 }
-public function fetchBoardFileResolutionData()
+public function fetchBoardFileResolutionData(Request $request)
 {
+    $location = $request->input('location');
     $user = auth()->user();
     $files =  CommonTable::where('user_id', $user->id)
     ->where('is_delete', 0)
-    ->where('location', 'Legal / Secretarial / Board Meetings')
+    ->where('location', $location)
     ->where('real_file_name', 'Resolutions')
     ->get();
    
@@ -2694,12 +2697,13 @@ public function fetchBoardMinBookData()
             'totalSize' => $totalSize,
         ]);
 }
-public function fetchBoardFileMinBookData()
+public function fetchBoardFileMinBookData(Request $request)
 {
+    $location = $request->input('location');
     $user = auth()->user();
     $files = CommonTable::where('user_id', $user->id)
     ->where('is_delete', 0)
-    ->where('location', 'Legal / Secretarial / Board Meetings')
+    ->where('location', $location)
     ->where('real_file_name', 'Minute Book')
     ->get();
    
@@ -5524,15 +5528,17 @@ public function bankaccountstatement(Request $request)
             'totalSize' => $totalSize,
         ]);
 }
-public function fetchBankFileAccsData()
+public function fetchBankFileAccsData(Request $request)
 {
+    $location = $request->input('location');
     $user = auth()->user();
-    
+    // dd($request);
     // Get the query without executing it
     $query = CommonTable::where('user_id', $user->id)
         ->where('is_delete', 0)
-       ->where('location', 'LIKE', '%Bank Account Statements%')
-        ->where('real_file_name', 'Bank account statement');
+    //    ->where('location', 'LIKE', '%Bank Account Statements%')
+       ->where('location', $location)
+        ->where('real_file_name', 'Bank Account Statement');
 
    
     $files = $query->get();
@@ -17616,14 +17622,20 @@ $commonColumns = [
 $files4 = CommonTable::where('user_id', $user->id)
     ->where('is_delete', 1)
     ->get();
-                    
+    $folderLocation = request()->query('folder');
+
+    // Ensure the parameter is not null or empty before proceeding
+
+
+    // Decode the folder parameter
+    $decodedFolderLocation = urldecode($folderLocation);     
                     
         // $filess = BoardMinuteBook::where('user_id', $userId)->get();
         $moadoc = MOA::all();
         $user = auth()->user();
         $entries = CommonTable::where('user_id', $user->id)
     ->where('is_delete', 0)
-    ->where('location', 'Legal / Secretarial / Board Meetings')
+    ->where('location', $decodedFolderLocation)
     ->where('real_file_name', 'Notices')
     ->get();
 
@@ -17635,7 +17647,7 @@ $files4 = CommonTable::where('user_id', $user->id)
 
         $entriesMinbook =CommonTable::where('user_id', $user->id)
     ->where('is_delete', 0)
-    ->where('location', 'Legal / Secretarial / Board Meetings')
+    ->where('location', $decodedFolderLocation)
     ->where('real_file_name', 'Minute Book')
     ->get();
         $countMinbooks = $entriesMinbook->count(); // Count of entries
@@ -17645,7 +17657,7 @@ $files4 = CommonTable::where('user_id', $user->id)
         
           $entriesreso = CommonTable::where('user_id', $user->id)
     ->where('is_delete', 0)
-    ->where('location', 'Legal / Secretarial / Board Meetings')
+    ->where('location', $decodedFolderLocation)
     ->where('real_file_name', 'Resolutions')
     ->get();
         $countentriesreso = $entriesreso->count(); // Count of entries
@@ -17656,7 +17668,7 @@ $files4 = CommonTable::where('user_id', $user->id)
         
         $entriesas = CommonTable::where('user_id', $user->id)
     ->where('is_delete', 0)
-    ->where('location', 'Legal / Secretarial / Board Meetings')
+    ->where('location', $decodedFolderLocation)
     ->where('real_file_name', 'Attendance sheet')
     ->get();
         $countentriesas = $entriesas->count(); // Count of entries
@@ -17687,7 +17699,7 @@ if ($countentriesas > 0) {
         
         $entriesnomeet = CommonTable::where('user_id', $user->id)
     ->where('is_delete', 0)
-    ->where('location', 'Legal / Secretarial / Annual General Meeting')
+    ->where('location', $decodedFolderLocation)
     ->where('real_file_name', 'Notices')
     ->get();
         $countentriesnomeet = $entriesnomeet->count(); // Count of entries
@@ -17697,7 +17709,7 @@ if ($countentriesas > 0) {
         
         $entriesminbookmeet = CommonTable::where('user_id', $user->id)
     ->where('is_delete', 0)
-    ->where('location', 'Legal / Secretarial / Annual General Meeting')
+    ->where('location', $decodedFolderLocation)
     ->where('real_file_name', 'Minute Book')
     ->get();
         $countentriesminbookmeet = $entriesminbookmeet->count(); // Count of entries
@@ -17707,7 +17719,7 @@ if ($countentriesas > 0) {
         
          $entriesasmeet = CommonTable::where('user_id', $user->id)
     ->where('is_delete', 0)
-    ->where('location', 'Legal / Secretarial / Annual General Meeting')
+    ->where('location', $decodedFolderLocation)
     ->where('real_file_name', 'Attendance sheet')
     ->get();
         $countentriesasmeet = $entriesasmeet->count(); // Count of entries
@@ -17717,7 +17729,7 @@ if ($countentriesas > 0) {
         
         $entriesresomeet = CommonTable::where('user_id', $user->id)
     ->where('is_delete', 0)
-    ->where('location', 'Legal / Secretarial / Annual General Meeting')
+    ->where('location', $decodedFolderLocation)
     ->where('real_file_name', 'Resolutions')
     ->get();
         $countentriesresomeet = $entriesresomeet->count(); // Count of entries
@@ -17747,7 +17759,7 @@ if ($countentriesresomeet > 0) {
         
          $entriesordernotice = CommonTable::where('user_id', $user->id)
     ->where('is_delete', 0)
-    ->where('location', 'Legal / Secretarial / Extra Ordinary General Meeting')
+    ->where('location', $decodedFolderLocation)
     ->where('real_file_name', 'Notices')
     ->get();
         $countentriesordernotice = $entriesordernotice->count(); // Count of entries
@@ -17757,7 +17769,7 @@ if ($countentriesresomeet > 0) {
         
         $entriesorderminbook = CommonTable::where('user_id', $user->id)
     ->where('is_delete', 0)
-    ->where('location', 'Legal / Secretarial / Extra Ordinary General Meeting')
+    ->where('location', $decodedFolderLocation)
     ->where('real_file_name', 'Minute Book')
     ->get();
         $countentriesorderminbook = $entriesorderminbook->count(); // Count of entries
@@ -17766,7 +17778,7 @@ if ($countentriesresomeet > 0) {
         
         $entriesorderAttend = CommonTable::where('user_id', $user->id)
     ->where('is_delete', 0)
-    ->where('location', 'Legal / Secretarial / Extra Ordinary General Meeting')
+    ->where('location', $decodedFolderLocation)
     ->where('real_file_name', 'Attendance sheet')
     ->get();
         $countentriesorderAttend = $entriesorderAttend->count(); // Count of entries
@@ -17775,7 +17787,7 @@ if ($countentriesresomeet > 0) {
         
             $entriesorderreso = CommonTable::where('user_id', $user->id)
     ->where('is_delete', 0)
-    ->where('location', 'Legal / Secretarial / Extra Ordinary General Meeting')
+    ->where('location', $decodedFolderLocation)
     ->where('real_file_name', 'Resolutions')
     ->get();
         $countentriesorderreso = $entriesorderreso->count(); // Count of entries
@@ -17785,7 +17797,7 @@ if ($countentriesresomeet > 0) {
         
           $entriesinnerrun = CommonTable::where('user_id', $user->id)
     ->where('is_delete', 0)
-    ->where('location', 'Legal / Secretarial / Incorporation')
+    ->where('location', $decodedFolderLocation)
     ->where('real_file_name', 'RUN Form')
     ->get();
             $countinnerrun = $entriesinnerrun->count();
@@ -17794,7 +17806,7 @@ $totalSizeKBinnerrun = round($totalSizeinnerrun / 1024, 2); // Convert to KB and
 
 $entriesinc9 = CommonTable::where('user_id', $user->id)
     ->where('is_delete', 0)
-    ->where('location', 'Legal / Secretarial / Incorporation')
+    ->where('location', $decodedFolderLocation)
     ->where('real_file_name', 'INC 9')
     ->get();
         $countentriesinc9 = $entriesinc9->count(); // Count of entries
@@ -17805,7 +17817,7 @@ $entriesinc9 = CommonTable::where('user_id', $user->id)
         
          $entriesinnerspice = CommonTable::where('user_id', $user->id)
     ->where('is_delete', 0)
-    ->where('location', 'Legal / Secretarial / Incorporation')
+    ->where('location', $decodedFolderLocation)
     ->where('real_file_name', 'SPICe Part B')
     ->get();
         $countentriesinnerspice = $entriesinnerspice->count(); // Count of entries
@@ -17815,7 +17827,7 @@ $entriesinc9 = CommonTable::where('user_id', $user->id)
         
          $entriesinnerinc33 = CommonTable::where('user_id', $user->id)
     ->where('is_delete', 0)
-    ->where('location', 'Legal / Secretarial / Incorporation')
+    ->where('location', $decodedFolderLocation)
     ->where('real_file_name', 'INC 33 SPICe MoA')
     ->get();
         $countentriesinnerinc33 = $entriesinnerinc33->count(); // Count of entries
@@ -17825,7 +17837,7 @@ $entriesinc9 = CommonTable::where('user_id', $user->id)
         
         $entriesinnerinc34 = CommonTable::where('user_id', $user->id)
     ->where('is_delete', 0)
-    ->where('location', 'Legal / Secretarial / Incorporation')
+    ->where('location', $decodedFolderLocation)
     ->where('real_file_name', 'INC 34')
     ->get();
         $countentriesinnerinc34 = $entriesinnerinc34->count(); // Count of entries
@@ -17834,7 +17846,7 @@ $entriesinc9 = CommonTable::where('user_id', $user->id)
         
         $entriesinnerinc35 = CommonTable::where('user_id', $user->id)
     ->where('is_delete', 0)
-    ->where('location', 'Legal / Secretarial / Incorporation')
+    ->where('location', $decodedFolderLocation)
     ->where('real_file_name', 'INC 35')
     ->get();
         $countentriesinnerinc35 = $entriesinnerinc35->count(); // Count of entries
@@ -17843,7 +17855,7 @@ $entriesinc9 = CommonTable::where('user_id', $user->id)
         
             $entriesinnerinc22 = CommonTable::where('user_id', $user->id)
     ->where('is_delete', 0)
-    ->where('location', 'Legal / Secretarial / Incorporation')
+    ->where('location', $decodedFolderLocation)
     ->where('real_file_name', 'INC 22')
     ->get();
         $countentriesinnerinc22 = $entriesinnerinc22->count(); // Count of entries
@@ -17854,7 +17866,7 @@ $entriesinc9 = CommonTable::where('user_id', $user->id)
         
         $entriesinnerinc20a = CommonTable::where('user_id', $user->id)
     ->where('is_delete', 0)
-    ->where('location', 'Legal / Secretarial / Incorporation')
+    ->where('location', $decodedFolderLocation)
     ->where('real_file_name', 'INC 20A')
     ->get();
         $countentriesinnerinc20a = $entriesinnerinc20a->count(); // Count of entries
@@ -17864,7 +17876,7 @@ $entriesinc9 = CommonTable::where('user_id', $user->id)
         
          $entriesafs = CommonTable::where('user_id', $user->id)
     ->where('is_delete', 0)
-    ->where('location', 'Legal / Secretarial / Annual Filings')
+    ->where('location', $decodedFolderLocation)
     ->where('real_file_name', 'AoC 4 Annual Filing Statement Form')
     ->get();
         $countentriesafs = $entriesafs->count(); // Count of entries
@@ -17874,7 +17886,7 @@ $entriesinc9 = CommonTable::where('user_id', $user->id)
         
          $entriescfs = CommonTable::where('user_id', $user->id)
     ->where('is_delete', 0)
-    ->where('location', 'Legal / Secretarial / Annual Filings')
+    ->where('location', $decodedFolderLocation)
     ->where('real_file_name', 'AoC 4 CFS')
     ->get();
         $countentriescfs = $entriescfs->count(); // Count of entries
@@ -17884,7 +17896,7 @@ $entriesinc9 = CommonTable::where('user_id', $user->id)
         
         $entriesmgt7 = CommonTable::where('user_id', $user->id)
     ->where('is_delete', 0)
-    ->where('location', 'Legal / Secretarial / Annual Filings')
+    ->where('location', $decodedFolderLocation)
     ->where('real_file_name', 'MGT 7')
     ->get();
         $countentriesmgt7 = $entriesmgt7->count(); // Count of entries
@@ -17893,7 +17905,7 @@ $entriesinc9 = CommonTable::where('user_id', $user->id)
         
          $entriesmgt7a = CommonTable::where('user_id', $user->id)
     ->where('is_delete', 0)
-    ->where('location', 'Legal / Secretarial / Annual Filings')
+    ->where('location', $decodedFolderLocation)
     ->where('real_file_name', 'MGT 7A')
     ->get();
         $countentriesmgt7a = $entriesmgt7a->count(); // Count of entries
@@ -17902,7 +17914,9 @@ $entriesinc9 = CommonTable::where('user_id', $user->id)
         
         $entriesbank = CommonTable::where('user_id', $user->id)
     ->where('is_delete', 0)
-    ->where('location', 'LIKE', '%Bank Account Statements%')
+    // ->where('location', 'LIKE', '%Bank Account Statements%')
+    ->where('location', $decodedFolderLocation)
+   
         ->where('real_file_name', 'Bank account statement')
     ->get();
         $countbank = $entriesbank->count();
@@ -17915,7 +17929,7 @@ $entriesinc9 = CommonTable::where('user_id', $user->id)
         
         $entriesdirectorappointmentsdir3din = CommonTable::where('user_id', $user->id)
     ->where('is_delete', 0)
-    ->where('location', 'Legal / Secretarial / Director Appointments')
+    ->where('location', $decodedFolderLocation)
     ->where('real_file_name', 'DIR-3 form/ DIN number')
     ->get();
         $countdirectorappointmentsdir3din = $entriesdirectorappointmentsdir3din->count();
@@ -17926,7 +17940,7 @@ $entriesinc9 = CommonTable::where('user_id', $user->id)
         
         $entriesdirectorappointmentsdir3 = CommonTable::where('user_id', $user->id)
     ->where('is_delete', 0)
-    ->where('location', 'Legal / Secretarial / Director Appointments')
+    ->where('location', $decodedFolderLocation)
     ->where('real_file_name', 'DIR 3 KYC')
     ->get();
         $countdirectorappointmentsdir3 = $entriesdirectorappointmentsdir3->count();
@@ -17936,7 +17950,7 @@ $entriesinc9 = CommonTable::where('user_id', $user->id)
         
         $entriesdirectorappointmentsdir6 =CommonTable::where('user_id', $user->id)
     ->where('is_delete', 0)
-    ->where('location', 'Legal / Secretarial / Director Appointments')
+    ->where('location', $decodedFolderLocation)
     ->where('real_file_name', 'DIR 6 form')
     ->get();
         $countdirectorappointmentsdir6 = $entriesdirectorappointmentsdir6->count();
@@ -17945,7 +17959,7 @@ $entriesinc9 = CommonTable::where('user_id', $user->id)
         
         $entriesdirectorappointmentsdir12 = CommonTable::where('user_id', $user->id)
     ->where('is_delete', 0)
-    ->where('location', 'Legal / Secretarial / Director Appointments')
+    ->where('location', $decodedFolderLocation)
     ->where('real_file_name', 'DIR 12 form')
     ->get();
         $countdirectorappointmentsdir12 = $entriesdirectorappointmentsdir12->count();
@@ -17955,7 +17969,9 @@ $entriesinc9 = CommonTable::where('user_id', $user->id)
         
          $entriescreditcardstatement = CommonTable::where('user_id', $user->id)
     ->where('is_delete', 0)
-    ->where('location', 'LIKE', '%Credit Card Statement%')
+    // ->where('location', 'LIKE', '%Credit Card Statement%')
+    ->where('location', $decodedFolderLocation)
+    
         ->where('real_file_name', 'Add Credit Card Statements')
     ->get();
         $countdcreditcardstatement = $entriescreditcardstatement->count();
@@ -17964,7 +17980,9 @@ $entriesinc9 = CommonTable::where('user_id', $user->id)
         
         $entriesfixeddepoiststatement = CommonTable::where('user_id', $user->id)
     ->where('is_delete', 0)
-    ->where('location', 'LIKE', '%Fixed Deposit Statements%')
+    // ->where('location', 'LIKE', '%Fixed Deposit Statements%')
+    ->where('location', 'LIKE', $decodedFolderLocation)
+    
     ->where('real_file_name', 'Fixed Deposit Account Statement')
     ->get();
         $countfixeddepoiststatement = $entriesfixeddepoiststatement->count();
@@ -17974,7 +17992,8 @@ $entriesinc9 = CommonTable::where('user_id', $user->id)
         
         $entriesmutualfundstatement = CommonTable::where('user_id', $user->id)
     ->where('is_delete', 0)
-    ->where('location', 'LIKE', '%Mutual Fund Statements%')
+    // ->where('location', 'LIKE', '%Mutual Fund Statements%')
+    ->where('location', 'LIKE', $decodedFolderLocation)
     ->where('real_file_name', 'Add Mutual Fund Statements')
     ->get();
         $countmutualfundstatement = $entriesmutualfundstatement->count();
@@ -17984,7 +18003,7 @@ $entriesinc9 = CommonTable::where('user_id', $user->id)
         
       $entriesdirectorresignationdir11 = CommonTable::where('user_id', $user->id)
     ->where('is_delete', 0)
-    ->where('location', 'Legal / Secretarial / Director Resignation')
+    ->where('location', $decodedFolderLocation)
     ->where('real_file_name', 'DIR 11 form')
     ->get();
         $countdirectorresignationdir11 = $entriesdirectorresignationdir11->count();
@@ -17995,7 +18014,7 @@ $entriesinc9 = CommonTable::where('user_id', $user->id)
         
         $entriesdirectorresignationdir12 = CommonTable::where('user_id', $user->id)
     ->where('is_delete', 0)
-    ->where('location', 'Legal / Secretarial / Director Resignation')
+    ->where('location', $decodedFolderLocation)
     ->where('real_file_name', 'DIR 12 form')
     ->get();
         $countdirectorresignationdir12 = $entriesdirectorresignationdir12->count();
@@ -18005,7 +18024,7 @@ $entriesinc9 = CommonTable::where('user_id', $user->id)
         
         $entriesdepositundertakingsFormDPT3 = CommonTable::where('user_id', $user->id)
     ->where('is_delete', 0)
-    ->where('location', 'Legal / Secretarial / Deposit Undertakings')
+    ->where('location', $decodedFolderLocation)
     ->where('real_file_name', 'Form DPT 3')
     ->get();
         $countdepositundertakingsFormDPT3 = $entriesdepositundertakingsFormDPT3->count();
@@ -18016,7 +18035,7 @@ $entriesinc9 = CommonTable::where('user_id', $user->id)
         
          $entriesAuditorExitsADT3 = CommonTable::where('user_id', $user->id)
     ->where('is_delete', 0)
-    ->where('location', 'Legal / Secretarial / Auditor Exits')
+    ->where('location', $decodedFolderLocation)
     ->where('real_file_name', 'ADT 3 form')
     ->get();
         $countAuditorExitsADT3 = $entriesAuditorExitsADT3->count();
@@ -18027,7 +18046,7 @@ $entriesinc9 = CommonTable::where('user_id', $user->id)
         
         $entriesAuditorExitsResignletteraud = CommonTable::where('user_id', $user->id)
     ->where('is_delete', 0)
-    ->where('location', 'Legal / Secretarial / Auditor Exits')
+    ->where('location', $decodedFolderLocation)
     ->where('real_file_name', 'Resignation letter by auditor')
     ->get();
         $countAuditorExitsResignletteraud = $entriesAuditorExitsResignletteraud->count();
@@ -18038,7 +18057,7 @@ $entriesinc9 = CommonTable::where('user_id', $user->id)
         
         $entriesAuditorExitsResignDetofgroundsseekremaud = CommonTable::where('user_id', $user->id)
     ->where('is_delete', 0)
-    ->where('location', 'Legal / Secretarial / Auditor Exits')
+    ->where('location', $decodedFolderLocation)
     ->where('real_file_name', 'Details of the grounds for seeking removal of auditor')
     ->get();
         $countAuditorExitsResignDetofgroundsseekremaud = $entriesAuditorExitsResignDetofgroundsseekremaud->count();
@@ -18051,7 +18070,7 @@ $entriesinc9 = CommonTable::where('user_id', $user->id)
         
         $entriesAuditorExitsSpecialResol = CommonTable::where('user_id', $user->id)
     ->where('is_delete', 0)
-    ->where('location', 'Legal / Secretarial / Auditor Exits')
+    ->where('location', $decodedFolderLocation)
     ->where('real_file_name', 'Special Resolution')
     ->get();
         $countAuditorExitsSpecialResol = $entriesAuditorExitsSpecialResol->count();
@@ -18061,7 +18080,7 @@ $entriesinc9 = CommonTable::where('user_id', $user->id)
         
          $entriesAuditorExitsADT2 = CommonTable::where('user_id', $user->id)
     ->where('is_delete', 0)
-    ->where('location', 'Legal / Secretarial / Auditor Exits')
+    ->where('location', $decodedFolderLocation)
     ->where('real_file_name', 'ADT 2')
     ->get();
         $countAuditorExitsADT2 = $entriesAuditorExitsADT2->count();
@@ -18073,7 +18092,8 @@ $entriesinc9 = CommonTable::where('user_id', $user->id)
         
         $entriesDirector1AadharKYC = CommonTable::where('user_id', $user->id)
     ->where('is_delete', 0)
-    ->where('location', 'LIKE', '%Taxation / Charter documents / Director Details / Director 1')
+    // ->where('location', 'LIKE', '%Taxation / Charter documents / Director Details / Director 1')
+    ->where('location', $decodedFolderLocation)
     ->where('real_file_name', 'Aadhar KYC')
     ->get();
         $countDirector1AadharKYC = $entriesDirector1AadharKYC->count();
@@ -18083,7 +18103,9 @@ $entriesinc9 = CommonTable::where('user_id', $user->id)
         
         $entriesDirector1AddressProof = CommonTable::where('user_id', $user->id)
     ->where('is_delete', 0)
-    ->where('location', 'LIKE', '%Taxation / Charter documents / Director Details / Director 1')
+    // ->where('location', 'LIKE', '%Taxation / Charter documents / Director Details / Director 1')
+
+    ->where('location', $decodedFolderLocation)
     ->where('real_file_name', 'Address Proof')
     ->get();
         $countDirector1AddressProof = $entriesDirector1AddressProof->count();
@@ -18094,7 +18116,8 @@ $entriesinc9 = CommonTable::where('user_id', $user->id)
         
         $entriesDirector1ContactDetails = CommonTable::where('user_id', $user->id)
     ->where('is_delete', 0)
-    ->where('location', 'LIKE', '%Taxation / Charter documents / Director Details / Director 1')
+    // ->where('location', 'LIKE', '%Taxation / Charter documents / Director Details / Director 1')
+    ->where('location', $decodedFolderLocation)
     ->where('real_file_name', 'Contact Details')
     ->get();
         $countDirector1ContactDetails = $entriesDirector1ContactDetails->count();
@@ -18105,7 +18128,9 @@ $entriesinc9 = CommonTable::where('user_id', $user->id)
         
         $entriesDirector1PANKYC = CommonTable::where('user_id', $user->id)
     ->where('is_delete', 0)
-    ->where('location', 'LIKE', '%Taxation / Charter documents / Director Details / Director 1')
+    // ->where('location', 'LIKE', '%Taxation / Charter documents / Director Details / Director 1')
+
+    ->where('location', $decodedFolderLocation)
     ->where('real_file_name', 'PAN KYC')
     ->get();
         $countDirector1PANKYC = $entriesDirector1PANKYC->count();
@@ -18115,7 +18140,8 @@ $entriesinc9 = CommonTable::where('user_id', $user->id)
         
         $entriesDirector1Photo = CommonTable::where('user_id', $user->id)
     ->where('is_delete', 0)
-    ->where('location', 'LIKE', '%Taxation / Charter documents / Director Details / Director 1')
+    // ->where('location', 'LIKE', '%Taxation / Charter documents / Director Details / Director 1')
+    ->where('location', $decodedFolderLocation)
     ->where('real_file_name', 'Photo')
     ->get();
         $countDirector1Photo = $entriesDirector1Photo->count();
@@ -18124,7 +18150,8 @@ $entriesinc9 = CommonTable::where('user_id', $user->id)
         
         $entriesDirector1Signimg = CommonTable::where('user_id', $user->id)
     ->where('is_delete', 0)
-    ->where('location', 'LIKE', '%Taxation / Charter documents / Director Details / Director 1')
+    ->where('location', $decodedFolderLocation)
+    // ->where('location', 'LIKE', '%Taxation / Charter documents / Director Details / Director 1')
     ->where('real_file_name', 'Signature image')
     ->get();
         $countDirector1Signimg = $entriesDirector1Signimg->count();
@@ -18138,7 +18165,9 @@ $entriesinc9 = CommonTable::where('user_id', $user->id)
         
          $entriesDirector2AadharKYC = CommonTable::where('user_id', $user->id)
     ->where('is_delete', 0)
-    ->where('location', 'LIKE', '%Taxation / Charter documents / Director Details / Director 2')
+    // ->where('location', 'LIKE', '%Taxation / Charter documents / Director Details / Director 2')
+
+    ->where('location', $decodedFolderLocation)
     ->where('real_file_name', 'Aadhar KYC')
     ->get();
         $countDirector2AadharKYC = $entriesDirector2AadharKYC->count();
@@ -18148,7 +18177,9 @@ $entriesinc9 = CommonTable::where('user_id', $user->id)
         
         $entriesDirector2AddressProof = CommonTable::where('user_id', $user->id)
     ->where('is_delete', 0)
-    ->where('location', 'LIKE', '%Taxation / Charter documents / Director Details / Director 2')
+    // ->where('location', 'LIKE', '%Taxation / Charter documents / Director Details / Director 2')
+
+    ->where('location', $decodedFolderLocation)
     ->where('real_file_name', 'Address Proof')
     ->get();
         $countDirector2AddressProof = $entriesDirector2AddressProof->count();
@@ -18159,7 +18190,9 @@ $entriesinc9 = CommonTable::where('user_id', $user->id)
         
         $entriesDirector2ContactDetails = CommonTable::where('user_id', $user->id)
     ->where('is_delete', 0)
-    ->where('location', 'LIKE', '%Taxation / Charter documents / Director Details / Director 2')
+    // ->where('location', 'LIKE', '%Taxation / Charter documents / Director Details / Director 2')
+
+    ->where('location', $decodedFolderLocation)
     ->where('real_file_name', 'Contact Details')
     ->get();
         $countDirector2ContactDetails = $entriesDirector2ContactDetails->count();
@@ -18170,7 +18203,9 @@ $entriesinc9 = CommonTable::where('user_id', $user->id)
         
         $entriesDirector2PANKYC = CommonTable::where('user_id', $user->id)
     ->where('is_delete', 0)
-    ->where('location', 'LIKE', '%Taxation / Charter documents / Director Details / Director 2')
+    // ->where('location', 'LIKE', '%Taxation / Charter documents / Director Details / Director 2')
+
+    ->where('location', $decodedFolderLocation)
     ->where('real_file_name', 'PAN KYC')
     ->get();
         $countDirector2PANKYC = $entriesDirector2PANKYC->count();
@@ -18180,7 +18215,9 @@ $entriesinc9 = CommonTable::where('user_id', $user->id)
         
         $entriesDirector2Photo = CommonTable::where('user_id', $user->id)
     ->where('is_delete', 0)
-    ->where('location', 'LIKE', '%Taxation / Charter documents / Director Details / Director 2')
+    // ->where('location', 'LIKE', '%Taxation / Charter documents / Director Details / Director 2')
+
+    ->where('location', $decodedFolderLocation)
     ->where('real_file_name', 'Photo')
     ->get();
         $countDirector2Photo = $entriesDirector2Photo->count();
@@ -18189,7 +18226,8 @@ $entriesinc9 = CommonTable::where('user_id', $user->id)
         
         $entriesDirector2Signimg = CommonTable::where('user_id', $user->id)
     ->where('is_delete', 0)
-    ->where('location', 'LIKE', '%Taxation / Charter documents / Director Details / Director 2')
+    // ->where('location', 'LIKE', '%Taxation / Charter documents / Director Details / Director 2')
+    ->where('location', $decodedFolderLocation)
     ->where('real_file_name', 'Signature image')
     ->get();
         $countDirector2Signimg = $entriesDirector2Signimg->count();
@@ -18199,7 +18237,8 @@ $entriesinc9 = CommonTable::where('user_id', $user->id)
         
         $entriesIncorporationArtofAssoc = CommonTable::where('user_id', $user->id)
     ->where('is_delete', 0)
-    ->where('location', 'LIKE', '%Taxation / Charter documents / Incorporation')
+    // ->where('location', 'LIKE', '%Taxation / Charter documents / Incorporation')
+    ->where('location', $decodedFolderLocation)
     ->where('real_file_name', 'Articles of Association')
     ->get();
         $countIncorporationArtofAssoc = $entriesIncorporationArtofAssoc->count();
@@ -18209,7 +18248,8 @@ $entriesinc9 = CommonTable::where('user_id', $user->id)
         // dd($entriesIncorporationArtofAssoc);
         $entriesIncorporationCertifofincorp = CommonTable::where('user_id', $user->id)
     ->where('is_delete', 0)
-    ->where('location', 'LIKE', '%Charter documents / Incorporation')
+    // ->where('location', 'LIKE', '%Charter documents / Incorporation')
+    ->where('location', $decodedFolderLocation)
     ->where('real_file_name', 'Certificate of incorporation')
     ->get();
     // dd($entriesIncorporationCertifofincorp);
@@ -18222,7 +18262,8 @@ $entriesinc9 = CommonTable::where('user_id', $user->id)
         
         $entriesIncorporationMemoofAssoc = CommonTable::where('user_id', $user->id)
     ->where('is_delete', 0)
-    ->where('location', 'LIKE', '%Taxation / Charter documents / Incorporation')
+    // ->where('location', 'LIKE', '%Taxation / Charter documents / Incorporation')
+    ->where('location', $decodedFolderLocation)
     ->where('real_file_name', 'Memorandum of Association')
     ->get();
         $countIncorporationMemoofAssoc = $entriesIncorporationMemoofAssoc->count();
@@ -18232,7 +18273,8 @@ $entriesinc9 = CommonTable::where('user_id', $user->id)
         
          $entriesIncorporationPartnerdeed = CommonTable::where('user_id', $user->id)
     ->where('is_delete', 0)
-    ->where('location', 'LIKE', '%Taxation / Charter documents / Incorporation')
+    // ->where('location', 'LIKE', '%Taxation / Charter documents / Incorporation')
+    ->where('location', $decodedFolderLocation)
     ->where('real_file_name', 'Partnership deed')
     ->get();
         $countIncorporationPartnerdeed = $entriesIncorporationPartnerdeed->count();
@@ -18242,7 +18284,8 @@ $entriesinc9 = CommonTable::where('user_id', $user->id)
         
         $entriesIncorporationLLPAgreement = CommonTable::where('user_id', $user->id)
     ->where('is_delete', 0)
-    ->where('location', 'LIKE', '%Taxation / Charter documents / Incorporation')
+    // ->where('location', 'LIKE', '%Taxation / Charter documents / Incorporation')
+    ->where('location', $decodedFolderLocation)
     ->where('real_file_name', 'LLP Agreement')
     ->get();
         $countIncorporationLLPAgreement = $entriesIncorporationLLPAgreement->count();
@@ -18252,7 +18295,8 @@ $entriesinc9 = CommonTable::where('user_id', $user->id)
         
         $entriesIncorporationTrustDeed = CommonTable::where('user_id', $user->id)
     ->where('is_delete', 0)
-    ->where('location', 'LIKE', '%Taxation / Charter documents / Incorporation')
+    // ->where('location', 'LIKE', '%Taxation / Charter documents / Incorporation')
+    ->where('location', $decodedFolderLocation)
     ->where('real_file_name', 'Trust Deed')
     ->get();
         $countIncorporationTrustDeed = $entriesIncorporationTrustDeed->count();
@@ -18262,7 +18306,8 @@ $entriesinc9 = CommonTable::where('user_id', $user->id)
         
         $entriesIncorporationSharecertifF = CommonTable::where('user_id', $user->id)
     ->where('is_delete', 0)
-    ->where('location', 'LIKE', '%Taxation / Charter documents / Incorporation')
+    // ->where('location', 'LIKE', '%Taxation / Charter documents / Incorporation')
+    ->where('location', $decodedFolderLocation)
     ->where('real_file_name', 'Share certificates')
     ->get();
         $countIncorporationSharecertifF = $entriesIncorporationSharecertifF->count();
@@ -18275,7 +18320,8 @@ $entriesinc9 = CommonTable::where('user_id', $user->id)
         
         $entriescharregpan = CommonTable::where('user_id', $user->id)
     ->where('is_delete', 0)
-    ->where('location', 'LIKE', '%Taxation / Charter documents / Registrations')
+    // ->where('location', 'LIKE', '%Taxation / Charter documents / Registrations')
+    ->where('location', $decodedFolderLocation)
     ->where('real_file_name', 'PAN certificate')
     ->get();
         $countcharregpan = $entriescharregpan->count();
@@ -18287,7 +18333,8 @@ $entriesinc9 = CommonTable::where('user_id', $user->id)
         
         $entriescharregtan = CommonTable::where('user_id', $user->id)
     ->where('is_delete', 0)
-    ->where('location', 'LIKE', '%Taxation / Charter documents / Registrations')
+    // ->where('location', 'LIKE', '%Taxation / Charter documents / Registrations')
+    ->where('location', $decodedFolderLocation)
     ->where('real_file_name', 'TAN certificate')
     ->get();
         $countcharregtan = $entriescharregtan->count();
@@ -18297,7 +18344,8 @@ $entriesinc9 = CommonTable::where('user_id', $user->id)
         
          $entriescharregGSTIN = CommonTable::where('user_id', $user->id)
     ->where('is_delete', 0)
-    ->where('location', 'LIKE', '%Taxation / Charter documents / Registrations')
+    // ->where('location', 'LIKE', '%Taxation / Charter documents / Registrations')
+    ->where('location', $decodedFolderLocation)
     ->where('real_file_name', 'GSTIN certificate')
     ->get();
         $countcharregGSTIN = $entriescharregGSTIN->count();
@@ -18307,7 +18355,8 @@ $entriesinc9 = CommonTable::where('user_id', $user->id)
         
          $entriescharregMSME = CommonTable::where('user_id', $user->id)
     ->where('is_delete', 0)
-    ->where('location', 'LIKE', '%Taxation / Charter documents / Registrations')
+    // ->where('location', 'LIKE', '%Taxation / Charter documents / Registrations')
+    ->where('location', $decodedFolderLocation)
     ->where('real_file_name', 'MSME certificate')
     ->get();
         $countcharregMSME = $entriescharregMSME->count();
@@ -18318,7 +18367,8 @@ $entriesinc9 = CommonTable::where('user_id', $user->id)
         
         $entriescharregTrademark = CommonTable::where('user_id', $user->id)
     ->where('is_delete', 0)
-    ->where('location', 'LIKE', '%Taxation / Charter documents / Registrations')
+    // ->where('location', 'LIKE', '%Taxation / Charter documents / Registrations')
+    ->where('location', $decodedFolderLocation)
     ->where('real_file_name', 'Trademark')
     ->get();
         $countcharregTrademark = $entriescharregTrademark->count();
@@ -18329,7 +18379,8 @@ $entriesinc9 = CommonTable::where('user_id', $user->id)
         
         $entriescharregPFC = CommonTable::where('user_id', $user->id)
     ->where('is_delete', 0)
-    ->where('location', 'LIKE', '%Taxation / Charter documents / Registrations')
+    // ->where('location', 'LIKE', '%Taxation / Charter documents / Registrations')
+    ->where('location', $decodedFolderLocation)
     ->where('real_file_name', 'Provident Fund certificate')
     ->get();
         $countcharregPFC = $entriescharregPFC->count();
@@ -18339,7 +18390,8 @@ $entriesinc9 = CommonTable::where('user_id', $user->id)
         
         $entriescharregESIC = CommonTable::where('user_id', $user->id)
     ->where('is_delete', 0)
-    ->where('location', 'LIKE', '%Taxation / Charter documents / Registrations')
+    // ->where('location', 'LIKE', '%Taxation / Charter documents / Registrations')
+    ->where('location', $decodedFolderLocation)
     ->where('real_file_name', 'Employee State Insurance certificate')
     ->get();
         $countcharregESIC = $entriescharregESIC->count();
@@ -18349,7 +18401,8 @@ $entriesinc9 = CommonTable::where('user_id', $user->id)
         
         $entriescharregPTC = CommonTable::where('user_id', $user->id)
     ->where('is_delete', 0)
-    ->where('location', 'LIKE', '%Taxation / Charter documents / Registrations')
+    // ->where('location', 'LIKE', '%Taxation / Charter documents / Registrations')
+    ->where('location', $decodedFolderLocation)
     ->where('real_file_name', 'Professional Tax certificate')
     ->get();
         $countcharregPTC = $entriescharregPTC->count();
@@ -18359,7 +18412,8 @@ $entriesinc9 = CommonTable::where('user_id', $user->id)
         
         $entriescharregLWFC = CommonTable::where('user_id', $user->id)
     ->where('is_delete', 0)
-    ->where('location', 'LIKE', '%Taxation / Charter documents / Registrations')
+    // ->where('location', 'LIKE', '%Taxation / Charter documents / Registrations')
+    ->where('location', $decodedFolderLocation)
     ->where('real_file_name', 'Labour Welfare Fund certificate')
     ->get();
         $countcharregLWFC = $entriescharregLWFC->count();
@@ -18369,7 +18423,8 @@ $entriesinc9 = CommonTable::where('user_id', $user->id)
         
         $entriescharregPP = CommonTable::where('user_id', $user->id)
     ->where('is_delete', 0)
-    ->where('location', 'LIKE', '%Taxation / Charter documents / Registrations')
+    // ->where('location', 'LIKE', '%Taxation / Charter documents / Registrations')
+    ->where('location', $decodedFolderLocation)
     ->where('real_file_name', 'POSH Policy')
     ->get();
         $countcharregPP = $entriescharregPP->count();
@@ -18380,7 +18435,8 @@ $entriesinc9 = CommonTable::where('user_id', $user->id)
         
         $entriesSECAABRAA = CommonTable::where('user_id', $user->id)
     ->where('is_delete', 0)
-    ->where('location', 'Legal / Secretarial / Auditor Appointment')
+    // ->where('location', 'Legal / Secretarial / Auditor Appointment')
+    ->where('location', $decodedFolderLocation)
     ->where('real_file_name', 'Board Resolution for the appointment of Auditor')
     ->get();
         $countSECAABRAA = $entriesSECAABRAA->count();
@@ -18390,7 +18446,8 @@ $entriesinc9 = CommonTable::where('user_id', $user->id)
         
          $entriesSECAAIA = CommonTable::where('user_id', $user->id)
     ->where('is_delete', 0)
-    ->where('location', 'Legal / Secretarial / Auditor Appointment')
+    // ->where('location', 'Legal / Secretarial / Auditor Appointment')
+    ->where('location', $decodedFolderLocation)
     ->where('real_file_name', 'Intimation to auditor')
     ->get();
         $countSECAAIA = $entriesSECAAIA->count();
@@ -18401,7 +18458,8 @@ $entriesinc9 = CommonTable::where('user_id', $user->id)
         
           $entriesSECAALA = CommonTable::where('user_id', $user->id)
     ->where('is_delete', 0)
-    ->where('location', 'Legal / Secretarial / Auditor Appointment')
+    // ->where('location', 'Legal / Secretarial / Auditor Appointment')
+    ->where('location', $decodedFolderLocation)
     ->where('real_file_name', 'Letter of appointment')
     ->get();
         $countSECAALA = $entriesSECAALA->count();
@@ -18412,7 +18470,8 @@ $entriesinc9 = CommonTable::where('user_id', $user->id)
         
          $entriesSECAACRCAA = CommonTable::where('user_id', $user->id)
     ->where('is_delete', 0)
-    ->where('location', 'Legal / Secretarial / Auditor Appointment')
+    // ->where('location', 'Legal / Secretarial / Auditor Appointment')
+    ->where('location', $decodedFolderLocation)
     ->where('real_file_name', 'Certificate as per Rule 4 and consent by Auditor for his appointment')
     ->get();
         $countSECAACRCAA = $entriesSECAACRCAA->count();
@@ -18423,7 +18482,8 @@ $entriesinc9 = CommonTable::where('user_id', $user->id)
         
                  $entriesSECAAALA = CommonTable::where('user_id', $user->id)
     ->where('is_delete', 0)
-    ->where('location', 'Legal / Secretarial / Auditor Appointment')
+    // ->where('location', 'Legal / Secretarial / Auditor Appointment')
+    ->where('location', $decodedFolderLocation)
     ->where('real_file_name', 'Acceptance letter for appointment')
     ->get();
         $countSECAAALA = $entriesSECAAALA->count();
@@ -18433,7 +18493,8 @@ $entriesinc9 = CommonTable::where('user_id', $user->id)
         
          $entriesSECAASR = CommonTable::where('user_id', $user->id)
     ->where('is_delete', 0)
-    ->where('location', 'Legal / Secretarial / Auditor Appointment')
+    // ->where('location', 'Legal / Secretarial / Auditor Appointment')
+    ->where('location', $decodedFolderLocation)
     ->where('real_file_name', 'Special Resolution')
     ->get();
         $countSECAASR = $entriesSECAASR->count();
@@ -18444,7 +18505,8 @@ $entriesinc9 = CommonTable::where('user_id', $user->id)
         
          $entriesSECSRRM = CommonTable::where('user_id', $user->id)
     ->where('is_delete', 0)
-    ->where('location', 'Legal / Secretarial / Statutory Registers')
+    // ->where('location', 'Legal / Secretarial / Statutory Registers')
+    ->where('location', $decodedFolderLocation)
     ->where('real_file_name', 'Register of Members')
     ->get();
         $countSECSRRM = $entriesSECSRRM->count();
@@ -18454,7 +18516,8 @@ $entriesinc9 = CommonTable::where('user_id', $user->id)
         // sandeep start here 30 sept 2024 secreterial fix path 
         $entriesSECSRROSH = CommonTable::where('user_id', $user->id)
             ->where('is_delete', 0)
-            ->where('location', 'Legal / Secretarial / Statutory Registers')
+            // ->where('location', 'Legal / Secretarial / Statutory Registers')
+            ->where('location', $decodedFolderLocation)
             ->where('real_file_name', 'Register of Other Security Holders')
             ->get();
         $countSECSRROSH = $entriesSECSRROSH->count();
@@ -18464,7 +18527,8 @@ $entriesinc9 = CommonTable::where('user_id', $user->id)
         
         $entriesSECSRFR = CommonTable::where('user_id', $user->id)
             ->where('is_delete', 0)
-            ->where('location', 'Legal / Secretarial / Statutory Registers')
+            // ->where('location', 'Legal / Secretarial / Statutory Registers')
+            ->where('location', $decodedFolderLocation)
             ->where('real_file_name', '⁠Foreign Register')
             ->get();
         $countSECSRFR = $entriesSECSRFR->count();
@@ -18474,7 +18538,8 @@ $entriesinc9 = CommonTable::where('user_id', $user->id)
         
         $entriesSECSRRDKMPR = CommonTable::where('user_id', $user->id)
             ->where('is_delete', 0)
-            ->where('location', 'Legal / Secretarial / Statutory Registers')
+            // ->where('location', 'Legal / Secretarial / Statutory Registers')
+            ->where('location', $decodedFolderLocation)
             ->where('real_file_name', 'Register of Directors and KMP')
             ->get();
         $countSECSRRDKMPR = $entriesSECSRRDKMPR->count();
@@ -18484,7 +18549,8 @@ $entriesinc9 = CommonTable::where('user_id', $user->id)
         
         $entriesSECSRROC = CommonTable::where('user_id', $user->id)
             ->where('is_delete', 0)
-            ->where('location', 'Legal / Secretarial / Statutory Registers')
+            // ->where('location', 'Legal / Secretarial / Statutory Registers')
+            ->where('location', $decodedFolderLocation)
             ->where('real_file_name', '⁠Register of Charges')
             ->get();
         $countSECSRROC = $entriesSECSRROC->count();
@@ -18494,7 +18560,8 @@ $entriesinc9 = CommonTable::where('user_id', $user->id)
         
         $entriesSECSRROD = CommonTable::where('user_id', $user->id)
             ->where('is_delete', 0)
-            ->where('location', 'Legal / Secretarial / Statutory Registers')
+            // ->where('location', 'Legal / Secretarial / Statutory Registers')
+            ->where('location', $decodedFolderLocation)
             ->where('real_file_name', 'Register of Deposits')
             ->get();
         $countSECSRROD = $entriesSECSRROD->count();
@@ -18504,7 +18571,8 @@ $entriesinc9 = CommonTable::where('user_id', $user->id)
         
         $entriesSECSRRLGS = CommonTable::where('user_id', $user->id)
             ->where('is_delete', 0)
-            ->where('location', 'Legal / Secretarial / Statutory Registers')
+            // ->where('location', 'Legal / Secretarial / Statutory Registers')
+            ->where('location', $decodedFolderLocation)
             ->where('real_file_name', 'Register of Loans, Guarantees and Securities')
             ->get();
         $countSECSRRLGS = $entriesSECSRRLGS->count();
@@ -18514,7 +18582,8 @@ $entriesinc9 = CommonTable::where('user_id', $user->id)
         
          $entriesSECSRROINHCN = CommonTable::where('user_id', $user->id)
             ->where('is_delete', 0)
-            ->where('location', 'Legal / Secretarial / Statutory Registers')
+            // ->where('location', 'Legal / Secretarial / Statutory Registers')
+            ->where('location', $decodedFolderLocation)
             ->where('real_file_name', 'Register of Investments not held in Company’s name')
             ->get();
         $countSECSRROINHCN = $entriesSECSRROINHCN->count();
@@ -18524,7 +18593,8 @@ $entriesinc9 = CommonTable::where('user_id', $user->id)
         
         $entriesSECSRRCDI = CommonTable::where('user_id', $user->id)
             ->where('is_delete', 0)
-            ->where('location', 'Legal / Secretarial / Statutory Registers')
+            // ->where('location', 'Legal / Secretarial / Statutory Registers')
+            ->where('location', $decodedFolderLocation)
             ->where('real_file_name', '⁠Register of Contracts in which Directors are interested')
             ->get();
         $countSECSRRCDI = $entriesSECSRRCDI->count();
@@ -18534,7 +18604,8 @@ $entriesinc9 = CommonTable::where('user_id', $user->id)
         
         $entriesSECSRRSES = CommonTable::where('user_id', $user->id)
             ->where('is_delete', 0)
-            ->where('location', 'Legal / Secretarial / Statutory Registers')
+            // ->where('location', 'Legal / Secretarial / Statutory Registers')
+            ->where('location', $decodedFolderLocation)
             ->where('real_file_name', 'Register of Sweat Equity Shares')
             ->get();
         $countSECSRRSES = $entriesSECSRRSES->count();
@@ -18544,7 +18615,8 @@ $entriesinc9 = CommonTable::where('user_id', $user->id)
         
         $entriesSECSRRESO = CommonTable::where('user_id', $user->id)
             ->where('is_delete', 0)
-            ->where('location', 'Legal / Secretarial / Statutory Registers')
+            // ->where('location', 'Legal / Secretarial / Statutory Registers')
+            ->where('location', $decodedFolderLocation)
             ->where('real_file_name', 'Register of Employee Stock Options')
             ->get();
         $countSECSRRESO = $entriesSECSRRESO->count();
@@ -18554,7 +18626,8 @@ $entriesinc9 = CommonTable::where('user_id', $user->id)
         
         $entriesSECSRROSBB = CommonTable::where('user_id', $user->id)
             ->where('is_delete', 0)
-            ->where('location', 'Legal / Secretarial / Statutory Registers')
+            // ->where('location', 'Legal / Secretarial / Statutory Registers')
+            ->where('location', $decodedFolderLocation)
             ->where('real_file_name', 'Register of Securities Bought Back')
             ->get();
         $countSECSRROSBB = $entriesSECSRROSBB->count();
@@ -18564,7 +18637,8 @@ $entriesinc9 = CommonTable::where('user_id', $user->id)
         
         $entriesSECSRRRDSC = CommonTable::where('user_id', $user->id)
             ->where('is_delete', 0)
-            ->where('location', 'Legal / Secretarial / Statutory Registers')
+            // ->where('location', 'Legal / Secretarial / Statutory Registers')
+            ->where('location', $decodedFolderLocation)
             ->where('real_file_name', 'Register of Renewed or Duplicate Share Certificates')
             ->get();
         $countSECSRRRDSC = $entriesSECSRRRDSC->count();
@@ -18584,7 +18658,8 @@ $entriesinc9 = CommonTable::where('user_id', $user->id)
         
         $entriesSECSRRPB = CommonTable::where('user_id', $user->id)
             ->where('is_delete', 0)
-            ->where('location', 'Legal / Secretarial / Statutory Registers')
+            // ->where('location', 'Legal / Secretarial / Statutory Registers')
+            ->where('location', $decodedFolderLocation)
             ->where('real_file_name', 'Register of Postal Ballot')
             ->get();
         $countSECSRRPB = $entriesSECSRRPB->count();
