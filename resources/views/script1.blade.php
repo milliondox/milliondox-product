@@ -2094,10 +2094,11 @@ $(document).ready(function() {
 
      <script>
 $(document).ready(function() {
-    function fetchMeetFileNoticeData() {
+    function fetchMeetFileNoticeData(location) {
         $.ajax({
             url: '{{ route('fetch-meet-file-notice-data') }}',
             type: 'GET',
+            data: { location: location }, // Pass the location parameter
             success: function(response) {
                 if (response && Array.isArray(response.files)) {
                     const tableBody = $('#filesTableasnomeet tbody');
@@ -2211,9 +2212,10 @@ function toggleMoveToDataRoomButton() {
     
 
  $('body').on('click', '#anual_Notices_countt', function() {
-            fetchMeetFileNoticeData();
+    const location  = $(this).data('location');
+            fetchMeetFileNoticeData(location);
         });
-    fetchMeetFileNoticeData();
+    fetchMeetFileNoticeData(location);
 
 });
 </script>
@@ -2457,10 +2459,11 @@ $(document).ready(function() {
 
      <script>
 $(document).ready(function() {
-    function fetchMeetFileMinBookData() {
+    function fetchMeetFileMinBookData(location) {
         $.ajax({
             url: '{{ route('fetch-meet-file-minbook-data') }}',
             type: 'GET',
+            data: { location: location }, // Pass the location parameter
             success: function(response) {
                 if (response && Array.isArray(response.files)) {
                     const tableBody = $('#filesTablemeetminbook tbody');
@@ -2573,9 +2576,10 @@ function toggleMoveToDataRoomButton() {
     
     
 $('body').on('click', '#anual_minut_countt', function() {
-            fetchMeetFileMinBookData();
+    const location  = $(this).data('location');
+            fetchMeetFileMinBookData(location);
         });
-    fetchMeetFileMinBookData();
+    fetchMeetFileMinBookData(location);
     
 
 });
@@ -2821,10 +2825,11 @@ $(document).ready(function() {
 
      <script>
 $(document).ready(function() {
-    function fetchMeetFileASData() {
+    function fetchMeetFileASData(location) {
         $.ajax({
             url: '{{ route('fetch-meet-file-as-data') }}',
             type: 'GET',
+            data: { location: location }, // Pass the location parameter
             success: function(response) {
                 if (response && Array.isArray(response.files)) {
                     const tableBody = $('#filesTablemeet2 tbody');
@@ -2942,9 +2947,10 @@ function toggleMoveToDataRoomButton() {
     
 
     $('body').on('click', '#anual_atandence_countt', function() {
-            fetchMeetFileASData();
+        const location  = $(this).data('location');
+            fetchMeetFileASData(location);
         });
-    fetchMeetFileASData();
+    fetchMeetFileASData(location);
 
 });
 </script>
@@ -3187,10 +3193,11 @@ $(document).ready(function() {
 
      <script>
 $(document).ready(function() {
-    function fetchMeetFileRESOData() {
+    function fetchMeetFileRESOData(location) {
         $.ajax({
             url: '{{ route('fetch-meet-file-reso-data') }}',
             type: 'GET',
+            data: { location: location }, // Pass the location parameter
             success: function(response) {
                 if (response && Array.isArray(response.files)) {
                     const tableBody = $('#filesTablemeet3 tbody');
@@ -3303,9 +3310,10 @@ $(document).ready(function() {
     });
 
    $('body').on('click', '#anual_Resolutions_countt', function() {
-            fetchMeetFileRESOData();
+    const location  = $(this).data('location');
+            fetchMeetFileRESOData(location);
         });
-    fetchMeetFileRESOData();
+    fetchMeetFileRESOData(location);
 
 });
 </script>
@@ -3549,10 +3557,11 @@ $(document).ready(function() {
 
      <script>
 $(document).ready(function() {
-    function fetchOrderFileNoticeData() {
+    function fetchOrderFileNoticeData(location) {
         $.ajax({
             url: '{{ route('fetch-order-file-notice-data') }}',
             type: 'GET',
+            data: { location: location }, // Pass the location parameter
             success: function(response) {
                 if (response && Array.isArray(response.files)) {
                     const tableBody = $('#filesTableorder tbody');
@@ -3667,9 +3676,10 @@ $(document).ready(function() {
     
     
  $('body').on('click', '#ordinary_Notices_countt', function() {
-            fetchOrderFileNoticeData();
+    const location  = $(this).data('location');
+            fetchOrderFileNoticeData(location);
         });
-    fetchOrderFileNoticeData();
+    fetchOrderFileNoticeData(location);
 
     
 
@@ -3916,10 +3926,11 @@ $(document).ready(function() {
 
      <script>
 $(document).ready(function() {
-    function fetchOrderFileMinBookData() {
+    function fetchOrderFileMinBookData(location) {
         $.ajax({
             url: '{{ route('fetch-order-file-minbook-data') }}',
             type: 'GET',
+            data: { location: location }, // Pass the location parameter
             success: function(response) {
                 if (response && Array.isArray(response.files)) {
                     const tableBody = $('#filesTableorder1 tbody');
@@ -4035,9 +4046,10 @@ function toggleMoveToDataRoomButton() {
     
     
     $('body').on('click', '#ordinary_minut_countt', function() {
-            fetchOrderFileMinBookData();
+        const location  = $(this).data('location');
+            fetchOrderFileMinBookData(location);
         });
-    fetchOrderFileMinBookData();
+    fetchOrderFileMinBookData(location);
 
 });
 </script>
@@ -4282,10 +4294,11 @@ $(document).ready(function() {
 
      <script>
 $(document).ready(function() {
-    function fetchOrderFileAttendData() {
+    function fetchOrderFileAttendData(location) {
         $.ajax({
             url: '{{ route('fetch-order-file-attend-data') }}',
             type: 'GET',
+            data: { location: location }, // Pass the location parameter
             success: function(response) {
                 if (response && Array.isArray(response.files)) {
                     const tableBody = $('#filesTableorder3 tbody');
@@ -4400,9 +4413,10 @@ function toggleMoveToDataRoomButton() {
     
     
     $('body').on('click', '#ordinary_atandence_countt', function() {
-            fetchOrderFileAttendData();
+        const location  = $(this).data('location');
+            fetchOrderFileAttendData(location);
         });
-    fetchOrderFileAttendData();
+    fetchOrderFileAttendData(location);
 
  
 
@@ -4647,10 +4661,11 @@ $(document).ready(function() {
 
      <script>
 $(document).ready(function() {
-    function fetchOrderFileRESOData() {
+    function fetchOrderFileRESOData(location) {
         $.ajax({
             url: '{{ route('fetch-order-file-reso-data') }}',
             type: 'GET',
+            data: { location: location }, // Pass the location parameter
             success: function(response) {
                 if (response && Array.isArray(response.files)) {
                     const tableBody = $('#filesTableorder41 tbody');
@@ -4766,9 +4781,10 @@ $(document).ready(function() {
     
     
     $('body').on('click', '#ordinary_Resolutions_countt', function() {
-            fetchOrderFileRESOData();
+        const location  = $(this).data('location');
+            fetchOrderFileRESOData(location);
         });
-    fetchOrderFileRESOData();
+    fetchOrderFileRESOData(location);
 
    
 
@@ -5014,10 +5030,11 @@ $(document).ready(function() {
 
      <script>
 $(document).ready(function() {
-    function fetchInnerFileRunsData() {
+    function fetchInnerFileRunsData(location) {
         $.ajax({
             url: '{{ route('fetch-inner-file-runs-data') }}',
             type: 'GET',
+            data: { location: location }, // Pass the location parameter
             success: function(response) {
                 if (response && Array.isArray(response.files)) {
                     const tableBody = $('#filesTableinner1 tbody');
@@ -5130,9 +5147,10 @@ function toggleMoveToDataRoomButton() {
     });
     // Fetch data every 5 seconds
     $('body').on('click', '#inco_run_form_countt', function() {
-            fetchInnerFileRunsData();
+        const location  = $(this).data('location');
+            fetchInnerFileRunsData(location);
         });
-    fetchInnerFileRunsData();
+    fetchInnerFileRunsData(location);
 
 });
 </script>
@@ -5373,10 +5391,11 @@ $(document).ready(function() {
 
      <script>
 $(document).ready(function() {
-    function fetchInnerFile9Data() {
+    function fetchInnerFile9Data(location) {
         $.ajax({
             url: '{{ route('fetch-inner-file-inc9-data') }}',
             type: 'GET',
+            data: { location: location }, // Pass the location parameter
             success: function(response) {
                 if (response && Array.isArray(response.files)) {
                     const tableBody = $('#filesTableinc9 tbody');
@@ -5491,9 +5510,10 @@ $(document).ready(function() {
     
    
 $('body').on('click', '#inco_INC_9_countt', function() {
-            fetchInnerFile9Data();
+    const location  = $(this).data('location');
+            fetchInnerFile9Data(location);
         });
-    fetchInnerFile9Data();
+    fetchInnerFile9Data(location);
 
 });
 </script>
@@ -5735,10 +5755,11 @@ $(document).ready(function() {
 
      <script>
 $(document).ready(function() {
-    function fetchInnerFilespiceData() {
+    function fetchInnerFilespiceData(location) {
         $.ajax({
             url: '{{ route('fetch-inner-file-spice-data') }}',
             type: 'GET',
+            data: { location: location }, // Pass the location parameter
             success: function(response) {
                 if (response && Array.isArray(response.files)) {
                     const tableBody = $('#filesTablespiceinner tbody');
@@ -5853,9 +5874,10 @@ function toggleMoveToDataRoomButton() {
     
 
    $('body').on('click', '#inco_SPICe_Part_B_countt', function() {
-            fetchInnerFilespiceData();
+    const location  = $(this).data('location');
+            fetchInnerFilespiceData(location);
         });
-    fetchInnerFilespiceData();
+    fetchInnerFilespiceData(location);
 
 });
 </script>
@@ -6098,10 +6120,11 @@ $(document).ready(function() {
 
      <script>
 $(document).ready(function() {
-    function fetchInnerFileINC33Data() {
+    function fetchInnerFileINC33Data(location) {
         $.ajax({
             url: '{{ route('fetch-inner-file-inc33-data') }}',
             type: 'GET',
+            data: { location: location }, // Pass the location parameter
             success: function(response) {
                 if (response && Array.isArray(response.files)) {
                     const tableBody = $('#filesTableinnerinc331 tbody');
@@ -6216,9 +6239,10 @@ $(document).ready(function() {
     
    
 $('body').on('click', '#inco_INC_33_countt', function() {
-            fetchInnerFileINC33Data();
+    const location  = $(this).data('location');
+            fetchInnerFileINC33Data(location);
         });
-    fetchInnerFileINC33Data();
+    fetchInnerFileINC33Data(location);
     
 
 });
@@ -6461,10 +6485,11 @@ $(document).ready(function() {
 
      <script>
 $(document).ready(function() {
-    function fetchInnerFileINC34Data() {
+    function fetchInnerFileINC34Data(location) {
         $.ajax({
             url: '{{ route('fetch-inner-file-inc34-data') }}',
             type: 'GET',
+            data: { location: location }, // Pass the location parameter
             success: function(response) {
                 if (response && Array.isArray(response.files)) {
                     const tableBody = $('#filesTableinnerinc334st tbody');
@@ -6580,9 +6605,10 @@ function toggleMoveToDataRoomButton() {
  
 
     $('body').on('click', '#inco_INC_34_countt', function() {
-            fetchInnerFileINC34Data();
+        const location  = $(this).data('location');
+            fetchInnerFileINC34Data(location);
         });
-    fetchInnerFileINC34Data();
+    fetchInnerFileINC34Data(location);
 
 });
 </script>
@@ -6823,10 +6849,11 @@ $(document).ready(function() {
 
      <script>
 $(document).ready(function() {
-    function fetchInnerFileINC35Data() {
+    function fetchInnerFileINC35Data(location) {
         $.ajax({
             url: '{{ route('fetch-inner-file-inc35-data') }}',
             type: 'GET',
+            data: { location: location }, // Pass the location parameter
             success: function(response) {
                 if (response && Array.isArray(response.files)) {
                     const tableBody = $('#filesTableinnerinc335st tbody');
@@ -6941,9 +6968,10 @@ function toggleMoveToDataRoomButton() {
   
 
     $('body').on('click', '#inco_INC_35_countt', function() {
-            fetchInnerFileINC35Data();
+        const location  = $(this).data('location');
+            fetchInnerFileINC35Data(location);
         });
-    fetchInnerFileINC35Data();
+    fetchInnerFileINC35Data(location);
 
 });
 </script>
@@ -7184,10 +7212,11 @@ $(document).ready(function() {
 
      <script>
 $(document).ready(function() {
-    function fetchInnerFileINC22Data() {
+    function fetchInnerFileINC22Data(location) {
         $.ajax({
             url: '{{ route('fetch-inner-file-inc22-data') }}',
             type: 'GET',
+            data: { location: location }, // Pass the location parameter
             success: function(response) {
                 if (response && Array.isArray(response.files)) {
                     const tableBody = $('#filesTableLegend tbody');
@@ -7301,9 +7330,10 @@ function toggleMoveToDataRoomButton() {
    
 
     $('body').on('click', '#inco_INC_22_countt', function() {
-            fetchInnerFileINC22Data();
+        const location  = $(this).data('location');
+            fetchInnerFileINC22Data(location);
         });
-    fetchInnerFileINC22Data();
+    fetchInnerFileINC22Data(location);
 
 });
 </script>
@@ -7546,10 +7576,11 @@ $(document).ready(function() {
 
      <script>
 $(document).ready(function() {
-    function fetchInnerFileINC20AData() {
+    function fetchInnerFileINC20AData(location) {
         $.ajax({
             url: '{{ route('fetch-inner-file-inc20a-data') }}',
             type: 'GET',
+            data: { location: location }, // Pass the location parameter
             success: function(response) {
                 if (response && Array.isArray(response.files)) {
                     const tableBody = $('#filesTableinc20at tbody');
@@ -7665,9 +7696,10 @@ $(document).ready(function() {
     
    
 $('body').on('click', '#inco_INC_20A_countt', function() {
-            fetchInnerFileINC20AData();
+    const location  = $(this).data('location');
+            fetchInnerFileINC20AData(location);
         });
-    fetchInnerFileINC20AData();
+    fetchInnerFileINC20AData(location);
    
 
 });
@@ -7910,10 +7942,11 @@ $(document).ready(function() {
 
      <script>
 $(document).ready(function() {
-    function fetchAnnFileAoc4AfsData() {
+    function fetchAnnFileAoc4AfsData(location) {
         $.ajax({
             url: '{{ route('fetch-ann-file-aoc4afs-data') }}',
             type: 'GET',
+            data: { location: location }, // Pass the location parameter
             success: function(response) {
                 if (response && Array.isArray(response.files)) {
                     const tableBody = $('#filesTableann1 tbody');
@@ -8027,9 +8060,10 @@ function toggleMoveToDataRoomButton() {
     
     
 $('body').on('click', '#filling_AoC_4_countt', function() {
-            fetchAnnFileAoc4AfsData();
+    const location  = $(this).data('location');
+            fetchAnnFileAoc4AfsData(location);
         });
-    fetchAnnFileAoc4AfsData();
+    fetchAnnFileAoc4AfsData(location);
    
 
 });
@@ -8273,10 +8307,11 @@ $(document).ready(function() {
 
      <script>
 $(document).ready(function() {
-    function fetchAnnFileAoc4CfsData() {
+    function fetchAnnFileAoc4CfsData(location) {
         $.ajax({
             url: '{{ route('fetch-ann-file-aoc4cfs-data') }}',
             type: 'GET',
+            data: { location: location }, // Pass the location parameter
             success: function(response) {
                 if (response && Array.isArray(response.files)) {
                     const tableBody = $('#filesTableann2 tbody');
@@ -8392,9 +8427,10 @@ $(document).ready(function() {
 
 
 $('body').on('click', '#filling_AoC_4_cfs_countt', function() {
-            fetchAnnFileAoc4CfsData();
+    const location  = $(this).data('location');
+            fetchAnnFileAoc4CfsData(location);
         });
-    fetchAnnFileAoc4CfsData();
+    fetchAnnFileAoc4CfsData(location);
 
 });
 </script>
@@ -8637,10 +8673,11 @@ $(document).ready(function() {
 
      <script>
 $(document).ready(function() {
-    function fetchAnnFilemgt7aData() {
+    function fetchAnnFilemgt7aData(location) {
         $.ajax({
             url: '{{ route('fetch-ann-file-mgt7a-data') }}',
             type: 'GET',
+            data: { location: location }, // Pass the location parameter
             success: function(response) {
                 if (response && Array.isArray(response.files)) {
                     const tableBody = $('#filesTableann4 tbody');
@@ -8758,10 +8795,11 @@ $(document).ready(function() {
     
     
 
-$('body').on('click', '#filling_MGT_7_countt', function() {
-            fetchAnnFilemgt7aData();
+$('body').on('click', '#filling_MGT_7a_countt', function() {
+    const location  = $(this).data('location');
+            fetchAnnFilemgt7aData(location);
         });
-    fetchAnnFilemgt7aData();
+    fetchAnnFilemgt7aData(location);
 
 });
 </script>
@@ -8974,10 +9012,11 @@ $(document).ready(function() {
 
      <script>
 $(document).ready(function() {
-    function fetchAnnFilemgt7Data() {
+    function fetchAnnFilemgt7Data(location) {
         $.ajax({
             url: '{{ route('fetch-ann-file-mgt7-data') }}',
             type: 'GET',
+            data: { location: location }, // Pass the location parameter
             success: function(response) {
                 if (response && Array.isArray(response.files)) {
                     const tableBody = $('#filesTableann3 tbody');
@@ -9096,9 +9135,10 @@ $(document).ready(function() {
     
 
 $('body').on('click', '#filling_MGT_7_counttd', function() {
-            fetchAnnFilemgt7Data();
+    const location  = $(this).data('location');
+            fetchAnnFilemgt7Data(location);
         });
-    fetchAnnFilemgt7Data();
+    fetchAnnFilemgt7Data(location);
 
 });
 </script>
@@ -9292,10 +9332,11 @@ $(document).ready(function() {
 
      <script>
 $(document).ready(function() {
-    function fetchdirectorappointmentsdir3dinFileData() {
+    function fetchdirectorappointmentsdir3dinFileData(location) {
         $.ajax({
             url: '{{ route('fetch-directorappointments-file-dir3din-data') }}',
             type: 'GET',
+            data: { location: location }, // Pass the location parameter
             success: function(response) {
                 if (response && Array.isArray(response.files)) {
                     const tableBody = $('#filesTabledir3din tbody');
@@ -9412,9 +9453,10 @@ function toggleMoveToDataRoomButton() {
     
     
 $('body').on('click', '#director_DIR_3_countt_din', function() {
-            fetchdirectorappointmentsdir3dinFileData();
+    const location  = $(this).data('location');
+            fetchdirectorappointmentsdir3dinFileData(location);
         });
-    fetchdirectorappointmentsdir3dinFileData();
+    fetchdirectorappointmentsdir3dinFileData(location);
 
 });
 </script>
@@ -9656,10 +9698,11 @@ $(document).ready(function() {
 
      <script>
 $(document).ready(function() {
-    function fetchdirectorappointmentsdir3FileData() {
+    function fetchdirectorappointmentsdir3FileData(location) {
         $.ajax({
             url: '{{ route('fetch-directorappointments-file-dir3-data') }}',
             type: 'GET',
+            data: { location: location }, // Pass the location parameter
             success: function(response) {
                 if (response && Array.isArray(response.files)) {
                     const tableBody = $('#filesTabledir3 tbody');
@@ -9776,9 +9819,10 @@ function toggleMoveToDataRoomButton() {
     
     
 $('body').on('click', '#director_DIR_3_countt', function() {
-            fetchdirectorappointmentsdir3FileData();
+    const location  = $(this).data('location');
+            fetchdirectorappointmentsdir3FileData(location);
         });
-    fetchdirectorappointmentsdir3FileData();
+    fetchdirectorappointmentsdir3FileData(location);
 
 });
 </script>
@@ -10019,10 +10063,11 @@ $(document).ready(function() {
 
      <script>
 $(document).ready(function() {
-    function fetchdirectorappointmentsdir6FileData() {
+    function fetchdirectorappointmentsdir6FileData(location) {
         $.ajax({
             url: '{{ route('fetch-directorappointments-file-dir6-data') }}',
             type: 'GET',
+            data: { location: location }, // Pass the location parameter
             success: function(response) {
                 if (response && Array.isArray(response.files)) {
                     const tableBody = $('#filesTabledir6 tbody');
@@ -10138,9 +10183,10 @@ function toggleMoveToDataRoomButton() {
     
 
 $('body').on('click', '#director_DIR_6_countt', function() {
-            fetchdirectorappointmentsdir6FileData();
+    const location  = $(this).data('location');
+            fetchdirectorappointmentsdir6FileData(location);
         });
-    fetchdirectorappointmentsdir6FileData();
+    fetchdirectorappointmentsdir6FileData(location);
 
 });
 </script>
@@ -10384,10 +10430,11 @@ $(document).ready(function() {
 
      <script>
 $(document).ready(function() {
-    function fetchdirectorappointmentsdir12FileData() {
+    function fetchdirectorappointmentsdir12FileData(location) {
         $.ajax({
             url: '{{ route('fetch-directorappointments-file-dir12-data') }}',
             type: 'GET',
+            data: { location: location }, // Pass the location parameter
             success: function(response) {
                 if (response && Array.isArray(response.files)) {
                     const tableBody = $('#filesTabledirectdir12 tbody');
@@ -10502,9 +10549,10 @@ function toggleMoveToDataRoomButton() {
     });
 
 $('body').on('click', '#director_DIR_12_countt', function() {
-            fetchdirectorappointmentsdir12FileData();
+    const location  = $(this).data('location');
+            fetchdirectorappointmentsdir12FileData(location);
         });
-    fetchdirectorappointmentsdir12FileData();
+    fetchdirectorappointmentsdir12FileData(location);
 
 });
 </script>
@@ -12191,11 +12239,13 @@ $(document).ready(function() {
 
 <!-- sandeep start here 1 October 2024 secretrial statury register-->
 <script>
-function fetchSecretarialStatutoryRegistersRMFileData() {
+        $(document).ready(function() {
+function fetchSecretarialStatutoryRegistersRMFileData(location) {
         
         $.ajax({
             url: '{{ route('fetch-SecretarialStatutoryRegistersRM-file-data') }}',
             type: 'GET',
+            data: { location: location }, // Pass the location parameter
             success: function(response) {
                 if (response && Array.isArray(response.files)) {
                     const tableBody = $('#filesTableRegisterMember tbody');
@@ -12281,18 +12331,20 @@ function fetchSecretarialStatutoryRegistersRMFileData() {
         });
     }
     
-    $(document).ready(function() {
+    
         $('body').on('click', '#StautoryReg_meber_countt', function() {
-            fetchSecretarialStatutoryRegistersRMFileData();
+            const location  = $(this).data('location');
+            fetchSecretarialStatutoryRegistersRMFileData(location);
         });
-    });
+   
     
     
-    function fetchSecretarialStatutoryRegistersROSHFileData() {
+    function fetchSecretarialStatutoryRegistersROSHFileData(location) {
         
         $.ajax({
             url: '{{ route('fetch-SecretarialStatutoryRegistersROSH-file-data') }}',
             type: 'GET',
+            data: { location: location }, // Pass the location parameter
             success: function(response) {
                 if (response && Array.isArray(response.files)) {
                     const tableBody = $('#filesTableROSH tbody');
@@ -12378,18 +12430,20 @@ function fetchSecretarialStatutoryRegistersRMFileData() {
         });
     }
     
-    $(document).ready(function() {
+  
         $('body').on('click', '#StautoryReg_security_countt', function() {
-            fetchSecretarialStatutoryRegistersROSHFileData();
+            const location  = $(this).data('location');
+            fetchSecretarialStatutoryRegistersROSHFileData(location);
         });
-    });
+  
     
     
-    function fetchSecretarialStatutoryRegistersFRFileData() {
+    function fetchSecretarialStatutoryRegistersFRFileData(location) {
         
         $.ajax({
             url: '{{ route('fetch-SecretarialStatutoryRegistersFR-file-data') }}',
             type: 'GET',
+            data: { location: location }, // Pass the location parameter
             success: function(response) {
                 if (response && Array.isArray(response.files)) {
                     const tableBody = $('#filesTableFR tbody');
@@ -12475,17 +12529,19 @@ function fetchSecretarialStatutoryRegistersRMFileData() {
         });
     }
     
-    $(document).ready(function() {
+   
         $('body').on('click', '#StautoryReg_forginreg_countt', function() {
-            fetchSecretarialStatutoryRegistersFRFileData();
+            const location  = $(this).data('location');
+            fetchSecretarialStatutoryRegistersFRFileData(location);
         });
-    });
+   
     
-    function fetchSecretarialStatutoryRegistersRDKFileData() {
+    function fetchSecretarialStatutoryRegistersRDKFileData(location) {
         
         $.ajax({
             url: '{{ route('fetch-SecretarialStatutoryRegistersRDK-file-data') }}',
             type: 'GET',
+            data: { location: location }, // Pass the location parameter
             success: function(response) {
                 if (response && Array.isArray(response.files)) {
                     const tableBody = $('#filesTableRDKMP tbody');
@@ -12571,17 +12627,19 @@ function fetchSecretarialStatutoryRegistersRMFileData() {
         });
     }
     
-    $(document).ready(function() {
+   
         $('body').on('click', '#StautoryReg_kmp_countt', function() {
-            fetchSecretarialStatutoryRegistersRDKFileData();
+            const location  = $(this).data('location');
+            fetchSecretarialStatutoryRegistersRDKFileData(location);
         });
-    });
+  
     
-    function fetchSecretarialStatutoryRegistersRCFileData() {
+    function fetchSecretarialStatutoryRegistersRCFileData(location) {
         
         $.ajax({
             url: '{{ route('fetch-SecretarialStatutoryRegistersRC-file-data') }}',
             type: 'GET',
+            data: { location: location }, // Pass the location parameter
             success: function(response) {
                 if (response && Array.isArray(response.files)) {
                     const tableBody = $('#filesTableRC tbody');
@@ -12667,18 +12725,20 @@ function fetchSecretarialStatutoryRegistersRMFileData() {
         });
     }
     
-    $(document).ready(function() {
+ 
         $('body').on('click', '#StautoryReg_regchnage_countt', function() {
-            fetchSecretarialStatutoryRegistersRCFileData();
+            const location  = $(this).data('location');
+            fetchSecretarialStatutoryRegistersRCFileData(location);
         });
-    });
+
     
     
-    function fetchSecretarialStatutoryRegistersRDFileData() {
+    function fetchSecretarialStatutoryRegistersRDFileData(location) {
         
         $.ajax({
             url: '{{ route('fetch-SecretarialStatutoryRegistersRD-file-data') }}',
             type: 'GET',
+            data: { location: location }, // Pass the location parameter
             success: function(response) {
                 if (response && Array.isArray(response.files)) {
                     const tableBody = $('#filesTableRD tbody');
@@ -12764,17 +12824,19 @@ function fetchSecretarialStatutoryRegistersRMFileData() {
         });
     }
     
-    $(document).ready(function() {
+   
         $('body').on('click', '#StautoryReg_dep_countt', function() {
-            fetchSecretarialStatutoryRegistersRDFileData();
+            const location  = $(this).data('location');
+            fetchSecretarialStatutoryRegistersRDFileData(location);
         });
-    });
+ 
     
-    function fetchSecretarialStatutoryRegistersRLGSFileData() {
+    function fetchSecretarialStatutoryRegistersRLGSFileData(location) {
         
         $.ajax({
             url: '{{ route('fetch-SecretarialStatutoryRegistersRLGS-file-data') }}',
             type: 'GET',
+            data: { location: location }, // Pass the location parameter
             success: function(response) {
                 if (response && Array.isArray(response.files)) {
                     const tableBody = $('#filesTableRLGS tbody');
@@ -12860,18 +12922,20 @@ function fetchSecretarialStatutoryRegistersRMFileData() {
         });
     }
     
-    $(document).ready(function() {
+  
         $('body').on('click', '#StautoryReg_lgs_countt', function() {
-            fetchSecretarialStatutoryRegistersRLGSFileData();
+            const location  = $(this).data('location');
+            fetchSecretarialStatutoryRegistersRLGSFileData(location);
         });
-    });
+  
     
     
-    function fetchSecretarialStatutoryRegistersRCDFileData() {
+    function fetchSecretarialStatutoryRegistersRCDFileData(location) {
         
         $.ajax({
             url: '{{ route('fetch-SecretarialStatutoryRegistersRCD-file-data') }}',
             type: 'GET',
+            data: { location: location }, // Pass the location parameter
             success: function(response) {
                 if (response && Array.isArray(response.files)) {
                     const tableBody = $('#filesTableRCD tbody');
@@ -12957,18 +13021,20 @@ function fetchSecretarialStatutoryRegistersRMFileData() {
         });
     }
     
-    $(document).ready(function() {
+  
         $('body').on('click', '#StautoryReg_icn_countt', function() {
-            fetchSecretarialStatutoryRegistersRCDFileData();
+            const location  = $(this).data('location');
+            fetchSecretarialStatutoryRegistersRCDFileData(location);
         });
-    });
+   
     
     
-    function fetchSecretarialStatutoryRegistersRCDIFileData() {
+    function fetchSecretarialStatutoryRegistersRCDIFileData(location) {
         
         $.ajax({
             url: '{{ route('fetch-SecretarialStatutoryRegistersRCDI-file-data') }}',
             type: 'GET',
+            data: { location: location }, // Pass the location parameter
             success: function(response) {
                 if (response && Array.isArray(response.files)) {
                     const tableBody = $('#filesTableRCDI tbody');
@@ -13054,18 +13120,20 @@ function fetchSecretarialStatutoryRegistersRMFileData() {
         });
     }
     
-    $(document).ready(function() {
+   
         $('body').on('click', '#StautoryReg_cdi_countt', function() {
-            fetchSecretarialStatutoryRegistersRCDIFileData();
+            const location  = $(this).data('location');
+            fetchSecretarialStatutoryRegistersRCDIFileData(location);
         });
-    });
+   
     
     
-    function fetchSecretarialStatutoryRegistersRSESFileData() {
+    function fetchSecretarialStatutoryRegistersRSESFileData(location) {
         
         $.ajax({
             url: '{{ route('fetch-SecretarialStatutoryRegistersRSES-file-data') }}',
             type: 'GET',
+            data: { location: location }, // Pass the location parameter
             success: function(response) {
                 if (response && Array.isArray(response.files)) {
                     const tableBody = $('#filesTableRSES tbody');
@@ -13151,17 +13219,19 @@ function fetchSecretarialStatutoryRegistersRMFileData() {
         });
     }
     
-    $(document).ready(function() {
+   
         $('body').on('click', '#StautoryReg_sewat_countt', function() {
-            fetchSecretarialStatutoryRegistersRSESFileData();
+            const location  = $(this).data('location');
+            fetchSecretarialStatutoryRegistersRSESFileData(location);
         });
-    });
+
     
-    function fetchSecretarialStatutoryRegistersRESOFileData() {
+    function fetchSecretarialStatutoryRegistersRESOFileData(location) {
         
         $.ajax({
             url: '{{ route('fetch-SecretarialStatutoryRegistersRESO-file-data') }}',
             type: 'GET',
+            data: { location: location }, // Pass the location parameter
             success: function(response) {
                 if (response && Array.isArray(response.files)) {
                     const tableBody = $('#filesTableRESO tbody');
@@ -13247,18 +13317,20 @@ function fetchSecretarialStatutoryRegistersRMFileData() {
         });
     }
     
-    $(document).ready(function() {
+    
         $('body').on('click', '#StautoryReg_stock_countt', function() {
-            fetchSecretarialStatutoryRegistersRESOFileData();
+            const location  = $(this).data('location');
+            fetchSecretarialStatutoryRegistersRESOFileData(location);
         });
-    });
+  
     
     
-    function fetchSecretarialStatutoryRegistersRSBBFileData() {
+    function fetchSecretarialStatutoryRegistersRSBBFileData(location) {
         
         $.ajax({
             url: '{{ route('fetch-SecretarialStatutoryRegistersRSBB-file-data') }}',
             type: 'GET',
+            data: { location: location }, // Pass the location parameter
             success: function(response) {
                 if (response && Array.isArray(response.files)) {
                     const tableBody = $('#filesTableRSBB tbody');
@@ -13344,18 +13416,20 @@ function fetchSecretarialStatutoryRegistersRMFileData() {
         });
     }
     
-    $(document).ready(function() {
+  
         $('body').on('click', '#StautoryReg_bought_countt', function() {
-            fetchSecretarialStatutoryRegistersRSBBFileData();
+            const location  = $(this).data('location');
+            fetchSecretarialStatutoryRegistersRSBBFileData(location);
         });
-    });
+   
     
     
-    function fetchSecretarialStatutoryRegistersRRDSCFileData() {
+    function fetchSecretarialStatutoryRegistersRRDSCFileData(location) {
         
         $.ajax({
             url: '{{ route('fetch-SecretarialStatutoryRegistersRRDSC-file-data') }}',
             type: 'GET',
+            data: { location: location }, // Pass the location parameter
             success: function(response) {
                 if (response && Array.isArray(response.files)) {
                     const tableBody = $('#filesTableRRDSC tbody');
@@ -13441,18 +13515,20 @@ function fetchSecretarialStatutoryRegistersRMFileData() {
         });
     }
     
-    $(document).ready(function() {
+ 
         $('body').on('click', '#StautoryReg_share_countt', function() {
-            fetchSecretarialStatutoryRegistersRRDSCFileData();
+            const location  = $(this).data('location');
+            fetchSecretarialStatutoryRegistersRRDSCFileData(location);
         });
-    });
+   
     
     
-    function fetchSecretarialStatutoryRegistersSBOFileData() {
+    function fetchSecretarialStatutoryRegistersSBOFileData(location) {
         
         $.ajax({
             url: '{{ route('fetch-SecretarialStatutoryRegistersSBO-file-data') }}',
             type: 'GET',
+            data: { location: location }, // Pass the location parameter
             success: function(response) {
                 if (response && Array.isArray(response.files)) {
                     const tableBody = $('#filesTableSBO tbody');
@@ -13538,18 +13614,20 @@ function fetchSecretarialStatutoryRegistersRMFileData() {
         });
     }
     
-    $(document).ready(function() {
+   
         $('body').on('click', '#StautoryReg_sbo_countt', function() {
-            fetchSecretarialStatutoryRegistersSBOFileData();
+            const location  = $(this).data('location');
+            fetchSecretarialStatutoryRegistersSBOFileData(location);
         });
-    });
+   
     
     
-    function fetchSecretarialStatutoryRegistersRPBFileData() {
+    function fetchSecretarialStatutoryRegistersRPBFileData(location) {
         
         $.ajax({
             url: '{{ route('fetch-SecretarialStatutoryRegistersRPB-file-data') }}',
             type: 'GET',
+            data: { location: location }, // Pass the location parameter
             success: function(response) {
                 if (response && Array.isArray(response.files)) {
                     const tableBody = $('#filesTableRPB tbody');
@@ -13635,9 +13713,10 @@ function fetchSecretarialStatutoryRegistersRMFileData() {
         });
     }
     
-    $(document).ready(function() {
+   
         $('body').on('click', '#StautoryReg_ballot_countt', function() {
-            fetchSecretarialStatutoryRegistersRPBFileData();
+            const location  = $(this).data('location');
+            fetchSecretarialStatutoryRegistersRPBFileData(location);
         });
     });
 

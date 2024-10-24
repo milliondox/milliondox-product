@@ -2576,7 +2576,7 @@ public function innerruns(Request $request)
         $entries = CommonTable::where('user_id', $user->id)
     ->where('is_delete', 0)
     ->where('location', 'Legal / Secretarial / Incorporation')
-    ->where('real_file_name', 'RUN Form')
+    ->where('real_file_name', 'RUN Form (Reserve Unique Name)')
     ->get();
 
         // Calculate count and total size of files
@@ -2590,13 +2590,14 @@ public function innerruns(Request $request)
             
         ]);
 }
-public function fetchInnerFileRunsData()
+public function fetchInnerFileRunsData(Request $request)
 {
+    $location = $request->input('location');
     $user = auth()->user();
     $files = CommonTable::where('user_id', $user->id)
     ->where('is_delete', 0)
-    ->where('location', 'Legal / Secretarial / Incorporation')
-    ->where('real_file_name', 'RUN Form')
+    ->where('location', $location)
+    ->where('real_file_name', 'RUN Form (Reserve Unique Name)')
     ->get();
    
 
@@ -2838,12 +2839,13 @@ public function fetchBoardFileMinBookData(Request $request)
             'totalSize' => $totalSize,
         ]);
 }
-public function fetchMeetFileMinBookData()
+public function fetchMeetFileMinBookData(Request $request)
 {
+    $location = $request->input('location');
     $user = auth()->user();
     $files = CommonTable::where('user_id', $user->id)
     ->where('is_delete', 0)
-    ->where('location', 'Legal / Secretarial / Annual General Meeting')
+    ->where('location', $location)
     ->where('real_file_name', 'Minute Book')
     ->get();
    
@@ -2975,12 +2977,13 @@ public function meetas(Request $request)
             'totalSize' => $totalSize,
         ]);
 }
-public function fetchMeetFileASData()
+public function fetchMeetFileASData(Request $request)
 {
+    $location = $request->input('location');
     $user = auth()->user();
     $files = CommonTable::where('user_id', $user->id)
     ->where('is_delete', 0)
-    ->where('location', 'Legal / Secretarial / Annual General Meeting')
+    ->where('location', $location)
     ->where('real_file_name', 'Attendance sheet')
     ->get();
    
@@ -3113,12 +3116,13 @@ public function meetreso(Request $request)
             'totalSize' => $totalSize,
         ]);
 }
-public function fetchMeetFileRESOData()
+public function fetchMeetFileRESOData(Request $request)
 {
+    $location = $request->input('location');
     $user = auth()->user();
     $files = CommonTable::where('user_id', $user->id)
     ->where('is_delete', 0)
-    ->where('location', 'Legal / Secretarial / Annual General Meeting')
+    ->where('location', $location )
     ->where('real_file_name', 'Resolutions')
     ->get();
    
@@ -3253,12 +3257,13 @@ public function ordernotice(Request $request)
             'totalSize' => $totalSize,
         ]);
 }
-public function fetchOrderFileNoticeData()
+public function fetchOrderFileNoticeData(Request $request)
 {
+    $location = $request->input('location');
     $user = auth()->user();
     $files =  CommonTable::where('user_id', $user->id)
     ->where('is_delete', 0)
-    ->where('location', 'Legal / Secretarial / Extra Ordinary General Meeting')
+    ->where('location', $location)
     ->where('real_file_name', 'Notices')
     ->get();
    
@@ -3392,12 +3397,13 @@ public function orderminbook(Request $request)
             'totalSize' => $totalSize,
         ]);
 }
-public function fetchOrderFileMinBookData()
+public function fetchOrderFileMinBookData(Request $request)
 {
+    $location = $request->input('location');
     $user = auth()->user();
     $files = CommonTable::where('user_id', $user->id)
     ->where('is_delete', 0)
-    ->where('location', 'Legal / Secretarial / Extra Ordinary General Meeting')
+    ->where('location', $location)
     ->where('real_file_name', 'Minute Book')
     ->get();
    
@@ -3533,12 +3539,13 @@ public function orderAttend(Request $request)
             'totalSize' => $totalSize,
         ]);
 }
-public function fetchOrderFileAttendData()
+public function fetchOrderFileAttendData(Request $request)
 {
+    $location = $request->input('location');
     $user = auth()->user();
     $files =  CommonTable::where('user_id', $user->id)
     ->where('is_delete', 0)
-    ->where('location', 'Legal / Secretarial / Extra Ordinary General Meeting')
+    ->where('location', $location)
     ->where('real_file_name', 'Attendance sheet')
     ->get();
    
@@ -3672,12 +3679,13 @@ public function orderreso(Request $request)
             'totalSize' => $totalSize,
         ]);
 }
-public function fetchOrderFileRESOData()
+public function fetchOrderFileRESOData(Request $request)
 {
+    $location = $request->input('location');
     $user = auth()->user();
     $files = CommonTable::where('user_id', $user->id)
     ->where('is_delete', 0)
-    ->where('location', 'Legal / Secretarial / Extra Ordinary General Meeting')
+    ->where('location', $location)
     ->where('real_file_name', 'Resolutions')
     ->get();
    
@@ -3812,13 +3820,14 @@ public function innerincnine(Request $request)
             'totalSize' => $totalSize,
         ]);
 }
-public function fetchInnerFile9Data()
+public function fetchInnerFile9Data(Request $request)
 {
+    $location = $request->input('location');
     $user = auth()->user();
     $files = CommonTable::where('user_id', $user->id)
     ->where('is_delete', 0)
-    ->where('location', 'Legal / Secretarial / Incorporation')
-    ->where('real_file_name', 'INC 9')
+    ->where('location', $location)
+    ->where('real_file_name', 'INC-9 (Declaration of Subscribers and First Directors)')
     ->get();
    
 
@@ -3951,13 +3960,14 @@ public function innerspice(Request $request)
             'totalSize' => $totalSize,
         ]);
 }
-public function fetchInnerFilespiceData()
+public function fetchInnerFilespiceData(Request $request)
 {
+    $location = $request->input('location');
     $user = auth()->user();
     $files = CommonTable::where('user_id', $user->id)
     ->where('is_delete', 0)
-    ->where('location', 'Legal / Secretarial / Incorporation')
-    ->where('real_file_name', 'SPICe Part B')
+    ->where('location', $location)
+    ->where('real_file_name', 'SPICe+Part B (Simplified Proforma for Incorporating Company Electronically)')
     ->get();
    
 
@@ -4091,13 +4101,14 @@ public function innerINC33(Request $request)
             'totalSize' => $totalSize,
         ]);
 }
-public function fetchInnerFileINC33Data()
+public function fetchInnerFileINC33Data(Request $request)
 {
+    $location = $request->input('location');
     $user = auth()->user();
     $files = CommonTable::where('user_id', $user->id)
     ->where('is_delete', 0)
-    ->where('location', 'Legal / Secretarial / Incorporation')
-    ->where('real_file_name', 'INC 33 SPICe MoA')
+    ->where('location', $location)
+    ->where('real_file_name', 'INC-33 SPICe MoA (e-Momorandum of Association)')
     ->get();
    
 
@@ -4230,13 +4241,14 @@ public function innerINC34(Request $request)
             'totalSize' => $totalSize,
         ]);
 }
-public function fetchInnerFileINC34Data()
+public function fetchInnerFileINC34Data(Request $request)
 {
+    $location = $request->input('location');
     $user = auth()->user();
     $files = CommonTable::where('user_id', $user->id)
     ->where('is_delete', 0)
-    ->where('location', 'Legal / Secretarial / Incorporation')
-    ->where('real_file_name', 'INC 34')
+    ->where('location', $location)
+    ->where('real_file_name', 'INC-34 SPICe MoA (e-Articles of Association)')
     ->get();
    
 
@@ -4369,13 +4381,15 @@ public function innerINC35(Request $request)
             'totalSize' => $totalSize,
         ]);
 }
-public function fetchInnerFileINC35Data()
+public function fetchInnerFileINC35Data(Request $request)
 {
+
+    $location = $request->input('location');
     $user = auth()->user();
     $files = CommonTable::where('user_id', $user->id)
     ->where('is_delete', 0)
-    ->where('location', 'Legal / Secretarial / Incorporation')
-    ->where('real_file_name', 'INC 35')
+    ->where('location', $location)
+    ->where('real_file_name', 'INC-35 AGILE-PRO-s')
     ->get();
    
 
@@ -4507,13 +4521,14 @@ public function innerINC22(Request $request)
             'totalSize' => $totalSize,
         ]);
 }
-public function fetchInnerFileINC22Data()
+public function fetchInnerFileINC22Data(Request $request)
 {
+    $location = $request->input('location');
     $user = auth()->user();
     $files = CommonTable::where('user_id', $user->id)
     ->where('is_delete', 0)
-    ->where('location', 'Legal / Secretarial / Incorporation')
-    ->where('real_file_name', 'INC 22')
+    ->where('location', $location)
+    ->where('real_file_name', 'INC-22 (Notice of situation or change of situation of registered office)')
     ->get();
    
 
@@ -4646,13 +4661,14 @@ public function innerINC20A(Request $request)
             'totalSize' => $totalSize,
         ]);
 }
-public function fetchInnerFileINC20AData()
+public function fetchInnerFileINC20AData(Request $request)
 {
+    $location = $request->input('location');
     $user = auth()->user();
     $files = CommonTable::where('user_id', $user->id)
     ->where('is_delete', 0)
-    ->where('location', 'Legal / Secretarial / Incorporation')
-    ->where('real_file_name', 'INC 20A')
+    ->where('location', $location)
+    ->where('real_file_name', 'INC-20A (Commencement of Business)')
     ->get();
    
 
@@ -4786,13 +4802,14 @@ public function annaoc4afs(Request $request)
             'totalSize' => $totalSize,
         ]);
 }
-public function fetchAnnFileAoc4AfsData()
+public function fetchAnnFileAoc4AfsData(Request $request)
 {
+    $location = $request->input('location');
     $user = auth()->user();
     $files = CommonTable::where('user_id', $user->id)
     ->where('is_delete', 0)
-    ->where('location', 'Legal / Secretarial / Annual Filings')
-    ->where('real_file_name', 'AoC 4 Annual Filing Statement Form')
+    ->where('location', $location)
+    ->where('real_file_name', 'AoC-4 (Annual Filing Statement Form)')
     ->get();
    
 
@@ -4925,13 +4942,14 @@ public function annaoc4Cfs(Request $request)
             'totalSize' => $totalSize,
         ]);
 }
-public function fetchAnnFileAoc4CfsData()
+public function fetchAnnFileAoc4CfsData(Request $request)
 {
+    $location = $request->input('location');
     $user = auth()->user();
     $files = CommonTable::where('user_id', $user->id)
     ->where('is_delete', 0)
-    ->where('location', 'Legal / Secretarial / Annual Filings')
-    ->where('real_file_name', 'AoC 4 CFS')
+    ->where('location', $location)
+    ->where('real_file_name', 'AoC-4 (CFS) (Form for filing consolidated financial statements and other documents with the Registrar)')
     ->get();
    
 
@@ -5065,13 +5083,14 @@ public function annmgt7(Request $request)
             'totalSize' => $totalSize,
         ]);
 }
-public function fetchAnnFilemgt7Data()
+public function fetchAnnFilemgt7Data(Request $request)
 {
+    $location = $request->input('location');
     $user = auth()->user();
     $files = CommonTable::where('user_id', $user->id)
     ->where('is_delete', 0)
-    ->where('location', 'Legal / Secretarial / Annual Filings')
-    ->where('real_file_name', 'MGT 7')
+    ->where('location', $location)
+    ->where('real_file_name', 'MGT-7/ (Annual Return of a company)')
     ->get();
    
 
@@ -5204,13 +5223,14 @@ public function annmgt7a(Request $request)
             'totalSize' => $totalSize,
         ]);
 }
-public function fetchAnnFilemgt7aData()
+public function fetchAnnFilemgt7aData(Request $request)
 {
+    $location = $request->input('location');
     $user = auth()->user();
     $files = CommonTable::where('user_id', $user->id)
     ->where('is_delete', 0)
-    ->where('location', 'Legal / Secretarial / Annual Filings')
-    ->where('real_file_name', 'MGT 7A')
+    ->where('location', $location)
+    ->where('real_file_name', 'MGT-7A (Annual Return of a small company)')
     ->get();
    
 
@@ -5390,12 +5410,13 @@ public function meetnotice(Request $request)
             'totalSize' => $totalSize,
         ]);
 }
-public function fetchMeetFileNoticeData()
+public function fetchMeetFileNoticeData(Request $request)
 {
+    $location = $request->input('location');
     $user = auth()->user();
     $files = CommonTable::where('user_id', $user->id)
     ->where('is_delete', 0)
-    ->where('location', 'Legal / Secretarial / Annual General Meeting')
+    ->where('location', $location)
     ->where('real_file_name', 'Notices')
     ->get();
    
@@ -5676,13 +5697,14 @@ public function directorappointmentsdir3(Request $request)
             'totalSize' => $totalSize,
         ]);
 }
-public function fetchdirectorappointmentsdir3FileData()
+public function fetchdirectorappointmentsdir3FileData(Request $request)
 {
+    $location = $request->input('location');
     $user = auth()->user();
     $files = CommonTable::where('user_id', $user->id)
     ->where('is_delete', 0)
-    ->where('location', 'Legal / Secretarial / Director Appointments')
-    ->where('real_file_name', 'DIR 3 KYC')
+    ->where('location', $location)
+    ->where('real_file_name', 'DIR-3 KYC')
     ->get();
    
 
@@ -5816,12 +5838,13 @@ public function directorappointmentsdir3din(Request $request)
             'totalSize' => $totalSize,
         ]);
 }
-public function fetchdirectorappointmentsdir3dinFileData()
+public function fetchdirectorappointmentsdir3dinFileData(Request $request)
 {
+    $location = $request->input('location');
     $user = auth()->user();
     $files = CommonTable::where('user_id', $user->id)
     ->where('is_delete', 0)
-    ->where('location', 'Legal / Secretarial / Director Appointments')
+    ->where('location', $location)
     ->where('real_file_name', 'DIR-3 form/ DIN number')
     ->get();
    
@@ -5957,13 +5980,14 @@ public function directorappointmentsdir6(Request $request)
             'totalSize' => $totalSize,
         ]);
 }
-public function fetchdirectorappointmentsdir6FileData()
+public function fetchdirectorappointmentsdir6FileData(Request $request)
 {
+    $location = $request->input('location');
     $user = auth()->user();
     $files = CommonTable::where('user_id', $user->id)
     ->where('is_delete', 0)
-    ->where('location', 'Legal / Secretarial / Director Appointments')
-    ->where('real_file_name', 'DIR 6 form')
+    ->where('location', $location)
+    ->where('real_file_name', 'DIR-6 form')
     ->get();
    
 
@@ -6098,13 +6122,14 @@ public function directorappointmentsdir12(Request $request)
             'totalSize' => $totalSize,
         ]);
 }
-public function fetchdirectorappointmentsdir12FileData()
+public function fetchdirectorappointmentsdir12FileData(Request $request)
 {
+    $location = $request->input('location');
     $user = auth()->user();
     $files = CommonTable::where('user_id', $user->id)
     ->where('is_delete', 0)
-    ->where('location', 'Legal / Secretarial / Director Appointments')
-    ->where('real_file_name', 'DIR 12 form')
+    ->where('location', $location)
+    ->where('real_file_name', 'DIR-12 form')
     ->get();
    
 
@@ -14997,144 +15022,156 @@ public function PredefinedCommonUploadFilesBank(Request $request)
 //////////////////////////////////////////// 4 october sandeep added code here for prdefined paths common pop upload form file upload  start /////////////////////////////////////////////////////////////////////////
 
 
-public function fetchSecretarialStatutoryRegistersROSHFileData()
+public function fetchSecretarialStatutoryRegistersROSHFileData(Request $request)
 {
+    $location = $request->input('location');
     $user = auth()->user();
     $files = CommonTable::where('user_id', $user->id)
     ->where('is_delete', 0)
-    ->where('location', 'Legal / Secretarial / Statutory Registers')
+    ->where('location', $location)
     ->where('real_file_name', 'Register of Other Security Holders')
     ->get();
    
     return response()->json(['files' => $files]);
 }
 
-public function fetchSecretarialStatutoryRegistersFRFileData()
+public function fetchSecretarialStatutoryRegistersFRFileData(Request $request)
 {
+    $location = $request->input('location');
     $user = auth()->user();
     $files = CommonTable::where('user_id', $user->id)
     ->where('is_delete', 0)
-    ->where('location', 'Legal / Secretarial / Statutory Registers')
+    ->where('location', $location)
     ->where('real_file_name', '⁠Foreign Register')
     ->get();
    
     return response()->json(['files' => $files]);
 }
 
-public function fetchSecretarialStatutoryRegistersRDKFileData()
+public function fetchSecretarialStatutoryRegistersRDKFileData(Request $request)
 {
+    $location = $request->input('location');
     $user = auth()->user();
     $files = CommonTable::where('user_id', $user->id)
     ->where('is_delete', 0)
-    ->where('location', 'Legal / Secretarial / Statutory Registers')
+    ->where('location', $location)
     ->where('real_file_name', 'Register of Directors and KMP')
     ->get();
    
     return response()->json(['files' => $files]);
 }
 
-public function fetchSecretarialStatutoryRegistersRCFileData()
+public function fetchSecretarialStatutoryRegistersRCFileData(Request $request)
 {
+    $location = $request->input('location');
     $user = auth()->user();
     $files = CommonTable::where('user_id', $user->id)
     ->where('is_delete', 0)
-    ->where('location', 'Legal / Secretarial / Statutory Registers')
+    ->where('location', $location)
     ->where('real_file_name', '⁠Register of Charges')
     ->get();
    
     return response()->json(['files' => $files]);
 }
 
-public function fetchSecretarialStatutoryRegistersRDFileData()
+public function fetchSecretarialStatutoryRegistersRDFileData(Request $request)
 {
+    $location = $request->input('location');
     $user = auth()->user();
     $files = CommonTable::where('user_id', $user->id)
     ->where('is_delete', 0)
-    ->where('location', 'Legal / Secretarial / Statutory Registers')
+    ->where('location', $location)
     ->where('real_file_name', 'Register of Deposits')
     ->get();
    
     return response()->json(['files' => $files]);
 }
 
-public function fetchSecretarialStatutoryRegistersRLGSFileData()
+public function fetchSecretarialStatutoryRegistersRLGSFileData(Request $request)
 {
+    $location = $request->input('location');
     $user = auth()->user();
     $files = CommonTable::where('user_id', $user->id)
     ->where('is_delete', 0)
-    ->where('location', 'Legal / Secretarial / Statutory Registers')
+    ->where('location', $location)
     ->where('real_file_name', 'Register of Loans, Guarantees and Securities')
     ->get();
    
     return response()->json(['files' => $files]);
 }
 
-public function fetchSecretarialStatutoryRegistersRCDFileData()
+public function fetchSecretarialStatutoryRegistersRCDFileData(Request $request)
 {
+    $location = $request->input('location');
     $user = auth()->user();
     $files = CommonTable::where('user_id', $user->id)
     ->where('is_delete', 0)
-    ->where('location', 'Legal / Secretarial / Statutory Registers')
+    ->where('location', $location)
     ->where('real_file_name', 'Register of Investments not held in Company’s name')
     ->get();
    
     return response()->json(['files' => $files]);
 }
 
-public function fetchSecretarialStatutoryRegistersRCDIFileData()
+public function fetchSecretarialStatutoryRegistersRCDIFileData(Request $request)
 {
+    $location = $request->input('location');
     $user = auth()->user();
     $files = CommonTable::where('user_id', $user->id)
     ->where('is_delete', 0)
-    ->where('location', 'Legal / Secretarial / Statutory Registers')
+    ->where('location', $location)
     ->where('real_file_name', '⁠Register of Contracts in which Directors are interested')
     ->get();
    
     return response()->json(['files' => $files]);
 }
 
-public function fetchSecretarialStatutoryRegistersRSESFileData()
+public function fetchSecretarialStatutoryRegistersRSESFileData(Request $request)
 {
+    $location = $request->input('location');
     $user = auth()->user();
     $files = CommonTable::where('user_id', $user->id)
     ->where('is_delete', 0)
-    ->where('location', 'Legal / Secretarial / Statutory Registers')
+    ->where('location', $location)
     ->where('real_file_name', 'Register of Sweat Equity Shares')
     ->get();
    
     return response()->json(['files' => $files]);
 }
 
-public function fetchSecretarialStatutoryRegistersRESOFileData()
+public function fetchSecretarialStatutoryRegistersRESOFileData(Request $request)
 {
+    $location = $request->input('location');
     $user = auth()->user();
     $files = CommonTable::where('user_id', $user->id)
     ->where('is_delete', 0)
-    ->where('location', 'Legal / Secretarial / Statutory Registers')
+    ->where('location', $location)
     ->where('real_file_name', 'Register of Employee Stock Options')
     ->get();
    
     return response()->json(['files' => $files]);
 }
 
-public function fetchSecretarialStatutoryRegistersRSBBFileData()
+public function fetchSecretarialStatutoryRegistersRSBBFileData(Request $request)
 {
+    $location = $request->input('location');
     $user = auth()->user();
     $files = CommonTable::where('user_id', $user->id)
     ->where('is_delete', 0)
-    ->where('location', 'Legal / Secretarial / Statutory Registers')
+    ->where('location', $location)
     ->where('real_file_name', 'Register of Securities Bought Back')
     ->get();
    
     return response()->json(['files' => $files]);
 }
 
-public function fetchSecretarialStatutoryRegistersRRDSCFileData()
+public function fetchSecretarialStatutoryRegistersRRDSCFileData(Request $request)
 {
+    $location = $request->input('location');
     $user = auth()->user();
     $files = CommonTable::where('user_id', $user->id)
     ->where('is_delete', 0)
-    ->where('location', 'Legal / Secretarial / Statutory Registers')
+    ->where('location',  $location)
     ->where('real_file_name', 'Register of Renewed or Duplicate Share Certificates')
     ->get();
    
@@ -15142,24 +15179,26 @@ public function fetchSecretarialStatutoryRegistersRRDSCFileData()
 }
 
 
-public function fetchSecretarialStatutoryRegistersSBOFileData()
+public function fetchSecretarialStatutoryRegistersSBOFileData(Request $request)
 {
+    $location = $request->input('location');
     $user = auth()->user();
     $files = CommonTable::where('user_id', $user->id)
     ->where('is_delete', 0)
-    ->where('location', 'Legal / Secretarial / Statutory Registers')
+    ->where('location', $location)
     ->where('real_file_name', 'Register of SBO')
     ->get();
    
     return response()->json(['files' => $files]);
 }
 
-public function fetchSecretarialStatutoryRegistersRPBFileData()
+public function fetchSecretarialStatutoryRegistersRPBFileData(Request $request)
 {
+    $location = $request->input('location');
     $user = auth()->user();
     $files = CommonTable::where('user_id', $user->id)
     ->where('is_delete', 0)
-    ->where('location', 'Legal / Secretarial / Statutory Registers')
+    ->where('location', $location)
     ->where('real_file_name', 'Register of Postal Ballot')
     ->get();
    
@@ -15188,12 +15227,13 @@ public function fetchSecretarialStatutoryRegistersRPBFileData()
             'totalSize' => $totalSize,
         ]);
 }
-public function fetchSecretarialStatutoryRegistersRMFileData()
+public function fetchSecretarialStatutoryRegistersRMFileData(Request $request)
 {
+    $location = $request->input('location');
     $user = auth()->user();
     $files = CommonTable::where('user_id', $user->id)
     ->where('is_delete', 0)
-    ->where('location', 'Legal / Secretarial / Statutory Registers')
+    ->where('location', $location)
     ->where('real_file_name', 'Register of Members')
     ->get();
    
@@ -17157,7 +17197,7 @@ $mailersend = new MailerSend(['api_key' => 'mlsn.3cf1d191812b63e38d5edf34dd01466
 
     return response()->json([
         'status' => 'success',
-        'message' => 'Member created successfully.',
+        'message' => 'Member added successfully.',
     ], 201);
 
     // return redirect()->back()->with('success', 'Member created successfully.');
@@ -17798,7 +17838,7 @@ if ($countentriesresomeet > 0) {
           $entriesinnerrun = CommonTable::where('user_id', $user->id)
     ->where('is_delete', 0)
     ->where('location', $decodedFolderLocation)
-    ->where('real_file_name', 'RUN Form')
+    ->where('real_file_name', 'RUN Form (Reserve Unique Name)')
     ->get();
             $countinnerrun = $entriesinnerrun->count();
             $totalSizeinnerrun = $entriesinnerrun->sum('file_size');
@@ -17807,7 +17847,7 @@ $totalSizeKBinnerrun = round($totalSizeinnerrun / 1024, 2); // Convert to KB and
 $entriesinc9 = CommonTable::where('user_id', $user->id)
     ->where('is_delete', 0)
     ->where('location', $decodedFolderLocation)
-    ->where('real_file_name', 'INC 9')
+    ->where('real_file_name', 'INC-9 (Declaration of Subscribers and First Directors)')
     ->get();
         $countentriesinc9 = $entriesinc9->count(); // Count of entries
         $totalSizeBytesentriesinc9 = $entriesinc9->sum('file_size'); // Sum of file sizes
@@ -17818,7 +17858,7 @@ $entriesinc9 = CommonTable::where('user_id', $user->id)
          $entriesinnerspice = CommonTable::where('user_id', $user->id)
     ->where('is_delete', 0)
     ->where('location', $decodedFolderLocation)
-    ->where('real_file_name', 'SPICe Part B')
+    ->where('real_file_name', 'SPICe+Part B (Simplified Proforma for Incorporating Company Electronically)')
     ->get();
         $countentriesinnerspice = $entriesinnerspice->count(); // Count of entries
         $totalSizeBytesentriesinnerspice = $entriesinnerspice->sum('file_size'); // Sum of file sizes
@@ -17828,7 +17868,7 @@ $entriesinc9 = CommonTable::where('user_id', $user->id)
          $entriesinnerinc33 = CommonTable::where('user_id', $user->id)
     ->where('is_delete', 0)
     ->where('location', $decodedFolderLocation)
-    ->where('real_file_name', 'INC 33 SPICe MoA')
+    ->where('real_file_name', 'INC-33 SPICe MoA (e-Momorandum of Association)')
     ->get();
         $countentriesinnerinc33 = $entriesinnerinc33->count(); // Count of entries
         $totalSizeBytesentriesinnerinc33 = $entriesinnerinc33->sum('file_size'); // Sum of file sizes
@@ -17838,7 +17878,7 @@ $entriesinc9 = CommonTable::where('user_id', $user->id)
         $entriesinnerinc34 = CommonTable::where('user_id', $user->id)
     ->where('is_delete', 0)
     ->where('location', $decodedFolderLocation)
-    ->where('real_file_name', 'INC 34')
+    ->where('real_file_name', 'INC-34 SPICe MoA (e-Articles of Association)')
     ->get();
         $countentriesinnerinc34 = $entriesinnerinc34->count(); // Count of entries
         $totalSizeBytesentriesinnerinc34 = $entriesinnerinc34->sum('file_size'); // Sum of file sizes
@@ -17847,7 +17887,7 @@ $entriesinc9 = CommonTable::where('user_id', $user->id)
         $entriesinnerinc35 = CommonTable::where('user_id', $user->id)
     ->where('is_delete', 0)
     ->where('location', $decodedFolderLocation)
-    ->where('real_file_name', 'INC 35')
+    ->where('real_file_name', 'INC-35 AGILE-PRO-s')
     ->get();
         $countentriesinnerinc35 = $entriesinnerinc35->count(); // Count of entries
         $totalSizeBytesentriesinnerinc35 = $entriesinnerinc35->sum('file_size'); // Sum of file sizes
@@ -17856,7 +17896,7 @@ $entriesinc9 = CommonTable::where('user_id', $user->id)
             $entriesinnerinc22 = CommonTable::where('user_id', $user->id)
     ->where('is_delete', 0)
     ->where('location', $decodedFolderLocation)
-    ->where('real_file_name', 'INC 22')
+    ->where('real_file_name', 'INC-22 (Notice of situation or change of situation of registered office)')
     ->get();
         $countentriesinnerinc22 = $entriesinnerinc22->count(); // Count of entries
         $totalSizeBytesentriesinnerinc22 = $entriesinnerinc22->sum('file_size'); // Sum of file sizes
@@ -17867,7 +17907,7 @@ $entriesinc9 = CommonTable::where('user_id', $user->id)
         $entriesinnerinc20a = CommonTable::where('user_id', $user->id)
     ->where('is_delete', 0)
     ->where('location', $decodedFolderLocation)
-    ->where('real_file_name', 'INC 20A')
+    ->where('real_file_name', 'INC-20A (Commencement of Business)')
     ->get();
         $countentriesinnerinc20a = $entriesinnerinc20a->count(); // Count of entries
         $totalSizeBytesentriesinnerinc20a = $entriesinnerinc20a->sum('file_size'); // Sum of file sizes
@@ -17877,7 +17917,7 @@ $entriesinc9 = CommonTable::where('user_id', $user->id)
          $entriesafs = CommonTable::where('user_id', $user->id)
     ->where('is_delete', 0)
     ->where('location', $decodedFolderLocation)
-    ->where('real_file_name', 'AoC 4 Annual Filing Statement Form')
+    ->where('real_file_name', 'AoC-4 (Annual Filing Statement Form)')
     ->get();
         $countentriesafs = $entriesafs->count(); // Count of entries
         $totalSizeBytesentriesafs = $entriesafs->sum('file_size'); // Sum of file sizes
@@ -17887,7 +17927,7 @@ $entriesinc9 = CommonTable::where('user_id', $user->id)
          $entriescfs = CommonTable::where('user_id', $user->id)
     ->where('is_delete', 0)
     ->where('location', $decodedFolderLocation)
-    ->where('real_file_name', 'AoC 4 CFS')
+    ->where('real_file_name', 'AoC-4 (CFS) (Form for filing consolidated financial statements and other documents with the Registrar)')
     ->get();
         $countentriescfs = $entriescfs->count(); // Count of entries
         $totalSizeBytesentriescfs = $entriescfs->sum('file_size'); // Sum of file sizes
@@ -17897,7 +17937,7 @@ $entriesinc9 = CommonTable::where('user_id', $user->id)
         $entriesmgt7 = CommonTable::where('user_id', $user->id)
     ->where('is_delete', 0)
     ->where('location', $decodedFolderLocation)
-    ->where('real_file_name', 'MGT 7')
+    ->where('real_file_name', 'MGT-7/ (Annual Return of a company)')
     ->get();
         $countentriesmgt7 = $entriesmgt7->count(); // Count of entries
         $totalSizeBytesentriesmgt7 = $entriesmgt7->sum('file_size'); // Sum of file sizes
@@ -17906,7 +17946,7 @@ $entriesinc9 = CommonTable::where('user_id', $user->id)
          $entriesmgt7a = CommonTable::where('user_id', $user->id)
     ->where('is_delete', 0)
     ->where('location', $decodedFolderLocation)
-    ->where('real_file_name', 'MGT 7A')
+    ->where('real_file_name', 'MGT-7A (Annual Return of a small company)')
     ->get();
         $countentriesmgt7a = $entriesmgt7a->count(); // Count of entries
         $totalSizeBytesentriesmgt7a = $entriesmgt7a->sum('file_size'); // Sum of file sizes
@@ -17941,7 +17981,7 @@ $entriesinc9 = CommonTable::where('user_id', $user->id)
         $entriesdirectorappointmentsdir3 = CommonTable::where('user_id', $user->id)
     ->where('is_delete', 0)
     ->where('location', $decodedFolderLocation)
-    ->where('real_file_name', 'DIR 3 KYC')
+    ->where('real_file_name', 'DIR-3 KYC')
     ->get();
         $countdirectorappointmentsdir3 = $entriesdirectorappointmentsdir3->count();
         $totalSizeBytesdirectorappointmentsdir3 = $entriesdirectorappointmentsdir3->sum('file_size');
@@ -17951,7 +17991,7 @@ $entriesinc9 = CommonTable::where('user_id', $user->id)
         $entriesdirectorappointmentsdir6 =CommonTable::where('user_id', $user->id)
     ->where('is_delete', 0)
     ->where('location', $decodedFolderLocation)
-    ->where('real_file_name', 'DIR 6 form')
+    ->where('real_file_name', 'DIR-6 form')
     ->get();
         $countdirectorappointmentsdir6 = $entriesdirectorappointmentsdir6->count();
         $totalSizeBytesdirectorappointmentsdir6 = $entriesdirectorappointmentsdir6->sum('file_size');
@@ -17960,7 +18000,7 @@ $entriesinc9 = CommonTable::where('user_id', $user->id)
         $entriesdirectorappointmentsdir12 = CommonTable::where('user_id', $user->id)
     ->where('is_delete', 0)
     ->where('location', $decodedFolderLocation)
-    ->where('real_file_name', 'DIR 12 form')
+    ->where('real_file_name', 'DIR-12 form')
     ->get();
         $countdirectorappointmentsdir12 = $entriesdirectorappointmentsdir12->count();
         $totalSizeBytesdirectorappointmentsdir12 = $entriesdirectorappointmentsdir12->sum('file_size');
