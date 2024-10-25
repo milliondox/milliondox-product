@@ -118,7 +118,7 @@
         </div>
         <span class="basic-file">Note:- file|mimes:pdf,doc,docx|max size:2048kb</span>
 
-        <button id="update-profile-btn" class="btn" style="border-radius:5px;" type="submit">Update Profile</button>
+        <button id="update-profile-btn" class="btn" style="border-radius:5px;" type="submit">Update Logo</button>
     </form>
 </div>
                                 </div>
@@ -684,7 +684,7 @@ $(document).ready(function() {
                     
                     <div class="gst_nomver">
                     <h3 class="edit_new_filed"><input type="text" id="add_gstt" name="add_gstt" placeholder="Enter GSTINs" value="" pattern="^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[A-Z0-9]{3}$" 
-                    title="GST must be 15 characters: 2 digits for state code, 5 letters for PAN, 4 digits for PAN, 1 letter, and 3 alphanumeric characters." required></h3>
+                    title="GST must be 15 characters: 2 digits for state code, 5 letters for PAN, 4 digits for PAN, 1 letter for PAN, and 3 alphanumeric characters for PAN." required></h3>
                      
                     <div class="copy_save">
 

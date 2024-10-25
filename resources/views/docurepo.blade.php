@@ -2656,7 +2656,7 @@ $(document).ready(function() {
 <li>
     <span>Accounting & Taxation / Book-Keeping / Bank Account Statements</span>
     <button data-bs-toggle="modal" data-bs-target="#common_file_upload_pop_bank"
-            data-location="Accounting & Taxation / Book-Keeping / Bank Account Statements"
+            data-location="2024-2025November301_Accounting & Taxation/2024-2025November301_Book-keeping/2024-2025November301_Bank Account Statements"
             data-real-file-name="Bank Account Statement">
     <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
         <path d="M14.75 10.25V13.25C14.75 13.6478 14.592 14.0294 14.3107 14.3107C14.0294 14.592 13.6478 14.75 13.25 14.75H2.75C2.35218 14.75 1.97064 14.592 1.68934 14.3107C1.40804 14.0294 1.25 13.6478 1.25 13.25V10.25M11.75 5L8 1.25M8 1.25L4.25 5M8 1.25V10.25" stroke="#CEFFA8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
@@ -2668,7 +2668,7 @@ $(document).ready(function() {
 <li>
     <span>Accounting & Taxation / Book-Keeping / Fixed Deposit Statements</span>
     <button data-bs-toggle="modal" data-bs-target="#common_file_upload_pop_bank"
-            data-location="Accounting & Taxation / Book-Keeping / Fixed Deposit Statements"
+            data-location="2024-2025November301_Accounting & Taxation/2024-2025November301_Book-keeping/2024-2025November301_Fixed Deposit Statements"
             data-real-file-name="Fixed Deposit Account Statement">
     <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
         <path d="M14.75 10.25V13.25C14.75 13.6478 14.592 14.0294 14.3107 14.3107C14.0294 14.592 13.6478 14.75 13.25 14.75H2.75C2.35218 14.75 1.97064 14.592 1.68934 14.3107C1.40804 14.0294 1.25 13.6478 1.25 13.25V10.25M11.75 5L8 1.25M8 1.25L4.25 5M8 1.25V10.25" stroke="#CEFFA8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
@@ -2679,7 +2679,7 @@ $(document).ready(function() {
 <li>
     <span>Accounting & Taxation / Book-Keeping / Credit Card Statements</span>
     <button data-bs-toggle="modal" data-bs-target="#common_file_upload_pop_bank"
-            data-location="Accounting & Taxation / Book-Keeping / Credit Card Statements"
+            data-location="2024-2025November301_Accounting & Taxation/2024-2025November301_Book-keeping/2024-2025November301_Credit Card Statements"
             data-real-file-name="Add Credit Card Statements">
     <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
         <path d="M14.75 10.25V13.25C14.75 13.6478 14.592 14.0294 14.3107 14.3107C14.0294 14.592 13.6478 14.75 13.25 14.75H2.75C2.35218 14.75 1.97064 14.592 1.68934 14.3107C1.40804 14.0294 1.25 13.6478 1.25 13.25V10.25M11.75 5L8 1.25M8 1.25L4.25 5M8 1.25V10.25" stroke="#CEFFA8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
@@ -2690,7 +2690,7 @@ $(document).ready(function() {
 <li>
     <span>Accounting & Taxation / Book-Keeping / Mutual Fund Statements</span>
     <button data-bs-toggle="modal" data-bs-target="#common_file_upload_pop_bank"
-            data-location="Accounting & Taxation / Book-Keeping / Mutual Fund Statements"
+            data-location="2024-2025November301_Accounting & Taxation/2024-2025November301_Book-keeping/2024-2025November301_Mutual Fund Statements"
             data-real-file-name="Add Mutual Fund Statements">
     <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
         <path d="M14.75 10.25V13.25C14.75 13.6478 14.592 14.0294 14.3107 14.3107C14.0294 14.592 13.6478 14.75 13.25 14.75H2.75C2.35218 14.75 1.97064 14.592 1.68934 14.3107C1.40804 14.0294 1.25 13.6478 1.25 13.25V10.25M11.75 5L8 1.25M8 1.25L4.25 5M8 1.25V10.25" stroke="#CEFFA8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
@@ -2698,7 +2698,7 @@ $(document).ready(function() {
     </button>
 </li>
 
-<li>
+{{-- <li>
     <span>Accounting & Taxation / Charter documents / Director Details / Director 1 / Photo</span>
     <button data-bs-toggle="modal" data-bs-target="#common_file_upload_pop"
             data-location="Accounting & Taxation / Charter documents / Director Details / Director 1"
@@ -2832,13 +2832,13 @@ $(document).ready(function() {
         <path d="M14.75 10.25V13.25C14.75 13.6478 14.592 14.0294 14.3107 14.3107C14.0294 14.592 13.6478 14.75 13.25 14.75H2.75C2.35218 14.75 1.97064 14.592 1.68934 14.3107C1.40804 14.0294 1.25 13.6478 1.25 13.25V10.25M11.75 5L8 1.25M8 1.25L4.25 5M8 1.25V10.25" stroke="#CEFFA8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
     </svg>
     </button>
-</li>
+</li> --}}
 
 
 <li>
     <span>Accounting & Taxation / Charter documents / Incorporation / Memorandum of Association</span>
     <button data-bs-toggle="modal" data-bs-target="#common_file_upload_pop"
-            data-location="Accounting & Taxation / Charter documents / Incorporation"
+            data-location="2024-2025November301_Accounting & Taxation/2024-2025November301_Charter Documents/2024-2025November301_Incorporation"
             data-real-file-name="Memorandum of Association">
     <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
         <path d="M14.75 10.25V13.25C14.75 13.6478 14.592 14.0294 14.3107 14.3107C14.0294 14.592 13.6478 14.75 13.25 14.75H2.75C2.35218 14.75 1.97064 14.592 1.68934 14.3107C1.40804 14.0294 1.25 13.6478 1.25 13.25V10.25M11.75 5L8 1.25M8 1.25L4.25 5M8 1.25V10.25" stroke="#CEFFA8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
@@ -2850,7 +2850,7 @@ $(document).ready(function() {
 <li>
     <span>Accounting & Taxation / Charter documents / Incorporation / Articles of Association</span>
     <button data-bs-toggle="modal" data-bs-target="#common_file_upload_pop"
-            data-location="Accounting & Taxation / Charter documents / Incorporation"
+            data-location="2024-2025November301_Accounting & Taxation/2024-2025November301_Charter Documents/2024-2025November301_Incorporation"
             data-real-file-name="Articles of Association">
     <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
         <path d="M14.75 10.25V13.25C14.75 13.6478 14.592 14.0294 14.3107 14.3107C14.0294 14.592 13.6478 14.75 13.25 14.75H2.75C2.35218 14.75 1.97064 14.592 1.68934 14.3107C1.40804 14.0294 1.25 13.6478 1.25 13.25V10.25M11.75 5L8 1.25M8 1.25L4.25 5M8 1.25V10.25" stroke="#CEFFA8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
@@ -2861,7 +2861,7 @@ $(document).ready(function() {
 <li>
     <span>Accounting & Taxation / Charter documents / Incorporation / Certificate of incorporation</span>
     <button data-bs-toggle="modal" data-bs-target="#common_file_upload_pop"
-            data-location="Accounting & Taxation / Charter documents / Incorporation"
+            data-location="2024-2025November301_Accounting & Taxation/2024-2025November301_Charter Documents/2024-2025November301_Incorporation"
             data-real-file-name="Certificate of incorporation">
     <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
         <path d="M14.75 10.25V13.25C14.75 13.6478 14.592 14.0294 14.3107 14.3107C14.0294 14.592 13.6478 14.75 13.25 14.75H2.75C2.35218 14.75 1.97064 14.592 1.68934 14.3107C1.40804 14.0294 1.25 13.6478 1.25 13.25V10.25M11.75 5L8 1.25M8 1.25L4.25 5M8 1.25V10.25" stroke="#CEFFA8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
@@ -2872,7 +2872,7 @@ $(document).ready(function() {
 <li>
     <span>Accounting & Taxation / Charter documents / Incorporation / Partnership deed</span>
     <button data-bs-toggle="modal" data-bs-target="#common_file_upload_pop"
-            data-location="Accounting & Taxation / Charter documents / Incorporation"
+            data-location="2024-2025November301_Accounting & Taxation/2024-2025November301_Charter Documents/2024-2025November301_Incorporation"
             data-real-file-name="Partnership deed">
     <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
         <path d="M14.75 10.25V13.25C14.75 13.6478 14.592 14.0294 14.3107 14.3107C14.0294 14.592 13.6478 14.75 13.25 14.75H2.75C2.35218 14.75 1.97064 14.592 1.68934 14.3107C1.40804 14.0294 1.25 13.6478 1.25 13.25V10.25M11.75 5L8 1.25M8 1.25L4.25 5M8 1.25V10.25" stroke="#CEFFA8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
@@ -2883,7 +2883,7 @@ $(document).ready(function() {
 <li>
     <span>Accounting & Taxation / Charter documents / Incorporation / LLP Agreement</span>
     <button data-bs-toggle="modal" data-bs-target="#common_file_upload_pop"
-            data-location="Accounting & Taxation / Charter documents / Incorporation"
+            data-location="2024-2025November301_Accounting & Taxation/2024-2025November301_Charter Documents/2024-2025November301_Incorporation"
             data-real-file-name="LLP Agreement">
     <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
         <path d="M14.75 10.25V13.25C14.75 13.6478 14.592 14.0294 14.3107 14.3107C14.0294 14.592 13.6478 14.75 13.25 14.75H2.75C2.35218 14.75 1.97064 14.592 1.68934 14.3107C1.40804 14.0294 1.25 13.6478 1.25 13.25V10.25M11.75 5L8 1.25M8 1.25L4.25 5M8 1.25V10.25" stroke="#CEFFA8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
@@ -2894,7 +2894,7 @@ $(document).ready(function() {
 <li>
     <span>Accounting & Taxation / Charter documents / Incorporation / Trust Deed</span>
     <button data-bs-toggle="modal" data-bs-target="#common_file_upload_pop"
-            data-location="Accounting & Taxation / Charter documents / Incorporation"
+            data-location="2024-2025November301_Accounting & Taxation/2024-2025November301_Charter Documents/2024-2025November301_Incorporation"
             data-real-file-name="Trust Deed">
     <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
         <path d="M14.75 10.25V13.25C14.75 13.6478 14.592 14.0294 14.3107 14.3107C14.0294 14.592 13.6478 14.75 13.25 14.75H2.75C2.35218 14.75 1.97064 14.592 1.68934 14.3107C1.40804 14.0294 1.25 13.6478 1.25 13.25V10.25M11.75 5L8 1.25M8 1.25L4.25 5M8 1.25V10.25" stroke="#CEFFA8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
@@ -2905,7 +2905,7 @@ $(document).ready(function() {
 <li>
     <span>Accounting & Taxation / Charter documents / Incorporation / Share certificates</span>
     <button data-bs-toggle="modal" data-bs-target="#common_file_upload_pop"
-            data-location="Accounting & Taxation / Charter documents / Incorporation"
+            data-location="2024-2025November301_Accounting & Taxation/2024-2025November301_Charter Documents/2024-2025November301_Incorporation"
             data-real-file-name="Share certificates">
     <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
         <path d="M14.75 10.25V13.25C14.75 13.6478 14.592 14.0294 14.3107 14.3107C14.0294 14.592 13.6478 14.75 13.25 14.75H2.75C2.35218 14.75 1.97064 14.592 1.68934 14.3107C1.40804 14.0294 1.25 13.6478 1.25 13.25V10.25M11.75 5L8 1.25M8 1.25L4.25 5M8 1.25V10.25" stroke="#CEFFA8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
@@ -2916,7 +2916,7 @@ $(document).ready(function() {
 <li>
     <span>Accounting & Taxation / Charter documents / Registrations / PAN certificate</span>
     <button data-bs-toggle="modal" data-bs-target="#common_file_upload_pop"
-            data-location="Accounting & Taxation / Charter documents / Registrations"
+            data-location="2024-2025November301_Accounting & Taxation/2024-2025November301_Charter Documents/2024-2025November301_Registrations"
             data-real-file-name="PAN certificate">
     <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
         <path d="M14.75 10.25V13.25C14.75 13.6478 14.592 14.0294 14.3107 14.3107C14.0294 14.592 13.6478 14.75 13.25 14.75H2.75C2.35218 14.75 1.97064 14.592 1.68934 14.3107C1.40804 14.0294 1.25 13.6478 1.25 13.25V10.25M11.75 5L8 1.25M8 1.25L4.25 5M8 1.25V10.25" stroke="#CEFFA8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
@@ -2928,7 +2928,7 @@ $(document).ready(function() {
 <li>
     <span>Accounting & Taxation / Charter documents / Registrations / TAN certificate</span>
     <button data-bs-toggle="modal" data-bs-target="#common_file_upload_pop"
-            data-location="Accounting & Taxation / Charter documents / Registrations"
+            data-location="2024-2025November301_Accounting & Taxation/2024-2025November301_Charter Documents/2024-2025November301_Registrations"
             data-real-file-name="TAN certificate">
     <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
         <path d="M14.75 10.25V13.25C14.75 13.6478 14.592 14.0294 14.3107 14.3107C14.0294 14.592 13.6478 14.75 13.25 14.75H2.75C2.35218 14.75 1.97064 14.592 1.68934 14.3107C1.40804 14.0294 1.25 13.6478 1.25 13.25V10.25M11.75 5L8 1.25M8 1.25L4.25 5M8 1.25V10.25" stroke="#CEFFA8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
@@ -2939,7 +2939,7 @@ $(document).ready(function() {
 <li>
     <span>Accounting & Taxation / Charter documents / Registrations / GSTIN certificate</span>
     <button data-bs-toggle="modal" data-bs-target="#common_file_upload_pop"
-            data-location="Accounting & Taxation / Charter documents / Registrations"
+            data-location="2024-2025November301_Accounting & Taxation/2024-2025November301_Charter Documents/2024-2025November301_Registrations"
             data-real-file-name="GSTIN certificate">
     <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
         <path d="M14.75 10.25V13.25C14.75 13.6478 14.592 14.0294 14.3107 14.3107C14.0294 14.592 13.6478 14.75 13.25 14.75H2.75C2.35218 14.75 1.97064 14.592 1.68934 14.3107C1.40804 14.0294 1.25 13.6478 1.25 13.25V10.25M11.75 5L8 1.25M8 1.25L4.25 5M8 1.25V10.25" stroke="#CEFFA8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
@@ -2950,7 +2950,7 @@ $(document).ready(function() {
 <li>
     <span>Accounting & Taxation / Charter documents / Registrations / MSME certificate</span>
     <button data-bs-toggle="modal" data-bs-target="#common_file_upload_pop"
-            data-location="Accounting & Taxation / Charter documents / Registrations"
+            data-location="2024-2025November301_Accounting & Taxation/2024-2025November301_Charter Documents/2024-2025November301_Registrations"
             data-real-file-name="MSME certificate">
     <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
         <path d="M14.75 10.25V13.25C14.75 13.6478 14.592 14.0294 14.3107 14.3107C14.0294 14.592 13.6478 14.75 13.25 14.75H2.75C2.35218 14.75 1.97064 14.592 1.68934 14.3107C1.40804 14.0294 1.25 13.6478 1.25 13.25V10.25M11.75 5L8 1.25M8 1.25L4.25 5M8 1.25V10.25" stroke="#CEFFA8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
@@ -2961,7 +2961,7 @@ $(document).ready(function() {
 <li>
     <span>Accounting & Taxation / Charter documents / Registrations / Trademark</span>
     <button data-bs-toggle="modal" data-bs-target="#common_file_upload_pop"
-            data-location="Accounting & Taxation / Charter documents / Registrations"
+            data-location="2024-2025November301_Accounting & Taxation/2024-2025November301_Charter Documents/2024-2025November301_Registrations"
             data-real-file-name="Trademark">
     <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
         <path d="M14.75 10.25V13.25C14.75 13.6478 14.592 14.0294 14.3107 14.3107C14.0294 14.592 13.6478 14.75 13.25 14.75H2.75C2.35218 14.75 1.97064 14.592 1.68934 14.3107C1.40804 14.0294 1.25 13.6478 1.25 13.25V10.25M11.75 5L8 1.25M8 1.25L4.25 5M8 1.25V10.25" stroke="#CEFFA8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
@@ -2972,7 +2972,7 @@ $(document).ready(function() {
 <li>
     <span>Accounting & Taxation / Charter documents / Registrations / Provident Fund certificate</span>
     <button data-bs-toggle="modal" data-bs-target="#common_file_upload_pop"
-            data-location="Accounting & Taxation / Charter documents / Registrations"
+            data-location="2024-2025November301_Accounting & Taxation/2024-2025November301_Charter Documents/2024-2025November301_Registrations"
             data-real-file-name="Provident Fund certificate">
     <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
         <path d="M14.75 10.25V13.25C14.75 13.6478 14.592 14.0294 14.3107 14.3107C14.0294 14.592 13.6478 14.75 13.25 14.75H2.75C2.35218 14.75 1.97064 14.592 1.68934 14.3107C1.40804 14.0294 1.25 13.6478 1.25 13.25V10.25M11.75 5L8 1.25M8 1.25L4.25 5M8 1.25V10.25" stroke="#CEFFA8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
@@ -2983,7 +2983,7 @@ $(document).ready(function() {
 <li>
     <span>Accounting & Taxation / Charter documents / Registrations / Employee State Insurance certificate</span>
     <button data-bs-toggle="modal" data-bs-target="#common_file_upload_pop"
-            data-location="Accounting & Taxation / Charter documents / Registrations"
+            data-location="2024-2025November301_Accounting & Taxation/2024-2025November301_Charter Documents/2024-2025November301_Registrations"
             data-real-file-name="Employee State Insurance certificate">
     <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
         <path d="M14.75 10.25V13.25C14.75 13.6478 14.592 14.0294 14.3107 14.3107C14.0294 14.592 13.6478 14.75 13.25 14.75H2.75C2.35218 14.75 1.97064 14.592 1.68934 14.3107C1.40804 14.0294 1.25 13.6478 1.25 13.25V10.25M11.75 5L8 1.25M8 1.25L4.25 5M8 1.25V10.25" stroke="#CEFFA8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
@@ -2994,7 +2994,7 @@ $(document).ready(function() {
 <li>
     <span>Accounting & Taxation / Charter documents / Registrations / Professional Tax certificate</span>
     <button data-bs-toggle="modal" data-bs-target="#common_file_upload_pop"
-            data-location="Accounting & Taxation / Charter documents / Registrations"
+            data-location="2024-2025November301_Accounting & Taxation/2024-2025November301_Charter Documents/2024-2025November301_Registrations"
             data-real-file-name="Professional Tax certificate">
     <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
         <path d="M14.75 10.25V13.25C14.75 13.6478 14.592 14.0294 14.3107 14.3107C14.0294 14.592 13.6478 14.75 13.25 14.75H2.75C2.35218 14.75 1.97064 14.592 1.68934 14.3107C1.40804 14.0294 1.25 13.6478 1.25 13.25V10.25M11.75 5L8 1.25M8 1.25L4.25 5M8 1.25V10.25" stroke="#CEFFA8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
@@ -3006,7 +3006,7 @@ $(document).ready(function() {
 <li>
     <span>Accounting & Taxation / Charter documents / Registrations / Labour Welfare Fund certificate</span>
     <button data-bs-toggle="modal" data-bs-target="#common_file_upload_pop"
-            data-location="Accounting & Taxation / Charter documents / Registrations"
+            data-location="2024-2025November301_Accounting & Taxation/2024-2025November301_Charter Documents/2024-2025November301_Registrations"
             data-real-file-name="Labour Welfare Fund certificate">
     <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
         <path d="M14.75 10.25V13.25C14.75 13.6478 14.592 14.0294 14.3107 14.3107C14.0294 14.592 13.6478 14.75 13.25 14.75H2.75C2.35218 14.75 1.97064 14.592 1.68934 14.3107C1.40804 14.0294 1.25 13.6478 1.25 13.25V10.25M11.75 5L8 1.25M8 1.25L4.25 5M8 1.25V10.25" stroke="#CEFFA8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
@@ -3017,7 +3017,7 @@ $(document).ready(function() {
 <li>
     <span>Accounting & Taxation / Charter documents / Registrations / POSH Policy</span>
     <button data-bs-toggle="modal" data-bs-target="#common_file_upload_pop"
-            data-location="Accounting & Taxation / Charter documents / Registrations"
+            data-location="2024-2025November301_Accounting & Taxation/2024-2025November301_Charter Documents/2024-2025November301_Registrations"
             data-real-file-name="POSH Policy">
     <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
         <path d="M14.75 10.25V13.25C14.75 13.6478 14.592 14.0294 14.3107 14.3107C14.0294 14.592 13.6478 14.75 13.25 14.75H2.75C2.35218 14.75 1.97064 14.592 1.68934 14.3107C1.40804 14.0294 1.25 13.6478 1.25 13.25V10.25M11.75 5L8 1.25M8 1.25L4.25 5M8 1.25V10.25" stroke="#CEFFA8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
@@ -3029,7 +3029,7 @@ $(document).ready(function() {
 <li>
     <span>Legal / Secretarial / Annual Filings / AoC-4 (Annual Filing Statement Form)</span>
     <button data-bs-toggle="modal" data-bs-target="#common_file_upload_pop"
-            data-location="Legal / Secretarial / Annual Filings"
+            data-location="2024-2025November301_Legal/2024-2025November301_Secretarial/2024-2025November301_Annual Filings"
             data-real-file-name="AoC-4 (Annual Filing Statement Form)">
     <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
         <path d="M14.75 10.25V13.25C14.75 13.6478 14.592 14.0294 14.3107 14.3107C14.0294 14.592 13.6478 14.75 13.25 14.75H2.75C2.35218 14.75 1.97064 14.592 1.68934 14.3107C1.40804 14.0294 1.25 13.6478 1.25 13.25V10.25M11.75 5L8 1.25M8 1.25L4.25 5M8 1.25V10.25" stroke="#CEFFA8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
@@ -3041,7 +3041,7 @@ $(document).ready(function() {
 <li>
     <span>Legal / Secretarial / Annual Filings / AoC-4 (CFS) (Form for filing consolidated financial statements and other documents with the Registrar)</span>
     <button data-bs-toggle="modal" data-bs-target="#common_file_upload_pop"
-            data-location="Legal / Secretarial / Annual Filings"
+            data-location="2024-2025November301_Legal/2024-2025November301_Secretarial/2024-2025November301_Annual Filings"
             data-real-file-name="AoC-4 (CFS) (Form for filing consolidated financial statements and other documents with the Registrar)">
     <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
         <path d="M14.75 10.25V13.25C14.75 13.6478 14.592 14.0294 14.3107 14.3107C14.0294 14.592 13.6478 14.75 13.25 14.75H2.75C2.35218 14.75 1.97064 14.592 1.68934 14.3107C1.40804 14.0294 1.25 13.6478 1.25 13.25V10.25M11.75 5L8 1.25M8 1.25L4.25 5M8 1.25V10.25" stroke="#CEFFA8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
@@ -3052,7 +3052,7 @@ $(document).ready(function() {
 <li>
     <span>Legal / Secretarial / Annual Filings / MGT-7/ (Annual Return of a company)</span>
     <button data-bs-toggle="modal" data-bs-target="#common_file_upload_pop"
-            data-location="Legal / Secretarial / Annual Filings"
+            data-location="2024-2025November301_Legal/2024-2025November301_Secretarial/2024-2025November301_Annual Filings"
             data-real-file-name="MGT-7/ (Annual Return of a company)">
     <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
         <path d="M14.75 10.25V13.25C14.75 13.6478 14.592 14.0294 14.3107 14.3107C14.0294 14.592 13.6478 14.75 13.25 14.75H2.75C2.35218 14.75 1.97064 14.592 1.68934 14.3107C1.40804 14.0294 1.25 13.6478 1.25 13.25V10.25M11.75 5L8 1.25M8 1.25L4.25 5M8 1.25V10.25" stroke="#CEFFA8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
@@ -3063,7 +3063,7 @@ $(document).ready(function() {
 <li>
     <span>Legal / Secretarial / Annual Filings / MGT-7A (Annual Return of a small company)</span>
     <button data-bs-toggle="modal" data-bs-target="#common_file_upload_pop"
-            data-location="Legal / Secretarial / Annual Filings"
+            data-location="2024-2025November301_Legal/2024-2025November301_Secretarial/2024-2025November301_Annual Filings"
             data-real-file-name="MGT-7A (Annual Return of a small company)">
     <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
         <path d="M14.75 10.25V13.25C14.75 13.6478 14.592 14.0294 14.3107 14.3107C14.0294 14.592 13.6478 14.75 13.25 14.75H2.75C2.35218 14.75 1.97064 14.592 1.68934 14.3107C1.40804 14.0294 1.25 13.6478 1.25 13.25V10.25M11.75 5L8 1.25M8 1.25L4.25 5M8 1.25V10.25" stroke="#CEFFA8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
@@ -3074,7 +3074,7 @@ $(document).ready(function() {
 <li>
     <span>Legal / Secretarial / Annual General Meeting / Notices</span>
     <button data-bs-toggle="modal" data-bs-target="#common_file_upload_pop"
-            data-location="Legal / Secretarial / Annual General Meeting"
+            data-location="2024-2025November301_Legal/2024-2025November301_Secretarial/2024-2025November301_Annual General Meeting"
             data-real-file-name="Notices">
     <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
         <path d="M14.75 10.25V13.25C14.75 13.6478 14.592 14.0294 14.3107 14.3107C14.0294 14.592 13.6478 14.75 13.25 14.75H2.75C2.35218 14.75 1.97064 14.592 1.68934 14.3107C1.40804 14.0294 1.25 13.6478 1.25 13.25V10.25M11.75 5L8 1.25M8 1.25L4.25 5M8 1.25V10.25" stroke="#CEFFA8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
@@ -3085,7 +3085,7 @@ $(document).ready(function() {
 <li>
     <span>Legal / Secretarial / Annual General Meeting / Minute Book</span>
     <button data-bs-toggle="modal" data-bs-target="#common_file_upload_pop"
-            data-location="Legal / Secretarial / Annual General Meeting"
+            data-location="2024-2025November301_Legal/2024-2025November301_Secretarial/2024-2025November301_Annual General Meeting"
             data-real-file-name="Minute Book">
     <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
         <path d="M14.75 10.25V13.25C14.75 13.6478 14.592 14.0294 14.3107 14.3107C14.0294 14.592 13.6478 14.75 13.25 14.75H2.75C2.35218 14.75 1.97064 14.592 1.68934 14.3107C1.40804 14.0294 1.25 13.6478 1.25 13.25V10.25M11.75 5L8 1.25M8 1.25L4.25 5M8 1.25V10.25" stroke="#CEFFA8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
@@ -3096,7 +3096,7 @@ $(document).ready(function() {
 <li>
     <span>Legal / Secretarial / Annual General Meeting / Attendance sheet</span>
     <button data-bs-toggle="modal" data-bs-target="#common_file_upload_pop"
-            data-location="Legal / Secretarial / Annual General Meeting"
+            data-location="2024-2025November301_Legal/2024-2025November301_Secretarial/2024-2025November301_Annual General Meeting"
             data-real-file-name="Attendance sheet">
     <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
         <path d="M14.75 10.25V13.25C14.75 13.6478 14.592 14.0294 14.3107 14.3107C14.0294 14.592 13.6478 14.75 13.25 14.75H2.75C2.35218 14.75 1.97064 14.592 1.68934 14.3107C1.40804 14.0294 1.25 13.6478 1.25 13.25V10.25M11.75 5L8 1.25M8 1.25L4.25 5M8 1.25V10.25" stroke="#CEFFA8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
@@ -3107,7 +3107,7 @@ $(document).ready(function() {
 <li>
     <span>Legal / Secretarial / Annual General Meeting / Resolutions</span>
     <button data-bs-toggle="modal" data-bs-target="#common_file_upload_pop"
-            data-location="Legal / Secretarial / Annual General Meeting"
+            data-location="2024-2025November301_Legal/2024-2025November301_Secretarial/2024-2025November301_Annual General Meeting"
             data-real-file-name="Resolutions">
     <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
         <path d="M14.75 10.25V13.25C14.75 13.6478 14.592 14.0294 14.3107 14.3107C14.0294 14.592 13.6478 14.75 13.25 14.75H2.75C2.35218 14.75 1.97064 14.592 1.68934 14.3107C1.40804 14.0294 1.25 13.6478 1.25 13.25V10.25M11.75 5L8 1.25M8 1.25L4.25 5M8 1.25V10.25" stroke="#CEFFA8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
@@ -3118,7 +3118,7 @@ $(document).ready(function() {
 <li>
     <span>Legal / Secretarial / Auditor Appointment / Board Resolution for the appointment of Auditor</span>
     <button data-bs-toggle="modal" data-bs-target="#common_file_upload_pop"
-            data-location="Legal / Secretarial / Auditor Appointment"
+            data-location="2024-2025November301_Legal/2024-2025November301_Secretarial/2024-2025November301_Auditor Appointments"
             data-real-file-name="Board Resolution for the appointment of Auditor">
     <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
         <path d="M14.75 10.25V13.25C14.75 13.6478 14.592 14.0294 14.3107 14.3107C14.0294 14.592 13.6478 14.75 13.25 14.75H2.75C2.35218 14.75 1.97064 14.592 1.68934 14.3107C1.40804 14.0294 1.25 13.6478 1.25 13.25V10.25M11.75 5L8 1.25M8 1.25L4.25 5M8 1.25V10.25" stroke="#CEFFA8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
@@ -3129,7 +3129,7 @@ $(document).ready(function() {
 <li>
     <span>Legal / Secretarial / Auditor Appointment / Intimation to auditor</span>
     <button data-bs-toggle="modal" data-bs-target="#common_file_upload_pop"
-            data-location="Legal / Secretarial / Auditor Appointment"
+            data-location="2024-2025November301_Legal/2024-2025November301_Secretarial/2024-2025November301_Auditor Appointments"
             data-real-file-name="Intimation to auditor">
     <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
         <path d="M14.75 10.25V13.25C14.75 13.6478 14.592 14.0294 14.3107 14.3107C14.0294 14.592 13.6478 14.75 13.25 14.75H2.75C2.35218 14.75 1.97064 14.592 1.68934 14.3107C1.40804 14.0294 1.25 13.6478 1.25 13.25V10.25M11.75 5L8 1.25M8 1.25L4.25 5M8 1.25V10.25" stroke="#CEFFA8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
@@ -3140,7 +3140,7 @@ $(document).ready(function() {
 <li>
     <span>Legal / Secretarial / Auditor Appointment / Letter of appointment</span>
     <button data-bs-toggle="modal" data-bs-target="#common_file_upload_pop"
-            data-location="Legal / Secretarial / Auditor Appointment"
+            data-location="2024-2025November301_Legal/2024-2025November301_Secretarial/2024-2025November301_Auditor Appointments"
             data-real-file-name="Letter of appointment">
     <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
         <path d="M14.75 10.25V13.25C14.75 13.6478 14.592 14.0294 14.3107 14.3107C14.0294 14.592 13.6478 14.75 13.25 14.75H2.75C2.35218 14.75 1.97064 14.592 1.68934 14.3107C1.40804 14.0294 1.25 13.6478 1.25 13.25V10.25M11.75 5L8 1.25M8 1.25L4.25 5M8 1.25V10.25" stroke="#CEFFA8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
@@ -3151,7 +3151,7 @@ $(document).ready(function() {
 <li>
     <span>Legal / Secretarial / Auditor Appointment / Certificate as per Rule 4 and consent by Auditor for his appointment</span>
     <button data-bs-toggle="modal" data-bs-target="#common_file_upload_pop"
-            data-location="Legal / Secretarial / Auditor Appointment"
+            data-location="2024-2025November301_Legal/2024-2025November301_Secretarial/2024-2025November301_Auditor Appointments"
             data-real-file-name="Certificate as per Rule 4 and consent by Auditor for his appointment">
     <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
         <path d="M14.75 10.25V13.25C14.75 13.6478 14.592 14.0294 14.3107 14.3107C14.0294 14.592 13.6478 14.75 13.25 14.75H2.75C2.35218 14.75 1.97064 14.592 1.68934 14.3107C1.40804 14.0294 1.25 13.6478 1.25 13.25V10.25M11.75 5L8 1.25M8 1.25L4.25 5M8 1.25V10.25" stroke="#CEFFA8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
@@ -3163,7 +3163,7 @@ $(document).ready(function() {
 <li>
     <span>Legal / Secretarial / Auditor Appointment / Acceptance letter for appointment</span>
     <button data-bs-toggle="modal" data-bs-target="#common_file_upload_pop"
-            data-location="Legal / Secretarial / Auditor Appointment"
+            data-location="2024-2025November301_Legal/2024-2025November301_Secretarial/2024-2025November301_Auditor Appointments"
             data-real-file-name="Acceptance letter for appointment">
     <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
         <path d="M14.75 10.25V13.25C14.75 13.6478 14.592 14.0294 14.3107 14.3107C14.0294 14.592 13.6478 14.75 13.25 14.75H2.75C2.35218 14.75 1.97064 14.592 1.68934 14.3107C1.40804 14.0294 1.25 13.6478 1.25 13.25V10.25M11.75 5L8 1.25M8 1.25L4.25 5M8 1.25V10.25" stroke="#CEFFA8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
@@ -3175,7 +3175,7 @@ $(document).ready(function() {
 <li>
     <span>Legal / Secretarial / Auditor Appointment / Special Resolution</span>
     <button data-bs-toggle="modal" data-bs-target="#common_file_upload_pop"
-            data-location="Legal / Secretarial / Auditor Appointment"
+            data-location="2024-2025November301_Legal/2024-2025November301_Secretarial/2024-2025November301_Auditor Appointments"
             data-real-file-name="Special Resolution">
     <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
         <path d="M14.75 10.25V13.25C14.75 13.6478 14.592 14.0294 14.3107 14.3107C14.0294 14.592 13.6478 14.75 13.25 14.75H2.75C2.35218 14.75 1.97064 14.592 1.68934 14.3107C1.40804 14.0294 1.25 13.6478 1.25 13.25V10.25M11.75 5L8 1.25M8 1.25L4.25 5M8 1.25V10.25" stroke="#CEFFA8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
@@ -3186,7 +3186,7 @@ $(document).ready(function() {
 <li>
     <span>Legal / Secretarial / Auditor Exits / ADT-3 form</span>
     <button data-bs-toggle="modal" data-bs-target="#common_file_upload_pop"
-            data-location="Legal / Secretarial / Auditor Exits"
+            data-location="2024-2025November301_Legal/2024-2025November301_Secretarial/2024-2025November301_Auditor Exits"
             data-real-file-name="ADT-3 form">
     <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
         <path d="M14.75 10.25V13.25C14.75 13.6478 14.592 14.0294 14.3107 14.3107C14.0294 14.592 13.6478 14.75 13.25 14.75H2.75C2.35218 14.75 1.97064 14.592 1.68934 14.3107C1.40804 14.0294 1.25 13.6478 1.25 13.25V10.25M11.75 5L8 1.25M8 1.25L4.25 5M8 1.25V10.25" stroke="#CEFFA8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
@@ -3197,7 +3197,7 @@ $(document).ready(function() {
 <li>
     <span>Legal / Secretarial / Auditor Exits / Resignation letter by auditor</span>
     <button data-bs-toggle="modal" data-bs-target="#common_file_upload_pop"
-            data-location="Legal / Secretarial / Auditor Exits"
+            data-location="2024-2025November301_Legal/2024-2025November301_Secretarial/2024-2025November301_Auditor Exits"
             data-real-file-name="Resignation letter by auditor">
     <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
         <path d="M14.75 10.25V13.25C14.75 13.6478 14.592 14.0294 14.3107 14.3107C14.0294 14.592 13.6478 14.75 13.25 14.75H2.75C2.35218 14.75 1.97064 14.592 1.68934 14.3107C1.40804 14.0294 1.25 13.6478 1.25 13.25V10.25M11.75 5L8 1.25M8 1.25L4.25 5M8 1.25V10.25" stroke="#CEFFA8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
@@ -3208,7 +3208,7 @@ $(document).ready(function() {
 <li>
     <span>Legal / Secretarial / Auditor Exits / Details of the grounds for seeking removal of auditor</span>
     <button data-bs-toggle="modal" data-bs-target="#common_file_upload_pop"
-            data-location="Legal / Secretarial / Auditor Exits"
+            data-location="2024-2025November301_Legal/2024-2025November301_Secretarial/2024-2025November301_Auditor Exits"
             data-real-file-name="Details of the grounds for seeking removal of auditor">
     <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
         <path d="M14.75 10.25V13.25C14.75 13.6478 14.592 14.0294 14.3107 14.3107C14.0294 14.592 13.6478 14.75 13.25 14.75H2.75C2.35218 14.75 1.97064 14.592 1.68934 14.3107C1.40804 14.0294 1.25 13.6478 1.25 13.25V10.25M11.75 5L8 1.25M8 1.25L4.25 5M8 1.25V10.25" stroke="#CEFFA8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
@@ -3219,7 +3219,7 @@ $(document).ready(function() {
 <li>
     <span>Legal / Secretarial / Auditor Exits / Special Resolution</span>
     <button data-bs-toggle="modal" data-bs-target="#common_file_upload_pop"
-            data-location="Legal / Secretarial / Auditor Exits"
+            data-location="2024-2025November301_Legal/2024-2025November301_Secretarial/2024-2025November301_Auditor Exits"
             data-real-file-name="Special Resolution">
     <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
         <path d="M14.75 10.25V13.25C14.75 13.6478 14.592 14.0294 14.3107 14.3107C14.0294 14.592 13.6478 14.75 13.25 14.75H2.75C2.35218 14.75 1.97064 14.592 1.68934 14.3107C1.40804 14.0294 1.25 13.6478 1.25 13.25V10.25M11.75 5L8 1.25M8 1.25L4.25 5M8 1.25V10.25" stroke="#CEFFA8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
@@ -3230,7 +3230,7 @@ $(document).ready(function() {
 <li>
     <span>Legal / Secretarial / Auditor Exits / ADT-2 (Application for removal of auditor(s) before expiry of term)</span>
     <button data-bs-toggle="modal" data-bs-target="#common_file_upload_pop"
-            data-location="Legal / Secretarial / Auditor Exits"
+            data-location="2024-2025November301_Legal/2024-2025November301_Secretarial/2024-2025November301_Auditor Exits"
             data-real-file-name="ADT-2 (Application for removal of auditor(s) before expiry of term)">
     <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
         <path d="M14.75 10.25V13.25C14.75 13.6478 14.592 14.0294 14.3107 14.3107C14.0294 14.592 13.6478 14.75 13.25 14.75H2.75C2.35218 14.75 1.97064 14.592 1.68934 14.3107C1.40804 14.0294 1.25 13.6478 1.25 13.25V10.25M11.75 5L8 1.25M8 1.25L4.25 5M8 1.25V10.25" stroke="#CEFFA8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
@@ -3241,7 +3241,7 @@ $(document).ready(function() {
 <li>
     <span>Legal / Secretarial / Board Meetings / Notices</span>
     <button data-bs-toggle="modal" data-bs-target="#common_file_upload_pop"
-            data-location="Legal / Secretarial / Board Meetings"
+            data-location="2024-2025November301_Legal/2024-2025November301_Secretarial/2024-2025November301_Board Meetings"
             data-real-file-name="Notices">
     <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
         <path d="M14.75 10.25V13.25C14.75 13.6478 14.592 14.0294 14.3107 14.3107C14.0294 14.592 13.6478 14.75 13.25 14.75H2.75C2.35218 14.75 1.97064 14.592 1.68934 14.3107C1.40804 14.0294 1.25 13.6478 1.25 13.25V10.25M11.75 5L8 1.25M8 1.25L4.25 5M8 1.25V10.25" stroke="#CEFFA8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
@@ -3252,7 +3252,7 @@ $(document).ready(function() {
 <li>
     <span>Legal / Secretarial / Board Meetings / Minute Book</span>
     <button data-bs-toggle="modal" data-bs-target="#common_file_upload_pop"
-            data-location="Legal / Secretarial / Board Meetings"
+            data-location="2024-2025November301_Legal/2024-2025November301_Secretarial/2024-2025November301_Board Meetings"
             data-real-file-name="Minute Book">
     <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
         <path d="M14.75 10.25V13.25C14.75 13.6478 14.592 14.0294 14.3107 14.3107C14.0294 14.592 13.6478 14.75 13.25 14.75H2.75C2.35218 14.75 1.97064 14.592 1.68934 14.3107C1.40804 14.0294 1.25 13.6478 1.25 13.25V10.25M11.75 5L8 1.25M8 1.25L4.25 5M8 1.25V10.25" stroke="#CEFFA8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
@@ -3263,7 +3263,7 @@ $(document).ready(function() {
 <li>
     <span>Legal / Secretarial / Board Meetings / Attendance sheet</span>
     <button data-bs-toggle="modal" data-bs-target="#common_file_upload_pop"
-            data-location="Legal / Secretarial / Board Meetings"
+            data-location="2024-2025November301_Legal/2024-2025November301_Secretarial/2024-2025November301_Board Meetings"
             data-real-file-name="Attendance sheet">
     <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
         <path d="M14.75 10.25V13.25C14.75 13.6478 14.592 14.0294 14.3107 14.3107C14.0294 14.592 13.6478 14.75 13.25 14.75H2.75C2.35218 14.75 1.97064 14.592 1.68934 14.3107C1.40804 14.0294 1.25 13.6478 1.25 13.25V10.25M11.75 5L8 1.25M8 1.25L4.25 5M8 1.25V10.25" stroke="#CEFFA8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
@@ -3275,7 +3275,7 @@ $(document).ready(function() {
 <li>
     <span>Legal / Secretarial / Board Meetings / Resolutions</span>
     <button data-bs-toggle="modal" data-bs-target="#common_file_upload_pop"
-            data-location="Legal / Secretarial / Board Meetings"
+            data-location="2024-2025November301_Legal/2024-2025November301_Secretarial/2024-2025November301_Board Meetings"
             data-real-file-name="Resolutions">
     <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
         <path d="M14.75 10.25V13.25C14.75 13.6478 14.592 14.0294 14.3107 14.3107C14.0294 14.592 13.6478 14.75 13.25 14.75H2.75C2.35218 14.75 1.97064 14.592 1.68934 14.3107C1.40804 14.0294 1.25 13.6478 1.25 13.25V10.25M11.75 5L8 1.25M8 1.25L4.25 5M8 1.25V10.25" stroke="#CEFFA8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
@@ -3286,7 +3286,7 @@ $(document).ready(function() {
 <li>
     <span>Legal / Secretarial / Deposit Undertakings /Form DPT-3</span>
     <button data-bs-toggle="modal" data-bs-target="#common_file_upload_pop"
-            data-location="Legal / Secretarial / Deposit Undertakings"
+            data-location="2024-2025November301_Legal/2024-2025November301_Secretarial/2024-2025November301_Deposit Undertakings"
             data-real-file-name="Form DPT-3">
     <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
         <path d="M14.75 10.25V13.25C14.75 13.6478 14.592 14.0294 14.3107 14.3107C14.0294 14.592 13.6478 14.75 13.25 14.75H2.75C2.35218 14.75 1.97064 14.592 1.68934 14.3107C1.40804 14.0294 1.25 13.6478 1.25 13.25V10.25M11.75 5L8 1.25M8 1.25L4.25 5M8 1.25V10.25" stroke="#CEFFA8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
@@ -3297,7 +3297,7 @@ $(document).ready(function() {
 <li>
     <span>Legal / Secretarial / Director Appointments / DIR-3 form/ DIN number</span>
     <button data-bs-toggle="modal" data-bs-target="#common_file_upload_pop"
-            data-location="Legal / Secretarial / Director Appointments"
+            data-location="2024-2025November301_Legal/2024-2025November301_Secretarial/2024-2025November301_Director Appointments"
             data-real-file-name="DIR-3 form/ DIN number">
     <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
         <path d="M14.75 10.25V13.25C14.75 13.6478 14.592 14.0294 14.3107 14.3107C14.0294 14.592 13.6478 14.75 13.25 14.75H2.75C2.35218 14.75 1.97064 14.592 1.68934 14.3107C1.40804 14.0294 1.25 13.6478 1.25 13.25V10.25M11.75 5L8 1.25M8 1.25L4.25 5M8 1.25V10.25" stroke="#CEFFA8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
@@ -3308,7 +3308,7 @@ $(document).ready(function() {
 <li>
     <span>Legal / Secretarial / Director Appointments / DIR-3 KYC</span>
     <button data-bs-toggle="modal" data-bs-target="#common_file_upload_pop"
-            data-location="Legal / Secretarial / Director Appointments"
+            data-location="2024-2025November301_Legal/2024-2025November301_Secretarial/2024-2025November301_Director Appointments"
             data-real-file-name="DIR-3 KYC">
     <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
         <path d="M14.75 10.25V13.25C14.75 13.6478 14.592 14.0294 14.3107 14.3107C14.0294 14.592 13.6478 14.75 13.25 14.75H2.75C2.35218 14.75 1.97064 14.592 1.68934 14.3107C1.40804 14.0294 1.25 13.6478 1.25 13.25V10.25M11.75 5L8 1.25M8 1.25L4.25 5M8 1.25V10.25" stroke="#CEFFA8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
@@ -3319,7 +3319,7 @@ $(document).ready(function() {
 <li>
     <span>Legal / Secretarial / Director Appointments / DIR-6 form</span>
     <button data-bs-toggle="modal" data-bs-target="#common_file_upload_pop"
-            data-location="Legal / Secretarial / Director Appointments"
+            data-location="2024-2025November301_Legal/2024-2025November301_Secretarial/2024-2025November301_Director Appointments"
             data-real-file-name="DIR-6 form">
     <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
         <path d="M14.75 10.25V13.25C14.75 13.6478 14.592 14.0294 14.3107 14.3107C14.0294 14.592 13.6478 14.75 13.25 14.75H2.75C2.35218 14.75 1.97064 14.592 1.68934 14.3107C1.40804 14.0294 1.25 13.6478 1.25 13.25V10.25M11.75 5L8 1.25M8 1.25L4.25 5M8 1.25V10.25" stroke="#CEFFA8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
@@ -3331,7 +3331,7 @@ $(document).ready(function() {
 <li>
     <span>Legal / Secretarial / Director Appointments / DIR-12 form</span>
     <button data-bs-toggle="modal" data-bs-target="#common_file_upload_pop"
-            data-location="Legal / Secretarial / Director Appointments"
+            data-location="2024-2025November301_Legal/2024-2025November301_Secretarial/2024-2025November301_Director Appointments"
             data-real-file-name="DIR-12 form">
     <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
         <path d="M14.75 10.25V13.25C14.75 13.6478 14.592 14.0294 14.3107 14.3107C14.0294 14.592 13.6478 14.75 13.25 14.75H2.75C2.35218 14.75 1.97064 14.592 1.68934 14.3107C1.40804 14.0294 1.25 13.6478 1.25 13.25V10.25M11.75 5L8 1.25M8 1.25L4.25 5M8 1.25V10.25" stroke="#CEFFA8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
@@ -3342,7 +3342,7 @@ $(document).ready(function() {
 <li>
     <span>Legal / Secretarial / Director Resignation / DIR-11 form</span>
     <button data-bs-toggle="modal" data-bs-target="#common_file_upload_pop"
-            data-location="Legal / Secretarial / Director Resignation"
+            data-location="2024-2025November301_Legal/2024-2025November301_Secretarial/2024-2025November301_Director Resignation & Removal"
             data-real-file-name="DIR-11 form">
     <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
         <path d="M14.75 10.25V13.25C14.75 13.6478 14.592 14.0294 14.3107 14.3107C14.0294 14.592 13.6478 14.75 13.25 14.75H2.75C2.35218 14.75 1.97064 14.592 1.68934 14.3107C1.40804 14.0294 1.25 13.6478 1.25 13.25V10.25M11.75 5L8 1.25M8 1.25L4.25 5M8 1.25V10.25" stroke="#CEFFA8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
@@ -3353,7 +3353,7 @@ $(document).ready(function() {
 <li>
     <span>Legal / Secretarial / Director Resignation / DIR-12 form</span>
     <button data-bs-toggle="modal" data-bs-target="#common_file_upload_pop"
-            data-location="Legal / Secretarial / Director Resignation"
+            data-location="2024-2025November301_Legal/2024-2025November301_Secretarial/2024-2025November301_Director Resignation & Removal"
             data-real-file-name="DIR-12 form">
     <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
         <path d="M14.75 10.25V13.25C14.75 13.6478 14.592 14.0294 14.3107 14.3107C14.0294 14.592 13.6478 14.75 13.25 14.75H2.75C2.35218 14.75 1.97064 14.592 1.68934 14.3107C1.40804 14.0294 1.25 13.6478 1.25 13.25V10.25M11.75 5L8 1.25M8 1.25L4.25 5M8 1.25V10.25" stroke="#CEFFA8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
@@ -3365,7 +3365,7 @@ $(document).ready(function() {
 <li>
     <span>Legal / Secretarial / Extra Ordinary General Meeting / Notices</span>
     <button data-bs-toggle="modal" data-bs-target="#common_file_upload_pop"
-            data-location="Legal / Secretarial / Extra Ordinary General Meeting"
+            data-location="2024-2025November301_Legal/2024-2025November301_Secretarial/2024-2025November301_Extra Ordinary General Meeting"
             data-real-file-name="Notices">
     <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
         <path d="M14.75 10.25V13.25C14.75 13.6478 14.592 14.0294 14.3107 14.3107C14.0294 14.592 13.6478 14.75 13.25 14.75H2.75C2.35218 14.75 1.97064 14.592 1.68934 14.3107C1.40804 14.0294 1.25 13.6478 1.25 13.25V10.25M11.75 5L8 1.25M8 1.25L4.25 5M8 1.25V10.25" stroke="#CEFFA8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
@@ -3376,7 +3376,7 @@ $(document).ready(function() {
 <li>
     <span>Legal / Secretarial / Extra Ordinary General Meeting / Minute Book</span>
     <button data-bs-toggle="modal" data-bs-target="#common_file_upload_pop"
-            data-location="Legal / Secretarial / Extra Ordinary General Meeting"
+            data-location="2024-2025November301_Legal/2024-2025November301_Secretarial/2024-2025November301_Extra Ordinary General Meeting"
             data-real-file-name="Minute Book">
     <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
         <path d="M14.75 10.25V13.25C14.75 13.6478 14.592 14.0294 14.3107 14.3107C14.0294 14.592 13.6478 14.75 13.25 14.75H2.75C2.35218 14.75 1.97064 14.592 1.68934 14.3107C1.40804 14.0294 1.25 13.6478 1.25 13.25V10.25M11.75 5L8 1.25M8 1.25L4.25 5M8 1.25V10.25" stroke="#CEFFA8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
@@ -3387,7 +3387,7 @@ $(document).ready(function() {
 <li>
     <span>Legal / Secretarial / Extra Ordinary General Meeting / Attendance sheet</span>
     <button data-bs-toggle="modal" data-bs-target="#common_file_upload_pop"
-            data-location="Legal / Secretarial / Extra Ordinary General Meeting"
+            data-location="2024-2025November301_Legal/2024-2025November301_Secretarial/2024-2025November301_Extra Ordinary General Meeting"
             data-real-file-name="Attendance sheet">
     <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
         <path d="M14.75 10.25V13.25C14.75 13.6478 14.592 14.0294 14.3107 14.3107C14.0294 14.592 13.6478 14.75 13.25 14.75H2.75C2.35218 14.75 1.97064 14.592 1.68934 14.3107C1.40804 14.0294 1.25 13.6478 1.25 13.25V10.25M11.75 5L8 1.25M8 1.25L4.25 5M8 1.25V10.25" stroke="#CEFFA8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
@@ -3398,7 +3398,7 @@ $(document).ready(function() {
 <li>
     <span>Legal / Secretarial / Extra Ordinary General Meeting / Resolutions</span>
     <button data-bs-toggle="modal" data-bs-target="#common_file_upload_pop"
-            data-location="Legal / Secretarial / Extra Ordinary General Meeting"
+            data-location="2024-2025November301_Legal/2024-2025November301_Secretarial/2024-2025November301_Extra Ordinary General Meeting"
             data-real-file-name="Resolutions">
     <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
         <path d="M14.75 10.25V13.25C14.75 13.6478 14.592 14.0294 14.3107 14.3107C14.0294 14.592 13.6478 14.75 13.25 14.75H2.75C2.35218 14.75 1.97064 14.592 1.68934 14.3107C1.40804 14.0294 1.25 13.6478 1.25 13.25V10.25M11.75 5L8 1.25M8 1.25L4.25 5M8 1.25V10.25" stroke="#CEFFA8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
@@ -3409,7 +3409,7 @@ $(document).ready(function() {
 <li>
     <span>Legal / Secretarial / Incorporation / RUN Form (Reserve Unique Name)</span>
     <button data-bs-toggle="modal" data-bs-target="#common_file_upload_pop"
-            data-location="Legal / Secretarial / Incorporation"
+            data-location="2024-2025November301_Legal/2024-2025November301_Secretarial/2024-2025November301_Incorporation"
             data-real-file-name="RUN Form (Reserve Unique Name)">
     <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
         <path d="M14.75 10.25V13.25C14.75 13.6478 14.592 14.0294 14.3107 14.3107C14.0294 14.592 13.6478 14.75 13.25 14.75H2.75C2.35218 14.75 1.97064 14.592 1.68934 14.3107C1.40804 14.0294 1.25 13.6478 1.25 13.25V10.25M11.75 5L8 1.25M8 1.25L4.25 5M8 1.25V10.25" stroke="#CEFFA8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
@@ -3420,7 +3420,7 @@ $(document).ready(function() {
 <li>
     <span>Legal / Secretarial / Incorporation / INC-9 (Declaration of Subscribers and First Directors)</span>
     <button data-bs-toggle="modal" data-bs-target="#common_file_upload_pop"
-            data-location="Legal / Secretarial / Incorporation"
+            data-location="2024-2025November301_Legal/2024-2025November301_Secretarial/2024-2025November301_Incorporation"
             data-real-file-name="INC-9 (Declaration of Subscribers and First Directors)">
     <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
         <path d="M14.75 10.25V13.25C14.75 13.6478 14.592 14.0294 14.3107 14.3107C14.0294 14.592 13.6478 14.75 13.25 14.75H2.75C2.35218 14.75 1.97064 14.592 1.68934 14.3107C1.40804 14.0294 1.25 13.6478 1.25 13.25V10.25M11.75 5L8 1.25M8 1.25L4.25 5M8 1.25V10.25" stroke="#CEFFA8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
@@ -3431,7 +3431,7 @@ $(document).ready(function() {
 <li>
     <span>Legal / Secretarial / Incorporation / SPICe+Part B (Simplified Proforma for Incorporating Company Electronically)</span>
     <button data-bs-toggle="modal" data-bs-target="#common_file_upload_pop"
-            data-location="Legal / Secretarial / Incorporation"
+            data-location="2024-2025November301_Legal/2024-2025November301_Secretarial/2024-2025November301_Incorporation"
             data-real-file-name="SPICe+Part B (Simplified Proforma for Incorporating Company Electronically)">
     <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
         <path d="M14.75 10.25V13.25C14.75 13.6478 14.592 14.0294 14.3107 14.3107C14.0294 14.592 13.6478 14.75 13.25 14.75H2.75C2.35218 14.75 1.97064 14.592 1.68934 14.3107C1.40804 14.0294 1.25 13.6478 1.25 13.25V10.25M11.75 5L8 1.25M8 1.25L4.25 5M8 1.25V10.25" stroke="#CEFFA8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
@@ -3443,7 +3443,7 @@ $(document).ready(function() {
 <li>
     <span>Legal / Secretarial / Incorporation / INC-33 SPICe MoA (e-Momorandum of Association)</span>
     <button data-bs-toggle="modal" data-bs-target="#common_file_upload_pop"
-            data-location="Legal / Secretarial / Incorporation"
+            data-location="2024-2025November301_Legal/2024-2025November301_Secretarial/2024-2025November301_Incorporation"
             data-real-file-name="INC-33 SPICe MoA (e-Momorandum of Association)">
     <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
         <path d="M14.75 10.25V13.25C14.75 13.6478 14.592 14.0294 14.3107 14.3107C14.0294 14.592 13.6478 14.75 13.25 14.75H2.75C2.35218 14.75 1.97064 14.592 1.68934 14.3107C1.40804 14.0294 1.25 13.6478 1.25 13.25V10.25M11.75 5L8 1.25M8 1.25L4.25 5M8 1.25V10.25" stroke="#CEFFA8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
@@ -3454,7 +3454,7 @@ $(document).ready(function() {
 <li>
     <span>Legal / Secretarial / Incorporation / INC-34 SPICe MoA (e-Articles of Association)</span>
     <button data-bs-toggle="modal" data-bs-target="#common_file_upload_pop"
-            data-location="Legal / Secretarial / Incorporation"
+            data-location="2024-2025November301_Legal/2024-2025November301_Secretarial/2024-2025November301_Incorporation"
             data-real-file-name="INC-34 SPICe MoA (e-Articles of Association)">
     <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
         <path d="M14.75 10.25V13.25C14.75 13.6478 14.592 14.0294 14.3107 14.3107C14.0294 14.592 13.6478 14.75 13.25 14.75H2.75C2.35218 14.75 1.97064 14.592 1.68934 14.3107C1.40804 14.0294 1.25 13.6478 1.25 13.25V10.25M11.75 5L8 1.25M8 1.25L4.25 5M8 1.25V10.25" stroke="#CEFFA8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
@@ -3465,7 +3465,7 @@ $(document).ready(function() {
 <li>
     <span>Legal / Secretarial / Incorporation / INC-35 AGILE-PRO-s</span>
     <button data-bs-toggle="modal" data-bs-target="#common_file_upload_pop"
-            data-location="Legal / Secretarial / Incorporation"
+            data-location="2024-2025November301_Legal/2024-2025November301_Secretarial/2024-2025November301_Incorporation"
             data-real-file-name="INC-35 AGILE-PRO-s">
     <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
         <path d="M14.75 10.25V13.25C14.75 13.6478 14.592 14.0294 14.3107 14.3107C14.0294 14.592 13.6478 14.75 13.25 14.75H2.75C2.35218 14.75 1.97064 14.592 1.68934 14.3107C1.40804 14.0294 1.25 13.6478 1.25 13.25V10.25M11.75 5L8 1.25M8 1.25L4.25 5M8 1.25V10.25" stroke="#CEFFA8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
@@ -3476,7 +3476,7 @@ $(document).ready(function() {
 <li>
     <span>Legal / Secretarial / Incorporation / INC-22 (Notice of situation or change of situation of registered office)</span>
     <button data-bs-toggle="modal" data-bs-target="#common_file_upload_pop"
-            data-location="Legal / Secretarial / Incorporation"
+            data-location="2024-2025November301_Legal/2024-2025November301_Secretarial/2024-2025November301_Incorporation"
             data-real-file-name="INC-22 (Notice of situation or change of situation of registered office)">
     <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
         <path d="M14.75 10.25V13.25C14.75 13.6478 14.592 14.0294 14.3107 14.3107C14.0294 14.592 13.6478 14.75 13.25 14.75H2.75C2.35218 14.75 1.97064 14.592 1.68934 14.3107C1.40804 14.0294 1.25 13.6478 1.25 13.25V10.25M11.75 5L8 1.25M8 1.25L4.25 5M8 1.25V10.25" stroke="#CEFFA8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
@@ -3487,7 +3487,7 @@ $(document).ready(function() {
 <li>
     <span>Legal / Secretarial / Incorporation / INC-20A (Commencement of Business)</span>
     <button data-bs-toggle="modal" data-bs-target="#common_file_upload_pop"
-            data-location="Legal / Secretarial / Incorporation"
+            data-location="2024-2025November301_Legal/2024-2025November301_Secretarial/2024-2025November301_Incorporation"
             data-real-file-name="INC-20A (Commencement of Business)">
     <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
         <path d="M14.75 10.25V13.25C14.75 13.6478 14.592 14.0294 14.3107 14.3107C14.0294 14.592 13.6478 14.75 13.25 14.75H2.75C2.35218 14.75 1.97064 14.592 1.68934 14.3107C1.40804 14.0294 1.25 13.6478 1.25 13.25V10.25M11.75 5L8 1.25M8 1.25L4.25 5M8 1.25V10.25" stroke="#CEFFA8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
@@ -3498,7 +3498,7 @@ $(document).ready(function() {
 <li>
     <span>Legal / Secretarial / Statutory Registers / Register of Members</span>
     <button data-bs-toggle="modal" data-bs-target="#common_file_upload_pop"
-            data-location="Legal / Secretarial / Statutory Registers"
+            data-location="2024-2025November301_Legal/2024-2025November301_Secretarial/2024-2025November301_Statutory Registers"
             data-real-file-name="Register of Members">
     <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
         <path d="M14.75 10.25V13.25C14.75 13.6478 14.592 14.0294 14.3107 14.3107C14.0294 14.592 13.6478 14.75 13.25 14.75H2.75C2.35218 14.75 1.97064 14.592 1.68934 14.3107C1.40804 14.0294 1.25 13.6478 1.25 13.25V10.25M11.75 5L8 1.25M8 1.25L4.25 5M8 1.25V10.25" stroke="#CEFFA8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
@@ -3509,7 +3509,7 @@ $(document).ready(function() {
 <li>
     <span>Legal / Secretarial / Statutory Registers / Register of Other Security Holders</span>
     <button data-bs-toggle="modal" data-bs-target="#common_file_upload_pop"
-            data-location="Legal / Secretarial / Statutory Registers"
+            data-location="2024-2025November301_Legal/2024-2025November301_Secretarial/2024-2025November301_Statutory Registers"
             data-real-file-name="Register of Other Security Holders">
     <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
         <path d="M14.75 10.25V13.25C14.75 13.6478 14.592 14.0294 14.3107 14.3107C14.0294 14.592 13.6478 14.75 13.25 14.75H2.75C2.35218 14.75 1.97064 14.592 1.68934 14.3107C1.40804 14.0294 1.25 13.6478 1.25 13.25V10.25M11.75 5L8 1.25M8 1.25L4.25 5M8 1.25V10.25" stroke="#CEFFA8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
@@ -3520,7 +3520,7 @@ $(document).ready(function() {
 <li>
     <span>Legal / Secretarial / Statutory Registers / Foreign Register</span>
     <button data-bs-toggle="modal" data-bs-target="#common_file_upload_pop"
-            data-location="Legal / Secretarial / Statutory Registers"
+            data-location="2024-2025November301_Legal/2024-2025November301_Secretarial/2024-2025November301_Statutory Registers"
             data-real-file-name="Foreign Register">
     <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
         <path d="M14.75 10.25V13.25C14.75 13.6478 14.592 14.0294 14.3107 14.3107C14.0294 14.592 13.6478 14.75 13.25 14.75H2.75C2.35218 14.75 1.97064 14.592 1.68934 14.3107C1.40804 14.0294 1.25 13.6478 1.25 13.25V10.25M11.75 5L8 1.25M8 1.25L4.25 5M8 1.25V10.25" stroke="#CEFFA8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
@@ -3531,7 +3531,7 @@ $(document).ready(function() {
 <li>
     <span>Legal / Secretarial / Statutory Registers / Register of Directors and KMP</span>
     <button data-bs-toggle="modal" data-bs-target="#common_file_upload_pop"
-            data-location="Legal / Secretarial / Statutory Registers"
+            data-location="2024-2025November301_Legal/2024-2025November301_Secretarial/2024-2025November301_Statutory Registers"
             data-real-file-name="Register of Directors and KMP">
     <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
         <path d="M14.75 10.25V13.25C14.75 13.6478 14.592 14.0294 14.3107 14.3107C14.0294 14.592 13.6478 14.75 13.25 14.75H2.75C2.35218 14.75 1.97064 14.592 1.68934 14.3107C1.40804 14.0294 1.25 13.6478 1.25 13.25V10.25M11.75 5L8 1.25M8 1.25L4.25 5M8 1.25V10.25" stroke="#CEFFA8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
@@ -3542,7 +3542,7 @@ $(document).ready(function() {
 <li>
     <span>Legal / Secretarial / Statutory Registers / Register of Charges</span>
     <button data-bs-toggle="modal" data-bs-target="#common_file_upload_pop"
-            data-location="Legal / Secretarial / Statutory Registers"
+            data-location="2024-2025November301_Legal/2024-2025November301_Secretarial/2024-2025November301_Statutory Registers"
             data-real-file-name="Register of Charges">
     <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
         <path d="M14.75 10.25V13.25C14.75 13.6478 14.592 14.0294 14.3107 14.3107C14.0294 14.592 13.6478 14.75 13.25 14.75H2.75C2.35218 14.75 1.97064 14.592 1.68934 14.3107C1.40804 14.0294 1.25 13.6478 1.25 13.25V10.25M11.75 5L8 1.25M8 1.25L4.25 5M8 1.25V10.25" stroke="#CEFFA8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
@@ -3553,7 +3553,7 @@ $(document).ready(function() {
 <li>
     <span>Legal / Secretarial / Statutory Registers / Register of Deposits</span>
     <button data-bs-toggle="modal" data-bs-target="#common_file_upload_pop"
-            data-location="Legal / Secretarial / Statutory Registers"
+            data-location="2024-2025November301_Legal/2024-2025November301_Secretarial/2024-2025November301_Statutory Registers"
             data-real-file-name="Register of Deposits">
     <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
         <path d="M14.75 10.25V13.25C14.75 13.6478 14.592 14.0294 14.3107 14.3107C14.0294 14.592 13.6478 14.75 13.25 14.75H2.75C2.35218 14.75 1.97064 14.592 1.68934 14.3107C1.40804 14.0294 1.25 13.6478 1.25 13.25V10.25M11.75 5L8 1.25M8 1.25L4.25 5M8 1.25V10.25" stroke="#CEFFA8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
@@ -3564,7 +3564,7 @@ $(document).ready(function() {
 <li>
     <span>Legal / Secretarial / Statutory Registers / Register of Loans, Guarantees and Securities</span>
     <button data-bs-toggle="modal" data-bs-target="#common_file_upload_pop"
-            data-location="Legal / Secretarial / Statutory Registers"
+            data-location="2024-2025November301_Legal/2024-2025November301_Secretarial/2024-2025November301_Statutory Registers"
             data-real-file-name="Register of Loans, Guarantees and Securities">
     <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
         <path d="M14.75 10.25V13.25C14.75 13.6478 14.592 14.0294 14.3107 14.3107C14.0294 14.592 13.6478 14.75 13.25 14.75H2.75C2.35218 14.75 1.97064 14.592 1.68934 14.3107C1.40804 14.0294 1.25 13.6478 1.25 13.25V10.25M11.75 5L8 1.25M8 1.25L4.25 5M8 1.25V10.25" stroke="#CEFFA8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
@@ -3576,7 +3576,7 @@ $(document).ready(function() {
 <li>
     <span>Legal / Secretarial / Statutory Registers / Register of Investments not held in Company’s name</span>
     <button data-bs-toggle="modal" data-bs-target="#common_file_upload_pop"
-            data-location="Legal / Secretarial / Statutory Registers"
+            data-location="2024-2025November301_Legal/2024-2025November301_Secretarial/2024-2025November301_Statutory Registers"
             data-real-file-name="Register of Investments not held in Company’s name">
     <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
         <path d="M14.75 10.25V13.25C14.75 13.6478 14.592 14.0294 14.3107 14.3107C14.0294 14.592 13.6478 14.75 13.25 14.75H2.75C2.35218 14.75 1.97064 14.592 1.68934 14.3107C1.40804 14.0294 1.25 13.6478 1.25 13.25V10.25M11.75 5L8 1.25M8 1.25L4.25 5M8 1.25V10.25" stroke="#CEFFA8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
@@ -3587,7 +3587,7 @@ $(document).ready(function() {
 <li>
     <span>Legal / Secretarial / Statutory Registers / Register of Contracts in which Directors are interested</span>
     <button data-bs-toggle="modal" data-bs-target="#common_file_upload_pop"
-            data-location="Legal / Secretarial / Statutory Registers"
+            data-location="2024-2025November301_Legal/2024-2025November301_Secretarial/2024-2025November301_Statutory Registers"
             data-real-file-name="Register of Contracts in which Directors are interested">
     <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
         <path d="M14.75 10.25V13.25C14.75 13.6478 14.592 14.0294 14.3107 14.3107C14.0294 14.592 13.6478 14.75 13.25 14.75H2.75C2.35218 14.75 1.97064 14.592 1.68934 14.3107C1.40804 14.0294 1.25 13.6478 1.25 13.25V10.25M11.75 5L8 1.25M8 1.25L4.25 5M8 1.25V10.25" stroke="#CEFFA8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
@@ -3599,7 +3599,7 @@ $(document).ready(function() {
 <li>
     <span>Legal / Secretarial / Statutory Registers / Register of Sweat Equity Shares</span>
     <button data-bs-toggle="modal" data-bs-target="#common_file_upload_pop"
-            data-location="Legal / Secretarial / Statutory Registers"
+            data-location="2024-2025November301_Legal/2024-2025November301_Secretarial/2024-2025November301_Statutory Registers"
             data-real-file-name="Register of Sweat Equity Shares">
     <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
         <path d="M14.75 10.25V13.25C14.75 13.6478 14.592 14.0294 14.3107 14.3107C14.0294 14.592 13.6478 14.75 13.25 14.75H2.75C2.35218 14.75 1.97064 14.592 1.68934 14.3107C1.40804 14.0294 1.25 13.6478 1.25 13.25V10.25M11.75 5L8 1.25M8 1.25L4.25 5M8 1.25V10.25" stroke="#CEFFA8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
@@ -3610,7 +3610,7 @@ $(document).ready(function() {
 <li>
     <span>Legal / Secretarial / Statutory Registers / Register of Employee Stock Options</span>
     <button data-bs-toggle="modal" data-bs-target="#common_file_upload_pop"
-            data-location="Legal / Secretarial / Statutory Registers"
+            data-location="2024-2025November301_Legal/2024-2025November301_Secretarial/2024-2025November301_Statutory Registers"
             data-real-file-name="Register of Employee Stock Options">
       <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
         <path d="M14.75 10.25V13.25C14.75 13.6478 14.592 14.0294 14.3107 14.3107C14.0294 14.592 13.6478 14.75 13.25 14.75H2.75C2.35218 14.75 1.97064 14.592 1.68934 14.3107C1.40804 14.0294 1.25 13.6478 1.25 13.25V10.25M11.75 5L8 1.25M8 1.25L4.25 5M8 1.25V10.25" stroke="#CEFFA8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
@@ -3621,7 +3621,7 @@ $(document).ready(function() {
 <li>
     <span>Legal / Secretarial / Statutory Registers / Register of Securities Bought Back</span>
     <button data-bs-toggle="modal" data-bs-target="#common_file_upload_pop"
-            data-location="Legal / Secretarial / Statutory Registers"
+            data-location="2024-2025November301_Legal/2024-2025November301_Secretarial/2024-2025November301_Statutory Registers"
             data-real-file-name="Register of Securities Bought Back">
       <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
         <path d="M14.75 10.25V13.25C14.75 13.6478 14.592 14.0294 14.3107 14.3107C14.0294 14.592 13.6478 14.75 13.25 14.75H2.75C2.35218 14.75 1.97064 14.592 1.68934 14.3107C1.40804 14.0294 1.25 13.6478 1.25 13.25V10.25M11.75 5L8 1.25M8 1.25L4.25 5M8 1.25V10.25" stroke="#CEFFA8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
@@ -3632,7 +3632,7 @@ $(document).ready(function() {
 <li>
   <span>Legal / Secretarial / Statutory Registers / Register of Renewed or Duplicate Share Certificates</span>
   <button data-bs-toggle="modal" data-bs-target="#common_file_upload_pop"
-          data-location="Legal / Secretarial / Statutory Registers"
+          data-location="2024-2025November301_Legal/2024-2025November301_Secretarial/2024-2025November301_Statutory Registers"
           data-real-file-name="Register of Renewed or Duplicate Share Certificates">
     <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
       <path d="M14.75 10.25V13.25C14.75 13.6478 14.592 14.0294 14.3107 14.3107C14.0294 14.592 13.6478 14.75 13.25 14.75H2.75C2.35218 14.75 1.97064 14.592 1.68934 14.3107C1.40804 14.0294 1.25 13.6478 1.25 13.25V10.25M11.75 5L8 1.25M8 1.25L4.25 5M8 1.25V10.25" stroke="#CEFFA8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
@@ -3643,7 +3643,7 @@ $(document).ready(function() {
 <li>
   <span>Legal / Secretarial / Statutory Registers / Register of SBO</span>
   <button data-bs-toggle="modal" data-bs-target="#common_file_upload_pop"
-          data-location="Legal / Secretarial / Statutory Registers"
+          data-location="2024-2025November301_Legal/2024-2025November301_Secretarial/2024-2025November301_Statutory Registers"
           data-real-file-name="Register of SBO">
     <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
       <path d="M14.75 10.25V13.25C14.75 13.6478 14.592 14.0294 14.3107 14.3107C14.0294 14.592 13.6478 14.75 13.25 14.75H2.75C2.35218 14.75 1.97064 14.592 1.68934 14.3107C1.40804 14.0294 1.25 13.6478 1.25 13.25V10.25M11.75 5L8 1.25M8 1.25L4.25 5M8 1.25V10.25" stroke="#CEFFA8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
@@ -3654,7 +3654,7 @@ $(document).ready(function() {
 <li>
   <span>Legal / Secretarial / Statutory Registers / Register of Postal Ballot</span>
   <button data-bs-toggle="modal" data-bs-target="#common_file_upload_pop"
-          data-location="Legal / Secretarial / Statutory Registers"
+          data-location="2024-2025November301_Legal/2024-2025November301_Secretarial/2024-2025November301_Statutory Registers"
           data-real-file-name="Register of Postal Ballot">
     <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
       <path d="M14.75 10.25V13.25C14.75 13.6478 14.592 14.0294 14.3107 14.3107C14.0294 14.592 13.6478 14.75 13.25 14.75H2.75C2.35218 14.75 1.97064 14.592 1.68934 14.3107C1.40804 14.0294 1.25 13.6478 1.25 13.25V10.25M11.75 5L8 1.25M8 1.25L4.25 5M8 1.25V10.25" stroke="#CEFFA8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
@@ -4215,7 +4215,7 @@ function openNewFolder(folderPath) {
                     breadcrumbHtml += `<span>${folderName}</span>`;
                 } else {
                     // Add intermediate breadcrumb links
-                    breadcrumbHtml += `<a href="#" class="breadcrumb-link" data-folder-path="${fullPath}">${folderName}</a> <span>/</span>`;
+                    breadcrumbHtml += `<a href="#" class="breadcrumb-link" data-folder-path="${fullPath}">${folderName}</a> <span> > </span>`;
                 }
             });
             
@@ -4393,12 +4393,11 @@ function decodeAndFormatUrl(url) {
     // Step 1: Decode the URL (if necessary)
     const decodedUrl = decodeURIComponent(url);
 
-    // Step 2: Remove the extra parts like '2024-2025October0_', '2024-2025October100000000000000_', etc.
-    // The updated regex now matches any number of digits
-    const cleanedUrl = decodedUrl.replace(/\d{4}-\d{4}October\d+_/g, '').trim();
+    // Step 2: Remove the extra parts like '2024-2025November301_', '2024-2025October100000000_', etc.
+    const cleanedUrl = decodedUrl.replace(/\d{4}-\d{4}[A-Za-z]+\d+_/g, '').trim();
 
-    // Step 3: Split the cleaned path by '/' and join without extra spaces
-    const formattedPath = cleanedUrl.split('/').map(part => part.trim()).join('/');
+    // Step 3: Split the cleaned path by '/' and join without spaces around slashes
+    const formattedPath = cleanedUrl.split('/').map(part => part.trim()).filter(part => part).join('/');
 
     return formattedPath;
 }
@@ -4432,11 +4431,22 @@ let url = `${pathToUse}`;
 
 // Format the decoded URL
 let result = decodeAndFormatUrl(url);
+
+let fullPath = `${result}`;
+
+// The base path you want to cut off
+let basePath = "Accounting & Taxation/Charter Documents/Director Details/";
+
+// Extract the part after the base path
+let newPermitter = fullPath.replace(basePath, '');
+// alert(`${basePath}${newPermitter}`);
+// alert(newPermitter);
 // alert(result);
 setInterval(function() {
     let result = decodeAndFormatUrl(url);
     console.log(result);  // Output: formatted URL every second
-}, 100); 
+}, 1000); 
+//  alert(result);
         // let resultto = removeDynamicPrefix(pathToUse);
 
      
@@ -4459,62 +4469,62 @@ setInterval(function() {
                 $('.file-container').html(response.fileHtml);
 
                 clearAppendedTables();
-
-                if (pathToUse === 'Legal/Secretarial/Board Meetings' && !incorporationTableAppended) {
+                if (result.includes("Secretarial/Board Meetings") && !incorporationTableAppended) {
                     insertIncorporationTable();
                     incorporationTableAppended = true;
-                } else if (pathToUse === 'Legal/Secretarial/Annual General Meeting' && !meetingTableAppended) {
+                } else if (result.includes("Secretarial/Annual General Meeting") && !meetingTableAppended){
                     insertMeetingTable();
                     meetingTableAppended = true;
-                } else if (pathToUse === 'Legal/Secretarial/Extra Ordinary General Meeting' && !orderTableAppended) {
+                } else if (result.includes("Secretarial/Extra Ordinary General Meeting") && !orderTableAppended)  {
                     insertOrderTable();
                     orderTableAppended = true;
-                } else if (pathToUse === 'Legal/Secretarial/Incorporation' && !incTableAppended) {
+                } else if (result.includes("Secretarial/Incorporation") && !incTableAppended)  {
                     insertINCTable();
                     incTableAppended = true;
-                } else if (pathToUse === 'Legal/Secretarial/Annual Filings' && !annTableAppended) {
+                } else if (result.includes("Secretarial/Annual Filings") && !annTableAppended)  {
                     insertANNTable();
                     annTableAppended = true;
-                } else if (pathToUse === 'Legal/Secretarial/Director Appointments' && !directTableAppended) {
+                } else if (result.includes("Secretarial/Director Appointments") && !directTableAppended)  {
                     insertDirectTable();
                     directTableAppended = true;
-                } else if (pathToUse === 'Legal/Secretarial/Director Resignation' && !directexitTableAppended) {
+                } else if (result.includes("Secretarial/Director Resignation") && !directexitTableAppended)  {
                     insertDirectexitTable();
                     directexitTableAppended = true;
-                } else if (pathToUse === 'Legal/Secretarial/Auditor Appointment' && !auditappTableAppended) {
+                } else if (result.includes("Secretarial/Auditor Appointment") && !auditappTableAppended)  {
                     insertauditappTable();
                     auditappTableAppended = true;
-                } else if (pathToUse === 'Legal/Secretarial/Auditor Exits' && !auditexitTableAppended) {
+                } else if (result.includes("Secretarial/Auditor Exits") && !auditexitTableAppended)  {
                     insertauditexitTable();
                     auditexitTableAppended = true;
-                } else if (pathToUse === 'Legal/Secretarial/Statutory Registers' && !staturegiTableAppended) {
+                } else if (result.includes("Secretarial/Statutory Registers") && !staturegiTableAppended)  {
                     insertstaturegiTable();
                     staturegiTableAppended = true;
-                } else if (pathToUse === 'Legal/Secretarial/Deposit Undertakings' && !undertakingTableAppended) {
+                } else if (result.includes("Secretarial/Deposit Undertakings") && !undertakingTableAppended) {
                     insertundertakingTable();
                     undertakingTableAppended = true;
-                } else if (pathToUse === 'Accounting & Taxation/Book-Keeping/Bank Account Statements' && !bankAccountStatementsTableAppended) {
+                } else if (result.includes("Accounting & Taxation/Book-keeping/Bank Account Statements") && !bankAccountStatementsTableAppended)  {
                     insertbankAccountStatementsTable();
                     bankAccountStatementsTableAppended = true;
-                } else if (pathToUse === 'Accounting & Taxation/Book-Keeping/Fixed Deposit Statements' && !bankFixedDepositStatementsTableAppended) {
+                } else if (result.includes("Accounting & Taxation/Book-keeping/Fixed Deposit Statements") && !bankFixedDepositStatementsTableAppended)  {
                     insertbankFixedDepositStatementsTable();
                     bankFixedDepositStatementsTableAppended = true;
-                } else if (pathToUse === 'Accounting & Taxation/Book-Keeping/Credit Card Statements' && !bankCreditCardStatementsTableAppended) {
+                } else if (result.includes("Accounting & Taxation/Book-keeping/Credit Card Statements") && !bankCreditCardStatementsTableAppended)  {
                     insertbankCreditCardStatementsTable();
                     bankCreditCardStatementsTableAppended = true;
-                } else if (pathToUse === 'Accounting & Taxation/Book-Keeping/Mutual Fund Statements' && !bankMutualFundStatementsTableAppended) {
+                } else if (result.includes("Accounting & Taxation/Book-keeping/Mutual Fund Statements") && !bankMutualFundStatementsTableAppended)  {
                     insertbankMutualFundStatementsTable();
                     bankMutualFundStatementsTableAppended = true;
-                } else if (pathToUse === 'Accounting & Taxation/Charter documents/Director Details/Director 1' && !charterdocumentsDirectordetatilsDirector1TableAppended) {
+                } else if (result.includes(`Accounting & Taxation/Charter Documents/Director Details/${newPermitter}`) && !charterdocumentsDirectordetatilsDirector1TableAppended) {
+                    
                     insertcharterdocumentsDirectordetatilsDirector1Table();
                     charterdocumentsDirectordetatilsDirector1TableAppended = true;
-                } else if (pathToUse === 'Accounting & Taxation/Charter documents/Director Details/Director 2' && !charterdocumentsDirectordetatilsDirector2TableAppended) {
-                    insertcharterdocumentsDirectordetatilsDirector2Table();
-                    charterdocumentsDirectordetatilsDirector2TableAppended = true;
-                } else if (pathToUse === 'Accounting & Taxation/Charter documents/Incorporation' && !charterdocumentsIncorporationTableAppended) {
+                } 
+                
+                else if (result.includes("Accounting & Taxation/Charter Documents/Incorporation") && !charterdocumentsIncorporationTableAppended)  {
+                // alert(result);
                     insertcharterdocumentsIncorporationTableAppendedTable();
                     charterdocumentsIncorporationTableAppended = true;
-                } else if (pathToUse === 'Accounting & Taxation/Charter documents/Registrations' && !charterdocumentsRegistrationsTableAppended) {
+                } else if (result.includes("Accounting & Taxation/Charter Documents/Registrations") && !charterdocumentsRegistrationsTableAppended)  {
                     insertcharterdocumentsRegistrationsTableAppendedTable();
                     charterdocumentsRegistrationsTableAppended = true;
                 }
@@ -4597,14 +4607,24 @@ setInterval(function() {
         const pathToUse = decodedFolderPath ? decodedFolderPath : folderPath;
        
         let url = `${pathToUse}`;
+        // let result = decodeAndFormatUrl(url);
 
+        let result = decodeAndFormatUrl(url);
+
+let fullPath = `${result}`;
+
+// The base path you want to cut off
+let basePath = "Accounting & Taxation/Charter Documents/Director Details/";
+
+// Extract the part after the base path
+let newPermitter = fullPath.replace(basePath, '');
         setInterval(function() {
     let result = decodeAndFormatUrl(url);
     console.log(result);  // Output: formatted URL every second
 }, 100); 
 
 // Format the decoded URL
-let result = decodeAndFormatUrl(url);
+
         // Directly use the folderPath as it's already decoded when passed from above
         $.ajax({
             url: '/fetch-folder-contents',
@@ -4669,61 +4689,61 @@ let result = decodeAndFormatUrl(url);
 
                 clearAppendedTables();
 
-                if (pathToUse === 'Legal/Secretarial/Board Meetings' && !incorporationTableAppended) {
+                if (result.includes("Secretarial/Board Meetings") && !incorporationTableAppended) {
                     insertIncorporationTable();
                     incorporationTableAppended = true;
-                } else if (pathToUse === 'Legal/Secretarial/Annual General Meeting' && !meetingTableAppended) {
+                } else if (result.includes("Secretarial/Annual General Meeting") && !meetingTableAppended){
                     insertMeetingTable();
                     meetingTableAppended = true;
-                } else if (pathToUse === 'Legal/Secretarial/Extra Ordinary General Meeting' && !orderTableAppended) {
+                } else if (result.includes("Secretarial/Extra Ordinary General Meeting") && !orderTableAppended)  {
                     insertOrderTable();
                     orderTableAppended = true;
-                } else if (pathToUse === 'Legal/Secretarial/Incorporation' && !incTableAppended) {
+                } else if (result.includes("Secretarial/Incorporation") && !incTableAppended)  {
                     insertINCTable();
                     incTableAppended = true;
-                } else if (pathToUse === 'Legal/Secretarial/Annual Filings' && !annTableAppended) {
+                } else if (result.includes("Secretarial/Annual Filings") && !annTableAppended)  {
                     insertANNTable();
                     annTableAppended = true;
-                } else if (pathToUse === 'Legal/Secretarial/Director Appointments' && !directTableAppended) {
+                } else if (result.includes("Secretarial/Director Appointments") && !directTableAppended)  {
                     insertDirectTable();
                     directTableAppended = true;
-                } else if (pathToUse === 'Legal/Secretarial/Director Resignation' && !directexitTableAppended) {
+                } else if (result.includes("Secretarial/Director Resignation") && !directexitTableAppended)  {
                     insertDirectexitTable();
                     directexitTableAppended = true;
-                } else if (pathToUse === 'Legal/Secretarial/Auditor Appointment' && !auditappTableAppended) {
+                } else if (result.includes("Secretarial/Auditor Appointment") && !auditappTableAppended)  {
                     insertauditappTable();
                     auditappTableAppended = true;
-                } else if (pathToUse === 'Legal/Secretarial/Auditor Exits' && !auditexitTableAppended) {
+                } else if (result.includes("Secretarial/Auditor Exits") && !auditexitTableAppended)  {
                     insertauditexitTable();
                     auditexitTableAppended = true;
-                } else if (pathToUse === 'Legal/Secretarial/Statutory Registers' && !staturegiTableAppended) {
+                } else if (result.includes("Secretarial/Statutory Registers") && !staturegiTableAppended)  {
                     insertstaturegiTable();
                     staturegiTableAppended = true;
-                } else if (pathToUse === 'Legal/Secretarial/Deposit Undertakings' && !undertakingTableAppended) {
+                } else if (result.includes("Secretarial/Deposit Undertakings") && !undertakingTableAppended) {
                     insertundertakingTable();
                     undertakingTableAppended = true;
-                } else if (pathToUse === 'Accounting & Taxation/Book-Keeping/Bank Account Statements' && !bankAccountStatementsTableAppended) {
+                } else if (result.includes("Accounting & Taxation/Book-keeping/Bank Account Statements") && !bankAccountStatementsTableAppended)  {
                     insertbankAccountStatementsTable();
                     bankAccountStatementsTableAppended = true;
-                } else if (pathToUse === 'Accounting & Taxation/Book-Keeping/Fixed Deposit Statements' && !bankFixedDepositStatementsTableAppended) {
+                } else if (result.includes("Accounting & Taxation/Book-keeping/Fixed Deposit Statements") && !bankFixedDepositStatementsTableAppended)  {
                     insertbankFixedDepositStatementsTable();
                     bankFixedDepositStatementsTableAppended = true;
-                } else if (pathToUse === 'Accounting & Taxation/Book-Keeping/Credit Card Statements' && !bankCreditCardStatementsTableAppended) {
+                } else if (result.includes("Accounting & Taxation/Book-keeping/Credit Card Statements") && !bankCreditCardStatementsTableAppended)  {
                     insertbankCreditCardStatementsTable();
                     bankCreditCardStatementsTableAppended = true;
-                } else if (pathToUse === 'Accounting & Taxation/Book-Keeping/Mutual Fund Statements' && !bankMutualFundStatementsTableAppended) {
+                } else if (result.includes("Accounting & Taxation/Book-keeping/Mutual Fund Statements") && !bankMutualFundStatementsTableAppended)  {
                     insertbankMutualFundStatementsTable();
                     bankMutualFundStatementsTableAppended = true;
-                } else if (pathToUse === 'Accounting & Taxation/Charter documents/Director Details/Director 1' && !charterdocumentsDirectordetatilsDirector1TableAppended) {
+                } else if (result.includes(`Accounting & Taxation/Charter Documents/Director Details/${newPermitter}`) && !charterdocumentsDirectordetatilsDirector1TableAppended) {
                     insertcharterdocumentsDirectordetatilsDirector1Table();
                     charterdocumentsDirectordetatilsDirector1TableAppended = true;
-                } else if (pathToUse === 'Accounting & Taxation/Charter documents/Director Details/Director 2' && !charterdocumentsDirectordetatilsDirector2TableAppended) {
-                    insertcharterdocumentsDirectordetatilsDirector2Table();
-                    charterdocumentsDirectordetatilsDirector2TableAppended = true;
-                } else if (pathToUse === 'Accounting & Taxation/Charter documents/Incorporation' && !charterdocumentsIncorporationTableAppended) {
+                }  
+                
+                else if (result.includes("Accounting & Taxation/Charter Documents/Incorporation") && !charterdocumentsIncorporationTableAppended)  {
+                // alert(result);
                     insertcharterdocumentsIncorporationTableAppendedTable();
                     charterdocumentsIncorporationTableAppended = true;
-                } else if (pathToUse === 'Accounting & Taxation/Charter documents/Registrations' && !charterdocumentsRegistrationsTableAppended) {
+                } else if (result.includes("Accounting & Taxation/Charter Documents/Registrations") && !charterdocumentsRegistrationsTableAppended)  {
                     insertcharterdocumentsRegistrationsTableAppendedTable();
                     charterdocumentsRegistrationsTableAppended = true;
                 }
@@ -4927,15 +4947,14 @@ function handleFolderPath(folderPath) {
         console.log("Inserting Mutual Fund Statements Table");
         insertbankMutualFundStatementsTable();
         bankMutualFundStatementsTableAppended = true;
-    } else if (folderPath === 'Accounting & Taxation/Charter documents/Director Details/Director 1' && !charterdocumentsDirectordetatilsDirector1TableAppended) {
+    } else if (folderPath === `Accounting & Taxation/Charter Documents/Director Details/${newPermitter}` && !charterdocumentsDirectordetatilsDirector1TableAppended) {
         console.log("Inserting Director 1 Table");
         insertcharterdocumentsDirectordetatilsDirector1Table();
         charterdocumentsDirectordetatilsDirector1TableAppended = true;
-    } else if (folderPath === 'Accounting & Taxation/Charter documents/Director Details/Director 2' && !charterdocumentsDirectordetatilsDirector2TableAppended) {
-        console.log("Inserting Director 2 Table");
-        insertcharterdocumentsDirectordetatilsDirector2Table();
-        charterdocumentsDirectordetatilsDirector2TableAppended = true;
-    } else if (folderPath === 'Accounting & Taxation/Charter documents/Incorporation' && !charterdocumentsIncorporationTableAppended) {
+    } 
+     
+   
+    else if (folderPath === 'Accounting & Taxation/Charter documents/Incorporation' && !charterdocumentsIncorporationTableAppended) {
         console.log("Inserting Incorporation Table");
         insertcharterdocumentsIncorporationTableAppendedTable();
         charterdocumentsIncorporationTableAppended = true;
@@ -5701,7 +5720,8 @@ function handleFolderPath(folderPath) {
                 },
                 error: function(xhr, textStatus) {
                     if (textStatus !== 'abort') {
-                        toastr.error('An error occurred while uploading files: ' + xhr.responseText);
+                        toastr.error('An error occurred while uploading files');
+                        // toastr.error('An error occurred while uploading files: ' + xhr.responseText);
                         $('#common_file_upload_pop .close').click();    
                         
                     }
@@ -5717,6 +5737,7 @@ function handleFolderPath(folderPath) {
             // xhrRequests.push(xhr); // Store the xhr object in the array
             // globalFileIndex++; // Increment global index for the next file
         });
+        $('#common_file_upload_pop .close').click();    
 
         // Store the requests globally to be able to cancel them
         window.xhrRequests = xhrRequests;
@@ -5785,6 +5806,21 @@ function handleFolderPath(folderPath) {
                         $(`#progress_${currentFileIndex} .cancle_file`).hide(); // Hide cancel button on success
                         $(`#progress_${currentFileIndex} .done_tick`).show(); // Hide cancel button on success
 
+                        // $('.getparm').find('svg').next('span').children('span').text(response.count);
+
+                        // $('.comm_count').text(response.count);
+                        // $('.comm_size').text(response.totalSize);
+
+                        // Find the <td> with "Offer Letter" text
+                            let $offerLetterRow = $('td').filter(function() {
+                            return $(this).text().trim() === response.real_file_name; // response.real_file_name should match "Offer Letter"
+                        }).closest('tr'); // Get the closest row (tr) that contains the td
+
+                        // Update the .comm_count and .comm_size in the same row
+                        $offerLetterRow.find('.comm_count').text(response.count);
+                        // $offerLetterRow.find('.comm_size').text(response.totalSize + ' KB');
+                        $offerLetterRow.find('.comm_size').text(response.totalSize);
+
                         activeUploads[currentFileIndex] = false; // Mark this file as completed
                         checkAllUploadsComplete(); // Check if all uploads are done
 
@@ -5796,7 +5832,8 @@ function handleFolderPath(folderPath) {
                 },
                 error: function(xhr, textStatus) {
                     if (textStatus !== 'abort') {
-                        toastr.error('An error occurred while uploading files: ' + xhr.responseText);
+                        toastr.error('An error occurred while uploading files');
+                        // toastr.error('An error occurred while uploading files: ' + xhr.responseText);
                         $('#common_file_upload_pop_bank .close').click(); 
                     }
 
@@ -5810,6 +5847,8 @@ function handleFolderPath(folderPath) {
             // xhrRequests.push(xhr); // Store the xhr object in the array
             // globalFileIndex++; // Increment global index for the next file
         });
+        $('#common_file_upload_pop_bank .close').click(); 
+
 
         // Store the requests globally to be able to cancel them
         window.xhrRequests = xhrRequests;
@@ -6003,6 +6042,9 @@ $('#upload-file-form').on('submit', function(e) {
                     if (response.errorMessages.length) {
                         response.errorMessages.forEach(function(msg) {
                             // toastr.warning(msg);
+                        toastr.error('An error occurred while uploading files');
+
+
                         });
                     }
 
@@ -6047,6 +6089,8 @@ $('#upload-file-form').on('submit', function(e) {
         // Store the xhr request to allow cancellation later
         xhrRequests[currentFileIndex] = xhrUpload;
     });
+    $('#upload_filee .close').click(); 
+
 
     // Function to add progress bar for each file
     function addProgressIndicator1(fileName, index) {
@@ -8499,7 +8543,7 @@ document.addEventListener("DOMContentLoaded", function() {
             const form = $(this);
             if (!areAllRequiredFieldsFilled(form)) {
                 e.preventDefault();
-                toastr.error('Please fill out all required fields before submitting.'); // Display error toaster message
+                // toastr.error('Please fill out all required fields before submitting.'); // Display error toaster message
             } else {
                 // Disable the submit button after form submission to prevent double submit
                 const submitButton = form.find('button[type="submit"], input[type="submit"]');

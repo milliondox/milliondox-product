@@ -33682,7 +33682,7 @@ footer {
 
 body.dark-only {
 	color: #DBDBDB;
-	background-color: #10101c;
+	background-color: #1A1E25;
 }
 
 body.dark-only .employee-status .d-flex .flex-grow-1 h5 a {
@@ -34615,7 +34615,7 @@ body.dark-only .page-wrapper .page-header .header-wrapper .nav-right>ul>li:nth-c
 }
 
 body.dark-only .page-wrapper .page-body-wrapper {
-	background-color: #10101c;
+	background-color: #1A1E25;
 }
 
 body.dark-only .page-wrapper.compact-wrapper .page-body-wrapper div.sidebar-wrapper .sidebar-main .sidebar-links .sidebar-link.active svg {
@@ -36180,7 +36180,7 @@ body.dark-only .page-wrapper .page-body-wrapper .page-title .breadcrumb-item.act
 }
 
 body.dark-only .page-wrapper .page-body-wrapper .page-body {
-	background-color: #10101c;
+	background-color: #1a1e25;
 }
 
 body.dark-only .page-wrapper .page-body-wrapper .page-body .default-according .card:not(.email-body) {

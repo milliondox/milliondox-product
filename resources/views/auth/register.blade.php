@@ -14,6 +14,10 @@
     <link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&amp;display=swap" rel="stylesheet">
     <link rel="stylesheet" type="text/css" href="../assets/css/vendors/font-awesome.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@200..800&display=swap" rel="stylesheet">
+
     <!-- ico-font-->
     <link rel="stylesheet" type="text/css" href="../assets/css/vendors/icofont.css">
     <!-- Themify icon-->
@@ -205,7 +209,7 @@ Read the policy <a data-bs-toggle="modal" data-bs-target="#term_regester">Click 
                 </div>
             </div>
             <div class="last-message">
-                <p>By clicking “Sign Up” or “Continue with Google” above, you acknowledge that you have read and understood, and agree to Milliondox's Terms & Conditions and Privacy Policy.</p>
+                <p>By clicking “Sign Up” above, you acknowledge that you have read and understood, and agree to Milliondox's Terms & Conditions and Privacy Policy.</p>
             </div>
         </div>
     </div>
@@ -515,9 +519,9 @@ Read the policy <a data-bs-toggle="modal" data-bs-target="#term_regester">Click 
     display: flex;
     align-items: flex-start;
     justify-content: flex-start;
-    margin-bottom: 30px;
+    margin-bottom: 20px;
     flex-direction: column;
-    gap: 15px 0px;
+    gap: 18px 0px;
 }
 
         .login_board .loginn_nt_form .fomr_head p {
@@ -566,7 +570,7 @@ Read the policy <a data-bs-toggle="modal" data-bs-target="#term_regester">Click 
 
         .login_board .loginn_nt_form .login_forrm form .form-group input {
           border: 1px solid #DADADA;
-          border-radius: 0;
+          border-radius: 9px;
           padding: 12px 10px 12px 10px;
           width: 100%;
           outline: none;
@@ -745,7 +749,7 @@ Read the policy <a data-bs-toggle="modal" data-bs-target="#term_regester">Click 
     display: flex;
     align-items: center;
     padding: 0px 0px;
-    margin-bottom: 40px;
+    margin-bottom: 30px;
 }
 
         .login_forrm .last_flid .or_login {

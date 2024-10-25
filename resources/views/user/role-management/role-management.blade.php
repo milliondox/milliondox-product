@@ -722,7 +722,7 @@ function deleteUser(userId) {
                           </div>
 
                 <div class="root_btn">                        
-                 <button class="btn btn-primary"  style="border-radius:5px;" type="submit">Upload</button>
+                 <button class="btn btn-primary"  style="border-radius:5px;" type="submit">Add</button>
 </div>
 				
                                     </form>
@@ -1247,23 +1247,48 @@ document.querySelectorAll('.emppicd').forEach(function(input) {
     }
 .member_list .dropdown {
     display: inline-block;
+    cursor: pointer;
 }
 
 .member_list .dropdown button.dropbtn {
-    background: transparent;
     border: 0;
     outline: none;
     box-shadow: none;
-    display: flex;
-    align-items: center;
     padding: 0;
     pointer-events: none;
+    width: 30px;
+    height: 30px;
+    border-radius: 50px;
+    background: #f1f1f1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: all .25s ease-out;
+    cursor: pointer;
 }
+
+.member_list .dropdown:hover button.dropbtn {
+    background: #e6e1e1;
+}
+
+.dark-only .member_list .dropdown button.dropbtn {
+    background: #212839;
+}
+
+.dark-only .member_list .dropdown:hover button.dropbtn {
+    background: #171b26;
+}
+
+.dark-only .dropdown-content a.dropdown-itemm .delete-button {
+    color: #707070;
+}
+
 
 .dropdown-content .down_del .delet_nt button {
     background: transparent;
     border: none;
     display: inline-flex;
+    color: #707070;
 }
 
     </style>
