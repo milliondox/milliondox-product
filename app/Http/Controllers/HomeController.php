@@ -6692,13 +6692,14 @@ public function directorresignationdir11(Request $request)
             'totalSize' => $totalSize,
         ]);
 }
-public function fetchdirectorresignationdir11FileData()
+public function fetchdirectorresignationdir11FileData(Request $request)
 {
+    $location = $request->input('location');
     $user = auth()->user();
     $files = CommonTable::where('user_id', $user->id)
     ->where('is_delete', 0)
-    ->where('location', 'Legal / Secretarial / Director Resignation')
-    ->where('real_file_name', 'DIR 11 form')
+    ->where('location', $location)
+    ->where('real_file_name', 'DIR-11 form')
     ->get();
    
 
@@ -6835,13 +6836,14 @@ public function directorresignationdir12(Request $request)
             'totalSize' => $totalSize,
         ]);
 }
-public function fetchdirectorresignationdir12FileData()
+public function fetchdirectorresignationdir12FileData(Request $request)
 {
+    $location = $request->input('location');
     $user = auth()->user();
     $files = CommonTable::where('user_id', $user->id)
     ->where('is_delete', 0)
-    ->where('location', 'Legal / Secretarial / Director Resignation')
-    ->where('real_file_name', 'DIR 12 form')
+    ->where('location', $location)
+    ->where('real_file_name', 'DIR-12 form')
     ->get();
    
 
@@ -6979,13 +6981,14 @@ public function depositundertakingsFormDPT3(Request $request)
             'totalSize' => $totalSize,
         ]);
 }
-public function fetchdepositundertakingsFormDPT3FileData()
+public function fetchdepositundertakingsFormDPT3FileData(Request $request)
 {
+    $location = $request->input('location');
     $user = auth()->user();
     $files = CommonTable::where('user_id', $user->id)
     ->where('is_delete', 0)
-    ->where('location', 'Legal / Secretarial / Deposit Undertakings')
-    ->where('real_file_name', 'Form DPT 3')
+    ->where('location', $location)
+    ->where('real_file_name', 'Form DPT-3')
     ->get();
    
 
@@ -7121,13 +7124,14 @@ public function AuditorExitsADT3Form(Request $request)
             'totalSize' => $totalSize,
         ]);
 }
-public function fetchAuditorExitsADT3FormFileData()
+public function fetchAuditorExitsADT3FormFileData(Request $request)
 {
+    $location = $request->input('location');
     $user = auth()->user();
     $files = CommonTable::where('user_id', $user->id)
     ->where('is_delete', 0)
-    ->where('location', 'Legal / Secretarial / Auditor Exits')
-    ->where('real_file_name', 'ADT 3 form')
+    ->where('location', $location)
+    ->where('real_file_name', 'ADT-3 form')
     ->get();
    
 
@@ -7263,12 +7267,13 @@ public function AuditorExitsResignletteraudF(Request $request)
             'totalSize' => $totalSize,
         ]);
 }
-public function fetchAuditorExitsResignletteraudFFileData()
+public function fetchAuditorExitsResignletteraudFFileData(Request $request)
 {
+    $location = $request->input('location');
     $user = auth()->user();
     $files = CommonTable::where('user_id', $user->id)
     ->where('is_delete', 0)
-    ->where('location', 'Legal / Secretarial / Auditor Exits')
+    ->where('location', $location)
     ->where('real_file_name', 'Resignation letter by auditor')
     ->get();
    
@@ -7405,12 +7410,13 @@ public function AuditorExitsResignDetofgroundsseekremaudF(Request $request)
             'totalSize' => $totalSize,
         ]);
 }
-public function fetchAuditorExitsResignDetofgroundsseekremaudFFileData()
+public function fetchAuditorExitsResignDetofgroundsseekremaudFFileData(Request $request)
 {
+    $location = $request->input('location');
     $user = auth()->user();
     $files = CommonTable::where('user_id', $user->id)
     ->where('is_delete', 0)
-    ->where('location', 'Legal / Secretarial / Auditor Exits')
+    ->where('location', $location)
     ->where('real_file_name', 'Details of the grounds for seeking removal of auditor')
     ->get();
    
@@ -7546,12 +7552,13 @@ public function AuditorExitsSpecialResolF(Request $request)
             'totalSize' => $totalSize,
         ]);
 }
-public function fetchAuditorExitsSpecialResolFFileData()
+public function fetchAuditorExitsSpecialResolFFileData(Request $request)
 {
+    $location = $request->input('location');
     $user = auth()->user();
     $files = CommonTable::where('user_id', $user->id)
     ->where('is_delete', 0)
-    ->where('location', 'Legal / Secretarial / Auditor Exits')
+    ->where('location', $location)
     ->where('real_file_name', 'Special Resolution')
     ->get();
    
@@ -7688,13 +7695,14 @@ public function AuditorExitsADT2Form(Request $request)
             'totalSize' => $totalSize,
         ]);
 }
-public function fetchAuditorExitsADT2FormFileData()
+public function fetchAuditorExitsADT2FormFileData(Request $request)
 {
+    $location = $request->input('location');
     $user = auth()->user();
     $files = CommonTable::where('user_id', $user->id)
     ->where('is_delete', 0)
-    ->where('location', 'Legal / Secretarial / Auditor Exits')
-    ->where('real_file_name', 'ADT 2')
+    ->where('location', $location)
+    ->where('real_file_name', 'ADT-2 (Application for removal of auditor(s) before expiry of term)')
     ->get();
    
 
@@ -7827,12 +7835,13 @@ public function Director1AadharKYCF(Request $request)
             'totalSize' => $totalSize,
         ]);
 }
-public function fetchDirector1AadharKYCFFileData()
+public function fetchDirector1AadharKYCFFileData(Request $request)
 {
+    $location = $request->input('location');
     $user = auth()->user();
     $files = CommonTable::where('user_id', $user->id)
     ->where('is_delete', 0)
-    ->where('location', 'LIKE', '%Taxation / Charter documents / Director Details / Director 1')
+    ->where('location', $location)
     ->where('real_file_name', 'Aadhar KYC')
     ->get();
    
@@ -7965,12 +7974,13 @@ public function Director1AddressProofF(Request $request)
             'totalSize' => $totalSize,
         ]);
 }
-public function fetchDirector1AddressProofFFileData()
+public function fetchDirector1AddressProofFFileData(Request $request)
 {
+    $location = $request->input('location');
     $user = auth()->user();
     $files = CommonTable::where('user_id', $user->id)
     ->where('is_delete', 0)
-   ->where('location', 'LIKE', '%Taxation / Charter documents / Director Details / Director 1')
+   ->where('location', $location)
     ->where('real_file_name', 'Address Proof')
     ->get();
    
@@ -8103,12 +8113,13 @@ public function Director1ContactDetailsF(Request $request)
             'totalSize' => $totalSize,
         ]);
 }
-public function fetchDirector1ContactDetailsFFileData()
+public function fetchDirector1ContactDetailsFFileData(Request $request)
 {
+    $location = $request->input('location');
     $user = auth()->user();
     $files = CommonTable::where('user_id', $user->id)
     ->where('is_delete', 0)
-    ->where('location', 'LIKE', '%Taxation / Charter documents / Director Details / Director 1')
+    ->where('location', $location)
     ->where('real_file_name', 'Contact Details')
     ->get();
    
@@ -8242,12 +8253,13 @@ public function Director1PANKYCF(Request $request)
             'totalSize' => $totalSize,
         ]);
 }
-public function fetchDirector1PANKYCFFileData()
+public function fetchDirector1PANKYCFFileData(Request $request)
 {
+    $location = $request->input('location');
     $user = auth()->user();
     $files = CommonTable::where('user_id', $user->id)
     ->where('is_delete', 0)
-    ->where('location', 'LIKE', '%Taxation / Charter documents / Director Details / Director 1')
+    ->where('location', $location)
     ->where('real_file_name', 'PAN KYC')
     ->get();
    
@@ -8380,12 +8392,13 @@ public function Director1PhotoF(Request $request)
             'totalSize' => $totalSize,
         ]);
 }
-public function fetchDirector1PhotoFFileData()
+public function fetchDirector1PhotoFFileData(Request $request)
 {
+    $location = $request->input('location');
     $user = auth()->user();
     $files = CommonTable::where('user_id', $user->id)
     ->where('is_delete', 0)
-    ->where('location', 'LIKE', '%Taxation / Charter documents / Director Details / Director 1')
+    ->where('location',  $location)
     ->where('real_file_name', 'Photo')
     ->get();
    
@@ -8518,12 +8531,13 @@ public function Director1SignimgF(Request $request)
             'totalSize' => $totalSize,
         ]);
 }
-public function fetchDirector1SignimgFFileData()
+public function fetchDirector1SignimgFFileData(Request $request)
 {
+    $location = $request->input('location');
     $user = auth()->user();
     $files = CommonTable::where('user_id', $user->id)
     ->where('is_delete', 0)
-    ->where('location', 'LIKE', '%Taxation / Charter documents / Director Details / Director 1')
+    ->where('location', $location)
     ->where('real_file_name', 'Signature image')
     ->get();
    
@@ -9485,12 +9499,13 @@ public function IncorporationArtofAssocF(Request $request)
             'totalSize' => $totalSize,
         ]);
 }
-public function fetchIncorporationArtofAssocFFileData()
+public function fetchIncorporationArtofAssocFFileData(Request $request)
 {
+    $location = $request->input('location');
     $user = auth()->user();
     $files = CommonTable::where('user_id', $user->id)
     ->where('is_delete', 0)
-    ->where('location', 'LIKE', '%Taxation / Charter documents / Incorporation')
+    ->where('location', $location)
     ->where('real_file_name', 'Articles of Association')
     ->get();
    
@@ -9622,12 +9637,13 @@ public function IncorporationCertifofincorpF(Request $request)
             'totalSize' => $totalSize,
         ]);
 }
-public function fetchIncorporationCertifofincorpFFileData()
+public function fetchIncorporationCertifofincorpFFileData(Request $request)
 {
+    $location = $request->input('location');
     $user = auth()->user();
     $files = CommonTable::where('user_id', $user->id)
     ->where('is_delete', 0)
-    ->where('location', 'LIKE', '%Charter documents / Incorporation')
+    ->where('location', $location)
     ->where('real_file_name', 'Certificate of incorporation')
     ->get();
    
@@ -9762,12 +9778,13 @@ public function CharterdocumentsIncorporationMemorandumofAssociation(Request $re
             'totalSize' => $totalSize,
         ]);
 }
-public function fetchCharterdocumentsIncorporationMemorandumofAssociationFileData()
+public function fetchCharterdocumentsIncorporationMemorandumofAssociationFileData(Request $request)
 {
+    $location = $request->input('location');
     $user = auth()->user();
     $files =CommonTable::where('user_id', $user->id)
     ->where('is_delete', 0)
-    ->where('location', 'LIKE', '%Taxation / Charter documents / Incorporation')
+    ->where('location', $location)
     ->where('real_file_name', 'Memorandum of Association')
     ->get();
    
@@ -9900,12 +9917,13 @@ public function IncorporationPartnerdeedF(Request $request)
             'totalSize' => $totalSize,
         ]);
 }
-public function fetchIncorporationPartnerdeedFFileData()
+public function fetchIncorporationPartnerdeedFFileData(Request $request)
 {
+    $location = $request->input('location');
     $user = auth()->user();
     $files = CommonTable::where('user_id', $user->id)
     ->where('is_delete', 0)
-   ->where('location', 'LIKE', '%Taxation / Charter documents / Incorporation')
+   ->where('location', $location)
     ->where('real_file_name', 'Partnership deed')
     ->get();
    
@@ -10039,12 +10057,13 @@ public function IncorporationLLPAgreementF(Request $request)
             'totalSize' => $totalSize,
         ]);
 }
-public function fetchIncorporationLLPAgreementFFileData()
+public function fetchIncorporationLLPAgreementFFileData(Request $request)
 {
+    $location = $request->input('location');
     $user = auth()->user();
     $files = CommonTable::where('user_id', $user->id)
     ->where('is_delete', 0)
-    ->where('location', 'LIKE', '%Taxation / Charter documents / Incorporation')
+    ->where('location', $location)
     ->where('real_file_name', 'LLP Agreement')
     ->get();
    
@@ -10178,12 +10197,13 @@ public function IncorporationTrustDeedF(Request $request)
             'totalSize' => $totalSize,
         ]);
 }
-public function fetchIncorporationTrustDeedFFileData()
+public function fetchIncorporationTrustDeedFFileData(Request $request)
 {
+    $location = $request->input('location');
     $user = auth()->user();
     $files = CommonTable::where('user_id', $user->id)
     ->where('is_delete', 0)
-    ->where('location', 'LIKE', '%Taxation / Charter documents / Incorporation')
+    ->where('location', $location)
     ->where('real_file_name', 'Trust Deed')
     ->get();
    
@@ -10316,12 +10336,13 @@ public function IncorporationSharecertifF(Request $request)
             'totalSize' => $totalSize,
         ]);
 }
-public function fetchIncorporationSharecertifFFileData()
+public function fetchIncorporationSharecertifFFileData(Request $request)
 {
+    $location = $request->input('location');
     $user = auth()->user();
     $files = CommonTable::where('user_id', $user->id)
     ->where('is_delete', 0)
-    ->where('location', 'LIKE', '%Taxation / Charter documents / Incorporation')
+    ->where('location', $location)
     ->where('real_file_name', 'Share certificates')
     ->get();
    
@@ -10456,12 +10477,13 @@ public function CharterdocumentsRegistrationsPAN(Request $request)
             'totalSize' => $totalSize,
         ]);
 }
-public function fetchCharterdocumentsRegistrationsPANFileData()
+public function fetchCharterdocumentsRegistrationsPANFileData(Request $request)
 {
+    $location = $request->input('location');
     $user = auth()->user();
     $files = CommonTable::where('user_id', $user->id)
     ->where('is_delete', 0)
-   ->where('location', 'LIKE', '%Taxation / Charter documents / Registrations')
+   ->where('location', $location)
     ->where('real_file_name', 'PAN certificate')
     ->get();
    
@@ -10595,12 +10617,13 @@ public function CharterdocumentsRegistrationsTAN(Request $request)
             'totalSize' => $totalSize,
         ]);
 }
-public function fetchCharterdocumentsRegistrationsTANFileData()
+public function fetchCharterdocumentsRegistrationsTANFileData(Request $request)
 {
+    $location = $request->input('location');
     $user = auth()->user();
     $files = CommonTable::where('user_id', $user->id)
     ->where('is_delete', 0)
-    ->where('location', 'LIKE', '%Taxation / Charter documents / Registrations')
+    ->where('location', $location)
     ->where('real_file_name', 'TAN certificate')
     ->get();
    
@@ -10736,12 +10759,13 @@ public function CharterdocumentsRegistrationsGSTIN(Request $request)
             'totalSize' => $totalSize,
         ]);
 }
-public function fetchCharterdocumentsRegistrationsGSTINFileData()
+public function fetchCharterdocumentsRegistrationsGSTINFileData(Request $request)
 {
+    $location = $request->input('location');
     $user = auth()->user();
     $files = CommonTable::where('user_id', $user->id)
     ->where('is_delete', 0)
-    ->where('location', 'LIKE', '%Taxation / Charter documents / Registrations')
+    ->where('location', $location)
     ->where('real_file_name', 'GSTIN certificate')
     ->get();
    
@@ -10875,12 +10899,13 @@ public function CharterdocumentsRegistrationsMSME(Request $request)
             'totalSize' => $totalSize,
         ]);
 }
-public function fetchCharterdocumentsRegistrationsMSMEFileData()
+public function fetchCharterdocumentsRegistrationsMSMEFileData(Request $request)
 {
+    $location = $request->input('location');
     $user = auth()->user();
     $files = CommonTable::where('user_id', $user->id)
     ->where('is_delete', 0)
-    ->where('location', 'LIKE', '%Taxation / Charter documents / Registrations')
+    ->where('location', $location)
     ->where('real_file_name', 'MSME certificate')
     ->get();
    
@@ -11013,12 +11038,13 @@ public function CharterdocumentsRegistrationsTrademark(Request $request)
             'totalSize' => $totalSize,
         ]);
 }
-public function fetchCharterdocumentsRegistrationsTrademarkFileData()
+public function fetchCharterdocumentsRegistrationsTrademarkFileData(Request $request)
 {
+    $location = $request->input('location');
     $user = auth()->user();
     $files = CommonTable::where('user_id', $user->id)
     ->where('is_delete', 0)
-    ->where('location', 'LIKE', '%Taxation / Charter documents / Registrations')
+    ->where('location', $location)
     ->where('real_file_name', 'Trademark')
     ->get();
    
@@ -11152,12 +11178,13 @@ public function CharterdocumentsRegistrationsPFC(Request $request)
             'totalSize' => $totalSize,
         ]);
 }
-public function fetchCharterdocumentsRegistrationsPFCFileData()
+public function fetchCharterdocumentsRegistrationsPFCFileData(Request $request)
 {
+    $location = $request->input('location');
     $user = auth()->user();
     $files = CommonTable::where('user_id', $user->id)
     ->where('is_delete', 0)
-    ->where('location', 'LIKE', '%Taxation / Charter documents / Registrations')
+    ->where('location', $location)
     ->where('real_file_name', 'Provident Fund certificate')
     ->get();
    
@@ -11292,12 +11319,13 @@ public function CharterdocumentsRegistrationsESIC(Request $request)
             'totalSize' => $totalSize,
         ]);
 }
-public function fetchCharterdocumentsRegistrationsESICFileData()
+public function fetchCharterdocumentsRegistrationsESICFileData(Request $request)
 {
+    $location = $request->input('location');
     $user = auth()->user();
     $files = CommonTable::where('user_id', $user->id)
     ->where('is_delete', 0)
-    ->where('location', 'LIKE', '%Taxation / Charter documents / Registrations')
+    ->where('location', $location)
     ->where('real_file_name', 'Employee State Insurance certificate')
     ->get();
    
@@ -11430,12 +11458,13 @@ public function CharterdocumentsRegistrationsPTC(Request $request)
             'totalSize' => $totalSize,
         ]);
 }
-public function fetchCharterdocumentsRegistrationsPTCDataFileData()
+public function fetchCharterdocumentsRegistrationsPTCDataFileData(Request $request)
 {
+    $location = $request->input('location');
     $user = auth()->user();
     $files = CommonTable::where('user_id', $user->id)
     ->where('is_delete', 0)
-    ->where('location', 'LIKE', '%Taxation / Charter documents / Registrations')
+    ->where('location', $location)
     ->where('real_file_name', 'Professional Tax certificate')
     ->get();
    
@@ -11568,12 +11597,13 @@ public function CharterdocumentsRegistrationsLWFC(Request $request)
             'totalSize' => $totalSize,
         ]);
 }
-public function fetchCharterdocumentsRegistrationsLWFCFileData()
+public function fetchCharterdocumentsRegistrationsLWFCFileData(Request $request)
 {
+    $location = $request->input('location');
     $user = auth()->user();
     $files = CommonTable::where('user_id', $user->id)
     ->where('is_delete', 0)
-    ->where('location', 'LIKE', '%Taxation / Charter documents / Registrations')
+    ->where('location', $location)
     ->where('real_file_name', 'Labour Welfare Fund certificate')
     ->get();
    
@@ -11706,12 +11736,13 @@ public function CharterdocumentsRegistrationsPOSHPolicy(Request $request)
             'totalSize' => $totalSize,
         ]);
 }
-public function fetchCharterdocumentsRegistrationsPOSHPolicyFileData()
+public function fetchCharterdocumentsRegistrationsPOSHPolicyFileData(Request $request)
 {
+    $location = $request->input('location');
     $user = auth()->user();
     $files = CommonTable::where('user_id', $user->id)
     ->where('is_delete', 0)
-    ->where('location', 'LIKE', '%Taxation / Charter documents / Registrations')
+    ->where('location', $location)
     ->where('real_file_name', 'POSH Policy')
     ->get();
    
@@ -11850,12 +11881,13 @@ public function SecretarialAuditorAppointmentBRAA(Request $request)
             'totalSize' => $totalSize,
         ]);
 }
-public function fetchSecretarialAuditorAppointmentBRAAFileData()
+public function fetchSecretarialAuditorAppointmentBRAAFileData(Request $request)
 {
+    $location = $request->input('location');
     $user = auth()->user();
     $files = CommonTable::where('user_id', $user->id)
     ->where('is_delete', 0)
-    ->where('location', 'Legal / Secretarial / Auditor Appointment')
+    ->where('location', $location)
     ->where('real_file_name', 'Board Resolution for the appointment of Auditor')
     ->get();
    
@@ -11989,12 +12021,13 @@ public function SecretarialAuditorAppointmentIA(Request $request)
             'totalSize' => $totalSize,
         ]);
 }
-public function fetchSecretarialAuditorAppointmentIAFileData()
+public function fetchSecretarialAuditorAppointmentIAFileData(Request $request)
 {
+    $location = $request->input('location');
     $user = auth()->user();
     $files = CommonTable::where('user_id', $user->id)
     ->where('is_delete', 0)
-    ->where('location', 'Legal / Secretarial / Auditor Appointment')
+    ->where('location', $location)
     ->where('real_file_name', 'Intimation to auditor')
     ->get();
    
@@ -12130,12 +12163,13 @@ public function SecretarialAuditorAppointmentLA(Request $request)
             'totalSize' => $totalSize,
         ]);
 }
-public function fetchSecretarialAuditorAppointmentLAFileData()
+public function fetchSecretarialAuditorAppointmentLAFileData(Request $request)
 {
+    $location = $request->input('location');
     $user = auth()->user();
     $files = CommonTable::where('user_id', $user->id)
     ->where('is_delete', 0)
-    ->where('location', 'Legal / Secretarial / Auditor Appointment')
+    ->where('location', $location)
     ->where('real_file_name', 'Letter of appointment')
     ->get();
    
@@ -12268,12 +12302,13 @@ public function SecretarialAuditorAppointmentCRCAA(Request $request)
             'totalSize' => $totalSize,
         ]);
 }
-public function fetchSecretarialAuditorAppointmentCRCAAFileData()
+public function fetchSecretarialAuditorAppointmentCRCAAFileData(Request $request)
 {
+    $location = $request->input('location');
     $user = auth()->user();
     $files = CommonTable::where('user_id', $user->id)
     ->where('is_delete', 0)
-    ->where('location', 'Legal / Secretarial / Auditor Appointment')
+    ->where('location', $location)
     ->where('real_file_name', 'Certificate as per Rule 4 and consent by Auditor for his appointment')
     ->get();
    
@@ -12405,12 +12440,13 @@ public function SecretarialAuditorAppointmentALA(Request $request)
             'totalSize' => $totalSize,
         ]);
 }
-public function fetchSecretarialAuditorAppointmentALAFileData()
+public function fetchSecretarialAuditorAppointmentALAFileData(Request $request)
 {
+    $location = $request->input('location');
     $user = auth()->user();
     $files = CommonTable::where('user_id', $user->id)
     ->where('is_delete', 0)
-    ->where('location', 'Legal / Secretarial / Auditor Appointment')
+    ->where('location', $location)
     ->where('real_file_name', 'Acceptance letter for appointment')
     ->get();
    
@@ -13106,12 +13142,13 @@ public function SecretarialAuditorAppointmentSR(Request $request)
             'totalSize' => $totalSize,
         ]);
 }
-public function fetchSecretarialAuditorAppointmentSRFileData()
+public function fetchSecretarialAuditorAppointmentSRFileData(Request $request)
 {
+    $location = $request->input('location');
     $user = auth()->user();
     $files = CommonTable::where('user_id', $user->id)
     ->where('is_delete', 0)
-    ->where('location', 'Legal / Secretarial / Auditor Appointment')
+    ->where('location', $location)
     ->where('real_file_name', 'Special Resolution')
     ->get();
    
@@ -18071,7 +18108,7 @@ $entriesinc9 = CommonTable::where('user_id', $user->id)
       $entriesdirectorresignationdir11 = CommonTable::where('user_id', $user->id)
     ->where('is_delete', 0)
     ->where('location', $decodedFolderLocation)
-    ->where('real_file_name', 'DIR 11 form')
+    ->where('real_file_name', 'DIR-11 form')
     ->get();
         $countdirectorresignationdir11 = $entriesdirectorresignationdir11->count();
         $totalSizeBytesdirectorresignationdir11 = $entriesdirectorresignationdir11->sum('file_size');
@@ -18082,7 +18119,7 @@ $entriesinc9 = CommonTable::where('user_id', $user->id)
         $entriesdirectorresignationdir12 = CommonTable::where('user_id', $user->id)
     ->where('is_delete', 0)
     ->where('location', $decodedFolderLocation)
-    ->where('real_file_name', 'DIR 12 form')
+    ->where('real_file_name', 'DIR-12 form')
     ->get();
         $countdirectorresignationdir12 = $entriesdirectorresignationdir12->count();
         $totalSizeBytesdirectorresignationdir12 = $entriesdirectorresignationdir12->sum('file_size');
@@ -18092,7 +18129,7 @@ $entriesinc9 = CommonTable::where('user_id', $user->id)
         $entriesdepositundertakingsFormDPT3 = CommonTable::where('user_id', $user->id)
     ->where('is_delete', 0)
     ->where('location', $decodedFolderLocation)
-    ->where('real_file_name', 'Form DPT 3')
+    ->where('real_file_name', 'Form DPT-3')
     ->get();
         $countdepositundertakingsFormDPT3 = $entriesdepositundertakingsFormDPT3->count();
         $totalSizeBytesdepositundertakingsFormDPT3 = $entriesdepositundertakingsFormDPT3->sum('file_size');
@@ -18103,7 +18140,7 @@ $entriesinc9 = CommonTable::where('user_id', $user->id)
          $entriesAuditorExitsADT3 = CommonTable::where('user_id', $user->id)
     ->where('is_delete', 0)
     ->where('location', $decodedFolderLocation)
-    ->where('real_file_name', 'ADT 3 form')
+    ->where('real_file_name', 'ADT-3 form')
     ->get();
         $countAuditorExitsADT3 = $entriesAuditorExitsADT3->count();
         $totalSizeBytesAuditorExitsADT3 = $entriesAuditorExitsADT3->sum('file_size');
@@ -18148,7 +18185,7 @@ $entriesinc9 = CommonTable::where('user_id', $user->id)
          $entriesAuditorExitsADT2 = CommonTable::where('user_id', $user->id)
     ->where('is_delete', 0)
     ->where('location', $decodedFolderLocation)
-    ->where('real_file_name', 'ADT 2')
+    ->where('real_file_name', 'ADT-2 (Application for removal of auditor(s) before expiry of term)')
     ->get();
         $countAuditorExitsADT2 = $entriesAuditorExitsADT2->count();
         $totalSizeBytesAuditorExitsADT2 = $entriesAuditorExitsADT2->sum('file_size');
