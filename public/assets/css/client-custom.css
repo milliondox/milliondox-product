@@ -1431,11 +1431,11 @@ body.dark-only .page-wrapper .page-header .header-wrapper .nav-right>ul>li:nth-c
     background: transparent;
     transition: all .25s ease-out;
 }
-.add_events .for_group.an_re button.event-type-btn[data-value="anniversary"] {
+.add_events .for_group.an_re button.event-type-btn[data-value="Other"] {
     color: #FF005C;
 }
 
-.add_events .for_group.an_re button.event-type-btn.active[data-value="anniversary"] {
+.add_events .for_group.an_re button.event-type-btn.active[data-value="Other"] {
     background: #FF005C;
     color: #FFF;
 }
@@ -6184,11 +6184,11 @@ display: block;
     color: #FFF;
 }
 
-.form_evennt .for_group.an_re button.event-type-btn[data-value="anniversary"] {
+.form_evennt .for_group.an_re button.event-type-btn[data-value="Other"] {
     color: #FF005C;
 }
 
-.form_evennt .for_group.an_re button.event-type-btn.active[data-value="anniversary"] {
+.form_evennt .for_group.an_re button.event-type-btn.active[data-value="Other"] {
     background: #FF005C;
     color: #FFF;
 }
@@ -15041,11 +15041,11 @@ body.dark-only .page-wrapper .page-header .header-wrapper .nav-right>ul>li:nth-c
     background: transparent;
     transition: all .25s ease-out;
 }
-.add_events .for_group.an_re button.event-type-btn[data-value="anniversary"] {
+.add_events .for_group.an_re button.event-type-btn[data-value="Other"] {
     color: #FF005C;
 }
 
-.add_events .for_group.an_re button.event-type-btn.active[data-value="anniversary"] {
+.add_events .for_group.an_re button.event-type-btn.active[data-value="Other"] {
     background: #FF005C;
     color: #FFF;
 }
@@ -19928,11 +19928,11 @@ display: block;
     color: #FFF;
 }
 
-.form_evennt .for_group.an_re button.event-type-btn[data-value="anniversary"] {
+.form_evennt .for_group.an_re button.event-type-btn[data-value="Other"] {
     color: #FF005C;
 }
 
-.form_evennt .for_group.an_re button.event-type-btn.active[data-value="anniversary"] {
+.form_evennt .for_group.an_re button.event-type-btn.active[data-value="Other"] {
     background: #FF005C;
     color: #FFF;
 }
