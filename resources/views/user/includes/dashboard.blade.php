@@ -279,7 +279,8 @@ $(".his_edit_event").click(function() {
     $(document).on('click', '.event-type-btn', function() {
         $('.event-type-btn.active').removeClass('active');
         $(this).addClass('active');
-        $('#eventType').val($(this).attr('data-value'));
+        // $('#eventType').val($(this).attr('data-value'));
+        $(this).closest('form').find('#eventType').val($(this).attr('data-value'));
     });
 </script>
 

@@ -1291,6 +1291,8 @@ $user_id = $user->id;
     }
 }
 public function editEvents(Request $request) {
+
+    // dd($request);
     
 
     // Fetch the task by ID and update its values
@@ -1322,7 +1324,7 @@ public function updateEvents(Request $request){
     
     $eventId = $request->input('event_id');
     // print_r($eventId);
-    // dd($request);
+    // print_r($request);
     // dd($eventId);
     
     $validatedData = $request->validate([
