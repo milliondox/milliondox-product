@@ -1633,9 +1633,9 @@ $(document).ready(function() {
                                   </div>
                                 </div>
                                 <div class="for_group an_re">
-                                <button type="button" class="event-type-btn active" name="eventType" value="Reminder" data-value="reminder">Reminder</button>
-                                  <button type="button" class="event-type-btn" name="eventType" value="Anniversary" data-value="anniversary">Other</button>                                  
-                                  <input type="hidden" id="eventType" name="eventType" value="anniversary"> <!-- Hidden input to store selected event type -->
+                                <button type="button" class="event-type-btn active" name="eventType" value="reminder" data-value="reminder">Reminder</button>
+                                  <button type="button" class="event-type-btn" name="eventType" value="Other" data-value="Other">Other</button>                                  
+                                  <input type="hidden" id="eventType" name="eventType" value="Other"> <!-- Hidden input to store selected event type -->
                                 </div>
                                 <div class="for_group bttn">
                                   <button type="submit" class="hvr-rotate">
@@ -1647,79 +1647,99 @@ $(document).ready(function() {
                               </form>
                               
                                  <!--edit form start for event-->
-                                 @foreach($eventsData as $eventsDataList)
-                                 
-                                  <form id="eventFormddd_edit{{$eventsDataList->id}}" action="{{ route('editEvents') }}" method="POST" class="upload-form eventsformedit">
-                                <!-- <input type="hidden" name="_token" value="#" autocomplete="off"> -->
-                                 @csrf
-                                <button type="button" id="close_event_edit_ar{{ $eventsDataList->id }}" class="close_form">
-                                  <span aria-hidden="true">
-                                    <svg width="50" height="50" viewBox="0 0 50 50" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                      <rect width="4.27093" height="66.172" transform="matrix(0.702074 -0.712104 0.709324 0.704883 0 3.31244)" fill="black"></rect>
-                                      <rect width="4.27086" height="66.3713" transform="matrix(-0.704896 -0.70931 0.706518 -0.707695 3.10742 50)" fill="black"></rect>
-                                    </svg>
-                                  </span>
-                                </button>
+                                 @foreach ($eventsData as $eventsDataList)
+                                <form id="eventFormddd_edit{{ $eventsDataList->id }}" action="{{ route('editEvents') }}" method="POST"
+                                    class="upload-form eventsformedit">
+                                    <!-- <input type="hidden" name="_token" value="#" autocomplete="off"> -->
+                                    @csrf
+                                    <button type="button" id="close_event_edit_ar{{ $eventsDataList->id }}" class="close_form">
+                                        <span aria-hidden="true">
+                                            <svg width="50" height="50" viewBox="0 0 50 50" fill="none"
+                                                xmlns="http://www.w3.org/2000/svg">
+                                                <rect width="4.27093" height="66.172"
+                                                    transform="matrix(0.702074 -0.712104 0.709324 0.704883 0 3.31244)" fill="black"></rect>
+                                                <rect width="4.27086" height="66.3713"
+                                                    transform="matrix(-0.704896 -0.70931 0.706518 -0.707695 3.10742 50)" fill="black"></rect>
+                                            </svg>
+                                        </span>
+                                    </button>
 
-                                <div class="for_group">
-                                  <label for="eventName">Event Name</label>
-                                  <input type="text" id="eventName" name="eventName" value="{{$eventsDataList->eventName}}" required="">
-                                  <input type="hidden" id="event_id" name="event_id" value="{{$eventsDataList->id}}" required="">
-                                </div>
-                                <div class="for_group">
-                                  <label for="eventDate">Event Date</label>
-                                  <input type="date" id="eventDate" name="eventDate" value="{{$eventsDataList->eventDate}}"  required="">
-                                </div>
-                                <div class="group_radio">
-    <div class="for_group radio">
-        <input type="radio" id="repeatYearly1{{ $eventsDataList->id }}" name="repeat" value="yearly" 
-               @if($eventsDataList->eventRepeat == 'yearly') checked @endif>
-        <label for="repeatYearly1{{ $eventsDataList->id }}">Every Year</label><br>
-    </div>
-    <div class="for_group radio">
-        <input type="radio" id="repeatMonthly1{{ $eventsDataList->id }}" name="repeat" value="monthly" 
-               @if($eventsDataList->eventRepeat == 'monthly') checked @endif>
-        <label for="repeatMonthly1{{ $eventsDataList->id }}">Every Month</label><br>
-    </div>
-    <div class="for_group radio">
-        <input type="radio" id="repeatDaily1{{ $eventsDataList->id }}" name="repeat" value="daily" 
-               @if($eventsDataList->eventRepeat == 'daily') checked @endif>
-        <label for="repeatDaily1{{ $eventsDataList->id }}">Every Day</label><br>
-    </div>
+                                    <div class="for_group">
+                                        <label for="eventName">Event Name</label>
+                                        <input type="text" id="eventName" name="eventName" value="{{ $eventsDataList->eventName }}"
+                                            required="">
+                                        <input type="hidden" id="event_id" name="event_id" value="{{ $eventsDataList->id }}" required="">
+                                    </div>
+                                    <div class="for_group">
+                                        <label for="eventDate">Event Date</label>
+                                        <input type="date" id="eventDate" name="eventDate" value="{{ $eventsDataList->eventDate }}"
+                                            required="">
+                                    </div>
+                                    <div class="group_radio">
+                                        <div class="for_group radio">
+                                            <input type="radio" id="repeatYearly1{{ $eventsDataList->id }}" name="repeat" value="yearly"
+                                                @if ($eventsDataList->eventRepeat == 'yearly') checked @endif>
+                                            <label for="repeatYearly1{{ $eventsDataList->id }}">Every Year</label><br>
+                                        </div>
+                                        <div class="for_group radio">
+                                            <input type="radio" id="repeatMonthly1{{ $eventsDataList->id }}" name="repeat" value="monthly"
+                                                @if ($eventsDataList->eventRepeat == 'monthly') checked @endif>
+                                            <label for="repeatMonthly1{{ $eventsDataList->id }}">Every Month</label><br>
+                                        </div>
+                                        <div class="for_group radio">
+                                            <input type="radio" id="repeatDaily1{{ $eventsDataList->id }}" name="repeat" value="daily"
+                                                @if ($eventsDataList->eventRepeat == 'daily') checked @endif>
+                                            <label for="repeatDaily1{{ $eventsDataList->id }}">Every Day</label><br>
+                                        </div>
+                                        <div class="for_group radio">
+                                            <input type="radio" id="repeatonce1{{ $eventsDataList->id }}" name="repeat" value="Once"
+                                                @if ($eventsDataList->eventRepeat == 'Once') checked @endif>
+                                            <label for="repeatonce1{{ $eventsDataList->id }}">Once Only</label><br>
 
-    <div class="for_group radio">
-      <input type="radio" id="repeatonce1" name="repeat" value="Once">
-      <label for="repeatonce1">Once Only</label><br>
-      </div>
-</div>
+                                        </div>
 
-                                <div class="for_group an_re">
-                                <button type="button" class="event-type-btn active" name="eventType" value="Reminder" data-value="reminder">Reminder</button>
-                                  <button type="button" class="event-type-btn" name="eventType" value="Anniversary" data-value="anniversary">Other</button>                                
-                                  <input type="hidden" id="eventType" name="eventType" value="anniversary"> <!-- Hidden input to store selected event type -->
-                                </div>
-                                <div class="for_group bttn">
-                                  <button type="submit" class="hvr-rotate">
-                                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                      <path d="M12.6667 12.6667V5.33341H3.33333V12.6667H12.6667ZM10.6667 0.666748H12V2.00008H12.6667C13.0203 2.00008 13.3594 2.14056 13.6095 2.39061C13.8595 2.64065 14 2.97979 14 3.33341V12.6667C14 13.4067 13.4067 14.0001 12.6667 14.0001H3.33333C2.97971 14.0001 2.64057 13.8596 2.39052 13.6096C2.14048 13.3595 2 13.0204 2 12.6667V3.33341C2 2.59341 2.59333 2.00008 3.33333 2.00008H4V0.666748H5.33333V2.00008H10.6667V0.666748ZM7.33333 6.33341H8.66667V8.33341H10.6667V9.66675H8.66667V11.6667H7.33333V9.66675H5.33333V8.33341H7.33333V6.33341Z" fill="white"></path>
-                                    </svg>
-                                    Save</button>
-                                </div>
-                              </form>
-                              <script>
-  $(document).ready(function() {
-    // When the anchor tag is clicked, show the form
-    $('#his_edit_event_ar{{ $eventsDataList->id }}').click(function() {
-      $('#eventFormddd_edit{{ $eventsDataList->id }}').slideDown(); // Show the form
-    });
+                                                  {{-- <div class="for_group radio">
+                                            <input type="radio" id="repeatonce1" name="repeat" value="Once">
+                                            <label for="repeatonce1">Once Only</label><br>
+                                            </div> --}}
 
-    // Optionally, you can hide the form when the "close" button is clicked
-    $('#close_event_edit_ar{{ $eventsDataList->id }}').click(function() {
-      $('#eventFormddd_edit{{ $eventsDataList->id }}').slideUp(); // Hide the form
-    });
-  });
-</script>
-                              @endforeach
+                                    </div>
+
+                                    <div class="for_group an_re">
+                                        <button type="button" class="event-type-btn <?php echo ($eventsDataList->eventType == 'reminder') ? 'active' : ''; ?>" name="eventType" value="reminder"
+                                            data-value="reminder">Reminder</button>
+                                        <button type="button" class="event-type-btn <?php echo ($eventsDataList->eventType == 'Other') ? 'active' : ''; ?>" name="eventType" value="Other"
+                                            data-value="Other">Other</button>
+                                        <input type="hidden" id="eventType" name="eventType" value="<?php echo htmlspecialchars($eventsDataList->eventType); ?>">
+                                        <!-- Hidden input to store selected event type -->
+                                    </div>
+                                    <div class="for_group bttn">
+                                        <button type="submit" class="hvr-rotate">
+                                            <svg width="16" height="16" viewBox="0 0 16 16" fill="none"
+                                                xmlns="http://www.w3.org/2000/svg">
+                                                <path
+                                                    d="M12.6667 12.6667V5.33341H3.33333V12.6667H12.6667ZM10.6667 0.666748H12V2.00008H12.6667C13.0203 2.00008 13.3594 2.14056 13.6095 2.39061C13.8595 2.64065 14 2.97979 14 3.33341V12.6667C14 13.4067 13.4067 14.0001 12.6667 14.0001H3.33333C2.97971 14.0001 2.64057 13.8596 2.39052 13.6096C2.14048 13.3595 2 13.0204 2 12.6667V3.33341C2 2.59341 2.59333 2.00008 3.33333 2.00008H4V0.666748H5.33333V2.00008H10.6667V0.666748ZM7.33333 6.33341H8.66667V8.33341H10.6667V9.66675H8.66667V11.6667H7.33333V9.66675H5.33333V8.33341H7.33333V6.33341Z"
+                                                    fill="white"></path>
+                                            </svg>
+                                            Update</button>
+                                    </div>
+                                </form>
+                                <script>
+                                    $(document).ready(function() {
+                                        // When the anchor tag is clicked, show the form
+                                        $('#his_edit_event_ar{{ $eventsDataList->id }}').click(function() {
+                                            $('#eventFormddd_edit{{ $eventsDataList->id }}').slideDown(); // Show the form
+                                        });
+
+                                        // Optionally, you can hide the form when the "close" button is clicked
+                                        $('#close_event_edit_ar{{ $eventsDataList->id }}').click(function() {
+                                            $('#eventFormddd_edit{{ $eventsDataList->id }}').slideUp(); // Hide the form
+                                        });
+
+                                    });
+                                </script>
+                            @endforeach
+
                               
                                  
                                  <!--edit form end for event-->
@@ -1811,7 +1831,7 @@ $(document).ready(function() {
                                 @foreach($eventsData as $eventsDataList)
                                   <li>
                                     <div class="icon_his_ani">
-                                      @if($eventsDataList->eventType  == "anniversary")
+                                      @if($eventsDataList->eventType  == "Other")
                                       <svg width="10" height="10" viewBox="0 0 10 10" fill="none" xmlns="http://www.w3.org/2000/svg">
                                     <path d="M9.5 5V8.5C9.5 8.76522 9.39464 9.01957 9.20711 9.20711C9.01957 9.39464 8.76522 9.5 8.5 9.5H1.5C1.23478 9.5 0.98043 9.39464 0.792893 9.20711C0.605357 9.01957 0.5 8.76522 0.5 8.5V5H9.5ZM7 0.5C7.13261 0.5 7.25979 0.552678 7.35355 0.646447C7.44732 0.740215 7.5 0.867392 7.5 1V1.5H8.5C8.76522 1.5 9.01957 1.60536 9.20711 1.79289C9.39464 1.98043 9.5 2.23478 9.5 2.5V4H0.5V2.5C0.5 2.23478 0.605357 1.98043 0.792893 1.79289C0.98043 1.60536 1.23478 1.5 1.5 1.5H2.5V1C2.5 0.867392 2.55268 0.740215 2.64645 0.646447C2.74021 0.552678 2.86739 0.5 3 0.5C3.13261 0.5 3.25979 0.552678 3.35355 0.646447C3.44732 0.740215 3.5 0.867392 3.5 1V1.5H6.5V1C6.5 0.867392 6.55268 0.740215 6.64645 0.646447C6.74021 0.552678 6.86739 0.5 7 0.5Z" fill="#434343"/>
                                        </svg>
@@ -1888,7 +1908,7 @@ $(document).ready(function() {
           <ul id="marquee-list">
                             
                            @foreach($upcomingevent as $upevent)
-                                @if($upevent->eventType == "anniversary")
+                                @if($upevent->eventType == "Other")
 
                           <li class="brday">
                           <svg width="10" height="10" viewBox="0 0 10 10" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -1908,7 +1928,7 @@ $(document).ready(function() {
                             
                             @endforeach
 @foreach($upcomingevent as $upevent)
-                                @if($upevent->eventType == "anniversary")
+                                @if($upevent->eventType == "Other")
 
                           <li class="brday"><svg width="30" height="30" viewBox="0 0 30 30" fill="none" xmlns="http://www.w3.org/2000/svg">
                               <g clip-path="url(#clip0_285_1341)">
@@ -1941,7 +1961,7 @@ $(document).ready(function() {
           <ul id="marquee-list">
                             
                            @foreach($upcomingevent as $upevent)
-                                @if($upevent->eventType == "anniversary")
+                                @if($upevent->eventType == "Other")
 
                           <li class="brday">
                           <svg width="10" height="10" viewBox="0 0 10 10" fill="none" xmlns="http://www.w3.org/2000/svg">
