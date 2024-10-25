@@ -229,7 +229,9 @@ Route::post('/updateTask', [App\Http\Controllers\HomeController::class, 'updateT
 
 Route::post('/getTaskWithDate/{taskDate}', [App\Http\Controllers\HomeController::class, 'getTaskWithDate'])
 ->name('getTaskWithDate');
-Route::post('/getEventWithDate/{eventDate}', [App\Http\Controllers\HomeController::class, 'getEventWithDate'])
+// Route::post('/getEventWithDate/{eventDate}', [App\Http\Controllers\HomeController::class, 'getEventWithDate'])
+// ->name('getEventWithDate');
+Route::post('/getEventWithDate', [App\Http\Controllers\HomeController::class, 'getEventWithDate'])
 ->name('getEventWithDate');
 
 // Route::get('/getTaskWithDate', [App\Http\Controllers\HomeController::class, 'getTaskWithDate'])
