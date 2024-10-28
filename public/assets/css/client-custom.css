@@ -27606,6 +27606,12 @@ display:none !important;
 .edit_start .iti.iti--allow-dropdown {
     width: 100%;
 }
+
+.page-wrapper .page-header .header-wrapper .nav-right ul li.setting_munal svg {
+    width: 27px !important;
+    height: 27px !important;
+}
+
 }
 
 
