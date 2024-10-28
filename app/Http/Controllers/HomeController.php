@@ -1240,15 +1240,20 @@ protected function createFolderStructure($employeeName, $userId)
 
 
 
-public function getEventWithDate(Request $request, $eventDate)
+public function getEventWithDate(Request $request)
 {
     // dd($request);
+    $user = auth()->user();
+    $user_id = $user->id;
+    // dd($user_id);
     
      $eventDate = $request->input('eventDate');
     
     try {
         // Find the task by Date
-         $eventsData = TaskEvents::whereDate('eventDate', $eventDate )->get();
+        $eventsData = TaskEvents::where('user_id', $user_id)
+        ->whereDate('eventDate', $eventDate)
+        ->get();
                             
         return response()->json(['taskEvents' => $eventsData,'success' => 'Event Fetched successfully'],200);
 
