@@ -438,8 +438,8 @@
 
 <div class="retreve_inn_sec"> 
     <span>Retrieve documents quickly with Advanced Search.</span>
-    <!--<a href="{{ url("/showAdvSearch") }}?category=Secretarial&section=Board Meetings&subsection=Notices" id="load-notices-btn">TRY OUT-->
-     <a href="{{url('/user/advsearch')}}">TRY OUT
+    <a href="{{ url("/showAdvSearch") }}?category=Secretarial&section=Annual Filings&subsection=AoC-4 (Annual Filing Statement Form)" id="load-notices-btn">TRY OUT
+     <!-- <a href="{{url('/user/advsearch')}}">TRY OUT -->
     <svg width="12" height="10" viewBox="0 0 12 10" fill="none" xmlns="http://www.w3.org/2000/svg">
     <path d="M0.666341 5L11.333 5M11.333 5L7.33301 9M11.333 5L7.33301 1" stroke="#CEFFA8" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
     </svg>
@@ -636,8 +636,8 @@
 
 <div class="retreve_inn_sec"> 
     <span>Retrieve documents quickly with Advanced Search.</span>
-    <!--<a href="{{ url("/showAdvSearch") }}?category=Secretarial&section=Board Meetings&subsection=Notices" id="load-notices-btn">TRY OUT-->
-     <a href="{{url('/user/advsearch')}}">TRY OUT
+    <a href="{{ url("/showAdvSearch") }}?category=Secretarial&section=Annual Filings&subsection=AoC-4 (CFS) (Form for filing consolidated financial statements and other documents with the Registrar)" id="load-notices-btn">TRY OUT
+     <!-- <a href="{{url('/user/advsearch')}}">TRY OUT -->
     <svg width="12" height="10" viewBox="0 0 12 10" fill="none" xmlns="http://www.w3.org/2000/svg">
     <path d="M0.666341 5L11.333 5M11.333 5L7.33301 9M11.333 5L7.33301 1" stroke="#CEFFA8" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
     </svg>
@@ -834,8 +834,8 @@
 
 <div class="retreve_inn_sec"> 
     <span>Retrieve documents quickly with Advanced Search.</span>
-    <!--<a href="{{ url("/showAdvSearch") }}?category=Secretarial&section=Board Meetings&subsection=Notices" id="load-notices-btn">TRY OUT-->
-     <a href="{{url('/user/advsearch')}}">TRY OUT
+    <a href="{{ url("/showAdvSearch") }}?category=Secretarial&section=Annual Filings&subsection=MGT-7/ (Annual Return of a company)" id="load-notices-btn">TRY OUT
+     <!-- <a href="{{url('/user/advsearch')}}">TRY OUT -->
     <svg width="12" height="10" viewBox="0 0 12 10" fill="none" xmlns="http://www.w3.org/2000/svg">
     <path d="M0.666341 5L11.333 5M11.333 5L7.33301 9M11.333 5L7.33301 1" stroke="#CEFFA8" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
     </svg>
@@ -1032,8 +1032,8 @@
 
 <div class="retreve_inn_sec"> 
     <span>Retrieve documents quickly with Advanced Search.</span>
-    <!--<a href="{{ url("/showAdvSearch") }}?category=Secretarial&section=Board Meetings&subsection=Notices" id="load-notices-btn">TRY OUT-->
-     <a href="{{url('/user/advsearch')}}">TRY OUT
+    <a href="{{ url("/showAdvSearch") }}?category=Secretarial&section=Annual Filings&subsection=MGT-7A (Annual Return of a small company)" id="load-notices-btn">TRY OUT
+     <!-- <a href="{{url('/user/advsearch')}}">TRY OUT -->
     <svg width="12" height="10" viewBox="0 0 12 10" fill="none" xmlns="http://www.w3.org/2000/svg">
     <path d="M0.666341 5L11.333 5M11.333 5L7.33301 9M11.333 5L7.33301 1" stroke="#CEFFA8" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
     </svg>

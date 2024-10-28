@@ -573,7 +573,7 @@ Pre-Defined Files
                 return;
             }
 
-            let tableHtml = '<table class="table table-striped"><thead><tr><th>File Name</th><th>Owner</th><th>Tag</th><th>Size</th><th>Date Created</th><th>Location</th><th>Path</th><th>Year</th><th>Action</th></tr></thead><tbody>';
+            let tableHtml = '<table class="table table-striped"><thead><tr><th>File Name</th><th>Owner</th><th>Tag</th><th>Size</th><th>Date Created</th><th>Path</th><th>Year</th><th>Action</th></tr></thead><tbody>';
 
             data.forEach(item => {
                 let path = item.source_table ? `/board-details/${item.id}` : `/download-file/${item.id}`;
@@ -587,12 +587,12 @@ Pre-Defined Files
                 let fyear = item.fyear ? item.fyear : 'N/A';
 
                 tableHtml += `<tr>
-                                <td>${item.name}</td>
+                                <td>${location}</td>
                                 <td>${userName}</td>
                                 <td>${tag}</td>
                                 <td>${size}</td>
                                 <td>${createdDate}</td>
-                                <td>${location}</td>
+                               
                                 <td>${filePath}</td>
                                 <td>${fyear}</td>
                                 <td><a class="dropdown-item download_nt" data-id="${item.id}">

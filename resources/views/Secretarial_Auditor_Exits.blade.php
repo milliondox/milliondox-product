@@ -499,8 +499,8 @@
 
 <div class="retreve_inn_sec"> 
     <span>Retrieve documents quickly with Advanced Search.</span>
-    <!--<a href="{{ url("/showAdvSearch") }}?category=Secretarial&section=Board Meetings&subsection=Notices" id="load-notices-btn">TRY OUT-->
-     <a href="{{url('/user/advsearch')}}">TRY OUT
+    <a href="{{ url("/showAdvSearch") }}?category=Secretarial&section=Auditor Exits&subsection=ADT-3 form" id="load-notices-btn">TRY OUT
+     <!-- <a href="{{url('/user/advsearch')}}">TRY OUT -->
     <svg width="12" height="10" viewBox="0 0 12 10" fill="none" xmlns="http://www.w3.org/2000/svg">
     <path d="M0.666341 5L11.333 5M11.333 5L7.33301 9M11.333 5L7.33301 1" stroke="#CEFFA8" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
     </svg>
@@ -697,8 +697,8 @@
 
 <div class="retreve_inn_sec"> 
     <span>Retrieve documents quickly with Advanced Search.</span>
-    <!--<a href="{{ url("/showAdvSearch") }}?category=Secretarial&section=Board Meetings&subsection=Notices" id="load-notices-btn">TRY OUT-->
-     <a href="{{url('/user/advsearch')}}">TRY OUT
+    <a href="{{ url("/showAdvSearch") }}?category=Secretarial&section=Auditor Exits&subsection=Resignation letter by auditor" id="load-notices-btn">TRY OUT
+     <!-- <a href="{{url('/user/advsearch')}}">TRY OUT -->
     <svg width="12" height="10" viewBox="0 0 12 10" fill="none" xmlns="http://www.w3.org/2000/svg">
     <path d="M0.666341 5L11.333 5M11.333 5L7.33301 9M11.333 5L7.33301 1" stroke="#CEFFA8" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
     </svg>
@@ -894,8 +894,8 @@
 
 <div class="retreve_inn_sec"> 
     <span>Retrieve documents quickly with Advanced Search.</span>
-    <!--<a href="{{ url("/showAdvSearch") }}?category=Secretarial&section=Board Meetings&subsection=Notices" id="load-notices-btn">TRY OUT-->
-     <a href="{{url('/user/advsearch')}}">TRY OUT
+    <a href="{{ url("/showAdvSearch") }}?category=Secretarial&section=Auditor Exits&subsection=Details of the grounds for seeking removal of auditor" id="load-notices-btn">TRY OUT
+     <!-- <a href="{{url('/user/advsearch')}}">TRY OUT -->
     <svg width="12" height="10" viewBox="0 0 12 10" fill="none" xmlns="http://www.w3.org/2000/svg">
     <path d="M0.666341 5L11.333 5M11.333 5L7.33301 9M11.333 5L7.33301 1" stroke="#CEFFA8" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
     </svg>
@@ -1092,8 +1092,8 @@
 
 <div class="retreve_inn_sec"> 
     <span>Retrieve documents quickly with Advanced Search.</span>
-    <!--<a href="{{ url("/showAdvSearch") }}?category=Secretarial&section=Board Meetings&subsection=Notices" id="load-notices-btn">TRY OUT-->
-     <a href="{{url('/user/advsearch')}}">TRY OUT
+    <a href="{{ url("/showAdvSearch") }}?category=Secretarial&section= Auditor Exits&subsection=Special Resolution" id="load-notices-btn">TRY OUT
+     <!-- <a href="{{url('/user/advsearch')}}">TRY OUT -->
     <svg width="12" height="10" viewBox="0 0 12 10" fill="none" xmlns="http://www.w3.org/2000/svg">
     <path d="M0.666341 5L11.333 5M11.333 5L7.33301 9M11.333 5L7.33301 1" stroke="#CEFFA8" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
     </svg>
@@ -1290,8 +1290,8 @@
 
 <div class="retreve_inn_sec"> 
     <span>Retrieve documents quickly with Advanced Search.</span>
-    <!--<a href="{{ url("/showAdvSearch") }}?category=Secretarial&section=Board Meetings&subsection=Notices" id="load-notices-btn">TRY OUT-->
-     <a href="{{url('/user/advsearch')}}">TRY OUT
+    <a href="{{ url("/showAdvSearch") }}?category=Secretarial&section=Auditor Exits&subsection=ADT-2 (Application for removal of auditor(s) before expiry of term)" id="load-notices-btn">TRY OUT
+     <!-- <a href="{{url('/user/advsearch')}}">TRY OUT -->
     <svg width="12" height="10" viewBox="0 0 12 10" fill="none" xmlns="http://www.w3.org/2000/svg">
     <path d="M0.666341 5L11.333 5M11.333 5L7.33301 9M11.333 5L7.33301 1" stroke="#CEFFA8" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
     </svg>
