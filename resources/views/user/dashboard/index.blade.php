@@ -727,7 +727,8 @@ $(document).ready(function () {
       <div class="container-fluid  nt_dashboard_head">
         <div class="row">
           <div class="col-md-3 col-sm-6">
-            <div class="head_profile nt_profile">
+          <a href="{{url('/user/companyprofile')}}" target="_blank">
+            <div class="head_profile nt_profile">           
               <div class="left_profile">
                 <h2><span>Profile Completion</span>{{$progressPercentage}}%</h2>
               </div>
@@ -765,7 +766,10 @@ $(document).ready(function () {
                 </div>
 
               </div>
+    
             </div>
+            </a>
+
           </div>
 
           <div class="col-md-3 col-sm-6">
