@@ -16081,35 +16081,433 @@ public function showAdvSearch(Request $request)
 
     // Define table names and their respective aliases
     $tables = [
-        'board_notice' => 'board_notice',
-        'board_reso' => 'board_reso',
-        'board_minute_book' => 'board_minute_book',
-        'board_as' => 'board_as'
+        'common_table' => 'common_table'
     ];
 
-    // Determine the selected table based on the query parameters
+    // Determine the selected table and location filter based on the query parameters
     $selectedTable = null;
+    $locationFilter = null;
+    $realFileNameFilter = null;
+
     if ($category === 'Secretarial' && $section === 'Board Meetings') {
         switch ($subsection) {
             case 'Notices':
-                $selectedTable = 'board_notice';
+                $selectedTable = 'common_table';
+                $locationFilter = 'Board Meetings';
+                $realFileNameFilter = 'Notices';
                 break;
+                case 'Minute Book':
+                    $selectedTable = 'common_table';
+                    $locationFilter = 'Board Meetings';
+                    $realFileNameFilter = 'Minute Book';
+                    break;
+                    case 'Attendance sheet':
+                        $selectedTable = 'common_table';
+                        $locationFilter = 'Board Meetings';
+                        $realFileNameFilter = 'Attendance sheet';
+                        break;
             case 'Resolutions':
-                $selectedTable = 'board_reso';
+                $selectedTable = 'common_table';
+                $locationFilter = 'Board Meetings';
+                $realFileNameFilter = 'Resolutions';
                 break;
-            case 'Minute Book':
-                $selectedTable = 'board_minute_book';
+           
+            
+            default:
+                $selectedTable = null;
                 break;
-            case 'Attendance sheet':
-                $selectedTable = 'board_as';
+        }
+    }
+    else if ($category === 'Secretarial' && $section === 'Annual Filings') {
+        switch ($subsection) {
+            case 'AoC-4 (Annual Filing Statement Form)':
+                $selectedTable = 'common_table';
+                $locationFilter = 'Annual Filings';
+                $realFileNameFilter = 'AoC-4 (Annual Filing Statement Form)';
                 break;
+                case 'AoC-4 (CFS) (Form for filing consolidated financial statements and other documents with the Registrar)':
+                    $selectedTable = 'common_table';
+                    $locationFilter = 'Annual Filings';
+                    $realFileNameFilter = 'AoC-4 (CFS) (Form for filing consolidated financial statements and other documents with the Registrar)';
+                    break;
+                    case 'MGT-7/ (Annual Return of a company)':
+                        $selectedTable = 'common_table';
+                        $locationFilter = 'Annual Filings';
+                        $realFileNameFilter = 'MGT-7/ (Annual Return of a company)';
+                        break;
+            case 'MGT-7A (Annual Return of a small company)':
+                $selectedTable = 'common_table';
+                $locationFilter = 'Annual Filings';
+                $realFileNameFilter = 'MGT-7A (Annual Return of a small company)';
+                break;
+           
+            
             default:
                 $selectedTable = null;
                 break;
         }
     }
 
-    // Fetch data for the selected table if available
+    else if ($category === 'Secretarial' && $section === 'Annual General Meeting') {
+        switch ($subsection) {
+            case 'Notices':
+                $selectedTable = 'common_table';
+                $locationFilter = 'Annual General Meeting';
+                $realFileNameFilter = 'Notices';
+                break;
+                case 'Minute Book':
+                    $selectedTable = 'common_table';
+                    $locationFilter = 'Annual General Meeting';
+                    $realFileNameFilter = 'Minute Book';
+                    break;
+                    case 'Attendance sheet':
+                        $selectedTable = 'common_table';
+                        $locationFilter = 'Annual General Meeting';
+                        $realFileNameFilter = 'Attendance sheet';
+                        break;
+            case 'Resolutions':
+                $selectedTable = 'common_table';
+                $locationFilter = 'Annual General Meeting';
+                $realFileNameFilter = 'Resolutions';
+                break;
+           
+            
+            default:
+                $selectedTable = null;
+                break;
+        }
+    }
+
+    else if ($category === 'Secretarial' && $section === 'Auditor Appointments') {
+        switch ($subsection) {
+            case 'Board Resolution for the appointment of Auditor':
+                $selectedTable = 'common_table';
+                $locationFilter = 'Auditor Appointments';
+                $realFileNameFilter = 'Board Resolution for the appointment of Auditor';
+                break;
+                case 'Intimation to auditor':
+                    $selectedTable = 'common_table';
+                    $locationFilter = 'Auditor Appointments';
+                    $realFileNameFilter = 'Intimation to auditor';
+                    break;
+                    case 'Letter of appointment':
+                        $selectedTable = 'common_table';
+                        $locationFilter = 'Auditor Appointments';
+                        $realFileNameFilter = 'Letter of appointment';
+                        break;
+            case 'Certificate as per Rule 4 and consent by Auditor for his appointment':
+                $selectedTable = 'common_table';
+                $locationFilter = 'Auditor Appointments';
+                $realFileNameFilter = 'Certificate as per Rule 4 and consent by Auditor for his appointment';
+                break;
+                case 'Acceptance letter for appointment':
+                    $selectedTable = 'common_table';
+                    $locationFilter = 'Auditor Appointments';
+                    $realFileNameFilter = 'Acceptance letter for appointment';
+                    break;
+
+                    case 'Special Resolution':
+                        $selectedTable = 'common_table';
+                        $locationFilter = 'Auditor Appointments';
+                        $realFileNameFilter = 'Special Resolution';
+                        break;
+            
+            default:
+                $selectedTable = null;
+                break;
+        }
+    }
+
+    else if ($category === 'Secretarial' && $section === 'Auditor Exits') {
+        switch ($subsection) {
+            case 'ADT-3 form':
+                $selectedTable = 'common_table';
+                $locationFilter = 'Auditor Exits';
+                $realFileNameFilter = 'ADT-3 form';
+                break;
+                case 'Resignation letter by auditor':
+                    $selectedTable = 'common_table';
+                    $locationFilter = 'Auditor Exits';
+                    $realFileNameFilter = 'Resignation letter by auditor';
+                    break;
+                    case 'Details of the grounds for seeking removal of auditor':
+                        $selectedTable = 'common_table';
+                        $locationFilter = 'Auditor Exits';
+                        $realFileNameFilter = 'Details of the grounds for seeking removal of auditor';
+                        break;
+            case 'Special Resolution':
+                $selectedTable = 'common_table';
+                $locationFilter = 'Auditor Exits';
+                $realFileNameFilter = 'Special Resolution';
+                break;
+                case 'ADT-2 (Application for removal of auditor(s) before expiry of term)':
+                    $selectedTable = 'common_table';
+                    $locationFilter = 'Auditor Exits';
+                    $realFileNameFilter = 'ADT-2 (Application for removal of auditor(s) before expiry of term)';
+                    break;
+
+                    
+            
+            default:
+                $selectedTable = null;
+                break;
+        }
+    }
+
+    else if ($category === 'Secretarial' && $section === 'Deposit Undertakings') {
+        switch ($subsection) {
+            case 'Form DPT-3':
+                $selectedTable = 'common_table';
+                $locationFilter = 'Deposit Undertakings';
+                $realFileNameFilter = 'Form DPT-3';
+                break;
+                
+
+                    
+            
+            default:
+                $selectedTable = null;
+                break;
+        }
+    }
+
+
+    
+    else if ($category === 'Secretarial' && $section === 'Director Appointments') {
+        switch ($subsection) {
+            case 'DIR-3 form/ DIN number':
+                $selectedTable = 'common_table';
+                $locationFilter = 'Director Appointments';
+                $realFileNameFilter = 'DIR-3 form/ DIN number';
+                break;
+                
+                case 'DIR-3 KYC':
+                    $selectedTable = 'common_table';
+                    $locationFilter = 'Director Appointments';
+                    $realFileNameFilter = 'DIR-3 KYC';
+                    break;
+
+                    case 'DIR-6 form':
+                        $selectedTable = 'common_table';
+                        $locationFilter = 'Director Appointments';
+                        $realFileNameFilter = 'DIR-6 form';
+                        break;
+                    
+                        case 'DIR-12 form':
+                            $selectedTable = 'common_table';
+                            $locationFilter = 'Director Appointments';
+                            $realFileNameFilter = 'DIR-12 form';
+                            break;
+            default:
+                $selectedTable = null;
+                break;
+        }
+    }
+
+
+    else if ($category === 'Secretarial' && $section === 'Director%20Resignation%20%26%20Removal') {
+        switch ($subsection) {
+            case 'DIR-11 form':
+                $selectedTable = 'common_table';
+                $locationFilter = 'Director%20Resignation%20%26%20Removal';
+                $realFileNameFilter = 'DIR-11 form';
+                break;
+                
+                case 'DIR-12 form':
+                    $selectedTable = 'common_table';
+                    $locationFilter = 'Director%20Resignation%20%26%20Removal';
+                    $realFileNameFilter = 'DIR-12 form';
+                    break;
+
+                    
+            default:
+                $selectedTable = null;
+                break;
+        }
+    }
+
+    else if ($category === 'Secretarial' && $section === 'Extra Ordinary General Meeting') {
+        switch ($subsection) {
+            case 'Notices':
+                $selectedTable = 'common_table';
+                $locationFilter = 'Extra Ordinary General Meeting';
+                $realFileNameFilter = 'Notices';
+                break;
+                
+                case 'Minute Book':
+                    $selectedTable = 'common_table';
+                    $locationFilter = 'Extra Ordinary General Meeting';
+                    $realFileNameFilter = 'Minute Book';
+                    break;
+
+                    case 'Attendance sheet':
+                        $selectedTable = 'common_table';
+                        $locationFilter = 'Extra Ordinary General Meeting';
+                        $realFileNameFilter = 'Attendance sheet';
+                        break;
+
+                        case 'Resolutions':
+                            $selectedTable = 'common_table';
+                            $locationFilter = 'Extra Ordinary General Meeting';
+                            $realFileNameFilter = 'Resolutions';
+                            break;
+
+                    
+            default:
+                $selectedTable = null;
+                break;
+        }
+    }
+
+
+    else if ($category === 'Secretarial' && $section === 'Incorporation') {
+        switch ($subsection) {
+            case 'RUN Form (Reserve Unique Name)':
+                $selectedTable = 'common_table';
+                $locationFilter = 'Incorporation';
+                $realFileNameFilter = 'RUN Form (Reserve Unique Name)';
+                break;
+                
+                case 'INC-9 (Declaration of Subscribers and First Directors)':
+                    $selectedTable = 'common_table';
+                    $locationFilter = 'Incorporation';
+                    $realFileNameFilter = 'INC-9 (Declaration of Subscribers and First Directors)';
+                    break;
+
+                    case 'SPICe+Part B (Simplified Proforma for Incorporating Company Electronically)':
+                        $selectedTable = 'common_table';
+                        $locationFilter = 'Incorporation';
+                        $realFileNameFilter = 'SPICe+Part B (Simplified Proforma for Incorporating Company Electronically)';
+                        break;
+
+                        case 'INC-33 SPICe MoA (e-Momorandum of Association)':
+                            $selectedTable = 'common_table';
+                            $locationFilter = 'Incorporation';
+                            $realFileNameFilter = 'INC-33 SPICe MoA (e-Momorandum of Association)';
+                            break;
+
+                            case 'INC-34 SPICe MoA (e-Articles of Association)':
+                                $selectedTable = 'common_table';
+                                $locationFilter = 'Incorporation';
+                                $realFileNameFilter = 'INC-34 SPICe MoA (e-Articles of Association)';
+                                break;
+                                case 'INC-35 AGILE-PRO-s':
+                                    $selectedTable = 'common_table';
+                                    $locationFilter = 'Incorporation';
+                                    $realFileNameFilter = 'INC-35 AGILE-PRO-s';
+                                    break;
+
+                                    case 'INC-22 (Notice of situation or change of situation of registered office)':
+                                        $selectedTable = 'common_table';
+                                        $locationFilter = 'Incorporation';
+                                        $realFileNameFilter = 'INC-22 (Notice of situation or change of situation of registered office)';
+                                        break;
+
+                                        case 'INC-20A (Commencement of Business)':
+                                            $selectedTable = 'common_table';
+                                            $locationFilter = 'Incorporation';
+                                            $realFileNameFilter = 'INC-20A (Commencement of Business)';
+                                            break;
+
+                    
+            default:
+                $selectedTable = null;
+                break;
+        }
+    }
+
+
+    else if ($category === 'Secretarial' && $section === 'Statutory Registers') {
+        switch ($subsection) {
+            case 'Register of Members':
+                $selectedTable = 'common_table';
+                $locationFilter = 'Statutory Registers';
+                $realFileNameFilter = 'Register of Members';
+                break;
+                
+                case 'Register of Other Security Holders':
+                    $selectedTable = 'common_table';
+                    $locationFilter = 'Statutory Registers';
+                    $realFileNameFilter = 'Register of Other Security Holders';
+                    break;
+
+                    case '⁠Foreign Register':
+                        $selectedTable = 'common_table';
+                        $locationFilter = 'Statutory Registers';
+                        $realFileNameFilter = '⁠Foreign Register';
+                        break;
+
+                        case 'Register of Directors and KMP':
+                            $selectedTable = 'common_table';
+                            $locationFilter = 'Statutory Registers';
+                            $realFileNameFilter = 'Register of Directors and KMP';
+                            break;
+
+                            case '⁠Register of Charges':
+                                $selectedTable = 'common_table';
+                                $locationFilter = 'Statutory Registers';
+                                $realFileNameFilter = '⁠Register of Charges';
+                                break;
+                                case 'Register of Deposits':
+                                    $selectedTable = 'common_table';
+                                    $locationFilter = 'Statutory Registers';
+                                    $realFileNameFilter = 'Register of Deposits';
+                                    break;
+
+                                    case 'Register of Loans, Guarantees and Securities':
+                                        $selectedTable = 'common_table';
+                                        $locationFilter = 'Statutory Registers';
+                                        $realFileNameFilter = 'Register of Loans, Guarantees and Securities';
+                                        break;
+
+                                        case 'Register of Investments not held in Company’s name':
+                                            $selectedTable = 'common_table';
+                                            $locationFilter = 'Statutory Registers';
+                                            $realFileNameFilter = 'Register of Investments not held in Company’s name';
+                                            break;
+
+                                            case 'Register of Contracts in which Directors are interested':
+                                                $selectedTable = 'common_table';
+                                                $locationFilter = 'Statutory Registers';
+                                                $realFileNameFilter = 'Register of Contracts in which Directors are interested';
+                                                break;
+
+                                                case 'Register of Sweat Equity Shares':
+                                                    $selectedTable = 'common_table';
+                                                    $locationFilter = 'Statutory Registers';
+                                                    $realFileNameFilter = 'Register of Sweat Equity Shares';
+                                                    break;
+
+                                                    case 'Register of Employee Stock Options':
+                                                        $selectedTable = 'common_table';
+                                                        $locationFilter = 'Statutory Registers';
+                                                        $realFileNameFilter = 'Register of Employee Stock Options';
+                                                        break;
+
+                                                        case 'Register of Securities Bought Back':
+                                                            $selectedTable = 'common_table';
+                                                            $locationFilter = 'Statutory Registers';
+                                                            $realFileNameFilter = 'Register of Securities Bought Back';
+                                                            break;
+                                                            case 'Register of Renewed or Duplicate Share Certificates':
+                                                                $selectedTable = 'common_table';
+                                                                $locationFilter = 'Statutory Registers';
+                                                                $realFileNameFilter = 'Register of Renewed or Duplicate Share Certificates';
+                                                                break;
+                                                                case 'Register of SBO':
+                                                                    $selectedTable = 'common_table';
+                                                                    $locationFilter = 'Statutory Registers';
+                                                                    $realFileNameFilter = 'Register of SBO';
+                                                                    break;
+
+                    
+            default:
+                $selectedTable = null;
+                break;
+        }
+    }
+
+    // Fetch data for the selected table if available and filter by location and real_file_name
     if ($selectedTable && array_key_exists($selectedTable, $tables)) {
         $tableData = DB::table($selectedTable)
             ->select(
@@ -16126,6 +16524,8 @@ public function showAdvSearch(Request $request)
             )
             ->where('user_id', $user->id)
             ->where('is_delete', 0)
+            ->where('location', 'like', "%{$locationFilter}%")
+            ->where('real_file_name', $realFileNameFilter)
             ->get();
 
         $results = $tableData->toArray();
@@ -16147,6 +16547,7 @@ public function showAdvSearch(Request $request)
         'results' => $results,
     ]);
 }
+
 
 
 

@@ -8686,7 +8686,28 @@ checkFolderConditions();
         setInterval(getFolderFromURL, 100);
     });
 </script>
+<script>
+// Function to clear cache and cookies
+function clearCacheAndCookies() {
+    // Clear localStorage and sessionStorage
+    localStorage.clear();
+    sessionStorage.clear();
 
+    // Clear all cookies
+    document.cookie.split(";").forEach(cookie => {
+        document.cookie = cookie.replace(/^ +/, "")
+            .replace(/=.*/, "=;expires=" + new Date(0).toUTCString() + ";path=/");
+    });
+}
+
+// Add event listeners to elements with specific classes
+document.querySelectorAll('.breadcrumb-link, .wedcolor, .folder-link, .selected-folder')
+    .forEach(element => {
+        element.addEventListener("click", clearCacheAndCookies);
+    });
+
+
+</script>
 @endsection
    
 

@@ -1129,8 +1129,8 @@
 
 <div class="retreve_inn_sec"> 
     <span>Retrieve documents quickly with Advanced Search.</span>
-    <!--<a href="{{ url("/showAdvSearch") }}?category=Secretarial&section=Board Meetings&subsection=Notices" id="load-notices-btn">TRY OUT-->
-     <a href="{{url('/user/advsearch')}}">TRY OUT
+    <a href="{{ url("/showAdvSearch") }}?category=Secretarial&section=Statutory Registers&subsection=Register of Members" id="load-notices-btn">TRY OUT
+     <!-- <a href="{{url('/user/advsearch')}}">TRY OUT -->
     <svg width="12" height="10" viewBox="0 0 12 10" fill="none" xmlns="http://www.w3.org/2000/svg">
     <path d="M0.666341 5L11.333 5M11.333 5L7.33301 9M11.333 5L7.33301 1" stroke="#CEFFA8" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
     </svg>
@@ -1328,8 +1328,8 @@
 
 <div class="retreve_inn_sec"> 
     <span>Retrieve documents quickly with Advanced Search.</span>
-    <!--<a href="{{ url("/showAdvSearch") }}?category=Secretarial&section=Board Meetings&subsection=Notices" id="load-notices-btn">TRY OUT-->
-     <a href="{{url('/user/advsearch')}}">TRY OUT
+    <a href="{{ url("/showAdvSearch") }}?category=Secretarial&section=Statutory Registers&subsection=Register of Other Security Holders" id="load-notices-btn">TRY OUT
+     <!-- <a href="{{url('/user/advsearch')}}">TRY OUT -->
     <svg width="12" height="10" viewBox="0 0 12 10" fill="none" xmlns="http://www.w3.org/2000/svg">
     <path d="M0.666341 5L11.333 5M11.333 5L7.33301 9M11.333 5L7.33301 1" stroke="#CEFFA8" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
     </svg>
@@ -1526,8 +1526,8 @@
 
 <div class="retreve_inn_sec"> 
     <span>Retrieve documents quickly with Advanced Search.</span>
-    <!--<a href="{{ url("/showAdvSearch") }}?category=Secretarial&section=Board Meetings&subsection=Notices" id="load-notices-btn">TRY OUT-->
-     <a href="{{url('/user/advsearch')}}">TRY OUT
+    <a href="{{ url("/showAdvSearch") }}?category=Secretarial&section=Statutory Registers&subsection=⁠Foreign Register" id="load-notices-btn">TRY OUT
+     <!-- <a href="{{url('/user/advsearch')}}">TRY OUT -->
     <svg width="12" height="10" viewBox="0 0 12 10" fill="none" xmlns="http://www.w3.org/2000/svg">
     <path d="M0.666341 5L11.333 5M11.333 5L7.33301 9M11.333 5L7.33301 1" stroke="#CEFFA8" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
     </svg>
@@ -1723,8 +1723,8 @@
 
 <div class="retreve_inn_sec"> 
     <span>Retrieve documents quickly with Advanced Search.</span>
-    <!--<a href="{{ url("/showAdvSearch") }}?category=Secretarial&section=Board Meetings&subsection=Notices" id="load-notices-btn">TRY OUT-->
-     <a href="{{url('/user/advsearch')}}">TRY OUT
+    <a href="{{ url("/showAdvSearch") }}?category=Secretarial&section=Statutory Registers&subsection=Register of Directors and KMP" id="load-notices-btn">TRY OUT
+     <!-- <a href="{{url('/user/advsearch')}}">TRY OUT -->
     <svg width="12" height="10" viewBox="0 0 12 10" fill="none" xmlns="http://www.w3.org/2000/svg">
     <path d="M0.666341 5L11.333 5M11.333 5L7.33301 9M11.333 5L7.33301 1" stroke="#CEFFA8" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
     </svg>
@@ -1922,8 +1922,8 @@
 
 <div class="retreve_inn_sec"> 
     <span>Retrieve documents quickly with Advanced Search.</span>
-    <!--<a href="{{ url("/showAdvSearch") }}?category=Secretarial&section=Board Meetings&subsection=Notices" id="load-notices-btn">TRY OUT-->
-     <a href="{{url('/user/advsearch')}}">TRY OUT
+    <a href="{{ url("/showAdvSearch") }}?category=Secretarial&section=Statutory Registers&subsection=⁠Register of Charges" id="load-notices-btn">TRY OUT
+     <!-- <a href="{{url('/user/advsearch')}}">TRY OUT -->
     <svg width="12" height="10" viewBox="0 0 12 10" fill="none" xmlns="http://www.w3.org/2000/svg">
     <path d="M0.666341 5L11.333 5M11.333 5L7.33301 9M11.333 5L7.33301 1" stroke="#CEFFA8" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
     </svg>
@@ -2120,8 +2120,8 @@
 
 <div class="retreve_inn_sec"> 
     <span>Retrieve documents quickly with Advanced Search.</span>
-    <!--<a href="{{ url("/showAdvSearch") }}?category=Secretarial&section=Board Meetings&subsection=Notices" id="load-notices-btn">TRY OUT-->
-     <a href="{{url('/user/advsearch')}}">TRY OUT
+    <a href="{{ url("/showAdvSearch") }}?category=Secretarial&section=Statutory Registers&subsection=Register of Deposits" id="load-notices-btn">TRY OUT
+     <!-- <a href="{{url('/user/advsearch')}}">TRY OUT -->
     <svg width="12" height="10" viewBox="0 0 12 10" fill="none" xmlns="http://www.w3.org/2000/svg">
     <path d="M0.666341 5L11.333 5M11.333 5L7.33301 9M11.333 5L7.33301 1" stroke="#CEFFA8" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
     </svg>
@@ -2318,8 +2318,8 @@
 
 <div class="retreve_inn_sec"> 
     <span>Retrieve documents quickly with Advanced Search.</span>
-    <!--<a href="{{ url("/showAdvSearch") }}?category=Secretarial&section=Board Meetings&subsection=Notices" id="load-notices-btn">TRY OUT-->
-     <a href="{{url('/user/advsearch')}}">TRY OUT
+    <a href="{{ url("/showAdvSearch") }}?category=Secretarial&section=Statutory Registers&subsection=Register of Loans, Guarantees and Securities" id="load-notices-btn">TRY OUT
+     <!-- <a href="{{url('/user/advsearch')}}">TRY OUT -->
     <svg width="12" height="10" viewBox="0 0 12 10" fill="none" xmlns="http://www.w3.org/2000/svg">
     <path d="M0.666341 5L11.333 5M11.333 5L7.33301 9M11.333 5L7.33301 1" stroke="#CEFFA8" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
     </svg>
@@ -2515,8 +2515,8 @@
 
 <div class="retreve_inn_sec"> 
     <span>Retrieve documents quickly with Advanced Search.</span>
-    <!--<a href="{{ url("/showAdvSearch") }}?category=Secretarial&section=Board Meetings&subsection=Notices" id="load-notices-btn">TRY OUT-->
-     <a href="{{url('/user/advsearch')}}">TRY OUT
+    <a href="{{ url("/showAdvSearch") }}?category=Secretarial&section= Statutory Registers&subsection=Register of Investments not held in Company’s name" id="load-notices-btn">TRY OUT
+     <!-- <a href="{{url('/user/advsearch')}}">TRY OUT -->
     <svg width="12" height="10" viewBox="0 0 12 10" fill="none" xmlns="http://www.w3.org/2000/svg">
     <path d="M0.666341 5L11.333 5M11.333 5L7.33301 9M11.333 5L7.33301 1" stroke="#CEFFA8" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
     </svg>
@@ -2712,8 +2712,8 @@
 
 <div class="retreve_inn_sec"> 
     <span>Retrieve documents quickly with Advanced Search.</span>
-    <!--<a href="{{ url("/showAdvSearch") }}?category=Secretarial&section=Board Meetings&subsection=Notices" id="load-notices-btn">TRY OUT-->
-     <a href="{{url('/user/advsearch')}}">TRY OUT
+    <a href="{{ url("/showAdvSearch") }}?category=Secretarial&section=Statutory Registers&subsection=⁠Register of Contracts in which Directors are interested" id="load-notices-btn">TRY OUT
+     <!-- <a href="{{url('/user/advsearch')}}">TRY OUT -->
     <svg width="12" height="10" viewBox="0 0 12 10" fill="none" xmlns="http://www.w3.org/2000/svg">
     <path d="M0.666341 5L11.333 5M11.333 5L7.33301 9M11.333 5L7.33301 1" stroke="#CEFFA8" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
     </svg>
@@ -2909,8 +2909,8 @@
 
 <div class="retreve_inn_sec"> 
     <span>Retrieve documents quickly with Advanced Search.</span>
-    <!--<a href="{{ url("/showAdvSearch") }}?category=Secretarial&section=Board Meetings&subsection=Notices" id="load-notices-btn">TRY OUT-->
-     <a href="{{url('/user/advsearch')}}">TRY OUT
+    <a href="{{ url("/showAdvSearch") }}?category=Secretarial&section=Statutory Registers&subsection=Register of Sweat Equity Shares" id="load-notices-btn">TRY OUT
+     <!-- <a href="{{url('/user/advsearch')}}">TRY OUT -->
     <svg width="12" height="10" viewBox="0 0 12 10" fill="none" xmlns="http://www.w3.org/2000/svg">
     <path d="M0.666341 5L11.333 5M11.333 5L7.33301 9M11.333 5L7.33301 1" stroke="#CEFFA8" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
     </svg>
@@ -3106,8 +3106,8 @@
 
 <div class="retreve_inn_sec"> 
     <span>Retrieve documents quickly with Advanced Search.</span>
-    <!--<a href="{{ url("/showAdvSearch") }}?category=Secretarial&section=Board Meetings&subsection=Notices" id="load-notices-btn">TRY OUT-->
-     <a href="{{url('/user/advsearch')}}">TRY OUT
+    <a href="{{ url("/showAdvSearch") }}?category=Secretarial&section=Statutory Registers&subsection=Register of Employee Stock Options" id="load-notices-btn">TRY OUT
+     <!-- <a href="{{url('/user/advsearch')}}">TRY OUT -->
     <svg width="12" height="10" viewBox="0 0 12 10" fill="none" xmlns="http://www.w3.org/2000/svg">
     <path d="M0.666341 5L11.333 5M11.333 5L7.33301 9M11.333 5L7.33301 1" stroke="#CEFFA8" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
     </svg>
@@ -3304,8 +3304,8 @@
 
 <div class="retreve_inn_sec"> 
     <span>Retrieve documents quickly with Advanced Search.</span>
-    <!--<a href="{{ url("/showAdvSearch") }}?category=Secretarial&section=Board Meetings&subsection=Notices" id="load-notices-btn">TRY OUT-->
-     <a href="{{url('/user/advsearch')}}">TRY OUT
+    <a href="{{ url("/showAdvSearch") }}?category=Secretarial&section=Statutory Registers&subsection=Register of Securities Bought Back" id="load-notices-btn">TRY OUT
+     <!-- <a href="{{url('/user/advsearch')}}">TRY OUT -->
     <svg width="12" height="10" viewBox="0 0 12 10" fill="none" xmlns="http://www.w3.org/2000/svg">
     <path d="M0.666341 5L11.333 5M11.333 5L7.33301 9M11.333 5L7.33301 1" stroke="#CEFFA8" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
     </svg>
@@ -3500,8 +3500,8 @@
 
 <div class="retreve_inn_sec"> 
     <span>Retrieve documents quickly with Advanced Search.</span>
-    <!--<a href="{{ url("/showAdvSearch") }}?category=Secretarial&section=Board Meetings&subsection=Notices" id="load-notices-btn">TRY OUT-->
-     <a href="{{url('/user/advsearch')}}">TRY OUT
+    <a href="{{ url("/showAdvSearch") }}?category=Secretarial&section=Statutory Registers&subsection=Register of Renewed or Duplicate Share Certificates" id="load-notices-btn">TRY OUT
+     <!-- <a href="{{url('/user/advsearch')}}">TRY OUT -->
     <svg width="12" height="10" viewBox="0 0 12 10" fill="none" xmlns="http://www.w3.org/2000/svg">
     <path d="M0.666341 5L11.333 5M11.333 5L7.33301 9M11.333 5L7.33301 1" stroke="#CEFFA8" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
     </svg>
@@ -3697,8 +3697,8 @@
 
 <div class="retreve_inn_sec"> 
     <span>Retrieve documents quickly with Advanced Search.</span>
-    <!--<a href="{{ url("/showAdvSearch") }}?category=Secretarial&section=Board Meetings&subsection=Notices" id="load-notices-btn">TRY OUT-->
-     <a href="{{url('/user/advsearch')}}">TRY OUT
+    <a href="{{ url("/showAdvSearch") }}?category=Secretarial&section=Statutory Registers&subsection=Register of SBO" id="load-notices-btn">TRY OUT
+     <!-- <a href="{{url('/user/advsearch')}}">TRY OUT -->
     <svg width="12" height="10" viewBox="0 0 12 10" fill="none" xmlns="http://www.w3.org/2000/svg">
     <path d="M0.666341 5L11.333 5M11.333 5L7.33301 9M11.333 5L7.33301 1" stroke="#CEFFA8" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
     </svg>
@@ -3894,8 +3894,8 @@
 
 <div class="retreve_inn_sec"> 
     <span>Retrieve documents quickly with Advanced Search.</span>
-    <!--<a href="{{ url("/showAdvSearch") }}?category=Secretarial&section=Board Meetings&subsection=Notices" id="load-notices-btn">TRY OUT-->
-     <a href="{{url('/user/advsearch')}}">TRY OUT
+    <a href="{{ url("/showAdvSearch") }}?category=Secretarial&section=Statutory Registers&subsection=Register of Postal Ballot" id="load-notices-btn">TRY OUT
+     <!-- <a href="{{url('/user/advsearch')}}">TRY OUT -->
     <svg width="12" height="10" viewBox="0 0 12 10" fill="none" xmlns="http://www.w3.org/2000/svg">
     <path d="M0.666341 5L11.333 5M11.333 5L7.33301 9M11.333 5L7.33301 1" stroke="#CEFFA8" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
     </svg>
