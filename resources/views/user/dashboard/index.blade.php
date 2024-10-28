@@ -1492,7 +1492,7 @@ $(document).ready(function() {
             },
             data: { eventDate: eventDate },
             success: function(response) {
-                if (response.success) {
+                if (response.success && response.taskEvents && response.taskEvents.length > 0) {
                     $('#re_render_events').empty(); // Clear loading message
 
                     response.taskEvents.forEach(function(event) {
@@ -1773,6 +1773,38 @@ $(document).ready(function() {
                                 </div>
                             </li>
                         `);
+
+                        //
+                        $(document).ready(function() {
+                        $('.active_greenn').on('click', function() {
+                            // Set status and get task ID
+                            // let status = 1;
+                            // $(this).toggleClass('active');
+                            $(this).closest('li').toggleClass('active');
+                            let taskId = $(this).data('task-id'); // Retrieves "22" from data-task-id attribute
+                            
+                            // Send data using AJAX
+                            $.ajax({
+                                url: 'updateTaskStatus', // replace with your endpoint URL
+                                method: 'POST',
+                                data: {
+                                    task_id: taskId
+                                },
+                                success: function(response) {
+                                  window.location.reload();
+                                    console.log("Response from server:", response);
+                                },
+                                error: function(xhr, status, error) {
+                                    console.error("Error:", error);
+                                }
+                            });
+                            
+                            // Optional: Update the button text to show status
+                            // $(this).text('Status: ' + status); 
+                        });
+                    });
+
+                        //
                         $(document).ready(function() {
                         // Set CSRF token for all AJAX requests
                         $.ajaxSetup({
@@ -1916,6 +1948,35 @@ $(document).ready(function() {
 
 
     </script>
+
+<script>
+  $(document).ready(function() {
+      $('.active_greenn').on('click', function() {
+          // Set status and get task ID
+          // let status = 1;
+          let taskId = $(this).data('task-id'); // Retrieves "22" from data-task-id attribute
+          
+          // Send data using AJAX
+          $.ajax({
+              url: 'updateTaskStatus', // replace with your endpoint URL
+              method: 'POST',
+              data: {
+                  task_id: taskId
+              },
+              success: function(response) {
+                window.location.reload();
+                  console.log("Response from server:", response);
+              },
+              error: function(xhr, status, error) {
+                  console.error("Error:", error);
+              }
+          });
+          
+          // Optional: Update the button text to show status
+          // $(this).text('Status: ' + status); 
+      });
+  });
+  </script>
     
     <script>
 $(document).ready(function() {
