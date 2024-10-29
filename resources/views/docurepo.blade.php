@@ -4154,7 +4154,7 @@ function openNewFolder(folderPath) {
     }
 }
 
- function updateBreadcrumb(folderPath) {
+function updateBreadcrumb(folderPath) {
     function getQueryParam(param) {
         const params = new URLSearchParams(window.location.search);
         return params.get(param);
@@ -4165,86 +4165,53 @@ function openNewFolder(folderPath) {
     const decodedFolderPath = folderPaths ? decodeURIComponent(folderPaths) : null;
     const pathToUse = decodedFolderPath || folderPath;
 
-    // let breadcrumbHtml = '';
-    // const folderNames = pathToUse.split('/');
-    // let fullPath = '';
+    let breadcrumbHtml = '';
+    const folderNames = pathToUse.split('/');
+    let fullPath = '';
 
-    // folderNames.forEach((folderName, index) => {
-    //     fullPath += (index > 0 ? '/' : '') + folderName;
+    folderNames.forEach((folderName, index) => {
+        fullPath += (index > 0 ? '/' : '') + folderName;
 
-    //     if (index === folderNames.length - 1) {
-            
-    //         if (strpos(${folderName}, '_') !== false) {
-    //             // Find the position of the '-' character
-    //              let dash_position_name = strpos(${folderName}, '_');
-                
-    //             // Get the substring after the '-'
-    //             let replacedName = substr(${folderName}, dash_position_name + 1);
-    //             ${folderName} = replacedName ;
-                
-    //         }
-    //         else{
-    //             ${folderName} = ${folderName};
-    //         }
-            
-            
-    //         breadcrumbHtml += `<span>${folderName}</span>`;
-    //     } else {
-    //         breadcrumbHtml += `<a href="#" class="breadcrumb-link" data-folder-path="${fullPath}">${folderName}</a> <span>/</span>`;
-    //     }
-    // });
-    
-            let breadcrumbHtml = '';
-            const folderNames = pathToUse.split('/');
-            let fullPath = '';
-            
-            folderNames.forEach((folderName, index) => {
-                fullPath += (index > 0 ? '/' : '') + folderName;
-            
-                // Check if the folderName contains '2024-2025October240_'
-                const pattern = /^\d{4}-\d{4}(January|February|March|April|May|June|July|August|September|October|November|December)\d{1,}_/;
-            
-                if (pattern.test(folderName)) {
-                    // Extract the substring after '2024-2025October240_'
-                    let underscorePosition = folderName.indexOf('_');
-                    folderName = folderName.slice(underscorePosition + 1);
-                }
-            
-                if (index === folderNames.length - 1) {
-                    // Add the last part of the breadcrumb as a plain span
-                    breadcrumbHtml += `<span>${folderName}</span>`;
-                } else {
-                    // Add intermediate breadcrumb links
-                    breadcrumbHtml += `<a href="#" class="breadcrumb-link" data-folder-path="${fullPath}">${folderName}</a> <span> > </span>`;
-                }
-            });
-            
-            
- if (!breadcrumbHtml.trim() || breadcrumbHtml === '<span></span>') {
+        // Check if the folderName contains '2024-2025October240_'
+        const pattern = /^\d{4}-\d{4}(January|February|March|April|May|June|July|August|September|October|November|December)\d{1,}_/;
+
+        if (pattern.test(folderName)) {
+            // Extract the substring after '2024-2025October240_'
+            let underscorePosition = folderName.indexOf('_');
+            folderName = folderName.slice(underscorePosition + 1);
+        }
+
+        if (index === folderNames.length - 1) {
+            // Add the last part of the breadcrumb as a plain span
+            breadcrumbHtml += `<span>${folderName}</span>`;
+        } else {
+            // Add intermediate breadcrumb links
+            breadcrumbHtml += `<a href="#" class="breadcrumb-link" data-folder-path="${fullPath}">${folderName}</a> <span> > </span>`;
+        }
+    });
+
+    if (!breadcrumbHtml.trim() || breadcrumbHtml === '<span></span>') {
         breadcrumbHtml = '<span>Home</span>'; // Set to Home if breadcrumb is empty
     }
 
     // Update the breadcrumb navigation path
     $('.nav-path').html(breadcrumbHtml);
-    console.log("FDgfdgfdgdfgfd :" + breadcrumbHtml); // Log the actual breadcrumbHtml
 
     // Show or hide select_path_view based on breadcrumb content
     if (!breadcrumbHtml.trim() || breadcrumbHtml === '<span>Home</span>') {
-        // Hide the select_path_view if breadcrumbHtml is empty or is just "Home"
-        $('.select_path_view').hide();
+        $('.select_path_view').hide(); // Hide if breadcrumb is empty or is just "Home"
     } else {
-        // Show the select_path_view if breadcrumbHtml has content
-        $('.select_path_view').show();
+        $('.select_path_view').show(); // Show if breadcrumbHtml has content
     }
-
 
     // Attach click event handler to breadcrumb links
     $(document).off('click', '.breadcrumb-link').on('click', '.breadcrumb-link', function(e) {
         e.preventDefault();
         const folderPath = $(this).data('folder-path');
- console.log("gjkhgjhgfgjjhghjghjgjhgjhgjhgjhgjhghjghjgjhgjyg: "+folderPath);
         console.log("Navigating to folder: " + folderPath);
-        navigateToFolder(folderPath); // Function to handle navigation
+
+        // Reload the page with the new folder path as a query parameter
+        window.location.href = `?folder=${encodeURIComponent(folderPath)}`;
     });
 }
 
@@ -4322,33 +4289,44 @@ function navigateToFolder1(folderPath) {
 }
 
 function navigateToFolder(folderPath) {
+    // Show a loader for loading indication
     showLoader();
 
     // Decode the folder path to remove unwanted encoding
     folderPath = decodeURIComponent(folderPath);
 
-   
-        updateBreadcrumb(folderPath);
-        fetchFolderContents(folderPath, false);
-        openNewFolder(folderPath);
-        $('li a').removeClass('selected-folder');
-        $(`[data-folder-path="${folderPath}"]`).addClass('selected-folder');
-        $('#parent-folder, #parent-folders').val(folderPath);
-        toggleLabelWrap();
-        
-        // Save breadcrumb to session (implement this part as needed)
+    // Update the breadcrumb based on the folder path
+    updateBreadcrumb(folderPath);
 
-        // Trigger a success alert with the folder path
-      
+    // Fetch the folder contents (optional if you still want to keep it for async loading)
+    fetchFolderContents(folderPath, false);
 
- 
+    // Open the new folder
+    openNewFolder(folderPath);
 
+    // Update the selected folder UI
+    $('li a').removeClass('selected-folder');
+    $(`[data-folder-path="${folderPath}"]`).addClass('selected-folder');
+    $('#parent-folder, #parent-folders').val(folderPath);
+    toggleLabelWrap();
+
+    // Save breadcrumb to session (implement this part as needed)
+
+    // Check if a folderPath is provided
     if (folderPath) {
+        // Reload the page with the new folder path
         const newUrl = new URL(window.location);
         newUrl.searchParams.set('folder', encodeURIComponent(folderPath));
-        window.history.pushState({ path: newUrl.href }, '', newUrl.href);
+        
+        // Optionally use history.pushState to update the URL without reloading (for AJAX)
+        // Uncomment the next line if you want to change the URL without reloading
+        // window.history.pushState({ path: newUrl.href }, '', newUrl.href);
+
+        // Force reload the page with the new URL
+        window.location.href = newUrl.href;
     }
 }
+
 
 // Listen for browser navigation (back/forward buttons)
 window.addEventListener('popstate', function(event) {
@@ -4444,7 +4422,7 @@ let newPermitter = fullPath.replace(basePath, '');
 // alert(result);
 setInterval(function() {
     let result = decodeAndFormatUrl(url);
-    console.log(result);  // Output: formatted URL every second
+    // console.log(result);  // Output: formatted URL every second
 }, 1000); 
 //  alert(result);
         // let resultto = removeDynamicPrefix(pathToUse);
@@ -4620,7 +4598,7 @@ let basePath = "Accounting & Taxation/Charter Documents/Director Details/";
 let newPermitter = fullPath.replace(basePath, '');
         setInterval(function() {
     let result = decodeAndFormatUrl(url);
-    console.log(result);  // Output: formatted URL every second
+    // console.log(result);  // Output: formatted URL every second
 }, 100); 
 
 // Format the decoded URL
@@ -8676,7 +8654,7 @@ checkFolderConditions();
                 // Dynamically set the 'data-location' attribute on the button element
                 $('.getparm').attr('data-location', decodedFolder);
                 
-                console.log("Decoded Folder Path: ", decodedFolder); // For debugging
+                // console.log("Decoded Folder Path: ", decodedFolder); // For debugging
             } else {
                 console.log('No folder parameter found in the URL.');
             }
@@ -8686,28 +8664,7 @@ checkFolderConditions();
         setInterval(getFolderFromURL, 100);
     });
 </script>
-<script>
-// Function to clear cache and cookies
-function clearCacheAndCookies() {
-    // Clear localStorage and sessionStorage
-    localStorage.clear();
-    sessionStorage.clear();
 
-    // Clear all cookies
-    document.cookie.split(";").forEach(cookie => {
-        document.cookie = cookie.replace(/^ +/, "")
-            .replace(/=.*/, "=;expires=" + new Date(0).toUTCString() + ";path=/");
-    });
-}
-
-// Add event listeners to elements with specific classes
-document.querySelectorAll('.breadcrumb-link, .wedcolor, .folder-link, .selected-folder')
-    .forEach(element => {
-        element.addEventListener("click", clearCacheAndCookies);
-    });
-
-
-</script>
 @endsection
    
 

@@ -16305,17 +16305,17 @@ public function showAdvSearch(Request $request)
     }
 
 
-    else if ($category === 'Secretarial' && $section === 'Director%20Resignation%20%26%20Removal') {
+    else if ($category === 'Secretarial' && $section === 'Director Resignation Removal') {
         switch ($subsection) {
             case 'DIR-11 form':
                 $selectedTable = 'common_table';
-                $locationFilter = 'Director%20Resignation%20%26%20Removal';
+                $locationFilter = 'Director Resignation Removal';
                 $realFileNameFilter = 'DIR-11 form';
                 break;
                 
                 case 'DIR-12 form':
                     $selectedTable = 'common_table';
-                    $locationFilter = 'Director%20Resignation%20%26%20Removal';
+                    $locationFilter = 'Director Resignation Removal';
                     $realFileNameFilter = 'DIR-12 form';
                     break;
 
@@ -16500,6 +16500,248 @@ public function showAdvSearch(Request $request)
                                                                     $realFileNameFilter = 'Register of SBO';
                                                                     break;
 
+                    
+            default:
+                $selectedTable = null;
+                break;
+        }
+    }
+
+    else if ($category === 'Accounting Taxation' && $section === 'Director Details') {
+        switch ($subsection) {
+            case 'Photo':
+                $selectedTable = 'common_table';
+                $locationFilter = 'Director Details';
+                $realFileNameFilter = 'Photo';
+                break;
+                
+                case 'Signature image':
+                    $selectedTable = 'common_table';
+                    $locationFilter = 'Director Details';
+                    $realFileNameFilter = 'Signature image';
+                    break;
+
+                    case 'Aadhar KYC':
+                        $selectedTable = 'common_table';
+                        $locationFilter = 'Director Details';
+                        $realFileNameFilter = '⁠Aadhar KYC';
+                        break;
+
+                        case 'PAN KYC':
+                            $selectedTable = 'common_table';
+                            $locationFilter = 'Director Details';
+                            $realFileNameFilter = 'PAN KYC';
+                            break;
+
+                            case '⁠Address Proof':
+                                $selectedTable = 'common_table';
+                                $locationFilter = 'Director Details';
+                                $realFileNameFilter = 'Address Proof';
+                                break;
+                                case 'Contact Details':
+                                    $selectedTable = 'common_table';
+                                    $locationFilter = 'Director Details';
+                                    $realFileNameFilter = 'Contact Details';
+                                    break;
+
+                                    
+                                                       
+                    
+            default:
+                $selectedTable = null;
+                break;
+        }
+    }
+
+    else if ($category === 'Accounting Taxation' && $section === 'Incorporation') {
+        switch ($subsection) {
+            case 'Memorandum of Association':
+                $selectedTable = 'common_table';
+                $locationFilter = 'Incorporation';
+                $realFileNameFilter = 'Memorandum of Association';
+                break;
+                
+                case 'Articles of Association':
+                    $selectedTable = 'common_table';
+                    $locationFilter = 'Incorporation';
+                    $realFileNameFilter = 'Articles of Association';
+                    break;
+
+                    case 'Certificate of incorporation':
+                        $selectedTable = 'common_table';
+                        $locationFilter = 'Incorporation';
+                        $realFileNameFilter = 'Certificate of incorporation';
+                        break;
+
+                        case 'Partnership deed':
+                            $selectedTable = 'common_table';
+                            $locationFilter = 'Incorporation';
+                            $realFileNameFilter = 'Partnership deed';
+                            break;
+
+                            case 'LLP Agreement':
+                                $selectedTable = 'common_table';
+                                $locationFilter = 'Incorporation';
+                                $realFileNameFilter = 'LLP Agreement';
+                                break;
+                                case 'Trust Deed':
+                                    $selectedTable = 'common_table';
+                                    $locationFilter = 'Incorporation';
+                                    $realFileNameFilter = 'Trust Deed';
+                                    break;
+
+                                    case 'Share certificates':
+                                        $selectedTable = 'common_table';
+                                        $locationFilter = 'Incorporation';
+                                        $realFileNameFilter = 'Share certificates';
+                                        break;
+
+                                    
+                                                       
+                    
+            default:
+                $selectedTable = null;
+                break;
+        }
+    }
+
+    else if ($category === 'Accounting Taxation' && $section === 'Registrations') {
+        switch ($subsection) {
+            case 'PAN certificate':
+                $selectedTable = 'common_table';
+                $locationFilter = 'Registrations';
+                $realFileNameFilter = 'PAN certificate';
+                break;
+                
+                case 'TAN certificate':
+                    $selectedTable = 'common_table';
+                    $locationFilter = 'Registrations';
+                    $realFileNameFilter = 'TAN certificate';
+                    break;
+
+                    case 'GSTIN certificate':
+                        $selectedTable = 'common_table';
+                        $locationFilter = 'Registrations';
+                        $realFileNameFilter = 'GSTIN certificate';
+                        break;
+
+                        case 'MSME certificate':
+                            $selectedTable = 'common_table';
+                            $locationFilter = 'Registrations';
+                            $realFileNameFilter = 'MSME certificate';
+                            break;
+
+                            case 'Trademark':
+                                $selectedTable = 'common_table';
+                                $locationFilter = 'Registrations';
+                                $realFileNameFilter = 'Trademark';
+                                break;
+                                case 'Provident Fund certificate':
+                                    $selectedTable = 'common_table';
+                                    $locationFilter = 'Registrations';
+                                    $realFileNameFilter = 'Provident Fund certificate';
+                                    break;
+
+                                    case 'Employee State Insurance certificate':
+                                        $selectedTable = 'common_table';
+                                        $locationFilter = 'Registrations';
+                                        $realFileNameFilter = 'Employee State Insurance certificate';
+                                        break;
+                                        case 'Professional Tax certificate':
+                                            $selectedTable = 'common_table';
+                                            $locationFilter = 'Registrations';
+                                            $realFileNameFilter = 'Professional Tax certificate';
+                                            break;
+                                            case 'Labour Welfare Fund certificate':
+                                                $selectedTable = 'common_table';
+                                                $locationFilter = 'Registrations';
+                                                $realFileNameFilter = 'Labour Welfare Fund certificate';
+                                                break;
+                                                case 'POSH Policy':
+                                                    $selectedTable = 'common_table';
+                                                    $locationFilter = 'Registrations';
+                                                    $realFileNameFilter = 'POSH Policy';
+                                                    break;
+
+                                    
+                                                       
+                    
+            default:
+                $selectedTable = null;
+                break;
+        }
+    }
+
+    else if ($category === 'Accounting Taxation' && $section === 'Bank Account Statements') {
+        switch ($subsection) {
+            case 'Bank Account Statement':
+                $selectedTable = 'common_table';
+                $locationFilter = 'Bank Account Statements';
+                $realFileNameFilter = 'Bank Account Statement';
+                break;
+                
+               
+
+                                    
+                                                       
+                    
+            default:
+                $selectedTable = null;
+                break;
+        }
+    }
+
+    else if ($category === 'Accounting Taxation' && $section === 'Credit Card Statements') {
+        switch ($subsection) {
+            case 'Add Credit Card Statements':
+                $selectedTable = 'common_table';
+                $locationFilter = 'Credit Card Statements';
+                $realFileNameFilter = 'Add Credit Card Statements';
+                break;
+                
+               
+
+                                    
+                                                       
+                    
+            default:
+                $selectedTable = null;
+                break;
+        }
+    }
+
+    else if ($category === 'Accounting Taxation' && $section === 'Mutual Fund Statements') {
+        switch ($subsection) {
+            case 'Add Mutual Fund Statements':
+                $selectedTable = 'common_table';
+                $locationFilter = 'Mutual Fund Statements';
+                $realFileNameFilter = 'Add Mutual Fund Statements';
+                break;
+                
+               
+
+                                    
+                                                       
+                    
+            default:
+                $selectedTable = null;
+                break;
+        }
+    }
+
+
+    else if ($category === 'Accounting Taxation' && $section === 'Fixed Deposit Statements') {
+        switch ($subsection) {
+            case 'Fixed Deposit Account Statement':
+                $selectedTable = 'common_table';
+                $locationFilter = 'Fixed Deposit Statements';
+                $realFileNameFilter = 'Fixed Deposit Account Statement';
+                break;
+                
+               
+
+                                    
+                                                       
                     
             default:
                 $selectedTable = null;
