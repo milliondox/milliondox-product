@@ -267,7 +267,7 @@ Route::delete('/file/{id}', [App\Http\Controllers\HomeController::class, 'delete
 
 Route::put('/file/{id}/restore', [App\Http\Controllers\HomeController::class, 'restore'])->name('file.restore');
 
-Route::get('/download-folder/{folderPath}', [App\Http\Controllers\HomeController::class, 'downloadFolder']);
+Route::get('/download-folder/{folderid}', [App\Http\Controllers\HomeController::class, 'downloadFolder']);
 // Route::post('/downloadFolders', [App\Http\Controllers\HomeController::class, 'downloadFolders'])->name('downloadFolders');
 
 
