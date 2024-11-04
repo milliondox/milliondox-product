@@ -106,7 +106,7 @@
   
 </script>
   </head>
-  <body>
+  <body class="custom_reverse_dark">
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 <script>window.jQuery || document.write('<script src="{{ asset('assets/js/jquerylocal.js') }}"><\/script>')</script>
 

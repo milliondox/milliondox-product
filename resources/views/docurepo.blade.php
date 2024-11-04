@@ -8665,6 +8665,49 @@ checkFolderConditions();
     });
 </script>
 
+<script>
+$(document).ready(function () {
+  // Check sessionStorage for dark mode state and apply it on page load
+  if (sessionStorage.getItem('body') === 'dark-only') {
+    $('body').addClass('dark-only');
+    $('.mode i').removeClass("fa-moon-o").addClass("fa-lightbulb-o");
+    $('.rolelabel').addClass("text-warning");
+    $('.mode').addClass('active_mod');
+  } else {
+    // Default to light mode if sessionStorage is not set
+    $('body').removeClass('dark-only');
+    $('.mode i').removeClass("fa-lightbulb-o").addClass("fa-moon-o");
+    $('.rolelabel').removeClass("text-warning");
+    $('.mode').removeClass('active_mod');
+  }
+
+  // Handle click event on .mode
+  $(".mode").on("click", function () {
+    if ($('body').hasClass('dark-only')) {
+      // Remove dark mode
+      $('body').removeClass('dark-only');
+      $('.mode i').removeClass("fa-lightbulb-o").addClass("fa-moon-o");
+      $('.rolelabel').removeClass("text-warning");
+      $('.mode').removeClass('active_mod');
+      // Clear the sessionStorage value
+      sessionStorage.removeItem('body');
+    } else {
+      // Activate dark mode
+      $('body').addClass('dark-only');
+      $('.mode i').removeClass("fa-moon-o").addClass("fa-lightbulb-o");
+      $('.rolelabel').addClass("text-warning");
+      $('.mode').addClass('active_mod');
+      // Set the sessionStorage value to 'dark-only'
+      sessionStorage.setItem('body', 'dark-only');
+    }
+  });
+});
+
+
+
+</script>
+
+
 @endsection
    
 

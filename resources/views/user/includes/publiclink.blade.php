@@ -71,6 +71,7 @@
     <script src="{{ asset('assets/js/datatable/datatables/jquery.dataTables.min.js') }}"></script>
     <script src="{{ asset('assets/js/datatable/datatables/datatable.custom.js') }}"></script>
     <script src="{{ asset('assets/js/script.js') }}"></script>
+    <script src="../assets/js/comon_toggle_theme.js"></script>
     <script src="{{ asset('assets/js/theme-customizer/customizer.js') }}">  </script>
     <script src="https://rawgit.com/stadnikEV/slide-v/master/dist/slide-v.min.js"></script>
   

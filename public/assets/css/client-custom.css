@@ -23717,7 +23717,7 @@ body.dark-only .page-wrapper .modal-content {
     border-radius: 50%;
 }
 .nav-menus li .mode .slider:after {
-    content: '\f186';    
+    content: '\f0eb';   
     font-family: FontAwesome;
     position: absolute;
     top: 50%;
@@ -23728,7 +23728,7 @@ body.dark-only .page-wrapper .modal-content {
     color: #000;
 }
 .nav-menus li .mode.active_mod .slider:after {
-   content: '\f0eb';
+    content: '\f186'; 
     left: auto;
     right: 10px;
 }
@@ -23738,7 +23738,7 @@ body.dark-only .page-wrapper .modal-content {
     height: unset !important;
 }
 
-.dark-only .nav-menus li .mode.active_mod .slider {
+ .nav-menus li .mode.active_mod .slider {
     background-color: #83adfb;
 }
 

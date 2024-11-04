@@ -127,6 +127,7 @@
     <script src="/../assets/js/datatable/datatables/jquery.dataTables.min.js"></script>
     <script src="/../assets/js/datatable/datatables/datatable.custom.js"></script>
     <script src="../assets/js/script.js"></script>
+    <script src="../assets/js/comon_toggle_theme.js"></script>
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script> <!-- Include jQuery -->
 <script>
