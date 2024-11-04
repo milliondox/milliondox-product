@@ -538,20 +538,31 @@ public function updateTask(Request $request){
         // }
 }
 
-public function getTaskWithDate(Request $request,$taskDate)
+public function getTaskWithDate(Request $request)
 {
     // dd($request);
+    $user = auth()->user();
+    $user_id = $user->id;
     
-     $taskDate = $request->input('taskDate');
-    //   dd($taskDate);
-    //  print_r($taskDate);
+    $taskDate = $request->input('eventDate');
     
     try {
         // Find the task by Date
-         $tasksData = Tasks::where('status', '!=', 'deleted')
-                            ->whereDate('taskDeadline', $taskDate )->get();
+        //   $tasks = Tasks::where('status', '!=', 'deleted')->where('user_id', $user->id)->get();
+
+    // $tasks = Tasks::where('status', '!=', 'deleted')->where('user_id', $user->id)->whereDate('taskDeadline', $taskDate)->get();
+    $tasks = Tasks::where('status', '!=', 'deleted')
+    ->where('user_id', $user_id)
+    ->whereDate('taskDeadline', $taskDate)
+    ->get();
+
+
+        //  $tasksData = Tasks::where('status', '!=', 'deleted')
+        //                     ->where('user_id', $user_id)
+        //                     ->whereDate('taskDeadline', $taskDate)->get();
+        // dd($tasksData);
                             
-        return response()->json(['tasks' => $tasksData,'success' => 'Task Fetched successfully'],200);
+        return response()->json(['tasks' => $tasks,'success' => 'Task Fetched successfully'],200);
 
         // Return JSON response with task data
         // return response()->json([

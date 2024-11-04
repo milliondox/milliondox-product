@@ -227,7 +227,7 @@ Route::get('/deleteTaskStatus', [App\Http\Controllers\HomeController::class, 'de
 Route::post('/updateTask', [App\Http\Controllers\HomeController::class, 'updateTask'])
 ->name('updateTask');
 
-Route::post('/getTaskWithDate/{taskDate}', [App\Http\Controllers\HomeController::class, 'getTaskWithDate'])
+Route::post('/getTaskWithDate', [App\Http\Controllers\HomeController::class, 'getTaskWithDate'])
 ->name('getTaskWithDate');
 // Route::post('/getEventWithDate/{eventDate}', [App\Http\Controllers\HomeController::class, 'getEventWithDate'])
 // ->name('getEventWithDate');
