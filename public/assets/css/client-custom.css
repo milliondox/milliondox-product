@@ -15148,6 +15148,10 @@ body.dark-only .page-wrapper .page-header .header-wrapper .nav-right>ul>li:nth-c
     height: 100%;
 }
 
+.dark-only .add_events form #close_event_edit_ar svg, .dark-only .close_form svg {
+    filter: invert(1);
+}
+
 
 #show_formm svg {
     margin: 0px 7px 0px 0px;
