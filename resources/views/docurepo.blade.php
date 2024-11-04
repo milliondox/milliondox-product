@@ -1924,34 +1924,43 @@ $(document).ready(function() {
 </div>
 <script>
 $(document).ready(function() {
-    $(document).on('click', '.download_nt', function() {
-        var folderPath = $(this).data('folder-path');
+    $(document).on('click', '.downloadfolder', function() {
+        var folderid = $(this).data('id');
 
-        // Show a loading spinner or message
-        var loadingMessage = $("<div>Preparing your download...</div>");
-        $('body').append(loadingMessage);
+        // Show a loading message or spinner
+        var loadingMessage = $("<div>Preparing your download...</div>").appendTo('body');
 
-        // Send AJAX request to download the folder
         $.ajax({
-            url: '/download-folder/' + encodeURIComponent(folderPath), // URL-encode the folder path
+            url: '/download-folder/' + folderid,
             type: 'GET',
-            success: function(response) {
-                // Remove loading message
+            xhrFields: {
+                responseType: 'blob' // Set response type to blob for file downloads
+            },
+            success: function(response, status, xhr) {
                 loadingMessage.remove();
 
-                // Check if the response contains a valid success message
-                if (response && response.success) {
-                    // Trigger file download using the URL of the ZIP file
-                    window.location.href = response.zipFileUrl; // Ensure zipFileUrl is correctly set
+                // Check if the response is a file (not JSON)
+                const disposition = xhr.getResponseHeader('Content-Disposition');
+                if (disposition && disposition.indexOf('attachment') !== -1) {
+                    const filename = disposition.split('filename=')[1].replace(/"/g, '');
+
+                    // Create a download link for the blob
+                    const blob = new Blob([response], { type: 'application/zip' });
+                    const url = window.URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = filename;
+                    document.body.appendChild(a);
+                    a.click();
+                    a.remove();
+                    window.URL.revokeObjectURL(url);
                 } else {
-                    console.log(response); // Log the entire response to debug
-                    alert('Error: ' + (response.message || 'An unknown error occurred.'));
+                    alert('An error occurred. The file could not be downloaded.');
                 }
             },
             error: function(xhr, status, error) {
-                // Remove loading message
                 loadingMessage.remove();
-                console.error('Error details:', status, error, xhr.responseText); // Log the full error for debugging
+                console.error('Error details:', status, error, xhr.responseText);
                 alert('An error occurred while downloading the folder. Please try again.');
             }
         });
@@ -4209,9 +4218,9 @@ function updateBreadcrumb(folderPath) {
         e.preventDefault();
         const folderPath = $(this).data('folder-path');
         console.log("Navigating to folder: " + folderPath);
-
+        navigateToFolder(folderPath); // Function to handle navigation
         // Reload the page with the new folder path as a query parameter
-        window.location.href = `?folder=${encodeURIComponent(folderPath)}`;
+        // window.location.href = `?folder=${encodeURIComponent(folderPath)}`;
     });
 }
 
@@ -4289,41 +4298,31 @@ function navigateToFolder1(folderPath) {
 }
 
 function navigateToFolder(folderPath) {
-    // Show a loader for loading indication
     showLoader();
 
     // Decode the folder path to remove unwanted encoding
     folderPath = decodeURIComponent(folderPath);
 
-    // Update the breadcrumb based on the folder path
-    updateBreadcrumb(folderPath);
+   
+        updateBreadcrumb(folderPath);
+        fetchFolderContents(folderPath, false);
+        openNewFolder(folderPath);
+        $('li a').removeClass('selected-folder');
+        $(`[data-folder-path="${folderPath}"]`).addClass('selected-folder');
+        $('#parent-folder, #parent-folders').val(folderPath);
+        toggleLabelWrap();
+        
+        // Save breadcrumb to session (implement this part as needed)
 
-    // Fetch the folder contents (optional if you still want to keep it for async loading)
-    fetchFolderContents(folderPath, false);
+        // Trigger a success alert with the folder path
+      
 
-    // Open the new folder
-    openNewFolder(folderPath);
+ 
 
-    // Update the selected folder UI
-    $('li a').removeClass('selected-folder');
-    $(`[data-folder-path="${folderPath}"]`).addClass('selected-folder');
-    $('#parent-folder, #parent-folders').val(folderPath);
-    toggleLabelWrap();
-
-    // Save breadcrumb to session (implement this part as needed)
-
-    // Check if a folderPath is provided
     if (folderPath) {
-        // Reload the page with the new folder path
         const newUrl = new URL(window.location);
         newUrl.searchParams.set('folder', encodeURIComponent(folderPath));
-        
-        // Optionally use history.pushState to update the URL without reloading (for AJAX)
-        // Uncomment the next line if you want to change the URL without reloading
-        // window.history.pushState({ path: newUrl.href }, '', newUrl.href);
-
-        // Force reload the page with the new URL
-        window.location.href = newUrl.href;
+        window.history.pushState({ path: newUrl.href }, '', newUrl.href);
     }
 }
 
