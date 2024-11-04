@@ -227,7 +227,7 @@ Route::get('/deleteTaskStatus', [App\Http\Controllers\HomeController::class, 'de
 Route::post('/updateTask', [App\Http\Controllers\HomeController::class, 'updateTask'])
 ->name('updateTask');
 
-Route::post('/getTaskWithDate/{taskDate}', [App\Http\Controllers\HomeController::class, 'getTaskWithDate'])
+Route::post('/getTaskWithDate', [App\Http\Controllers\HomeController::class, 'getTaskWithDate'])
 ->name('getTaskWithDate');
 // Route::post('/getEventWithDate/{eventDate}', [App\Http\Controllers\HomeController::class, 'getEventWithDate'])
 // ->name('getEventWithDate');
@@ -267,7 +267,7 @@ Route::delete('/file/{id}', [App\Http\Controllers\HomeController::class, 'delete
 
 Route::put('/file/{id}/restore', [App\Http\Controllers\HomeController::class, 'restore'])->name('file.restore');
 
-Route::get('/download-folder/{folderPath}', [App\Http\Controllers\HomeController::class, 'downloadFolder']);
+Route::get('/download-folder/{folderid}', [App\Http\Controllers\HomeController::class, 'downloadFolder']);
 // Route::post('/downloadFolders', [App\Http\Controllers\HomeController::class, 'downloadFolders'])->name('downloadFolders');
 
 
