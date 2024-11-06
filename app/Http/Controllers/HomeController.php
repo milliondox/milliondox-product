@@ -18265,7 +18265,7 @@ private function generateUniqueUsername($fname, $lname)
     //     return view('user.Document-Repository.document-repository', compact('cli_announcements', 'folders'));
     // }
 
-    public function docurepo()
+    public function docurepo(Request $request)
     {
         
         $user = auth()->user();
@@ -18351,35 +18351,7 @@ $commonColumns = [
     'updated_at'
 ];
 
-// Create individual queries for each table
-// $files1 = DB::table('board_notice')
-//     ->select(array_merge($commonColumns, [DB::raw('"board_notice" as table_name')]))
-//     ->where('user_id', $user_id)
-//     ->where('is_delete', 1)
-//     ->unionAll(DB::table('board_notice')->select(DB::raw('NULL as id, "N/A" as file_name, "N/A" as file_type, "N/A" as real_file_name, 0 as file_size, "N/A" as file_path, "N/A" as user_name, NULL as user_id, 0 as file_status, "N/A" as fyear, "N/A" as Month, "N/A" as Tags, "N/A" as location, NULL as created_at, NULL as updated_at, "board_notice" as table_name'))->whereRaw('0 = 1'));
 
-// $files2 = DB::table('board_minute_book')
-//     ->select(array_merge($commonColumns, [DB::raw('"board_minute_book" as table_name')]))
-//     ->where('user_id', $user_id)
-//     ->where('is_delete', 1)
-//     ->unionAll(DB::table('board_minute_book')->select(DB::raw('NULL as id, "N/A" as file_name, "N/A" as file_type, "N/A" as real_file_name, 0 as file_size, "N/A" as file_path, "N/A" as user_name, NULL as user_id, 0 as file_status, "N/A" as fyear, "N/A" as Month, "N/A" as Tags, "N/A" as location, NULL as created_at, NULL as updated_at, "board_minute_book" as table_name'))->whereRaw('0 = 1'))
-//     ->unionAll($files1);
-
-// $files3 = DB::table('board_reso')
-//     ->select(array_merge($commonColumns, [DB::raw('"board_reso" as table_name')]))
-//     ->where('user_id', $user_id)
-//     ->where('is_delete', 1)
-//     ->unionAll(DB::table('board_reso')->select(DB::raw('NULL as id, "N/A" as file_name, "N/A" as file_type, "N/A" as real_file_name, 0 as file_size, "N/A" as file_path, "N/A" as user_name, NULL as user_id, 0 as file_status, "N/A" as fyear, "N/A" as Month, "N/A" as Tags, "N/A" as location, NULL as created_at, NULL as updated_at, "board_reso" as table_name'))->whereRaw('0 = 1'))
-//     ->unionAll($files2);
-
-// $files4 = DB::table('board_as')
-//     ->select(array_merge($commonColumns, [DB::raw('"board_as" as table_name')]))
-//     ->where('user_id', $user_id)
-//     ->where('is_delete', 1)
-//     ->unionAll(DB::table('board_as')->select(DB::raw('NULL as id, "N/A" as file_name, "N/A" as file_type, "N/A" as real_file_name, 0 as file_size, "N/A" as file_path, "N/A" as user_name, NULL as user_id, 0 as file_status, "N/A" as fyear, "N/A" as Month, "N/A" as Tags, "N/A" as location, NULL as created_at, NULL as updated_at, "board_as" as table_name'))->whereRaw('0 = 1'))
-//     ->unionAll($files3)
-//     ->orderBy('updated_at', 'desc')
-//     ->get();
 
 
 $files4 = CommonTable::where('user_id', $user->id)
@@ -18389,22 +18361,44 @@ $files4 = CommonTable::where('user_id', $user->id)
 
     // Ensure the parameter is not null or empty before proceeding
 
+    // dd($request);
+
 
     // Decode the folder parameter
-    $decodedFolderLocation = urldecode($folderLocation);     
+    $decodedFolderLocation = urldecode($folderLocation);  
+    // dd($decodedFolderLocation);
+    $iamhereSKY = false;
+
+    if($request->query('folderPath') ){
+        $decodedFolderLocation =  $request->query('folderPath');  
+        // folderPath: 2024-2025November301_Legal/2024-2025November301_Secretarial/2024-2025November301_Annual Filings
+        $decodedFolderLocation = str_replace("folderPath: ", "", $decodedFolderLocation);
+        $iamhereSKY = true;
+        // dd($decodedFolderLocation);
+
+    }
+
+
                     
         // $filess = BoardMinuteBook::where('user_id', $userId)->get();
         $moadoc = MOA::all();
         $user = auth()->user();
+
         $entries = CommonTable::where('user_id', $user->id)
     ->where('is_delete', 0)
     ->where('location', $decodedFolderLocation)
     ->where('real_file_name', 'Notices')
     ->get();
 
+    // dd($entries);
+
+
+
         $count = $entries->count();
         $totalSizeBytes = $entries->sum('file_size');
         $totalSizeKB = round($totalSizeBytes / 1024, 2);
+
+        // dd($count);
 
 
 
@@ -18645,6 +18639,8 @@ $entriesinc9 = CommonTable::where('user_id', $user->id)
         $countentriesafs = $entriesafs->count(); // Count of entries
         $totalSizeBytesentriesafs = $entriesafs->sum('file_size'); // Sum of file sizes
         $totalSizeKBentrieafs = round($totalSizeBytesentriesafs / 1024, 2); // Convert to KB and round
+
+        // dd($countentriesafs);
         
         
          $entriescfs = CommonTable::where('user_id', $user->id)
@@ -19785,6 +19781,256 @@ $entriesinc9 = CommonTable::where('user_id', $user->id)
     
     // Find the UserRole record where the role matches the user's role
     $userRoleRecord = UserRole::where('role', $userRole)->first();
+
+    if($iamhereSKY === true){
+        return response()->json([
+            'counthroff4' => $counthroff4,
+            'totalSizeKBhroff4' => $totalSizeKBhroff4,
+            'counthroff3' => $counthroff3,
+            'totalSizeKBhroff3' => $totalSizeKBhroff3,
+            'counthroff2' => $counthroff2,
+            'totalSizeKBhroff2' => $totalSizeKBhroff2,
+            'counthroff1' => $counthroff1,
+            'totalSizeKBhroff1' => $totalSizeKBhroff1,
+            'counthremppol4' => $counthremppol4,
+            'totalSizeKBhremppol4' => $totalSizeKBhremppol4,
+            'counthremppol3' => $counthremppol3,
+            'totalSizeKBhremppol3' => $totalSizeKBhremppol3,
+            'counthremppol2' => $counthremppol2,
+            'totalSizeKBhremppol2' => $totalSizeKBhremppol2,
+            'counthremppol1' => $counthremppol1,
+            'totalSizeKBhremppol1' => $totalSizeKBhremppol1,
+            'counthrhrpaymoney5' => $counthrhrpaymoney5,
+            'totalSizeKBhrpaymoney5' => $totalSizeKBhrpaymoney5,
+            'counthrhrpaymoney4' => $counthrhrpaymoney4,
+            'totalSizeKBhrpaymoney4' => $totalSizeKBhrpaymoney4,
+            'counthrhrpaymoney3' => $counthrhrpaymoney3,
+            'totalSizeKBhrpaymoney3' => $totalSizeKBhrpaymoney3,
+            'counthrhrpaymoney2' => $counthrhrpaymoney2,
+            'totalSizeKBhrpaymoney2' => $totalSizeKBhrpaymoney2,
+            'counthrhrpaymoney1' => $counthrhrpaymoney1,
+            'totalSizeKBhrpaymoney1' => $totalSizeKBhrpaymoney1,
+            'counthrhrempdecmaster' => $counthrhrempdecmaster,
+            'totalSizeKBhrempdecmaster' => $totalSizeKBhrempdecmaster,
+            'counthrhrempdec' => $counthrhrempdec,
+            'totalSizeKBhrempdec' => $totalSizeKBhrempdec,
+            'counthrpayrimapprove' => $counthrpayrimapprove,
+            'totalSizeKBhrpayrimapprove' => $totalSizeKBhrpayrimapprove,
+            'counthrpayrim' => $counthrpayrim,
+            'totalSizeKBhrpayrim' => $totalSizeKBhrpayrim,
+            'countkyccontactdetails' => $countkyccontactdetails,
+            'totalSizeKBkyccontactdetails' => $totalSizeKBkyccontactdetails,
+            'countkycaddressproof' => $countkycaddressproof,
+            'totalSizeKBkycaddressproof' => $totalSizeKBkycaddressproof,
+            'countkycpan' => $countkycpan,
+            'totalSizeKBkycpan' => $totalSizeKBkycpan,
+            'countkycaadhar' => $countkycaadhar,
+            'totalSizeKBkycaadhar' => $totalSizeKBkycaadhar,
+            'countkycphoto' => $countkycphoto,
+            'totalSizeKBkycphoto' => $totalSizeKBkycphoto,
+            'countemponboardincometax' => $countemponboardincometax,
+            'totalSizeKBemponboardincometax' => $totalSizeKBemponboardincometax,
+            'countemponboardepf' => $countemponboardepf,
+            'totalSizeKBemponboardepf' => $totalSizeKBemponboardepf,
+            'countemponboardcb' => $countemponboardcb,
+            'totalSizeKBemponboardcb' => $countemponboardcb,
+            'countemponboardnc' => $countemponboardnc,
+            'totalSizeKBemponboardnc' => $totalSizeKBemponboardnc,
+            'countemponboardnda' => $countemponboardnda,
+            'totalSizeKBemponboardnda' => $totalSizeKBemponboardnda,
+            'countemponboardea' => $countemponboardea,
+            'totalSizeKBemponboardea' => $totalSizeKBemponboardea,
+            'countemponboardal' => $countemponboardal,
+            'totalSizeKBemponboardal' => $totalSizeKBemponboardal,
+            'totalSizeKBemponboard' => $totalSizeKBemponboard,
+            'countemponboard' => $countemponboard,
+            'totalSizeKBdirectorappointmentsdir3din' => $totalSizeKBdirectorappointmentsdir3din,
+            'countdirectorappointmentsdir3din' => $countdirectorappointmentsdir3din,
+            'countSECAASR' => $countSECAASR,
+            'totalSizeKBSECAASR' => $totalSizeKBSECAASR,
+            'countSECAAALA' => $countSECAAALA,
+            'totalSizeKBSECAAALA' => $totalSizeKBSECAAALA,
+            'countSECAACRCAA' => $countSECAACRCAA,
+            'totalSizeKBSECAACRCAA' => $totalSizeKBSECAACRCAA,
+            'countSECAALA' => $countSECAALA,
+            'totalSizeKBSECAALA' => $totalSizeKBSECAALA,
+            'countSECAAIA' => $countSECAAIA,
+            'totalSizeKBSECAAIA' => $totalSizeKBSECAAIA,
+            'countSECAABRAA' => $countSECAABRAA,
+            'totalSizeKBSECAABRAA' => $totalSizeKBSECAABRAA,
+            'countcharregPP' => $countcharregPP,
+            'totalSizeKBcharregPP' => $totalSizeKBcharregPP,
+            'countcharregLWFC' => $countcharregLWFC,
+            'totalSizeKBcharregLWFC' => $totalSizeKBcharregLWFC,
+            'countcharregPTC' => $countcharregPTC,
+            'totalSizeKBcharregPTC' => $totalSizeKBcharregPTC,
+            'countcharregESIC' => $countcharregESIC,
+            'totalSizeKBcharregESIC' => $totalSizeKBcharregESIC,
+            'countcharregPFC' => $countcharregPFC,
+            'totalSizeKBcharregPFC' => $totalSizeKBcharregPFC,
+            'countcharregTrademark' => $countcharregTrademark,
+            'totalSizeKBcharregTrademark' => $totalSizeKBcharregTrademark,
+            'countcharregMSME' => $totalSizeKBcharregTrademark,
+            'totalSizeKBcharregMSME' => $totalSizeKBcharregMSME,
+            'countcharregGSTIN' => $totalSizeKBcharregMSME,
+            'totalSizeKBcharregGSTIN' => $totalSizeKBcharregMSME,
+            'countcharregtan' => $countcharregtan,
+            'totalSizeKBcharregtan' => $totalSizeKBcharregtan,
+            'countcharregpan' => $countcharregpan,
+            'totalSizeKBcharregpan' => $totalSizeKBcharregpan,
+            'countIncorporationSharecertifF' => $countIncorporationSharecertifF,
+            'totalSizeKBIncorporationSharecertifF' => $totalSizeKBIncorporationSharecertifF,
+            'countIncorporationTrustDeed' => $countIncorporationTrustDeed,
+            'totalSizeKBIncorporationTrustDeed' => $totalSizeKBIncorporationTrustDeed,
+            'countIncorporationLLPAgreement' => $countIncorporationLLPAgreement,
+            'totalSizeKBIncorporationLLPAgreement' => $totalSizeKBIncorporationLLPAgreement,
+            'countIncorporationPartnerdeed' => $countIncorporationPartnerdeed,
+            'totalSizeKBIncorporationPartnerdeed' => $totalSizeKBIncorporationPartnerdeed,
+            'countIncorporationMemoofAssoc' => $countIncorporationMemoofAssoc,
+            'totalSizeKBIncorporationMemoofAssoc' => $totalSizeKBIncorporationMemoofAssoc,
+            'countIncorporationCertifofincorp' => $countIncorporationCertifofincorp,
+            'totalSizeKBIncorporationCertifofincorp' => $totalSizeKBIncorporationCertifofincorp,
+            'countIncorporationArtofAssoc' => $countIncorporationArtofAssoc, 
+            'totalSizeKBIncorporationArtofAssoc' => $totalSizeKBIncorporationArtofAssoc,
+            'countDirector2Signimg'  => $countDirector2Signimg,
+            'totalSizeKBDirector2Signimg' => $totalSizeKBDirector2Signimg, 
+            'countDirector2Photo' => $countDirector2Photo,
+            'totalSizeKBDirector2Photo' => $totalSizeKBDirector2Photo,
+            'countDirector2PANKYC' => $countDirector2PANKYC,
+            'totalSizeKBDirector2PANKYC' => $totalSizeKBDirector2PANKYC,
+            'countDirector2AddressProof' => $countDirector2AddressProof,
+            'countDirector2ContactDetails' => $countDirector2ContactDetails,
+            'totalSizeKBDirector2ContactDetails' => $totalSizeKBDirector2ContactDetails,
+            'totalSizeKBDirector2AddressProof' => $totalSizeKBDirector2AddressProof,
+            'countDirector2AadharKYC' => $countDirector2AadharKYC,
+            'totalSizeKBDirector2AadharKYC' => $totalSizeKBDirector2AadharKYC,
+            'countDirector1Signimg' => $countDirector1Signimg,
+            'totalSizeKBDirector1Signimg' => $totalSizeKBDirector1Signimg,
+            'countDirector1Photo' => $countDirector1Photo,
+            'totalSizeKBDirector1Photo' => $totalSizeKBDirector1Photo,
+            'countDirector1PANKYC' => $countDirector1PANKYC,
+            'totalSizeKBDirector1PANKYC' => $totalSizeKBDirector1PANKYC,
+            'countDirector1AddressProof' => $countDirector1AddressProof,
+            'countDirector1ContactDetails' => $countDirector1ContactDetails,
+            'totalSizeKBDirector1ContactDetails' => $totalSizeKBDirector1ContactDetails,
+            'totalSizeKBDirector1AddressProof' => $totalSizeKBDirector1AddressProof,
+            'countDirector1AadharKYC' => $countDirector1AadharKYC,
+            'totalSizeKBDirector1AadharKYC' => $totalSizeKBDirector1AadharKYC,
+            'countAuditorExitsADT2' => $countAuditorExitsADT2,
+            'totalSizeKBAuditorExitsADT2' => $totalSizeKBAuditorExitsADT2,
+            'countAuditorExitsSpecialResol' => $countAuditorExitsSpecialResol,
+            'totalSizeKBAuditorExitsSpecialResol' => $totalSizeKBAuditorExitsSpecialResol,
+            'countAuditorExitsResignDetofgroundsseekremaud' => $countAuditorExitsResignDetofgroundsseekremaud,
+            'totalSizeKBAuditorExitsResignDetofgroundsseekremaud' => $totalSizeKBAuditorExitsResignDetofgroundsseekremaud,
+            'countAuditorExitsADT3' => $countAuditorExitsADT3,
+            'countAuditorExitsResignletteraud' => $countAuditorExitsResignletteraud,
+            'totalSizeKBAuditorExitsResignletteraud' => $totalSizeKBAuditorExitsResignletteraud,
+            'totalSizeKBAuditorExitsADT3' => $totalSizeKBAuditorExitsResignletteraud,
+            'countdepositundertakingsFormDPT3' => $countdepositundertakingsFormDPT3,
+            'totalSizeKBdepositundertakingsFormDPT3' => $totalSizeKBdepositundertakingsFormDPT3,
+            'countdirectorresignationdir11' => $countdirectorresignationdir11,
+            'totalSizeKBdirectorresignationdir11' => $totalSizeKBdirectorresignationdir11,
+            'countdirectorresignationdir12' => $countdirectorresignationdir12,
+            'totalSizeKBdirectorresignationdir12' => $totalSizeKBdirectorresignationdir12,
+            'countmutualfundstatement' => $countmutualfundstatement,
+            'totalSizeKBmutualfundstatement' => $totalSizeKBmutualfundstatement,
+            'countfixeddepoiststatement' => $countfixeddepoiststatement,
+            'totalSizeKBfixeddepoiststatement' => $totalSizeKBfixeddepoiststatement,
+            'countdcreditcardstatement' => $countdcreditcardstatement,
+            'totalSizeKBcreditcardstatement' => $totalSizeKBcreditcardstatement, 
+            'countdirectorappointmentsdir12' => $countdirectorappointmentsdir12,
+            'totalSizeKBdirectorappointmentsdir12' => $totalSizeKBdirectorappointmentsdir12,
+            'countdirectorappointmentsdir6' => $countdirectorappointmentsdir6, 
+            'totalSizeKBdirectorappointmentsdir6' => $totalSizeKBdirectorappointmentsdir6,
+            'countdirectorappointmentsdir3' => $countdirectorappointmentsdir3,
+            'totalSizeKBdirectorappointmentsdir3' => $totalSizeKBdirectorappointmentsdir3,
+            'countbank' => $countbank,
+            'totalSizeKBbank' => $totalSizeKBbank, 
+            'countentriesmgt7a' => $countentriesmgt7a,
+            'totalSizeKBentriemgt7a' => $totalSizeKBentriemgt7a,
+            'countentriesmgt7' => $countentriesmgt7, 
+            'totalSizeKBentriemgt7' => $totalSizeKBentriemgt7,
+            'countentriescfs' => $countentriescfs,
+            'totalSizeKBentriecfs' => $totalSizeKBentriecfs, 
+            'countentriesafs' => $countentriesafs,
+            'countentriesinnerinc20a' => $countentriesinnerinc20a,
+            'totalSizeKBentrieafs' => $totalSizeKBentrieafs, 
+            'totalSizeKBentrieinnerinc20a' => $totalSizeKBentrieinnerinc20a,
+            'totalSizeKBentrieinnerinc22' => $totalSizeKBentrieinnerinc22,
+            'countentriesinnerinc22' => $countentriesinnerinc22,
+            'countentriesinnerinc35' => $countentriesinnerinc35,
+            'totalSizeKBentrieinnerinc35' => $totalSizeKBentrieinnerinc35, 
+            'countentriesinnerinc34' => $countentriesinnerinc34,
+            'totalSizeKBentrieinnerinc34' => $totalSizeKBentrieinnerinc34,
+            'countentriesinnerinc33' => $countentriesinnerinc33, 
+            'totalSizeKBentrieinnerinc33' => $totalSizeKBentrieinnerinc33,
+            'countentriesinnerspice' => $countentriesinnerspice,
+            'totalSizeKBentrieinnerspice' => $totalSizeKBentrieinnerspice,
+            'totalSizeKBentrieinc9' => $totalSizeKBentrieinc9,
+            'countentriesinc9' => $countentriesinc9,
+            'countinnerrun' => $countinnerrun,
+            'totalSizeKBinnerrun' => $totalSizeKBinnerrun,
+            'count' => $count, 
+            'totalSizeKB' => $totalSizeKB,
+            'totalSizeKBMinbooks' => $totalSizeKBMinbooks,
+            'countMinbooks' => $countMinbooks,
+            'countentriesreso' => $countentriesreso, 
+            'totalSizeKBentriesreso' => $totalSizeKBentriesreso,
+            'countentriesas' => $countentriesas,
+            'totalSizeKBentriesas' => $totalSizeKBentriesas,
+            'countentriesnomeet' => $countentriesnomeet, 
+            'totalSizeKBentriesnomeet' => $totalSizeKBentriesnomeet,
+            'countentriesminbookmeet' => $countentriesminbookmeet,
+            'totalSizeKBentriesminbookmeet' => $totalSizeKBentriesminbookmeet,
+            'countentriesasmeet' => $countentriesasmeet,
+            'totalSizeKBentriesasmeet' => $totalSizeKBentriesasmeet,
+            'countentriesresomeet' => $countentriesresomeet, 
+            'totalSizeKBentriesresomeet' => $totalSizeKBentriesresomeet,
+            'countentriesordernotice' => $countentriesordernotice,
+            'totalSizeKBentriesordernotice' => $totalSizeKBentriesordernotice, 
+            'countentriesorderminbook' => $countentriesorderminbook,
+            'totalSizeKBentriesorderminbook' => $totalSizeKBentriesorderminbook,
+            'countentriesorderAttend' => $countentriesorderAttend, 
+            'totalSizeKBentriesorderAttend' => $totalSizeKBentriesorderAttend,
+            'countentriesorderreso' => $countentriesorderreso,
+            'totalSizeKBentriesorderreso' => $totalSizeKBentriesorderreso,
+            'countSECSRRM' => $countSECSRRM,
+            'totalSizeKBSECSRRM' => $totalSizeKBSECSRRM, 
+            'countSECSRROSH' => $countSECSRROSH,
+            'totalSizeKBSECSRROSH' => $totalSizeKBSECSRROSH,
+            'countSECSRFR' => $countSECSRFR,
+            'totalSizeKBSECSRFR' => $totalSizeKBSECSRFR,
+            'countSECSRRDKMPR' => $countSECSRRDKMPR,
+            'totalSizeKBSECSRRDKMPR' => $totalSizeKBSECSRRDKMPR,
+            'countSECSRROC' => $countSECSRROC,
+            'totalSizeKBSECSRROC' => $totalSizeKBSECSRROC,
+            'countSECSRROD' => $countSECSRROD,
+            'totalSizeKBSECSRROD' => $totalSizeKBSECSRROD,
+            'countSECSRRLGS' => $countSECSRRLGS,
+            'totalSizeKBSECSRRLGS' => $totalSizeKBSECSRRLGS,
+            'countSECSRROINHCN' => $countSECSRROINHCN,
+            'totalSizeKBSECSRROINHCN' => $totalSizeKBSECSRROINHCN,
+            'countSECSRRCDI' => $countSECSRRCDI,
+            'totalSizeKBSECSRRCDI' => $totalSizeKBSECSRRCDI,
+            'countSECSRRSES' => $countSECSRRSES,
+            'totalSizeKBSECSRRSES' => $totalSizeKBSECSRRSES, 
+            'countSECSRRESO' => $countSECSRRESO,
+            'totalSizeKBSECSRRESO' => $totalSizeKBSECSRRESO,
+            'countSECSRROSBB' => $countSECSRROSBB,
+            'totalSizeKBSECSRROSBB' => $totalSizeKBSECSRROSBB,
+            'countSECSRRRDSC' => $countSECSRRRDSC,
+            'totalSizeKBSECSRRRDSC' => $totalSizeKBSECSRRRDSC,
+            'countSECSRRSBO' => $countSECSRRSBO,
+            'totalSizeKBSECSRRSBO' => $totalSizeKBSECSRRSBO,
+            'countSECSRRPB' => $totalSizeKBSECSRRSBO,
+            'totalSizeKBSECSRRPB' => $totalSizeKBSECSRRSBO
+          
+        ]);
+    }
+
+   
+
+    // return view('Secretarial_Annual_Filings', compact('countentriesafs','countentriescfs', 'countentriesmgt7','countentriesmgt7a','totalSizeKBentrieafs','totalSizeKBentriecfs', 'totalSizeKBentriemgt7', 'totalSizeKBentriemgt7a'));
         
         
         return view('docurepo', compact('counthroff4','totalSizeKBhroff4','counthroff3','totalSizeKBhroff3','counthroff2','totalSizeKBhroff2','counthroff1','totalSizeKBhroff1','counthremppol4','totalSizeKBhremppol4','counthremppol3','totalSizeKBhremppol3','counthremppol2','totalSizeKBhremppol2','counthremppol1','totalSizeKBhremppol1','counthrhrpaymoney5','totalSizeKBhrpaymoney5','counthrhrpaymoney4','totalSizeKBhrpaymoney4','counthrhrpaymoney3','totalSizeKBhrpaymoney3','counthrhrpaymoney2','totalSizeKBhrpaymoney2','counthrhrpaymoney1','totalSizeKBhrpaymoney1','counthrhrempdecmaster','totalSizeKBhrempdecmaster','counthrhrempdec','totalSizeKBhrempdec','counthrpayrimapprove','totalSizeKBhrpayrimapprove','counthrpayrim','totalSizeKBhrpayrim','countkyccontactdetails','totalSizeKBkyccontactdetails','countkycaddressproof','totalSizeKBkycaddressproof','countkycpan','totalSizeKBkycpan','countkycaadhar','totalSizeKBkycaadhar','countkycphoto','totalSizeKBkycphoto','countemponboardincometax','totalSizeKBemponboardincometax','countemponboardepf','totalSizeKBemponboardepf','countemponboardcb','totalSizeKBemponboardcb','countemponboardnc','totalSizeKBemponboardnc','countemponboardnda','totalSizeKBemponboardnda','countemponboardea','totalSizeKBemponboardea','countemponboardal','totalSizeKBemponboardal','totalSizeKBemponboard','countemponboard','totalSizeKBdirectorappointmentsdir3din','countdirectorappointmentsdir3din','cli_announcements','fileCount','fileCount1','user','commondataroom','countSECAASR','totalSizeKBSECAASR','countSECAAALA','totalSizeKBSECAAALA','countSECAACRCAA','totalSizeKBSECAACRCAA','countSECAALA','totalSizeKBSECAALA','countSECAAIA','totalSizeKBSECAAIA','countSECAABRAA','totalSizeKBSECAABRAA','countcharregPP','totalSizeKBcharregPP','countcharregLWFC','totalSizeKBcharregLWFC','countcharregPTC','totalSizeKBcharregPTC','countcharregESIC','totalSizeKBcharregESIC','countcharregPFC','totalSizeKBcharregPFC','countcharregTrademark','totalSizeKBcharregTrademark','countcharregMSME','totalSizeKBcharregMSME','countcharregGSTIN','totalSizeKBcharregGSTIN','countcharregtan','totalSizeKBcharregtan','countcharregpan','totalSizeKBcharregpan','countIncorporationSharecertifF',
@@ -19836,6 +20082,7 @@ $entriesinc9 = CommonTable::where('user_id', $user->id)
         'countSECSRRESO','totalSizeKBSECSRRESO','countSECSRROSBB','totalSizeKBSECSRROSBB','countSECSRRRDSC','totalSizeKBSECSRRRDSC',
         'countSECSRRSBO','totalSizeKBSECSRRSBO','countSECSRRPB','totalSizeKBSECSRRPB'));
     }
+    
     
 //     public function filterContents(Request $request)
 // {
