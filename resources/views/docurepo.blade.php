@@ -6029,7 +6029,7 @@ $('#upload-file-form').on('submit', function(e) {
                     checkAllUploadsComplete1(); // Check if all uploads are done
 
                     fetchFolderContents($('#parent-folder').val());
-                    console.log("i am looking ::");
+                    // console.log("i am looking ::");
                     console.log($('#parent-folder').val());
                     resetFileInput($('input[name="file"]'));
                 } else {
