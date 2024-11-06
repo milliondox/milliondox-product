@@ -1781,7 +1781,7 @@ public function getUsersByRole($role)
 public function boradnotice(Request $request)
 {
     $request->validate([
-        'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
+        'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,xlsx,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
         'tagList' => 'nullable', // Allow tagList to be nullable
     ], [
         'files.*.required' => 'Each file is required.',
@@ -1880,7 +1880,7 @@ public function boradnotice(Request $request)
     public function boradattendencesheet(Request $request)
 {
        $request->validate([
-        'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
+        'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,xlsx,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
         'tagList' => 'nullable', // Allow tagList to be nullable
     ], [
         'files.*.required' => 'Each file is required.',
@@ -1978,7 +1978,7 @@ public function boradnotice(Request $request)
     public function boradresolution(Request $request)
 {
    $request->validate([
-        'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
+        'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,xlsx,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
         'tagList' => 'nullable', // Allow tagList to be nullable
     ], [
         'files.*.required' => 'Each file is required.',
@@ -2080,7 +2080,7 @@ public function boradnotice(Request $request)
 public function boradmintuebook(Request $request)
 {
    $request->validate([
-        'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
+        'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,xlsx,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
         'tagList' => 'nullable', // Allow tagList to be nullable
     ], [
         'files.*.required' => 'Each file is required.',
@@ -2484,7 +2484,7 @@ public function deleteOrderReso(Request $request)
 public function innerruns(Request $request)
 {
    $request->validate([
-        'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
+        'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,xlsx,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
         'tagList' => 'nullable', // Allow tagList to be nullable
     ], [
         'files.*.required' => 'Each file is required.',
@@ -2734,7 +2734,7 @@ public function fetchBoardFileMinBookData(Request $request)
  public function meetminutebook(Request $request)
 {
  $request->validate([
-        'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
+        'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,xlsx,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
         'tagList' => 'nullable', // Allow tagList to be nullable
     ], [
         'files.*.required' => 'Each file is required.',
@@ -2874,7 +2874,7 @@ public function fetchMeetFileMinBookData(Request $request)
 public function meetas(Request $request)
 {
    $request->validate([
-        'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
+        'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,xlsx,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
         'tagList' => 'nullable', // Allow tagList to be nullable
     ], [
         'files.*.required' => 'Each file is required.',
@@ -3013,7 +3013,7 @@ public function fetchMeetFileASData(Request $request)
 public function meetreso(Request $request)
 {
     $request->validate([
-        'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
+        'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,xlsx,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
         'tagList' => 'nullable', // Allow tagList to be nullable
     ], [
         'files.*.required' => 'Each file is required.',
@@ -3152,7 +3152,7 @@ public function fetchMeetFileRESOData(Request $request)
 public function ordernotice(Request $request)
 {
     $request->validate([
-        'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
+        'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,xlsx,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
         'tagList' => 'nullable', // Allow tagList to be nullable
     ], [
         'files.*.required' => 'Each file is required.',
@@ -3292,7 +3292,7 @@ public function fetchOrderFileNoticeData(Request $request)
 public function orderminbook(Request $request)
 {
    $request->validate([
-        'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
+        'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,xlsx,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
         'tagList' => 'nullable', // Allow tagList to be nullable
     ], [
         'files.*.required' => 'Each file is required.',
@@ -3433,7 +3433,7 @@ public function fetchOrderFileMinBookData(Request $request)
 public function orderAttend(Request $request)
 {
   $request->validate([
-        'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
+        'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,xlsx,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
         'tagList' => 'nullable', // Allow tagList to be nullable
     ], [
         'files.*.required' => 'Each file is required.',
@@ -3574,7 +3574,7 @@ public function fetchOrderFileAttendData(Request $request)
 public function orderreso(Request $request)
 {
    $request->validate([
-        'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
+        'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,xlsx,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
         'tagList' => 'nullable', // Allow tagList to be nullable
     ], [
         'files.*.required' => 'Each file is required.',
@@ -3715,7 +3715,7 @@ public function fetchOrderFileRESOData(Request $request)
 public function innerincnine(Request $request)
 {
     $request->validate([
-        'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
+        'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,xlsx,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
         'tagList' => 'nullable', // Allow tagList to be nullable
     ], [
         'files.*.required' => 'Each file is required.',
@@ -3855,7 +3855,7 @@ public function fetchInnerFile9Data(Request $request)
 public function innerspice(Request $request)
 {
     $request->validate([
-        'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
+        'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,xlsx,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
         'tagList' => 'nullable', // Allow tagList to be nullable
     ], [
         'files.*.required' => 'Each file is required.',
@@ -3996,7 +3996,7 @@ public function fetchInnerFilespiceData(Request $request)
 public function innerINC33(Request $request)
 {
   $request->validate([
-        'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
+        'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,xlsx,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
         'tagList' => 'nullable', // Allow tagList to be nullable
     ], [
         'files.*.required' => 'Each file is required.',
@@ -4136,7 +4136,7 @@ public function fetchInnerFileINC33Data(Request $request)
 public function innerINC34(Request $request)
 {
    $request->validate([
-        'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
+        'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,xlsx,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
         'tagList' => 'nullable', // Allow tagList to be nullable
     ], [
         'files.*.required' => 'Each file is required.',
@@ -4276,7 +4276,7 @@ public function fetchInnerFileINC34Data(Request $request)
 public function innerINC35(Request $request)
 {
    $request->validate([
-        'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
+        'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,xlsx,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
         'tagList' => 'nullable', // Allow tagList to be nullable
     ], [
         'files.*.required' => 'Each file is required.',
@@ -4416,7 +4416,7 @@ public function fetchInnerFileINC35Data(Request $request)
 public function innerINC22(Request $request)
 {
     $request->validate([
-        'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
+        'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,xlsx,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
         'tagList' => 'nullable', // Allow tagList to be nullable
     ], [
         'files.*.required' => 'Each file is required.',
@@ -4556,7 +4556,7 @@ public function fetchInnerFileINC22Data(Request $request)
 public function innerINC20A(Request $request)
 {
    $request->validate([
-        'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
+        'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,xlsx,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
         'tagList' => 'nullable', // Allow tagList to be nullable
     ], [
         'files.*.required' => 'Each file is required.',
@@ -4697,7 +4697,7 @@ public function fetchInnerFileINC20AData(Request $request)
 public function annaoc4afs(Request $request)
 {
     $request->validate([
-        'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
+        'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,xlsx,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
         'tagList' => 'nullable', // Allow tagList to be nullable
     ], [
         'files.*.required' => 'Each file is required.',
@@ -4837,7 +4837,7 @@ public function fetchAnnFileAoc4AfsData(Request $request)
 public function annaoc4Cfs(Request $request)
 {
     $request->validate([
-        'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
+        'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,xlsx,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
         'tagList' => 'nullable', // Allow tagList to be nullable
     ], [
         'files.*.required' => 'Each file is required.',
@@ -4978,7 +4978,7 @@ public function fetchAnnFileAoc4CfsData(Request $request)
 public function annmgt7(Request $request)
 {
     $request->validate([
-        'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
+        'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,xlsx,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
         'tagList' => 'nullable', // Allow tagList to be nullable
     ], [
         'files.*.required' => 'Each file is required.',
@@ -5118,7 +5118,7 @@ public function fetchAnnFilemgt7Data(Request $request)
 public function annmgt7a(Request $request)
 {
     $request->validate([
-        'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
+        'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,xlsx,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
         'tagList' => 'nullable', // Allow tagList to be nullable
     ], [
         'files.*.required' => 'Each file is required.',
@@ -5305,7 +5305,7 @@ public function checkFiles()
 public function meetnotice(Request $request)
 {
     $request->validate([
-        'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
+        'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,xlsx,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
         'tagList' => 'nullable', // Allow tagList to be nullable
     ], [
         'files.*.required' => 'Each file is required.',
@@ -5445,7 +5445,7 @@ public function fetchMeetFileNoticeData(Request $request)
 public function bankaccountstatement(Request $request)
 {
     $request->validate([
-        'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
+        'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,xlsx,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
         'tagList' => 'nullable', // Allow tagList to be nullable
     ], [
         'files.*.required' => 'Each file is required.',
@@ -5591,7 +5591,7 @@ public function fetchBankFileAccsData(Request $request)
 public function directorappointmentsdir3(Request $request)
 {
    $request->validate([
-        'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
+        'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,xlsx,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
         'tagList' => 'nullable', // Allow tagList to be nullable
     ], [
         'files.*.required' => 'Each file is required.',
@@ -5733,7 +5733,7 @@ public function fetchdirectorappointmentsdir3FileData(Request $request)
 public function directorappointmentsdir3din(Request $request)
 {
    $request->validate([
-        'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
+        'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,xlsx,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
         'tagList' => 'nullable', // Allow tagList to be nullable
     ], [
         'files.*.required' => 'Each file is required.',
@@ -5874,7 +5874,7 @@ public function fetchdirectorappointmentsdir3dinFileData(Request $request)
 public function directorappointmentsdir6(Request $request)
 {
     $request->validate([
-        'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
+        'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,xlsx,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
         'tagList' => 'nullable', // Allow tagList to be nullable
     ], [
         'files.*.required' => 'Each file is required.',
@@ -6016,7 +6016,7 @@ public function fetchdirectorappointmentsdir6FileData(Request $request)
 public function directorappointmentsdir12(Request $request)
 {
     $request->validate([
-        'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
+        'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,xlsx,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
         'tagList' => 'nullable', // Allow tagList to be nullable
     ], [
         'files.*.required' => 'Each file is required.',
@@ -6159,7 +6159,7 @@ public function fetchdirectorappointmentsdir12FileData(Request $request)
 public function creditcardstatement(Request $request)
 {
     $request->validate([
-        'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
+        'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,xlsx,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
         'tagList' => 'nullable', // Allow tagList to be nullable
     ], [
         'files.*.required' => 'Each file is required.',
@@ -6304,7 +6304,7 @@ public function fetchcreditcardstatementFileData(Request $request)
 public function mutualfundstatement(Request $request)
 {
     $request->validate([
-        'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
+        'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,xlsx,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
         'tagList' => 'nullable', // Allow tagList to be nullable
     ], [
         'files.*.required' => 'Each file is required.',
@@ -6444,7 +6444,7 @@ public function fetchmutualfundstatementFileData()
 public function fixeddepoiststatement(Request $request)
 {
     $request->validate([
-        'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
+        'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,xlsx,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
         'tagList' => 'nullable', // Allow tagList to be nullable
     ], [
         'files.*.required' => 'Each file is required.',
@@ -6584,7 +6584,7 @@ public function fetchfixeddepoiststatementFileData()
 public function directorresignationdir11(Request $request)
 {
    $request->validate([
-        'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
+        'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,xlsx,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
         'tagList' => 'nullable', // Allow tagList to be nullable
     ], [
         'files.*.required' => 'Each file is required.',
@@ -6728,7 +6728,7 @@ public function fetchdirectorresignationdir11FileData(Request $request)
 public function directorresignationdir12(Request $request)
 {
     $request->validate([
-        'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
+        'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,xlsx,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
         'tagList' => 'nullable', // Allow tagList to be nullable
     ], [
         'files.*.required' => 'Each file is required.',
@@ -6873,7 +6873,7 @@ public function fetchdirectorresignationdir12FileData(Request $request)
 public function depositundertakingsFormDPT3(Request $request)
 {
     $request->validate([
-        'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
+        'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,xlsx,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
         'tagList' => 'nullable', // Allow tagList to be nullable
     ], [
         'files.*.required' => 'Each file is required.',
@@ -7016,7 +7016,7 @@ public function fetchdepositundertakingsFormDPT3FileData(Request $request)
 public function AuditorExitsADT3Form(Request $request)
 {
    $request->validate([
-        'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
+        'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,xlsx,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
         'tagList' => 'nullable', // Allow tagList to be nullable
     ], [
         'files.*.required' => 'Each file is required.',
@@ -7159,7 +7159,7 @@ public function fetchAuditorExitsADT3FormFileData(Request $request)
 public function AuditorExitsResignletteraudF(Request $request)
 {
     $request->validate([
-        'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
+        'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,xlsx,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
         'tagList' => 'nullable', // Allow tagList to be nullable
     ], [
         'files.*.required' => 'Each file is required.',
@@ -7302,7 +7302,7 @@ public function fetchAuditorExitsResignletteraudFFileData(Request $request)
 public function AuditorExitsResignDetofgroundsseekremaudF(Request $request)
 {
     $request->validate([
-        'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
+        'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,xlsx,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
         'tagList' => 'nullable', // Allow tagList to be nullable
     ], [
         'files.*.required' => 'Each file is required.',
@@ -7444,7 +7444,7 @@ public function fetchAuditorExitsResignDetofgroundsseekremaudFFileData(Request $
 public function AuditorExitsSpecialResolF(Request $request)
 {
     $request->validate([
-        'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
+        'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,xlsx,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
         'tagList' => 'nullable', // Allow tagList to be nullable
     ], [
         'files.*.required' => 'Each file is required.',
@@ -7587,7 +7587,7 @@ public function fetchAuditorExitsSpecialResolFFileData(Request $request)
 public function AuditorExitsADT2Form(Request $request)
 {
     $request->validate([
-        'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
+        'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,xlsx,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
         'tagList' => 'nullable', // Allow tagList to be nullable
     ], [
         'files.*.required' => 'Each file is required.',
@@ -7730,7 +7730,7 @@ public function fetchAuditorExitsADT2FormFileData(Request $request)
 public function Director1AadharKYCF(Request $request)
 {
     $request->validate([
-        'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
+        'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,xlsx,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
         'tagList' => 'nullable', // Allow tagList to be nullable
     ], [
         'files.*.required' => 'Each file is required.',
@@ -7869,7 +7869,7 @@ public function fetchDirector1AadharKYCFFileData(Request $request)
 public function Director1AddressProofF(Request $request)
 {
     $request->validate([
-        'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
+        'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,xlsx,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
         'tagList' => 'nullable', // Allow tagList to be nullable
     ], [
         'files.*.required' => 'Each file is required.',
@@ -8008,7 +8008,7 @@ public function fetchDirector1AddressProofFFileData(Request $request)
 public function Director1ContactDetailsF(Request $request)
 {
     $request->validate([
-        'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
+        'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,xlsx,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
         'tagList' => 'nullable', // Allow tagList to be nullable
     ], [
         'files.*.required' => 'Each file is required.',
@@ -8148,7 +8148,7 @@ public function fetchDirector1ContactDetailsFFileData(Request $request)
 public function Director1PANKYCF(Request $request)
 {
     $request->validate([
-        'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
+        'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,xlsx,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
         'tagList' => 'nullable', // Allow tagList to be nullable
     ], [
         'files.*.required' => 'Each file is required.',
@@ -8288,7 +8288,7 @@ public function fetchDirector1PANKYCFFileData(Request $request)
 public function Director1PhotoF(Request $request)
 {
     $request->validate([
-        'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
+        'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,xlsx,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
         'tagList' => 'nullable', // Allow tagList to be nullable
     ], [
         'files.*.required' => 'Each file is required.',
@@ -8426,7 +8426,7 @@ public function fetchDirector1PhotoFFileData(Request $request)
 public function Director1SignimgF(Request $request)
 {
    $request->validate([
-        'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
+        'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,xlsx,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
         'tagList' => 'nullable', // Allow tagList to be nullable
     ], [
         'files.*.required' => 'Each file is required.',
@@ -8565,7 +8565,7 @@ public function fetchDirector1SignimgFFileData(Request $request)
 public function Director2SignimgF(Request $request)
 {
     $request->validate([
-        'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
+        'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,xlsx,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
         'tagList' => 'nullable', // Allow tagList to be nullable
     ], [
         'files.*.required' => 'Each file is required.',
@@ -8703,7 +8703,7 @@ public function fetchDirector2SignimgFFileData()
 public function Director2PhotoF(Request $request)
 {
    $request->validate([
-        'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
+        'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,xlsx,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
         'tagList' => 'nullable', // Allow tagList to be nullable
     ], [
         'files.*.required' => 'Each file is required.',
@@ -8842,7 +8842,7 @@ public function fetchDirector2PhotoFFileData()
 public function Director2PANKYCF(Request $request)
 {
    $request->validate([
-        'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
+        'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,xlsx,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
         'tagList' => 'nullable', // Allow tagList to be nullable
     ], [
         'files.*.required' => 'Each file is required.',
@@ -8981,7 +8981,7 @@ public function fetchDirector2PANKYCFFileData()
 public function Director2ContactDetailsF(Request $request)
 {
     $request->validate([
-        'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
+        'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,xlsx,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
         'tagList' => 'nullable', // Allow tagList to be nullable
     ], [
         'files.*.required' => 'Each file is required.',
@@ -9118,7 +9118,7 @@ public function fetchDirector2ContactDetailsFFileData()
 public function Director2AddressProofF(Request $request)
 {
     $request->validate([
-        'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
+        'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,xlsx,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
         'tagList' => 'nullable', // Allow tagList to be nullable
     ], [
         'files.*.required' => 'Each file is required.',
@@ -9256,7 +9256,7 @@ public function fetchDirector2AddressProofFFileData()
 public function Director2AadharKYCF(Request $request)
 {
    $request->validate([
-        'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
+        'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,xlsx,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
         'tagList' => 'nullable', // Allow tagList to be nullable
     ], [
         'files.*.required' => 'Each file is required.',
@@ -9394,7 +9394,7 @@ public function fetchDirector2AadharKYCFFileData()
 public function IncorporationArtofAssocF(Request $request)
 {
     $request->validate([
-        'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
+        'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,xlsx,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
         'tagList' => 'nullable', // Allow tagList to be nullable
     ], [
         'files.*.required' => 'Each file is required.',
@@ -9532,7 +9532,7 @@ public function fetchIncorporationArtofAssocFFileData(Request $request)
 public function IncorporationCertifofincorpF(Request $request)
 {
     $request->validate([
-        'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
+        'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,xlsx,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
         'tagList' => 'nullable', // Allow tagList to be nullable
     ], [
         'files.*.required' => 'Each file is required.',
@@ -9673,7 +9673,7 @@ public function fetchIncorporationCertifofincorpFFileData(Request $request)
 public function CharterdocumentsIncorporationMemorandumofAssociation(Request $request)
 {
     $request->validate([
-        'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
+        'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,xlsx,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
         'tagList' => 'nullable', // Allow tagList to be nullable
     ], [
         'files.*.required' => 'Each file is required.',
@@ -9812,7 +9812,7 @@ public function fetchCharterdocumentsIncorporationMemorandumofAssociationFileDat
 public function IncorporationPartnerdeedF(Request $request)
 {
    $request->validate([
-        'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
+        'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,xlsx,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
         'tagList' => 'nullable', // Allow tagList to be nullable
     ], [
         'files.*.required' => 'Each file is required.',
@@ -9952,7 +9952,7 @@ public function fetchIncorporationPartnerdeedFFileData(Request $request)
 public function IncorporationLLPAgreementF(Request $request)
 {
    $request->validate([
-        'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
+        'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,xlsx,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
         'tagList' => 'nullable', // Allow tagList to be nullable
     ], [
         'files.*.required' => 'Each file is required.',
@@ -10092,7 +10092,7 @@ public function fetchIncorporationLLPAgreementFFileData(Request $request)
 public function IncorporationTrustDeedF(Request $request)
 {
     $request->validate([
-        'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
+        'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,xlsx,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
         'tagList' => 'nullable', // Allow tagList to be nullable
     ], [
         'files.*.required' => 'Each file is required.',
@@ -10231,7 +10231,7 @@ public function fetchIncorporationTrustDeedFFileData(Request $request)
 public function IncorporationSharecertifF(Request $request)
 {
     $request->validate([
-        'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
+        'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,xlsx,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
         'tagList' => 'nullable', // Allow tagList to be nullable
     ], [
         'files.*.required' => 'Each file is required.',
@@ -10371,7 +10371,7 @@ public function fetchIncorporationSharecertifFFileData(Request $request)
 public function CharterdocumentsRegistrationsPAN(Request $request)
 {
     $request->validate([
-        'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
+        'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,xlsx,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
         'tagList' => 'nullable', // Allow tagList to be nullable
     ], [
         'files.*.required' => 'Each file is required.',
@@ -10512,7 +10512,7 @@ public function fetchCharterdocumentsRegistrationsPANFileData(Request $request)
 public function CharterdocumentsRegistrationsTAN(Request $request)
 {
     $request->validate([
-        'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
+        'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,xlsx,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
         'tagList' => 'nullable', // Allow tagList to be nullable
     ], [
         'files.*.required' => 'Each file is required.',
@@ -10654,7 +10654,7 @@ public function fetchCharterdocumentsRegistrationsTANFileData(Request $request)
 public function CharterdocumentsRegistrationsGSTIN(Request $request)
 {
     $request->validate([
-        'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
+        'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,xlsx,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
         'tagList' => 'nullable', // Allow tagList to be nullable
     ], [
         'files.*.required' => 'Each file is required.',
@@ -10794,7 +10794,7 @@ public function fetchCharterdocumentsRegistrationsGSTINFileData(Request $request
 public function CharterdocumentsRegistrationsMSME(Request $request)
 {
    $request->validate([
-        'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
+        'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,xlsx,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
         'tagList' => 'nullable', // Allow tagList to be nullable
     ], [
         'files.*.required' => 'Each file is required.',
@@ -10933,7 +10933,7 @@ public function fetchCharterdocumentsRegistrationsMSMEFileData(Request $request)
 public function CharterdocumentsRegistrationsTrademark(Request $request)
 {
     $request->validate([
-        'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
+        'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,xlsx,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
         'tagList' => 'nullable', // Allow tagList to be nullable
     ], [
         'files.*.required' => 'Each file is required.',
@@ -11073,7 +11073,7 @@ public function fetchCharterdocumentsRegistrationsTrademarkFileData(Request $req
 public function CharterdocumentsRegistrationsPFC(Request $request)
 {
    $request->validate([
-        'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
+        'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,xlsx,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
         'tagList' => 'nullable', // Allow tagList to be nullable
     ], [
         'files.*.required' => 'Each file is required.',
@@ -11214,7 +11214,7 @@ public function fetchCharterdocumentsRegistrationsPFCFileData(Request $request)
 public function CharterdocumentsRegistrationsESIC(Request $request)
 {
     $request->validate([
-        'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
+        'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,xlsx,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
         'tagList' => 'nullable', // Allow tagList to be nullable
     ], [
         'files.*.required' => 'Each file is required.',
@@ -11353,7 +11353,7 @@ public function fetchCharterdocumentsRegistrationsESICFileData(Request $request)
 public function CharterdocumentsRegistrationsPTC(Request $request)
 {
     $request->validate([
-        'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
+        'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,xlsx,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
         'tagList' => 'nullable', // Allow tagList to be nullable
     ], [
         'files.*.required' => 'Each file is required.',
@@ -11492,7 +11492,7 @@ public function fetchCharterdocumentsRegistrationsPTCDataFileData(Request $reque
 public function CharterdocumentsRegistrationsLWFC(Request $request)
 {
     $request->validate([
-        'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
+        'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,xlsx,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
         'tagList' => 'nullable', // Allow tagList to be nullable
     ], [
         'files.*.required' => 'Each file is required.',
@@ -11631,7 +11631,7 @@ public function fetchCharterdocumentsRegistrationsLWFCFileData(Request $request)
 public function CharterdocumentsRegistrationsPOSHPolicy(Request $request)
 {
     $request->validate([
-        'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
+        'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,xlsx,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
         'tagList' => 'nullable', // Allow tagList to be nullable
     ], [
         'files.*.required' => 'Each file is required.',
@@ -11777,7 +11777,7 @@ public function fetchCharterdocumentsRegistrationsPOSHPolicyFileData(Request $re
 public function SecretarialAuditorAppointmentBRAA(Request $request)
 {
     $request->validate([
-        'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
+        'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,xlsx,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
         'tagList' => 'nullable', // Allow tagList to be nullable
     ], [
         'files.*.required' => 'Each file is required.',
@@ -11916,7 +11916,7 @@ public function fetchSecretarialAuditorAppointmentBRAAFileData(Request $request)
 public function SecretarialAuditorAppointmentIA(Request $request)
 {
     $request->validate([
-        'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
+        'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,xlsx,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
         'tagList' => 'nullable', // Allow tagList to be nullable
     ], [
         'files.*.required' => 'Each file is required.',
@@ -12058,7 +12058,7 @@ public function fetchSecretarialAuditorAppointmentIAFileData(Request $request)
 public function SecretarialAuditorAppointmentLA(Request $request)
 {
     $request->validate([
-        'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
+        'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,xlsx,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
         'tagList' => 'nullable', // Allow tagList to be nullable
     ], [
         'files.*.required' => 'Each file is required.',
@@ -12197,7 +12197,7 @@ public function fetchSecretarialAuditorAppointmentLAFileData(Request $request)
 public function SecretarialAuditorAppointmentCRCAA(Request $request)
 {
    $request->validate([
-        'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
+        'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,xlsx,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
         'tagList' => 'nullable', // Allow tagList to be nullable
     ], [
         'files.*.required' => 'Each file is required.',
@@ -12335,7 +12335,7 @@ public function fetchSecretarialAuditorAppointmentCRCAAFileData(Request $request
 public function SecretarialAuditorAppointmentALA(Request $request)
 {
     $request->validate([
-        'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
+        'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,xlsx,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
         'tagList' => 'nullable', // Allow tagList to be nullable
     ], [
         'files.*.required' => 'Each file is required.',
@@ -13037,7 +13037,7 @@ public function fetchhrempoff4fFileData(Request $request)
 public function SecretarialAuditorAppointmentSR(Request $request)
 {
     $request->validate([
-        'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
+        'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,xlsx,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
         'tagList' => 'nullable', // Allow tagList to be nullable
     ], [
         'files.*.required' => 'Each file is required.',
@@ -13177,7 +13177,7 @@ public function fetchSecretarialAuditorAppointmentSRFileData(Request $request)
 public function SecretarialStatutoryRegistersRM(Request $request)
 {
     $request->validate([
-        'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
+        'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,xlsx,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
         'tagList' => 'nullable', // Allow tagList to be nullable
     ], [
         'files.*.required' => 'Each file is required.',
@@ -13282,7 +13282,7 @@ public function SecretarialStatutoryRegistersRM(Request $request)
 public function SecretarialStatutoryRegistersROSH(Request $request)
 {
     $request->validate([
-        'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
+        'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,xlsx,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
         'tagList' => 'nullable', // Allow tagList to be nullable
     ], [
         'files.*.required' => 'Each file is required.',
@@ -13387,7 +13387,7 @@ public function SecretarialStatutoryRegistersROSH(Request $request)
 public function SecretarialStatutoryRegistersFR(Request $request)
 {
     $request->validate([
-        'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
+        'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,xlsx,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
         'tagList' => 'nullable', // Allow tagList to be nullable
     ], [
         'files.*.required' => 'Each file is required.',
@@ -13493,7 +13493,7 @@ public function SecretarialStatutoryRegistersFR(Request $request)
 public function SecretarialStatutoryRegistersRDK(Request $request)
 {
     $request->validate([
-        'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
+        'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,xlsx,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
         'tagList' => 'nullable', // Allow tagList to be nullable
     ], [
         'files.*.required' => 'Each file is required.',
@@ -13599,7 +13599,7 @@ public function SecretarialStatutoryRegistersRDK(Request $request)
 public function SecretarialStatutoryRegistersRC(Request $request)
 {
     $request->validate([
-        'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
+        'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,xlsx,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
         'tagList' => 'nullable', // Allow tagList to be nullable
     ], [
         'files.*.required' => 'Each file is required.',
@@ -13704,7 +13704,7 @@ public function SecretarialStatutoryRegistersRC(Request $request)
 public function SecretarialStatutoryRegistersRD(Request $request)
 {
     $request->validate([
-        'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
+        'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,xlsx,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
         'tagList' => 'nullable', // Allow tagList to be nullable
     ], [
         'files.*.required' => 'Each file is required.',
@@ -13809,7 +13809,7 @@ public function SecretarialStatutoryRegistersRD(Request $request)
 public function SecretarialStatutoryRegistersRLGS(Request $request)
 {
     $request->validate([
-        'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
+        'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,xlsx,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
         'tagList' => 'nullable', // Allow tagList to be nullable
     ], [
         'files.*.required' => 'Each file is required.',
@@ -13914,7 +13914,7 @@ public function SecretarialStatutoryRegistersRLGS(Request $request)
 public function SecretarialStatutoryRegistersRCD(Request $request)
 {
     $request->validate([
-        'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
+        'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,xlsx,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
         'tagList' => 'nullable', // Allow tagList to be nullable
     ], [
         'files.*.required' => 'Each file is required.',
@@ -14019,7 +14019,7 @@ public function SecretarialStatutoryRegistersRCD(Request $request)
 public function SecretarialStatutoryRegistersRCDI(Request $request)
 {
     $request->validate([
-        'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
+        'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,xlsx,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
         'tagList' => 'nullable', // Allow tagList to be nullable
     ], [
         'files.*.required' => 'Each file is required.',
@@ -14124,7 +14124,7 @@ public function SecretarialStatutoryRegistersRCDI(Request $request)
 public function SecretarialStatutoryRegistersRSES(Request $request)
 {
     $request->validate([
-        'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
+        'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,xlsx,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
         'tagList' => 'nullable', // Allow tagList to be nullable
     ], [
         'files.*.required' => 'Each file is required.',
@@ -14229,7 +14229,7 @@ public function SecretarialStatutoryRegistersRSES(Request $request)
 public function SecretarialStatutoryRegistersRESO(Request $request)
 {
     $request->validate([
-        'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
+        'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,xlsx,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
         'tagList' => 'nullable', // Allow tagList to be nullable
     ], [
         'files.*.required' => 'Each file is required.',
@@ -14334,7 +14334,7 @@ public function SecretarialStatutoryRegistersRESO(Request $request)
 public function SecretarialStatutoryRegistersRSBB(Request $request)
 {
     $request->validate([
-        'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
+        'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,xlsx,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
         'tagList' => 'nullable', // Allow tagList to be nullable
     ], [
         'files.*.required' => 'Each file is required.',
@@ -14440,7 +14440,7 @@ public function SecretarialStatutoryRegistersRSBB(Request $request)
 public function SecretarialStatutoryRegistersRRDSC(Request $request)
 {
     $request->validate([
-        'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
+        'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,xlsx,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
         'tagList' => 'nullable', // Allow tagList to be nullable
     ], [
         'files.*.required' => 'Each file is required.',
@@ -14546,7 +14546,7 @@ public function SecretarialStatutoryRegistersRRDSC(Request $request)
 public function SecretarialStatutoryRegistersSBO(Request $request)
 {
     $request->validate([
-        'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
+        'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,xlsx,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
         'tagList' => 'nullable', // Allow tagList to be nullable
     ], [
         'files.*.required' => 'Each file is required.',
@@ -14652,7 +14652,7 @@ public function SecretarialStatutoryRegistersSBO(Request $request)
 public function SecretarialStatutoryRegistersRPB(Request $request)
 {
     $request->validate([
-        'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
+        'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,xlsx,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
         'tagList' => 'nullable', // Allow tagList to be nullable
     ], [
         'files.*.required' => 'Each file is required.',
@@ -14759,7 +14759,7 @@ public function SecretarialStatutoryRegistersRPB(Request $request)
 public function PredefinedCommonUploadFiles(Request $request)
 {
     $request->validate([
-        'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
+        'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,xlsx,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
         'tagList' => 'nullable', // Allow tagList to be nullable
         'location' => 'required|string', // Require location
         'real_file_name' => 'required|string', // Require real file name
@@ -14927,7 +14927,7 @@ public function PredefinedCommonUploadFiles(Request $request)
             // return redirect()->back()->with('success2', 'File Uploaded successfully.');
 
             return response()->json([
-                'success' => true,
+                'success' => empty($errorMessages),
                 'count' => $count,
                 'totalSize' => $totalSizef,
                 'successMessages' => $successMessages,
@@ -14949,7 +14949,7 @@ public function PredefinedCommonUploadFiles(Request $request)
 public function PredefinedCommonUploadFilesBank(Request $request)
 {
     $request->validate([
-        'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
+        'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,xlsx,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
         'tagList' => 'nullable', // Allow tagList to be nullable
     ], [
         'files.*.required' => 'Each file is required.',
@@ -15081,7 +15081,7 @@ public function PredefinedCommonUploadFilesBank(Request $request)
 
 
             return response()->json([
-                'success' => true,
+                'success' => empty($errorMessages),
                 'count' => $count,
                 'totalSize' => $totalSizef,
                 'successMessages' => $successMessages,
@@ -20916,7 +20916,7 @@ public function downloadFile($id)
     
         // Validate the request
         $request->validate([
-            'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
+            'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,xlsx,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
             'tagList' => 'nullable', // Allow tagList to be nullable
         ], [
             'files.*.required' => 'Each file is required.',
@@ -20988,7 +20988,7 @@ public function downloadFile($id)
     
                 // Compile the response
                 return response()->json([
-                    'success' => true,
+                    'success' => empty($errorMessages),
                     'successMessages' => $successMessages,
                     'errorMessages' => $errorMessages,
                 ]);
