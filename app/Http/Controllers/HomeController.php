@@ -19407,7 +19407,7 @@ $entriesinc9 = CommonTable::where('user_id', $user->id)
         
         $entriesSECSRRSBO = CommonTable::where('user_id', $user->id)
             ->where('is_delete', 0)
-            ->where('location', 'Legal / Secretarial / Statutory Registers')
+            ->where('location', $decodedFolderLocation)
             ->where('real_file_name', 'Register of SBO')
             ->get();
         $countSECSRRSBO = $entriesSECSRRSBO->count();
@@ -20022,8 +20022,8 @@ $entriesinc9 = CommonTable::where('user_id', $user->id)
             'totalSizeKBSECSRRRDSC' => $totalSizeKBSECSRRRDSC,
             'countSECSRRSBO' => $countSECSRRSBO,
             'totalSizeKBSECSRRSBO' => $totalSizeKBSECSRRSBO,
-            'countSECSRRPB' => $totalSizeKBSECSRRSBO,
-            'totalSizeKBSECSRRPB' => $totalSizeKBSECSRRSBO
+            'countSECSRRPB' => $countSECSRRPB,
+            'totalSizeKBSECSRRPB' => $totalSizeKBSECSRRPB
           
         ]);
     }
