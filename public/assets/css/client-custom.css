@@ -19037,6 +19037,11 @@ span#totalCount {
     background: linear-gradient(100.13deg, #81ACFF 14.53%, #5790FF 72.91%) !important;
     color: #DBDBDB;
 }
+.drop_coman_file .green-outline button.btn {
+    background: #008000 !IMPORTANT;
+    color: #FFF;
+}
+
 /* have title */
 .drop_coman_file.have_title .modal-header {
     justify-content: center;
