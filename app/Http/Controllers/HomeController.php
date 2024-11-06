@@ -14759,7 +14759,7 @@ public function SecretarialStatutoryRegistersRPB(Request $request)
 public function PredefinedCommonUploadFiles(Request $request)
 {
     $request->validate([
-        'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,xlsx,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
+        'files.*' => 'required|file|max:102400|mimes:pdf,ppt,pot,pps,pptx,pptm,potx,ppam,ppsx,sldx,sldm,odp,ods,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,xlsx,docx,docm,xlam,txt,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv,xltx,xltm', // Allow specific file types up to 100MB
         'tagList' => 'nullable', // Allow tagList to be nullable
         'location' => 'required|string', // Require location
         'real_file_name' => 'required|string', // Require real file name
@@ -14949,7 +14949,7 @@ public function PredefinedCommonUploadFiles(Request $request)
 public function PredefinedCommonUploadFilesBank(Request $request)
 {
     $request->validate([
-        'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,xlsx,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
+        'files.*' => 'required|file|max:102400|mimes:pdf,ppt,pot,pps,pptx,pptm,potx,ppam,ppsx,sldx,sldm,odp,ods,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,xlsx,docx,docm,xlam,txt,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv,xltx,xltm', // Allow specific file types up to 100MB
         'tagList' => 'nullable', // Allow tagList to be nullable
     ], [
         'files.*.required' => 'Each file is required.',
@@ -20916,7 +20916,7 @@ public function downloadFile($id)
     
         // Validate the request
         $request->validate([
-            'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,xlsx,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
+            'files.*' => 'required|file|max:102400|mimes:pdf,ppt,pot,pps,pptx,pptm,potx,ppam,ppsx,sldx,sldm,odp,ods,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,xlsx,docx,docm,xlam,txt,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv,xltx,xltm', // Allow specific file types up to 100MB
             'tagList' => 'nullable', // Allow tagList to be nullable
         ], [
             'files.*.required' => 'Each file is required.',
