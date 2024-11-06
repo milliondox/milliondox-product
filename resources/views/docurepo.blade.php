@@ -4555,8 +4555,8 @@ $(document).on('click', '.folder-link', function(e) {
                         $('.comm_size[data-variable="totalSizeKBSECSRRSBO"]').text(response.totalSizeKBSECSRRSBO + ' KB');
                         $('.comm_count[data-variable="countSECSRRSBO"]').text(response.countSECSRRSBO);
 
-                        $('.comm_size[data-variable="totalSizeKBSECSRRPB"]').text(response.totalSizeKBSECSRRPB + ' KB');
-                        $('.comm_count[data-variable="countSECSRRPB"]').text(response.countSECSRRPB);
+                        // $('.comm_size[data-variable="totalSizeKBSECSRRPB"]').text(response.totalSizeKBSECSRRPB + ' KB');
+                        // $('.comm_count[data-variable="countSECSRRPB"]').text(response.countSECSRRPB);
 
 
                         $('.comm_size[data-variable="totalSizeKBSECSRRPB"]').text(response.totalSizeKBSECSRRPB + ' KB');
