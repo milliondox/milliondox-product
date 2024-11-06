@@ -68,6 +68,8 @@
     <script src="/../assets/js/datatable/datatables/jquery.dataTables.min.js"></script>
     <script src="/../assets/js/datatable/datatables/datatable.custom.js"></script>
     <script src="../assets/js/script.js"></script>
+    <script src="../assets/js/comon_toggle_theme.js"></script>
+    
     <script src="../assets/js/theme-customizer/customizer.js">  </script>
     <!-- login js-->
 
