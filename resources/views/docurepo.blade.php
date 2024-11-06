@@ -1927,40 +1927,31 @@ $(document).ready(function() {
     $(document).on('click', '.downloadfolder', function() {
         var folderid = $(this).data('id');
 
-        // Show a loading message or spinner
-        var loadingMessage = $("<div>Preparing your download...</div>").appendTo('body');
+        // Show a loading spinner or message
+        var loadingMessage = $("<div>Preparing your download...</div>");
+        $('body').append(loadingMessage);
 
+        // Send AJAX request to download the folder
         $.ajax({
-            url: '/download-folder/' + folderid,
+            url: '/download-folder/' + folderid, // URL-encode the folder path
             type: 'GET',
-            xhrFields: {
-                responseType: 'blob' // Set response type to blob for file downloads
-            },
-            success: function(response, status, xhr) {
+            success: function(response) {
+                // Remove loading message
                 loadingMessage.remove();
 
-                // Check if the response is a file (not JSON)
-                const disposition = xhr.getResponseHeader('Content-Disposition');
-                if (disposition && disposition.indexOf('attachment') !== -1) {
-                    const filename = disposition.split('filename=')[1].replace(/"/g, '');
-
-                    // Create a download link for the blob
-                    const blob = new Blob([response], { type: 'application/zip' });
-                    const url = window.URL.createObjectURL(blob);
-                    const a = document.createElement('a');
-                    a.href = url;
-                    a.download = filename;
-                    document.body.appendChild(a);
-                    a.click();
-                    a.remove();
-                    window.URL.revokeObjectURL(url);
+                // Check if the response contains a valid success message
+                if (response && response.success) {
+                    // Trigger file download using the URL of the ZIP file
+                    window.location.href = response.zipFileUrl; // Ensure zipFileUrl is correctly set
                 } else {
-                    alert('An error occurred. The file could not be downloaded.');
+                    console.log(response); // Log the entire response to debug
+                    alert('Error: ' + (response.message || 'An unknown error occurred.'));
                 }
             },
             error: function(xhr, status, error) {
+                // Remove loading message
                 loadingMessage.remove();
-                console.error('Error details:', status, error, xhr.responseText);
+                console.error('Error details:', status, error, xhr.responseText); // Log the full error for debugging
                 alert('An error occurred while downloading the folder. Please try again.');
             }
         });
@@ -4214,15 +4205,16 @@ function updateBreadcrumb(folderPath) {
     }
 
     // Attach click event handler to breadcrumb links
+    // Attach click event handler to breadcrumb links
     $(document).off('click', '.breadcrumb-link').on('click', '.breadcrumb-link', function(e) {
         e.preventDefault();
         const folderPath = $(this).data('folder-path');
+ console.log("gjkhgjhgfgjjhghjghjgjhgjhgjhgjhgjhghjghjgjhgjyg: "+folderPath);
         console.log("Navigating to folder: " + folderPath);
         navigateToFolder(folderPath); // Function to handle navigation
-        // Reload the page with the new folder path as a query parameter
-        // window.location.href = `?folder=${encodeURIComponent(folderPath)}`;
     });
 }
+
 
 function toggleLabelWrap() {
     if ($('#parent-folder').val() || $('#parent-folders').val()) {
@@ -4250,8 +4242,9 @@ $(document).on('click', '.folder-link', function(e) {
     e.stopPropagation();
     var $this = $(this);
     var folderPath = $this.data('folder-path');
+    // alert(folderPath);
     
-    
+    // alert(folderPath);
     
     // Remove 'selected-folder' class from all folder links and toggle icons
     $('.folder-link').removeClass('selected-folder');
@@ -4261,9 +4254,444 @@ $(document).on('click', '.folder-link', function(e) {
     if ($this.hasClass('selected-folder')) {
         $this.removeClass('selected-folder');
     } else {
-        navigateToFolder(folderPath);
         $this.addClass('selected-folder');
+
+        // function getQueryParam(param) {
+        //     const params = new URLSearchParams(window.location.search);
+        //     return params.get(param); // Get specific parameter value
+        // }
+
+        // let path = getQueryParam('folderpath'); // Replace 'yourParamName' with the actual parameter name you want
+        // alert(path);
+        // console.log("Path is: " + path);
+
+        // Make AJAX request to send folderPath to the controller
+        $.ajax({
+            url: '/docurepo', // URL for the GET request
+            method: 'GET',
+            data: { folderPath: folderPath }, // Pass folderPath directly as query parameter
+            
+            success: function(response) {
+               
+                    setTimeout(function() {
+                        
+                        $('.comm_size[data-variable="totalSizeKBentrieafs"]').text(response.totalSizeKBentrieafs + ' KB');
+                        $('.comm_count[data-variable="countentriesafs"]').text(response.countentriesafs);
+
+                        $('.comm_size[data-variable="totalSizeKBentriecfs"]').text(response.totalSizeKBentriecfs + ' KB');
+                        $('.comm_count[data-variable="countentriescfs"]').text(response.countentriescfs);
+
+
+                        $('.comm_size[data-variable="totalSizeKBentriemgt7"]').text(response.totalSizeKBentriemgt7 + ' KB');
+                        $('.comm_count[data-variable="countentriesmgt7"]').text(response.countentriesmgt7);
+
+                        $('.comm_size[data-variable="totalSizeKBentriemgt7a"]').text(response.totalSizeKBentriemgt7a + ' KB');
+                        $('.comm_count[data-variable="countentriesmgt7a"]').text(response.countentriesmgt7a);
+
+
+                        $('.comm_size[data-variable="totalSizeKBbank"]').text(response.totalSizeKBbank + ' KB');
+                        $('.comm_count[data-variable="countbank"]').text(response.countbank);
+
+
+                        $('.comm_size[data-variable="totalSizeKBcreditcardstatement"]').text(response.totalSizeKBcreditcardstatement + ' KB');
+                        $('.comm_count[data-variable="countdcreditcardstatement"]').text(response.countdcreditcardstatement);
+
+                        $('.comm_size[data-variable="totalSizeKBfixeddepoiststatement"]').text(response.totalSizeKBfixeddepoiststatement + ' KB');
+                        $('.comm_count[data-variable="countfixeddepoiststatement"]').text(response.countfixeddepoiststatement);
+
+                        $('.comm_size[data-variable="totalSizeKBmutualfundstatement"]').text(response.totalSizeKBmutualfundstatement + ' KB');
+                        $('.comm_count[data-variable="countmutualfundstatement"]').text(response.countmutualfundstatement);
+
+
+                        $('.comm_size[data-variable="totalSizeKBDirector1Photo"]').text(response.totalSizeKBDirector1Photo + ' KB');
+                        $('.comm_count[data-variable="countDirector1Photo"]').text(response.countDirector1Photo);
+
+                        $('.comm_size[data-variable="totalSizeKBDirector1Signimg"]').text(response.totalSizeKBDirector1Signimg + ' KB');
+                        $('.comm_count[data-variable="countDirector1Signimg"]').text(response.countDirector1Signimg);
+
+                        $('.comm_size[data-variable="totalSizeKBDirector1AadharKYC"]').text(response.totalSizeKBDirector1AadharKYC + ' KB');
+                        $('.comm_count[data-variable="countDirector1AadharKYC"]').text(response.countDirector1AadharKYC);
+
+
+                        $('.comm_size[data-variable="totalSizeKBDirector1PANKYC"]').text(response.totalSizeKBDirector1PANKYC + ' KB');
+                        $('.comm_count[data-variable="countDirector1PANKYC"]').text(response.countDirector1PANKYC);
+
+
+                        $('.comm_size[data-variable="totalSizeKBDirector1AddressProof"]').text(response.totalSizeKBDirector1AddressProof + ' KB');
+                        $('.comm_count[data-variable="countDirector1AddressProof"]').text(response.countDirector1AddressProof);
+
+                        $('.comm_size[data-variable="totalSizeKBDirector1ContactDetails"]').text(response.totalSizeKBDirector1ContactDetails + ' KB');
+                        $('.comm_count[data-variable="countDirector1ContactDetails"]').text(response.countDirector1ContactDetails);
+
+                        $('.comm_size[data-variable="totalSizeKBIncorporationMemoofAssoc"]').text(response.totalSizeKBIncorporationMemoofAssoc + ' KB');
+                        $('.comm_count[data-variable="countIncorporationMemoofAssoc"]').text(response.countIncorporationMemoofAssoc);
+
+
+                        $('.comm_size[data-variable="totalSizeKBIncorporationArtofAssoc"]').text(response.totalSizeKBIncorporationArtofAssoc + ' KB');
+                        $('.comm_count[data-variable="countIncorporationArtofAssoc"]').text(response.countIncorporationArtofAssoc);
+
+                        $('.comm_size[data-variable="totalSizeKBIncorporationCertifofincorp"]').text(response.totalSizeKBIncorporationCertifofincorp + ' KB');
+                        $('.comm_count[data-variable="countIncorporationCertifofincorp"]').text(response.countIncorporationCertifofincorp);
+
+
+                        $('.comm_size[data-variable="totalSizeKBIncorporationPartnerdeed"]').text(response.totalSizeKBIncorporationPartnerdeed + ' KB');
+                        $('.comm_count[data-variable="countIncorporationPartnerdeed"]').text(response.countIncorporationPartnerdeed);
+
+                        $('.comm_size[data-variable="totalSizeKBIncorporationLLPAgreement"]').text(response.totalSizeKBIncorporationLLPAgreement + ' KB');
+                        $('.comm_count[data-variable="countIncorporationLLPAgreement"]').text(response.countIncorporationLLPAgreement);
+
+
+                        $('.comm_size[data-variable="totalSizeKBIncorporationTrustDeed"]').text(response.totalSizeKBIncorporationTrustDeed + ' KB');
+                        $('.comm_count[data-variable="countIncorporationTrustDeed"]').text(response.countIncorporationTrustDeed);
+
+                        $('.comm_size[data-variable="totalSizeKBIncorporationSharecertifF"]').text(response.totalSizeKBIncorporationSharecertifF + ' KB');
+                        $('.comm_count[data-variable="countIncorporationSharecertifF"]').text(response.countIncorporationSharecertifF);
+
+
+                        $('.comm_size[data-variable="totalSizeKBcharregpan"]').text(response.totalSizeKBcharregpan + ' KB');
+                        $('.comm_count[data-variable="countcharregpan"]').text(response.countcharregpan);
+
+                        $('.comm_size[data-variable="totalSizeKBcharregtan"]').text(response.totalSizeKBcharregtan + ' KB');
+                        $('.comm_count[data-variable="countcharregtan"]').text(response.countcharregtan);
+
+
+                        $('.comm_size[data-variable="totalSizeKBcharregGSTIN"]').text(response.totalSizeKBcharregGSTIN + ' KB');
+                        $('.comm_count[data-variable="countcharregGSTIN"]').text(response.countcharregGSTIN);
+
+                        $('.comm_size[data-variable="totalSizeKBcharregMSME"]').text(response.totalSizeKBcharregMSME + ' KB');
+                        $('.comm_count[data-variable="countcharregMSME"]').text(response.countcharregMSME);
+
+
+                        $('.comm_size[data-variable="totalSizeKBcharregTrademark"]').text(response.totalSizeKBcharregTrademark + ' KB');
+                        $('.comm_count[data-variable="countcharregTrademark"]').text(response.countcharregTrademark);
+
+                        $('.comm_size[data-variable="totalSizeKBcharregPFC"]').text(response.totalSizeKBcharregPFC + ' KB');
+                        $('.comm_count[data-variable="countcharregPFC"]').text(response.countcharregPFC);
+
+                        $('.comm_size[data-variable="totalSizeKBcharregESIC"]').text(response.totalSizeKBcharregESIC + ' KB');
+                        $('.comm_count[data-variable="countcharregESIC"]').text(response.countcharregESIC);
+
+
+                        $('.comm_size[data-variable="totalSizeKBcharregPTC"]').text(response.totalSizeKBcharregPTC + ' KB');
+                        $('.comm_count[data-variable="countcharregPTC"]').text(response.countcharregPTC);
+
+                        $('.comm_size[data-variable="totalSizeKBcharregLWFC"]').text(response.totalSizeKBcharregLWFC + ' KB');
+                        $('.comm_count[data-variable="countcharregLWFC"]').text(response.countcharregLWFC);
+
+                        $('.comm_size[data-variable="totalSizeKBcharregPP"]').text(response.totalSizeKBcharregPP + ' KB');
+                        $('.comm_count[data-variable="countcharregPP"]').text(response.countcharregPP);
+
+
+                        $('.comm_size[data-variable="totalSizeKBentriesnomeet"]').text(response.totalSizeKBentriesnomeet + ' KB');
+                        $('.comm_count[data-variable="countentriesnomeet"]').text(response.countentriesnomeet);
+
+                        $('.comm_size[data-variable="totalSizeKBentriesminbookmeet"]').text(response.totalSizeKBentriesminbookmeet + ' KB');
+                        $('.comm_count[data-variable="countentriesminbookmeet"]').text(response.countentriesminbookmeet);
+
+
+                        $('.comm_size[data-variable="totalSizeKBentriesasmeet"]').text(response.totalSizeKBentriesasmeet + ' KB');
+                        $('.comm_count[data-variable="countentriesasmeet"]').text(response.countentriesasmeet);
+
+                        $('.comm_size[data-variable="totalSizeKBentriesresomeet"]').text(response.totalSizeKBentriesresomeet + ' KB');
+                        $('.comm_count[data-variable="countentriesresomeet"]').text(response.countentriesresomeet);
+
+                        $('.comm_size[data-variable="totalSizeKBSECAABRAA"]').text(response.totalSizeKBSECAABRAA + ' KB');
+                        $('.comm_count[data-variable="countSECAABRAA"]').text(response.countSECAABRAA);
+
+
+                        $('.comm_size[data-variable="totalSizeKBSECAAIA"]').text(response.totalSizeKBSECAAIA + ' KB');
+                        $('.comm_count[data-variable="countSECAAIA"]').text(response.countSECAAIA);
+
+                        $('.comm_size[data-variable="totalSizeKBSECAAIA"]').text(response.totalSizeKBSECAAIA + ' KB');
+                        $('.comm_count[data-variable="countSECAAIA"]').text(response.countSECAAIA);
+
+                        $('.comm_size[data-variable="totalSizeKBSECAALA"]').text(response.totalSizeKBSECAALA + ' KB');
+                        $('.comm_count[data-variable="countSECAALA"]').text(response.countSECAALA);
+
+
+                        $('.comm_size[data-variable="totalSizeKBSECAACRCAA"]').text(response.totalSizeKBSECAACRCAA + ' KB');
+                        $('.comm_count[data-variable="countSECAACRCAA"]').text(response.countSECAACRCAA);
+
+
+                        $('.comm_size[data-variable="totalSizeKBSECAAALA"]').text(response.totalSizeKBSECAAALA + ' KB');
+                        $('.comm_count[data-variable="countSECAAALA"]').text(response.countSECAAALA);
+
+
+                        $('.comm_size[data-variable="totalSizeKBSECAASR"]').text(response.totalSizeKBSECAASR + ' KB');
+                        $('.comm_count[data-variable="countSECAASR"]').text(response.countSECAASR);
+
+
+                        $('.comm_size[data-variable="totalSizeKBAuditorExitsADT3"]').text(response.totalSizeKBAuditorExitsADT3 + ' KB');
+                        $('.comm_count[data-variable="countAuditorExitsADT3"]').text(response.countAuditorExitsADT3);
+
+                        $('.comm_size[data-variable="totalSizeKBAuditorExitsResignletteraud"]').text(response.totalSizeKBAuditorExitsResignletteraud + ' KB');
+                        $('.comm_count[data-variable="countAuditorExitsResignletteraud"]').text(response.countAuditorExitsResignletteraud);
+
+                        $('.comm_size[data-variable="totalSizeKBAuditorExitsResignDetofgroundsseekremaud"]').text(response.totalSizeKBAuditorExitsResignDetofgroundsseekremaud + ' KB');
+                        $('.comm_count[data-variable="countAuditorExitsResignDetofgroundsseekremaud"]').text(response.countAuditorExitsResignDetofgroundsseekremaud);
+
+
+                        $('.comm_size[data-variable="totalSizeKBAuditorExitsSpecialResol"]').text(response.totalSizeKBAuditorExitsSpecialResol + ' KB');
+                        $('.comm_count[data-variable="countAuditorExitsSpecialResol"]').text(response.countAuditorExitsSpecialResol);
+
+                        $('.comm_size[data-variable="totalSizeKBAuditorExitsADT2"]').text(response.totalSizeKBAuditorExitsADT2 + ' KB');
+                        $('.comm_count[data-variable="countAuditorExitsADT2"]').text(response.countAuditorExitsADT2);
+
+                        $('.comm_size[data-variable="totalSizeKB"]').text(response.totalSizeKB + ' KB');
+                        $('.comm_count[data-variable="count"]').text(response.count);
+
+                        $('.comm_size[data-variable="totalSizeKBMinbooks"]').text(response.totalSizeKBMinbooks + ' KB');
+                        $('.comm_count[data-variable="countMinbooks"]').text(response.countMinbooks);
+
+
+                        $('.comm_size[data-variable="totalSizeKBentriesas"]').text(response.totalSizeKBentriesas + ' KB');
+                        $('.comm_count[data-variable="countentriesas"]').text(response.countentriesas);
+
+                        $('.comm_size[data-variable="totalSizeKBentriesreso"]').text(response.totalSizeKBentriesreso + ' KB');
+                        $('.comm_count[data-variable="countentriesreso"]').text(response.countentriesreso);
+
+
+                        $('.comm_size[data-variable="totalSizeKBdepositundertakingsFormDPT3"]').text(response.totalSizeKBdepositundertakingsFormDPT3 + ' KB');
+                        $('.comm_count[data-variable="countdepositundertakingsFormDPT3"]').text(response.countdepositundertakingsFormDPT3);
+
+                        $('.comm_size[data-variable="totalSizeKBdirectorappointmentsdir3din"]').text(response.totalSizeKBdirectorappointmentsdir3din + ' KB');
+                        $('.comm_count[data-variable="countdirectorappointmentsdir3din"]').text(response.countdirectorappointmentsdir3din);
+
+                        $('.comm_size[data-variable="totalSizeKBdirectorappointmentsdir3"]').text(response.totalSizeKBdirectorappointmentsdir3 + ' KB');
+                        $('.comm_count[data-variable="countdirectorappointmentsdir3"]').text(response.countdirectorappointmentsdir3);
+
+                        $('.comm_size[data-variable="totalSizeKBdirectorappointmentsdir6"]').text(response.totalSizeKBdirectorappointmentsdir6 + ' KB');
+                        $('.comm_count[data-variable="countdirectorappointmentsdir6"]').text(response.countdirectorappointmentsdir6);
+
+                        $('.comm_size[data-variable="totalSizeKBdirectorappointmentsdir12"]').text(response.totalSizeKBdirectorappointmentsdir12 + ' KB');
+                        $('.comm_count[data-variable="countdirectorappointmentsdir12"]').text(response.countdirectorappointmentsdir12);
+
+                        $('.comm_size[data-variable="totalSizeKBdirectorresignationdir11"]').text(response.totalSizeKBdirectorresignationdir11 + ' KB');
+                        $('.comm_count[data-variable="countdirectorresignationdir11"]').text(response.countdirectorresignationdir11);
+
+                        $('.comm_size[data-variable="totalSizeKBdirectorresignationdir12"]').text(response.totalSizeKBdirectorresignationdir12 + ' KB');
+                        $('.comm_count[data-variable="countdirectorresignationdir12"]').text(response.countdirectorresignationdir12);
+
+                        $('.comm_size[data-variable="totalSizeKBentriesordernotice"]').text(response.totalSizeKBentriesordernotice + ' KB');
+                        $('.comm_count[data-variable="countentriesordernotice"]').text(response.countentriesordernotice);
+
+                        $('.comm_size[data-variable="totalSizeKBentriesorderminbook"]').text(response.totalSizeKBentriesorderminbook + ' KB');
+                        $('.comm_count[data-variable="countentriesorderminbook"]').text(response.countentriesorderminbook);
+
+                        $('.comm_size[data-variable="totalSizeKBentriesorderAttend"]').text(response.totalSizeKBentriesorderAttend + ' KB');
+                        $('.comm_count[data-variable="countentriesorderAttend"]').text(response.countentriesorderAttend);
+
+                        $('.comm_size[data-variable="totalSizeKBentriesorderreso"]').text(response.totalSizeKBentriesorderreso + ' KB');
+                        $('.comm_count[data-variable="countentriesorderreso"]').text(response.countentriesorderreso);
+
+                        $('.comm_size[data-variable="totalSizeKBinnerrun"]').text(response.totalSizeKBinnerrun + ' KB');
+                        $('.comm_count[data-variable="countinnerrun"]').text(response.countinnerrun);
+
+                        $('.comm_size[data-variable="totalSizeKBentrieinc9"]').text(response.totalSizeKBentrieinc9 + ' KB');
+                        $('.comm_count[data-variable="countentriesinc9"]').text(response.countentriesinc9);
+
+                        $('.comm_size[data-variable="totalSizeKBentrieinnerspice"]').text(response.totalSizeKBentrieinnerspice + ' KB');
+                        $('.comm_count[data-variable="countentriesinnerspice"]').text(response.countentriesinnerspice);
+
+
+                        $('.comm_size[data-variable="totalSizeKBentrieinnerinc33"]').text(response.totalSizeKBentrieinnerinc33 + ' KB');
+                        $('.comm_count[data-variable="countentriesinnerinc33"]').text(response.countentriesinnerinc33);
+
+                        $('.comm_size[data-variable="totalSizeKBentrieinnerinc34"]').text(response.totalSizeKBentrieinnerinc34 + ' KB');
+                        $('.comm_count[data-variable="countentriesinnerinc34"]').text(response.countentriesinnerinc34);
+
+                        $('.comm_size[data-variable="totalSizeKBentrieinnerinc35"]').text(response.totalSizeKBentrieinnerinc35 + ' KB');
+                        $('.comm_count[data-variable="countentriesinnerinc35"]').text(response.countentriesinnerinc35);
+
+                        $('.comm_size[data-variable="totalSizeKBentrieinnerinc20a"]').text(response.totalSizeKBentrieinnerinc20a + ' KB');
+                        $('.comm_count[data-variable="countentriesinnerinc20a"]').text(response.countentriesinnerinc20a);
+
+                        $('.comm_size[data-variable="totalSizeKBSECSRRM"]').text(response.totalSizeKBSECSRRM + ' KB');
+                        $('.comm_count[data-variable="countSECSRRM"]').text(response.countSECSRRM);
+
+                        $('.comm_size[data-variable="totalSizeKBSECSRROSH"]').text(response.totalSizeKBSECSRROSH + ' KB');
+                        $('.comm_count[data-variable="countSECSRROSH"]').text(response.countSECSRROSH);
+
+
+                        $('.comm_size[data-variable="totalSizeKBSECSRFR"]').text(response.totalSizeKBSECSRFR + ' KB');
+                        $('.comm_count[data-variable="countSECSRFR"]').text(response.countSECSRFR);
+
+                        $('.comm_size[data-variable="totalSizeKBSECSRRDKMPR"]').text(response.totalSizeKBSECSRRDKMPR + ' KB');
+                        $('.comm_count[data-variable="countSECSRRDKMPR"]').text(response.countSECSRRDKMPR);
+
+                        $('.comm_size[data-variable="totalSizeKBSECSRROC"]').text(response.totalSizeKBSECSRROC + ' KB');
+                        $('.comm_count[data-variable="countSECSRROC"]').text(response.countSECSRROC);
+
+                        $('.comm_size[data-variable="totalSizeKBSECSRROD"]').text(response.totalSizeKBSECSRROD + ' KB');
+                        $('.comm_count[data-variable="countSECSRROD"]').text(response.countSECSRROD);
+
+                        $('.comm_size[data-variable="totalSizeKBSECSRRLGS"]').text(response.totalSizeKBSECSRRLGS + ' KB');
+                        $('.comm_count[data-variable="countSECSRRLGS"]').text(response.countSECSRRLGS);
+
+
+                        $('.comm_size[data-variable="totalSizeKBSECSRROINHCN"]').text(response.totalSizeKBSECSRROINHCN + ' KB');
+                        $('.comm_count[data-variable="countSECSRROINHCN"]').text(response.countSECSRROINHCN);
+
+                        $('.comm_size[data-variable="totalSizeKBSECSRRCDI"]').text(response.totalSizeKBSECSRRCDI + ' KB');
+                        $('.comm_count[data-variable="countSECSRRCDI"]').text(response.countSECSRRCDI);
+
+                        $('.comm_size[data-variable="totalSizeKBSECSRRSES"]').text(response.totalSizeKBSECSRRSES + ' KB');
+                        $('.comm_count[data-variable="countSECSRRSES"]').text(response.countSECSRRSES);
+
+                        $('.comm_size[data-variable="totalSizeKBSECSRRSES"]').text(response.totalSizeKBSECSRRSES + ' KB');
+                        $('.comm_count[data-variable="countSECSRRSES"]').text(response.countSECSRRSES);
+
+
+                        $('.comm_size[data-variable="totalSizeKBSECSRRESO"]').text(response.totalSizeKBSECSRRESO + ' KB');
+                        $('.comm_count[data-variable="countSECSRRESO"]').text(response.countSECSRRESO);
+
+
+                        $('.comm_size[data-variable="totalSizeKBSECSRROSBB"]').text(response.totalSizeKBSECSRROSBB + ' KB');
+                        $('.comm_count[data-variable="countSECSRROSBB"]').text(response.countSECSRROSBB);
+
+                        $('.comm_size[data-variable="totalSizeKBSECSRRRDSC"]').text(response.totalSizeKBSECSRRRDSC + ' KB');
+                        $('.comm_count[data-variable="countSECSRRRDSC"]').text(response.countSECSRRRDSC);
+
+                        $('.comm_size[data-variable="totalSizeKBSECSRRSBO"]').text(response.totalSizeKBSECSRRSBO + ' KB');
+                        $('.comm_count[data-variable="countSECSRRSBO"]').text(response.countSECSRRSBO);
+
+                        $('.comm_size[data-variable="totalSizeKBSECSRRPB"]').text(response.totalSizeKBSECSRRPB + ' KB');
+                        $('.comm_count[data-variable="countSECSRRPB"]').text(response.countSECSRRPB);
+
+
+                        $('.comm_size[data-variable="totalSizeKBSECSRRPB"]').text(response.totalSizeKBSECSRRPB + ' KB');
+                        $('.comm_count[data-variable="countSECSRRPB"]').text(response.countSECSRRPB);
+
+                        $('.comm_size[data-variable="totalSizeKBhrpayrim"]').text(response.totalSizeKBhrpayrim + ' KB');
+                        $('.comm_count[data-variable="counthrpayrim"]').text(response.counthrpayrim);
+
+                        $('.comm_size[data-variable="totalSizeKBhrpayrimapprove"]').text(response.totalSizeKBhrpayrimapprove + ' KB');
+                        $('.comm_count[data-variable="counthrpayrimapprove"]').text(response.counthrpayrimapprove);
+
+                        $('.comm_size[data-variable="totalSizeKBhrpaymoney1"]').text(response.totalSizeKBhrpaymoney1 + ' KB');
+                        $('.comm_count[data-variable="counthrhrpaymoney1"]').text(response.counthrhrpaymoney1);
+
+                        $('.comm_size[data-variable="totalSizeKBhrpaymoney2"]').text(response.totalSizeKBhrpaymoney2 + ' KB');
+                        $('.comm_count[data-variable="counthrhrpaymoney2"]').text(response.counthrhrpaymoney2);
+
+                        $('.comm_size[data-variable="totalSizeKBhrpaymoney3"]').text(response.totalSizeKBhrpaymoney3 + ' KB');
+                        $('.comm_count[data-variable="counthrhrpaymoney3"]').text(response.counthrhrpaymoney3);
+
+
+                        $('.comm_size[data-variable="totalSizeKBhrpaymoney4"]').text(response.totalSizeKBhrpaymoney4 + ' KB');
+                        $('.comm_count[data-variable="counthrhrpaymoney4"]').text(response.counthrhrpaymoney4);
+
+                        $('.comm_size[data-variable="totalSizeKBhrpaymoney5"]').text(response.totalSizeKBhrpaymoney5 + ' KB');
+                        $('.comm_count[data-variable="counthrhrpaymoney5"]').text(response.counthrhrpaymoney5);
+
+                        $('.comm_size[data-variable="totalSizeKBhremppol1"]').text(response.totalSizeKBhremppol1 + ' KB');
+                        $('.comm_count[data-variable="counthremppol1"]').text(response.counthremppol1);
+
+                        $('.comm_size[data-variable="totalSizeKBhremppol2"]').text(response.totalSizeKBhremppol2 + ' KB');
+                        $('.comm_count[data-variable="counthremppol2"]').text(response.counthremppol2);
+
+                        $('.comm_size[data-variable="totalSizeKBhremppol3"]').text(response.totalSizeKBhremppol3 + ' KB');
+                        $('.comm_count[data-variable="counthremppol3"]').text(response.counthremppol3);
+
+                        $('.comm_size[data-variable="totalSizeKBhremppol4"]').text(response.totalSizeKBhremppol4 + ' KB');
+                        $('.comm_count[data-variable="counthremppol4"]').text(response.counthremppol4);
+
+                        $('.comm_size[data-variable="totalSizeKBhroff1"]').text(response.totalSizeKBhroff1 + ' KB');
+                        $('.comm_count[data-variable="counthroff1"]').text(response.counthroff1);
+
+                        $('.comm_size[data-variable="totalSizeKBhroff2"]').text(response.totalSizeKBhroff2 + ' KB');
+                        $('.comm_count[data-variable="counthroff2"]').text(response.counthroff2);
+
+                        $('.comm_size[data-variable="totalSizeKBhroff3"]').text(response.totalSizeKBhroff3 + ' KB');
+                        $('.comm_count[data-variable="counthroff3"]').text(response.counthroff3);
+
+                        $('.comm_size[data-variable="totalSizeKBhroff4"]').text(response.totalSizeKBhroff4 + ' KB');
+                        $('.comm_count[data-variable="counthroff4"]').text(response.counthroff4);
+
+                        $('.comm_size[data-variable="totalSizeKBhrempdec"]').text(response.totalSizeKBhrempdec + ' KB');
+                        $('.comm_count[data-variable="counthrhrempdec"]').text(response.counthrhrempdec);
+
+
+                        $('.comm_size[data-variable="totalSizeKBhrempdecmaster"]').text(response.totalSizeKBhrempdecmaster + ' KB');
+                        $('.comm_count[data-variable="counthrhrempdecmaster"]').text(response.counthrhrempdecmaster);
+
+                        $('.comm_size[data-variable="totalSizeKBkycphoto"]').text(response.totalSizeKBkycphoto + ' KB');
+                        $('.comm_count[data-variable="countkycphoto"]').text(response.countkycphoto);
+
+                        $('.comm_size[data-variable="totalSizeKBkycaadhar"]').text(response.totalSizeKBkycaadhar + ' KB');
+                        $('.comm_count[data-variable="countkycaadhar"]').text(response.countkycaadhar);
+
+                        $('.comm_size[data-variable="totalSizeKBkycpan"]').text(response.totalSizeKBkycpan + ' KB');
+                        $('.comm_count[data-variable="countkycpan"]').text(response.countkycpan);
+
+                        $('.comm_size[data-variable="totalSizeKBkycaddressproof"]').text(response.totalSizeKBkycaddressproof + ' KB');
+                        $('.comm_count[data-variable="countkycaddressproof"]').text(response.countkycaddressproof);
+
+                        $('.comm_size[data-variable="totalSizeKBkyccontactdetails"]').text(response.totalSizeKBkyccontactdetails + ' KB');
+                        $('.comm_count[data-variable="countkyccontactdetails"]').text(response.countkyccontactdetails);
+
+                        $('.comm_size[data-variable="totalSizeKBemponboard"]').text(response.totalSizeKBemponboard + ' KB');
+                        $('.comm_count[data-variable="countemponboard"]').text(response.countemponboard);
+
+                        $('.comm_size[data-variable="totalSizeKBemponboardal"]').text(response.totalSizeKBemponboardal + ' KB');
+                        $('.comm_count[data-variable="countemponboardal"]').text(response.countemponboardal);
+
+                        $('.comm_size[data-variable="totalSizeKBemponboardea"]').text(response.totalSizeKBemponboardea + ' KB');
+                        $('.comm_count[data-variable="countemponboardea"]').text(response.countemponboardea);
+
+                        $('.comm_size[data-variable="totalSizeKBemponboardnda"]').text(response.totalSizeKBemponboardnda + ' KB');
+                        $('.comm_count[data-variable="countemponboardnda"]').text(response.countemponboardnda);
+
+                        $('.comm_size[data-variable="totalSizeKBemponboardnc"]').text(response.totalSizeKBemponboardnc + ' KB');
+                        $('.comm_count[data-variable="countemponboardnc"]').text(response.countemponboardnc);
+
+                        $('.comm_size[data-variable="totalSizeKBemponboardcb"]').text(response.totalSizeKBemponboardcb + ' KB');
+                        $('.comm_count[data-variable="countemponboardcb"]').text(response.countemponboardcb);
+
+                        $('.comm_size[data-variable="totalSizeKBemponboardepf"]').text(response.totalSizeKBemponboardepf + ' KB');
+                        $('.comm_count[data-variable="countemponboardepf"]').text(response.countemponboardepf);
+
+                        $('.comm_size[data-variable="totalSizeKBemponboardincometax"]').text(response.totalSizeKBemponboardincometax + ' KB');
+                        $('.comm_count[data-variable="countemponboardincometax"]').text(response.countemponboardincometax);
+
+
+                    }, 1000); 
+            },
+            error: function(xhr, status, error) {
+                console.error(error); // Log any error for debugging
+            }
+        });
     }
+});
+// Function to fetch data from the server
+function fetchTotalSize(folderPath) {
+    $.ajax({
+        url: '/docurepo', // URL for the GET request
+        method: 'GET',
+        data: { folderPath: folderPath }, // Pass folderPath directly as query parameter
+        success: function(response) {
+            // Handle the response from the controller
+            console.log(response); // Log the response for debugging
+            
+            // Update the size in the designated span using a data attribute
+            $('.comm_size[data-variable="totalSizeKBentrieafs"]').text(response.totalSizeKBentrieafs + ' KB');
+        },
+        error: function(xhr, status, error) {
+            console.error("AJAX Error:", error); // Log any error for debugging
+        }
+    });
+}
+
+// Event listener for folder links
+$('.folder-link').on('click', function(event) {
+    event.preventDefault(); // Prevent default link behavior
+
+    // Get the folder path from the clicked link (assuming data-folder-path is an attribute)
+    const folderPath = $(this).data('folder-path'); // Change to your actual attribute
+
+    // Call the fetchTotalSize function with the folder path
+
+   
 });
 
 $(document).on('click', '.toggle_icconn', function(e) {
@@ -4325,7 +4753,6 @@ function navigateToFolder(folderPath) {
         window.history.pushState({ path: newUrl.href }, '', newUrl.href);
     }
 }
-
 
 // Listen for browser navigation (back/forward buttons)
 window.addEventListener('popstate', function(event) {
@@ -4402,7 +4829,8 @@ function decodeAndFormatUrl(url) {
 // Decode the folder path if it exists, otherwise use 'folderPath'
 const decodedFolderPath = folderPaths ? decodeURIComponent(folderPaths) : null;
 const pathToUse = decodedFolderPath ? decodedFolderPath : folderPath;
-
+// alert("inside fetch folder");
+// alert(pathToUse);
 // Make sure to use backticks (`) for the template literal
 let url = `${pathToUse}`;
 
@@ -5150,7 +5578,7 @@ function handleFolderPath(folderPath) {
     }
 
     $('.hidebdnotice').on('click', function() {
-        alert('hello');
+        
         console.log("clicked");
     });
 
