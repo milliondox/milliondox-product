@@ -1923,40 +1923,53 @@ $(document).ready(function() {
     </div>
 </div>
 <script>
+
 $(document).ready(function() {
     $(document).on('click', '.downloadfolder', function() {
         var folderid = $(this).data('id');
 
-        // Show a loading spinner or message
-        var loadingMessage = $("<div>Preparing your download...</div>");
-        $('body').append(loadingMessage);
+        // Show a loading message or spinner
+        var loadingMessage = $("<div>Preparing your download...</div>").appendTo('body');
 
-        // Send AJAX request to download the folder
         $.ajax({
-            url: '/download-folder/' + folderid, // URL-encode the folder path
+            url: '/download-folder/' + folderid,
             type: 'GET',
-            success: function(response) {
-                // Remove loading message
+            xhrFields: {
+                responseType: 'blob' // Set response type to blob for file downloads
+            },
+            success: function(response, status, xhr) {
                 loadingMessage.remove();
 
-                // Check if the response contains a valid success message
-                if (response && response.success) {
-                    // Trigger file download using the URL of the ZIP file
-                    window.location.href = response.zipFileUrl; // Ensure zipFileUrl is correctly set
+                // Check if the response is a file (not JSON)
+                const disposition = xhr.getResponseHeader('Content-Disposition');
+                if (disposition && disposition.indexOf('attachment') !== -1) {
+                    const filename = disposition.split('filename=')[1].replace(/"/g, '');
+
+                    // Create a download link for the blob
+                    const blob = new Blob([response], { type: 'application/zip' });
+                    const url = window.URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = filename;
+                    document.body.appendChild(a);
+                    a.click();
+                    a.remove();
+                    window.URL.revokeObjectURL(url);
                 } else {
-                    console.log(response); // Log the entire response to debug
-                    alert('Error: ' + (response.message || 'An unknown error occurred.'));
+                    alert('An error occurred. The file could not be downloaded.');
                 }
             },
             error: function(xhr, status, error) {
-                // Remove loading message
                 loadingMessage.remove();
-                console.error('Error details:', status, error, xhr.responseText); // Log the full error for debugging
+                console.error('Error details:', status, error, xhr.responseText);
                 alert('An error occurred while downloading the folder. Please try again.');
             }
         });
     });
 });
+
+
+
 
 
 
@@ -4620,6 +4633,9 @@ $(document).on('click', '.folder-link', function(e) {
 
                         $('.comm_size[data-variable="totalSizeKBkycaadhar"]').text(response.totalSizeKBkycaadhar + ' KB');
                         $('.comm_count[data-variable="countkycaadhar"]').text(response.countkycaadhar);
+
+                        $('.comm_size[data-variable="totalSizeKBentrieinnerinc22"]').text(response.totalSizeKBentrieinnerinc22 + ' KB');
+                        $('.comm_count[data-variable="countentriesinnerinc22"]').text(response.countentriesinnerinc22);
 
                         $('.comm_size[data-variable="totalSizeKBkycpan"]').text(response.totalSizeKBkycpan + ' KB');
                         $('.comm_count[data-variable="countkycpan"]').text(response.countkycpan);
