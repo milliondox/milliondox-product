@@ -965,7 +965,7 @@
 
                           <div class="gropu_form">
                           <label for="Division">Division</label>
-  <select id="divison" name="divison" required>
+  <select id="divison" name="divison">
   <option value="" disabled Selected>select</option>
     
 <option value="Human Resources" {{ $cont->divison === 'Human Resources' ? ' selected' : '' }}>Human Resources</option>
@@ -1325,7 +1325,7 @@
 
                           <div class="gropu_form">
                           <label for="Division">Division</label>
-  <select id="divison" name="divison" required>
+  <select id="divison" name="divison">
   <option value="" disabled Selected>select</option>
     
 <option value="Human Resources" {{ $cont->divison === 'Human Resources' ? ' selected' : '' }}>Human Resources</option>

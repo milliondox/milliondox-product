@@ -4859,14 +4859,7 @@ let fullPath = `${result}`;
 let basePath = "Accounting & Taxation/Charter Documents/Director Details/";
 
 // Extract the part after the base path
-let newPermitter = fullPath.replace(basePath, '');
-// alert(`${basePath}${newPermitter}`);
-// alert(newPermitter);
-// alert(result);
-setInterval(function() {
-    let result = decodeAndFormatUrl(url);
-    // console.log(result);  // Output: formatted URL every second
-}, 1000); 
+let newPermitter = fullPath.replace(basePath, '').split('/')[0];
 //  alert(result);
         // let resultto = removeDynamicPrefix(pathToUse);
 
@@ -4890,102 +4883,114 @@ setInterval(function() {
                 $('.file-container').html(response.fileHtml);
 
                 clearAppendedTables();
-                if (result.includes("Secretarial/Board Meetings") && !incorporationTableAppended) {
+                if (result.endsWith("Secretarial/Board Meetings") && !incorporationTableAppended) {
                     insertIncorporationTable();
                     incorporationTableAppended = true;
-                } else if (result.includes("Secretarial/Annual General Meeting") && !meetingTableAppended){
+                } else if (result.endsWith("Secretarial/Annual General Meeting") && !meetingTableAppended){
                     insertMeetingTable();
                     meetingTableAppended = true;
-                } else if (result.includes("Secretarial/Extra Ordinary General Meeting") && !orderTableAppended)  {
+                } else if (result.endsWith("Secretarial/Extra Ordinary General Meeting") && !orderTableAppended)  {
                     insertOrderTable();
                     orderTableAppended = true;
-                } else if (result.includes("Secretarial/Incorporation") && !incTableAppended)  {
+                } else if (result.endsWith("Secretarial/Incorporation") && !incTableAppended)  {
                     insertINCTable();
                     incTableAppended = true;
-                } else if (result.includes("Secretarial/Annual Filings") && !annTableAppended)  {
+                } else if (result.endsWith("Secretarial/Annual Filings") && !annTableAppended)  {
                     insertANNTable();
                     annTableAppended = true;
-                } else if (result.includes("Secretarial/Director Appointments") && !directTableAppended)  {
+                } else if (result.endsWith("Secretarial/Director Appointments") && !directTableAppended)  {
                     insertDirectTable();
                     directTableAppended = true;
-                } else if (result.includes("Secretarial/Director Resignation") && !directexitTableAppended)  {
+                } else if (result.endsWith("Secretarial/Director Resignation") && !directexitTableAppended)  {
                     insertDirectexitTable();
                     directexitTableAppended = true;
-                } else if (result.includes("Secretarial/Auditor Appointment") && !auditappTableAppended)  {
+                } else if (result.endsWith("Secretarial/Auditor Appointment") && !auditappTableAppended)  {
                     insertauditappTable();
                     auditappTableAppended = true;
-                } else if (result.includes("Secretarial/Auditor Exits") && !auditexitTableAppended)  {
+                } else if (result.endsWith("Secretarial/Auditor Exits") && !auditexitTableAppended)  {
                     insertauditexitTable();
                     auditexitTableAppended = true;
-                } else if (result.includes("Secretarial/Statutory Registers") && !staturegiTableAppended)  {
+                } else if (result.endsWith("Secretarial/Statutory Registers") && !staturegiTableAppended)  {
                     insertstaturegiTable();
                     staturegiTableAppended = true;
-                } else if (result.includes("Secretarial/Deposit Undertakings") && !undertakingTableAppended) {
+                } else if (result.endsWith("Secretarial/Deposit Undertakings") && !undertakingTableAppended) {
                     insertundertakingTable();
                     undertakingTableAppended = true;
-                } else if (result.includes("Accounting & Taxation/Book-keeping/Bank Account Statements") && !bankAccountStatementsTableAppended)  {
+                } else if (result.endsWith("Accounting & Taxation/Book-keeping/Bank Account Statements") && !bankAccountStatementsTableAppended)  {
                     insertbankAccountStatementsTable();
                     bankAccountStatementsTableAppended = true;
-                } else if (result.includes("Accounting & Taxation/Book-keeping/Fixed Deposit Statements") && !bankFixedDepositStatementsTableAppended)  {
+                } else if (result.endsWith("Accounting & Taxation/Book-keeping/Fixed Deposit Statements") && !bankFixedDepositStatementsTableAppended)  {
                     insertbankFixedDepositStatementsTable();
                     bankFixedDepositStatementsTableAppended = true;
-                } else if (result.includes("Accounting & Taxation/Book-keeping/Credit Card Statements") && !bankCreditCardStatementsTableAppended)  {
+                } else if (result.endsWith("Accounting & Taxation/Book-keeping/Credit Card Statements") && !bankCreditCardStatementsTableAppended)  {
                     insertbankCreditCardStatementsTable();
                     bankCreditCardStatementsTableAppended = true;
-                } else if (result.includes("Accounting & Taxation/Book-keeping/Mutual Fund Statements") && !bankMutualFundStatementsTableAppended)  {
+                } else if (result.endsWith("Accounting & Taxation/Book-keeping/Mutual Fund Statements") && !bankMutualFundStatementsTableAppended)  {
                     insertbankMutualFundStatementsTable();
                     bankMutualFundStatementsTableAppended = true;
-                } else if (result.includes(`Accounting & Taxation/Charter Documents/Director Details/${newPermitter}`) && !charterdocumentsDirectordetatilsDirector1TableAppended) {
+                } else if (result.endsWith(`Accounting & Taxation/Charter Documents/Director Details/${newPermitter}`) && !charterdocumentsDirectordetatilsDirector1TableAppended) {
                     
+                    setInterval(function() {
+    let result = decodeAndFormatUrl(url);
+    let fullPath = `${result}`;
+
+    // Extract the part after the base path and get only the first parameter (name)
+    let newPermitter = fullPath.replace(basePath, '').split('/')[0];
+
+    // Output the result or use it to trigger actions
+    console.log(newPermitter); // Output the cleaned value
+}, 1000);
+
+
                     insertcharterdocumentsDirectordetatilsDirector1Table();
                     charterdocumentsDirectordetatilsDirector1TableAppended = true;
                 } 
                 
-                else if (result.includes("Accounting & Taxation/Charter Documents/Incorporation") && !charterdocumentsIncorporationTableAppended)  {
+                else if (result.endsWith("Accounting & Taxation/Charter Documents/Incorporation") && !charterdocumentsIncorporationTableAppended)  {
                 // alert(result);
                     insertcharterdocumentsIncorporationTableAppendedTable();
                     charterdocumentsIncorporationTableAppended = true;
-                } else if (result.includes("Accounting & Taxation/Charter Documents/Registrations") && !charterdocumentsRegistrationsTableAppended)  {
+                } else if (result.endsWith("Accounting & Taxation/Charter Documents/Registrations") && !charterdocumentsRegistrationsTableAppended)  {
                     insertcharterdocumentsRegistrationsTableAppendedTable();
                     charterdocumentsRegistrationsTableAppended = true;
                 }
-                else if (result.includes("Employee Database/Onboarding documents") && !hronboarTableAppended) {
+                else if (result.endsWith("Employee Database/Onboarding documents") && !hronboarTableAppended) {
                    
                     inserthronboarTableAppended();  // Call the function to append the table
                     hronboarTableAppended = true;  // Set the flag to true to prevent further appends
                 }
-                else if (result.includes("Employee Database/KYC Documents") && !hrkycTableAppended) {
+                else if (result.endsWith("Employee Database/KYC Documents") && !hrkycTableAppended) {
                   
                     inserthrkycTableAppended();  // Call the function to append the table
                     hrkycTableAppended = true;  // Set the flag to true to prevent further appends
                 }
 
-                else if (result.includes("Employee Database/Declarations") && !hrdecTableAppended) {
+                else if (result.endsWith("Employee Database/Declarations") && !hrdecTableAppended) {
                   
                     inserthrdecTableAppended();  // Call the function to append the table
                     hrdecTableAppended = true;  // Set the flag to true to prevent further appends
                 }
 
 
-                else if (result.includes("Employee Database/Offboarding") && !hroffboardTableAppended) {
+                else if (result.endsWith("Employee Database/Offboarding") && !hroffboardTableAppended) {
                    
                     inserthroffboardTableAppended();  // Call the function to append the table
                     hroffboardTableAppended = true;  // Set the flag to true to prevent further appends
                 }
 
-                else if (result.includes("Employee Database/ESOP") && !hresopTableAppended) {
+                else if (result.endsWith("Employee Database/ESOP") && !hresopTableAppended) {
 
                     inserthresopTableAppended();  // Call the function to append the table
                     hresopTableAppended = true;  // Set the flag to true to prevent further appends
                 }
 
-                else if (result.includes("Pay Registers/Monthly Payrun") && !hrmpTableAppended) {
+                else if (result.endsWith("Pay Registers/Monthly Payrun") && !hrmpTableAppended) {
                    
                     inserthrmpTableAppended();  // Call the function to append the table
                     hrmpTableAppended = true;  // Set the flag to true to prevent further appends
                 }
 
-                else if (result.includes("Pay Registers/Reimbursements") && !hrreimbTableAppended) {
+                else if (result.endsWith("Pay Registers/Reimbursements") && !hrreimbTableAppended) {
                    
                     inserthrreimTableAppended();  // Call the function to append the table
                     hrreimbTableAppended = true;  // Set the flag to true to prevent further appends
@@ -5031,18 +5036,14 @@ setInterval(function() {
         // let result = decodeAndFormatUrl(url);
 
         let result = decodeAndFormatUrl(url);
-
+    //  console.log(result);
 let fullPath = `${result}`;
 
 // The base path you want to cut off
 let basePath = "Accounting & Taxation/Charter Documents/Director Details/";
 
 // Extract the part after the base path
-let newPermitter = fullPath.replace(basePath, '');
-        setInterval(function() {
-    let result = decodeAndFormatUrl(url);
-    // console.log(result);  // Output: formatted URL every second
-}, 100); 
+let newPermitter = fullPath.replace(basePath, '').split('/')[0]; 
 
 // Format the decoded URL
 
@@ -5061,7 +5062,7 @@ let newPermitter = fullPath.replace(basePath, '');
 
                 // Split the string by '/' and trim spaces
                 
-                // const parts = pathToUse.split('/').map(part => part.trim());
+                // const parts = pathToUse.split('/').map(part => part.trim());    
     
                 // let incrementalPaths = [];
                 
@@ -5110,102 +5111,114 @@ let newPermitter = fullPath.replace(basePath, '');
 
                 clearAppendedTables();
 
-                if (result.includes("Secretarial/Board Meetings") && !incorporationTableAppended) {
+                if (result.endsWith("Secretarial/Board Meetings") && !incorporationTableAppended) {
                     insertIncorporationTable();
                     incorporationTableAppended = true;
-                } else if (result.includes("Secretarial/Annual General Meeting") && !meetingTableAppended){
+                } else if (result.endsWith("Secretarial/Annual General Meeting") && !meetingTableAppended){
                     insertMeetingTable();
                     meetingTableAppended = true;
-                } else if (result.includes("Secretarial/Extra Ordinary General Meeting") && !orderTableAppended)  {
+                } else if (result.endsWith("Secretarial/Extra Ordinary General Meeting") && !orderTableAppended)  {
                     insertOrderTable();
                     orderTableAppended = true;
-                } else if (result.includes("Secretarial/Incorporation") && !incTableAppended)  {
+                } else if (result.endsWith("Secretarial/Incorporation") && !incTableAppended)  {
                     insertINCTable();
                     incTableAppended = true;
-                } else if (result.includes("Secretarial/Annual Filings") && !annTableAppended)  {
+                } else if (result.endsWith("Secretarial/Annual Filings") && !annTableAppended)  {
                     insertANNTable();
                     annTableAppended = true;
-                } else if (result.includes("Secretarial/Director Appointments") && !directTableAppended)  {
+                } else if (result.endsWith("Secretarial/Director Appointments") && !directTableAppended)  {
                     insertDirectTable();
                     directTableAppended = true;
-                } else if (result.includes("Secretarial/Director Resignation") && !directexitTableAppended)  {
+                } else if (result.endsWith("Secretarial/Director Resignation") && !directexitTableAppended)  {
                     insertDirectexitTable();
                     directexitTableAppended = true;
-                } else if (result.includes("Secretarial/Auditor Appointment") && !auditappTableAppended)  {
+                } else if (result.endsWith("Secretarial/Auditor Appointment") && !auditappTableAppended)  {
                     insertauditappTable();
                     auditappTableAppended = true;
-                } else if (result.includes("Secretarial/Auditor Exits") && !auditexitTableAppended)  {
+                } else if (result.endsWith("Secretarial/Auditor Exits") && !auditexitTableAppended)  {
                     insertauditexitTable();
                     auditexitTableAppended = true;
-                } else if (result.includes("Secretarial/Statutory Registers") && !staturegiTableAppended)  {
+                } else if (result.endsWith("Secretarial/Statutory Registers") && !staturegiTableAppended)  {
                     insertstaturegiTable();
                     staturegiTableAppended = true;
-                } else if (result.includes("Secretarial/Deposit Undertakings") && !undertakingTableAppended) {
+                } else if (result.endsWith("Secretarial/Deposit Undertakings") && !undertakingTableAppended) {
                     insertundertakingTable();
                     undertakingTableAppended = true;
-                } else if (result.includes("Accounting & Taxation/Book-keeping/Bank Account Statements") && !bankAccountStatementsTableAppended)  {
+                } else if (result.endsWith("Accounting & Taxation/Book-keeping/Bank Account Statements") && !bankAccountStatementsTableAppended)  {
                     insertbankAccountStatementsTable();
                     bankAccountStatementsTableAppended = true;
-                } else if (result.includes("Accounting & Taxation/Book-keeping/Fixed Deposit Statements") && !bankFixedDepositStatementsTableAppended)  {
+                } else if (result.endsWith("Accounting & Taxation/Book-keeping/Fixed Deposit Statements") && !bankFixedDepositStatementsTableAppended)  {
                     insertbankFixedDepositStatementsTable();
                     bankFixedDepositStatementsTableAppended = true;
-                } else if (result.includes("Accounting & Taxation/Book-keeping/Credit Card Statements") && !bankCreditCardStatementsTableAppended)  {
+                } else if (result.endsWith("Accounting & Taxation/Book-keeping/Credit Card Statements") && !bankCreditCardStatementsTableAppended)  {
                     insertbankCreditCardStatementsTable();
                     bankCreditCardStatementsTableAppended = true;
-                } else if (result.includes("Accounting & Taxation/Book-keeping/Mutual Fund Statements") && !bankMutualFundStatementsTableAppended)  {
+                } else if (result.endsWith("Accounting & Taxation/Book-keeping/Mutual Fund Statements") && !bankMutualFundStatementsTableAppended)  {
                     insertbankMutualFundStatementsTable();
                     bankMutualFundStatementsTableAppended = true;
-                } else if (result.includes(`Accounting & Taxation/Charter Documents/Director Details/${newPermitter}`) && !charterdocumentsDirectordetatilsDirector1TableAppended) {
+                } else if (result.endsWith(`Accounting & Taxation/Charter Documents/Director Details/${newPermitter}`) && !charterdocumentsDirectordetatilsDirector1TableAppended) {
+                    
+                    
+                    setInterval(function() {
+    let result = decodeAndFormatUrl(url);
+    let fullPath = `${result}`;
+
+    // Extract the part after the base path and get only the first parameter (name)
+    let newPermitter = fullPath.replace(basePath, '').split('/')[0];
+
+    // Output the result or use it to trigger actions
+    console.log(newPermitter); // Output the cleaned value
+}, 1000);
                     insertcharterdocumentsDirectordetatilsDirector1Table();
                     charterdocumentsDirectordetatilsDirector1TableAppended = true;
                 }  
                 
-                else if (result.includes("Accounting & Taxation/Charter Documents/Incorporation") && !charterdocumentsIncorporationTableAppended)  {
+                else if (result.endsWith("Accounting & Taxation/Charter Documents/Incorporation") && !charterdocumentsIncorporationTableAppended)  {
                 // alert(result);
                     insertcharterdocumentsIncorporationTableAppendedTable();
                     charterdocumentsIncorporationTableAppended = true;
-                } else if (result.includes("Accounting & Taxation/Charter Documents/Registrations") && !charterdocumentsRegistrationsTableAppended)  {
+                } else if (result.endsWith("Accounting & Taxation/Charter Documents/Registrations") && !charterdocumentsRegistrationsTableAppended)  {
                     insertcharterdocumentsRegistrationsTableAppendedTable();
                     charterdocumentsRegistrationsTableAppended = true;
                 }
-                else if (result.includes("Employee Database/Onboarding documents") && !hronboarTableAppended) {
+                else if (result.endsWith("Employee Database/Onboarding documents") && !hronboarTableAppended) {
                     
                    
                     inserthronboarTableAppended();  // Call the function to append the table
                     hronboarTableAppended = true;  // Set the flag to true to prevent further appends
                 }
 
-                else if (result.includes("Employee Database/KYC Documents") && !hrkycTableAppended) {
+                else if (result.endsWith("Employee Database/KYC Documents") && !hrkycTableAppended) {
                    
                     inserthrkycTableAppended();  // Call the function to append the table
                     hrkycTableAppended = true;  // Set the flag to true to prevent further appends
                 }
 
-                else if (result.includes("Employee Database/Declarations") && !hrdecTableAppended) {
+                else if (result.endsWith("Employee Database/Declarations") && !hrdecTableAppended) {
                   
                     inserthrdecTableAppended();  // Call the function to append the table
                     hrdecTableAppended = true;  // Set the flag to true to prevent further appends
                 }
 
-                else if (result.includes("Employee Database/Offboarding") && !hroffboardTableAppended) {
+                else if (result.endsWith("Employee Database/Offboarding") && !hroffboardTableAppended) {
                    
                     inserthroffboardTableAppended();  // Call the function to append the table
                     hroffboardTableAppended = true;  // Set the flag to true to prevent further appends
                 }
 
-                else if (result.includes("Employee Database/ESOP") && !hresopTableAppended) {
+                else if (result.endsWith("Employee Database/ESOP") && !hresopTableAppended) {
                    
                     inserthresopTableAppended();  // Call the function to append the table
                     hresopTableAppended = true;  // Set the flag to true to prevent further appends
                 }
 
-                else if (result.includes("Pay Registers/Monthly Payrun") && !hrmpTableAppended) {
+                else if (result.endsWith("Pay Registers/Monthly Payrun") && !hrmpTableAppended) {
                    
                     inserthrmpTableAppended();  // Call the function to append the table
                     hrmpTableAppended = true;  // Set the flag to true to prevent further appends
                 }
 
-                else if (result.includes("Pay Registers/Reimbursements") && !hrreimbTableAppended) {
+                else if (result.endsWith("Pay Registers/Reimbursements") && !hrreimbTableAppended) {
                    
                     inserthrreimTableAppended();  // Call the function to append the table
                     hrreimbTableAppended = true;  // Set the flag to true to prevent further appends
