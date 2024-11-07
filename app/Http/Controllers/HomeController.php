@@ -1541,7 +1541,7 @@ public function updateMembers(Request $request)
         $file->move(public_path('uploads/profile_images'), $fileName);
         
         // Store the file path in the profile_picture field in the User table
-        $user->profile_picture =  $fileName;
+        $user->profile_picture =  'uploads/profile_images/' . $fileName;
     }
 
     $user->save();
@@ -1558,7 +1558,7 @@ public function updateMembers(Request $request)
 
     // Update profile picture in UserInfo table
     if ($request->hasFile('profile_picture')) {
-        $userInfoData['profile_picture'] = $fileName;
+        $userInfoData['profile_picture'] = 'uploads/profile_images/' . $fileName;
     }
 
     UserInfo::where('user_id', $user->id)->update($userInfoData);
@@ -1574,7 +1574,7 @@ public function updateMembers(Request $request)
 
         // Update profile picture in the members table
         if ($request->hasFile('profile_picture')) {
-            $member->profile_picture =  $fileName;
+            $member->profile_picture =  'uploads/profile_images/' . $fileName;
         }
 
         $member->save();
@@ -17788,7 +17788,7 @@ if ($request->hasFile('profile_picture')) {
     $file->move(public_path('uploads/profile_images'), $fileName);
     
     // Store the filename in the member's profile picture field
-    $member->profile_picture = $fileName;
+    $member->profile_picture = 'uploads/profile_images/' . $fileName;
 
     // Insert the file details into the profile_images table
     
@@ -17806,7 +17806,7 @@ UserInfo::create([
     'fname' => $request->fname,
     'lname' => $request->lname,
     'phone' => $request->phone,
-    'profile_picture' => $member->profile_picture,
+    'profile_picture' =>'uploads/profile_images/' . $member->profile_picture,
     'createdby_id' => $user_id,
     'main_role_id' => $request->main_role_id,
     'Edit_Password' => 1,
@@ -17831,7 +17831,7 @@ Member::create([
     'fname' => $request->fname,
     'lname' => $request->lname,
     'phone' => $request->phone,
-    'profile_picture' => $member->profile_picture,
+    'profile_picture' => 'uploads/profile_images/' . $member->profile_picture,
     'createdby_id' => $user_id,
     'main_role_id' => $request->main_role_id,
     'Edit_Password' => 1,
@@ -19870,10 +19870,10 @@ $entriesinc9 = CommonTable::where('user_id', $user->id)
             'totalSizeKBcharregPFC' => $totalSizeKBcharregPFC,
             'countcharregTrademark' => $countcharregTrademark,
             'totalSizeKBcharregTrademark' => $totalSizeKBcharregTrademark,
-            'countcharregMSME' => $totalSizeKBcharregTrademark,
+            'countcharregMSME' => $countcharregMSME,
             'totalSizeKBcharregMSME' => $totalSizeKBcharregMSME,
-            'countcharregGSTIN' => $totalSizeKBcharregMSME,
-            'totalSizeKBcharregGSTIN' => $totalSizeKBcharregMSME,
+            'countcharregGSTIN' => $countcharregGSTIN,
+            'totalSizeKBcharregGSTIN' => $totalSizeKBcharregGSTIN,
             'countcharregtan' => $countcharregtan,
             'totalSizeKBcharregtan' => $totalSizeKBcharregtan,
             'countcharregpan' => $countcharregpan,
@@ -20941,20 +20941,57 @@ public function saveBreadcrumb(Request $request)
         ]);
     }
 
-
-public function downloadFile($id)
-{
-    $file = Files::findOrFail($id);
-    $filePath = storage_path('app/' . $file->path);
-
-    if (file_exists($filePath)) {
-        return response()->download($filePath, $file->name);
-    } else {
-        abort(404, 'File not found');
+    public function downloadFile($id)
+    {
+        $file = CommonTable::findOrFail($id);
+        
+        // Assuming you store the file path in a 'file_path' column
+        $filePath = $file->file_path;
+        $realFileName = $file->real_file_name; // The real file name as stored in the database
+    
+        if (Storage::exists($filePath)) {
+            // Download the file with the original name instead of the system file name
+            return Storage::download($filePath, $realFileName);
+        } else {
+            return redirect()->back()->with('error', 'File not found.');
+        }
     }
-}
-
-
+    
+    public function viewFile($id)
+    {
+        $file = CommonTable::findOrFail($id);
+        
+        // File path and MIME type
+        $filePath = $file->file_path;
+        $mimeType = Storage::mimeType($filePath);
+    
+        if (Storage::exists($filePath)) {
+            return response()->file(storage_path("app/{$filePath}"), [
+                'Content-Type' => $mimeType,
+            ]);
+        } else {
+            return redirect()->back()->with('error', 'File not found.');
+        }
+    }
+    
+    public function advancedeleteFile($id)
+    {
+        // Find the record in CommonTable by ID
+        $file = CommonTable::find($id);
+    
+        if ($file) {
+            // Update the is_delete field to 1
+            $file->is_delete = 1;
+            $file->save();
+    
+            // Return a JSON response for success
+            return response()->json(['success' => true, 'message' => 'File deleted successfully.']);
+        } else {
+            // Return an error if file not found
+            return response()->json(['success' => false, 'message' => 'File not found.'], 404);
+        }
+    }
+    
     
 
 

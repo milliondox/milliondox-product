@@ -489,7 +489,7 @@ function fetchUsersByRole(role, tabId) {
             
             // If profile picture exists, show image; otherwise, show the first letter of the name in a circle.
             if (user.profile_picture) {
-                profilePictureHtml = `<img src="{{ asset('uploads/profile_images/') }}/${user.profile_picture}" alt="Profile Picture">`;
+                profilePictureHtml = `<img src="{{ asset('/') }}${user.profile_picture}" alt="Profile Picture">`;
             } else {
                 var firstLetter = user.name.charAt(0).toUpperCase(); // Get the first letter of the user's name
                 profilePictureHtml = `

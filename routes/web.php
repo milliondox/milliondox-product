@@ -886,7 +886,8 @@ Route::get('/folders', [App\Http\Controllers\HomeController::class,'getFolders']
 Route::get('/user/dashboard', [App\Http\Controllers\HomeController::class, 'index'])->name('user.dashboard.index');
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 Route::get('/download-file/{id}', [App\Http\Controllers\HomeController::class,'downloadFile']);
-
+Route::get('/view-file/{id}', [App\Http\Controllers\HomeController::class, 'viewFile'])->name('view.file');
+Route::post('/advancedelete-file/{id}', [App\Http\Controllers\HomeController::class, 'advancedeleteFile'])->name('advancedelete.file');
 
 Route::get('/docurepo', [App\Http\Controllers\HomeController::class, 'docurepo'])->name('docurepo');
 Route::get('/fetch-folder-contents',[App\Http\Controllers\HomeController::class, 'fetchFolderContents'])->name('fetchFolderContents');
