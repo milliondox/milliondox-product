@@ -18295,6 +18295,21 @@ $userFolders = Folder::where('user_id', Auth::id())
                         ->orderBy('name')
                         ->get();
 
+$RealFileFolders = Folder::where('common_folder', 1)
+->whereNull('is_bank')
+->whereNotNull('real_file_name')
+->orderBy('name')
+->get();
+
+// dd($RealFileFolders);
+
+$RealFileFoldersBank = Folder::where('common_folder', 1)
+->where('is_bank', 1)
+->whereNotNull('real_file_name')
+->orderBy('name')
+->get();
+// dd($RealFileFolders);
+
 // Combine both results
 $folders = $commonFolders->merge($userFolders);
         
@@ -20033,7 +20048,7 @@ $entriesinc9 = CommonTable::where('user_id', $user->id)
     // return view('Secretarial_Annual_Filings', compact('countentriesafs','countentriescfs', 'countentriesmgt7','countentriesmgt7a','totalSizeKBentrieafs','totalSizeKBentriecfs', 'totalSizeKBentriemgt7', 'totalSizeKBentriemgt7a'));
         
         
-        return view('docurepo', compact('counthroff4','totalSizeKBhroff4','counthroff3','totalSizeKBhroff3','counthroff2','totalSizeKBhroff2','counthroff1','totalSizeKBhroff1','counthremppol4','totalSizeKBhremppol4','counthremppol3','totalSizeKBhremppol3','counthremppol2','totalSizeKBhremppol2','counthremppol1','totalSizeKBhremppol1','counthrhrpaymoney5','totalSizeKBhrpaymoney5','counthrhrpaymoney4','totalSizeKBhrpaymoney4','counthrhrpaymoney3','totalSizeKBhrpaymoney3','counthrhrpaymoney2','totalSizeKBhrpaymoney2','counthrhrpaymoney1','totalSizeKBhrpaymoney1','counthrhrempdecmaster','totalSizeKBhrempdecmaster','counthrhrempdec','totalSizeKBhrempdec','counthrpayrimapprove','totalSizeKBhrpayrimapprove','counthrpayrim','totalSizeKBhrpayrim','countkyccontactdetails','totalSizeKBkyccontactdetails','countkycaddressproof','totalSizeKBkycaddressproof','countkycpan','totalSizeKBkycpan','countkycaadhar','totalSizeKBkycaadhar','countkycphoto','totalSizeKBkycphoto','countemponboardincometax','totalSizeKBemponboardincometax','countemponboardepf','totalSizeKBemponboardepf','countemponboardcb','totalSizeKBemponboardcb','countemponboardnc','totalSizeKBemponboardnc','countemponboardnda','totalSizeKBemponboardnda','countemponboardea','totalSizeKBemponboardea','countemponboardal','totalSizeKBemponboardal','totalSizeKBemponboard','countemponboard','totalSizeKBdirectorappointmentsdir3din','countdirectorappointmentsdir3din','cli_announcements','fileCount','fileCount1','user','commondataroom','countSECAASR','totalSizeKBSECAASR','countSECAAALA','totalSizeKBSECAAALA','countSECAACRCAA','totalSizeKBSECAACRCAA','countSECAALA','totalSizeKBSECAALA','countSECAAIA','totalSizeKBSECAAIA','countSECAABRAA','totalSizeKBSECAABRAA','countcharregPP','totalSizeKBcharregPP','countcharregLWFC','totalSizeKBcharregLWFC','countcharregPTC','totalSizeKBcharregPTC','countcharregESIC','totalSizeKBcharregESIC','countcharregPFC','totalSizeKBcharregPFC','countcharregTrademark','totalSizeKBcharregTrademark','countcharregMSME','totalSizeKBcharregMSME','countcharregGSTIN','totalSizeKBcharregGSTIN','countcharregtan','totalSizeKBcharregtan','countcharregpan','totalSizeKBcharregpan','countIncorporationSharecertifF',
+        return view('docurepo', compact('RealFileFoldersBank','RealFileFolders','counthroff4','totalSizeKBhroff4','counthroff3','totalSizeKBhroff3','counthroff2','totalSizeKBhroff2','counthroff1','totalSizeKBhroff1','counthremppol4','totalSizeKBhremppol4','counthremppol3','totalSizeKBhremppol3','counthremppol2','totalSizeKBhremppol2','counthremppol1','totalSizeKBhremppol1','counthrhrpaymoney5','totalSizeKBhrpaymoney5','counthrhrpaymoney4','totalSizeKBhrpaymoney4','counthrhrpaymoney3','totalSizeKBhrpaymoney3','counthrhrpaymoney2','totalSizeKBhrpaymoney2','counthrhrpaymoney1','totalSizeKBhrpaymoney1','counthrhrempdecmaster','totalSizeKBhrempdecmaster','counthrhrempdec','totalSizeKBhrempdec','counthrpayrimapprove','totalSizeKBhrpayrimapprove','counthrpayrim','totalSizeKBhrpayrim','countkyccontactdetails','totalSizeKBkyccontactdetails','countkycaddressproof','totalSizeKBkycaddressproof','countkycpan','totalSizeKBkycpan','countkycaadhar','totalSizeKBkycaadhar','countkycphoto','totalSizeKBkycphoto','countemponboardincometax','totalSizeKBemponboardincometax','countemponboardepf','totalSizeKBemponboardepf','countemponboardcb','totalSizeKBemponboardcb','countemponboardnc','totalSizeKBemponboardnc','countemponboardnda','totalSizeKBemponboardnda','countemponboardea','totalSizeKBemponboardea','countemponboardal','totalSizeKBemponboardal','totalSizeKBemponboard','countemponboard','totalSizeKBdirectorappointmentsdir3din','countdirectorappointmentsdir3din','cli_announcements','fileCount','fileCount1','user','commondataroom','countSECAASR','totalSizeKBSECAASR','countSECAAALA','totalSizeKBSECAAALA','countSECAACRCAA','totalSizeKBSECAACRCAA','countSECAALA','totalSizeKBSECAALA','countSECAAIA','totalSizeKBSECAAIA','countSECAABRAA','totalSizeKBSECAABRAA','countcharregPP','totalSizeKBcharregPP','countcharregLWFC','totalSizeKBcharregLWFC','countcharregPTC','totalSizeKBcharregPTC','countcharregESIC','totalSizeKBcharregESIC','countcharregPFC','totalSizeKBcharregPFC','countcharregTrademark','totalSizeKBcharregTrademark','countcharregMSME','totalSizeKBcharregMSME','countcharregGSTIN','totalSizeKBcharregGSTIN','countcharregtan','totalSizeKBcharregtan','countcharregpan','totalSizeKBcharregpan','countIncorporationSharecertifF',
         'totalSizeKBIncorporationSharecertifF','countIncorporationTrustDeed'
         ,'totalSizeKBIncorporationTrustDeed','countIncorporationLLPAgreement',
         'totalSizeKBIncorporationLLPAgreement','countIncorporationPartnerdeed',
@@ -20366,14 +20381,14 @@ public function shareFolder(Request $request)
 
     // Base query for fetching folders
     $commonFoldersQuery = Folder::where('parent_name', $folderPath)
-                                ->where('common_folder', 1)
-                                ->where('real_file_name', NULL);
+                                ->where('common_folder', 1);
+                                // ->where('real_file_name', NULL);
 
 
                                 $userFoldersQuery = Folder::where('parent_name', $folderPath)
                                 ->where('user_id', Auth::id())
-                                ->where('is_delete', 0)
-                                ->where('real_file_name', NULL);
+                                ->where('is_delete', 0);
+                                // ->where('real_file_name', NULL);
 
     // Apply sorting logic based on the selected sort option
     switch ($sortOption) {

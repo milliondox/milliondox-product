@@ -2666,7 +2666,80 @@ $(document).ready(function() {
 <path d="M14.75 10.25V13.25C14.75 13.6478 14.592 14.0294 14.3107 14.3107C14.0294 14.592 13.6478 14.75 13.25 14.75H2.75C2.35218 14.75 1.97064 14.592 1.68934 14.3107C1.40804 14.0294 1.25 13.6478 1.25 13.25V10.25M11.75 5L8 1.25M8 1.25L4.25 5M8 1.25V10.25" stroke="#CEFFA8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
 </svg></button></li> --}}
 
+{{-- dynamic list start here start --}}
+
+
+@foreach ($RealFileFoldersBank as $folderBank)
+    @php
+    // Remove any prefix that ends with an underscore after each "/" and also remove the leading slash if it exists
+    $formattedPath = preg_replace('/(?:^|\/)[^\/_]+_/', '/', $folderBank->path);
+    $formattedPath = ltrim($formattedPath, '/'); // Remove leading slash
+    @endphp
+
 <li>
+    <span>{{ $formattedPath }} / {{ $folderBank->real_file_name }} </span>
+    <button data-bs-toggle="modal" data-bs-target="#common_file_upload_pop_bank"
+            data-location="{{ $folderBank->path }}"
+            data-real-file-name="{{ $folderBank->real_file_name }}">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M14.75 10.25V13.25C14.75 13.6478 14.592 14.0294 14.3107 14.3107C14.0294 14.592 13.6478 14.75 13.25 14.75H2.75C2.35218 14.75 1.97064 14.592 1.68934 14.3107C1.40804 14.0294 1.25 13.6478 1.25 13.25V10.25M11.75 5L8 1.25M8 1.25L4.25 5M8 1.25V10.25" stroke="#CEFFA8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+    </button>
+</li>
+@endforeach
+
+
+{{-- @foreach ($RealFileFolders as $folder)
+    @php
+    // Remove any prefix that ends with an underscore after each "/" and also remove the leading slash if it exists
+    $formattedPath = preg_replace('/(?:^|\/)[^\/_]+_/', '/', $folder->path);
+    $formattedPath = ltrim($formattedPath, '/'); // Remove leading slash
+    @endphp
+
+<li>
+    <span>{{ $formattedPath }} / {{ $folder->real_file_name }} </span>
+    <button data-bs-toggle="modal" data-bs-target="#common_file_upload_pop"
+            data-location="{{ $folder->path }}"
+            data-real-file-name="{{ $folder->real_file_name }}">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M14.75 10.25V13.25C14.75 13.6478 14.592 14.0294 14.3107 14.3107C14.0294 14.592 13.6478 14.75 13.25 14.75H2.75C2.35218 14.75 1.97064 14.592 1.68934 14.3107C1.40804 14.0294 1.25 13.6478 1.25 13.25V10.25M11.75 5L8 1.25M8 1.25L4.25 5M8 1.25V10.25" stroke="#CEFFA8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+    </button>
+</li>
+@endforeach --}}
+
+@foreach ($RealFileFolders as $folder)
+    @php
+        // Decode the JSON array in real_file_name
+        $realFileNames = json_decode($folder->real_file_name, true);
+
+        // Remove any prefix that ends with an underscore after each "/" and also remove the leading slash if it exists
+        $formattedPath = preg_replace('/(?:^|\/)[^\/_]+_/', '/', $folder->path);
+        $formattedPath = ltrim($formattedPath, '/'); // Remove leading slash
+    @endphp
+
+    @if (is_array($realFileNames))
+        @foreach ($realFileNames as $fileName)
+            <li>
+                <span>{{ $formattedPath }} / {{ $fileName }}</span>
+                <button data-bs-toggle="modal" data-bs-target="#common_file_upload_pop"
+                        data-location="{{ $folder->path }}"
+                        data-real-file-name="{{ $fileName }}">
+                        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M14.75 10.25V13.25C14.75 13.6478 14.592 14.0294 14.3107 14.3107C14.0294 14.592 13.6478 14.75 13.25 14.75H2.75C2.35218 14.75 1.97064 14.592 1.68934 14.3107C1.40804 14.0294 1.25 13.6478 1.25 13.25V10.25M11.75 5L8 1.25M8 1.25L4.25 5M8 1.25V10.25" stroke="#CEFFA8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                </button>
+            </li>
+        @endforeach
+    @endif
+@endforeach
+
+
+
+{{-- dynamic list start here end --}}
+
+
+{{-- <li>
     <span>Accounting & Taxation / Book-Keeping / Bank Account Statements</span>
     <button data-bs-toggle="modal" data-bs-target="#common_file_upload_pop_bank"
             data-location="2024-2025November301_Accounting & Taxation/2024-2025November301_Book-keeping/2024-2025November301_Bank Account Statements"
@@ -2709,145 +2782,11 @@ $(document).ready(function() {
         <path d="M14.75 10.25V13.25C14.75 13.6478 14.592 14.0294 14.3107 14.3107C14.0294 14.592 13.6478 14.75 13.25 14.75H2.75C2.35218 14.75 1.97064 14.592 1.68934 14.3107C1.40804 14.0294 1.25 13.6478 1.25 13.25V10.25M11.75 5L8 1.25M8 1.25L4.25 5M8 1.25V10.25" stroke="#CEFFA8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
     </svg>
     </button>
-</li>
-
-{{-- <li>
-    <span>Accounting & Taxation / Charter documents / Director Details / Director 1 / Photo</span>
-    <button data-bs-toggle="modal" data-bs-target="#common_file_upload_pop"
-            data-location="Accounting & Taxation / Charter documents / Director Details / Director 1"
-            data-real-file-name="Photo">
-    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <path d="M14.75 10.25V13.25C14.75 13.6478 14.592 14.0294 14.3107 14.3107C14.0294 14.592 13.6478 14.75 13.25 14.75H2.75C2.35218 14.75 1.97064 14.592 1.68934 14.3107C1.40804 14.0294 1.25 13.6478 1.25 13.25V10.25M11.75 5L8 1.25M8 1.25L4.25 5M8 1.25V10.25" stroke="#CEFFA8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-    </svg>
-    </button>
-</li>
-
-
-<li>
-    <span>Accounting & Taxation / Charter documents / Director Details / Director 1 / Signature image</span>
-    <button data-bs-toggle="modal" data-bs-target="#common_file_upload_pop"
-            data-location="Accounting & Taxation / Charter documents / Director Details / Director 1"
-            data-real-file-name="Signature image">
-    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <path d="M14.75 10.25V13.25C14.75 13.6478 14.592 14.0294 14.3107 14.3107C14.0294 14.592 13.6478 14.75 13.25 14.75H2.75C2.35218 14.75 1.97064 14.592 1.68934 14.3107C1.40804 14.0294 1.25 13.6478 1.25 13.25V10.25M11.75 5L8 1.25M8 1.25L4.25 5M8 1.25V10.25" stroke="#CEFFA8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-    </svg>
-    </button>
-</li>
-
-<li>
-    <span>Accounting & Taxation / Charter documents / Director Details / Director 1 / Aadhar KYC</span>
-    <button data-bs-toggle="modal" data-bs-target="#common_file_upload_pop"
-            data-location="Accounting & Taxation / Charter documents / Director Details / Director 1"
-            data-real-file-name="Aadhar KYC">
-    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <path d="M14.75 10.25V13.25C14.75 13.6478 14.592 14.0294 14.3107 14.3107C14.0294 14.592 13.6478 14.75 13.25 14.75H2.75C2.35218 14.75 1.97064 14.592 1.68934 14.3107C1.40804 14.0294 1.25 13.6478 1.25 13.25V10.25M11.75 5L8 1.25M8 1.25L4.25 5M8 1.25V10.25" stroke="#CEFFA8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-    </svg>
-    </button>
-</li>
-
-
-<li>
-    <span>Accounting & Taxation / Charter documents / Director Details / Director 1 / PAN KYC</span>
-    <button data-bs-toggle="modal" data-bs-target="#common_file_upload_pop"
-            data-location="Accounting & Taxation / Charter documents / Director Details / Director 1"
-            data-real-file-name="PAN KYC">
-    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <path d="M14.75 10.25V13.25C14.75 13.6478 14.592 14.0294 14.3107 14.3107C14.0294 14.592 13.6478 14.75 13.25 14.75H2.75C2.35218 14.75 1.97064 14.592 1.68934 14.3107C1.40804 14.0294 1.25 13.6478 1.25 13.25V10.25M11.75 5L8 1.25M8 1.25L4.25 5M8 1.25V10.25" stroke="#CEFFA8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-    </svg>
-    </button>
-</li>
-
-<li>
-    <span>Accounting & Taxation / Charter documents / Director Details / Director 1 / Address Proof</span>
-    <button data-bs-toggle="modal" data-bs-target="#common_file_upload_pop"
-            data-location="Accounting & Taxation / Charter documents / Director Details / Director 1"
-            data-real-file-name="Address Proof">
-    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <path d="M14.75 10.25V13.25C14.75 13.6478 14.592 14.0294 14.3107 14.3107C14.0294 14.592 13.6478 14.75 13.25 14.75H2.75C2.35218 14.75 1.97064 14.592 1.68934 14.3107C1.40804 14.0294 1.25 13.6478 1.25 13.25V10.25M11.75 5L8 1.25M8 1.25L4.25 5M8 1.25V10.25" stroke="#CEFFA8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-    </svg>
-    </button>
-</li>
-
-<li>
-    <span>Accounting & Taxation / Charter documents / Director Details / Director 1 / Contact Details</span>
-    <button data-bs-toggle="modal" data-bs-target="#common_file_upload_pop"
-            data-location="Accounting & Taxation / Charter documents / Director Details / Director 1"
-            data-real-file-name="Contact Details">
-    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <path d="M14.75 10.25V13.25C14.75 13.6478 14.592 14.0294 14.3107 14.3107C14.0294 14.592 13.6478 14.75 13.25 14.75H2.75C2.35218 14.75 1.97064 14.592 1.68934 14.3107C1.40804 14.0294 1.25 13.6478 1.25 13.25V10.25M11.75 5L8 1.25M8 1.25L4.25 5M8 1.25V10.25" stroke="#CEFFA8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-    </svg>
-    </button>
-</li>
-
-<li>
-    <span>Accounting & Taxation / Charter documents / Director Details / Director 2 / Photo</span>
-    <button data-bs-toggle="modal" data-bs-target="#common_file_upload_pop"
-            data-location="Accounting & Taxation / Charter documents / Director Details / Director 2"
-            data-real-file-name="Photo">
-    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <path d="M14.75 10.25V13.25C14.75 13.6478 14.592 14.0294 14.3107 14.3107C14.0294 14.592 13.6478 14.75 13.25 14.75H2.75C2.35218 14.75 1.97064 14.592 1.68934 14.3107C1.40804 14.0294 1.25 13.6478 1.25 13.25V10.25M11.75 5L8 1.25M8 1.25L4.25 5M8 1.25V10.25" stroke="#CEFFA8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-    </svg>
-    </button>
-</li>
-
-<li>
-    <span>Accounting & Taxation / Charter documents / Director Details / Director 2 / Signature image</span>
-    <button data-bs-toggle="modal" data-bs-target="#common_file_upload_pop"
-            data-location="Accounting & Taxation / Charter documents / Director Details / Director 2"
-            data-real-file-name="Signature image">
-    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <path d="M14.75 10.25V13.25C14.75 13.6478 14.592 14.0294 14.3107 14.3107C14.0294 14.592 13.6478 14.75 13.25 14.75H2.75C2.35218 14.75 1.97064 14.592 1.68934 14.3107C1.40804 14.0294 1.25 13.6478 1.25 13.25V10.25M11.75 5L8 1.25M8 1.25L4.25 5M8 1.25V10.25" stroke="#CEFFA8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-    </svg>
-    </button>
-</li>
-
-<li>
-    <span>Accounting & Taxation / Charter documents / Director Details / Director 2 / Aadhar KYC</span>
-    <button data-bs-toggle="modal" data-bs-target="#common_file_upload_pop"
-            data-location="Accounting & Taxation / Charter documents / Director Details / Director 2"
-            data-real-file-name="Aadhar KYC">
-    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <path d="M14.75 10.25V13.25C14.75 13.6478 14.592 14.0294 14.3107 14.3107C14.0294 14.592 13.6478 14.75 13.25 14.75H2.75C2.35218 14.75 1.97064 14.592 1.68934 14.3107C1.40804 14.0294 1.25 13.6478 1.25 13.25V10.25M11.75 5L8 1.25M8 1.25L4.25 5M8 1.25V10.25" stroke="#CEFFA8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-    </svg>
-    </button>
-</li>
-
-
-<li>
-    <span>Accounting & Taxation / Charter documents / Director Details / Director 2 / PAN KYC</span>
-    <button data-bs-toggle="modal" data-bs-target="#common_file_upload_pop"
-            data-location="Accounting & Taxation / Charter documents / Director Details / Director 2"
-            data-real-file-name="PAN KYC">
-    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <path d="M14.75 10.25V13.25C14.75 13.6478 14.592 14.0294 14.3107 14.3107C14.0294 14.592 13.6478 14.75 13.25 14.75H2.75C2.35218 14.75 1.97064 14.592 1.68934 14.3107C1.40804 14.0294 1.25 13.6478 1.25 13.25V10.25M11.75 5L8 1.25M8 1.25L4.25 5M8 1.25V10.25" stroke="#CEFFA8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-    </svg>
-    </button>
-</li>
-
-
-<li>
-    <span>Accounting & Taxation / Charter documents / Director Details / Director 2 / Address Proof</span>
-    <button data-bs-toggle="modal" data-bs-target="#common_file_upload_pop"
-            data-location="Accounting & Taxation / Charter documents / Director Details / Director 2"
-            data-real-file-name="Address Proof">
-    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <path d="M14.75 10.25V13.25C14.75 13.6478 14.592 14.0294 14.3107 14.3107C14.0294 14.592 13.6478 14.75 13.25 14.75H2.75C2.35218 14.75 1.97064 14.592 1.68934 14.3107C1.40804 14.0294 1.25 13.6478 1.25 13.25V10.25M11.75 5L8 1.25M8 1.25L4.25 5M8 1.25V10.25" stroke="#CEFFA8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-    </svg>
-    </button>
-</li>
-
-<li>
-    <span>Accounting & Taxation / Charter documents / Director Details / Director 2 / Contact Details</span>
-    <button data-bs-toggle="modal" data-bs-target="#common_file_upload_pop"
-            data-location="Accounting & Taxation / Charter documents / Director Details / Director 2"
-            data-real-file-name="Contact Details">
-    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <path d="M14.75 10.25V13.25C14.75 13.6478 14.592 14.0294 14.3107 14.3107C14.0294 14.592 13.6478 14.75 13.25 14.75H2.75C2.35218 14.75 1.97064 14.592 1.68934 14.3107C1.40804 14.0294 1.25 13.6478 1.25 13.25V10.25M11.75 5L8 1.25M8 1.25L4.25 5M8 1.25V10.25" stroke="#CEFFA8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-    </svg>
-    </button>
 </li> --}}
 
 
+
+{{-- 
 <li>
     <span>Accounting & Taxation / Charter documents / Incorporation / Memorandum of Association</span>
     <button data-bs-toggle="modal" data-bs-target="#common_file_upload_pop"
@@ -3586,7 +3525,7 @@ $(document).ready(function() {
 </li>
 {{--  --}}
 
-<li>
+{{-- <li>
     <span>Legal / Secretarial / Statutory Registers / Register of Investments not held in Company’s name</span>
     <button data-bs-toggle="modal" data-bs-target="#common_file_upload_pop"
             data-location="2024-2025November301_Legal/2024-2025November301_Secretarial/2024-2025November301_Statutory Registers"
@@ -3673,7 +3612,7 @@ $(document).ready(function() {
       <path d="M14.75 10.25V13.25C14.75 13.6478 14.592 14.0294 14.3107 14.3107C14.0294 14.592 13.6478 14.75 13.25 14.75H2.75C2.35218 14.75 1.97064 14.592 1.68934 14.3107C1.40804 14.0294 1.25 13.6478 1.25 13.25V10.25M11.75 5L8 1.25M8 1.25L4.25 5M8 1.25V10.25" stroke="#CEFFA8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
     </svg>
   </button>
-</li>
+</li> --}} 
 
 
     </ul>
