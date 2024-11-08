@@ -2669,9 +2669,11 @@ $(document).ready(function() {
 {{-- dynamic list start here start --}}
 
 
-@foreach ($RealFileFoldersBank as $folderBank)
+{{-- @foreach ($RealFileFoldersBank as $folderBank)
     @php
     // Remove any prefix that ends with an underscore after each "/" and also remove the leading slash if it exists
+    $realFileNames = json_decode($folder->real_file_name, true);
+
     $formattedPath = preg_replace('/(?:^|\/)[^\/_]+_/', '/', $folderBank->path);
     $formattedPath = ltrim($formattedPath, '/'); // Remove leading slash
     @endphp
@@ -2686,27 +2688,35 @@ $(document).ready(function() {
             </svg>
     </button>
 </li>
-@endforeach
+@endforeach --}}
 
 
-{{-- @foreach ($RealFileFolders as $folder)
+@foreach ($RealFileFoldersBank as $folder)
     @php
-    // Remove any prefix that ends with an underscore after each "/" and also remove the leading slash if it exists
-    $formattedPath = preg_replace('/(?:^|\/)[^\/_]+_/', '/', $folder->path);
-    $formattedPath = ltrim($formattedPath, '/'); // Remove leading slash
+        // Decode the JSON array in real_file_name
+        $realFileNames = json_decode($folder->real_file_name, true);
+
+        // Remove any prefix that ends with an underscore after each "/" and also remove the leading slash if it exists
+        $formattedPath = preg_replace('/(?:^|\/)[^\/_]+_/', '/', $folder->path);
+        $formattedPath = ltrim($formattedPath, '/'); // Remove leading slash
     @endphp
 
-<li>
-    <span>{{ $formattedPath }} / {{ $folder->real_file_name }} </span>
-    <button data-bs-toggle="modal" data-bs-target="#common_file_upload_pop"
-            data-location="{{ $folder->path }}"
-            data-real-file-name="{{ $folder->real_file_name }}">
-            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M14.75 10.25V13.25C14.75 13.6478 14.592 14.0294 14.3107 14.3107C14.0294 14.592 13.6478 14.75 13.25 14.75H2.75C2.35218 14.75 1.97064 14.592 1.68934 14.3107C1.40804 14.0294 1.25 13.6478 1.25 13.25V10.25M11.75 5L8 1.25M8 1.25L4.25 5M8 1.25V10.25" stroke="#CEFFA8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>
-    </button>
-</li>
-@endforeach --}}
+    @if (is_array($realFileNames))
+        @foreach ($realFileNames as $fileName)
+            <li>
+                <span>{{ $formattedPath }} / {{ $fileName }}</span>
+                <button data-bs-toggle="modal" data-bs-target="#common_file_upload_pop_bank"
+                        data-location="{{ $folder->path }}"
+                        data-real-file-name="{{ $fileName }}">
+                        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M14.75 10.25V13.25C14.75 13.6478 14.592 14.0294 14.3107 14.3107C14.0294 14.592 13.6478 14.75 13.25 14.75H2.75C2.35218 14.75 1.97064 14.592 1.68934 14.3107C1.40804 14.0294 1.25 13.6478 1.25 13.25V10.25M11.75 5L8 1.25M8 1.25L4.25 5M8 1.25V10.25" stroke="#CEFFA8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                </button>
+            </li>
+        @endforeach
+    @endif
+@endforeach
+
 
 @foreach ($RealFileFolders as $folder)
     @php
