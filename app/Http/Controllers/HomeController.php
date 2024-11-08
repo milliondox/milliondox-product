@@ -697,6 +697,7 @@ public function storecompanydirector(Request $request)
 
     // Create the directory
     Storage::makeDirectory($newFolderPath);
+    $DIR_real_file_name=["Photo","Signature image","Aadhar KYC","PAN KYC","Address Proof","Contact Details"];
 
     // Create a new Folder record and associate the director ID
     $folder = new Folder();
@@ -705,6 +706,8 @@ public function storecompanydirector(Request $request)
     $folder->parent_name = $parentFolderPath;
     $folder->user_id = $userId;
     $folder->director_id = $storedir->id;  // Store the last inserted director ID
+    $folder->real_file_name = json_encode($DIR_real_file_name); // Convert to JSON before saving
+
     $folder->save();
 
     // Redirect back with a success message
