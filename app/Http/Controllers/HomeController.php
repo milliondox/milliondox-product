@@ -352,39 +352,36 @@ $progressPercentage = 0;
     
         $request->validate([
             'textarea' => 'required|string|max:1000', 
-            'file' => 'required|mimes:jpg,jpeg,png,pdf,doc,docx|max:5096',
         ]);
     
-        if ($request->hasFile('file')) {
-            
-            $file = $request->file('file');
-            
-            $fileName = time() . '_' . $file->getClientOriginalName();
-            
-            // Store the file in the 'feedback' folder inside 'storage/app/public'
-            
-            $filePath = $file->storeAs('uploads/Feedbacks', $fileName);
-            
-            $feedback = new Feedback();
-            
-            $feedback->user_id = $userId;
-            $feedback->role = $user->role;
-            $feedback->feedback_message = $request->textarea;
-            $feedback->real_file_name = $file->getClientOriginalName();
-            $feedback->file_type = $file->getClientMimeType();
-            $feedback->file_path = $filePath; // Store the file path in the database
-            $feedback->status = 0;
+        // Initialize file-related variables as null
+        $filePath = null;
+        $fileName = null;
+        $fileType = null;
     
-            
-            if ($feedback->save()) {
-                return response()->json(['success' => 'Feedback submitted successfully. We will get back to you !']);
-            } else {
-                return response()->json(['error' => 'Something went wrong!']);
-            }
+        if ($request->hasFile('file')) {
+            $file = $request->file('file');
+            $fileName = time() . '_' . $file->getClientOriginalName();
+            $filePath = $file->storeAs('uploads/Feedbacks', $fileName);
+            $fileType = $file->getClientMimeType();
+        }
+    
+        $feedback = new Feedback();
+        $feedback->user_id = $userId;
+        $feedback->role = $user->role;
+        $feedback->feedback_message = $request->textarea;
+        $feedback->real_file_name = $fileName;
+        $feedback->file_type = $fileType;
+        $feedback->file_path = $filePath;
+        $feedback->status = 0;
+    
+        if ($feedback->save()) {
+            return response()->json(['success' => 'Feedback submitted successfully. We will get back to you!']);
         } else {
-            return response()->json(['error' => 'File upload failed!']);
+            return response()->json(['error' => 'Something went wrong!']);
         }
     }
+    
 
     
     
@@ -827,7 +824,7 @@ public function storecompanyemployee(Request $request)
     }
     
     // Step 1: Create a common Human Resources folder for all users
-    $hrFolderName = "{$fiscalYear}{$currentMonth}0_Human Resources";  // Common folder for all users
+    
     $hrFolderPath = "{$hrFolderName}";
     
     // Check if Human Resources folder exists and create it if not
