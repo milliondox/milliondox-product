@@ -888,6 +888,15 @@ public function storecompanyemployee(Request $request)
             'KRAs and OKRs',
         ],
     ];
+
+    $Onboarding_RealFileNames     = ["Offer Letter","Acceptance Letter","Employment Agreement","Non Disclosure Agreement","Non-compete","Contractual Bond","Form 11 - EPF","Form 12BB - Income Tax"];
+    $KYC_RealFileNames            = ["Photo","Aadhar KYC","PAN KYC","Address Proof","Contact Details"];
+    $Offboarding_RealFileNames    = ["Resignation letter","Experience Letter","No Dues certificate","Character certificate"];
+    $ESOP_RealFileNames           = ["Policy","Grant Letters","Acceptance Letters","Nominations"];
+    $Declarations_RealFileNames   = ["Asset Declaration Forms","Employee Master"];
+    $MonthlyPayrun_RealFileNames  = ["Attendance log","Variable pays","Terminations/ Exits","New Hires","Pay Register"];
+    $Reimbursements_RealFileNames = ["Reimbursement forms & Invoices","Approvals"];  
+    
     
     // Loop through the folders and create them if they don't exist
     foreach ($folders as $mainFolder => $subFolders) {
@@ -920,8 +929,29 @@ public function storecompanyemployee(Request $request)
                 $subFolderDb->parent_name = $mainFolderPath;
                 $subFolderDb->user_id = $userId;
                 // $subFolderDb->common_folder = 1;
-                $subFolderDb->save();
-            }
+                // $subFolderDb->save();
+
+                  // Check if the subfolder is 'Onboarding documents' to add extra entries in real_file_name
+                        if ($subFolder === 'Onboarding documents') {
+                            $subFolderDb->real_file_name = json_encode($Onboarding_RealFileNames); // Save as JSON
+                        }else if($subFolder === 'KYC Documents') {
+                            $subFolderDb->real_file_name = json_encode($KYC_RealFileNames); // Save as JSON
+                        }else if($subFolder === 'Offboarding') {
+                            $subFolderDb->real_file_name = json_encode($Offboarding_RealFileNames); // Save as JSON
+                        }else if($subFolder === 'ESOP') {
+                            $subFolderDb->real_file_name = json_encode($ESOP_RealFileNames); // Save as JSON
+                        }else if($subFolder === 'Declarations') {
+                            $subFolderDb->real_file_name = json_encode($Declarations_RealFileNames); // Save as JSON
+                        }else if($subFolder === 'Monthly Payrun') {
+                            $subFolderDb->real_file_name = json_encode($MonthlyPayrun_RealFileNames); // Save as JSON
+                        }else if($subFolder === 'Reimbursements') {
+                            $subFolderDb->real_file_name = json_encode($Reimbursements_RealFileNames); // Save as JSON
+                        }else{
+
+                        }
+
+                    $subFolderDb->save();
+                    }
         }
     }
 
@@ -18295,11 +18325,12 @@ $userFolders = Folder::where('user_id', Auth::id())
                         ->orderBy('name')
                         ->get();
 
-$RealFileFolders = Folder::where('common_folder', 1)
-->whereNull('is_bank')
-->whereNotNull('real_file_name')
-->orderBy('name')
-->get();
+$RealFileFolders = Folder::where('user_id', Auth::id())
+    ->orWhere('common_folder', 1)
+    ->whereNull('is_bank')
+    ->whereNotNull('real_file_name')
+    ->orderBy('name')
+    ->get();
 
 // dd($RealFileFolders);
 
