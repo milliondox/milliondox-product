@@ -1902,26 +1902,7 @@ $(document).ready(function() {
 
 
 <!-- Rename Modal -->
-<!-- Rename Modal -->
-<div class="modal fade" id="renameModal" tabindex="-1" role="dialog" aria-labelledby="renameModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="renameModalLabel">Rename Folder</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                <input type="text" id="newFolderName" class="form-control" placeholder="Enter new folder name" required>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-                <button type="button" id="confirmRename" class="btn btn-primary">Rename</button>
-            </div>
-        </div>
-    </div>
-</div>
+
 <script>
 
 $(document).ready(function() {
@@ -1975,49 +1956,67 @@ $(document).ready(function() {
 
 
 </script>
-<script>
-    $(document).ready(function() {
-    // When the rename link is clicked
-    $(document).on('click', '.rename_nt', function() {
-        // Get the current folder name
-        var currentFolderName = $(this).closest('li').find('span').text();
-        var folderId = $(this).closest('button').data('folder-id');
+<div class="modal fade drop_coman_file have_title" id="renamefolder" tabindex="-1" role="dialog" aria-labelledby="renamefolder" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" style="font-weight:700">Rename folder</h5>
+          <button class="close" style="border-radius:5px;" type="button" data-bs-dismiss="modal">
+            <span aria-hidden="true">
+              <svg width="50" height="50" viewBox="0 0 50 50" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <rect width="4.27093" height="66.172" transform="matrix(0.702074 -0.712104 0.709324 0.704883 0 3.31244)" fill="black" />
+                <rect width="4.27086" height="66.3713" transform="matrix(-0.704896 -0.70931 0.706518 -0.707695 3.10742 50)" fill="black" />
+              </svg>
+            </span>
+          </button>
+        </div>
+        <div class="modal-body">
+            <form id="rename-folder-form" action="{{ route('renamefolder') }}" method="POST">
+                @csrf
 
-        // Set the current folder name in the input field
-        $('#newFolderName').val(currentFolderName);
+                      <div class="gropu_form">
+                      <label for="fname">Folder Name</label>
+                      <input type="hidden" name="folder_id" id="folder_id"  value="">
+                      <input type="hidden" name="old_folder_name" id="old_folder_name"  value="">
+                      <input type="hidden" name="folder_path" id="folder_path"  value="">
+                      <input type="hidden" name="employee_id" id="employee_id"  value="">
+                      <input type="hidden" name="director_id" id="director_id"  value="">
+                      <input type="text" name="folder_name" id="folder_name" class="foldername" placeholder="Enter Folder Name" value="">
+                      </div>
 
-        // Open the modal
-        $('#renameModal').modal('show');
+                      <div class="upp_input">
+                      <button class="btn btn-primary" id="renamefolderbtn" style="border-radius:5px;" type="submit">Submit</button>
+</div>
+                
+            </form>
 
-        // Handle the confirm rename button click
-        $('#confirmRename').off('click').on('click', function() {
-            var newFolderName = $('#newFolderName').val();
 
-            // AJAX call to rename the folder
-            $.ajax({
-                url: '/rename-folder', // Replace with your rename endpoint
-                type: 'POST',
-                data: {
-                    id: folderId,
-                    name: newFolderName,
-                    _token: '{{ csrf_token() }}' // Ensure you include CSRF token
-                },
-                success: function(response) {
-                    // Handle success (e.g., update the folder name in the UI)
-                    if (response.success) {
-                        $(this).closest('li').find('span').text(newFolderName);
-                        $('#renameModal').modal('hide');
-                    } else {
-                        alert('Error renaming folder: ' + response.message);
-                    }
-                },
-                error: function() {
-                    alert('Error renaming folder. Please try again.');
-                }
-            });
+        </div>
+      </div>
+    </div>
+  </div>
+  <script>
+    $(document).ready(function () {
+        // Listen for click events on elements with the class .rename_nt, using event delegation on the document body
+        $(document).on('click', '.rename_nt', function () {
+            // Get folder data from the clicked link
+            let folderId = $(this).data('folder_id');
+            let folderName = $(this).data('folder_name');
+            let oldfolderName = $(this).data('folder_name');
+            let folderPath = $(this).data('folder_path');
+            let employeeid = $(this).data('employee_id');
+            let directorid = $(this).data('director_id');
+            
+
+            // Set values in the form inputs
+            $('#rename-folder-form #folder_id').val(folderId);
+            $('#rename-folder-form #folder_name').val(folderName);
+            $('#rename-folder-form #old_folder_name').val(oldfolderName);
+            $('#rename-folder-form #folder_path').val(folderPath);
+            $('#rename-folder-form #employee_id').val(employeeid);
+            $('#rename-folder-form #director_id').val(directorid);
         });
     });
-});
 
 
 </script>
@@ -4850,10 +4849,10 @@ let newPermitter = fullPath.replace(basePath, '').split('/')[0];
                 } else if (result.endsWith("Secretarial/Director Appointments") && !directTableAppended)  {
                     insertDirectTable();
                     directTableAppended = true;
-                } else if (result.endsWith("Secretarial/Director Resignation") && !directexitTableAppended)  {
+                } else if (result.endsWith("Secretarial/Director Resignation & Removal") && !directexitTableAppended)  {
                     insertDirectexitTable();
                     directexitTableAppended = true;
-                } else if (result.endsWith("Secretarial/Auditor Appointment") && !auditappTableAppended)  {
+                } else if (result.endsWith("Secretarial/Auditor Appointments") && !auditappTableAppended)  {
                     insertauditappTable();
                     auditappTableAppended = true;
                 } else if (result.endsWith("Secretarial/Auditor Exits") && !auditexitTableAppended)  {
@@ -5078,10 +5077,10 @@ let newPermitter = fullPath.replace(basePath, '').split('/')[0];
                 } else if (result.endsWith("Secretarial/Director Appointments") && !directTableAppended)  {
                     insertDirectTable();
                     directTableAppended = true;
-                } else if (result.endsWith("Secretarial/Director Resignation") && !directexitTableAppended)  {
+                } else if (result.endsWith("Secretarial/Director Resignation & Removal") && !directexitTableAppended)  {
                     insertDirectexitTable();
                     directexitTableAppended = true;
-                } else if (result.endsWith("Secretarial/Auditor Appointment") && !auditappTableAppended)  {
+                } else if (result.endsWith("Secretarial/Auditor Appointments") && !auditappTableAppended)  {
                     insertauditappTable();
                     auditappTableAppended = true;
                 } else if (result.endsWith("Secretarial/Auditor Exits") && !auditexitTableAppended)  {
