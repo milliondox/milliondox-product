@@ -15158,10 +15158,14 @@ public function PredefinedCommonUploadFiles(Request $request)
                            
                             $filePath = $file->store($location);
                             // Create a new entry for each file
+                            $storedFileName = basename($filePath);
+
+                            // dd($storedFileName);
                             CommonTable::create([
                                 'file_type' => $file->getClientMimeType(),
                                 'file_name' => $file->getClientOriginalName(),
                                 'real_file_name' => $request->input('real_file_name'),
+                                'temp_file_name' => $storedFileName,
                                 'file_size' => $file->getSize(),
                                 'file_path' => $filePath,
                                 'user_name' => auth()->user()->name, // Assuming user is authenticated
@@ -21067,71 +21071,275 @@ public function shareFolder(Request $request)
     }
 
 
-    public function downloadFolder($folderid)
-    {
-        $folder_id = $folderid;
-        $folder = Folder::where('id', $folder_id)->first();
+    // public function downloadFolder($folderid)
+    // {
+    //     $folder_id = $folderid;
+    //     $folder = Folder::where('id', $folder_id)->first();
     
-        if (!$folder) {
-            \Log::error("Folder not found for ID: " . $folder_id);
-            return response()->json(['success' => false, 'message' => 'Folder not found.']);
+    //     if (!$folder) {
+    //         \Log::error("Folder not found for ID: " . $folder_id);
+    //         return response()->json(['success' => false, 'message' => 'Folder not found.']);
+    //     }
+    
+    //     $zipFileName = $folder->name . $folder->id . '.zip';
+    //     $zipFilePath = storage_path('app/public/' . $zipFileName);
+    
+    //     $zip = new ZipArchive();
+    //     if ($zip->open($zipFilePath, ZipArchive::CREATE) !== TRUE) {
+    //         \Log::error("Could not create ZIP file at: " . $zipFilePath);
+    //         return response()->json(['success' => false, 'message' => 'Could not create ZIP file.']);
+    //     }
+    
+    //     $folderFullPath = storage_path('app/' . $folder->path);
+    //     if (is_dir($folderFullPath)) {
+    //         $this->addFolderToZip($zip, $folderFullPath, $folder->name);
+    //     } else {
+    //         \Log::error("Folder does not exist: " . $folderFullPath);
+    //         return response()->json(['success' => false, 'message' => 'Folder does not exist.']);
+    //     }
+    
+    //     $zip->close();
+    
+    //     if (!file_exists($zipFilePath)) {
+    //         return response()->json(['success' => false, 'message' => 'ZIP file could not be created.']);
+    //     }
+    
+    //     // Download response
+    //     return response()->download($zipFilePath)->deleteFileAfterSend(true);
+    // }
+    
+    // /**
+    //  * Recursively adds a folder and its contents to a ZipArchive.
+    //  *
+    //  * @param ZipArchive $zip The ZipArchive object.
+    //  * @param string $folderPath The path to the folder being added.
+    //  * @param string $folderName The name to be used inside the ZIP.
+    //  */
+    // private function addFolderToZip($zip, $folderPath, $folderName)
+    // {
+    //     $zip->addEmptyDir($folderName);
+    
+    //     $files = scandir($folderPath);
+    
+    //     foreach ($files as $file) {
+    //         if ($file == '.' || $file == '..') {
+    //             continue;
+    //         }
+    
+    //         $filePath = $folderPath . '/' . $file;
+    //         $zipPath = $folderName . '/' . $file;
+    
+    //         if (is_dir($filePath)) {
+    //             $this->addFolderToZip($zip, $filePath, $zipPath);
+    //         } else {
+    //             $zip->addFile($filePath, $zipPath);
+    //         }
+    //     }
+    // }
+
+
+
+//sandeep start here for subdirectories according to real file name     working 
+// use App\Models\File; // Ensure this is your Eloquent model
+
+// public function downloadFolder($folderid)
+// {
+//     $folder = Folder::find($folderid);
+
+//     if (!$folder) {
+//         \Log::error("Folder not found for ID: " . $folderid);
+//         return response()->json(['success' => false, 'message' => 'Folder not found.']);
+//     }
+
+//     $zipFileName = $folder->name . $folder->id . '.zip';
+//     $zipFilePath = storage_path('app/public/' . $zipFileName);
+
+//     $zip = new ZipArchive();
+//     if ($zip->open($zipFilePath, ZipArchive::CREATE) !== TRUE) {
+//         \Log::error("Could not create ZIP file at: " . $zipFilePath);
+//         return response()->json(['success' => false, 'message' => 'Could not create ZIP file.']);
+//     }
+
+//     $folderFullPath = storage_path('app/' . $folder->path);
+//     if (is_dir($folderFullPath)) {
+//         $this->addFolderToZip($zip, $folderFullPath, $folder->name);
+//     } else {
+//         \Log::error("Folder does not exist: " . $folderFullPath);
+//         return response()->json(['success' => false, 'message' => 'Folder does not exist.']);
+//     }
+
+//     $zip->close();
+
+//     if (!file_exists($zipFilePath)) {
+//         return response()->json(['success' => false, 'message' => 'ZIP file could not be created.']);
+//     }
+
+//     return response()->download($zipFilePath)->deleteFileAfterSend(true);
+// }
+
+// /**
+//  * Recursively adds a folder and its contents to a ZipArchive.
+//  *
+//  * @param ZipArchive $zip The ZipArchive object.
+//  * @param string $folderPath The path to the folder being added.
+//  * @param string $zipFolderName The name to be used inside the ZIP.
+//  */
+// private function addFolderToZip($zip, $folderPath, $zipFolderName)
+// {
+//     $zip->addEmptyDir($zipFolderName);
+
+//     $files = scandir($folderPath);
+
+//     foreach ($files as $file) {
+//         if ($file == '.' || $file == '..') {
+//             continue;
+//         }
+
+//         $filePath = $folderPath . '/' . $file;
+
+//         // Fetch the real file name from the database, if it exists
+//         $fileRecord = CommonTable::where('temp_file_name', $file)->first();
+
+//         // If `real_file_name` exists, use it for the subdirectory; otherwise, skip subdirectory creation
+//         if ($fileRecord && $fileRecord->real_file_name) {
+//             $realFileName = $fileRecord->real_file_name;
+//             $zipSubdirectory = $zipFolderName . '/' . $realFileName;
+
+//             // If it's a directory, recursively add it
+//             if (is_dir($filePath)) {
+//                 $this->addFolderToZip($zip, $filePath, $zipSubdirectory);
+//             } else {
+//                 // Ensure the subdirectory exists in the zip for each unique `real_file_name`
+//                 if (!$zip->locateName($zipSubdirectory)) {
+//                     $zip->addEmptyDir($zipSubdirectory);
+//                 }
+//                 // Add the file to its corresponding subdirectory inside the ZIP
+//                 $zip->addFile($filePath, $zipSubdirectory . '/' . basename($filePath));
+//             }
+//         } else {
+//             // If `real_file_name` is not available, add the file directly under the main folder
+//             if (!is_dir($filePath)) {
+//                 $zip->addFile($filePath, $zipFolderName . '/' . basename($filePath));
+//             }
+//         }
+//     }
+// }
+
+
+//sandeep end  here for subdirectories according to real file name     working 
+
+
+public function downloadFolder($folderid)
+{
+    $folder = Folder::find($folderid);
+
+    if (!$folder) {
+        \Log::error("Folder not found for ID: " . $folderid);
+        return response()->json(['success' => false, 'message' => 'Folder not found.']);
+    }
+
+    $zipFileName = $folder->name . $folder->id . '.zip';
+    $zipFilePath = storage_path('app/public/' . $zipFileName);
+
+    $zip = new ZipArchive();
+    if ($zip->open($zipFilePath, ZipArchive::CREATE) !== TRUE) {
+        \Log::error("Could not create ZIP file at: " . $zipFilePath);
+        return response()->json(['success' => false, 'message' => 'Could not create ZIP file.']);
+    }
+
+    $folderFullPath = storage_path('app/' . $folder->path);
+    if (is_dir($folderFullPath)) {
+        $this->addFolderToZip($zip, $folderFullPath, $folder->name);
+    } else {
+        \Log::error("Folder does not exist: " . $folderFullPath);
+        return response()->json(['success' => false, 'message' => 'Folder does not exist.']);
+    }
+
+    $zip->close();
+
+    if (!file_exists($zipFilePath)) {
+        return response()->json(['success' => false, 'message' => 'ZIP file could not be created.']);
+    }
+
+    return response()->download($zipFilePath)->deleteFileAfterSend(true);
+}
+
+/**
+ * Recursively adds a folder and its contents to a ZipArchive.
+ *
+ * @param ZipArchive $zip The ZipArchive object.
+ * @param string $folderPath The path to the folder being added.
+ * @param string $zipFolderName The name to be used inside the ZIP.
+ */
+private function addFolderToZip($zip, $folderPath, $zipFolderName)
+{
+    // Add the folder itself as an empty directory in the ZIP
+    $zip->addEmptyDir($zipFolderName);
+
+    $files = scandir($folderPath);
+
+    foreach ($files as $file) {
+        if ($file == '.' || $file == '..') {
+            continue;
         }
-    
-        $zipFileName = $folder->name . $folder->id . '.zip';
-        $zipFilePath = storage_path('app/public/' . $zipFileName);
-    
-        $zip = new ZipArchive();
-        if ($zip->open($zipFilePath, ZipArchive::CREATE) !== TRUE) {
-            \Log::error("Could not create ZIP file at: " . $zipFilePath);
-            return response()->json(['success' => false, 'message' => 'Could not create ZIP file.']);
+
+        $filePath = $folderPath . '/' . $file;
+
+        // Fetch file information from the database
+        $fileRecord = CommonTable::where('temp_file_name', $file)->first();
+
+        // Use `file_name` for the file name in the ZIP if both `temp_file_name` and `real_file_name` are NULL
+        $fileNameInZip = $fileRecord && $fileRecord->file_name ? $fileRecord->file_name : $file;
+
+        // Determine subdirectory based on `real_file_name` or fall back to `file_name`
+        $subDirName = null;
+        if ($fileRecord) {
+            // If `real_file_name` exists, use it for subdirectory
+            if ($fileRecord->real_file_name) {
+                $subDirName = $fileRecord->real_file_name;
+            }
         }
-    
-        $folderFullPath = storage_path('app/' . $folder->path);
-        if (is_dir($folderFullPath)) {
-            $this->addFolderToZip($zip, $folderFullPath, $folder->name);
+
+        if (is_dir($filePath)) {
+            // Recursively add subdirectories, using `real_file_name` as the directory name if available
+            $this->addFolderToZip($zip, $filePath, $zipFolderName . '/' . ($subDirName ?? $fileNameInZip));
         } else {
-            \Log::error("Folder does not exist: " . $folderFullPath);
-            return response()->json(['success' => false, 'message' => 'Folder does not exist.']);
-        }
-    
-        $zip->close();
-    
-        if (!file_exists($zipFilePath)) {
-            return response()->json(['success' => false, 'message' => 'ZIP file could not be created.']);
-        }
-    
-        // Download response
-        return response()->download($zipFilePath)->deleteFileAfterSend(true);
-    }
-    
-    /**
-     * Recursively adds a folder and its contents to a ZipArchive.
-     *
-     * @param ZipArchive $zip The ZipArchive object.
-     * @param string $folderPath The path to the folder being added.
-     * @param string $folderName The name to be used inside the ZIP.
-     */
-    private function addFolderToZip($zip, $folderPath, $folderName)
-    {
-        $zip->addEmptyDir($folderName);
-    
-        $files = scandir($folderPath);
-    
-        foreach ($files as $file) {
-            if ($file == '.' || $file == '..') {
-                continue;
-            }
-    
-            $filePath = $folderPath . '/' . $file;
-            $zipPath = $folderName . '/' . $file;
-    
-            if (is_dir($filePath)) {
-                $this->addFolderToZip($zip, $filePath, $zipPath);
+            // If `real_file_name` is null, place the file outside of any subdirectory and name it `file_name`
+            if ($subDirName) {
+                // If a subdirectory is specified, ensure it exists and add the file within it
+                if (!$zip->locateName($zipFolderName . '/' . $subDirName)) {
+                    $zip->addEmptyDir($zipFolderName . '/' . $subDirName);
+                }
+                $zip->addFile($filePath, $zipFolderName . '/' . $subDirName . '/' . $fileNameInZip);
             } else {
-                $zip->addFile($filePath, $zipPath);
+                // If no subdirectory is needed, add the file directly under the main folder with `file_name`
+                $zip->addFile($filePath, $zipFolderName . '/' . $fileNameInZip);
             }
         }
     }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////
+
+
+
+
+    
+    
+
     
     
     

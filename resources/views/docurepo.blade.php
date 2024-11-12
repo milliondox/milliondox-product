@@ -41,6 +41,15 @@
     padding: 6px;
     transition: all .25s ease-out;
 }
+
+.progress_circle2 {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100px;  /* Set height if necessary */
+    width: 100px;   /* Set width if necessary */
+}
+
     </style>
     
 
@@ -6097,12 +6106,26 @@ function handleFolderPath(folderPath) {
 
                     } else {
                         toastr.error(response.message);
+
+                        // Create the error SVG with red fill
+                        let errorSVG = '<svg width="24px" height="24px" viewBox="0 0 24 24" fill="red"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"></path></svg>';
+
+                        // Replace the current done tick with the error SVG
+                        $(`#progress_${currentFileIndex} .progress_circle2`).html(errorSVG); // Insert the error SVG
+
                         $('#common_file_upload_pop .close').click();    
                     }
                 },
                 error: function(xhr, textStatus) {
                     if (textStatus !== 'abort') {
                         toastr.error('An error occurred while uploading files');
+
+                        // Create the error SVG with red fill
+                        let errorSVG = '<svg width="24px" height="24px" viewBox="0 0 24 24" fill="red"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"></path></svg>';
+
+                        // Replace the current done tick with the error SVG
+                        $(`#progress_${currentFileIndex} .progress_circle2`).html(errorSVG); // Insert the error SVG
+
                         // toastr.error('An error occurred while uploading files: ' + xhr.responseText);
                         $('#common_file_upload_pop .close').click();    
                         
@@ -6208,6 +6231,12 @@ function handleFolderPath(folderPath) {
 
                     } else {
                         toastr.error(response.message);
+
+                        // Create the error SVG with red fill
+                        let errorSVG = '<svg width="24px" height="24px" viewBox="0 0 24 24" fill="red"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"></path></svg>';
+
+                        // Replace the current done tick with the error SVG
+                        $(`#progress_${currentFileIndex} .progress_circle2`).html(errorSVG); // Insert the error SVG
                         $('#common_file_upload_pop_bank .close').click(); 
 
                     }
@@ -6216,6 +6245,11 @@ function handleFolderPath(folderPath) {
                     if (textStatus !== 'abort') {
                         toastr.error('An error occurred while uploading files');
                         // toastr.error('An error occurred while uploading files: ' + xhr.responseText);
+                        // Create the error SVG with red fill
+                        let errorSVG = '<svg width="24px" height="24px" viewBox="0 0 24 24" fill="red"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"></path></svg>';
+
+                        // Replace the current done tick with the error SVG
+                        $(`#progress_${currentFileIndex} .progress_circle2`).html(errorSVG); // Insert the error SVG
                         $('#common_file_upload_pop_bank .close').click(); 
                     }
 
@@ -6247,7 +6281,7 @@ function handleFolderPath(folderPath) {
         const progressHtml = `
             <div class="progress_repeat" id="progress_${index}">
                 <h2 class="file_name">${fileName}</h2>
-                <div class="progress_circle">
+                <div class="progress_circle progress_circle2">
                     <div id="wrapper_progreess" class="center">                  
                         <svg class="progresss" x="0px" y="0px" viewBox="0 0 80 80">
                             <path class="track" d="M5,40a35,35 0 1,0 70,0a35,35 0 1,0 -70,0" />
@@ -6278,23 +6312,50 @@ function handleFolderPath(folderPath) {
     }
 
     // Function to handle upload cancellation
+    // window.cancelUpload = function(currentFileIndex) {
+    //     if (window.xhrRequests && window.xhrRequests[currentFileIndex]) {
+    //         window.xhrRequests[currentFileIndex].abort(); // Abort the AJAX request
+
+    //         // alert(`Cancelled upload for file: ${index}`);
+    //         // toastr.info(`Upload cancelled for file: ${index}`);
+    //         // $(`#progress_${index}`).remove(); // Remove the progress indicator
+
+    //         $(`#progress_${currentFileIndex}`).fadeOut(500, function() {
+    //             $(this).remove();
+    //         });
+    //         // toastr.info(`Upload cancelled for file: ${index}`);
+
+    //         // Optionally, remove from the xhrRequests to clean up memory
+    //          delete window.xhrRequests[currentFileIndex];
+    //     }
+    // }
+
     window.cancelUpload = function(currentFileIndex) {
+    // Show a confirmation dialog before canceling
+    let isConfirmed = window.confirm("Are you sure you want to cancel the upload?");
+
+    if (isConfirmed) {
+        // If the user confirmed, proceed with canceling the upload
         if (window.xhrRequests && window.xhrRequests[currentFileIndex]) {
             window.xhrRequests[currentFileIndex].abort(); // Abort the AJAX request
 
-            // alert(`Cancelled upload for file: ${index}`);
-            // toastr.info(`Upload cancelled for file: ${index}`);
-            // $(`#progress_${index}`).remove(); // Remove the progress indicator
-
+            // Fade out and remove the progress indicator
             $(`#progress_${currentFileIndex}`).fadeOut(500, function() {
                 $(this).remove();
             });
-            // toastr.info(`Upload cancelled for file: ${index}`);
 
             // Optionally, remove from the xhrRequests to clean up memory
-             delete window.xhrRequests[currentFileIndex];
+            delete window.xhrRequests[currentFileIndex];
+
+            // Optionally, you can display a message that the upload was canceled
+            toastr.error(`Upload cancelled`);
         }
+    } else {
+        // If the user did not confirm, do nothing (upload will continue)
+        toastr.info("Upload is still in progress.");
     }
+}
+
 
     // Function to update the success count display
     function updateSuccessCount() {
@@ -6425,6 +6486,11 @@ $('#upload-file-form').on('submit', function(e) {
                         response.errorMessages.forEach(function(msg) {
                             // toastr.warning(msg);
                         toastr.error('An error occurred while uploading files');
+                        // Create the error SVG with red fill
+                        let errorSVG = '<svg width="24px" height="24px" viewBox="0 0 24 24" fill="red"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"></path></svg>';
+
+                        // Replace the current done tick with the error SVG
+                        $(`#progress_${currentFileIndex} .progress_circle2`).html(errorSVG); // Insert the error SVG
 
 
                         });
@@ -6439,6 +6505,11 @@ $('#upload-file-form').on('submit', function(e) {
                     resetFileInput($('input[name="file"]'));
                 } else {
                     toastr.error('Failed to upload file: ' + response.message);
+                    // Create the error SVG with red fill
+                    let errorSVG = '<svg width="24px" height="24px" viewBox="0 0 24 24" fill="red"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"></path></svg>';
+
+                    // Replace the current done tick with the error SVG
+                    $(`#progress_${currentFileIndex} .progress_circle2`).html(errorSVG); // Insert the error SVG
                     $('#upload_filee .close').click(); 
 
                 }
@@ -6450,9 +6521,19 @@ $('#upload-file-form').on('submit', function(e) {
                 if (xhr.status === 400 || xhr.status === 500) {
                     let response = JSON.parse(xhr.responseText);
                     toastr.error('Error: ' + response.message);
+                    // Create the error SVG with red fill
+                    let errorSVG = '<svg width="24px" height="24px" viewBox="0 0 24 24" fill="red"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"></path></svg>';
+
+                    // Replace the current done tick with the error SVG
+                    $(`#progress_${currentFileIndex} .progress_circle2`).html(errorSVG); // Insert the error SVG
                     $('#upload_filee .close').click(); 
 
                 } else {
+                    // Create the error SVG with red fill
+                    let errorSVG = '<svg width="24px" height="24px" viewBox="0 0 24 24" fill="red"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"></path></svg>';
+
+                    // Replace the current done tick with the error SVG
+                    $(`#progress_${currentFileIndex} .progress_circle2`).html(errorSVG); // Insert the error SVG
 
                    $('#upload_filee .close').click(); 
 
@@ -6479,7 +6560,7 @@ $('#upload-file-form').on('submit', function(e) {
         const progressHtml = `
             <div class="progress_repeat" id="progress_${index}">
                 <h2 class="file_name">${fileName}</h2>
-                <div class="progress_circle">
+                <div class="progress_circle progress_circle2">
                     <div id="wrapper_progreess" class="center">                  
                         <svg class="progresss" x="0px" y="0px" viewBox="0 0 80 80">
                             <path class="track" d="M5,40a35,35 0 1,0 70,0a35,35 0 1,0 -70,0" />
@@ -6508,23 +6589,53 @@ $('#upload-file-form').on('submit', function(e) {
         progressFill.css('stroke-dashoffset', offset);
     }
 
+    // // Function to cancel upload for a specific file
+    // window.cancelUpload1 = function(currentFileIndex) {
+    //     if (xhrRequests[currentFileIndex]) {
+    //         xhrRequests[currentFileIndex].abort(); // Abort the AJAX request
+
+    //         $(`#progress_${currentFileIndex}`).fadeOut(500, function() {
+    //             $(this).remove();
+    //         });
+    //         $('.button-spinner').remove();
+
+
+    //         // toastr.info(`Upload cancelled for file: ${currentFileIndex}`);
+
+    //         // Clean up xhr request memory
+    //         delete xhrRequests[currentFileIndex];
+    //     }
+    // }
     // Function to cancel upload for a specific file
-    window.cancelUpload1 = function(currentFileIndex) {
+window.cancelUpload1 = function(currentFileIndex) {
+    // Show a confirmation dialog before canceling
+    let isConfirmed = window.confirm("Are you sure you want to cancel the upload?");
+
+    if (isConfirmed) {
+        // If the user confirmed, proceed with canceling the upload
         if (xhrRequests[currentFileIndex]) {
             xhrRequests[currentFileIndex].abort(); // Abort the AJAX request
 
+            // Fade out and remove the progress indicator
             $(`#progress_${currentFileIndex}`).fadeOut(500, function() {
                 $(this).remove();
             });
+            
+            // Remove any button spinner if present
             $('.button-spinner').remove();
 
-
-            // toastr.info(`Upload cancelled for file: ${currentFileIndex}`);
+            // Optionally, display a message that the upload was canceled
+            toastr.error(`Upload cancelled`);
 
             // Clean up xhr request memory
             delete xhrRequests[currentFileIndex];
         }
+    } else {
+        // If the user did not confirm, do nothing (upload will continue)
+        toastr.info("Upload is still in progress.");
     }
+}
+
 
     // Function to update the success count display
     function updateSuccessCount1() {
@@ -7942,9 +8053,46 @@ $(window).on('load', function() {
 // });
 
 
+// function hideprogressdiv() {
+    // $('.progree_cont_nt').hide(); // Simply hide the progress container
+
+// }
+
+// Function to hide the progress div and cancel all uploads if confirmed
 function hideprogressdiv() {
+    // Show confirmation dialog
+    let isConfirmed = window.confirm("Are you sure you want to cancel all uploads?");
     $('.progree_cont_nt').hide(); // Simply hide the progress container
+
+
+    if (isConfirmed) {
+        // Loop through all xhrRequests and abort each if they exist
+        for (let key in xhrRequests) {
+            if (xhrRequests[key]) {
+                xhrRequests[key].abort(); // Abort each AJAX request
+
+                // Optionally, fade out and remove each progress indicator
+                $(`#progress_${key}`).fadeOut(500, function() {
+                    $(this).remove();
+                });
+                
+                // Remove spinner, if applicable
+                $('.button-spinner').remove();
+
+                // Clean up xhrRequests memory
+                delete xhrRequests[key];
+            }
+        }
+        
+
+        // Optionally, display a message indicating all uploads were canceled
+        toastr.error("All uploads have been canceled.");
+    } else {
+        // If the user did not confirm, do nothing
+        toastr.info("Uploads are still in progress.");
+    }
 }
+
 
 
 
