@@ -789,13 +789,14 @@ public function storecompanyemployee(Request $request)
         'emp_code.unique' => 'This Employee Code already exists. Please provide a unique Employee Code.',
     ];
 
-    // Validate the incoming request data
+    // Validate request data
     $validatedData = $request->validate([
         'name' => 'required|string|max:255',
         'app_dates' => 'required|date',
         'termi_dates' => 'nullable|date',
-        'emp_code' => 'required|string|max:50|unique:store_company_employee,emp_code', // Ensure emp_code is unique
+        'emp_code' => 'required|string|max:50|unique:store_company_employee,emp_code',
     ], $messages);
+
 
     $user = auth()->user();
     $userId = Auth::id();
@@ -813,66 +814,209 @@ public function storecompanyemployee(Request $request)
     // $userId = $request->user_id;  // Assuming this comes from the request
     
     // Get current year and month
-    $currentYear = now()->year;
-    $currentMonth = now()->format('F'); // Full month name (e.g., 'October')
+    // $currentYear = now()->year;
+    // $currentMonth = now()->format('F'); // Full month name (e.g., 'October')
     
-    // Determine fiscal year
-    if (now()->month < 4) {
-        $fiscalYear = ($currentYear - 1) . '-' . $currentYear;
-    } else {
-        $fiscalYear = $currentYear . '-' . ($currentYear + 1);
-    }
+    // // Determine fiscal year
+    // if (now()->month < 4) {
+    //     $fiscalYear = ($currentYear - 1) . '-' . $currentYear;
+    // } else {
+    //     $fiscalYear = $currentYear . '-' . ($currentYear + 1);
+    // }
     
-    // Step 1: Create a common Human Resources folder for all users
-    $hrFolderName = "{$fiscalYear}{$currentMonth}0_Human Resources";  // Common folder for all users
-    $hrFolderPath = "{$hrFolderName}";
+    // // Step 1: Create a common Human Resources folder for all users
+    // $hrFolderName = "{$fiscalYear}{$currentMonth}0_Human Resources";  // Common folder for all users
+    // $hrFolderPath = "{$hrFolderName}";
     
-    // Check if Human Resources folder exists and create it if not
+    // // Check if Human Resources folder exists and create it if not
+    // if (!Storage::exists($hrFolderPath)) {
+    //     Storage::makeDirectory($hrFolderPath);
+    
+    //     // Store the folder details in the database (if necessary)
+    //     $hrFolder = new Folder();
+    //     $hrFolder->name = basename($hrFolderPath);
+    //     $hrFolder->path = $hrFolderPath;
+    //     $hrFolder->parent_name = null;
+    //     $hrFolder->user_id =  $userId;  // No specific user; common for all
+    //     $hrFolder->common_folder = 1;
+    //     $hrFolder->save();
+    // }
+    
+    // // Step 2: Create Employee folder inside Human Resources folder
+    // $employeeFolderName = "{$fiscalYear}{$currentMonth}{$userId}_{$employeeName}";
+    // $employeeFolderPath = "{$hrFolderPath}/{$employeeFolderName}";
+    
+    // // Check if Employee folder exists and create it if not
+    // if (!Storage::exists($employeeFolderPath)) {
+    //     Storage::makeDirectory($employeeFolderPath);
+    
+    //     // Store the Employee folder details in the database
+    //     $employeeFolder = new Folder();
+    //     $employeeFolder->name = basename($employeeFolderPath);
+    //     $employeeFolder->path = $employeeFolderPath;
+    //     $employeeFolder->parent_name = $hrFolderPath;
+    //     $employeeFolder->user_id = $userId;
+    //     $employeeFolder->employee_id = $storeemp->id;
+    //     $employeeFolder->save();
+    // }
+    
+    // // Step 3: Create subfolders dynamically within Employee folder
+    // $folders = [
+    //     'Employee Database' => [
+    //         'Onboarding documents',
+    //         'KYC Documents',
+    //         'Offboarding',
+    //         'Reference Checks',
+    //         'ESOP',
+    //         'Declarations',
+    //     ],
+    //     'Pay Registers' => [
+    //         'Monthly Payrun',
+    //         'Reimbursements',
+    //         'Salary Slips',
+    //     ],
+    //     'Policies & Handbook' => [
+    //         'Leave policy',
+    //         'Attendance policy',
+    //         'Reimbursement policy',
+    //         'Organisation Chart',
+    //         'Code of conduct',
+    //         'Health Insurance',
+    //         'Asset Allocation & Usage Policy',
+    //     ],
+    //     'Appraisals' => [
+    //         'Appraisals forms',
+    //         'Management approvals',
+    //         'KRAs and OKRs',
+    //     ],
+    // ];
+
+    // $Onboarding_RealFileNames     = ["Offer Letter","Acceptance Letter","Employment Agreement","Non Disclosure Agreement","Non-compete","Contractual Bond","Form 11 - EPF","Form 12BB - Income Tax"];
+    // $KYC_RealFileNames            = ["Photo","Aadhar KYC","PAN KYC","Address Proof","Contact Details"];
+    // $Offboarding_RealFileNames    = ["Resignation letter","Experience Letter","No Dues certificate","Character certificate"];
+    // $ESOP_RealFileNames           = ["Policy","Grant Letters","Acceptance Letters","Nominations"];
+    // $Declarations_RealFileNames   = ["Asset Declaration Forms","Employee Master"];
+    // $MonthlyPayrun_RealFileNames  = ["Attendance log","Variable pays","Terminations/ Exits","New Hires","Pay Register"];
+    // $Reimbursements_RealFileNames = ["Reimbursement forms & Invoices","Approvals"];  
+    
+    
+    // // Loop through the folders and create them if they don't exist
+    // foreach ($folders as $mainFolder => $subFolders) {
+    //     $mainFolderPath = "{$employeeFolderPath}/{$fiscalYear}{$currentMonth}{$userId}_{$mainFolder}";
+    
+    //     if (!Storage::exists($mainFolderPath)) {
+    //         Storage::makeDirectory($mainFolderPath);
+    
+    //         // Store the main folder details in the database
+    //         $mainFolderDb = new Folder();
+    //         $mainFolderDb->name = basename($mainFolderPath);
+    //         $mainFolderDb->path = $mainFolderPath;
+    //         $mainFolderDb->parent_name = $employeeFolderPath;
+    //         $mainFolderDb->user_id = $userId;
+    //         $mainFolderDb->common_folder = 1;
+    //         $mainFolderDb->employee_id = $storeemp->id;
+    //         $mainFolderDb->save();
+    //     }
+    
+    //     // Create subfolders inside each main folder
+    //     foreach ($subFolders as $subFolder) {
+    //         $subFolderPath = "{$mainFolderPath}/{$fiscalYear}{$currentMonth}{$userId}_{$subFolder}";
+    
+    //         if (!Storage::exists($subFolderPath)) {
+    //             Storage::makeDirectory($subFolderPath);
+    
+    //             // Store the subfolder details in the database
+    //             $subFolderDb = new Folder();
+    //             $subFolderDb->name = basename($subFolderPath);
+    //             $subFolderDb->path = $subFolderPath;
+    //             $subFolderDb->parent_name = $mainFolderPath;
+    //             $subFolderDb->user_id = $userId;
+    //             $subFolderDb->common_folder = 1;
+    //             $subFolderDb->employee_id = $storeemp->id;
+    //             // $subFolderDb->save();
+
+    //               // Check if the subfolder is 'Onboarding documents' to add extra entries in real_file_name
+    //                     if ($subFolder === 'Onboarding documents') {
+    //                         $subFolderDb->real_file_name = json_encode($Onboarding_RealFileNames); // Save as JSON
+    //                     }else if($subFolder === 'KYC Documents') {
+    //                         $subFolderDb->real_file_name = json_encode($KYC_RealFileNames); // Save as JSON
+    //                     }else if($subFolder === 'Offboarding') {
+    //                         $subFolderDb->real_file_name = json_encode($Offboarding_RealFileNames); // Save as JSON
+    //                     }else if($subFolder === 'ESOP') {
+    //                         $subFolderDb->real_file_name = json_encode($ESOP_RealFileNames); // Save as JSON
+    //                     }else if($subFolder === 'Declarations') {
+    //                         $subFolderDb->real_file_name = json_encode($Declarations_RealFileNames); // Save as JSON
+    //                     }else if($subFolder === 'Monthly Payrun') {
+    //                         $subFolderDb->real_file_name = json_encode($MonthlyPayrun_RealFileNames); // Save as JSON
+    //                     }else if($subFolder === 'Reimbursements') {
+    //                         $subFolderDb->real_file_name = json_encode($Reimbursements_RealFileNames); // Save as JSON
+    //                     }else{
+
+    //                     }
+
+    //                 $subFolderDb->save();
+    //                 }
+    //     }
+    // }
+
+    // // Return a success response (optional)
+    // return response()->json([
+    //     'message' => 'Employee details stored successfully!',
+    //     'data' => $storeemp,
+    // ]);
+    $Onboarding_RealFileNames = [
+        "Offer Letter", "Acceptance Letter", "Employment Agreement", 
+        "Non Disclosure Agreement", "Non-compete", "Contractual Bond", 
+        "Form 11 - EPF", "Form 12BB - Income Tax"
+    ];
+    
+    $KYC_RealFileNames = [
+        "Photo", "Aadhar KYC", "PAN KYC", "Address Proof", "Contact Details"
+    ];
+    
+    $Offboarding_RealFileNames = [
+        "Resignation letter", "Experience Letter", "No Dues certificate", "Character certificate"
+    ];
+    
+    $ESOP_RealFileNames = [
+        "Policy", "Grant Letters", "Acceptance Letters", "Nominations"
+    ];
+    
+    $Declarations_RealFileNames = [
+        "Asset Declaration Forms", "Employee Master"
+    ];
+    
+    $MonthlyPayrun_RealFileNames = [
+        "Attendance log", "Variable pays", "Terminations/ Exits", "New Hires", "Pay Register"
+    ];
+    
+    $Reimbursements_RealFileNames = [
+        "Reimbursement forms & Invoices", "Approvals"
+    ];
+
+    // Define Human Resources folder path
+    $userId = Auth::id();  // Get the current user ID
+    $currentYear = now()->year;  // Get current year
+    $currentMonth = now()->format('F');  // Get current month in full format
+    $fiscalYear = now()->month < 4 ? ($currentYear - 1) . '-' . $currentYear : $currentYear . '-' . ($currentYear + 1);
+    $hrFolderPath = "{$fiscalYear}{$currentMonth}0_Human Resources";  // Define Human Resources folder path
+
+    // Check if "Human Resources" folder exists, if not, create it
     if (!Storage::exists($hrFolderPath)) {
         Storage::makeDirectory($hrFolderPath);
-    
-        // Store the folder details in the database (if necessary)
-        $hrFolder = new Folder();
-        $hrFolder->name = basename($hrFolderPath);
-        $hrFolder->path = $hrFolderPath;
-        $hrFolder->parent_name = null;
-        $hrFolder->user_id =  $userId;  // No specific user; common for all
-        $hrFolder->common_folder = 1;
-        $hrFolder->save();
+        Folder::create([
+            'name' => basename($hrFolderPath),
+            'path' => $hrFolderPath,
+            'parent_name' => null,
+            'user_id' => $userId,
+            'common_folder' => 1,
+        ]);
     }
-    
-    // Step 2: Create Employee folder inside Human Resources folder
-    $employeeFolderName = "{$fiscalYear}{$currentMonth}{$userId}_{$employeeName}";
-    $employeeFolderPath = "{$hrFolderPath}/{$employeeFolderName}";
-    
-    // Check if Employee folder exists and create it if not
-    if (!Storage::exists($employeeFolderPath)) {
-        Storage::makeDirectory($employeeFolderPath);
-    
-        // Store the Employee folder details in the database
-        $employeeFolder = new Folder();
-        $employeeFolder->name = basename($employeeFolderPath);
-        $employeeFolder->path = $employeeFolderPath;
-        $employeeFolder->parent_name = $hrFolderPath;
-        $employeeFolder->user_id = $userId;
-        $employeeFolder->save();
-    }
-    
-    // Step 3: Create subfolders dynamically within Employee folder
-    $folders = [
-        'Employee Database' => [
-            'Onboarding documents',
-            'KYC Documents',
-            'Offboarding',
-            'Reference Checks',
-            'ESOP',
-            'Declarations',
-        ],
-        'Pay Registers' => [
-            'Monthly Payrun',
-            'Reimbursements',
-            'Salary Slips',
-        ],
+
+    // Define fixed folders and their respective subfolders
+    $fixedFolders = [
+        'Employee Database' => [],  // No subfolders for this folder
+        'Pay Registers' => ['Monthly Payrun', 'Reimbursements', 'Salary Slips'],
         'Policies & Handbook' => [
             'Leave policy',
             'Attendance policy',
@@ -880,105 +1024,216 @@ public function storecompanyemployee(Request $request)
             'Organisation Chart',
             'Code of conduct',
             'Health Insurance',
-            'Asset Allocation & Usage Policy',
+            'Asset Allocation & Usage Policy'
         ],
         'Appraisals' => [
             'Appraisals forms',
             'Management approvals',
-            'KRAs and OKRs',
+            'KRAs and OKRs'
         ],
     ];
 
-    $Onboarding_RealFileNames     = ["Offer Letter","Acceptance Letter","Employment Agreement","Non Disclosure Agreement","Non-compete","Contractual Bond","Form 11 - EPF","Form 12BB - Income Tax"];
-    $KYC_RealFileNames            = ["Photo","Aadhar KYC","PAN KYC","Address Proof","Contact Details"];
-    $Offboarding_RealFileNames    = ["Resignation letter","Experience Letter","No Dues certificate","Character certificate"];
-    $ESOP_RealFileNames           = ["Policy","Grant Letters","Acceptance Letters","Nominations"];
-    $Declarations_RealFileNames   = ["Asset Declaration Forms","Employee Master"];
-    $MonthlyPayrun_RealFileNames  = ["Attendance log","Variable pays","Terminations/ Exits","New Hires","Pay Register"];
-    $Reimbursements_RealFileNames = ["Reimbursement forms & Invoices","Approvals"];  
-    
-    
-    // Loop through the folders and create them if they don't exist
-    foreach ($folders as $mainFolder => $subFolders) {
-        $mainFolderPath = "{$employeeFolderPath}/{$fiscalYear}{$currentMonth}{$userId}_{$mainFolder}";
-    
+    // Loop through the fixed folders and create them with subfolders
+    foreach ($fixedFolders as $mainFolder => $subFolders) {
+        $mainFolderPath = "{$hrFolderPath}/{$mainFolder}";
+
+        // Create the main folder if it doesn't exist
         if (!Storage::exists($mainFolderPath)) {
             Storage::makeDirectory($mainFolderPath);
-    
-            // Store the main folder details in the database
-            $mainFolderDb = new Folder();
-            $mainFolderDb->name = basename($mainFolderPath);
-            $mainFolderDb->path = $mainFolderPath;
-            $mainFolderDb->parent_name = $employeeFolderPath;
-            $mainFolderDb->user_id = $userId;
-            // $mainFolderDb->common_folder = 1;
-            $mainFolderDb->save();
+            Folder::create([
+                'name' => $mainFolder,
+                'path' => $mainFolderPath,
+                'parent_name' => $hrFolderPath,
+                'user_id' => $userId,
+                'common_folder' => 1,
+            ]);
         }
-    
-        // Create subfolders inside each main folder
+
+        // Loop through subfolders and create them if they don't exist
         foreach ($subFolders as $subFolder) {
-            $subFolderPath = "{$mainFolderPath}/{$fiscalYear}{$currentMonth}{$userId}_{$subFolder}";
-    
+            $subFolderPath = "{$mainFolderPath}/{$subFolder}";
+
             if (!Storage::exists($subFolderPath)) {
                 Storage::makeDirectory($subFolderPath);
-    
-                // Store the subfolder details in the database
-                $subFolderDb = new Folder();
-                $subFolderDb->name = basename($subFolderPath);
-                $subFolderDb->path = $subFolderPath;
-                $subFolderDb->parent_name = $mainFolderPath;
-                $subFolderDb->user_id = $userId;
-                // $subFolderDb->common_folder = 1;
-                // $subFolderDb->save();
-
-                  // Check if the subfolder is 'Onboarding documents' to add extra entries in real_file_name
-                        if ($subFolder === 'Onboarding documents') {
-                            $subFolderDb->real_file_name = json_encode($Onboarding_RealFileNames); // Save as JSON
-                        }else if($subFolder === 'KYC Documents') {
-                            $subFolderDb->real_file_name = json_encode($KYC_RealFileNames); // Save as JSON
-                        }else if($subFolder === 'Offboarding') {
-                            $subFolderDb->real_file_name = json_encode($Offboarding_RealFileNames); // Save as JSON
-                        }else if($subFolder === 'ESOP') {
-                            $subFolderDb->real_file_name = json_encode($ESOP_RealFileNames); // Save as JSON
-                        }else if($subFolder === 'Declarations') {
-                            $subFolderDb->real_file_name = json_encode($Declarations_RealFileNames); // Save as JSON
-                        }else if($subFolder === 'Monthly Payrun') {
-                            $subFolderDb->real_file_name = json_encode($MonthlyPayrun_RealFileNames); // Save as JSON
-                        }else if($subFolder === 'Reimbursements') {
-                            $subFolderDb->real_file_name = json_encode($Reimbursements_RealFileNames); // Save as JSON
-                        }else{
-
-                        }
-
-                    $subFolderDb->save();
-                    }
+                Folder::create([
+                    'name' => $subFolder,
+                    'path' => $subFolderPath,
+                    'parent_name' => $mainFolderPath,
+                    'user_id' => $userId,
+                    'common_folder' => 1,
+                ]);
+            }
         }
     }
 
-    // Return a success response (optional)
+    // Define non-fixed folders for a new employee (inside Employee Database)
+    $employeeFolders = [
+        'Onboarding documents',
+        'KYC Documents',
+        'Offboarding',
+        'Reference Checks',
+        'ESOP',
+        'Declarations',
+    ];
+
+    // Loop through non-fixed folders for the specific employee
+    foreach ($employeeFolders as $folder) {
+        $employeeFolderPath = "{$hrFolderPath}/Employee Database/{$storeemp->name}/{$folder}";
+
+        // Create the employee folder if it doesn't exist
+        if (!Storage::exists($employeeFolderPath)) {
+            Storage::makeDirectory($employeeFolderPath);
+            Folder::create([
+                'name' => $folder,
+                'path' => $employeeFolderPath,
+                'parent_name' => "{$hrFolderPath}/Employee Database/{$storeemp->name}",
+                'user_id' => $userId,
+                'employee_id' => $storeemp->id,
+            ]);
+        }
+
+        // If the folder is "Onboarding documents", add real file names
+        if ($folder === 'Onboarding documents') {
+            Folder::where('path', $employeeFolderPath)
+                ->update(['real_file_name' => json_encode($Onboarding_RealFileNames)]);
+        }
+        // Similarly for other folders like KYC Documents, Offboarding, etc.
+        if ($folder === 'KYC Documents') {
+            Folder::where('path', $employeeFolderPath)
+                ->update(['real_file_name' => json_encode($KYC_RealFileNames)]);
+        }
+        if ($folder === 'Offboarding') {
+            Folder::where('path', $employeeFolderPath)
+                ->update(['real_file_name' => json_encode($Offboarding_RealFileNames)]);
+        }
+        if ($folder === 'ESOP') {
+            Folder::where('path', $employeeFolderPath)
+                ->update(['real_file_name' => json_encode($ESOP_RealFileNames)]);
+        }
+        if ($folder === 'Declarations') {
+            Folder::where('path', $employeeFolderPath)
+                ->update(['real_file_name' => json_encode($Declarations_RealFileNames)]);
+        }
+    }
+
     return response()->json([
-        'message' => 'Employee details stored successfully!',
-        'data' => $storeemp,
+        'message' => 'All folders and subfolders created successfully under Human Resources and Employee Database!',
     ]);
 }
 
+// public function updatecompanyemployee(Request $request)
+// {
+//     // Validate the incoming request
+//     $request->validate([
+//         'name' => 'required|string',
+//         'app_date' => 'required|date',
+//         'termi_date' => 'nullable|date',
+//         'emp_code' => 'required|string',
+//         'emp_id' => 'required|integer',  // Assuming this is passed
+//     ]);
+
+//     // Find the employee record by emp_id
+//     $emp = StoreCompanyEmployee::find($request->emp_id);
+    
+//     if ($emp) {
+//         // Backup the old employee name for later replacement in Folder data
+//         $oldEmployeeName = $emp->name;
+
+//         // Update the employee's details
+//         $emp->name = $request->name;
+//         $emp->app_date = $request->app_date;
+//         $emp->termi_date = $request->termi_date;
+//         $emp->emp_code = $request->emp_code;
+//         $emp->save();
+
+//         // Update Folder records where employee_id matches
+//         $folders = Folder::where('employee_id', $request->emp_id)->get();
+
+//         foreach ($folders as $folder) {
+//             // Update folder name, path, and parent_name in the database
+//             $folder->name = str_replace($oldEmployeeName, $request->name, $folder->name);
+//             $folder->path = str_replace($oldEmployeeName, $request->name, $folder->path);
+//             $folder->parent_name = str_replace($oldEmployeeName, $request->name, $folder->parent_name);
+//             $folder->save();
+
+//             // Update the folder in the storage if the folder path has changed
+//             if (Storage::exists($folder->path)) {
+//                 $newFolderPath = str_replace($oldEmployeeName, $request->name, $folder->path);
+//                 if ($folder->path !== $newFolderPath) {
+//                     // Rename the folder in the storage
+//                     Storage::move($folder->path, $newFolderPath);
+//                 }
+//             }
+//         }
+
+//         // Redirect back with a success message
+//         return redirect()->back()->with('success', 'Employee details and related folders updated successfully.');
+//     } else {
+//         // In case employee is not found
+//         return redirect()->back()->with('error', 'Employee not found.');
+//     }
+// }
 public function updatecompanyemployee(Request $request)
 {
-    // dd($request);
-   
+    // Validate the incoming request
+    $request->validate([
+        'name' => 'required|string',
+        'app_date' => 'required|date',
+        'termi_date' => 'nullable|date',
+        'emp_code' => 'required|string',
+        'emp_id' => 'required|integer',  // Assuming this is passed
+    ]);
 
-    // Find the GST record by ID and update it
+    // Find the employee record by emp_id
     $emp = StoreCompanyEmployee::find($request->emp_id);
-    $emp->name = $request->name;
-    $emp->app_date = $request->app_date;
-     $emp->termi_date = $request->termi_date;
-     $emp->emp_code = $request->emp_code;
-    // Update other fields if necessary
-    $emp->save();
+    
+    if ($emp) {
+        // Backup the old employee name for later replacement in Folder data
+        $oldEmployeeName = $emp->name;
 
-    // Redirect back with a success message
-    return redirect()->back()->with('success', 'Employee details updated successfully.');
+        // Update the employee's details
+        $emp->name = $request->name;
+        $emp->app_date = $request->app_date;
+        $emp->termi_date = $request->termi_date;
+        $emp->emp_code = $request->emp_code;
+        $emp->save();
+
+        // Update Folder records where employee_id matches
+        $folders = Folder::where('employee_id', $request->emp_id)->get();
+
+        foreach ($folders as $folder) {
+            // Replace old employee name in folder data (name, path, parent_name)
+            $folder->name = str_replace($oldEmployeeName, $request->name, $folder->name);
+            $folder->path = str_replace($oldEmployeeName, $request->name, $folder->path);
+            $folder->parent_name = str_replace($oldEmployeeName, $request->name, $folder->parent_name);
+            $folder->save();
+
+            // Full path for the folder in storage
+            $oldFolderPath = storage_path('app/' . $folder->path);
+            $newFolderPath = storage_path('app/' . str_replace($oldEmployeeName, $request->name, $folder->path));
+
+            // Ensure the folder exists before attempting to move/rename
+            if (Storage::exists($folder->path)) {
+                // Only rename if the path has actually changed
+                if ($folder->path !== str_replace($oldEmployeeName, $request->name, $folder->path)) {
+                    // Rename the folder in the storage
+                    Storage::move($folder->path, str_replace($oldEmployeeName, $request->name, $folder->path));
+                }
+            } else {
+                // Log an error if the folder doesn't exist
+                \Log::error('Folder does not exist: ' . $oldFolderPath);
+            }
+        }
+
+        // Redirect back with a success message
+        return redirect()->back()->with('success', 'Employee details and related folders updated successfully.');
+    } else {
+        // In case employee is not found
+        return redirect()->back()->with('error', 'Employee not found.');
+    }
 }
+
+
 
 public function delcompemp(Request $request)
 {
@@ -20509,7 +20764,7 @@ public function shareFolder(Request $request)
                                 </button>
                                 <div id="myDropdown2-' . $folder->id . '" class="dropdown-content">
                                    
-                                    <a class="dropdown-itemm rename_nt"><img src="../assets/images/rename_nt.png">Rename</a>
+                                    <a class="dropdown-itemm rename_nt" data-bs-toggle="modal" data-bs-target="#renamefolder" data-director_id="' . $folder->director_id . '" data-employee_id="' . $folder->employee_id . '" data-folder_path="' . $folder->path . '" data-old_folder_name="' . $folder->name . '" data-folder_name="' . $folder->name . '" data-folder_id="' . $folder->id . '"><img src="../assets/images/rename_nt.png">Rename</a>
 
                                      <a class="dropdown-itemm download_nt downloadfolder" data-folder-path="' . $folder->path . '" data-id="' . $folder->id . '"><svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
                                       <path d="M2.40625 12.25C2.00014 12.25 1.61066 12.0887 1.32349 11.8015C1.03633 11.5143 0.875 11.1249 0.875 10.7188V8.53125C0.875 8.3572 0.94414 8.19028 1.06721 8.06721C1.19028 7.94414 1.3572 7.875 1.53125 7.875C1.7053 7.875 1.87222 7.94414 1.99529 8.06721C2.11836 8.19028 2.1875 8.3572 2.1875 8.53125V10.7188C2.1875 10.8395 2.2855 10.9375 2.40625 10.9375H11.5938C11.6518 10.9375 11.7074 10.9145 11.7484 10.8734C11.7895 10.8324 11.8125 10.7768 11.8125 10.7188V8.53125C11.8125 8.3572 11.8816 8.19028 12.0047 8.06721C12.1278 7.94414 12.2947 7.875 12.4688 7.875C12.6428 7.875 12.8097 7.94414 12.9328 8.06721C13.0559 8.19028 13.125 8.3572 13.125 8.53125V10.7188C13.125 11.1249 12.9637 11.5143 12.6765 11.8015C12.3893 12.0887 11.9999 12.25 11.5938 12.25H2.40625Z" fill="#CEFFA8"></path>
@@ -20880,8 +21135,133 @@ public function shareFolder(Request $request)
     
     
     
+//     public function renameFolder(Request $request)
+// {
+//     $request->validate([
+//         'old_folder_name' => 'required|string',
+//         'folder_name' => 'required|string',
+//     ]);
 
+//     $searchTerm = $request->old_folder_name;
+//     $newTerm = $request->folder_name;
+//     $emp = $request->employee_id;
 
+//     $dir = $request->director_id;
+
+//     $fold = $request->folder_id;
+
+//     // Fetch folders where 'path' contains the search term
+//     $folders = Folder::where('employee_id', $emp)->get();
+
+//     foreach ($folders as $folder) {
+//         // Current folder path and name
+//         $currentFolderPath = $folder->path;
+
+//         // Create the new folder path by replacing only the specified term
+//         $newFolderPath = str_replace($searchTerm, $newTerm, $currentFolderPath);
+
+//         // Rename the folder in the filesystem if it exists
+//         if (Storage::exists($currentFolderPath)) {
+//             Storage::move($currentFolderPath, $newFolderPath);
+//         }
+
+//         // Update the folder record in the database with the new path and name
+//         $folder->name = str_replace($searchTerm, $newTerm, $folder->name);
+//         $folder->path = $newFolderPath;
+//         $folder->save();
+//     }
+
+//     // Update any other related fields (paths and parent names) in the database
+//     Folder::where('parent_name', 'LIKE', '%' . $searchTerm . '%')
+//         ->update(['parent_name' => DB::raw("REPLACE(parent_name, '$searchTerm', '$newTerm')")]);
+
+//     StoreCompanyEmployee::where('name', 'LIKE', '%' . $searchTerm . '%')
+//         ->where('id', $emp)
+//         ->update(['name' => DB::raw("REPLACE(name, '$searchTerm', '$newTerm')")]);
+
+//     return redirect()->back()->with('success', 'Folder names, paths, and related records updated successfully!');
+// }
+    
+public function renameFolder(Request $request)
+{
+    $request->validate([
+        'old_folder_name' => 'required|string',
+        'folder_name' => 'required|string',
+    ]);
+
+    $searchTerm = $request->old_folder_name;
+    $newTerm = $request->folder_name;
+    $employeeId = $request->employee_id;
+    $directorId = $request->director_id;
+    $folderId = $request->folder_id;
+
+    // Initialize an empty folders collection
+    $folders = collect();
+
+    if (!is_null($employeeId)) {
+        // Fetch folders by employee ID
+        $folders = Folder::where('employee_id', $employeeId)->get();
+    } elseif (!is_null($directorId)) {
+        // Fetch folders by director ID if employee ID is null
+        $folders = Folder::where('director_id', $directorId)->get();
+    } else {
+        // Fetch specific folder by folder ID if both employee ID and director ID are null
+        $folder = Folder::find($folderId);
+        if ($folder) {
+            $folders->push($folder);
+        }
+    }
+
+    foreach ($folders as $folder) {
+        $currentFolderPath = $folder->path;
+        $newFolderPath = str_replace($searchTerm, $newTerm, $currentFolderPath);
+
+        // Rename the folder in the filesystem if it exists
+        if (Storage::exists($currentFolderPath)) {
+            Storage::move($currentFolderPath, $newFolderPath);
+        }
+
+        // Update the folder record in the database with the new path and name
+        $folder->name = str_replace($searchTerm, $newTerm, $folder->name);
+        $folder->path = $newFolderPath;
+        $folder->save();
+    }
+
+    // Update other related fields in the database based on employee_id or director_id
+    if (!is_null($employeeId)) {
+        // Only update folders related to the specified employee
+        Folder::where('employee_id', $employeeId)
+            ->where('parent_name', 'LIKE', '%' . $searchTerm . '%')
+            ->update(['parent_name' => DB::raw("REPLACE(parent_name, '$searchTerm', '$newTerm')")]);
+
+        // Update employee name
+        StoreCompanyEmployee::where('name', 'LIKE', '%' . $searchTerm . '%')
+            ->where('id', $employeeId)
+            ->update(['name' => DB::raw("REPLACE(name, '$searchTerm', '$newTerm')")]);
+    } elseif (!is_null($directorId)) {
+        // Only update folders related to the specified director
+        Folder::where('director_id', $directorId)
+            ->where('parent_name', 'LIKE', '%' . $searchTerm . '%')
+            ->update(['parent_name' => DB::raw("REPLACE(parent_name, '$searchTerm', '$newTerm')")]);
+
+        // Update director name
+        StoreCompanyDirector::where('name', 'LIKE', '%' . $searchTerm . '%')
+            ->where('id', $directorId)
+            ->update([
+                'name' => DB::raw("REPLACE(name, '$searchTerm', '$newTerm')"),
+                'path' => DB::raw("REPLACE(path, '$searchTerm', '$newTerm')")
+            ]);
+    } else {
+        // If both employee_id and director_id are null, update by folder_id (no specific employee or director)
+        Folder::where('id', $folderId)
+            ->where('parent_name', 'LIKE', '%' . $searchTerm . '%')
+            ->update(['parent_name' => DB::raw("REPLACE(parent_name, '$searchTerm', '$newTerm')")]);
+    }
+
+    return redirect()->back()->with('success', 'Folder names, paths, and related records updated successfully!');
+}
+
+    
     
     
 

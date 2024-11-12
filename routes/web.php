@@ -871,6 +871,9 @@ Route::get('/fetch-SecretarialStatutoryRegistersRPB-file-data', [App\Http\Contro
 
 
 
+Route::post('/renamefolder', [App\Http\Controllers\HomeController::class, 'renamefolder'])->name('renamefolder');
+
+
 
 // path end
 

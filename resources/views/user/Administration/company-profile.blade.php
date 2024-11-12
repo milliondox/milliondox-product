@@ -1696,41 +1696,48 @@ h2.busiimage {
 
 </style>
 <script>
-    $(document).ready(function () {
-    $('.stempcom').on('submit', function (e) {
-        e.preventDefault(); // Prevent the default form submission
+  $(document).ready(function () {
+      $('.stempcom').on('submit', function (e) {
+          e.preventDefault(); // Prevent the default form submission
 
-        let formData = new FormData(this); // Create a FormData object for file upload handling
+          let formData = new FormData(this); // Create a FormData object for file upload handling
 
-        $.ajax({
-            url: $(this).attr('action'), // Get the action URL from the form
-            method: $(this).attr('method'), // Get the form method (POST)
-            data: formData,
-            processData: false,
-            contentType: false,
-            success: function (response) {
-                // Handle success response with Toastr
-                toastr.success(response.message, 'Success');
-                
+          $.ajax({
+              url: $(this).attr('action'), // Get the action URL from the form
+              method: $(this).attr('method'), // Get the form method (POST)
+              data: formData,
+              processData: false,
+              contentType: false,
+              success: function (response) {
+                  // Handle success response with Toastr
+                  toastr.success(response.message, 'Success');
 
-                // Optionally, clear the form or update the UI as needed
-                $('.stempcom')[0].reset(); // Reset the form
-                setTimeout(function() {
-                                location.reload(); // Reload the page
-                            }, 1000); // Delay in milliseconds (1 second)
-            },
-            error: function (xhr, status, error) {
-                // Handle error response with Toastr
-                toastr.error('Something went wrong. Please try again.', 'Error');
+                  // Optionally, clear the form or update the UI as needed
+                  $('.stempcom')[0].reset(); // Reset the form
+                  setTimeout(function() {
+                      location.reload(); // Reload the page
+                  }, 1000); // Delay in milliseconds (1 second)
+              },
+              error: function (xhr, status, error) {
+                  // Check if there are validation errors
+                  if (xhr.status === 422) {
+                      let errors = xhr.responseJSON.errors;
+                      $.each(errors, function (key, value) {
+                          toastr.error(value, 'Validation Error');
+                      });
+                  } else {
+                      // Handle other errors
+                      toastr.error('Something went wrong. Please try again.', 'Error');
+                  }
 
-                // Log error to the console for debugging
-                console.error(xhr.responseText);
-            }
-        });
-    });
-});
-
+                  // Log error to the console for debugging
+                  console.error(xhr.responseText);
+              }
+          });
+      });
+  });
 </script>
+
 <script>
     $(document).on('click', '.compempdel', function(e) {
     e.preventDefault(); // Prevent the form from submitting
