@@ -42,13 +42,13 @@
                             </div>
                           </td>
                           <td>Fixed Deposit Account Statement</td>
-                            <td><span class="comm_size" id="total-size-fxdp-td"> {{$totalSizeKBfixeddepoiststatement}} KB</span> </td>
+                            <td><span class="comm_size" id="total-size-fxdp-td" data-variable="totalSizeKBfixeddepoiststatement"> {{$totalSizeKBfixeddepoiststatement}} KB</span> </td>
                               <td> 
                             <div class="type_number getparm" data-location="" data-bs-toggle="modal" data-bs-target="#fixeddepositstatement_count"  id="fixeddepositstatement_countt">
                             <svg width="22" height="22" viewBox="0 0 22 22" fill="none" xmlns="http://www.w3.org/2000/svg">
 <path fill-rule="evenodd" clip-rule="evenodd" d="M11.25 1.834C10.79 1.756 10.162 1.75 9.03 1.75C7.113 1.75 5.75 1.752 4.718 1.89C3.706 2.025 3.125 2.28 2.702 2.702C2.279 3.125 2.025 3.705 1.89 4.711C1.752 5.739 1.75 7.093 1.75 9.001V13.001C1.75 14.907 1.752 16.261 1.89 17.289C2.025 18.295 2.279 18.875 2.702 19.299C3.125 19.721 3.705 19.975 4.711 20.11C5.739 20.249 7.093 20.25 9 20.25H13C14.907 20.25 16.262 20.248 17.29 20.11C18.295 19.975 18.875 19.721 19.298 19.298C19.721 18.875 19.975 18.295 20.11 17.289C20.248 16.262 20.25 14.907 20.25 13V12.563C20.25 11.027 20.24 10.299 20.076 9.75H16.946C15.813 9.75 14.888 9.75 14.156 9.652C13.393 9.549 12.731 9.327 12.202 8.798C11.673 8.269 11.451 7.608 11.348 6.843C11.25 6.113 11.25 5.187 11.25 4.053V1.834ZM12.75 2.61V4C12.75 5.2 12.752 6.024 12.835 6.643C12.915 7.241 13.059 7.534 13.263 7.737C13.466 7.941 13.759 8.085 14.357 8.165C14.976 8.248 15.8 8.25 17 8.25H19.02C18.6363 7.88459 18.2462 7.52587 17.85 7.174L13.891 3.611C13.5175 3.26961 13.1371 2.93587 12.75 2.61ZM9.175 0.25C10.56 0.25 11.455 0.25 12.278 0.565C13.101 0.881 13.763 1.477 14.788 2.4L14.895 2.496L18.853 6.059L18.978 6.171C20.162 7.236 20.928 7.925 21.339 8.849C21.751 9.773 21.751 10.803 21.75 12.395V13.056C21.75 14.894 21.75 16.35 21.597 17.489C21.439 18.661 21.107 19.61 20.359 20.359C19.61 21.107 18.661 21.439 17.489 21.597C16.349 21.75 14.894 21.75 13.056 21.75H8.944C7.106 21.75 5.65 21.75 4.511 21.597C3.339 21.439 2.39 21.107 1.641 20.359C0.893 19.61 0.561 18.661 0.403 17.489C0.25 16.349 0.25 14.894 0.25 13.056V8.945C0.25 7.107 0.25 5.651 0.403 4.512C0.561 3.34 0.893 2.391 1.641 1.642C2.391 0.893 3.342 0.562 4.519 0.404C5.663 0.251 7.126 0.251 8.974 0.251H9.03L9.175 0.25Z" fill="#ABABAB"/>
 </svg>
-<span class="cpoont"><span class="comm_count" id="entries-count-fxdp-td">{{$countfixeddepoiststatement}} </span></span>
+<span class="cpoont"><span class="comm_count" id="entries-count-fxdp-td" data-variable="countfixeddepoiststatement">{{$countfixeddepoiststatement}} </span></span>
                             </div>
 
                             </td>
@@ -296,8 +296,8 @@
 
 <div class="retreve_inn_sec"> 
     <span>Retrieve documents quickly with Advanced Search.</span>
-    <!--<a href="{{ url("/showAdvSearch") }}?category=Secretarial&section=Board Meetings&subsection=Notices" id="load-notices-btn">TRY OUT-->
-     <a href="{{url('/user/advsearch')}}">TRY OUT
+    <a href="{{ url("/showAdvSearch") }}?category=Accounting Taxation&section=Fixed Deposit Statements&subsection=Fixed Deposit Account Statement" id="load-notices-btn">TRY OUT
+     <!-- <a href="{{url('/user/advsearch')}}">TRY OUT -->
     <svg width="12" height="10" viewBox="0 0 12 10" fill="none" xmlns="http://www.w3.org/2000/svg">
     <path d="M0.666341 5L11.333 5M11.333 5L7.33301 9M11.333 5L7.33301 1" stroke="#CEFFA8" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
     </svg>

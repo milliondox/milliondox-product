@@ -345,46 +345,43 @@ $progressPercentage = 0;
     }
     
     
-    public function saveFeedback(Request $request)
-    {
-        $user = auth()->user();
-        $userId = Auth::id();
-    
-        $request->validate([
-            'textarea' => 'required|string|max:1000', 
-            'file' => 'required|mimes:jpg,jpeg,png,pdf,doc,docx|max:5096',
-        ]);
-    
-        if ($request->hasFile('file')) {
-            
-            $file = $request->file('file');
-            
-            $fileName = time() . '_' . $file->getClientOriginalName();
-            
-            // Store the file in the 'feedback' folder inside 'storage/app/public'
-            
-            $filePath = $file->storeAs('uploads/Feedbacks', $fileName);
-            
-            $feedback = new Feedback();
-            
-            $feedback->user_id = $userId;
-            $feedback->role = $user->role;
-            $feedback->feedback_message = $request->textarea;
-            $feedback->real_file_name = $file->getClientOriginalName();
-            $feedback->file_type = $file->getClientMimeType();
-            $feedback->file_path = $filePath; // Store the file path in the database
-            $feedback->status = 0;
-    
-            
-            if ($feedback->save()) {
-                return response()->json(['success' => 'Feedback submitted successfully. We will get back to you !']);
-            } else {
-                return response()->json(['error' => 'Something went wrong!']);
-            }
-        } else {
-            return response()->json(['error' => 'File upload failed!']);
-        }
+public function saveFeedback(Request $request)
+{
+    $user = auth()->user();
+    $userId = Auth::id();
+
+    $request->validate([
+        'textarea' => 'required|string|max:1000', 
+    ]);
+
+    // Initialize file-related variables as null
+    $filePath = null;
+    $fileName = null;
+    $fileType = null;
+
+    if ($request->hasFile('file')) {
+        $file = $request->file('file');
+        $fileName = time() . '_' . $file->getClientOriginalName();
+        $filePath = $file->storeAs('uploads/Feedbacks', $fileName);
+        $fileType = $file->getClientMimeType();
     }
+
+    $feedback = new Feedback();
+    $feedback->user_id = $userId;
+    $feedback->role = $user->role;
+    $feedback->feedback_message = $request->textarea;
+    $feedback->real_file_name = $fileName;
+    $feedback->file_type = $fileType;
+    $feedback->file_path = $filePath;
+    $feedback->status = 0;
+
+    if ($feedback->save()) {
+        return response()->json(['success' => 'Feedback submitted successfully. We will get back to you!']);
+    } else {
+        return response()->json(['error' => 'Something went wrong!']);
+    }
+}
+
 
     
     
@@ -538,20 +535,31 @@ public function updateTask(Request $request){
         // }
 }
 
-public function getTaskWithDate(Request $request,$taskDate)
+public function getTaskWithDate(Request $request)
 {
     // dd($request);
+    $user = auth()->user();
+    $user_id = $user->id;
     
-     $taskDate = $request->input('taskDate');
-    //   dd($taskDate);
-    //  print_r($taskDate);
+    $taskDate = $request->input('eventDate');
     
     try {
         // Find the task by Date
-         $tasksData = Tasks::where('status', '!=', 'deleted')
-                            ->whereDate('taskDeadline', $taskDate )->get();
+        //   $tasks = Tasks::where('status', '!=', 'deleted')->where('user_id', $user->id)->get();
+
+    // $tasks = Tasks::where('status', '!=', 'deleted')->where('user_id', $user->id)->whereDate('taskDeadline', $taskDate)->get();
+    $tasks = Tasks::where('status', '!=', 'deleted')
+    ->where('user_id', $user_id)
+    ->whereDate('taskDeadline', $taskDate)
+    ->get();
+
+
+        //  $tasksData = Tasks::where('status', '!=', 'deleted')
+        //                     ->where('user_id', $user_id)
+        //                     ->whereDate('taskDeadline', $taskDate)->get();
+        // dd($tasksData);
                             
-        return response()->json(['tasks' => $tasksData,'success' => 'Task Fetched successfully'],200);
+        return response()->json(['tasks' => $tasks,'success' => 'Task Fetched successfully'],200);
 
         // Return JSON response with task data
         // return response()->json([
@@ -686,6 +694,7 @@ public function storecompanydirector(Request $request)
 
     // Create the directory
     Storage::makeDirectory($newFolderPath);
+    $DIR_real_file_name=["Photo","Signature image","Aadhar KYC","PAN KYC","Address Proof","Contact Details"];
 
     // Create a new Folder record and associate the director ID
     $folder = new Folder();
@@ -694,6 +703,8 @@ public function storecompanydirector(Request $request)
     $folder->parent_name = $parentFolderPath;
     $folder->user_id = $userId;
     $folder->director_id = $storedir->id;  // Store the last inserted director ID
+    $folder->real_file_name = json_encode($DIR_real_file_name); // Convert to JSON before saving
+
     $folder->save();
 
     // Redirect back with a success message
@@ -778,15 +789,14 @@ public function storecompanyemployee(Request $request)
         'emp_code.unique' => 'This Employee Code already exists. Please provide a unique Employee Code.',
     ];
 
-    // Validate the incoming request data
+    // Validate request data
     $validatedData = $request->validate([
         'name' => 'required|string|max:255',
         'app_dates' => 'required|date',
         'termi_dates' => 'nullable|date',
-        'emp_code' => 'required|string|max:50|unique:store_company_employee,emp_code', // Ensure emp_code is unique
+        'emp_code' => 'required|string|max:50|unique:store_company_employee,emp_code',
     ], $messages);
 
-    $user = auth()->user();
     $userId = Auth::id();
 
     // Create a new StoreCompanyEmployee record
@@ -798,70 +808,34 @@ public function storecompanyemployee(Request $request)
         'emp_code' => $request->emp_code,
     ]);
 
-    $employeeName = $request->name;
-    // $userId = $request->user_id;  // Assuming this comes from the request
-    
-    // Get current year and month
+    // Generate the prefix for folder names
     $currentYear = now()->year;
-    $currentMonth = now()->format('F'); // Full month name (e.g., 'October')
+    $currentMonth = now()->format('F');
+    $uniqueId = Auth::id();
+    $fiscalYear = now()->month < 4 ? ($currentYear - 1) . '-' . $currentYear : $currentYear . '-' . ($currentYear + 1);
     
-    // Determine fiscal year
-    if (now()->month < 4) {
-        $fiscalYear = ($currentYear - 1) . '-' . $currentYear;
-    } else {
-        $fiscalYear = $currentYear . '-' . ($currentYear + 1);
-    }
-    
-    // Step 1: Create a common Human Resources folder for all users
-    $hrFolderName = "{$fiscalYear}{$currentMonth}0_Human Resources";  // Common folder for all users
-    $hrFolderPath = "{$hrFolderName}";
-    
-    // Check if Human Resources folder exists and create it if not
+    $hrPrefix = "{$fiscalYear}{$currentMonth}0_";
+    $otherPrefix ="{$fiscalYear}{$currentMonth}{$uniqueId}_";
+
+    // Define Human Resources folder path with prefix
+    $hrFolderPath = "{$hrPrefix}Human Resources";
+
+    // Ensure HR folder exists
     if (!Storage::exists($hrFolderPath)) {
         Storage::makeDirectory($hrFolderPath);
-    
-        // Store the folder details in the database (if necessary)
-        $hrFolder = new Folder();
-        $hrFolder->name = basename($hrFolderPath);
-        $hrFolder->path = $hrFolderPath;
-        $hrFolder->parent_name = null;
-        $hrFolder->user_id =  $userId;  // No specific user; common for all
-        $hrFolder->common_folder = 1;
-        $hrFolder->save();
+        Folder::create([
+            'name' => basename($hrFolderPath),
+            'path' => $hrFolderPath,
+            'parent_name' => null,
+            'user_id' => $userId,
+            'common_folder' => 1,
+        ]);
     }
-    
-    // Step 2: Create Employee folder inside Human Resources folder
-    $employeeFolderName = "{$fiscalYear}{$currentMonth}{$userId}_{$employeeName}";
-    $employeeFolderPath = "{$hrFolderPath}/{$employeeFolderName}";
-    
-    // Check if Employee folder exists and create it if not
-    if (!Storage::exists($employeeFolderPath)) {
-        Storage::makeDirectory($employeeFolderPath);
-    
-        // Store the Employee folder details in the database
-        $employeeFolder = new Folder();
-        $employeeFolder->name = basename($employeeFolderPath);
-        $employeeFolder->path = $employeeFolderPath;
-        $employeeFolder->parent_name = $hrFolderPath;
-        $employeeFolder->user_id = $userId;
-        $employeeFolder->save();
-    }
-    
-    // Step 3: Create subfolders dynamically within Employee folder
-    $folders = [
-        'Employee Database' => [
-            'Onboarding documents',
-            'KYC Documents',
-            'Offboarding',
-            'Reference Checks',
-            'ESOP',
-            'Declarations',
-        ],
-        'Pay Registers' => [
-            'Monthly Payrun',
-            'Reimbursements',
-            'Salary Slips',
-        ],
+
+    // Define main and non-fixed folders with their subfolders
+    $fixedFolders = [
+        'Employee Database' => [],
+        'Pay Registers' => ['Monthly Payrun', 'Reimbursements', 'Salary Slips'],
         'Policies & Handbook' => [
             'Leave policy',
             'Attendance policy',
@@ -869,75 +843,273 @@ public function storecompanyemployee(Request $request)
             'Organisation Chart',
             'Code of conduct',
             'Health Insurance',
-            'Asset Allocation & Usage Policy',
-        ],
-        'Appraisals' => [
-            'Appraisals forms',
-            'Management approvals',
-            'KRAs and OKRs',
+            'Asset Allocation & Usage Policy'
         ],
     ];
-    
-    // Loop through the folders and create them if they don't exist
-    foreach ($folders as $mainFolder => $subFolders) {
-        $mainFolderPath = "{$employeeFolderPath}/{$fiscalYear}{$currentMonth}{$userId}_{$mainFolder}";
-    
+
+    // Real file names for specific folders
+    $realFileNames = [
+        'Onboarding documents' => ["Offer Letter", "Acceptance Letter", "Employment Agreement", "Non Disclosure Agreement", "Non-compete", "Contractual Bond", "Form 11 - EPF", "Form 12BB - Income Tax"],
+        'KYC Documents' => ["Photo", "Aadhar KYC", "PAN KYC", "Address Proof", "Contact Details"],
+        'Offboarding' => ["Resignation letter", "Experience Letter", "No Dues certificate", "Character certificate"],
+        'ESOP' => ["Policy", "Grant Letters", "Acceptance Letters", "Nominations"],
+        'Declarations' => ["Asset Declaration Forms", "Employee Master"],
+        'Monthly Payrun' => ["Attendance log", "Variable pays", "Terminations/ Exits", "New Hires", "Pay Register"],
+        'Reimbursements' => ["Reimbursement forms & Invoices", "Approvals"],
+    ];
+
+    // Create fixed folders with prefix
+    foreach ($fixedFolders as $mainFolder => $subFolders) {
+        $mainFolderPath = "{$hrFolderPath}/{$otherPrefix}{$mainFolder}";
+
         if (!Storage::exists($mainFolderPath)) {
             Storage::makeDirectory($mainFolderPath);
-    
-            // Store the main folder details in the database
-            $mainFolderDb = new Folder();
-            $mainFolderDb->name = basename($mainFolderPath);
-            $mainFolderDb->path = $mainFolderPath;
-            $mainFolderDb->parent_name = $employeeFolderPath;
-            $mainFolderDb->user_id = $userId;
-            // $mainFolderDb->common_folder = 1;
-            $mainFolderDb->save();
+            Folder::create([
+                'name' => "{$otherPrefix}{$mainFolder}",
+                'path' => $mainFolderPath,
+                'parent_name' => $hrFolderPath,
+                'user_id' => $userId,
+                'common_folder' => 1,
+            ]);
         }
-    
-        // Create subfolders inside each main folder
+
         foreach ($subFolders as $subFolder) {
-            $subFolderPath = "{$mainFolderPath}/{$fiscalYear}{$currentMonth}{$userId}_{$subFolder}";
-    
+            $subFolderPath = "{$mainFolderPath}/{$otherPrefix}{$subFolder}";
+
             if (!Storage::exists($subFolderPath)) {
                 Storage::makeDirectory($subFolderPath);
-    
-                // Store the subfolder details in the database
-                $subFolderDb = new Folder();
-                $subFolderDb->name = basename($subFolderPath);
-                $subFolderDb->path = $subFolderPath;
-                $subFolderDb->parent_name = $mainFolderPath;
-                $subFolderDb->user_id = $userId;
-                // $subFolderDb->common_folder = 1;
-                $subFolderDb->save();
+                Folder::create([
+                    'name' => "{$otherPrefix}{$subFolder}",
+                    'path' => $subFolderPath,
+                    'parent_name' => $mainFolderPath,
+                    'user_id' => $userId,
+                    'common_folder' => 1,
+                ]);
             }
         }
     }
 
-    // Return a success response (optional)
-    return response()->json([
-        'message' => 'Employee details stored successfully!',
-        'data' => $storeemp,
-    ]);
+    // Create Employee Database folder with prefix
+    $employeeDatabasePath = "{$hrFolderPath}/{$otherPrefix}Employee Database";
+    if (!Storage::exists($employeeDatabasePath)) {
+        Storage::makeDirectory($employeeDatabasePath);
+        Folder::create([
+            'name' => "{$otherPrefix}Employee Database",
+            'path' => $employeeDatabasePath,
+            'parent_name' => $hrFolderPath,
+            'user_id' => $userId,
+            'common_folder' => 1,
+        ]);
+    }
+
+    // Create employee-specific folder with prefix
+    $employeeFolderPath = "{$employeeDatabasePath}/{$otherPrefix}{$storeemp->name}";
+    if (!Storage::exists($employeeFolderPath)) {
+        Storage::makeDirectory($employeeFolderPath);
+        Folder::create([
+            'name' => "{$otherPrefix}{$storeemp->name}",
+            'path' => $employeeFolderPath,
+            'parent_name' => $employeeDatabasePath,
+            'user_id' => $userId,
+            'employee_id' => $storeemp->id,
+            
+        ]);
+    }
+
+    // Define non-fixed folders for the employee with prefix
+    $employeeFolders = [
+        'Onboarding documents',
+        'KYC Documents',
+        'Offboarding',
+        'Reference Checks',
+        'ESOP',
+        'Declarations',
+        'Appraisals' => [
+            'Appraisals forms',
+            'Management approvals',
+            'KRAs and OKRs'
+        ]
+    ];
+
+    // Create non-fixed folders and add files with prefix if defined
+    foreach ($employeeFolders as $folder => $subFolders) {
+        $folderName = is_string($folder) ? $folder : $subFolders;
+        $folderPath = "{$employeeFolderPath}/{$otherPrefix}{$folderName}";
+
+        if (!Storage::exists($folderPath)) {
+            Storage::makeDirectory($folderPath);
+            Folder::create([
+                'name' => "{$otherPrefix}{$folderName}",
+                'path' => $folderPath,
+                'parent_name' => $employeeFolderPath,
+                'user_id' => $userId,
+                'employee_id' => $storeemp->id,
+                'common_folder' => 1,
+            ]);
+        }
+
+        // Check if the folder has predefined files to create with prefix
+        if (isset($realFileNames[$folderName])) {
+            foreach ($realFileNames[$folderName] as $fileName) {
+                $filePath = "{$folderPath}/{$otherPrefix}{$fileName}.txt";  // Adjust extension if needed
+                if (!Storage::exists($filePath)) {
+                    Storage::put($filePath, "Placeholder content for {$fileName}");
+                }
+            }
+        }
+
+        // Create subfolders with prefix if applicable
+        if (is_array($subFolders)) {
+            foreach ($subFolders as $subFolder) {
+                $subFolderPath = "{$folderPath}/{$otherPrefix}{$subFolder}";
+                if (!Storage::exists($subFolderPath)) {
+                    Storage::makeDirectory($subFolderPath);
+                    Folder::create([
+                        'name' => "{$otherPrefix}{$subFolder}",
+                        'path' => $subFolderPath,
+                        'parent_name' => $folderPath,
+                        'user_id' => $userId,
+                        'employee_id' => $storeemp->id,
+                        'common_folder' => 1,
+                    ]);
+                }
+            }
+        }
+    }
+
+    return response()->json(['message' => 'All folders and files created successfully with prefixed names!']);
 }
 
+
+
+
+
+
+// public function updatecompanyemployee(Request $request)
+// {
+//     // Validate the incoming request
+//     $request->validate([
+//         'name' => 'required|string',
+//         'app_date' => 'required|date',
+//         'termi_date' => 'nullable|date',
+//         'emp_code' => 'required|string',
+//         'emp_id' => 'required|integer',  // Assuming this is passed
+//     ]);
+
+//     // Find the employee record by emp_id
+//     $emp = StoreCompanyEmployee::find($request->emp_id);
+    
+//     if ($emp) {
+//         // Backup the old employee name for later replacement in Folder data
+//         $oldEmployeeName = $emp->name;
+
+//         // Update the employee's details
+//         $emp->name = $request->name;
+//         $emp->app_date = $request->app_date;
+//         $emp->termi_date = $request->termi_date;
+//         $emp->emp_code = $request->emp_code;
+//         $emp->save();
+
+//         // Update Folder records where employee_id matches
+//         $folders = Folder::where('employee_id', $request->emp_id)->get();
+
+//         foreach ($folders as $folder) {
+//             // Update folder name, path, and parent_name in the database
+//             $folder->name = str_replace($oldEmployeeName, $request->name, $folder->name);
+//             $folder->path = str_replace($oldEmployeeName, $request->name, $folder->path);
+//             $folder->parent_name = str_replace($oldEmployeeName, $request->name, $folder->parent_name);
+//             $folder->save();
+
+//             // Update the folder in the storage if the folder path has changed
+//             if (Storage::exists($folder->path)) {
+//                 $newFolderPath = str_replace($oldEmployeeName, $request->name, $folder->path);
+//                 if ($folder->path !== $newFolderPath) {
+//                     // Rename the folder in the storage
+//                     Storage::move($folder->path, $newFolderPath);
+//                 }
+//             }
+//         }
+
+//         // Redirect back with a success message
+//         return redirect()->back()->with('success', 'Employee details and related folders updated successfully.');
+//     } else {
+//         // In case employee is not found
+//         return redirect()->back()->with('error', 'Employee not found.');
+//     }
+// }
 public function updatecompanyemployee(Request $request)
 {
-    // dd($request);
-   
+    // Validate the incoming request
+    $request->validate([
+        'name' => 'required|string',
+        'app_date' => 'required|date',
+        'termi_date' => 'nullable|date',
+        'emp_code' => 'required|string',
+        'emp_id' => 'required|integer',  // Assuming this is passed
+    ]);
 
-    // Find the GST record by ID and update it
+    // Find the employee record by emp_id
     $emp = StoreCompanyEmployee::find($request->emp_id);
-    $emp->name = $request->name;
-    $emp->app_date = $request->app_date;
-     $emp->termi_date = $request->termi_date;
-     $emp->emp_code = $request->emp_code;
-    // Update other fields if necessary
-    $emp->save();
+    
+    if ($emp) {
+        // Backup the old employee name for replacement in Folder data
+        $oldEmployeeName = $emp->name;
+        $newEmployeeName = $request->name;
 
-    // Redirect back with a success message
-    return redirect()->back()->with('success', 'Employee details updated successfully.');
+        // Update the employee's details
+        $emp->name = $newEmployeeName;
+        $emp->app_date = $request->app_date;
+        $emp->termi_date = $request->termi_date;
+        $emp->emp_code = $request->emp_code;
+        $emp->save();
+
+        // Fetch all folders associated with this employee that have the old name in any field
+        $folders = Folder::where('employee_id', $request->emp_id)
+            ->where(function ($query) use ($oldEmployeeName) {
+                $query->where('name', 'like', '%' . $oldEmployeeName . '%')
+                      ->orWhere('path', 'like', '%' . $oldEmployeeName . '%')
+                      ->orWhere('parent_name', 'like', '%' . $oldEmployeeName . '%');
+            })
+            ->get();
+
+        foreach ($folders as $folder) {
+            // Replace oldEmployeeName with newEmployeeName in each relevant field
+            $updated = false;
+            if (strpos($folder->name, $oldEmployeeName) !== false) {
+                $folder->name = str_replace($oldEmployeeName, $newEmployeeName, $folder->name);
+                $updated = true;
+            }
+            if (strpos($folder->path, $oldEmployeeName) !== false) {
+                // Update the storage if path needs changing
+                $newFolderPath = str_replace($oldEmployeeName, $newEmployeeName, $folder->path);
+                if (Storage::exists($folder->path)) {
+                    Storage::move($folder->path, $newFolderPath);
+                    // $folder->path = $newFolderPath;
+                }
+                $folder->path = $newFolderPath;
+                $updated = true;
+            }
+            if (strpos($folder->parent_name, $oldEmployeeName) !== false) {
+                $folder->parent_name = str_replace($oldEmployeeName, $newEmployeeName, $folder->parent_name);
+                $updated = true;
+            }
+            
+            // Save changes only if any field was updated
+            if ($updated) {
+                $folder->save();
+            }
+        }
+
+        return redirect()->back()->with('success', 'Employee details and related folders updated successfully.');
+    } else {
+        return redirect()->back()->with('error', 'Employee not found.');
+    }
 }
+
+
+
+
+
 
 public function delcompemp(Request $request)
 {
@@ -1240,15 +1412,20 @@ protected function createFolderStructure($employeeName, $userId)
 
 
 
-public function getEventWithDate(Request $request, $eventDate)
+public function getEventWithDate(Request $request)
 {
     // dd($request);
+    $user = auth()->user();
+    $user_id = $user->id;
+    // dd($user_id);
     
      $eventDate = $request->input('eventDate');
     
     try {
         // Find the task by Date
-         $eventsData = TaskEvents::whereDate('eventDate', $eventDate )->get();
+        $eventsData = TaskEvents::where('user_id', $user_id)
+        ->whereDate('eventDate', $eventDate)
+        ->get();
                             
         return response()->json(['taskEvents' => $eventsData,'success' => 'Event Fetched successfully'],200);
 
@@ -1525,7 +1702,7 @@ public function updateMembers(Request $request)
         $file->move(public_path('uploads/profile_images'), $fileName);
         
         // Store the file path in the profile_picture field in the User table
-        $user->profile_picture =  $fileName;
+        $user->profile_picture =  'uploads/profile_images/' . $fileName;
     }
 
     $user->save();
@@ -1542,7 +1719,7 @@ public function updateMembers(Request $request)
 
     // Update profile picture in UserInfo table
     if ($request->hasFile('profile_picture')) {
-        $userInfoData['profile_picture'] = $fileName;
+        $userInfoData['profile_picture'] = 'uploads/profile_images/' . $fileName;
     }
 
     UserInfo::where('user_id', $user->id)->update($userInfoData);
@@ -1558,7 +1735,7 @@ public function updateMembers(Request $request)
 
         // Update profile picture in the members table
         if ($request->hasFile('profile_picture')) {
-            $member->profile_picture =  $fileName;
+            $member->profile_picture =  'uploads/profile_images/' . $fileName;
         }
 
         $member->save();
@@ -1765,7 +1942,7 @@ public function getUsersByRole($role)
 public function boradnotice(Request $request)
 {
     $request->validate([
-        'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
+        'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,xlsx,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
         'tagList' => 'nullable', // Allow tagList to be nullable
     ], [
         'files.*.required' => 'Each file is required.',
@@ -1864,7 +2041,7 @@ public function boradnotice(Request $request)
     public function boradattendencesheet(Request $request)
 {
        $request->validate([
-        'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
+        'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,xlsx,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
         'tagList' => 'nullable', // Allow tagList to be nullable
     ], [
         'files.*.required' => 'Each file is required.',
@@ -1962,7 +2139,7 @@ public function boradnotice(Request $request)
     public function boradresolution(Request $request)
 {
    $request->validate([
-        'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
+        'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,xlsx,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
         'tagList' => 'nullable', // Allow tagList to be nullable
     ], [
         'files.*.required' => 'Each file is required.',
@@ -2064,7 +2241,7 @@ public function boradnotice(Request $request)
 public function boradmintuebook(Request $request)
 {
    $request->validate([
-        'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
+        'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,xlsx,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
         'tagList' => 'nullable', // Allow tagList to be nullable
     ], [
         'files.*.required' => 'Each file is required.',
@@ -2468,7 +2645,7 @@ public function deleteOrderReso(Request $request)
 public function innerruns(Request $request)
 {
    $request->validate([
-        'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
+        'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,xlsx,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
         'tagList' => 'nullable', // Allow tagList to be nullable
     ], [
         'files.*.required' => 'Each file is required.',
@@ -2718,7 +2895,7 @@ public function fetchBoardFileMinBookData(Request $request)
  public function meetminutebook(Request $request)
 {
  $request->validate([
-        'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
+        'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,xlsx,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
         'tagList' => 'nullable', // Allow tagList to be nullable
     ], [
         'files.*.required' => 'Each file is required.',
@@ -2858,7 +3035,7 @@ public function fetchMeetFileMinBookData(Request $request)
 public function meetas(Request $request)
 {
    $request->validate([
-        'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
+        'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,xlsx,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
         'tagList' => 'nullable', // Allow tagList to be nullable
     ], [
         'files.*.required' => 'Each file is required.',
@@ -2997,7 +3174,7 @@ public function fetchMeetFileASData(Request $request)
 public function meetreso(Request $request)
 {
     $request->validate([
-        'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
+        'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,xlsx,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
         'tagList' => 'nullable', // Allow tagList to be nullable
     ], [
         'files.*.required' => 'Each file is required.',
@@ -3136,7 +3313,7 @@ public function fetchMeetFileRESOData(Request $request)
 public function ordernotice(Request $request)
 {
     $request->validate([
-        'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
+        'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,xlsx,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
         'tagList' => 'nullable', // Allow tagList to be nullable
     ], [
         'files.*.required' => 'Each file is required.',
@@ -3276,7 +3453,7 @@ public function fetchOrderFileNoticeData(Request $request)
 public function orderminbook(Request $request)
 {
    $request->validate([
-        'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
+        'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,xlsx,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
         'tagList' => 'nullable', // Allow tagList to be nullable
     ], [
         'files.*.required' => 'Each file is required.',
@@ -3417,7 +3594,7 @@ public function fetchOrderFileMinBookData(Request $request)
 public function orderAttend(Request $request)
 {
   $request->validate([
-        'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
+        'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,xlsx,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
         'tagList' => 'nullable', // Allow tagList to be nullable
     ], [
         'files.*.required' => 'Each file is required.',
@@ -3558,7 +3735,7 @@ public function fetchOrderFileAttendData(Request $request)
 public function orderreso(Request $request)
 {
    $request->validate([
-        'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
+        'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,xlsx,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
         'tagList' => 'nullable', // Allow tagList to be nullable
     ], [
         'files.*.required' => 'Each file is required.',
@@ -3699,7 +3876,7 @@ public function fetchOrderFileRESOData(Request $request)
 public function innerincnine(Request $request)
 {
     $request->validate([
-        'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
+        'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,xlsx,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
         'tagList' => 'nullable', // Allow tagList to be nullable
     ], [
         'files.*.required' => 'Each file is required.',
@@ -3839,7 +4016,7 @@ public function fetchInnerFile9Data(Request $request)
 public function innerspice(Request $request)
 {
     $request->validate([
-        'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
+        'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,xlsx,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
         'tagList' => 'nullable', // Allow tagList to be nullable
     ], [
         'files.*.required' => 'Each file is required.',
@@ -3980,7 +4157,7 @@ public function fetchInnerFilespiceData(Request $request)
 public function innerINC33(Request $request)
 {
   $request->validate([
-        'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
+        'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,xlsx,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
         'tagList' => 'nullable', // Allow tagList to be nullable
     ], [
         'files.*.required' => 'Each file is required.',
@@ -4120,7 +4297,7 @@ public function fetchInnerFileINC33Data(Request $request)
 public function innerINC34(Request $request)
 {
    $request->validate([
-        'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
+        'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,xlsx,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
         'tagList' => 'nullable', // Allow tagList to be nullable
     ], [
         'files.*.required' => 'Each file is required.',
@@ -4250,7 +4427,7 @@ public function fetchInnerFileINC34Data(Request $request)
     $files = CommonTable::where('user_id', $user->id)
     ->where('is_delete', 0)
     ->where('location', $location)
-    ->where('real_file_name', 'INC-34 SPICe MoA (e-Articles of Association)')
+    ->where('real_file_name', 'INC-34 SPICe AoA (e-Articles of Association)')
     ->get();
    
 
@@ -4260,7 +4437,7 @@ public function fetchInnerFileINC34Data(Request $request)
 public function innerINC35(Request $request)
 {
    $request->validate([
-        'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
+        'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,xlsx,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
         'tagList' => 'nullable', // Allow tagList to be nullable
     ], [
         'files.*.required' => 'Each file is required.',
@@ -4400,7 +4577,7 @@ public function fetchInnerFileINC35Data(Request $request)
 public function innerINC22(Request $request)
 {
     $request->validate([
-        'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
+        'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,xlsx,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
         'tagList' => 'nullable', // Allow tagList to be nullable
     ], [
         'files.*.required' => 'Each file is required.',
@@ -4540,7 +4717,7 @@ public function fetchInnerFileINC22Data(Request $request)
 public function innerINC20A(Request $request)
 {
    $request->validate([
-        'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
+        'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,xlsx,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
         'tagList' => 'nullable', // Allow tagList to be nullable
     ], [
         'files.*.required' => 'Each file is required.',
@@ -4681,7 +4858,7 @@ public function fetchInnerFileINC20AData(Request $request)
 public function annaoc4afs(Request $request)
 {
     $request->validate([
-        'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
+        'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,xlsx,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
         'tagList' => 'nullable', // Allow tagList to be nullable
     ], [
         'files.*.required' => 'Each file is required.',
@@ -4821,7 +4998,7 @@ public function fetchAnnFileAoc4AfsData(Request $request)
 public function annaoc4Cfs(Request $request)
 {
     $request->validate([
-        'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
+        'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,xlsx,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
         'tagList' => 'nullable', // Allow tagList to be nullable
     ], [
         'files.*.required' => 'Each file is required.',
@@ -4962,7 +5139,7 @@ public function fetchAnnFileAoc4CfsData(Request $request)
 public function annmgt7(Request $request)
 {
     $request->validate([
-        'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
+        'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,xlsx,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
         'tagList' => 'nullable', // Allow tagList to be nullable
     ], [
         'files.*.required' => 'Each file is required.',
@@ -5102,7 +5279,7 @@ public function fetchAnnFilemgt7Data(Request $request)
 public function annmgt7a(Request $request)
 {
     $request->validate([
-        'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
+        'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,xlsx,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
         'tagList' => 'nullable', // Allow tagList to be nullable
     ], [
         'files.*.required' => 'Each file is required.',
@@ -5289,7 +5466,7 @@ public function checkFiles()
 public function meetnotice(Request $request)
 {
     $request->validate([
-        'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
+        'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,xlsx,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
         'tagList' => 'nullable', // Allow tagList to be nullable
     ], [
         'files.*.required' => 'Each file is required.',
@@ -5429,7 +5606,7 @@ public function fetchMeetFileNoticeData(Request $request)
 public function bankaccountstatement(Request $request)
 {
     $request->validate([
-        'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
+        'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,xlsx,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
         'tagList' => 'nullable', // Allow tagList to be nullable
     ], [
         'files.*.required' => 'Each file is required.',
@@ -5575,7 +5752,7 @@ public function fetchBankFileAccsData(Request $request)
 public function directorappointmentsdir3(Request $request)
 {
    $request->validate([
-        'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
+        'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,xlsx,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
         'tagList' => 'nullable', // Allow tagList to be nullable
     ], [
         'files.*.required' => 'Each file is required.',
@@ -5717,7 +5894,7 @@ public function fetchdirectorappointmentsdir3FileData(Request $request)
 public function directorappointmentsdir3din(Request $request)
 {
    $request->validate([
-        'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
+        'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,xlsx,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
         'tagList' => 'nullable', // Allow tagList to be nullable
     ], [
         'files.*.required' => 'Each file is required.',
@@ -5858,7 +6035,7 @@ public function fetchdirectorappointmentsdir3dinFileData(Request $request)
 public function directorappointmentsdir6(Request $request)
 {
     $request->validate([
-        'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
+        'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,xlsx,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
         'tagList' => 'nullable', // Allow tagList to be nullable
     ], [
         'files.*.required' => 'Each file is required.',
@@ -6000,7 +6177,7 @@ public function fetchdirectorappointmentsdir6FileData(Request $request)
 public function directorappointmentsdir12(Request $request)
 {
     $request->validate([
-        'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
+        'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,xlsx,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
         'tagList' => 'nullable', // Allow tagList to be nullable
     ], [
         'files.*.required' => 'Each file is required.',
@@ -6143,7 +6320,7 @@ public function fetchdirectorappointmentsdir12FileData(Request $request)
 public function creditcardstatement(Request $request)
 {
     $request->validate([
-        'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
+        'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,xlsx,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
         'tagList' => 'nullable', // Allow tagList to be nullable
     ], [
         'files.*.required' => 'Each file is required.',
@@ -6288,7 +6465,7 @@ public function fetchcreditcardstatementFileData(Request $request)
 public function mutualfundstatement(Request $request)
 {
     $request->validate([
-        'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
+        'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,xlsx,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
         'tagList' => 'nullable', // Allow tagList to be nullable
     ], [
         'files.*.required' => 'Each file is required.',
@@ -6428,7 +6605,7 @@ public function fetchmutualfundstatementFileData()
 public function fixeddepoiststatement(Request $request)
 {
     $request->validate([
-        'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
+        'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,xlsx,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
         'tagList' => 'nullable', // Allow tagList to be nullable
     ], [
         'files.*.required' => 'Each file is required.',
@@ -6568,7 +6745,7 @@ public function fetchfixeddepoiststatementFileData()
 public function directorresignationdir11(Request $request)
 {
    $request->validate([
-        'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
+        'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,xlsx,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
         'tagList' => 'nullable', // Allow tagList to be nullable
     ], [
         'files.*.required' => 'Each file is required.',
@@ -6712,7 +6889,7 @@ public function fetchdirectorresignationdir11FileData(Request $request)
 public function directorresignationdir12(Request $request)
 {
     $request->validate([
-        'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
+        'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,xlsx,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
         'tagList' => 'nullable', // Allow tagList to be nullable
     ], [
         'files.*.required' => 'Each file is required.',
@@ -6857,7 +7034,7 @@ public function fetchdirectorresignationdir12FileData(Request $request)
 public function depositundertakingsFormDPT3(Request $request)
 {
     $request->validate([
-        'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
+        'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,xlsx,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
         'tagList' => 'nullable', // Allow tagList to be nullable
     ], [
         'files.*.required' => 'Each file is required.',
@@ -7000,7 +7177,7 @@ public function fetchdepositundertakingsFormDPT3FileData(Request $request)
 public function AuditorExitsADT3Form(Request $request)
 {
    $request->validate([
-        'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
+        'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,xlsx,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
         'tagList' => 'nullable', // Allow tagList to be nullable
     ], [
         'files.*.required' => 'Each file is required.',
@@ -7143,7 +7320,7 @@ public function fetchAuditorExitsADT3FormFileData(Request $request)
 public function AuditorExitsResignletteraudF(Request $request)
 {
     $request->validate([
-        'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
+        'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,xlsx,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
         'tagList' => 'nullable', // Allow tagList to be nullable
     ], [
         'files.*.required' => 'Each file is required.',
@@ -7286,7 +7463,7 @@ public function fetchAuditorExitsResignletteraudFFileData(Request $request)
 public function AuditorExitsResignDetofgroundsseekremaudF(Request $request)
 {
     $request->validate([
-        'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
+        'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,xlsx,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
         'tagList' => 'nullable', // Allow tagList to be nullable
     ], [
         'files.*.required' => 'Each file is required.',
@@ -7428,7 +7605,7 @@ public function fetchAuditorExitsResignDetofgroundsseekremaudFFileData(Request $
 public function AuditorExitsSpecialResolF(Request $request)
 {
     $request->validate([
-        'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
+        'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,xlsx,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
         'tagList' => 'nullable', // Allow tagList to be nullable
     ], [
         'files.*.required' => 'Each file is required.',
@@ -7571,7 +7748,7 @@ public function fetchAuditorExitsSpecialResolFFileData(Request $request)
 public function AuditorExitsADT2Form(Request $request)
 {
     $request->validate([
-        'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
+        'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,xlsx,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
         'tagList' => 'nullable', // Allow tagList to be nullable
     ], [
         'files.*.required' => 'Each file is required.',
@@ -7714,7 +7891,7 @@ public function fetchAuditorExitsADT2FormFileData(Request $request)
 public function Director1AadharKYCF(Request $request)
 {
     $request->validate([
-        'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
+        'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,xlsx,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
         'tagList' => 'nullable', // Allow tagList to be nullable
     ], [
         'files.*.required' => 'Each file is required.',
@@ -7853,7 +8030,7 @@ public function fetchDirector1AadharKYCFFileData(Request $request)
 public function Director1AddressProofF(Request $request)
 {
     $request->validate([
-        'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
+        'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,xlsx,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
         'tagList' => 'nullable', // Allow tagList to be nullable
     ], [
         'files.*.required' => 'Each file is required.',
@@ -7992,7 +8169,7 @@ public function fetchDirector1AddressProofFFileData(Request $request)
 public function Director1ContactDetailsF(Request $request)
 {
     $request->validate([
-        'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
+        'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,xlsx,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
         'tagList' => 'nullable', // Allow tagList to be nullable
     ], [
         'files.*.required' => 'Each file is required.',
@@ -8132,7 +8309,7 @@ public function fetchDirector1ContactDetailsFFileData(Request $request)
 public function Director1PANKYCF(Request $request)
 {
     $request->validate([
-        'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
+        'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,xlsx,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
         'tagList' => 'nullable', // Allow tagList to be nullable
     ], [
         'files.*.required' => 'Each file is required.',
@@ -8272,7 +8449,7 @@ public function fetchDirector1PANKYCFFileData(Request $request)
 public function Director1PhotoF(Request $request)
 {
     $request->validate([
-        'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
+        'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,xlsx,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
         'tagList' => 'nullable', // Allow tagList to be nullable
     ], [
         'files.*.required' => 'Each file is required.',
@@ -8410,7 +8587,7 @@ public function fetchDirector1PhotoFFileData(Request $request)
 public function Director1SignimgF(Request $request)
 {
    $request->validate([
-        'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
+        'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,xlsx,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
         'tagList' => 'nullable', // Allow tagList to be nullable
     ], [
         'files.*.required' => 'Each file is required.',
@@ -8549,7 +8726,7 @@ public function fetchDirector1SignimgFFileData(Request $request)
 public function Director2SignimgF(Request $request)
 {
     $request->validate([
-        'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
+        'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,xlsx,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
         'tagList' => 'nullable', // Allow tagList to be nullable
     ], [
         'files.*.required' => 'Each file is required.',
@@ -8687,7 +8864,7 @@ public function fetchDirector2SignimgFFileData()
 public function Director2PhotoF(Request $request)
 {
    $request->validate([
-        'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
+        'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,xlsx,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
         'tagList' => 'nullable', // Allow tagList to be nullable
     ], [
         'files.*.required' => 'Each file is required.',
@@ -8826,7 +9003,7 @@ public function fetchDirector2PhotoFFileData()
 public function Director2PANKYCF(Request $request)
 {
    $request->validate([
-        'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
+        'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,xlsx,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
         'tagList' => 'nullable', // Allow tagList to be nullable
     ], [
         'files.*.required' => 'Each file is required.',
@@ -8965,7 +9142,7 @@ public function fetchDirector2PANKYCFFileData()
 public function Director2ContactDetailsF(Request $request)
 {
     $request->validate([
-        'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
+        'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,xlsx,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
         'tagList' => 'nullable', // Allow tagList to be nullable
     ], [
         'files.*.required' => 'Each file is required.',
@@ -9102,7 +9279,7 @@ public function fetchDirector2ContactDetailsFFileData()
 public function Director2AddressProofF(Request $request)
 {
     $request->validate([
-        'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
+        'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,xlsx,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
         'tagList' => 'nullable', // Allow tagList to be nullable
     ], [
         'files.*.required' => 'Each file is required.',
@@ -9240,7 +9417,7 @@ public function fetchDirector2AddressProofFFileData()
 public function Director2AadharKYCF(Request $request)
 {
    $request->validate([
-        'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
+        'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,xlsx,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
         'tagList' => 'nullable', // Allow tagList to be nullable
     ], [
         'files.*.required' => 'Each file is required.',
@@ -9378,7 +9555,7 @@ public function fetchDirector2AadharKYCFFileData()
 public function IncorporationArtofAssocF(Request $request)
 {
     $request->validate([
-        'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
+        'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,xlsx,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
         'tagList' => 'nullable', // Allow tagList to be nullable
     ], [
         'files.*.required' => 'Each file is required.',
@@ -9516,7 +9693,7 @@ public function fetchIncorporationArtofAssocFFileData(Request $request)
 public function IncorporationCertifofincorpF(Request $request)
 {
     $request->validate([
-        'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
+        'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,xlsx,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
         'tagList' => 'nullable', // Allow tagList to be nullable
     ], [
         'files.*.required' => 'Each file is required.',
@@ -9657,7 +9834,7 @@ public function fetchIncorporationCertifofincorpFFileData(Request $request)
 public function CharterdocumentsIncorporationMemorandumofAssociation(Request $request)
 {
     $request->validate([
-        'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
+        'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,xlsx,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
         'tagList' => 'nullable', // Allow tagList to be nullable
     ], [
         'files.*.required' => 'Each file is required.',
@@ -9796,7 +9973,7 @@ public function fetchCharterdocumentsIncorporationMemorandumofAssociationFileDat
 public function IncorporationPartnerdeedF(Request $request)
 {
    $request->validate([
-        'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
+        'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,xlsx,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
         'tagList' => 'nullable', // Allow tagList to be nullable
     ], [
         'files.*.required' => 'Each file is required.',
@@ -9936,7 +10113,7 @@ public function fetchIncorporationPartnerdeedFFileData(Request $request)
 public function IncorporationLLPAgreementF(Request $request)
 {
    $request->validate([
-        'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
+        'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,xlsx,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
         'tagList' => 'nullable', // Allow tagList to be nullable
     ], [
         'files.*.required' => 'Each file is required.',
@@ -10076,7 +10253,7 @@ public function fetchIncorporationLLPAgreementFFileData(Request $request)
 public function IncorporationTrustDeedF(Request $request)
 {
     $request->validate([
-        'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
+        'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,xlsx,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
         'tagList' => 'nullable', // Allow tagList to be nullable
     ], [
         'files.*.required' => 'Each file is required.',
@@ -10215,7 +10392,7 @@ public function fetchIncorporationTrustDeedFFileData(Request $request)
 public function IncorporationSharecertifF(Request $request)
 {
     $request->validate([
-        'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
+        'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,xlsx,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
         'tagList' => 'nullable', // Allow tagList to be nullable
     ], [
         'files.*.required' => 'Each file is required.',
@@ -10355,7 +10532,7 @@ public function fetchIncorporationSharecertifFFileData(Request $request)
 public function CharterdocumentsRegistrationsPAN(Request $request)
 {
     $request->validate([
-        'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
+        'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,xlsx,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
         'tagList' => 'nullable', // Allow tagList to be nullable
     ], [
         'files.*.required' => 'Each file is required.',
@@ -10496,7 +10673,7 @@ public function fetchCharterdocumentsRegistrationsPANFileData(Request $request)
 public function CharterdocumentsRegistrationsTAN(Request $request)
 {
     $request->validate([
-        'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
+        'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,xlsx,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
         'tagList' => 'nullable', // Allow tagList to be nullable
     ], [
         'files.*.required' => 'Each file is required.',
@@ -10638,7 +10815,7 @@ public function fetchCharterdocumentsRegistrationsTANFileData(Request $request)
 public function CharterdocumentsRegistrationsGSTIN(Request $request)
 {
     $request->validate([
-        'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
+        'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,xlsx,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
         'tagList' => 'nullable', // Allow tagList to be nullable
     ], [
         'files.*.required' => 'Each file is required.',
@@ -10778,7 +10955,7 @@ public function fetchCharterdocumentsRegistrationsGSTINFileData(Request $request
 public function CharterdocumentsRegistrationsMSME(Request $request)
 {
    $request->validate([
-        'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
+        'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,xlsx,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
         'tagList' => 'nullable', // Allow tagList to be nullable
     ], [
         'files.*.required' => 'Each file is required.',
@@ -10917,7 +11094,7 @@ public function fetchCharterdocumentsRegistrationsMSMEFileData(Request $request)
 public function CharterdocumentsRegistrationsTrademark(Request $request)
 {
     $request->validate([
-        'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
+        'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,xlsx,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
         'tagList' => 'nullable', // Allow tagList to be nullable
     ], [
         'files.*.required' => 'Each file is required.',
@@ -11057,7 +11234,7 @@ public function fetchCharterdocumentsRegistrationsTrademarkFileData(Request $req
 public function CharterdocumentsRegistrationsPFC(Request $request)
 {
    $request->validate([
-        'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
+        'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,xlsx,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
         'tagList' => 'nullable', // Allow tagList to be nullable
     ], [
         'files.*.required' => 'Each file is required.',
@@ -11198,7 +11375,7 @@ public function fetchCharterdocumentsRegistrationsPFCFileData(Request $request)
 public function CharterdocumentsRegistrationsESIC(Request $request)
 {
     $request->validate([
-        'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
+        'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,xlsx,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
         'tagList' => 'nullable', // Allow tagList to be nullable
     ], [
         'files.*.required' => 'Each file is required.',
@@ -11337,7 +11514,7 @@ public function fetchCharterdocumentsRegistrationsESICFileData(Request $request)
 public function CharterdocumentsRegistrationsPTC(Request $request)
 {
     $request->validate([
-        'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
+        'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,xlsx,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
         'tagList' => 'nullable', // Allow tagList to be nullable
     ], [
         'files.*.required' => 'Each file is required.',
@@ -11476,7 +11653,7 @@ public function fetchCharterdocumentsRegistrationsPTCDataFileData(Request $reque
 public function CharterdocumentsRegistrationsLWFC(Request $request)
 {
     $request->validate([
-        'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
+        'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,xlsx,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
         'tagList' => 'nullable', // Allow tagList to be nullable
     ], [
         'files.*.required' => 'Each file is required.',
@@ -11615,7 +11792,7 @@ public function fetchCharterdocumentsRegistrationsLWFCFileData(Request $request)
 public function CharterdocumentsRegistrationsPOSHPolicy(Request $request)
 {
     $request->validate([
-        'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
+        'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,xlsx,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
         'tagList' => 'nullable', // Allow tagList to be nullable
     ], [
         'files.*.required' => 'Each file is required.',
@@ -11761,7 +11938,7 @@ public function fetchCharterdocumentsRegistrationsPOSHPolicyFileData(Request $re
 public function SecretarialAuditorAppointmentBRAA(Request $request)
 {
     $request->validate([
-        'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
+        'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,xlsx,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
         'tagList' => 'nullable', // Allow tagList to be nullable
     ], [
         'files.*.required' => 'Each file is required.',
@@ -11900,7 +12077,7 @@ public function fetchSecretarialAuditorAppointmentBRAAFileData(Request $request)
 public function SecretarialAuditorAppointmentIA(Request $request)
 {
     $request->validate([
-        'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
+        'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,xlsx,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
         'tagList' => 'nullable', // Allow tagList to be nullable
     ], [
         'files.*.required' => 'Each file is required.',
@@ -12042,7 +12219,7 @@ public function fetchSecretarialAuditorAppointmentIAFileData(Request $request)
 public function SecretarialAuditorAppointmentLA(Request $request)
 {
     $request->validate([
-        'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
+        'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,xlsx,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
         'tagList' => 'nullable', // Allow tagList to be nullable
     ], [
         'files.*.required' => 'Each file is required.',
@@ -12181,7 +12358,7 @@ public function fetchSecretarialAuditorAppointmentLAFileData(Request $request)
 public function SecretarialAuditorAppointmentCRCAA(Request $request)
 {
    $request->validate([
-        'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
+        'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,xlsx,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
         'tagList' => 'nullable', // Allow tagList to be nullable
     ], [
         'files.*.required' => 'Each file is required.',
@@ -12319,7 +12496,7 @@ public function fetchSecretarialAuditorAppointmentCRCAAFileData(Request $request
 public function SecretarialAuditorAppointmentALA(Request $request)
 {
     $request->validate([
-        'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
+        'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,xlsx,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
         'tagList' => 'nullable', // Allow tagList to be nullable
     ], [
         'files.*.required' => 'Each file is required.',
@@ -13021,7 +13198,7 @@ public function fetchhrempoff4fFileData(Request $request)
 public function SecretarialAuditorAppointmentSR(Request $request)
 {
     $request->validate([
-        'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
+        'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,xlsx,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
         'tagList' => 'nullable', // Allow tagList to be nullable
     ], [
         'files.*.required' => 'Each file is required.',
@@ -13161,7 +13338,7 @@ public function fetchSecretarialAuditorAppointmentSRFileData(Request $request)
 public function SecretarialStatutoryRegistersRM(Request $request)
 {
     $request->validate([
-        'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
+        'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,xlsx,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
         'tagList' => 'nullable', // Allow tagList to be nullable
     ], [
         'files.*.required' => 'Each file is required.',
@@ -13266,7 +13443,7 @@ public function SecretarialStatutoryRegistersRM(Request $request)
 public function SecretarialStatutoryRegistersROSH(Request $request)
 {
     $request->validate([
-        'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
+        'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,xlsx,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
         'tagList' => 'nullable', // Allow tagList to be nullable
     ], [
         'files.*.required' => 'Each file is required.',
@@ -13371,7 +13548,7 @@ public function SecretarialStatutoryRegistersROSH(Request $request)
 public function SecretarialStatutoryRegistersFR(Request $request)
 {
     $request->validate([
-        'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
+        'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,xlsx,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
         'tagList' => 'nullable', // Allow tagList to be nullable
     ], [
         'files.*.required' => 'Each file is required.',
@@ -13477,7 +13654,7 @@ public function SecretarialStatutoryRegistersFR(Request $request)
 public function SecretarialStatutoryRegistersRDK(Request $request)
 {
     $request->validate([
-        'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
+        'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,xlsx,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
         'tagList' => 'nullable', // Allow tagList to be nullable
     ], [
         'files.*.required' => 'Each file is required.',
@@ -13583,7 +13760,7 @@ public function SecretarialStatutoryRegistersRDK(Request $request)
 public function SecretarialStatutoryRegistersRC(Request $request)
 {
     $request->validate([
-        'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
+        'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,xlsx,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
         'tagList' => 'nullable', // Allow tagList to be nullable
     ], [
         'files.*.required' => 'Each file is required.',
@@ -13688,7 +13865,7 @@ public function SecretarialStatutoryRegistersRC(Request $request)
 public function SecretarialStatutoryRegistersRD(Request $request)
 {
     $request->validate([
-        'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
+        'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,xlsx,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
         'tagList' => 'nullable', // Allow tagList to be nullable
     ], [
         'files.*.required' => 'Each file is required.',
@@ -13793,7 +13970,7 @@ public function SecretarialStatutoryRegistersRD(Request $request)
 public function SecretarialStatutoryRegistersRLGS(Request $request)
 {
     $request->validate([
-        'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
+        'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,xlsx,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
         'tagList' => 'nullable', // Allow tagList to be nullable
     ], [
         'files.*.required' => 'Each file is required.',
@@ -13898,7 +14075,7 @@ public function SecretarialStatutoryRegistersRLGS(Request $request)
 public function SecretarialStatutoryRegistersRCD(Request $request)
 {
     $request->validate([
-        'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
+        'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,xlsx,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
         'tagList' => 'nullable', // Allow tagList to be nullable
     ], [
         'files.*.required' => 'Each file is required.',
@@ -14003,7 +14180,7 @@ public function SecretarialStatutoryRegistersRCD(Request $request)
 public function SecretarialStatutoryRegistersRCDI(Request $request)
 {
     $request->validate([
-        'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
+        'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,xlsx,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
         'tagList' => 'nullable', // Allow tagList to be nullable
     ], [
         'files.*.required' => 'Each file is required.',
@@ -14108,7 +14285,7 @@ public function SecretarialStatutoryRegistersRCDI(Request $request)
 public function SecretarialStatutoryRegistersRSES(Request $request)
 {
     $request->validate([
-        'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
+        'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,xlsx,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
         'tagList' => 'nullable', // Allow tagList to be nullable
     ], [
         'files.*.required' => 'Each file is required.',
@@ -14213,7 +14390,7 @@ public function SecretarialStatutoryRegistersRSES(Request $request)
 public function SecretarialStatutoryRegistersRESO(Request $request)
 {
     $request->validate([
-        'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
+        'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,xlsx,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
         'tagList' => 'nullable', // Allow tagList to be nullable
     ], [
         'files.*.required' => 'Each file is required.',
@@ -14318,7 +14495,7 @@ public function SecretarialStatutoryRegistersRESO(Request $request)
 public function SecretarialStatutoryRegistersRSBB(Request $request)
 {
     $request->validate([
-        'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
+        'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,xlsx,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
         'tagList' => 'nullable', // Allow tagList to be nullable
     ], [
         'files.*.required' => 'Each file is required.',
@@ -14424,7 +14601,7 @@ public function SecretarialStatutoryRegistersRSBB(Request $request)
 public function SecretarialStatutoryRegistersRRDSC(Request $request)
 {
     $request->validate([
-        'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
+        'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,xlsx,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
         'tagList' => 'nullable', // Allow tagList to be nullable
     ], [
         'files.*.required' => 'Each file is required.',
@@ -14530,7 +14707,7 @@ public function SecretarialStatutoryRegistersRRDSC(Request $request)
 public function SecretarialStatutoryRegistersSBO(Request $request)
 {
     $request->validate([
-        'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
+        'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,xlsx,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
         'tagList' => 'nullable', // Allow tagList to be nullable
     ], [
         'files.*.required' => 'Each file is required.',
@@ -14636,7 +14813,7 @@ public function SecretarialStatutoryRegistersSBO(Request $request)
 public function SecretarialStatutoryRegistersRPB(Request $request)
 {
     $request->validate([
-        'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
+        'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,xlsx,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
         'tagList' => 'nullable', // Allow tagList to be nullable
     ], [
         'files.*.required' => 'Each file is required.',
@@ -14743,7 +14920,7 @@ public function SecretarialStatutoryRegistersRPB(Request $request)
 public function PredefinedCommonUploadFiles(Request $request)
 {
     $request->validate([
-        'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
+        'files.*' => 'required|file|max:102400|mimes:pdf,ppt,pot,pps,pptx,pptm,potx,ppam,ppsx,sldx,sldm,odp,ods,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,xlsx,docx,docm,xlam,txt,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv,xltx,xltm', // Allow specific file types up to 100MB
         'tagList' => 'nullable', // Allow tagList to be nullable
         'location' => 'required|string', // Require location
         'real_file_name' => 'required|string', // Require real file name
@@ -14857,10 +15034,14 @@ public function PredefinedCommonUploadFiles(Request $request)
                            
                             $filePath = $file->store($location);
                             // Create a new entry for each file
+                            $storedFileName = basename($filePath);
+
+                            // dd($storedFileName);
                             CommonTable::create([
                                 'file_type' => $file->getClientMimeType(),
                                 'file_name' => $file->getClientOriginalName(),
                                 'real_file_name' => $request->input('real_file_name'),
+                                'temp_file_name' => $storedFileName,
                                 'file_size' => $file->getSize(),
                                 'file_path' => $filePath,
                                 'user_name' => auth()->user()->name, // Assuming user is authenticated
@@ -14911,7 +15092,7 @@ public function PredefinedCommonUploadFiles(Request $request)
             // return redirect()->back()->with('success2', 'File Uploaded successfully.');
 
             return response()->json([
-                'success' => true,
+                'success' => empty($errorMessages),
                 'count' => $count,
                 'totalSize' => $totalSizef,
                 'successMessages' => $successMessages,
@@ -14933,7 +15114,7 @@ public function PredefinedCommonUploadFiles(Request $request)
 public function PredefinedCommonUploadFilesBank(Request $request)
 {
     $request->validate([
-        'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
+        'files.*' => 'required|file|max:102400|mimes:pdf,ppt,pot,pps,pptx,pptm,potx,ppam,ppsx,sldx,sldm,odp,ods,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,xlsx,docx,docm,xlam,txt,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv,xltx,xltm', // Allow specific file types up to 100MB
         'tagList' => 'nullable', // Allow tagList to be nullable
     ], [
         'files.*.required' => 'Each file is required.',
@@ -15065,7 +15246,7 @@ public function PredefinedCommonUploadFilesBank(Request $request)
 
 
             return response()->json([
-                'success' => true,
+                'success' => empty($errorMessages),
                 'count' => $count,
                 'totalSize' => $totalSizef,
                 'successMessages' => $successMessages,
@@ -16076,35 +16257,675 @@ public function showAdvSearch(Request $request)
 
     // Define table names and their respective aliases
     $tables = [
-        'board_notice' => 'board_notice',
-        'board_reso' => 'board_reso',
-        'board_minute_book' => 'board_minute_book',
-        'board_as' => 'board_as'
+        'common_table' => 'common_table'
     ];
 
-    // Determine the selected table based on the query parameters
+    // Determine the selected table and location filter based on the query parameters
     $selectedTable = null;
+    $locationFilter = null;
+    $realFileNameFilter = null;
+
     if ($category === 'Secretarial' && $section === 'Board Meetings') {
         switch ($subsection) {
             case 'Notices':
-                $selectedTable = 'board_notice';
+                $selectedTable = 'common_table';
+                $locationFilter = 'Board Meetings';
+                $realFileNameFilter = 'Notices';
                 break;
+                case 'Minute Book':
+                    $selectedTable = 'common_table';
+                    $locationFilter = 'Board Meetings';
+                    $realFileNameFilter = 'Minute Book';
+                    break;
+                    case 'Attendance sheet':
+                        $selectedTable = 'common_table';
+                        $locationFilter = 'Board Meetings';
+                        $realFileNameFilter = 'Attendance sheet';
+                        break;
             case 'Resolutions':
-                $selectedTable = 'board_reso';
+                $selectedTable = 'common_table';
+                $locationFilter = 'Board Meetings';
+                $realFileNameFilter = 'Resolutions';
                 break;
-            case 'Minute Book':
-                $selectedTable = 'board_minute_book';
+           
+            
+            default:
+                $selectedTable = null;
                 break;
-            case 'Attendance sheet':
-                $selectedTable = 'board_as';
+        }
+    }
+    else if ($category === 'Secretarial' && $section === 'Annual Filings') {
+        switch ($subsection) {
+            case 'AoC-4 (Annual Filing Statement Form)':
+                $selectedTable = 'common_table';
+                $locationFilter = 'Annual Filings';
+                $realFileNameFilter = 'AoC-4 (Annual Filing Statement Form)';
                 break;
+                case 'AoC-4 (CFS) (Form for filing consolidated financial statements and other documents with the Registrar)':
+                    $selectedTable = 'common_table';
+                    $locationFilter = 'Annual Filings';
+                    $realFileNameFilter = 'AoC-4 (CFS) (Form for filing consolidated financial statements and other documents with the Registrar)';
+                    break;
+                    case 'MGT-7/ (Annual Return of a company)':
+                        $selectedTable = 'common_table';
+                        $locationFilter = 'Annual Filings';
+                        $realFileNameFilter = 'MGT-7/ (Annual Return of a company)';
+                        break;
+            case 'MGT-7A (Annual Return of a small company)':
+                $selectedTable = 'common_table';
+                $locationFilter = 'Annual Filings';
+                $realFileNameFilter = 'MGT-7A (Annual Return of a small company)';
+                break;
+           
+            
             default:
                 $selectedTable = null;
                 break;
         }
     }
 
-    // Fetch data for the selected table if available
+    else if ($category === 'Secretarial' && $section === 'Annual General Meeting') {
+        switch ($subsection) {
+            case 'Notices':
+                $selectedTable = 'common_table';
+                $locationFilter = 'Annual General Meeting';
+                $realFileNameFilter = 'Notices';
+                break;
+                case 'Minute Book':
+                    $selectedTable = 'common_table';
+                    $locationFilter = 'Annual General Meeting';
+                    $realFileNameFilter = 'Minute Book';
+                    break;
+                    case 'Attendance sheet':
+                        $selectedTable = 'common_table';
+                        $locationFilter = 'Annual General Meeting';
+                        $realFileNameFilter = 'Attendance sheet';
+                        break;
+            case 'Resolutions':
+                $selectedTable = 'common_table';
+                $locationFilter = 'Annual General Meeting';
+                $realFileNameFilter = 'Resolutions';
+                break;
+           
+            
+            default:
+                $selectedTable = null;
+                break;
+        }
+    }
+
+    else if ($category === 'Secretarial' && $section === 'Auditor Appointments') {
+        switch ($subsection) {
+            case 'Board Resolution for the appointment of Auditor':
+                $selectedTable = 'common_table';
+                $locationFilter = 'Auditor Appointments';
+                $realFileNameFilter = 'Board Resolution for the appointment of Auditor';
+                break;
+                case 'Intimation to auditor':
+                    $selectedTable = 'common_table';
+                    $locationFilter = 'Auditor Appointments';
+                    $realFileNameFilter = 'Intimation to auditor';
+                    break;
+                    case 'Letter of appointment':
+                        $selectedTable = 'common_table';
+                        $locationFilter = 'Auditor Appointments';
+                        $realFileNameFilter = 'Letter of appointment';
+                        break;
+            case 'Certificate as per Rule 4 and consent by Auditor for his appointment':
+                $selectedTable = 'common_table';
+                $locationFilter = 'Auditor Appointments';
+                $realFileNameFilter = 'Certificate as per Rule 4 and consent by Auditor for his appointment';
+                break;
+                case 'Acceptance letter for appointment':
+                    $selectedTable = 'common_table';
+                    $locationFilter = 'Auditor Appointments';
+                    $realFileNameFilter = 'Acceptance letter for appointment';
+                    break;
+
+                    case 'Special Resolution':
+                        $selectedTable = 'common_table';
+                        $locationFilter = 'Auditor Appointments';
+                        $realFileNameFilter = 'Special Resolution';
+                        break;
+            
+            default:
+                $selectedTable = null;
+                break;
+        }
+    }
+
+    else if ($category === 'Secretarial' && $section === 'Auditor Exits') {
+        switch ($subsection) {
+            case 'ADT-3 form':
+                $selectedTable = 'common_table';
+                $locationFilter = 'Auditor Exits';
+                $realFileNameFilter = 'ADT-3 form';
+                break;
+                case 'Resignation letter by auditor':
+                    $selectedTable = 'common_table';
+                    $locationFilter = 'Auditor Exits';
+                    $realFileNameFilter = 'Resignation letter by auditor';
+                    break;
+                    case 'Details of the grounds for seeking removal of auditor':
+                        $selectedTable = 'common_table';
+                        $locationFilter = 'Auditor Exits';
+                        $realFileNameFilter = 'Details of the grounds for seeking removal of auditor';
+                        break;
+            case 'Special Resolution':
+                $selectedTable = 'common_table';
+                $locationFilter = 'Auditor Exits';
+                $realFileNameFilter = 'Special Resolution';
+                break;
+                case 'ADT-2 (Application for removal of auditor(s) before expiry of term)':
+                    $selectedTable = 'common_table';
+                    $locationFilter = 'Auditor Exits';
+                    $realFileNameFilter = 'ADT-2 (Application for removal of auditor(s) before expiry of term)';
+                    break;
+
+                    
+            
+            default:
+                $selectedTable = null;
+                break;
+        }
+    }
+
+    else if ($category === 'Secretarial' && $section === 'Deposit Undertakings') {
+        switch ($subsection) {
+            case 'Form DPT-3':
+                $selectedTable = 'common_table';
+                $locationFilter = 'Deposit Undertakings';
+                $realFileNameFilter = 'Form DPT-3';
+                break;
+                
+
+                    
+            
+            default:
+                $selectedTable = null;
+                break;
+        }
+    }
+
+
+    
+    else if ($category === 'Secretarial' && $section === 'Director Appointments') {
+        switch ($subsection) {
+            case 'DIR-3 form/ DIN number':
+                $selectedTable = 'common_table';
+                $locationFilter = 'Director Appointments';
+                $realFileNameFilter = 'DIR-3 form/ DIN number';
+                break;
+                
+                case 'DIR-3 KYC':
+                    $selectedTable = 'common_table';
+                    $locationFilter = 'Director Appointments';
+                    $realFileNameFilter = 'DIR-3 KYC';
+                    break;
+
+                    case 'DIR-6 form':
+                        $selectedTable = 'common_table';
+                        $locationFilter = 'Director Appointments';
+                        $realFileNameFilter = 'DIR-6 form';
+                        break;
+                    
+                        case 'DIR-12 form':
+                            $selectedTable = 'common_table';
+                            $locationFilter = 'Director Appointments';
+                            $realFileNameFilter = 'DIR-12 form';
+                            break;
+            default:
+                $selectedTable = null;
+                break;
+        }
+    }
+
+
+    else if ($category === 'Secretarial' && $section === 'Director Resignation Removal') {
+        switch ($subsection) {
+            case 'DIR-11 form':
+                $selectedTable = 'common_table';
+                $locationFilter = 'Director Resignation Removal';
+                $realFileNameFilter = 'DIR-11 form';
+                break;
+                
+                case 'DIR-12 form':
+                    $selectedTable = 'common_table';
+                    $locationFilter = 'Director Resignation Removal';
+                    $realFileNameFilter = 'DIR-12 form';
+                    break;
+
+                    
+            default:
+                $selectedTable = null;
+                break;
+        }
+    }
+
+    else if ($category === 'Secretarial' && $section === 'Extra Ordinary General Meeting') {
+        switch ($subsection) {
+            case 'Notices':
+                $selectedTable = 'common_table';
+                $locationFilter = 'Extra Ordinary General Meeting';
+                $realFileNameFilter = 'Notices';
+                break;
+                
+                case 'Minute Book':
+                    $selectedTable = 'common_table';
+                    $locationFilter = 'Extra Ordinary General Meeting';
+                    $realFileNameFilter = 'Minute Book';
+                    break;
+
+                    case 'Attendance sheet':
+                        $selectedTable = 'common_table';
+                        $locationFilter = 'Extra Ordinary General Meeting';
+                        $realFileNameFilter = 'Attendance sheet';
+                        break;
+
+                        case 'Resolutions':
+                            $selectedTable = 'common_table';
+                            $locationFilter = 'Extra Ordinary General Meeting';
+                            $realFileNameFilter = 'Resolutions';
+                            break;
+
+                    
+            default:
+                $selectedTable = null;
+                break;
+        }
+    }
+
+
+    else if ($category === 'Secretarial' && $section === 'Incorporation') {
+        switch ($subsection) {
+            case 'RUN Form (Reserve Unique Name)':
+                $selectedTable = 'common_table';
+                $locationFilter = 'Incorporation';
+                $realFileNameFilter = 'RUN Form (Reserve Unique Name)';
+                break;
+                
+                case 'INC-9 (Declaration of Subscribers and First Directors)':
+                    $selectedTable = 'common_table';
+                    $locationFilter = 'Incorporation';
+                    $realFileNameFilter = 'INC-9 (Declaration of Subscribers and First Directors)';
+                    break;
+
+                    case 'SPICe+Part B (Simplified Proforma for Incorporating Company Electronically)':
+                        $selectedTable = 'common_table';
+                        $locationFilter = 'Incorporation';
+                        $realFileNameFilter = 'SPICe+Part B (Simplified Proforma for Incorporating Company Electronically)';
+                        break;
+
+                        case 'INC-33 SPICe MoA (e-Momorandum of Association)':
+                            $selectedTable = 'common_table';
+                            $locationFilter = 'Incorporation';
+                            $realFileNameFilter = 'INC-33 SPICe MoA (e-Momorandum of Association)';
+                            break;
+
+                            case 'INC-34 SPICe AoA (e-Articles of Association)':
+                                $selectedTable = 'common_table';
+                                $locationFilter = 'Incorporation';
+                                $realFileNameFilter = 'INC-34 SPICe AoA (e-Articles of Association)';
+                                break;
+                                case 'INC-35 AGILE-PRO-s':
+                                    $selectedTable = 'common_table';
+                                    $locationFilter = 'Incorporation';
+                                    $realFileNameFilter = 'INC-35 AGILE-PRO-s';
+                                    break;
+
+                                    case 'INC-22 (Notice of situation or change of situation of registered office)':
+                                        $selectedTable = 'common_table';
+                                        $locationFilter = 'Incorporation';
+                                        $realFileNameFilter = 'INC-22 (Notice of situation or change of situation of registered office)';
+                                        break;
+
+                                        case 'INC-20A (Commencement of Business)':
+                                            $selectedTable = 'common_table';
+                                            $locationFilter = 'Incorporation';
+                                            $realFileNameFilter = 'INC-20A (Commencement of Business)';
+                                            break;
+
+                    
+            default:
+                $selectedTable = null;
+                break;
+        }
+    }
+
+
+    else if ($category === 'Secretarial' && $section === 'Statutory Registers') {
+        switch ($subsection) {
+            case 'Register of Members':
+                $selectedTable = 'common_table';
+                $locationFilter = 'Statutory Registers';
+                $realFileNameFilter = 'Register of Members';
+                break;
+                
+                case 'Register of Other Security Holders':
+                    $selectedTable = 'common_table';
+                    $locationFilter = 'Statutory Registers';
+                    $realFileNameFilter = 'Register of Other Security Holders';
+                    break;
+
+                    case '⁠Foreign Register':
+                        $selectedTable = 'common_table';
+                        $locationFilter = 'Statutory Registers';
+                        $realFileNameFilter = '⁠Foreign Register';
+                        break;
+
+                        case 'Register of Directors and KMP':
+                            $selectedTable = 'common_table';
+                            $locationFilter = 'Statutory Registers';
+                            $realFileNameFilter = 'Register of Directors and KMP';
+                            break;
+
+                            case '⁠Register of Charges':
+                                $selectedTable = 'common_table';
+                                $locationFilter = 'Statutory Registers';
+                                $realFileNameFilter = '⁠Register of Charges';
+                                break;
+                                case 'Register of Deposits':
+                                    $selectedTable = 'common_table';
+                                    $locationFilter = 'Statutory Registers';
+                                    $realFileNameFilter = 'Register of Deposits';
+                                    break;
+
+                                    case 'Register of Loans, Guarantees and Securities':
+                                        $selectedTable = 'common_table';
+                                        $locationFilter = 'Statutory Registers';
+                                        $realFileNameFilter = 'Register of Loans, Guarantees and Securities';
+                                        break;
+
+                                        case 'Register of Investments not held in Company’s name':
+                                            $selectedTable = 'common_table';
+                                            $locationFilter = 'Statutory Registers';
+                                            $realFileNameFilter = 'Register of Investments not held in Company’s name';
+                                            break;
+
+                                            case 'Register of Contracts in which Directors are interested':
+                                                $selectedTable = 'common_table';
+                                                $locationFilter = 'Statutory Registers';
+                                                $realFileNameFilter = 'Register of Contracts in which Directors are interested';
+                                                break;
+
+                                                case 'Register of Sweat Equity Shares':
+                                                    $selectedTable = 'common_table';
+                                                    $locationFilter = 'Statutory Registers';
+                                                    $realFileNameFilter = 'Register of Sweat Equity Shares';
+                                                    break;
+
+                                                    case 'Register of Employee Stock Options':
+                                                        $selectedTable = 'common_table';
+                                                        $locationFilter = 'Statutory Registers';
+                                                        $realFileNameFilter = 'Register of Employee Stock Options';
+                                                        break;
+
+                                                        case 'Register of Securities Bought Back':
+                                                            $selectedTable = 'common_table';
+                                                            $locationFilter = 'Statutory Registers';
+                                                            $realFileNameFilter = 'Register of Securities Bought Back';
+                                                            break;
+                                                            case 'Register of Renewed or Duplicate Share Certificates':
+                                                                $selectedTable = 'common_table';
+                                                                $locationFilter = 'Statutory Registers';
+                                                                $realFileNameFilter = 'Register of Renewed or Duplicate Share Certificates';
+                                                                break;
+                                                                case 'Register of SBO':
+                                                                    $selectedTable = 'common_table';
+                                                                    $locationFilter = 'Statutory Registers';
+                                                                    $realFileNameFilter = 'Register of SBO';
+                                                                    break;
+
+                    
+            default:
+                $selectedTable = null;
+                break;
+        }
+    }
+
+    else if ($category === 'Accounting Taxation' && $section === 'Director Details') {
+        switch ($subsection) {
+            case 'Photo':
+                $selectedTable = 'common_table';
+                $locationFilter = 'Director Details';
+                $realFileNameFilter = 'Photo';
+                break;
+                
+                case 'Signature image':
+                    $selectedTable = 'common_table';
+                    $locationFilter = 'Director Details';
+                    $realFileNameFilter = 'Signature image';
+                    break;
+
+                    case 'Aadhar KYC':
+                        $selectedTable = 'common_table';
+                        $locationFilter = 'Director Details';
+                        $realFileNameFilter = '⁠Aadhar KYC';
+                        break;
+
+                        case 'PAN KYC':
+                            $selectedTable = 'common_table';
+                            $locationFilter = 'Director Details';
+                            $realFileNameFilter = 'PAN KYC';
+                            break;
+
+                            case '⁠Address Proof':
+                                $selectedTable = 'common_table';
+                                $locationFilter = 'Director Details';
+                                $realFileNameFilter = 'Address Proof';
+                                break;
+                                case 'Contact Details':
+                                    $selectedTable = 'common_table';
+                                    $locationFilter = 'Director Details';
+                                    $realFileNameFilter = 'Contact Details';
+                                    break;
+
+                                    
+                                                       
+                    
+            default:
+                $selectedTable = null;
+                break;
+        }
+    }
+
+    else if ($category === 'Accounting Taxation' && $section === 'Incorporation') {
+        switch ($subsection) {
+            case 'Memorandum of Association':
+                $selectedTable = 'common_table';
+                $locationFilter = 'Incorporation';
+                $realFileNameFilter = 'Memorandum of Association';
+                break;
+                
+                case 'Articles of Association':
+                    $selectedTable = 'common_table';
+                    $locationFilter = 'Incorporation';
+                    $realFileNameFilter = 'Articles of Association';
+                    break;
+
+                    case 'Certificate of incorporation':
+                        $selectedTable = 'common_table';
+                        $locationFilter = 'Incorporation';
+                        $realFileNameFilter = 'Certificate of incorporation';
+                        break;
+
+                        case 'Partnership deed':
+                            $selectedTable = 'common_table';
+                            $locationFilter = 'Incorporation';
+                            $realFileNameFilter = 'Partnership deed';
+                            break;
+
+                            case 'LLP Agreement':
+                                $selectedTable = 'common_table';
+                                $locationFilter = 'Incorporation';
+                                $realFileNameFilter = 'LLP Agreement';
+                                break;
+                                case 'Trust Deed':
+                                    $selectedTable = 'common_table';
+                                    $locationFilter = 'Incorporation';
+                                    $realFileNameFilter = 'Trust Deed';
+                                    break;
+
+                                    case 'Share certificates':
+                                        $selectedTable = 'common_table';
+                                        $locationFilter = 'Incorporation';
+                                        $realFileNameFilter = 'Share certificates';
+                                        break;
+
+                                    
+                                                       
+                    
+            default:
+                $selectedTable = null;
+                break;
+        }
+    }
+
+    else if ($category === 'Accounting Taxation' && $section === 'Registrations') {
+        switch ($subsection) {
+            case 'PAN certificate':
+                $selectedTable = 'common_table';
+                $locationFilter = 'Registrations';
+                $realFileNameFilter = 'PAN certificate';
+                break;
+                
+                case 'TAN certificate':
+                    $selectedTable = 'common_table';
+                    $locationFilter = 'Registrations';
+                    $realFileNameFilter = 'TAN certificate';
+                    break;
+
+                    case 'GSTIN certificate':
+                        $selectedTable = 'common_table';
+                        $locationFilter = 'Registrations';
+                        $realFileNameFilter = 'GSTIN certificate';
+                        break;
+
+                        case 'MSME certificate':
+                            $selectedTable = 'common_table';
+                            $locationFilter = 'Registrations';
+                            $realFileNameFilter = 'MSME certificate';
+                            break;
+
+                            case 'Trademark':
+                                $selectedTable = 'common_table';
+                                $locationFilter = 'Registrations';
+                                $realFileNameFilter = 'Trademark';
+                                break;
+                                case 'Provident Fund certificate':
+                                    $selectedTable = 'common_table';
+                                    $locationFilter = 'Registrations';
+                                    $realFileNameFilter = 'Provident Fund certificate';
+                                    break;
+
+                                    case 'Employee State Insurance certificate':
+                                        $selectedTable = 'common_table';
+                                        $locationFilter = 'Registrations';
+                                        $realFileNameFilter = 'Employee State Insurance certificate';
+                                        break;
+                                        case 'Professional Tax certificate':
+                                            $selectedTable = 'common_table';
+                                            $locationFilter = 'Registrations';
+                                            $realFileNameFilter = 'Professional Tax certificate';
+                                            break;
+                                            case 'Labour Welfare Fund certificate':
+                                                $selectedTable = 'common_table';
+                                                $locationFilter = 'Registrations';
+                                                $realFileNameFilter = 'Labour Welfare Fund certificate';
+                                                break;
+                                                case 'POSH Policy':
+                                                    $selectedTable = 'common_table';
+                                                    $locationFilter = 'Registrations';
+                                                    $realFileNameFilter = 'POSH Policy';
+                                                    break;
+
+                                    
+                                                       
+                    
+            default:
+                $selectedTable = null;
+                break;
+        }
+    }
+
+    else if ($category === 'Accounting Taxation' && $section === 'Bank Account Statements') {
+        switch ($subsection) {
+            case 'Bank Account Statement':
+                $selectedTable = 'common_table';
+                $locationFilter = 'Bank Account Statements';
+                $realFileNameFilter = 'Bank Account Statement';
+                break;
+                
+               
+
+                                    
+                                                       
+                    
+            default:
+                $selectedTable = null;
+                break;
+        }
+    }
+
+    else if ($category === 'Accounting Taxation' && $section === 'Credit Card Statements') {
+        switch ($subsection) {
+            case 'Add Credit Card Statements':
+                $selectedTable = 'common_table';
+                $locationFilter = 'Credit Card Statements';
+                $realFileNameFilter = 'Add Credit Card Statements';
+                break;
+                
+               
+
+                                    
+                                                       
+                    
+            default:
+                $selectedTable = null;
+                break;
+        }
+    }
+
+    else if ($category === 'Accounting Taxation' && $section === 'Mutual Fund Statements') {
+        switch ($subsection) {
+            case 'Add Mutual Fund Statements':
+                $selectedTable = 'common_table';
+                $locationFilter = 'Mutual Fund Statements';
+                $realFileNameFilter = 'Add Mutual Fund Statements';
+                break;
+                
+               
+
+                                    
+                                                       
+                    
+            default:
+                $selectedTable = null;
+                break;
+        }
+    }
+
+
+    else if ($category === 'Accounting Taxation' && $section === 'Fixed Deposit Statements') {
+        switch ($subsection) {
+            case 'Fixed Deposit Account Statement':
+                $selectedTable = 'common_table';
+                $locationFilter = 'Fixed Deposit Statements';
+                $realFileNameFilter = 'Fixed Deposit Account Statement';
+                break;
+                
+               
+
+                                    
+                                                       
+                    
+            default:
+                $selectedTable = null;
+                break;
+        }
+    }
+
+    // Fetch data for the selected table if available and filter by location and real_file_name
     if ($selectedTable && array_key_exists($selectedTable, $tables)) {
         $tableData = DB::table($selectedTable)
             ->select(
@@ -16121,6 +16942,8 @@ public function showAdvSearch(Request $request)
             )
             ->where('user_id', $user->id)
             ->where('is_delete', 0)
+            ->where('location', 'like', "%{$locationFilter}%")
+            ->where('real_file_name', $realFileNameFilter)
             ->get();
 
         $results = $tableData->toArray();
@@ -16142,6 +16965,7 @@ public function showAdvSearch(Request $request)
         'results' => $results,
     ]);
 }
+
 
 
 
@@ -17129,7 +17953,7 @@ if ($request->hasFile('profile_picture')) {
     $file->move(public_path('uploads/profile_images'), $fileName);
     
     // Store the filename in the member's profile picture field
-    $member->profile_picture = $fileName;
+    $member->profile_picture = 'uploads/profile_images/' . $fileName;
 
     // Insert the file details into the profile_images table
     
@@ -17147,7 +17971,7 @@ UserInfo::create([
     'fname' => $request->fname,
     'lname' => $request->lname,
     'phone' => $request->phone,
-    'profile_picture' => $member->profile_picture,
+    'profile_picture' =>'uploads/profile_images/' . $member->profile_picture,
     'createdby_id' => $user_id,
     'main_role_id' => $request->main_role_id,
     'Edit_Password' => 1,
@@ -17172,7 +17996,7 @@ Member::create([
     'fname' => $request->fname,
     'lname' => $request->lname,
     'phone' => $request->phone,
-    'profile_picture' => $member->profile_picture,
+    'profile_picture' => 'uploads/profile_images/' . $member->profile_picture,
     'createdby_id' => $user_id,
     'main_role_id' => $request->main_role_id,
     'Edit_Password' => 1,
@@ -17606,7 +18430,7 @@ private function generateUniqueUsername($fname, $lname)
     //     return view('user.Document-Repository.document-repository', compact('cli_announcements', 'folders'));
     // }
 
-    public function docurepo()
+    public function docurepo(Request $request)
     {
         
         $user = auth()->user();
@@ -17635,6 +18459,22 @@ private function generateUniqueUsername($fname, $lname)
 $userFolders = Folder::where('user_id', Auth::id())
                         ->orderBy('name')
                         ->get();
+
+$RealFileFolders = Folder::where('user_id', Auth::id())
+    ->orWhere('common_folder', 1)
+    ->whereNull('is_bank')
+    ->whereNotNull('real_file_name')
+    ->orderBy('name')
+    ->get();
+
+// dd($RealFileFolders);
+
+$RealFileFoldersBank = Folder::where('common_folder', 1)
+->where('is_bank', 1)
+->whereNotNull('real_file_name')
+->orderBy('name')
+->get();
+// dd($RealFileFolders);
 
 // Combine both results
 $folders = $commonFolders->merge($userFolders);
@@ -17692,35 +18532,7 @@ $commonColumns = [
     'updated_at'
 ];
 
-// Create individual queries for each table
-// $files1 = DB::table('board_notice')
-//     ->select(array_merge($commonColumns, [DB::raw('"board_notice" as table_name')]))
-//     ->where('user_id', $user_id)
-//     ->where('is_delete', 1)
-//     ->unionAll(DB::table('board_notice')->select(DB::raw('NULL as id, "N/A" as file_name, "N/A" as file_type, "N/A" as real_file_name, 0 as file_size, "N/A" as file_path, "N/A" as user_name, NULL as user_id, 0 as file_status, "N/A" as fyear, "N/A" as Month, "N/A" as Tags, "N/A" as location, NULL as created_at, NULL as updated_at, "board_notice" as table_name'))->whereRaw('0 = 1'));
 
-// $files2 = DB::table('board_minute_book')
-//     ->select(array_merge($commonColumns, [DB::raw('"board_minute_book" as table_name')]))
-//     ->where('user_id', $user_id)
-//     ->where('is_delete', 1)
-//     ->unionAll(DB::table('board_minute_book')->select(DB::raw('NULL as id, "N/A" as file_name, "N/A" as file_type, "N/A" as real_file_name, 0 as file_size, "N/A" as file_path, "N/A" as user_name, NULL as user_id, 0 as file_status, "N/A" as fyear, "N/A" as Month, "N/A" as Tags, "N/A" as location, NULL as created_at, NULL as updated_at, "board_minute_book" as table_name'))->whereRaw('0 = 1'))
-//     ->unionAll($files1);
-
-// $files3 = DB::table('board_reso')
-//     ->select(array_merge($commonColumns, [DB::raw('"board_reso" as table_name')]))
-//     ->where('user_id', $user_id)
-//     ->where('is_delete', 1)
-//     ->unionAll(DB::table('board_reso')->select(DB::raw('NULL as id, "N/A" as file_name, "N/A" as file_type, "N/A" as real_file_name, 0 as file_size, "N/A" as file_path, "N/A" as user_name, NULL as user_id, 0 as file_status, "N/A" as fyear, "N/A" as Month, "N/A" as Tags, "N/A" as location, NULL as created_at, NULL as updated_at, "board_reso" as table_name'))->whereRaw('0 = 1'))
-//     ->unionAll($files2);
-
-// $files4 = DB::table('board_as')
-//     ->select(array_merge($commonColumns, [DB::raw('"board_as" as table_name')]))
-//     ->where('user_id', $user_id)
-//     ->where('is_delete', 1)
-//     ->unionAll(DB::table('board_as')->select(DB::raw('NULL as id, "N/A" as file_name, "N/A" as file_type, "N/A" as real_file_name, 0 as file_size, "N/A" as file_path, "N/A" as user_name, NULL as user_id, 0 as file_status, "N/A" as fyear, "N/A" as Month, "N/A" as Tags, "N/A" as location, NULL as created_at, NULL as updated_at, "board_as" as table_name'))->whereRaw('0 = 1'))
-//     ->unionAll($files3)
-//     ->orderBy('updated_at', 'desc')
-//     ->get();
 
 
 $files4 = CommonTable::where('user_id', $user->id)
@@ -17730,22 +18542,44 @@ $files4 = CommonTable::where('user_id', $user->id)
 
     // Ensure the parameter is not null or empty before proceeding
 
+    // dd($request);
+
 
     // Decode the folder parameter
-    $decodedFolderLocation = urldecode($folderLocation);     
+    $decodedFolderLocation = urldecode($folderLocation);  
+    // dd($decodedFolderLocation);
+    $iamhereSKY = false;
+
+    if($request->query('folderPath') ){
+        $decodedFolderLocation =  $request->query('folderPath');  
+        // folderPath: 2024-2025November301_Legal/2024-2025November301_Secretarial/2024-2025November301_Annual Filings
+        $decodedFolderLocation = str_replace("folderPath: ", "", $decodedFolderLocation);
+        $iamhereSKY = true;
+        // dd($decodedFolderLocation);
+
+    }
+
+
                     
         // $filess = BoardMinuteBook::where('user_id', $userId)->get();
         $moadoc = MOA::all();
         $user = auth()->user();
+
         $entries = CommonTable::where('user_id', $user->id)
     ->where('is_delete', 0)
     ->where('location', $decodedFolderLocation)
     ->where('real_file_name', 'Notices')
     ->get();
 
+    // dd($entries);
+
+
+
         $count = $entries->count();
         $totalSizeBytes = $entries->sum('file_size');
         $totalSizeKB = round($totalSizeBytes / 1024, 2);
+
+        // dd($count);
 
 
 
@@ -17942,7 +18776,7 @@ $entriesinc9 = CommonTable::where('user_id', $user->id)
         $entriesinnerinc34 = CommonTable::where('user_id', $user->id)
     ->where('is_delete', 0)
     ->where('location', $decodedFolderLocation)
-    ->where('real_file_name', 'INC-34 SPICe MoA (e-Articles of Association)')
+    ->where('real_file_name', 'INC-34 SPICe AoA (e-Articles of Association)')
     ->get();
         $countentriesinnerinc34 = $entriesinnerinc34->count(); // Count of entries
         $totalSizeBytesentriesinnerinc34 = $entriesinnerinc34->sum('file_size'); // Sum of file sizes
@@ -17986,6 +18820,8 @@ $entriesinc9 = CommonTable::where('user_id', $user->id)
         $countentriesafs = $entriesafs->count(); // Count of entries
         $totalSizeBytesentriesafs = $entriesafs->sum('file_size'); // Sum of file sizes
         $totalSizeKBentrieafs = round($totalSizeBytesentriesafs / 1024, 2); // Convert to KB and round
+
+        // dd($countentriesafs);
         
         
          $entriescfs = CommonTable::where('user_id', $user->id)
@@ -18752,7 +19588,7 @@ $entriesinc9 = CommonTable::where('user_id', $user->id)
         
         $entriesSECSRRSBO = CommonTable::where('user_id', $user->id)
             ->where('is_delete', 0)
-            ->where('location', 'Legal / Secretarial / Statutory Registers')
+            ->where('location', $decodedFolderLocation)
             ->where('real_file_name', 'Register of SBO')
             ->get();
         $countSECSRRSBO = $entriesSECSRRSBO->count();
@@ -19126,9 +19962,259 @@ $entriesinc9 = CommonTable::where('user_id', $user->id)
     
     // Find the UserRole record where the role matches the user's role
     $userRoleRecord = UserRole::where('role', $userRole)->first();
+
+    if($iamhereSKY === true){
+        return response()->json([
+            'counthroff4' => $counthroff4,
+            'totalSizeKBhroff4' => $totalSizeKBhroff4,
+            'counthroff3' => $counthroff3,
+            'totalSizeKBhroff3' => $totalSizeKBhroff3,
+            'counthroff2' => $counthroff2,
+            'totalSizeKBhroff2' => $totalSizeKBhroff2,
+            'counthroff1' => $counthroff1,
+            'totalSizeKBhroff1' => $totalSizeKBhroff1,
+            'counthremppol4' => $counthremppol4,
+            'totalSizeKBhremppol4' => $totalSizeKBhremppol4,
+            'counthremppol3' => $counthremppol3,
+            'totalSizeKBhremppol3' => $totalSizeKBhremppol3,
+            'counthremppol2' => $counthremppol2,
+            'totalSizeKBhremppol2' => $totalSizeKBhremppol2,
+            'counthremppol1' => $counthremppol1,
+            'totalSizeKBhremppol1' => $totalSizeKBhremppol1,
+            'counthrhrpaymoney5' => $counthrhrpaymoney5,
+            'totalSizeKBhrpaymoney5' => $totalSizeKBhrpaymoney5,
+            'counthrhrpaymoney4' => $counthrhrpaymoney4,
+            'totalSizeKBhrpaymoney4' => $totalSizeKBhrpaymoney4,
+            'counthrhrpaymoney3' => $counthrhrpaymoney3,
+            'totalSizeKBhrpaymoney3' => $totalSizeKBhrpaymoney3,
+            'counthrhrpaymoney2' => $counthrhrpaymoney2,
+            'totalSizeKBhrpaymoney2' => $totalSizeKBhrpaymoney2,
+            'counthrhrpaymoney1' => $counthrhrpaymoney1,
+            'totalSizeKBhrpaymoney1' => $totalSizeKBhrpaymoney1,
+            'counthrhrempdecmaster' => $counthrhrempdecmaster,
+            'totalSizeKBhrempdecmaster' => $totalSizeKBhrempdecmaster,
+            'counthrhrempdec' => $counthrhrempdec,
+            'totalSizeKBhrempdec' => $totalSizeKBhrempdec,
+            'counthrpayrimapprove' => $counthrpayrimapprove,
+            'totalSizeKBhrpayrimapprove' => $totalSizeKBhrpayrimapprove,
+            'counthrpayrim' => $counthrpayrim,
+            'totalSizeKBhrpayrim' => $totalSizeKBhrpayrim,
+            'countkyccontactdetails' => $countkyccontactdetails,
+            'totalSizeKBkyccontactdetails' => $totalSizeKBkyccontactdetails,
+            'countkycaddressproof' => $countkycaddressproof,
+            'totalSizeKBkycaddressproof' => $totalSizeKBkycaddressproof,
+            'countkycpan' => $countkycpan,
+            'totalSizeKBkycpan' => $totalSizeKBkycpan,
+            'countkycaadhar' => $countkycaadhar,
+            'totalSizeKBkycaadhar' => $totalSizeKBkycaadhar,
+            'countkycphoto' => $countkycphoto,
+            'totalSizeKBkycphoto' => $totalSizeKBkycphoto,
+            'countemponboardincometax' => $countemponboardincometax,
+            'totalSizeKBemponboardincometax' => $totalSizeKBemponboardincometax,
+            'countemponboardepf' => $countemponboardepf,
+            'totalSizeKBemponboardepf' => $totalSizeKBemponboardepf,
+            'countemponboardcb' => $countemponboardcb,
+            'totalSizeKBemponboardcb' => $countemponboardcb,
+            'countemponboardnc' => $countemponboardnc,
+            'totalSizeKBemponboardnc' => $totalSizeKBemponboardnc,
+            'countemponboardnda' => $countemponboardnda,
+            'totalSizeKBemponboardnda' => $totalSizeKBemponboardnda,
+            'countemponboardea' => $countemponboardea,
+            'totalSizeKBemponboardea' => $totalSizeKBemponboardea,
+            'countemponboardal' => $countemponboardal,
+            'totalSizeKBemponboardal' => $totalSizeKBemponboardal,
+            'totalSizeKBemponboard' => $totalSizeKBemponboard,
+            'countemponboard' => $countemponboard,
+            'totalSizeKBdirectorappointmentsdir3din' => $totalSizeKBdirectorappointmentsdir3din,
+            'countdirectorappointmentsdir3din' => $countdirectorappointmentsdir3din,
+            'countSECAASR' => $countSECAASR,
+            'totalSizeKBSECAASR' => $totalSizeKBSECAASR,
+            'countSECAAALA' => $countSECAAALA,
+            'totalSizeKBSECAAALA' => $totalSizeKBSECAAALA,
+            'countSECAACRCAA' => $countSECAACRCAA,
+            'totalSizeKBSECAACRCAA' => $totalSizeKBSECAACRCAA,
+            'countSECAALA' => $countSECAALA,
+            'totalSizeKBSECAALA' => $totalSizeKBSECAALA,
+            'countSECAAIA' => $countSECAAIA,
+            'totalSizeKBSECAAIA' => $totalSizeKBSECAAIA,
+            'countSECAABRAA' => $countSECAABRAA,
+            'totalSizeKBSECAABRAA' => $totalSizeKBSECAABRAA,
+            'countcharregPP' => $countcharregPP,
+            'totalSizeKBcharregPP' => $totalSizeKBcharregPP,
+            'countcharregLWFC' => $countcharregLWFC,
+            'totalSizeKBcharregLWFC' => $totalSizeKBcharregLWFC,
+            'countcharregPTC' => $countcharregPTC,
+            'totalSizeKBcharregPTC' => $totalSizeKBcharregPTC,
+            'countcharregESIC' => $countcharregESIC,
+            'totalSizeKBcharregESIC' => $totalSizeKBcharregESIC,
+            'countcharregPFC' => $countcharregPFC,
+            'totalSizeKBcharregPFC' => $totalSizeKBcharregPFC,
+            'countcharregTrademark' => $countcharregTrademark,
+            'totalSizeKBcharregTrademark' => $totalSizeKBcharregTrademark,
+            'countcharregMSME' => $countcharregMSME,
+            'totalSizeKBcharregMSME' => $totalSizeKBcharregMSME,
+            'countcharregGSTIN' => $countcharregGSTIN,
+            'totalSizeKBcharregGSTIN' => $totalSizeKBcharregGSTIN,
+            'countcharregtan' => $countcharregtan,
+            'totalSizeKBcharregtan' => $totalSizeKBcharregtan,
+            'countcharregpan' => $countcharregpan,
+            'totalSizeKBcharregpan' => $totalSizeKBcharregpan,
+            'countIncorporationSharecertifF' => $countIncorporationSharecertifF,
+            'totalSizeKBIncorporationSharecertifF' => $totalSizeKBIncorporationSharecertifF,
+            'countIncorporationTrustDeed' => $countIncorporationTrustDeed,
+            'totalSizeKBIncorporationTrustDeed' => $totalSizeKBIncorporationTrustDeed,
+            'countIncorporationLLPAgreement' => $countIncorporationLLPAgreement,
+            'totalSizeKBIncorporationLLPAgreement' => $totalSizeKBIncorporationLLPAgreement,
+            'countIncorporationPartnerdeed' => $countIncorporationPartnerdeed,
+            'totalSizeKBIncorporationPartnerdeed' => $totalSizeKBIncorporationPartnerdeed,
+            'countIncorporationMemoofAssoc' => $countIncorporationMemoofAssoc,
+            'totalSizeKBIncorporationMemoofAssoc' => $totalSizeKBIncorporationMemoofAssoc,
+            'countIncorporationCertifofincorp' => $countIncorporationCertifofincorp,
+            'totalSizeKBIncorporationCertifofincorp' => $totalSizeKBIncorporationCertifofincorp,
+            'countIncorporationArtofAssoc' => $countIncorporationArtofAssoc, 
+            'totalSizeKBIncorporationArtofAssoc' => $totalSizeKBIncorporationArtofAssoc,
+            'countDirector2Signimg'  => $countDirector2Signimg,
+            'totalSizeKBDirector2Signimg' => $totalSizeKBDirector2Signimg, 
+            'countDirector2Photo' => $countDirector2Photo,
+            'totalSizeKBDirector2Photo' => $totalSizeKBDirector2Photo,
+            'countDirector2PANKYC' => $countDirector2PANKYC,
+            'totalSizeKBDirector2PANKYC' => $totalSizeKBDirector2PANKYC,
+            'countDirector2AddressProof' => $countDirector2AddressProof,
+            'countDirector2ContactDetails' => $countDirector2ContactDetails,
+            'totalSizeKBDirector2ContactDetails' => $totalSizeKBDirector2ContactDetails,
+            'totalSizeKBDirector2AddressProof' => $totalSizeKBDirector2AddressProof,
+            'countDirector2AadharKYC' => $countDirector2AadharKYC,
+            'totalSizeKBDirector2AadharKYC' => $totalSizeKBDirector2AadharKYC,
+            'countDirector1Signimg' => $countDirector1Signimg,
+            'totalSizeKBDirector1Signimg' => $totalSizeKBDirector1Signimg,
+            'countDirector1Photo' => $countDirector1Photo,
+            'totalSizeKBDirector1Photo' => $totalSizeKBDirector1Photo,
+            'countDirector1PANKYC' => $countDirector1PANKYC,
+            'totalSizeKBDirector1PANKYC' => $totalSizeKBDirector1PANKYC,
+            'countDirector1AddressProof' => $countDirector1AddressProof,
+            'countDirector1ContactDetails' => $countDirector1ContactDetails,
+            'totalSizeKBDirector1ContactDetails' => $totalSizeKBDirector1ContactDetails,
+            'totalSizeKBDirector1AddressProof' => $totalSizeKBDirector1AddressProof,
+            'countDirector1AadharKYC' => $countDirector1AadharKYC,
+            'totalSizeKBDirector1AadharKYC' => $totalSizeKBDirector1AadharKYC,
+            'countAuditorExitsADT2' => $countAuditorExitsADT2,
+            'totalSizeKBAuditorExitsADT2' => $totalSizeKBAuditorExitsADT2,
+            'countAuditorExitsSpecialResol' => $countAuditorExitsSpecialResol,
+            'totalSizeKBAuditorExitsSpecialResol' => $totalSizeKBAuditorExitsSpecialResol,
+            'countAuditorExitsResignDetofgroundsseekremaud' => $countAuditorExitsResignDetofgroundsseekremaud,
+            'totalSizeKBAuditorExitsResignDetofgroundsseekremaud' => $totalSizeKBAuditorExitsResignDetofgroundsseekremaud,
+            'countAuditorExitsADT3' => $countAuditorExitsADT3,
+            'countAuditorExitsResignletteraud' => $countAuditorExitsResignletteraud,
+            'totalSizeKBAuditorExitsResignletteraud' => $totalSizeKBAuditorExitsResignletteraud,
+            'totalSizeKBAuditorExitsADT3' => $totalSizeKBAuditorExitsResignletteraud,
+            'countdepositundertakingsFormDPT3' => $countdepositundertakingsFormDPT3,
+            'totalSizeKBdepositundertakingsFormDPT3' => $totalSizeKBdepositundertakingsFormDPT3,
+            'countdirectorresignationdir11' => $countdirectorresignationdir11,
+            'totalSizeKBdirectorresignationdir11' => $totalSizeKBdirectorresignationdir11,
+            'countdirectorresignationdir12' => $countdirectorresignationdir12,
+            'totalSizeKBdirectorresignationdir12' => $totalSizeKBdirectorresignationdir12,
+            'countmutualfundstatement' => $countmutualfundstatement,
+            'totalSizeKBmutualfundstatement' => $totalSizeKBmutualfundstatement,
+            'countfixeddepoiststatement' => $countfixeddepoiststatement,
+            'totalSizeKBfixeddepoiststatement' => $totalSizeKBfixeddepoiststatement,
+            'countdcreditcardstatement' => $countdcreditcardstatement,
+            'totalSizeKBcreditcardstatement' => $totalSizeKBcreditcardstatement, 
+            'countdirectorappointmentsdir12' => $countdirectorappointmentsdir12,
+            'totalSizeKBdirectorappointmentsdir12' => $totalSizeKBdirectorappointmentsdir12,
+            'countdirectorappointmentsdir6' => $countdirectorappointmentsdir6, 
+            'totalSizeKBdirectorappointmentsdir6' => $totalSizeKBdirectorappointmentsdir6,
+            'countdirectorappointmentsdir3' => $countdirectorappointmentsdir3,
+            'totalSizeKBdirectorappointmentsdir3' => $totalSizeKBdirectorappointmentsdir3,
+            'countbank' => $countbank,
+            'totalSizeKBbank' => $totalSizeKBbank, 
+            'countentriesmgt7a' => $countentriesmgt7a,
+            'totalSizeKBentriemgt7a' => $totalSizeKBentriemgt7a,
+            'countentriesmgt7' => $countentriesmgt7, 
+            'totalSizeKBentriemgt7' => $totalSizeKBentriemgt7,
+            'countentriescfs' => $countentriescfs,
+            'totalSizeKBentriecfs' => $totalSizeKBentriecfs, 
+            'countentriesafs' => $countentriesafs,
+            'countentriesinnerinc20a' => $countentriesinnerinc20a,
+            'totalSizeKBentrieafs' => $totalSizeKBentrieafs, 
+            'totalSizeKBentrieinnerinc20a' => $totalSizeKBentrieinnerinc20a,
+            'totalSizeKBentrieinnerinc22' => $totalSizeKBentrieinnerinc22,
+            'countentriesinnerinc22' => $countentriesinnerinc22,
+            'countentriesinnerinc35' => $countentriesinnerinc35,
+            'totalSizeKBentrieinnerinc35' => $totalSizeKBentrieinnerinc35, 
+            'countentriesinnerinc34' => $countentriesinnerinc34,
+            'totalSizeKBentrieinnerinc34' => $totalSizeKBentrieinnerinc34,
+            'countentriesinnerinc33' => $countentriesinnerinc33, 
+            'totalSizeKBentrieinnerinc33' => $totalSizeKBentrieinnerinc33,
+            'countentriesinnerspice' => $countentriesinnerspice,
+            'totalSizeKBentrieinnerspice' => $totalSizeKBentrieinnerspice,
+            'totalSizeKBentrieinc9' => $totalSizeKBentrieinc9,
+            'countentriesinc9' => $countentriesinc9,
+            'countinnerrun' => $countinnerrun,
+            'totalSizeKBinnerrun' => $totalSizeKBinnerrun,
+            'count' => $count, 
+            'totalSizeKB' => $totalSizeKB,
+            'totalSizeKBMinbooks' => $totalSizeKBMinbooks,
+            'countMinbooks' => $countMinbooks,
+            'countentriesreso' => $countentriesreso, 
+            'totalSizeKBentriesreso' => $totalSizeKBentriesreso,
+            'countentriesas' => $countentriesas,
+            'totalSizeKBentriesas' => $totalSizeKBentriesas,
+            'countentriesnomeet' => $countentriesnomeet, 
+            'totalSizeKBentriesnomeet' => $totalSizeKBentriesnomeet,
+            'countentriesminbookmeet' => $countentriesminbookmeet,
+            'totalSizeKBentriesminbookmeet' => $totalSizeKBentriesminbookmeet,
+            'countentriesasmeet' => $countentriesasmeet,
+            'totalSizeKBentriesasmeet' => $totalSizeKBentriesasmeet,
+            'countentriesresomeet' => $countentriesresomeet, 
+            'totalSizeKBentriesresomeet' => $totalSizeKBentriesresomeet,
+            'countentriesordernotice' => $countentriesordernotice,
+            'totalSizeKBentriesordernotice' => $totalSizeKBentriesordernotice, 
+            'countentriesorderminbook' => $countentriesorderminbook,
+            'totalSizeKBentriesorderminbook' => $totalSizeKBentriesorderminbook,
+            'countentriesorderAttend' => $countentriesorderAttend, 
+            'totalSizeKBentriesorderAttend' => $totalSizeKBentriesorderAttend,
+            'countentriesorderreso' => $countentriesorderreso,
+            'totalSizeKBentriesorderreso' => $totalSizeKBentriesorderreso,
+            'countSECSRRM' => $countSECSRRM,
+            'totalSizeKBSECSRRM' => $totalSizeKBSECSRRM, 
+            'countSECSRROSH' => $countSECSRROSH,
+            'totalSizeKBSECSRROSH' => $totalSizeKBSECSRROSH,
+            'countSECSRFR' => $countSECSRFR,
+            'totalSizeKBSECSRFR' => $totalSizeKBSECSRFR,
+            'countSECSRRDKMPR' => $countSECSRRDKMPR,
+            'totalSizeKBSECSRRDKMPR' => $totalSizeKBSECSRRDKMPR,
+            'countSECSRROC' => $countSECSRROC,
+            'totalSizeKBSECSRROC' => $totalSizeKBSECSRROC,
+            'countSECSRROD' => $countSECSRROD,
+            'totalSizeKBSECSRROD' => $totalSizeKBSECSRROD,
+            'countSECSRRLGS' => $countSECSRRLGS,
+            'totalSizeKBSECSRRLGS' => $totalSizeKBSECSRRLGS,
+            'countSECSRROINHCN' => $countSECSRROINHCN,
+            'totalSizeKBSECSRROINHCN' => $totalSizeKBSECSRROINHCN,
+            'countSECSRRCDI' => $countSECSRRCDI,
+            'totalSizeKBSECSRRCDI' => $totalSizeKBSECSRRCDI,
+            'countSECSRRSES' => $countSECSRRSES,
+            'totalSizeKBSECSRRSES' => $totalSizeKBSECSRRSES, 
+            'countSECSRRESO' => $countSECSRRESO,
+            'totalSizeKBSECSRRESO' => $totalSizeKBSECSRRESO,
+            'countSECSRROSBB' => $countSECSRROSBB,
+            'totalSizeKBSECSRROSBB' => $totalSizeKBSECSRROSBB,
+            'countSECSRRRDSC' => $countSECSRRRDSC,
+            'totalSizeKBSECSRRRDSC' => $totalSizeKBSECSRRRDSC,
+            'countSECSRRSBO' => $countSECSRRSBO,
+            'totalSizeKBSECSRRSBO' => $totalSizeKBSECSRRSBO,
+            'countSECSRRPB' => $countSECSRRPB,
+            'totalSizeKBSECSRRPB' => $totalSizeKBSECSRRPB
+          
+        ]);
+    }
+
+   
+
+    // return view('Secretarial_Annual_Filings', compact('countentriesafs','countentriescfs', 'countentriesmgt7','countentriesmgt7a','totalSizeKBentrieafs','totalSizeKBentriecfs', 'totalSizeKBentriemgt7', 'totalSizeKBentriemgt7a'));
         
         
-        return view('docurepo', compact('counthroff4','totalSizeKBhroff4','counthroff3','totalSizeKBhroff3','counthroff2','totalSizeKBhroff2','counthroff1','totalSizeKBhroff1','counthremppol4','totalSizeKBhremppol4','counthremppol3','totalSizeKBhremppol3','counthremppol2','totalSizeKBhremppol2','counthremppol1','totalSizeKBhremppol1','counthrhrpaymoney5','totalSizeKBhrpaymoney5','counthrhrpaymoney4','totalSizeKBhrpaymoney4','counthrhrpaymoney3','totalSizeKBhrpaymoney3','counthrhrpaymoney2','totalSizeKBhrpaymoney2','counthrhrpaymoney1','totalSizeKBhrpaymoney1','counthrhrempdecmaster','totalSizeKBhrempdecmaster','counthrhrempdec','totalSizeKBhrempdec','counthrpayrimapprove','totalSizeKBhrpayrimapprove','counthrpayrim','totalSizeKBhrpayrim','countkyccontactdetails','totalSizeKBkyccontactdetails','countkycaddressproof','totalSizeKBkycaddressproof','countkycpan','totalSizeKBkycpan','countkycaadhar','totalSizeKBkycaadhar','countkycphoto','totalSizeKBkycphoto','countemponboardincometax','totalSizeKBemponboardincometax','countemponboardepf','totalSizeKBemponboardepf','countemponboardcb','totalSizeKBemponboardcb','countemponboardnc','totalSizeKBemponboardnc','countemponboardnda','totalSizeKBemponboardnda','countemponboardea','totalSizeKBemponboardea','countemponboardal','totalSizeKBemponboardal','totalSizeKBemponboard','countemponboard','totalSizeKBdirectorappointmentsdir3din','countdirectorappointmentsdir3din','cli_announcements','fileCount','fileCount1','user','commondataroom','countSECAASR','totalSizeKBSECAASR','countSECAAALA','totalSizeKBSECAAALA','countSECAACRCAA','totalSizeKBSECAACRCAA','countSECAALA','totalSizeKBSECAALA','countSECAAIA','totalSizeKBSECAAIA','countSECAABRAA','totalSizeKBSECAABRAA','countcharregPP','totalSizeKBcharregPP','countcharregLWFC','totalSizeKBcharregLWFC','countcharregPTC','totalSizeKBcharregPTC','countcharregESIC','totalSizeKBcharregESIC','countcharregPFC','totalSizeKBcharregPFC','countcharregTrademark','totalSizeKBcharregTrademark','countcharregMSME','totalSizeKBcharregMSME','countcharregGSTIN','totalSizeKBcharregGSTIN','countcharregtan','totalSizeKBcharregtan','countcharregpan','totalSizeKBcharregpan','countIncorporationSharecertifF',
+        return view('docurepo', compact('RealFileFoldersBank','RealFileFolders','counthroff4','totalSizeKBhroff4','counthroff3','totalSizeKBhroff3','counthroff2','totalSizeKBhroff2','counthroff1','totalSizeKBhroff1','counthremppol4','totalSizeKBhremppol4','counthremppol3','totalSizeKBhremppol3','counthremppol2','totalSizeKBhremppol2','counthremppol1','totalSizeKBhremppol1','counthrhrpaymoney5','totalSizeKBhrpaymoney5','counthrhrpaymoney4','totalSizeKBhrpaymoney4','counthrhrpaymoney3','totalSizeKBhrpaymoney3','counthrhrpaymoney2','totalSizeKBhrpaymoney2','counthrhrpaymoney1','totalSizeKBhrpaymoney1','counthrhrempdecmaster','totalSizeKBhrempdecmaster','counthrhrempdec','totalSizeKBhrempdec','counthrpayrimapprove','totalSizeKBhrpayrimapprove','counthrpayrim','totalSizeKBhrpayrim','countkyccontactdetails','totalSizeKBkyccontactdetails','countkycaddressproof','totalSizeKBkycaddressproof','countkycpan','totalSizeKBkycpan','countkycaadhar','totalSizeKBkycaadhar','countkycphoto','totalSizeKBkycphoto','countemponboardincometax','totalSizeKBemponboardincometax','countemponboardepf','totalSizeKBemponboardepf','countemponboardcb','totalSizeKBemponboardcb','countemponboardnc','totalSizeKBemponboardnc','countemponboardnda','totalSizeKBemponboardnda','countemponboardea','totalSizeKBemponboardea','countemponboardal','totalSizeKBemponboardal','totalSizeKBemponboard','countemponboard','totalSizeKBdirectorappointmentsdir3din','countdirectorappointmentsdir3din','cli_announcements','fileCount','fileCount1','user','commondataroom','countSECAASR','totalSizeKBSECAASR','countSECAAALA','totalSizeKBSECAAALA','countSECAACRCAA','totalSizeKBSECAACRCAA','countSECAALA','totalSizeKBSECAALA','countSECAAIA','totalSizeKBSECAAIA','countSECAABRAA','totalSizeKBSECAABRAA','countcharregPP','totalSizeKBcharregPP','countcharregLWFC','totalSizeKBcharregLWFC','countcharregPTC','totalSizeKBcharregPTC','countcharregESIC','totalSizeKBcharregESIC','countcharregPFC','totalSizeKBcharregPFC','countcharregTrademark','totalSizeKBcharregTrademark','countcharregMSME','totalSizeKBcharregMSME','countcharregGSTIN','totalSizeKBcharregGSTIN','countcharregtan','totalSizeKBcharregtan','countcharregpan','totalSizeKBcharregpan','countIncorporationSharecertifF',
         'totalSizeKBIncorporationSharecertifF','countIncorporationTrustDeed'
         ,'totalSizeKBIncorporationTrustDeed','countIncorporationLLPAgreement',
         'totalSizeKBIncorporationLLPAgreement','countIncorporationPartnerdeed',
@@ -19177,6 +20263,7 @@ $entriesinc9 = CommonTable::where('user_id', $user->id)
         'countSECSRRESO','totalSizeKBSECSRRESO','countSECSRROSBB','totalSizeKBSECSRROSBB','countSECSRRRDSC','totalSizeKBSECSRRRDSC',
         'countSECSRRSBO','totalSizeKBSECSRRSBO','countSECSRRPB','totalSizeKBSECSRRPB'));
     }
+    
     
 //     public function filterContents(Request $request)
 // {
@@ -19460,14 +20547,14 @@ public function shareFolder(Request $request)
 
     // Base query for fetching folders
     $commonFoldersQuery = Folder::where('parent_name', $folderPath)
-                                ->where('common_folder', 1)
-                                ->where('real_file_name', NULL);
+                                ->where('common_folder', 1);
+                                // ->where('real_file_name', NULL);
 
 
                                 $userFoldersQuery = Folder::where('parent_name', $folderPath)
                                 ->where('user_id', Auth::id())
-                                ->where('is_delete', 0)
-                                ->where('real_file_name', NULL);
+                                ->where('is_delete', 0);
+                                // ->where('real_file_name', NULL);
 
     // Apply sorting logic based on the selected sort option
     switch ($sortOption) {
@@ -19557,9 +20644,9 @@ public function shareFolder(Request $request)
                                 </button>
                                 <div id="myDropdown2-' . $folder->id . '" class="dropdown-content">
                                    
-                                    <a class="dropdown-itemm rename_nt"><img src="../assets/images/rename_nt.png">Rename</a>
+                                    <a class="dropdown-itemm rename_nt" data-bs-toggle="modal" data-bs-target="#renamefolder" data-director_id="' . $folder->director_id . '" data-employee_id="' . $folder->employee_id . '" data-folder_path="' . $folder->path . '" data-old_folder_name="' . $folder->name . '" data-folder_name="' . $folder->name . '" data-folder_id="' . $folder->id . '"><img src="../assets/images/rename_nt.png">Rename</a>
 
-                                     <a class="dropdown-itemm download_nt" data-folder-path="' . $folder->path . '" data-id="' . $folder->id . '"><svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                     <a class="dropdown-itemm download_nt downloadfolder" data-folder-path="' . $folder->path . '" data-id="' . $folder->id . '"><svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
                                       <path d="M2.40625 12.25C2.00014 12.25 1.61066 12.0887 1.32349 11.8015C1.03633 11.5143 0.875 11.1249 0.875 10.7188V8.53125C0.875 8.3572 0.94414 8.19028 1.06721 8.06721C1.19028 7.94414 1.3572 7.875 1.53125 7.875C1.7053 7.875 1.87222 7.94414 1.99529 8.06721C2.11836 8.19028 2.1875 8.3572 2.1875 8.53125V10.7188C2.1875 10.8395 2.2855 10.9375 2.40625 10.9375H11.5938C11.6518 10.9375 11.7074 10.9145 11.7484 10.8734C11.7895 10.8324 11.8125 10.7768 11.8125 10.7188V8.53125C11.8125 8.3572 11.8816 8.19028 12.0047 8.06721C12.1278 7.94414 12.2947 7.875 12.4688 7.875C12.6428 7.875 12.8097 7.94414 12.9328 8.06721C13.0559 8.19028 13.125 8.3572 13.125 8.53125V10.7188C13.125 11.1249 12.9637 11.5143 12.6765 11.8015C12.3893 12.0887 11.9999 12.25 11.5938 12.25H2.40625Z" fill="#CEFFA8"></path>
                                       <path d="M6.34334 6.72788V1.75C6.34334 1.57595 6.41248 1.40903 6.53555 1.28596C6.65862 1.16289 6.82554 1.09375 6.99959 1.09375C7.17364 1.09375 7.34056 1.16289 7.46363 1.28596C7.5867 1.40903 7.65584 1.57595 7.65584 1.75V6.72788L9.37959 5.005C9.44049 4.9441 9.51279 4.89579 9.59236 4.86283C9.67193 4.82987 9.75722 4.81291 9.84334 4.81291C9.92947 4.81291 10.0148 4.82987 10.0943 4.86283C10.1739 4.89579 10.2462 4.9441 10.3071 5.005C10.368 5.0659 10.4163 5.1382 10.4493 5.21777C10.4822 5.29734 10.4992 5.38262 10.4992 5.46875C10.4992 5.55488 10.4822 5.64016 10.4493 5.71973C10.4163 5.7993 10.368 5.8716 10.3071 5.9325L7.46334 8.77625C7.40247 8.83721 7.33018 8.88556 7.25061 8.91856C7.17103 8.95155 7.08574 8.96853 6.99959 8.96853C6.91345 8.96853 6.82815 8.95155 6.74857 8.91856C6.669 8.88556 6.59671 8.83721 6.53584 8.77625L3.69209 5.9325C3.63119 5.8716 3.58288 5.7993 3.54992 5.71973C3.51696 5.64016 3.5 5.55488 3.5 5.46875C3.5 5.38262 3.51696 5.29734 3.54992 5.21777C3.58288 5.1382 3.63119 5.0659 3.69209 5.005C3.75299 4.9441 3.82529 4.89579 3.90486 4.86283C3.98443 4.82987 4.06972 4.81291 4.15584 4.81291C4.24197 4.81291 4.32725 4.82987 4.40682 4.86283C4.48639 4.89579 4.55869 4.9441 4.61959 5.005L6.34334 6.72788Z" fill="#CEFFA8"></path>
                                   </svg>Download</a>
@@ -19656,7 +20743,7 @@ public function shareFolder(Request $request)
                                    
                                                    
 
-                                                    <a class="dropdown-itemm download_nt" data-folder-path="' . $folder->path . '" data-id="' . $folder->id . '"><svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                    <a class="dropdown-itemm download_nt downloadfolder" data-folder-path="' . $folder->path . '" data-id="' . $folder->id . '"><svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
                                       <path d="M2.40625 12.25C2.00014 12.25 1.61066 12.0887 1.32349 11.8015C1.03633 11.5143 0.875 11.1249 0.875 10.7188V8.53125C0.875 8.3572 0.94414 8.19028 1.06721 8.06721C1.19028 7.94414 1.3572 7.875 1.53125 7.875C1.7053 7.875 1.87222 7.94414 1.99529 8.06721C2.11836 8.19028 2.1875 8.3572 2.1875 8.53125V10.7188C2.1875 10.8395 2.2855 10.9375 2.40625 10.9375H11.5938C11.6518 10.9375 11.7074 10.9145 11.7484 10.8734C11.7895 10.8324 11.8125 10.7768 11.8125 10.7188V8.53125C11.8125 8.3572 11.8816 8.19028 12.0047 8.06721C12.1278 7.94414 12.2947 7.875 12.4688 7.875C12.6428 7.875 12.8097 7.94414 12.9328 8.06721C13.0559 8.19028 13.125 8.3572 13.125 8.53125V10.7188C13.125 11.1249 12.9637 11.5143 12.6765 11.8015C12.3893 12.0887 11.9999 12.25 11.5938 12.25H2.40625Z" fill="#CEFFA8"></path>
                                       <path d="M6.34334 6.72788V1.75C6.34334 1.57595 6.41248 1.40903 6.53555 1.28596C6.65862 1.16289 6.82554 1.09375 6.99959 1.09375C7.17364 1.09375 7.34056 1.16289 7.46363 1.28596C7.5867 1.40903 7.65584 1.57595 7.65584 1.75V6.72788L9.37959 5.005C9.44049 4.9441 9.51279 4.89579 9.59236 4.86283C9.67193 4.82987 9.75722 4.81291 9.84334 4.81291C9.92947 4.81291 10.0148 4.82987 10.0943 4.86283C10.1739 4.89579 10.2462 4.9441 10.3071 5.005C10.368 5.0659 10.4163 5.1382 10.4493 5.21777C10.4822 5.29734 10.4992 5.38262 10.4992 5.46875C10.4992 5.55488 10.4822 5.64016 10.4493 5.71973C10.4163 5.7993 10.368 5.8716 10.3071 5.9325L7.46334 8.77625C7.40247 8.83721 7.33018 8.88556 7.25061 8.91856C7.17103 8.95155 7.08574 8.96853 6.99959 8.96853C6.91345 8.96853 6.82815 8.95155 6.74857 8.91856C6.669 8.88556 6.59671 8.83721 6.53584 8.77625L3.69209 5.9325C3.63119 5.8716 3.58288 5.7993 3.54992 5.71973C3.51696 5.64016 3.5 5.55488 3.5 5.46875C3.5 5.38262 3.51696 5.29734 3.54992 5.21777C3.58288 5.1382 3.63119 5.0659 3.69209 5.005C3.75299 4.9441 3.82529 4.89579 3.90486 4.86283C3.98443 4.82987 4.06972 4.81291 4.15584 4.81291C4.24197 4.81291 4.32725 4.82987 4.40682 4.86283C4.48639 4.89579 4.55869 4.9441 4.61959 5.005L6.34334 6.72788Z" fill="#CEFFA8"></path>
                                   </svg>Download</a>
@@ -19860,34 +20947,182 @@ public function shareFolder(Request $request)
     }
 
 
-    public function downloadFolder($folderPath)
+    // public function downloadFolder($folderid)
+    // {
+    //     $folder_id = $folderid;
+    //     $folder = Folder::where('id', $folder_id)->first();
+    
+    //     if (!$folder) {
+    //         \Log::error("Folder not found for ID: " . $folder_id);
+    //         return response()->json(['success' => false, 'message' => 'Folder not found.']);
+    //     }
+    
+    //     $zipFileName = $folder->name . $folder->id . '.zip';
+    //     $zipFilePath = storage_path('app/public/' . $zipFileName);
+    
+    //     $zip = new ZipArchive();
+    //     if ($zip->open($zipFilePath, ZipArchive::CREATE) !== TRUE) {
+    //         \Log::error("Could not create ZIP file at: " . $zipFilePath);
+    //         return response()->json(['success' => false, 'message' => 'Could not create ZIP file.']);
+    //     }
+    
+    //     $folderFullPath = storage_path('app/' . $folder->path);
+    //     if (is_dir($folderFullPath)) {
+    //         $this->addFolderToZip($zip, $folderFullPath, $folder->name);
+    //     } else {
+    //         \Log::error("Folder does not exist: " . $folderFullPath);
+    //         return response()->json(['success' => false, 'message' => 'Folder does not exist.']);
+    //     }
+    
+    //     $zip->close();
+    
+    //     if (!file_exists($zipFilePath)) {
+    //         return response()->json(['success' => false, 'message' => 'ZIP file could not be created.']);
+    //     }
+    
+    //     // Download response
+    //     return response()->download($zipFilePath)->deleteFileAfterSend(true);
+    // }
+    
+    // /**
+    //  * Recursively adds a folder and its contents to a ZipArchive.
+    //  *
+    //  * @param ZipArchive $zip The ZipArchive object.
+    //  * @param string $folderPath The path to the folder being added.
+    //  * @param string $folderName The name to be used inside the ZIP.
+    //  */
+    // private function addFolderToZip($zip, $folderPath, $folderName)
+    // {
+    //     $zip->addEmptyDir($folderName);
+    
+    //     $files = scandir($folderPath);
+    
+    //     foreach ($files as $file) {
+    //         if ($file == '.' || $file == '..') {
+    //             continue;
+    //         }
+    
+    //         $filePath = $folderPath . '/' . $file;
+    //         $zipPath = $folderName . '/' . $file;
+    
+    //         if (is_dir($filePath)) {
+    //             $this->addFolderToZip($zip, $filePath, $zipPath);
+    //         } else {
+    //             $zip->addFile($filePath, $zipPath);
+    //         }
+    //     }
+    // }
+
+
+
+//sandeep start here for subdirectories according to real file name     working 
+// use App\Models\File; // Ensure this is your Eloquent model
+
+// public function downloadFolder($folderid)
+// {
+//     $folder = Folder::find($folderid);
+
+//     if (!$folder) {
+//         \Log::error("Folder not found for ID: " . $folderid);
+//         return response()->json(['success' => false, 'message' => 'Folder not found.']);
+//     }
+
+//     $zipFileName = $folder->name . $folder->id . '.zip';
+//     $zipFilePath = storage_path('app/public/' . $zipFileName);
+
+//     $zip = new ZipArchive();
+//     if ($zip->open($zipFilePath, ZipArchive::CREATE) !== TRUE) {
+//         \Log::error("Could not create ZIP file at: " . $zipFilePath);
+//         return response()->json(['success' => false, 'message' => 'Could not create ZIP file.']);
+//     }
+
+//     $folderFullPath = storage_path('app/' . $folder->path);
+//     if (is_dir($folderFullPath)) {
+//         $this->addFolderToZip($zip, $folderFullPath, $folder->name);
+//     } else {
+//         \Log::error("Folder does not exist: " . $folderFullPath);
+//         return response()->json(['success' => false, 'message' => 'Folder does not exist.']);
+//     }
+
+//     $zip->close();
+
+//     if (!file_exists($zipFilePath)) {
+//         return response()->json(['success' => false, 'message' => 'ZIP file could not be created.']);
+//     }
+
+//     return response()->download($zipFilePath)->deleteFileAfterSend(true);
+// }
+
+// /**
+//  * Recursively adds a folder and its contents to a ZipArchive.
+//  *
+//  * @param ZipArchive $zip The ZipArchive object.
+//  * @param string $folderPath The path to the folder being added.
+//  * @param string $zipFolderName The name to be used inside the ZIP.
+//  */
+// private function addFolderToZip($zip, $folderPath, $zipFolderName)
+// {
+//     $zip->addEmptyDir($zipFolderName);
+
+//     $files = scandir($folderPath);
+
+//     foreach ($files as $file) {
+//         if ($file == '.' || $file == '..') {
+//             continue;
+//         }
+
+//         $filePath = $folderPath . '/' . $file;
+
+//         // Fetch the real file name from the database, if it exists
+//         $fileRecord = CommonTable::where('temp_file_name', $file)->first();
+
+//         // If `real_file_name` exists, use it for the subdirectory; otherwise, skip subdirectory creation
+//         if ($fileRecord && $fileRecord->real_file_name) {
+//             $realFileName = $fileRecord->real_file_name;
+//             $zipSubdirectory = $zipFolderName . '/' . $realFileName;
+
+//             // If it's a directory, recursively add it
+//             if (is_dir($filePath)) {
+//                 $this->addFolderToZip($zip, $filePath, $zipSubdirectory);
+//             } else {
+//                 // Ensure the subdirectory exists in the zip for each unique `real_file_name`
+//                 if (!$zip->locateName($zipSubdirectory)) {
+//                     $zip->addEmptyDir($zipSubdirectory);
+//                 }
+//                 // Add the file to its corresponding subdirectory inside the ZIP
+//                 $zip->addFile($filePath, $zipSubdirectory . '/' . basename($filePath));
+//             }
+//         } else {
+//             // If `real_file_name` is not available, add the file directly under the main folder
+//             if (!is_dir($filePath)) {
+//                 $zip->addFile($filePath, $zipFolderName . '/' . basename($filePath));
+//             }
+//         }
+//     }
+// }
+
+
+//sandeep end  here for subdirectories according to real file name     working 
+
+
+public function downloadFolder($folderid)
 {
-    // Decode the folder path since it was URL-encoded in the request
-    $folderPaths = $folderPath;
-    
-    // Fetch the folder based on the folder path
-    $folder = Folder::where('id', $folderPaths)->first();
-    // dd($folder);
-    
+    $folder = Folder::find($folderid);
+
     if (!$folder) {
-        \Log::error("Folder not found for path: " . $folderPaths);
+        \Log::error("Folder not found for ID: " . $folderid);
         return response()->json(['success' => false, 'message' => 'Folder not found.']);
     }
 
-    // Create a unique ZIP file name using folder id or name
-    $zipFileName = $folder->name . $folder->id . '.zip'; // Unique ZIP filename
-    $zipFilePath = storage_path('app/public/' . $zipFileName); // Save in the storage/app/public directory
+    $zipFileName = $folder->name . $folder->id . '.zip';
+    $zipFilePath = storage_path('app/public/' . $zipFileName);
 
-    // Initialize the ZipArchive object
     $zip = new ZipArchive();
-
-    // Open the ZIP file for writing
     if ($zip->open($zipFilePath, ZipArchive::CREATE) !== TRUE) {
         \Log::error("Could not create ZIP file at: " . $zipFilePath);
         return response()->json(['success' => false, 'message' => 'Could not create ZIP file.']);
     }
 
-    // Recursively add the folder and its contents to the ZIP file
     $folderFullPath = storage_path('app/' . $folder->path);
     if (is_dir($folderFullPath)) {
         $this->addFolderToZip($zip, $folderFullPath, $folder->name);
@@ -19896,19 +21131,13 @@ public function shareFolder(Request $request)
         return response()->json(['success' => false, 'message' => 'Folder does not exist.']);
     }
 
-    // Close the ZIP file
     $zip->close();
 
-    // Check if the ZIP file was created successfully
     if (!file_exists($zipFilePath)) {
         return response()->json(['success' => false, 'message' => 'ZIP file could not be created.']);
     }
 
-    // Return the ZIP file URL for downloading (ensure storage link is created with 'php artisan storage:link')
-    return response()->json([
-        'success' => true,
-        'zipFileUrl' => asset('storage/' . $zipFileName), // URL to download the file
-    ]);
+    return response()->download($zipFilePath)->deleteFileAfterSend(true);
 }
 
 /**
@@ -19916,38 +21145,207 @@ public function shareFolder(Request $request)
  *
  * @param ZipArchive $zip The ZipArchive object.
  * @param string $folderPath The path to the folder being added.
- * @param string $folderName The name to be used inside the ZIP.
+ * @param string $zipFolderName The name to be used inside the ZIP.
  */
-private function addFolderToZip($zip, $folderPaths, $folderName)
+private function addFolderToZip($zip, $folderPath, $zipFolderName)
 {
-    // Add the folder itself
-    $zip->addEmptyDir($folderName);
+    // Add the folder itself as an empty directory in the ZIP
+    $zip->addEmptyDir($zipFolderName);
 
-    // Get the files and subfolders inside this folder
-    $files = scandir($folderPaths);
+    $files = scandir($folderPath);
 
     foreach ($files as $file) {
         if ($file == '.' || $file == '..') {
-            continue; // Skip special directories
+            continue;
         }
 
-        $filePath = $folderPaths . '/' . $file;
-        $zipPath = $folderName . '/' . $file; // Path inside the ZIP
+        $filePath = $folderPath . '/' . $file;
+
+        // Fetch file information from the database
+        $fileRecord = CommonTable::where('temp_file_name', $file)->first();
+
+        // Use `file_name` for the file name in the ZIP if both `temp_file_name` and `real_file_name` are NULL
+        $fileNameInZip = $fileRecord && $fileRecord->file_name ? $fileRecord->file_name : $file;
+
+        // Determine subdirectory based on `real_file_name` or fall back to `file_name`
+        $subDirName = null;
+        if ($fileRecord) {
+            // If `real_file_name` exists, use it for subdirectory
+            if ($fileRecord->real_file_name) {
+                $subDirName = $fileRecord->real_file_name;
+            }
+        }
 
         if (is_dir($filePath)) {
-            // Recursively add subfolder
-            $this->addFolderToZip($zip, $filePath, $zipPath);
+            // Recursively add subdirectories, using `real_file_name` as the directory name if available
+            $this->addFolderToZip($zip, $filePath, $zipFolderName . '/' . ($subDirName ?? $fileNameInZip));
         } else {
-            // Add file to the ZIP
-            $zip->addFile($filePath, $zipPath);
+            // If `real_file_name` is null, place the file outside of any subdirectory and name it `file_name`
+            if ($subDirName) {
+                // If a subdirectory is specified, ensure it exists and add the file within it
+                if (!$zip->locateName($zipFolderName . '/' . $subDirName)) {
+                    $zip->addEmptyDir($zipFolderName . '/' . $subDirName);
+                }
+                $zip->addFile($filePath, $zipFolderName . '/' . $subDirName . '/' . $fileNameInZip);
+            } else {
+                // If no subdirectory is needed, add the file directly under the main folder with `file_name`
+                $zip->addFile($filePath, $zipFolderName . '/' . $fileNameInZip);
+            }
         }
     }
 }
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////
+
+
+
+
     
     
 
+    
+    
+    
+//     public function renameFolder(Request $request)
+// {
+//     $request->validate([
+//         'old_folder_name' => 'required|string',
+//         'folder_name' => 'required|string',
+//     ]);
 
+//     $searchTerm = $request->old_folder_name;
+//     $newTerm = $request->folder_name;
+//     $emp = $request->employee_id;
+
+//     $dir = $request->director_id;
+
+//     $fold = $request->folder_id;
+
+//     // Fetch folders where 'path' contains the search term
+//     $folders = Folder::where('employee_id', $emp)->get();
+
+//     foreach ($folders as $folder) {
+//         // Current folder path and name
+//         $currentFolderPath = $folder->path;
+
+//         // Create the new folder path by replacing only the specified term
+//         $newFolderPath = str_replace($searchTerm, $newTerm, $currentFolderPath);
+
+//         // Rename the folder in the filesystem if it exists
+//         if (Storage::exists($currentFolderPath)) {
+//             Storage::move($currentFolderPath, $newFolderPath);
+//         }
+
+//         // Update the folder record in the database with the new path and name
+//         $folder->name = str_replace($searchTerm, $newTerm, $folder->name);
+//         $folder->path = $newFolderPath;
+//         $folder->save();
+//     }
+
+//     // Update any other related fields (paths and parent names) in the database
+//     Folder::where('parent_name', 'LIKE', '%' . $searchTerm . '%')
+//         ->update(['parent_name' => DB::raw("REPLACE(parent_name, '$searchTerm', '$newTerm')")]);
+
+//     StoreCompanyEmployee::where('name', 'LIKE', '%' . $searchTerm . '%')
+//         ->where('id', $emp)
+//         ->update(['name' => DB::raw("REPLACE(name, '$searchTerm', '$newTerm')")]);
+
+//     return redirect()->back()->with('success', 'Folder names, paths, and related records updated successfully!');
+// }
+    
+public function renameFolder(Request $request)
+{
+    $request->validate([
+        'old_folder_name' => 'required|string',
+        'folder_name' => 'required|string',
+    ]);
+
+    $searchTerm = $request->old_folder_name;
+    $newTerm = $request->folder_name;
+    $employeeId = $request->employee_id;
+    $directorId = $request->director_id;
+    $folderId = $request->folder_id;
+
+    // Initialize an empty folders collection
+    $folders = collect();
+
+    if (!is_null($employeeId)) {
+        // Fetch folders by employee ID
+        $folders = Folder::where('employee_id', $employeeId)->get();
+    } elseif (!is_null($directorId)) {
+        // Fetch folders by director ID if employee ID is null
+        $folders = Folder::where('director_id', $directorId)->get();
+    } else {
+        // Fetch specific folder by folder ID if both employee ID and director ID are null
+        $folder = Folder::find($folderId);
+        if ($folder) {
+            $folders->push($folder);
+        }
+    }
+
+    foreach ($folders as $folder) {
+        $currentFolderPath = $folder->path;
+        $newFolderPath = str_replace($searchTerm, $newTerm, $currentFolderPath);
+
+        // Rename the folder in the filesystem if it exists
+        if (Storage::exists($currentFolderPath)) {
+            Storage::move($currentFolderPath, $newFolderPath);
+        }
+
+        // Update the folder record in the database with the new path and name
+        $folder->name = str_replace($searchTerm, $newTerm, $folder->name);
+        $folder->path = $newFolderPath;
+        $folder->save();
+    }
+
+    // Update other related fields in the database based on employee_id or director_id
+    if (!is_null($employeeId)) {
+        // Only update folders related to the specified employee
+        Folder::where('employee_id', $employeeId)
+            ->where('parent_name', 'LIKE', '%' . $searchTerm . '%')
+            ->update(['parent_name' => DB::raw("REPLACE(parent_name, '$searchTerm', '$newTerm')")]);
+
+        // Update employee name
+        StoreCompanyEmployee::where('name', 'LIKE', '%' . $searchTerm . '%')
+            ->where('id', $employeeId)
+            ->update(['name' => DB::raw("REPLACE(name, '$searchTerm', '$newTerm')")]);
+    } elseif (!is_null($directorId)) {
+        // Only update folders related to the specified director
+        Folder::where('director_id', $directorId)
+            ->where('parent_name', 'LIKE', '%' . $searchTerm . '%')
+            ->update(['parent_name' => DB::raw("REPLACE(parent_name, '$searchTerm', '$newTerm')")]);
+
+        // Update director name
+        StoreCompanyDirector::where('name', 'LIKE', '%' . $searchTerm . '%')
+            ->where('id', $directorId)
+            ->update([
+                'name' => DB::raw("REPLACE(name, '$searchTerm', '$newTerm')"),
+                'path' => DB::raw("REPLACE(path, '$searchTerm', '$newTerm')")
+            ]);
+    } else {
+        // If both employee_id and director_id are null, update by folder_id (no specific employee or director)
+        Folder::where('id', $folderId)
+            ->where('parent_name', 'LIKE', '%' . $searchTerm . '%')
+            ->update(['parent_name' => DB::raw("REPLACE(parent_name, '$searchTerm', '$newTerm')")]);
+    }
+
+    return redirect()->back()->with('success', 'Folder names, paths, and related records updated successfully!');
+}
+
+    
     
     
 
@@ -20053,20 +21451,57 @@ public function saveBreadcrumb(Request $request)
         ]);
     }
 
-
-public function downloadFile($id)
-{
-    $file = Files::findOrFail($id);
-    $filePath = storage_path('app/' . $file->path);
-
-    if (file_exists($filePath)) {
-        return response()->download($filePath, $file->name);
-    } else {
-        abort(404, 'File not found');
+    public function downloadFile($id)
+    {
+        $file = CommonTable::findOrFail($id);
+        
+        // Assuming you store the file path in a 'file_path' column
+        $filePath = $file->file_path;
+        $realFileName = $file->real_file_name; // The real file name as stored in the database
+    
+        if (Storage::exists($filePath)) {
+            // Download the file with the original name instead of the system file name
+            return Storage::download($filePath, $realFileName);
+        } else {
+            return redirect()->back()->with('error', 'File not found.');
+        }
     }
-}
-
-
+    
+    public function viewFile($id)
+    {
+        $file = CommonTable::findOrFail($id);
+        
+        // File path and MIME type
+        $filePath = $file->file_path;
+        $mimeType = Storage::mimeType($filePath);
+    
+        if (Storage::exists($filePath)) {
+            return response()->file(storage_path("app/{$filePath}"), [
+                'Content-Type' => $mimeType,
+            ]);
+        } else {
+            return redirect()->back()->with('error', 'File not found.');
+        }
+    }
+    
+    public function advancedeleteFile($id)
+    {
+        // Find the record in CommonTable by ID
+        $file = CommonTable::find($id);
+    
+        if ($file) {
+            // Update the is_delete field to 1
+            $file->is_delete = 1;
+            $file->save();
+    
+            // Return a JSON response for success
+            return response()->json(['success' => true, 'message' => 'File deleted successfully.']);
+        } else {
+            // Return an error if file not found
+            return response()->json(['success' => false, 'message' => 'File not found.'], 404);
+        }
+    }
+    
     
 
 
@@ -20275,7 +21710,7 @@ public function downloadFile($id)
     
         // Validate the request
         $request->validate([
-            'files.*' => 'required|file|max:102400|mimes:pdf,odp,ods,ppt,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,docx,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv', // Allow specific file types up to 100MB
+            'files.*' => 'required|file|max:102400|mimes:pdf,ppt,pot,pps,pptx,pptm,potx,ppam,ppsx,sldx,sldm,odp,ods,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,xlsx,docx,docm,xlam,txt,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv,xltx,xltm', // Allow specific file types up to 100MB
             'tagList' => 'nullable', // Allow tagList to be nullable
         ], [
             'files.*.required' => 'Each file is required.',
@@ -20347,7 +21782,7 @@ public function downloadFile($id)
     
                 // Compile the response
                 return response()->json([
-                    'success' => true,
+                    'success' => empty($errorMessages),
                     'successMessages' => $successMessages,
                     'errorMessages' => $errorMessages,
                 ]);

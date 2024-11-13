@@ -227,9 +227,11 @@ Route::get('/deleteTaskStatus', [App\Http\Controllers\HomeController::class, 'de
 Route::post('/updateTask', [App\Http\Controllers\HomeController::class, 'updateTask'])
 ->name('updateTask');
 
-Route::post('/getTaskWithDate/{taskDate}', [App\Http\Controllers\HomeController::class, 'getTaskWithDate'])
+Route::post('/getTaskWithDate', [App\Http\Controllers\HomeController::class, 'getTaskWithDate'])
 ->name('getTaskWithDate');
-Route::post('/getEventWithDate/{eventDate}', [App\Http\Controllers\HomeController::class, 'getEventWithDate'])
+// Route::post('/getEventWithDate/{eventDate}', [App\Http\Controllers\HomeController::class, 'getEventWithDate'])
+// ->name('getEventWithDate');
+Route::post('/getEventWithDate', [App\Http\Controllers\HomeController::class, 'getEventWithDate'])
 ->name('getEventWithDate');
 
 // Route::get('/getTaskWithDate', [App\Http\Controllers\HomeController::class, 'getTaskWithDate'])
@@ -265,7 +267,7 @@ Route::delete('/file/{id}', [App\Http\Controllers\HomeController::class, 'delete
 
 Route::put('/file/{id}/restore', [App\Http\Controllers\HomeController::class, 'restore'])->name('file.restore');
 
-Route::get('/download-folder/{folderPath}', [App\Http\Controllers\HomeController::class, 'downloadFolder']);
+Route::get('/download-folder/{folderid}', [App\Http\Controllers\HomeController::class, 'downloadFolder']);
 // Route::post('/downloadFolders', [App\Http\Controllers\HomeController::class, 'downloadFolders'])->name('downloadFolders');
 
 
@@ -869,6 +871,9 @@ Route::get('/fetch-SecretarialStatutoryRegistersRPB-file-data', [App\Http\Contro
 
 
 
+Route::post('/renamefolder', [App\Http\Controllers\HomeController::class, 'renamefolder'])->name('renamefolder');
+
+
 
 // path end
 
@@ -884,7 +889,8 @@ Route::get('/folders', [App\Http\Controllers\HomeController::class,'getFolders']
 Route::get('/user/dashboard', [App\Http\Controllers\HomeController::class, 'index'])->name('user.dashboard.index');
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 Route::get('/download-file/{id}', [App\Http\Controllers\HomeController::class,'downloadFile']);
-
+Route::get('/view-file/{id}', [App\Http\Controllers\HomeController::class, 'viewFile'])->name('view.file');
+Route::post('/advancedelete-file/{id}', [App\Http\Controllers\HomeController::class, 'advancedeleteFile'])->name('advancedelete.file');
 
 Route::get('/docurepo', [App\Http\Controllers\HomeController::class, 'docurepo'])->name('docurepo');
 Route::get('/fetch-folder-contents',[App\Http\Controllers\HomeController::class, 'fetchFolderContents'])->name('fetchFolderContents');

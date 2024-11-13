@@ -26,6 +26,7 @@ class CommonTable extends Model
         'file_type',
         'file_name',
         'real_file_name',
+        'temp_file_name',
         'file_path',
         'file_size',
         'user_name',

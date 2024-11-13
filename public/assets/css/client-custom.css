@@ -398,7 +398,7 @@ body.dark-only .page-wrapper .page-header .header-wrapper .nav-right>ul>li:nth-c
     white-space: nowrap;
     background: #A8A8A8;
     border-radius: 10px;
-    padding: 7px 15px;
+    padding: 8px 15px;
     font-size: 12px;
     font-weight: 700;
     color: #FFF;
@@ -9842,8 +9842,8 @@ display: block;
 
 /****all button hover css start*****/
 .hvr-rotate {
-    -webkit-transition-duration: 0.3s;
-    transition-duration: 0.3s;
+    -webkit-transition-duration: 0.25s;
+    transition-duration: 0.25s;
     -webkit-transition-property: transform;
     transition-property: transform;
     vertical-align: middle;
@@ -9851,8 +9851,8 @@ display: block;
     cursor: pointer;
 }
 .hvr-rotate:hover {
-    -webkit-transform: rotate(4deg);
-    transform: rotate(4deg);
+    -webkit-transform: scale(1.05);
+    transform: scale(1.05);
 }
 /****all button hover css end*****/
 
@@ -14008,7 +14008,7 @@ body.dark-only .page-wrapper .page-header .header-wrapper .nav-right>ul>li:nth-c
     white-space: nowrap;
     background: #A8A8A8;
     border-radius: 10px;
-    padding: 7px 15px;
+    padding: 8px 15px;
     font-size: 12px;
     font-weight: 700;
     color: #FFF;
@@ -15146,6 +15146,10 @@ body.dark-only .page-wrapper .page-header .header-wrapper .nav-right>ul>li:nth-c
 .add_events form #close_event_edit_ar svg, .close_form svg {
     width: 100%;
     height: 100%;
+}
+
+.dark-only .add_events form #close_event_edit_ar svg, .dark-only .close_form svg {
+    filter: invert(1);
 }
 
 
@@ -19033,6 +19037,11 @@ span#totalCount {
     background: linear-gradient(100.13deg, #81ACFF 14.53%, #5790FF 72.91%) !important;
     color: #DBDBDB;
 }
+.drop_coman_file .green-outline button.btn {
+    background: #008000 !IMPORTANT;
+    color: #FFF;
+}
+
 /* have title */
 .drop_coman_file.have_title .modal-header {
     justify-content: center;
@@ -23673,8 +23682,8 @@ body.dark-only .page-wrapper .modal-content {
 
 /****all button hover css start*****/
 .hvr-rotate {
-    -webkit-transition-duration: 0.3s;
-    transition-duration: 0.3s;
+    -webkit-transition-duration: 0.25s;
+    transition-duration: 0.25s;
     -webkit-transition-property: transform;
     transition-property: transform;
     vertical-align: middle;
@@ -23682,10 +23691,70 @@ body.dark-only .page-wrapper .modal-content {
     cursor: pointer;
 }
 .hvr-rotate:hover {
-    -webkit-transform: rotate(4deg);
-    transform: rotate(4deg);
+    -webkit-transform: scale(1.05);
+    transform: scale(1.05);
 }
 /****all button hover css end*****/
+
+/****dark theme button css start*****/
+.nav-menus li .mode {
+    position: relative;
+    display: inline-block;
+    width: 60px !important;
+    height: 34px;
+}
+.nav-menus li .mode .slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    transition: 0.4s;
+    border-radius: 34px;
+}
+.nav-menus li .mode .slider:before {
+    position: absolute;
+    content: '';
+    height: 26px;
+    width: 26px;
+    left: 4px;
+    bottom: 4px;
+    background-color: #FFF;
+    transition: 0.4s;
+    border-radius: 50%;
+}
+.nav-menus li .mode .slider:after {
+    content: '\f0eb';   
+    font-family: FontAwesome;
+    position: absolute;
+    top: 50%;
+    left: 10px;
+    transform: translateY(-50%);
+    font-size: 18px;
+    transition: 0.4s;
+    color: #000;
+}
+.nav-menus li .mode.active_mod .slider:after {
+    content: '\f186'; 
+    left: auto;
+    right: 10px;
+}
+
+.nav-menus li.theme_mode {
+    width: auto !important;
+    height: unset !important;
+}
+
+ .nav-menus li .mode.active_mod .slider {
+    background-color: #83adfb;
+}
+
+.nav-menus li .mode.active_mod .slider:before {
+    transform: translateX(26px);
+}
+/****dark theme button css end*****/
 
 /**role management css start****/
 
@@ -27546,6 +27615,12 @@ display:none !important;
 .edit_start .iti.iti--allow-dropdown {
     width: 100%;
 }
+
+.page-wrapper .page-header .header-wrapper .nav-right ul li.setting_munal svg {
+    width: 27px !important;
+    height: 27px !important;
+}
+
 }
 
 

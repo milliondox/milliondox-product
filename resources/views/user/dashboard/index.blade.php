@@ -727,7 +727,8 @@ $(document).ready(function () {
       <div class="container-fluid  nt_dashboard_head">
         <div class="row">
           <div class="col-md-3 col-sm-6">
-            <div class="head_profile nt_profile">
+          <a href="{{url('/user/companyprofile')}}" target="_blank">
+            <div class="head_profile nt_profile">           
               <div class="left_profile">
                 <h2><span>Profile Completion</span>{{$progressPercentage}}%</h2>
               </div>
@@ -765,7 +766,10 @@ $(document).ready(function () {
                 </div>
 
               </div>
+    
             </div>
+            </a>
+
           </div>
 
           <div class="col-md-3 col-sm-6">
@@ -1359,7 +1363,7 @@ $(document.body).on('click', '.his_edit_event', function(e) {
                                       <circle cx="14" cy="14" r="13.25" stroke="black" stroke-width="1.5"></circle>
                                       <path d="M18.9 7.46652H17.7333V6.29985C17.7333 6.1142 17.6596 5.93615 17.5283 5.80488C17.397 5.6736 17.219 5.59985 17.0333 5.59985C16.8477 5.59985 16.6696 5.6736 16.5384 5.80488C16.4071 5.93615 16.3333 6.1142 16.3333 6.29985V7.46652H12.1333V6.29985C12.1333 6.1142 12.0596 5.93615 11.9283 5.80488C11.797 5.6736 11.619 5.59985 11.4333 5.59985C11.2477 5.59985 11.0696 5.6736 10.9384 5.80488C10.8071 5.93615 10.7333 6.1142 10.7333 6.29985V7.46652H9.56667C8.88594 7.46652 8.2331 7.73694 7.75176 8.21828C7.27042 8.69962 7 9.35246 7 10.0332V20.2999C7 20.9806 7.27042 21.6334 7.75176 22.1148C8.2331 22.5961 8.88594 22.8665 9.56667 22.8665H18.9C19.5807 22.8665 20.2336 22.5961 20.7149 22.1148C21.1963 21.6334 21.4667 20.9806 21.4667 20.2999V10.0332C21.4667 9.35246 21.1963 8.69962 20.7149 8.21828C20.2336 7.73694 19.5807 7.46652 18.9 7.46652ZM9.56667 8.86652H10.7333V10.0332C10.7333 10.2188 10.8071 10.3969 10.9384 10.5282C11.0696 10.6594 11.2477 10.7332 11.4333 10.7332C11.619 10.7332 11.797 10.6594 11.9283 10.5282C12.0596 10.3969 12.1333 10.2188 12.1333 10.0332V8.86652H16.3333V10.0332C16.3333 10.2188 16.4071 10.3969 16.5384 10.5282C16.6696 10.6594 16.8477 10.7332 17.0333 10.7332C17.219 10.7332 17.397 10.6594 17.5283 10.5282C17.6596 10.3969 17.7333 10.2188 17.7333 10.0332V8.86652H18.9C19.2094 8.86652 19.5062 8.98944 19.725 9.20823C19.9438 9.42702 20.0667 9.72377 20.0667 10.0332V12.5999H8.4V10.0332C8.4 9.72377 8.52292 9.42702 8.74171 9.20823C8.9605 8.98944 9.25725 8.86652 9.56667 8.86652ZM18.9 21.4665H9.56667C9.25725 21.4665 8.9605 21.3436 8.74171 21.1248C8.52292 20.906 8.4 20.6093 8.4 20.2999V13.9999H20.0667V20.2999C20.0667 20.6093 19.9438 20.906 19.725 21.1248C19.5062 21.3436 19.2094 21.4665 18.9 21.4665Z" fill="black"></path>
                                     </svg>
-                                    <input type="date" id="eventDate" name="eventDate">
+                                    <input type="date" class="TaskDatePick" id="eventDate" name="eventDate">
                                   </div>
 
                                   <h2>
@@ -1450,6 +1454,438 @@ $(document.body).on('click', '.his_edit_event', function(e) {
 <!-- SweetAlert2 JS -->
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.all.min.js"></script>
 
+
+<script>
+
+//   $(document).ready(function() {
+//     $('.EventDatePick').on('change', function() {
+//         let eventDate = $(this).val(); // Get the selected date
+
+//         $.ajax({
+//             url: '{{ route('getEventWithDate') }}', // Laravel route to fetch event data
+//             type: 'POST',
+//             data: { eventDate: eventDate },
+//             success: function(response) {
+//                 if (response.success) {
+//                     console.log("Event Data:", response.taskEvents);
+//                     // Update the UI with response.taskEvents if needed
+//                 } else {
+//                     console.log(response.error);
+//                 }
+//             },
+//             error: function(xhr) {
+//                 console.log("Error fetching event:", xhr.responseJSON ? xhr.responseJSON.error : "Unknown error");
+//             }
+//         });
+//     });
+// });
+
+$(document).ready(function() {
+    // Event listener for date selection
+    $('.EventDatePick').on('change', function() {
+        let eventDate = $(this).val(); // Get the selected date
+
+        // Show a loading message
+        $('#re_render_events').html('<li>Loading...</li>');
+
+        $.ajax({
+            url: '{{ route('getEventWithDate') }}',
+            type: 'POST',
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') // CSRF token
+            },
+            data: { eventDate: eventDate },
+            success: function(response) {
+                if (response.success && response.taskEvents && response.taskEvents.length > 0) {
+                    $('#re_render_events').empty(); // Clear loading message
+
+                    response.taskEvents.forEach(function(event) {
+                        let eventIcon = event.eventType === "Other" ? getOtherIcon() : getReminderIcon();
+                        let listItem = `
+                            <li role="listitem" aria-labelledby="event-${event.id}">
+                                <div class="icon_his_ani" id="event-${event.id}">
+                                    ${eventIcon}
+                                    <span>${event.eventName}</span>
+                                </div>
+                                ${getEditDeleteButtons(event)}
+                            </li>
+                        `;
+                        
+                        // Append each list item to #re_render_events
+                        $('#re_render_events').append(listItem);
+
+                        // Append form to .add_events
+                        $('.tab .active .add_events').append(getEditForm(event));
+                        // $('.add_events').append(getEditForm(event));
+
+
+                        setupFormActions(event); // Setup actions for form display and hide
+                    });
+                } else {
+                    $('#re_render_events').html('<li>No events found for this date.</li>');
+                }
+            },
+            error: function(xhr) {
+                $('#re_render_events').html('<li>Error loading events. Please try again.</li>');
+                console.error(xhr.responseText);
+            }
+        });
+    });
+
+    function getOtherIcon() {
+        return `
+            <svg width="10" height="10" viewBox="0 0 10 10" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M9.5 5V8.5C9.5 8.76522 9.39464 9.01957 9.20711 9.20711C9.01957 9.39464 8.76522 9.5 8.5 9.5H1.5C1.23478 9.5 0.98043 9.39464 0.792893 9.20711C0.605357 9.01957 0.5 8.76522 0.5 8.5V5H9.5ZM7 0.5C7.13261 0.5 7.25979 0.552678 7.35355 0.646447C7.44732 0.740215 7.5 0.867392 7.5 1V1.5H8.5C8.76522 1.5 9.01957 1.60536 9.20711 1.79289C9.39464 1.98043 9.5 2.23478 9.5 2.5V4H0.5V2.5C0.5 2.23478 0.605357 1.98043 0.792893 1.79289C0.98043 1.60536 1.23478 1.5 1.5 1.5H2.5V1C2.5 0.867392 2.55268 0.740215 2.64645 0.646447C2.74021 0.552678 2.86739 0.5 3 0.5C3.13261 0.5 3.25979 0.552678 3.35355 0.646447C3.44732 0.740215 3.5 0.867392 3.5 1V1.5H6.5V1C6.5 0.867392 6.55268 0.740215 6.64645 0.646447C6.74021 0.552678 6.86739 0.5 7 0.5Z" fill="#434343"/>
+                                       </svg>
+        `;
+    }
+
+    function getReminderIcon() {
+        return `
+            <svg width="12" height="13" viewBox="0 0 12 13" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                      <path d="M11.25 10.0832V10.6665H0.75V10.0832L1.91667 8.9165V5.4165C1.91667 3.60817 3.10083 2.01567 4.83333 1.50234V1.33317C4.83333 1.02375 4.95625 0.727005 5.17504 0.508213C5.39383 0.28942 5.69058 0.166504 6 0.166504C6.30942 0.166504 6.60616 0.28942 6.82496 0.508213C7.04375 0.727005 7.16667 1.02375 7.16667 1.33317V1.50234C8.89917 2.01567 10.0833 3.60817 10.0833 5.4165V8.9165L11.25 10.0832ZM7.16667 11.2498C7.16667 11.5593 7.04375 11.856 6.82496 12.0748C6.60616 12.2936 6.30942 12.4165 6 12.4165C5.69058 12.4165 5.39383 12.2936 5.17504 12.0748C4.95625 11.856 4.83333 11.5593 4.83333 11.2498" fill="#434343"/>
+                                      </svg>
+        `;
+    }
+
+    function getEditDeleteButtons(event) {
+        return `
+            <div class="his_edit_event${event.id} his_edit_event_nt" id="edit_event_id${event.id}">
+                <button class="task_edit_del" id="his_edit_event_del" type="button" data-eventtask-id="${event.id}" aria-label="Delete event ${event.eventName}">
+                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                   <path d="M5.07536 13.3334C4.77759 13.3334 4.52359 13.2285 4.31336 13.0187C4.10359 12.809 3.9987 12.555 3.9987 12.2567V4.00007H3.33203V3.3334H5.9987V2.82007H9.9987V3.3334H12.6654V4.00007H11.9987V12.2567C11.9987 12.5634 11.896 12.8194 11.6907 13.0247C11.4849 13.2305 11.2287 13.3334 10.922 13.3334H5.07536ZM11.332 4.00007H4.66536V12.2567C4.66536 12.3763 4.70381 12.4745 4.7807 12.5514C4.85759 12.6283 4.95581 12.6667 5.07536 12.6667H10.922C11.0243 12.6667 11.1183 12.6241 11.204 12.5387C11.2894 12.453 11.332 12.359 11.332 12.2567V4.00007ZM6.53736 11.3334H7.20403V5.3334H6.53736V11.3334ZM8.79337 11.3334H9.46003V5.3334H8.79337V11.3334Z" fill="#FA4A4A"></path>
+                                                   </svg>
+                </button>
+                <a id="his_edit_event_ar${event.id}" class="his_edit_event_ar" aria-label="Edit event ${event.eventName}">
+                    <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                          <path d="M14.241 1.50879L16.491 3.75879L14.7758 5.47479L12.5258 3.22479L14.241 1.50879ZM6 11.9998H8.25L13.7153 6.53454L11.4653 4.28454L6 9.74979V11.9998Z" fill="#434343" />
+                                          <path d="M14.25 14.25H6.1185C6.099 14.25 6.07875 14.2575 6.05925 14.2575C6.0345 14.2575 6.00975 14.2507 5.98425 14.25H3.75V3.75H8.88525L10.3853 2.25H3.75C2.92275 2.25 2.25 2.922 2.25 3.75V14.25C2.25 15.078 2.92275 15.75 3.75 15.75H14.25C14.6478 15.75 15.0294 15.592 15.3107 15.3107C15.592 15.0294 15.75 14.6478 15.75 14.25V7.749L14.25 9.249V14.25Z" fill="#434343" />
+                                        </svg>
+                </a>
+            </div>
+        `;
+    }
+
+    function getEditForm(event) {
+        return `
+            <form id="eventFormddd_edit${event.id}" action="{{ route('editEvents') }}" method="POST" class="upload-form eventsformedit">
+                @csrf
+                <button type="button" id="close_event_edit_ar${event.id}" class="close_form">
+                    <span aria-hidden="true">
+                        <svg width="50" height="50" viewBox="0 0 50 50" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <rect width="4.27" height="66.17" transform="rotate(-45 3.31 0)" fill="black"></rect>
+                            <rect width="4.27" height="66.37" transform="rotate(45 3.11 50)" fill="black"></rect>
+                        </svg>
+                    </span>
+                </button>
+                <div class="for_group">
+                    <label for="eventName">Event Name</label>
+                    <input type="text" id="eventName" name="eventName" value="${event.eventName}" required>
+                    <input type="hidden" id="event_id" name="event_id" value="${event.id}" required>
+                </div>
+                <div class="for_group">
+                    <label for="eventDate">Event Date</label>
+                    <input type="date" id="eventDate" name="eventDate" value="${event.eventDate}" required>
+                </div>
+                ${getRepeatOptions(event)}
+                ${getEventTypeButtons(event)}
+                <div class="for_group bttn">
+                    <button type="submit" class="hvr-rotate">Update</button>
+                </div>
+            </form>
+        `;
+    }
+
+    function getRepeatOptions(event) {
+        return `
+            <div class="group_radio">
+                <div class="for_group radio">
+                    <input type="radio" id="repeatYearly1${event.id}" name="repeat" value="yearly" ${event.eventRepeat == 'yearly' ? 'checked' : ''}>
+                    <label for="repeatYearly1${event.id}">Every Year</label>
+                </div>
+                <div class="for_group radio">
+                    <input type="radio" id="repeatMonthly1${event.id}" name="repeat" value="monthly" ${event.eventRepeat == 'monthly' ? 'checked' : ''}>
+                    <label for="repeatMonthly1${event.id}">Every Month</label>
+                </div>
+                <div class="for_group radio">
+                    <input type="radio" id="repeatDaily1${event.id}" name="repeat" value="daily" ${event.eventRepeat == 'daily' ? 'checked' : ''}>
+                    <label for="repeatDaily1${event.id}">Every Day</label>
+                </div>
+                <div class="for_group radio">
+                    <input type="radio" id="repeatonce1${event.id}" name="repeat" value="Once" ${event.eventRepeat == 'Once' ? 'checked' : ''}>
+                    <label for="repeatonce1${event.id}">Once Only</label>
+                </div>
+            </div>
+        `;
+    }
+
+    function getEventTypeButtons(event) {
+        return `
+            <div class="for_group an_re">
+                <button type="button" class="event-type-btn ${event.eventType == 'reminder' ? 'active' : ''}" name="eventType" value="reminder" data-value="reminder">Reminder</button>
+                <button type="button" class="event-type-btn ${event.eventType == 'Other' ? 'active' : ''}" name="eventType" value="Other" data-value="Other">Other</button>
+                <input type="hidden" id="eventType" name="eventType" value="${event.eventType}">
+            </div>
+        `;
+    }
+
+    function setupFormActions(event) {
+        $(`#his_edit_event_ar${event.id}`).click(function() {
+            $(`#eventFormddd_edit${event.id}`).slideDown();
+        });
+
+        $(`#close_event_edit_ar${event.id}`).click(function() {
+            $(`#eventFormddd_edit${event.id}`).slideUp();
+        });
+
+        $(document).ready(function() {
+    // Set CSRF token for all AJAX requests
+    $.ajaxSetup({
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        }
+    });
+
+    // Handle click event for the delete button
+    $('.task_edit_del').click(function() {
+        // Get the task ID from the data attribute
+        let taskId = $(this).data('eventtask-id');
+
+        // Confirm deletion with SweetAlert
+        Swal.fire({
+            title: 'Are you sure?',
+            text: 'This will permanently delete the task!',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Yes, delete it!',
+            cancelButtonText: 'No, cancel!',
+        }).then((result) => {
+            if (result.isConfirmed) {
+                // Send an AJAX request to delete the task
+                $.ajax({
+                    type: 'DELETE',
+                    url: '{{ route('deleteeventTask', '') }}/' + taskId,
+                    dataType: 'json',
+                    success: function(response) {
+                        if (response.success) {
+                            toastr.success(response.success); // Show success message
+
+                            // Store a flag in sessionStorage
+                            sessionStorage.setItem('eventDeleted', 'true'); 
+ $('#show_form_event').click();
+                            setTimeout(function() {
+                                window.location.reload(); // Reload the page after deletion
+                            }, 500);
+                        } else {
+                            toastr.error(response.error); // Show error message
+                        }
+                    },
+                    error: function() {
+                        toastr.error('Failed to delete the task!'); // Show error message
+                    }
+                });
+            }
+        });
+    });
+
+    // Check if the task was deleted on page load
+    if (sessionStorage.getItem('eventDeleted')) {
+        // Simulate a click on the button
+       $(window).on('load', function() {
+         $('#show_form_event').click();
+       sessionStorage.removeItem('eventDeleted');
+      });
+
+        // Remove the flag from sessionStorage
+        
+    }
+});
+    }
+});
+
+
+
+</script>
+
+
+
+<script>
+  $(document).ready(function() {
+    // Event listener for date selection
+    $('.TaskDatePick').on('change', function() {
+        let eventDate = $(this).val(); // Get the selected date
+
+        // Show a loading message
+        $('#re-render-list').html('<li>Loading...</li>');
+
+        $.ajax({
+            url: '{{ route('getTaskWithDate') }}',
+            type: 'POST',
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') // CSRF token
+            },
+            data: {
+                eventDate: eventDate
+            },
+            success: function(response) {
+              $('#re-render-list').empty(); // Clear any previous content
+                if (response.success && response.tasks && response.tasks.length > 0) {
+                    // $('#re-render-list').empty(); // Clear loading message 
+
+                    // Iterate over the tasks/events and create li items
+                    response.tasks.forEach(function(task) {
+                        $('#re-render-list').append(`
+                            <li class="${task.status === 'completed' ? 'active' : ''}">
+                                <div class="main_task_wraap">
+                                    <div class="go_grenn">
+                                        <button class="active_greenn" data-task-id="${task.id}">
+                                            <svg width="15" height="15" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                <g clip-path="url(#clip0_511_3356)">
+                                                    <path d="M4 7.5L7 10L11 5M7.5 14.5C6.58075 14.5 5.6705 14.3189 4.82122 13.9672C3.97194 13.6154 3.20026 13.0998 2.55025 12.4497C1.90024 11.7997 1.38463 11.0281 1.03284 10.1788C0.68106 9.32951 0.5 8.41925 0.5 7.5C0.5 6.58075 0.68106 5.6705 1.03284 4.82122C1.38463 3.97194 1.90024 3.20026 2.55025 2.55025C3.20026 1.90024 3.97194 1.38463 4.82122 1.03284C5.6705 0.68106 6.58075 0.5 7.5 0.5C9.35652 0.5 11.137 1.2375 12.4497 2.55025C13.7625 3.86301 14.5 5.64348 14.5 7.5C14.5 9.35652 13.7625 11.137 12.4497 12.4497C11.137 13.7625 9.35652 14.5 7.5 14.5Z" stroke="black"></path>
+                                                </g>
+                                                <defs>
+                                                    <clipPath id="clip0_511_3356">
+                                                        <rect width="15" height="15" fill="white"></rect>
+                                                    </clipPath>
+                                                </defs>
+                                            </svg>
+                                        </button>
+                                    </div>
+                                    <div class="task_wraap">
+                                        <div class="top_wrap_cievent">
+                                            <div class="icon_his_ani">
+                                                <span>${task.taskName}</span>
+                                            </div>
+                                            <div class="his_edit_event" id="his_edit_event${task.id}">
+                                                <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                    <path d="M14.241 1.50879L16.491 3.75879L14.7758 5.47479L12.5258 3.22479L14.241 1.50879ZM6 11.9998H8.25L13.7153 6.53454L11.4653 4.28454L6 9.74979V11.9998Z" fill="#434343"></path>
+                                                    <path d="M14.25 14.25H6.1185C6.099 14.25 6.07875 14.2575 6.05925 14.2575C6.0345 14.2575 6.00975 14.2507 5.98425 14.25H3.75V3.75H8.88525L10.3853 2.25H3.75C2.92275 2.25 2.25 2.922 2.25 3.75V14.25C2.25 15.078 2.92275 15.75 3.75 15.75H14.25C14.6478 15.75 15.0294 15.592 15.3107 15.3107C15.592 15.0294 15.75 14.6478 15.75 14.25V7.749L14.25 9.249V14.25Z" fill="#434343"></path>
+                                                </svg>
+                                            </div>
+                                        </div>
+                                        <div class="task_details">
+                                            <div class="task_dess">
+                                                <p>${task.eventnote}</p>
+                                            </div>
+                                            <button class="task_del" id="task_del" data-task-id="${task.id}">
+                                                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                    <path d="M5.07536 13.3334C4.77759 13.3334 4.52359 13.2285 4.31336 13.0187C4.10359 12.809 3.9987 12.555 3.9987 12.2567V4.00007H3.33203V3.3334H5.9987V2.82007H9.9987V3.3334H12.6654V4.00007H11.9987V12.2567C11.9987 12.5634 11.896 12.8194 11.6907 13.0247C11.4849 13.2305 11.2287 13.3334 10.922 13.3334H5.07536ZM11.332 4.00007H4.66536V12.2567C4.66536 12.3763 4.70381 12.4745 4.7807 12.5514C4.85759 12.6283 4.95581 12.6667 5.07536 12.6667H10.922C11.0243 12.6667 11.1183 12.6241 11.204 12.5387C11.2894 12.453 11.332 12.359 11.332 12.2567V4.00007ZM6.53736 11.3334H7.20403V5.3334H6.53736V11.3334ZM8.79337 11.3334H9.46003V5.3334H8.79337V11.3334Z" fill="#FA4A4A"></path>
+                                                </svg>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </li>
+                        `);
+
+                        //
+                        $(document).ready(function() {
+                        $('.active_greenn').on('click', function() {
+                            // Set status and get task ID
+                            // let status = 1;
+                            // $(this).toggleClass('active');
+                            $(this).closest('li').toggleClass('active');
+                            let taskId = $(this).data('task-id'); // Retrieves "22" from data-task-id attribute
+                            
+                            // Send data using AJAX
+                            $.ajax({
+                                url: 'updateTaskStatus', // replace with your endpoint URL
+                                method: 'POST',
+                                data: {
+                                    task_id: taskId
+                                },
+                                success: function(response) {
+                                  window.location.reload();
+                                    console.log("Response from server:", response);
+                                },
+                                error: function(xhr, status, error) {
+                                    console.error("Error:", error);
+                                }
+                            });
+                            
+                            // Optional: Update the button text to show status
+                            // $(this).text('Status: ' + status); 
+                        });
+                    });
+
+                        //
+                        $(document).ready(function() {
+                        // Set CSRF token for all AJAX requests
+                        $.ajaxSetup({
+                            headers: {
+                                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                            }
+                        });
+
+                        // Handle click event for the delete button
+                        $('.task_del').click(function() {
+                            // Get the task ID from the data attribute
+                            let taskId = $(this).data('task-id');
+
+                            // Confirm deletion with SweetAlert
+                            Swal.fire({
+                                title: 'Are you sure?',
+                                text: 'This will permanently delete the task!',
+                                icon: 'warning',
+                                showCancelButton: true,
+                                confirmButtonText: 'Yes, delete it!',
+                                cancelButtonText: 'No, cancel!',
+                            }).then((result) => {
+                                if (result.isConfirmed) {
+                                    // Send an AJAX request to delete the task
+                                    $.ajax({
+                                        type: 'DELETE',
+                                        url: '{{ route('deleteTask', '') }}/' + taskId,
+                                        dataType: 'json',
+                                        success: function(response) {
+                                            if (response.success) {
+                                                toastr.success(response.success); // Show success message
+
+                                                // Store a flag in sessionStorage
+                                                sessionStorage.setItem('taskDeleted', 'true'); 
+                                                $('#show_form_event').click();
+                                                setTimeout(function() {
+                                                    window.location.reload(); // Reload the page after deletion
+                                                }, 500);
+                                            } else {
+                                                toastr.error(response.error); // Show error message
+                                            }
+                                        },
+                                        error: function() {
+                                            toastr.error('Failed to delete the task!'); // Show error message
+                                        }
+                                    });
+                                }
+                            });
+                        });
+
+                // Check if the task was deleted on page load
+                if (sessionStorage.getItem('taskDeleted')) {
+                    // Simulate a click on the button
+                  $(window).on('load', function() {
+                    $('#show_form_event').click();
+                  sessionStorage.removeItem('taskDeleted');
+                  });
+
+                    // Remove the flag from sessionStorage
+                    
+                }
+            });
+                    });
+                } else {
+                    $('#re-render-list').html('<li>No Task found for this date.</li>');
+                }
+            },
+            error: function(xhr) {
+                $('#re-render-list').html('<li>Error loading tasks. Please try again.</li>');
+                console.error(xhr.responseText);
+            }
+        });
+    });
+});
+
+</script>
+
  <script>
 $(document).ready(function() {
     // Set CSRF token for all AJAX requests
@@ -1516,6 +1952,35 @@ $(document).ready(function() {
 
 
     </script>
+
+<script>
+  $(document).ready(function() {
+      $('.active_greenn').on('click', function() {
+          // Set status and get task ID
+          // let status = 1;
+          let taskId = $(this).data('task-id'); // Retrieves "22" from data-task-id attribute
+          
+          // Send data using AJAX
+          $.ajax({
+              url: 'updateTaskStatus', // replace with your endpoint URL
+              method: 'POST',
+              data: {
+                  task_id: taskId
+              },
+              success: function(response) {
+                window.location.reload();
+                  console.log("Response from server:", response);
+              },
+              error: function(xhr, status, error) {
+                  console.error("Error:", error);
+              }
+          });
+          
+          // Optional: Update the button text to show status
+          // $(this).text('Status: ' + status); 
+      });
+  });
+  </script>
     
     <script>
 $(document).ready(function() {
@@ -1810,7 +2275,7 @@ $(document).ready(function() {
                                       <circle cx="14" cy="14" r="13.25" stroke="black" stroke-width="1.5"></circle>
                                       <path d="M18.9 7.46652H17.7333V6.29985C17.7333 6.1142 17.6596 5.93615 17.5283 5.80488C17.397 5.6736 17.219 5.59985 17.0333 5.59985C16.8477 5.59985 16.6696 5.6736 16.5384 5.80488C16.4071 5.93615 16.3333 6.1142 16.3333 6.29985V7.46652H12.1333V6.29985C12.1333 6.1142 12.0596 5.93615 11.9283 5.80488C11.797 5.6736 11.619 5.59985 11.4333 5.59985C11.2477 5.59985 11.0696 5.6736 10.9384 5.80488C10.8071 5.93615 10.7333 6.1142 10.7333 6.29985V7.46652H9.56667C8.88594 7.46652 8.2331 7.73694 7.75176 8.21828C7.27042 8.69962 7 9.35246 7 10.0332V20.2999C7 20.9806 7.27042 21.6334 7.75176 22.1148C8.2331 22.5961 8.88594 22.8665 9.56667 22.8665H18.9C19.5807 22.8665 20.2336 22.5961 20.7149 22.1148C21.1963 21.6334 21.4667 20.9806 21.4667 20.2999V10.0332C21.4667 9.35246 21.1963 8.69962 20.7149 8.21828C20.2336 7.73694 19.5807 7.46652 18.9 7.46652ZM9.56667 8.86652H10.7333V10.0332C10.7333 10.2188 10.8071 10.3969 10.9384 10.5282C11.0696 10.6594 11.2477 10.7332 11.4333 10.7332C11.619 10.7332 11.797 10.6594 11.9283 10.5282C12.0596 10.3969 12.1333 10.2188 12.1333 10.0332V8.86652H16.3333V10.0332C16.3333 10.2188 16.4071 10.3969 16.5384 10.5282C16.6696 10.6594 16.8477 10.7332 17.0333 10.7332C17.219 10.7332 17.397 10.6594 17.5283 10.5282C17.6596 10.3969 17.7333 10.2188 17.7333 10.0332V8.86652H18.9C19.2094 8.86652 19.5062 8.98944 19.725 9.20823C19.9438 9.42702 20.0667 9.72377 20.0667 10.0332V12.5999H8.4V10.0332C8.4 9.72377 8.52292 9.42702 8.74171 9.20823C8.9605 8.98944 9.25725 8.86652 9.56667 8.86652ZM18.9 21.4665H9.56667C9.25725 21.4665 8.9605 21.3436 8.74171 21.1248C8.52292 20.906 8.4 20.6093 8.4 20.2999V13.9999H20.0667V20.2999C20.0667 20.6093 19.9438 20.906 19.725 21.1248C19.5062 21.3436 19.2094 21.4665 18.9 21.4665Z" fill="black"></path>
                                     </svg>
-                                    <input type="date" id="eventDate" name="eventDate">
+                                    <input type="date" class="EventDatePick" id="eventDate" name="eventDate">
                                   </div>
                                   <script>
                                     // $today = Carbon::now() -> toDateString(); // Get the current date in YYYY-MM-DD format

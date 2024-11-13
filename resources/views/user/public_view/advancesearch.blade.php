@@ -573,7 +573,7 @@ Pre-Defined Files
                 return;
             }
 
-            let tableHtml = '<table class="table table-striped"><thead><tr><th>File Name</th><th>Owner</th><th>Tag</th><th>Size</th><th>Date Created</th><th>Location</th><th>Path</th><th>Year</th><th>Action</th></tr></thead><tbody>';
+            let tableHtml = '<table class="table table-striped"><thead><tr><th>File Name</th><th>Owner</th><th>Tag</th><th>Size</th><th>Date Created</th><th>Path</th><th>Year</th><th>Action</th></tr></thead><tbody>';
 
             data.forEach(item => {
                 let path = item.source_table ? `/board-details/${item.id}` : `/download-file/${item.id}`;
@@ -583,22 +583,32 @@ Pre-Defined Files
                 let location = item.real_file_name ? item.real_file_name : 'N/A';
                 let filePath = item.location ? item.location : 'N/A'; 
                 let userName = item.user_name ? item.user_name : 'N/A';
-                let tag = item.Tags ? item.Tags : 'N/A';
+                let tag = item.Tags ? (Array.isArray(item.Tags) ? item.Tags : [item.Tags]) : ['N/A']; 
+                console.log(typeof(tag));
+                let newtag = '';
+tag.forEach((element, index) => {
+  newtag += element;
+  if (index < tag.length - 1) {
+    newtag += ', ';
+  }
+});
                 let fyear = item.fyear ? item.fyear : 'N/A';
 
                 tableHtml += `<tr>
-                                <td>${item.name}</td>
+                                <td>${location}</td>
                                 <td>${userName}</td>
-                                <td>${tag}</td>
+                                <td>${newtag} </td>
                                 <td>${size}</td>
                                 <td>${createdDate}</td>
-                                <td>${location}</td>
+                               
                                 <td>${filePath}</td>
                                 <td>${fyear}</td>
-                                <td><a class="dropdown-item download_nt" data-id="${item.id}">
-                                <svg width="13" height="12" viewBox="0 0 13 12" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                <!-- SVG Content -->
-                                </svg></a></td>
+                                <td><a class="dropdown-item buttonss delete" data-id="${item.id}">
+                               Delete</a>
+                               <a class="dropdown-item buttonss view"  data-id="${item.id}">
+                               View</a>
+                               <a class="dropdown-item buttonss download_nt" data-id="${item.id}">
+                               Download</a></td>
                             </tr>`;
             });
 
@@ -676,18 +686,100 @@ Pre-Defined Files
     });
 </script>
 
-
- 
 <script>
-    $(document).on('click', '.download-btn', function(e) {
-    e.preventDefault(); // Prevent the default link behavior
-
+    $(document).on('click', '.view', function(e) {
+    e.preventDefault();
     let fileId = $(this).data('id');
-    let downloadUrl = '/download-file/' + fileId; // Adjust the URL as needed
 
-    // Start the file download
-    window.location.href = downloadUrl;
+    // Open the file in a new tab
+    window.open(`/view-file/${fileId}`, '_blank');
 });
+
+</script>
+<!-- SweetAlert CSS and JS -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<!-- Toastr CSS and JS -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+
+ <script>
+$(document).on('click', '.delete', function(e) {
+    e.preventDefault();
+    let fileId = $(this).data('id');
+
+    // Use SweetAlert for confirmation
+    Swal.fire({
+        title: 'Are you sure?',
+        text: "You won't be able to revert this!",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Yes, delete it!'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            // Proceed with AJAX request if confirmed
+            $.ajax({
+                url: `/advancedelete-file/${fileId}`,
+                method: 'POST',
+                data: {
+                    _token: '{{ csrf_token() }}' // Include CSRF token
+                },
+                success: function(response) {
+                    if (response.success) {
+                        // Show Toastr success message
+                        toastr.success(response.message);
+                        // Optionally remove the row or refresh the table
+                        $(`.delete[data-id="${fileId}"]`).closest('tr').remove();
+                    } else {
+                        // Show Toastr error message
+                        toastr.error(response.message || 'An error occurred.');
+                    }
+                },
+                error: function(xhr, status, error) {
+                    console.error('Delete Error:', error);
+                    // Show Toastr error message
+                    toastr.error('An error occurred while deleting the file.');
+                }
+            });
+        }
+    });
+});
+
+
+ </script>
+<script>
+  // Click handler for download buttons
+  $(document).on('click', '.download_nt', function(e) {
+        e.preventDefault();
+        let fileId = $(this).data('id');
+        
+        // AJAX call to initiate file download
+        $.ajax({
+            url: `/download-file/${fileId}`,
+            method: 'GET',
+            xhrFields: {
+                responseType: 'blob' // Specify blob response for downloading file
+            },
+            success: function(blob) {
+                // Create a link element to trigger file download
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `file_${fileId}`; // Set download file name
+                document.body.appendChild(a);
+                a.click();
+                a.remove();
+                window.URL.revokeObjectURL(url);
+            },
+            error: function(xhr, status, error) {
+                console.error('File Download Error:', error);
+                alert('An error occurred while downloading the file.');
+            }
+        });
+    });
 
 </script>
 
@@ -715,6 +807,13 @@ document.addEventListener('DOMContentLoaded', function () {
 });
 </script>
 
-
+<style>
+.buttonss {
+    color: white;
+    background: black;
+    margin: 10px;
+    text-align: center;
+}
+</style>
 		
 @endsection

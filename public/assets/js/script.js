@@ -170,47 +170,13 @@
     //   });
     
     
-    $(document).ready(function () {
-  // Check the localStorage for 'body' and 'mode' states and apply them on page load
-  if (localStorage.getItem('body') === 'dark-only') {
-    $('body').addClass('dark-only');
-    $('.mode i').removeClass("fa-moon-o").addClass("fa-lightbulb-o");
-    $('.rolelabel').addClass("text-warning");
-    $('.mode').addClass('active_mod');
-  } else {
-    $('body').removeClass('dark-only');
-    $('.mode i').removeClass("fa-lightbulb-o").addClass("fa-moon-o");
-    $('.rolelabel').removeClass("text-warning");
-    $('.mode').removeClass('active_mod');
-  }
 
-  // Handle click event on .mode
-  $(".mode").on("click", function () {
-    if (localStorage.getItem('body') === 'dark-only') {
-      // Remove the 'dark-only' class from <body>
-      $('body').removeClass('dark-only');
-      // Change the button icon to indicate the light theme
-      $('.mode i').removeClass("fa-lightbulb-o").addClass("fa-moon-o");
-      $('.rolelabel').removeClass("col-form-label pt-0 rolelabel text-warning").addClass("col-form-label pt-0 rolelabel");
-      // Remove the 'active_mod' class from .mode
-      $('.mode').removeClass('active_mod');
-      // Clear the localStorage value
-      localStorage.setItem('body', '');
-      localStorage.setItem('mode', '');
-    } else {
-      // Add the 'dark-only' class to <body>
-      $('body').addClass('dark-only');
-      // Change the button icon to indicate the dark theme
-      $('.mode i').removeClass("fa-moon-o").addClass("fa-lightbulb-o");
-      $('.rolelabel').addClass("text-warning");
-      // Add the 'active_mod' class to .mode
-      $('.mode').addClass('active_mod');
-      // Set the localStorage value to 'dark-only' and 'active_mod'
-      localStorage.setItem('body', 'dark-only');
-      localStorage.setItem('mode', 'active_mod');
-    }
-  });
-});
+    
+    
+      
+      
+            
+      
 
 
 
