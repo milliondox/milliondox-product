@@ -4427,7 +4427,7 @@ public function fetchInnerFileINC34Data(Request $request)
     $files = CommonTable::where('user_id', $user->id)
     ->where('is_delete', 0)
     ->where('location', $location)
-    ->where('real_file_name', 'INC-34 SPICe MoA (e-Articles of Association)')
+    ->where('real_file_name', 'INC-34 SPICe AoA (e-Articles of Association)')
     ->get();
    
 
@@ -16562,10 +16562,10 @@ public function showAdvSearch(Request $request)
                             $realFileNameFilter = 'INC-33 SPICe MoA (e-Momorandum of Association)';
                             break;
 
-                            case 'INC-34 SPICe MoA (e-Articles of Association)':
+                            case 'INC-34 SPICe AoA (e-Articles of Association)':
                                 $selectedTable = 'common_table';
                                 $locationFilter = 'Incorporation';
-                                $realFileNameFilter = 'INC-34 SPICe MoA (e-Articles of Association)';
+                                $realFileNameFilter = 'INC-34 SPICe AoA (e-Articles of Association)';
                                 break;
                                 case 'INC-35 AGILE-PRO-s':
                                     $selectedTable = 'common_table';
@@ -18776,7 +18776,7 @@ $entriesinc9 = CommonTable::where('user_id', $user->id)
         $entriesinnerinc34 = CommonTable::where('user_id', $user->id)
     ->where('is_delete', 0)
     ->where('location', $decodedFolderLocation)
-    ->where('real_file_name', 'INC-34 SPICe MoA (e-Articles of Association)')
+    ->where('real_file_name', 'INC-34 SPICe AoA (e-Articles of Association)')
     ->get();
         $countentriesinnerinc34 = $entriesinnerinc34->count(); // Count of entries
         $totalSizeBytesentriesinnerinc34 = $entriesinnerinc34->sum('file_size'); // Sum of file sizes

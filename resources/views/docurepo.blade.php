@@ -5,21 +5,22 @@
  @include('hr_on_board')
     <!-- tap on top starts-->
   <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-<script>window.jQuery || document.write('<script src="{{ asset('assets/js/jquerylocal.js') }}"><\/script>')</script>
+    <script>window.jQuery || document.write('<script src="{{ asset('assets/js/jquerylocal.js') }}"><\/script>')</script>
 
-     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-     
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+        
 
-     <script>
-    (function() {
-        var script = document.createElement('script');
-        script.src = 'https://code.jquery.com/jquery-3.7.1.min.js';
-        script.async = true;
-        document.head.appendChild(script);
-    })();
-</script>
-<style>
+        <script>
+        (function() {
+            var script = document.createElement('script');
+            script.src = 'https://code.jquery.com/jquery-3.7.1.min.js';
+            script.async = true;
+            document.head.appendChild(script);
+        })();
+    </script>
+
     <style>
+    
         .share_people {
             display: none;
             position: absolute;
@@ -28,56 +29,58 @@
             padding: 10px;
             width: 200px;
         }
+        
         .delete-button {
-    border: 0;
-    outline: none;
-    width: 30px;
-    height: 30px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: #373737;
-    border-radius: 50px;
-    padding: 6px;
-    transition: all .25s ease-out;
-}
+            border: 0;
+            outline: none;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #373737;
+            border-radius: 50px;
+            padding: 6px;
+            transition: all .25s ease-out;
+        }
 
-.progress_circle2 {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100px;  /* Set height if necessary */
-    width: 100px;   /* Set width if necessary */
-}
+        .progress_circle2 {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100px;  /* Set height if necessary */
+            width: 100px;   /* Set width if necessary */
+        }
 
     </style>
     
 
 
-@if(session('success'))
-    <script>
-        Swal.fire({
-            icon: 'success',
-            title: 'Success!',
-            text: '{{ session('success') }}',
-            confirmButtonText: 'OK'
-        });
-    </script>
-@endif
+    @if(session('success'))
+        <script>
+            Swal.fire({
+                icon: 'success',
+                title: 'Success!',
+                text: '{{ session('success') }}',
+                confirmButtonText: 'OK'
+            });
+        </script>
+    @endif
 
-@if(session('error'))
-    <script>
-        Swal.fire({
-            icon: 'error',
-            title: 'Error!',
-            text: '{{ session('error') }}',
-            confirmButtonText: 'OK'
-        });
-    </script>
-@endif
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    @if(session('error'))
+        <script>
+            Swal.fire({
+                icon: 'error',
+                title: 'Error!',
+                text: '{{ session('error') }}',
+                confirmButtonText: 'OK'
+            });
+        </script>
+    @endif
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
-<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+
     <script>
         $(document).ready(function() {
             var $sharePeople = $('.share_people');
@@ -104,293 +107,291 @@
         });
     </script>
 
-     <script>
-$(document).ready(function() {
-    // Handle click event on elements with class 'chck_slect'
-     $('body').on('click', '.chck_slect', function() {
-   
-        $('.check_boox').addClass('active');
-    });
+    <script>
+        $(document).ready(function() {
+            // Handle click event on elements with class 'chck_slect'
+            $('body').on('click', '.chck_slect', function() {
+        
+                $('.check_boox').addClass('active');
+            });
 
-    // Handle change event on checkboxes
-     $('body').on('change', 'input[name="fileCheckbox"]', function() {
-   
-        // Check if any checkbox is checked
-        if ($('input[name="fileCheckbox"]:checked').length > 0) {
-            // Add 'active' class to the 'retreve_inn' link
-            $('.retreve_inn').addClass('active');
-        } else {
-            // Remove 'active' class from the 'retreve_inn' link if no checkboxes are checked
-            $('.retreve_inn').removeClass('active');
-        }
-    });
+            // Handle change event on checkboxes
+            $('body').on('change', 'input[name="fileCheckbox"]', function() {
+        
+                // Check if any checkbox is checked
+                if ($('input[name="fileCheckbox"]:checked').length > 0) {
+                    // Add 'active' class to the 'retreve_inn' link
+                    $('.retreve_inn').addClass('active');
+                } else {
+                    // Remove 'active' class from the 'retreve_inn' link if no checkboxes are checked
+                    $('.retreve_inn').removeClass('active');
+                }
+            });
 
-    // Handle click event on 'done_chcel' link
-      $('body').on('click', '.done_chcel', function() {
-    
-        // Remove 'active' class from all 'check_boox' elements
-        $('.check_boox').removeClass('active');
-        // Uncheck all checkboxes
-        $('input[name="fileCheckbox"]').prop('checked', false);
-        // Optionally, remove 'active' class from 'retreve_inn' link
-        $('.retreve_inn').removeClass('active');
-    });
-});
+            // Handle click event on 'done_chcel' link
+            $('body').on('click', '.done_chcel', function() {
+            
+                // Remove 'active' class from all 'check_boox' elements
+                $('.check_boox').removeClass('active');
+                // Uncheck all checkboxes
+                $('input[name="fileCheckbox"]').prop('checked', false);
+                // Optionally, remove 'active' class from 'retreve_inn' link
+                $('.retreve_inn').removeClass('active');
+            });
+        });
 
- </script> 
+    </script> 
  
- <script>
-    $(document).ready(function() {
-    $('body').on('keydown', '.tag-input', function(event) {
-        if (event.key === 'Enter') {
-            event.preventDefault();
-            const textarea = this;
-            const tagContainer = textarea.closest('.tag-container');
-            const tagText = textarea.value.trim();
-            if (tagText !== '') {
-                const tag = document.createElement('div');
-                tag.className = 'tag';
-                tag.textContent = tagText;
+    <script>
+        $(document).ready(function() {
+            $('body').on('keydown', '.tag-input', function(event) {
+                if (event.key === 'Enter') {
+                    event.preventDefault();
+                    const textarea = this;
+                    const tagContainer = textarea.closest('.tag-container');
+                    const tagText = textarea.value.trim();
+                    if (tagText !== '') {
+                        const tag = document.createElement('div');
+                        tag.className = 'tag';
+                        tag.textContent = tagText;
 
-                const removeTag = document.createElement('span');
-                removeTag.className = 'remove-tag';
-                removeTag.textContent = '✖';
-                removeTag.addEventListener('click', function() {
-                    tagContainer.removeChild(tag);
-                    updateTags(tagContainer);
-                });
+                        const removeTag = document.createElement('span');
+                        removeTag.className = 'remove-tag';
+                        removeTag.textContent = '✖';
+                        removeTag.addEventListener('click', function() {
+                            tagContainer.removeChild(tag);
+                            updateTags(tagContainer);
+                        });
 
-                tag.appendChild(removeTag);
-                tagContainer.insertBefore(tag, textarea);
-                textarea.value = '';
-                updateTags(tagContainer);
+                        tag.appendChild(removeTag);
+                        tagContainer.insertBefore(tag, textarea);
+                        textarea.value = '';
+                        updateTags(tagContainer);
+                    }
+                }
+            });
+
+            function updateTags(tagContainer) {
+                const tags = [...tagContainer.querySelectorAll('.tag')]
+                    .map(tag => tag.textContent.replace('✖', '').trim());
+
+                // Update the hidden input field associated with this tag container
+                const hiddenInput = tagContainer.querySelector('.tagList');
+                if (hiddenInput) {
+                    hiddenInput.value = tags.join(',');
+                }
             }
-        }
-    });
 
-    function updateTags(tagContainer) {
-        const tags = [...tagContainer.querySelectorAll('.tag')]
-            .map(tag => tag.textContent.replace('✖', '').trim());
-
-        // Update the hidden input field associated with this tag container
-        const hiddenInput = tagContainer.querySelector('.tagList');
-        if (hiddenInput) {
-            hiddenInput.value = tags.join(',');
-        }
-    }
-});
+        });
     </script>
     
 
-<script>
-$(document).ready(function () {
-    // Object to store selected files for each input by their unique IDs
-    let fileData = {};
+    <script>
+        $(document).ready(function () {
+            // Object to store selected files for each input by their unique IDs
+            let fileData = {};
 
-    // Variable to track the currently open modal ID
-    let currentModalId = null;
+            // Variable to track the currently open modal ID
+            let currentModalId = null;
 
-    // Handle file input change
-    $('body').on('change', '.dragfile', function () {
-        const fileInput = this;
-        const fileList = $(fileInput).closest('.file-area').next('.file-list');
-        const inputId = $(fileInput).attr('id');
+            // Handle file input change
+            $('body').on('change', '.dragfile', function () {
+                const fileInput = this;
+                const fileList = $(fileInput).closest('.file-area').next('.file-list');
+                const inputId = $(fileInput).attr('id');
 
-        // Initialize fileData for the input if not already present
-        if (!fileData[inputId]) fileData[inputId] = [];
+                // Initialize fileData for the input if not already present
+                if (!fileData[inputId]) fileData[inputId] = [];
 
-        handleFiles(fileInput, fileList, inputId);
-    });
+                handleFiles(fileInput, fileList, inputId);
+            });
 
-    // Handle drag and drop events
-    $('.file-area').on('dragover', function (event) {
-        event.preventDefault();
-        $(this).addClass('green-outline');
-    }).on('dragleave drop', function (event) {
-        event.preventDefault();
-        $(this).removeClass('green-outline');
-    }).on('drop', function (event) {
-        event.preventDefault();
-        const fileInput = $(this).find('.dragfile')[0];
-        const fileList = $(this).next('.file-list');
-        fileInput.files = event.originalEvent.dataTransfer.files;
-        const inputId = $(fileInput).attr('id');
+            // Handle drag and drop events
+            $('.file-area').on('dragover', function (event) {
+                event.preventDefault();
+                $(this).addClass('green-outline');
+            }).on('dragleave drop', function (event) {
+                event.preventDefault();
+                $(this).removeClass('green-outline');
+            }).on('drop', function (event) {
+                event.preventDefault();
+                const fileInput = $(this).find('.dragfile')[0];
+                const fileList = $(this).next('.file-list');
+                fileInput.files = event.originalEvent.dataTransfer.files;
+                const inputId = $(fileInput).attr('id');
 
-        // Initialize fileData for the input if not already present
-        if (!fileData[inputId]) fileData[inputId] = [];
+                // Initialize fileData for the input if not already present
+                if (!fileData[inputId]) fileData[inputId] = [];
 
-        handleFiles(fileInput, fileList, inputId);
-    });
+                handleFiles(fileInput, fileList, inputId);
+            });
 
-    // Function to handle files and update the UI
-    function handleFiles(fileInput, fileList, inputId) {
-        const newFiles = Array.from(fileInput.files);
-        fileData[inputId] = [...fileData[inputId], ...newFiles];
-        fileList.empty();
-
-        // Append each file to the file list
-        fileData[inputId].forEach((file, index) => {
-            const fileItem = $('<div>', { class: 'file-item' }).append(
-                $('<span>').text(file.name),
-                $('<button>', { class: 'remove-btn', 'data-file-index': index }).text('X').on('click', function () {
-                    removeFile(fileInput, index, fileList, inputId);
-                })
-            );
-            fileList.append(fileItem);
-        });
-
-        updateFileInput(fileInput, inputId);
-    }
-
-    // Function to remove a file from the input
-    function removeFile(fileInput, index, fileList, inputId) {
-        fileData[inputId].splice(index, 1);
-        updateFileInput(fileInput, inputId);
-        refreshFileList(fileList, fileInput, inputId);
-    }
-
-    // Function to refresh the file list in the UI
-    function refreshFileList(fileList, fileInput, inputId) {
-        fileList.empty();
-        fileData[inputId].forEach((file, i) => {
-            const fileItem = $('<div>', { class: 'file-item' }).append(
-                $('<span>').text(file.name),
-                $('<button>', { class: 'remove-btn', 'data-file-index': i }).text('X').on('click', function () {
-                    removeFile(fileInput, i, fileList, inputId);
-                })
-            );
-            fileList.append(fileItem);
-        });
-    }
-
-    // Function to update the file input's file list
-    function updateFileInput(fileInput, inputId) {
-        const dataTransfer = new DataTransfer();
-        fileData[inputId].forEach(file => dataTransfer.items.add(file));
-        fileInput.files = dataTransfer.files;
-    }
-
-    // Clear file data and reset inputs when a modal is opened, unless reopening the same modal
-    $('body').on('shown.bs.modal', '.modal', function () {
-        const newModalId = $(this).attr('id');
-
-        // If reopening the same modal, don't clear the file data
-        if (currentModalId === newModalId) return;
-
-        currentModalId = newModalId; // Update current modal ID
-
-        $(this).find('.dragfile').each(function () {
-            const fileInput = this;
-            const fileList = $(fileInput).closest('.file-area').next('.file-list');
-            const inputId = $(fileInput).attr('id');
-
-            // Only clear if fileData exists for the input
-            if (fileData[inputId] && fileData[inputId].length > 0) {
-                fileData[inputId] = [];
-                updateFileInput(fileInput, inputId);
+            // Function to handle files and update the UI
+            function handleFiles(fileInput, fileList, inputId) {
+                const newFiles = Array.from(fileInput.files);
+                fileData[inputId] = [...fileData[inputId], ...newFiles];
                 fileList.empty();
+
+                // Append each file to the file list
+                fileData[inputId].forEach((file, index) => {
+                    const fileItem = $('<div>', { class: 'file-item' }).append(
+                        $('<span>').text(file.name),
+                        $('<button>', { class: 'remove-btn', 'data-file-index': index }).text('X').on('click', function () {
+                            removeFile(fileInput, index, fileList, inputId);
+                        })
+                    );
+                    fileList.append(fileItem);
+                });
+
+                updateFileInput(fileInput, inputId);
             }
+
+            // Function to remove a file from the input
+            function removeFile(fileInput, index, fileList, inputId) {
+                fileData[inputId].splice(index, 1);
+                updateFileInput(fileInput, inputId);
+                refreshFileList(fileList, fileInput, inputId);
+            }
+
+            // Function to refresh the file list in the UI
+            function refreshFileList(fileList, fileInput, inputId) {
+                fileList.empty();
+                fileData[inputId].forEach((file, i) => {
+                    const fileItem = $('<div>', { class: 'file-item' }).append(
+                        $('<span>').text(file.name),
+                        $('<button>', { class: 'remove-btn', 'data-file-index': i }).text('X').on('click', function () {
+                            removeFile(fileInput, i, fileList, inputId);
+                        })
+                    );
+                    fileList.append(fileItem);
+                });
+            }
+
+            // Function to update the file input's file list
+            function updateFileInput(fileInput, inputId) {
+                const dataTransfer = new DataTransfer();
+                fileData[inputId].forEach(file => dataTransfer.items.add(file));
+                fileInput.files = dataTransfer.files;
+            }
+
+            // Clear file data and reset inputs when a modal is opened, unless reopening the same modal
+            $('body').on('shown.bs.modal', '.modal', function () {
+                const newModalId = $(this).attr('id');
+
+                // If reopening the same modal, don't clear the file data
+                if (currentModalId === newModalId) return;
+
+                currentModalId = newModalId; // Update current modal ID
+
+                $(this).find('.dragfile').each(function () {
+                    const fileInput = this;
+                    const fileList = $(fileInput).closest('.file-area').next('.file-list');
+                    const inputId = $(fileInput).attr('id');
+
+                    // Only clear if fileData exists for the input
+                    if (fileData[inputId] && fileData[inputId].length > 0) {
+                        fileData[inputId] = [];
+                        updateFileInput(fileInput, inputId);
+                        fileList.empty();
+                    }
+                });
+            });
+
+            // Clear file data and reset input when closing the modal
+            $('body').on('click', '.close', function () {
+                const currentModal = $(this).closest('.modal');
+                currentModal.find('.dragfile').each(function () {
+                    const fileInput = this;
+                    const fileList = $(fileInput).closest('.file-area').next('.file-list');
+                    const inputId = $(fileInput).attr('id');
+
+                    fileData[inputId] = [];
+                    updateFileInput(fileInput, inputId);
+                    fileList.empty();
+                });
+            });
         });
-    });
-
-    // Clear file data and reset input when closing the modal
-    $('body').on('click', '.close', function () {
-        const currentModal = $(this).closest('.modal');
-        currentModal.find('.dragfile').each(function () {
-            const fileInput = this;
-            const fileList = $(fileInput).closest('.file-area').next('.file-list');
-            const inputId = $(fileInput).attr('id');
-
-            fileData[inputId] = [];
-            updateFileInput(fileInput, inputId);
-            fileList.empty();
-        });
-    });
-});
-
-
-
-</script>
+    </script>
     
 
  
     
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    const dropArea = document.querySelector('.left_side_wraap');
-    let dragCounter = 0;
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const dropArea = document.querySelector('.left_side_wraap');
+            let dragCounter = 0;
 
-    // Function to check if any modal is currently open
-    function isModalOpen() {
-        return $('.modal:visible').length > 0;
-    }
+            // Function to check if any modal is currently open
+            function isModalOpen() {
+                return $('.modal:visible').length > 0;
+            }
 
-    // Add class when file is dragged over the div
-    dropArea.addEventListener('dragenter', function(event) {
-        event.preventDefault();
-        if (isModalOpen()) return; // Stop script if another modal is open
+            // Add class when file is dragged over the div
+            dropArea.addEventListener('dragenter', function(event) {
+                event.preventDefault();
+                if (isModalOpen()) return; // Stop script if another modal is open
 
-        dragCounter++;
-        dropArea.classList.add('left_side_wraap_active');
-    });
+                dragCounter++;
+                dropArea.classList.add('left_side_wraap_active');
+            });
 
-    // Prevent default behavior to allow drop
-    dropArea.addEventListener('dragover', function(event) {
-        event.preventDefault();
-    });
+            // Prevent default behavior to allow drop
+            dropArea.addEventListener('dragover', function(event) {
+                event.preventDefault();
+            });
 
-    // Remove class when the file is dragged out of the div
-    dropArea.addEventListener('dragleave', function(event) {
-        event.preventDefault();
-        if (isModalOpen()) return; // Stop script if another modal is open
+            // Remove class when the file is dragged out of the div
+            dropArea.addEventListener('dragleave', function(event) {
+                event.preventDefault();
+                if (isModalOpen()) return; // Stop script if another modal is open
 
-        dragCounter--;
-        if (dragCounter === 0) {
-            dropArea.classList.remove('left_side_wraap_active');
-        }
-    });
+                dragCounter--;
+                if (dragCounter === 0) {
+                    dropArea.classList.remove('left_side_wraap_active');
+                }
+            });
 
-    // Handle file drop
-    dropArea.addEventListener('drop', function(event) {
-        event.preventDefault();
-        if (isModalOpen()) return; // Stop script if another modal is open
+            // Handle file drop
+            dropArea.addEventListener('drop', function(event) {
+                event.preventDefault();
+                if (isModalOpen()) return; // Stop script if another modal is open
 
-        dragCounter = 0;
-        dropArea.classList.remove('left_side_wraap_active');
+                dragCounter = 0;
+                dropArea.classList.remove('left_side_wraap_active');
 
-        const files = event.dataTransfer.files;
-        if (files.length > 0) {
-            const file = files[0];
+                const files = event.dataTransfer.files;
+                if (files.length > 0) {
+                    const file = files[0];
 
-            // Automatically select the file in the input field
-            autoSelectFile(file);
+                    // Automatically select the file in the input field
+                    autoSelectFile(file);
 
-            // Open the modal
-            $('#upload_filee').modal('show');
-        }
-    });
+                    // Open the modal
+                    $('#upload_filee').modal('show');
+                }
+            });
 
-    function autoSelectFile(file) {
-        const fileInput = document.querySelector('#upload_filee #file');
-        if (fileInput) {
-            const dataTransfer = new DataTransfer();
-            dataTransfer.items.add(file);
-            fileInput.files = dataTransfer.files;
+            function autoSelectFile(file) {
+                const fileInput = document.querySelector('#upload_filee #file');
+                if (fileInput) {
+                    const dataTransfer = new DataTransfer();
+                    dataTransfer.items.add(file);
+                    fileInput.files = dataTransfer.files;
 
-            // Trigger the change event on the file input
-            fileInput.dispatchEvent(new Event('change'));
-        }
-    }
+                    // Trigger the change event on the file input
+                    fileInput.dispatchEvent(new Event('change'));
+                }
+            }
 
-    // Handle the file selection UI update
-    $('#file').on('change', function() {
-        if (this.files.length > 0) {
-            $('.file-dummy .success').show();  // Show success message
-            $('.file-dummy .default').hide();  // Hide the default message
-        }
-    });
-});
-</script>
+            // Handle the file selection UI update
+            $('#file').on('change', function() {
+                if (this.files.length > 0) {
+                    $('.file-dummy .success').show();  // Show success message
+                    $('.file-dummy .default').hide();  // Hide the default message
+                }
+            });
+        });
+    </script>
 
 
 
@@ -415,85 +416,85 @@ document.addEventListener('DOMContentLoaded', function() {
 
           <!-- Page Header Start-->
        
-<div class="page-header">
-    <div class="header-wrapper row m-0">
-        <div class="header-logo-wrapper col-auto p-0">
-            <div class="toggle-sidebar">
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-grid status_toggle middle sidebar-toggle"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
-            <!-- <i class="status_toggle middle sidebar-toggle" data-feather="grid"> </i> -->
+    <div class="page-header">
+        <div class="header-wrapper row m-0">
+            <div class="header-logo-wrapper col-auto p-0">
+                <div class="toggle-sidebar">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-grid status_toggle middle sidebar-toggle"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
+                <!-- <i class="status_toggle middle sidebar-toggle" data-feather="grid"> </i> -->
+                </div>
+                <div class="logo-header-main"><a href="#">Milliondox</a></div>
             </div>
-            <div class="logo-header-main"><a href="#">Milliondox</a></div>
-        </div>
-        <div class="left-header col horizontal-wrapper ps-0">
-            <div class="left-menu-header">
-           <h2>
-           <span id="greeting" class=""></span>
-           Welcome to MillionDox!
-          </h2>
+            <div class="left-header col horizontal-wrapper ps-0">
+                <div class="left-menu-header">
+            <h2>
+            <span id="greeting" class=""></span>
+            Welcome to MillionDox!
+            </h2>
+                </div>
             </div>
-        </div>
 
-        <div class="nav-right col-1 pull-right right-header p-0 depo-ress mmbbbbll">
-            <div class="nav_right_logout">
-            <div class="logout_repo">
-             <ul>
-<li>
-         <div class="mode">
-        <span class="slider"></span>
-   </div>
-</li>
+            <div class="nav-right col-1 pull-right right-header p-0 depo-ress mmbbbbll">
+                <div class="nav_right_logout">
+                <div class="logout_repo">
+                <ul>
+                    <li>
+                        <div class="mode">
+                            <span class="slider"></span>
+                        </div>
+                    </li>
 
-                <li class="setting_munal">
-<div class="repo_setting">
-    <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
-<path d="M6.64288 17.5706L6.30003 14.8277C6.11431 14.7563 5.93946 14.6706 5.77546 14.5706C5.61146 14.4706 5.4506 14.3634 5.29289 14.2492L2.74288 15.3206L0.385742 11.2492L2.59288 9.57773C2.5786 9.47773 2.57146 9.38145 2.57146 9.28888V8.71031C2.57146 8.61716 2.5786 8.52059 2.59288 8.42059L0.385742 6.74916L2.74288 2.67773L5.29289 3.74916C5.45003 3.63488 5.61431 3.52773 5.78574 3.42773C5.95717 3.32773 6.1286 3.24202 6.30003 3.17059L6.64288 0.427734H11.3572L11.7 3.17059C11.8857 3.24202 12.0609 3.32773 12.2255 3.42773C12.39 3.52773 12.5506 3.63488 12.7072 3.74916L15.2572 2.67773L17.6143 6.74916L15.4072 8.42059C15.4215 8.52059 15.4286 8.61716 15.4286 8.71031V9.28802C15.4286 9.38116 15.4143 9.47773 15.3857 9.57773L17.5929 11.2492L15.2357 15.3206L12.7072 14.2492C12.55 14.3634 12.3857 14.4706 12.2143 14.5706C12.0429 14.6706 11.8715 14.7563 11.7 14.8277L11.3572 17.5706H6.64288ZM9.04288 11.9992C9.87146 11.9992 10.5786 11.7063 11.1643 11.1206C11.75 10.5349 12.0429 9.82773 12.0429 8.99916C12.0429 8.17059 11.75 7.46345 11.1643 6.87773C10.5786 6.29202 9.87146 5.99916 9.04288 5.99916C8.20003 5.99916 7.48917 6.29202 6.91031 6.87773C6.33146 7.46345 6.04231 8.17059 6.04289 8.99916C6.04289 9.82773 6.33231 10.5349 6.91117 11.1206C7.49003 11.7063 8.2006 11.9992 9.04288 11.9992Z" fill="#BABABA"/>
-</svg>
-</div>
-<ul class="setting_opt">
-<li class="need_hellp">
-    <a href="#" id="need_help"> 
-    <svg width="20" height="18" viewBox="0 0 20 18" fill="none" xmlns="http://www.w3.org/2000/svg">
-<path d="M7.33814 12.9905C10.4946 12.8151 13 10.2003 13 7C13 3.68629 10.3137 1 7 1C3.68629 1 1 3.68629 1 7C1 8.18071 1.34094 9.2817 1.92989 10.21L1.50586 11.482L1.50518 11.4839C1.34278 11.9711 1.26154 12.2149 1.31938 12.3771C1.36979 12.5184 1.48169 12.6299 1.62305 12.6803C1.78472 12.7379 2.02675 12.6573 2.51069 12.4959L2.51758 12.4939L3.79004 12.0698C4.7183 12.6588 5.81935 12.9998 7.00006 12.9998C7.11352 12.9998 7.22624 12.9967 7.33814 12.9905ZM7.33814 12.9905V12.9905ZM7.33814 12.9905C8.15907 15.3259 10.3841 17.0002 13.0001 17.0002C14.1808 17.0002 15.2817 16.6588 16.2099 16.0698L17.482 16.4939L17.4845 16.4944C17.9717 16.6567 18.2158 16.7381 18.378 16.6803C18.5194 16.6299 18.6299 16.5184 18.6803 16.3771C18.7382 16.2146 18.6572 15.9706 18.4943 15.4821L18.0703 14.21L18.2123 13.9746C18.7138 13.0979 18.9995 12.0823 18.9995 11C18.9995 7.6863 16.3137 5 13 5L12.7754 5.00414L12.6621 5.00967" stroke="#707070" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-</svg> Need Help?
-    </a>
-</li>
+                    <li class="setting_munal">
+                        <div class="repo_setting">
+                            <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M6.64288 17.5706L6.30003 14.8277C6.11431 14.7563 5.93946 14.6706 5.77546 14.5706C5.61146 14.4706 5.4506 14.3634 5.29289 14.2492L2.74288 15.3206L0.385742 11.2492L2.59288 9.57773C2.5786 9.47773 2.57146 9.38145 2.57146 9.28888V8.71031C2.57146 8.61716 2.5786 8.52059 2.59288 8.42059L0.385742 6.74916L2.74288 2.67773L5.29289 3.74916C5.45003 3.63488 5.61431 3.52773 5.78574 3.42773C5.95717 3.32773 6.1286 3.24202 6.30003 3.17059L6.64288 0.427734H11.3572L11.7 3.17059C11.8857 3.24202 12.0609 3.32773 12.2255 3.42773C12.39 3.52773 12.5506 3.63488 12.7072 3.74916L15.2572 2.67773L17.6143 6.74916L15.4072 8.42059C15.4215 8.52059 15.4286 8.61716 15.4286 8.71031V9.28802C15.4286 9.38116 15.4143 9.47773 15.3857 9.57773L17.5929 11.2492L15.2357 15.3206L12.7072 14.2492C12.55 14.3634 12.3857 14.4706 12.2143 14.5706C12.0429 14.6706 11.8715 14.7563 11.7 14.8277L11.3572 17.5706H6.64288ZM9.04288 11.9992C9.87146 11.9992 10.5786 11.7063 11.1643 11.1206C11.75 10.5349 12.0429 9.82773 12.0429 8.99916C12.0429 8.17059 11.75 7.46345 11.1643 6.87773C10.5786 6.29202 9.87146 5.99916 9.04288 5.99916C8.20003 5.99916 7.48917 6.29202 6.91031 6.87773C6.33146 7.46345 6.04231 8.17059 6.04289 8.99916C6.04289 9.82773 6.33231 10.5349 6.91117 11.1206C7.49003 11.7063 8.2006 11.9992 9.04288 11.9992Z" fill="#BABABA"/>
+                        </svg>
+                        </div>
+                 <ul class="setting_opt">
+                    <li class="need_hellp">
+                        <a href="#" id="need_help"> 
+                        <svg width="20" height="18" viewBox="0 0 20 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M7.33814 12.9905C10.4946 12.8151 13 10.2003 13 7C13 3.68629 10.3137 1 7 1C3.68629 1 1 3.68629 1 7C1 8.18071 1.34094 9.2817 1.92989 10.21L1.50586 11.482L1.50518 11.4839C1.34278 11.9711 1.26154 12.2149 1.31938 12.3771C1.36979 12.5184 1.48169 12.6299 1.62305 12.6803C1.78472 12.7379 2.02675 12.6573 2.51069 12.4959L2.51758 12.4939L3.79004 12.0698C4.7183 12.6588 5.81935 12.9998 7.00006 12.9998C7.11352 12.9998 7.22624 12.9967 7.33814 12.9905ZM7.33814 12.9905V12.9905ZM7.33814 12.9905C8.15907 15.3259 10.3841 17.0002 13.0001 17.0002C14.1808 17.0002 15.2817 16.6588 16.2099 16.0698L17.482 16.4939L17.4845 16.4944C17.9717 16.6567 18.2158 16.7381 18.378 16.6803C18.5194 16.6299 18.6299 16.5184 18.6803 16.3771C18.7382 16.2146 18.6572 15.9706 18.4943 15.4821L18.0703 14.21L18.2123 13.9746C18.7138 13.0979 18.9995 12.0823 18.9995 11C18.9995 7.6863 16.3137 5 13 5L12.7754 5.00414L12.6621 5.00967" stroke="#707070" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg> Need Help?
+                        </a>
+                    </li>
 
-<script>
-document.getElementById('need_help').addEventListener('click', function(event) {
-    event.preventDefault();
-    // WhatsApp URL with phone number and pre-filled custom message
-    const whatsappURL = 'https://wa.me/919910200287?text=Hello%2C%20I%20need%20assistance%20with%20MillionDox!';
-    window.location.href = whatsappURL;
-});
+                    <script>
+                        document.getElementById('need_help').addEventListener('click', function(event) {
+                            event.preventDefault();
+                            // WhatsApp URL with phone number and pre-filled custom message
+                            const whatsappURL = 'https://wa.me/919910200287?text=Hello%2C%20I%20need%20assistance%20with%20MillionDox!';
+                            window.location.href = whatsappURL;
+                        });
 
-</script>
+                    </script>
 
                     <li class="logout_out">
                     <a class="logou_inn" href="{{ route('logout') }}"
                     onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
-<svg width="18" height="14" viewBox="0 0 18 14" fill="none" xmlns="http://www.w3.org/2000/svg">
-<path d="M5.25 7C5.25 6.83424 5.31585 6.67527 5.43306 6.55806C5.55027 6.44085 5.70924 6.375 5.875 6.375H11.5V2.3125C11.5 1.0625 10.1801 0.125 9 0.125H3.0625C2.48253 0.12562 1.92649 0.356288 1.51639 0.766389C1.10629 1.17649 0.87562 1.73253 0.875 2.3125V11.6875C0.87562 12.2675 1.10629 12.8235 1.51639 13.2336C1.92649 13.6437 2.48253 13.8744 3.0625 13.875H9.3125C9.89247 13.8744 10.4485 13.6437 10.8586 13.2336C11.2687 12.8235 11.4994 12.2675 11.5 11.6875V7.625H5.875C5.70924 7.625 5.55027 7.55915 5.43306 7.44194C5.31585 7.32473 5.25 7.16576 5.25 7ZM16.9418 6.5582L13.8168 3.4332C13.6986 3.32094 13.5413 3.25928 13.3783 3.26137C13.2153 3.26345 13.0596 3.32912 12.9444 3.44437C12.8291 3.55962 12.7635 3.71534 12.7614 3.87831C12.7593 4.04129 12.8209 4.19863 12.9332 4.3168L14.991 6.375H11.5V7.625H14.991L12.9332 9.6832C12.8727 9.74066 12.8244 9.80965 12.791 9.88609C12.7576 9.96254 12.7398 10.0449 12.7387 10.1283C12.7377 10.2117 12.7533 10.2945 12.7847 10.3718C12.8162 10.4491 12.8628 10.5193 12.9217 10.5783C12.9807 10.6372 13.0509 10.6838 13.1282 10.7153C13.2055 10.7467 13.2883 10.7623 13.3717 10.7613C13.4551 10.7602 13.5375 10.7424 13.6139 10.709C13.6904 10.6756 13.7593 10.6273 13.8168 10.5668L16.9418 7.4418C17.0589 7.3246 17.1247 7.16569 17.1247 7C17.1247 6.83431 17.0589 6.6754 16.9418 6.5582Z" fill="#CEFFA8"/>
-</svg> Log Out
+                    <svg width="18" height="14" viewBox="0 0 18 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M5.25 7C5.25 6.83424 5.31585 6.67527 5.43306 6.55806C5.55027 6.44085 5.70924 6.375 5.875 6.375H11.5V2.3125C11.5 1.0625 10.1801 0.125 9 0.125H3.0625C2.48253 0.12562 1.92649 0.356288 1.51639 0.766389C1.10629 1.17649 0.87562 1.73253 0.875 2.3125V11.6875C0.87562 12.2675 1.10629 12.8235 1.51639 13.2336C1.92649 13.6437 2.48253 13.8744 3.0625 13.875H9.3125C9.89247 13.8744 10.4485 13.6437 10.8586 13.2336C11.2687 12.8235 11.4994 12.2675 11.5 11.6875V7.625H5.875C5.70924 7.625 5.55027 7.55915 5.43306 7.44194C5.31585 7.32473 5.25 7.16576 5.25 7ZM16.9418 6.5582L13.8168 3.4332C13.6986 3.32094 13.5413 3.25928 13.3783 3.26137C13.2153 3.26345 13.0596 3.32912 12.9444 3.44437C12.8291 3.55962 12.7635 3.71534 12.7614 3.87831C12.7593 4.04129 12.8209 4.19863 12.9332 4.3168L14.991 6.375H11.5V7.625H14.991L12.9332 9.6832C12.8727 9.74066 12.8244 9.80965 12.791 9.88609C12.7576 9.96254 12.7398 10.0449 12.7387 10.1283C12.7377 10.2117 12.7533 10.2945 12.7847 10.3718C12.8162 10.4491 12.8628 10.5193 12.9217 10.5783C12.9807 10.6372 13.0509 10.6838 13.1282 10.7153C13.2055 10.7467 13.2883 10.7623 13.3717 10.7613C13.4551 10.7602 13.5375 10.7424 13.6139 10.709C13.6904 10.6756 13.7593 10.6273 13.8168 10.5668L16.9418 7.4418C17.0589 7.3246 17.1247 7.16569 17.1247 7C17.1247 6.83431 17.0589 6.6754 16.9418 6.5582Z" fill="#CEFFA8"/>
+                    </svg> Log Out
                     </a>
                     <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
                         @csrf
                     </form>
                 </li>
                 
-</ul>
+        </ul>
                 </li>
                 
              </ul>
          </div>
-</div>
-<div class="nav_right_menu">
-        <!-- Header Right Icon Start-->
-        @include('user/includes.header-details')
-       <!-- Header Right Icon Start-->
-       </div>
+    </div>
+        <div class="nav_right_menu">
+                <!-- Header Right Icon Start-->
+                @include('user/includes.header-details')
+            <!-- Header Right Icon Start-->
+            </div>
+                </div>
+                </div>
         </div>
-         </div>
-</div>
 
       <!-- Page Header Ends-->
 
@@ -508,9 +509,9 @@ document.getElementById('need_help').addEventListener('click', function(event) {
          <div class="logo-wrapper"><a href="{{url('/home')}}">
              <!--<img class="img-fluid for-light" src="/../assets/images/logo.png" style="height: 58px;margin-left: 73px;" alt="">-->
              <div class="mill"><span class="milliondox">
-             <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
-<path d="M11 6H1M1 6L5.5 1.5M1 6L5.5 10.5" stroke="#C5C5C5"/>
-</svg>   
+                <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M11 6H1M1 6L5.5 1.5M1 6L5.5 10.5" stroke="#C5C5C5"/>
+                </svg>   
              BACK TO DASHBOARD</span></div>
              </a>
             <div class="back-btn">
@@ -520,61 +521,61 @@ document.getElementById('need_help').addEventListener('click', function(event) {
         </div>
         <div class="logo-icon-wrapper"><a href="">
                 <div class="icon-box-sidebar"><i data-feather="grid"></i></div></a></div>
-<!-- resp_logo -->
-<div class="repo_by">
-    <h2>Document <span>Repository</span></h2>
-        <div class="by_iage">
-            <span>By</span>
-            <img class="img_dark_repo" src="../assets/images/repo_logo.png" alt="img">
-            <img class="img_light_repo" src="../assets/images/repo_logo_dark.png" alt="img" style="display:none;">
-</div>
-</div>
-<!-- resp_logo -->
-
-<!-- progress bar start-->
-<div class="storage_progress">
-        <div class="progress-bar-container">
-        <div class="progress-bar" id="progressBar"></div>
+    <!-- resp_logo -->
+    <div class="repo_by">
+        <h2>Document <span>Repository</span></h2>
+            <div class="by_iage">
+                <span>By</span>
+                <img class="img_dark_repo" src="../assets/images/repo_logo.png" alt="img">
+                <img class="img_light_repo" src="../assets/images/repo_logo_dark.png" alt="img" style="display:none;">
     </div>
-<div class="progress-bar-text">1.7/3 GB utilized</div>
-</div>
-
-    <script>
-        window.onload = function() {
-            var progressBar = document.getElementById('progressBar');
-            var utilized = 1.7;
-            var total = 3;
-            var percentage = (utilized / total) * 100;
-            progressBar.style.width = percentage + '%';
-        };
-    </script>
-    
-<!-- progress bar end-->
-
-
-                    <!-- Loader starts-->
-                    <div class="comman_loderrs" id="client_loaders">
-      <div class="loder_wraper_inn_pos">
-      <div class="dot"></div>
-      <div class="dot"></div>
-      <div class="dot"></div>
-      <div class="dot"> </div>
-      <div class="dot"></div>
     </div>
+    <!-- resp_logo -->
+
+    <!-- progress bar start-->
+    <div class="storage_progress">
+            <div class="progress-bar-container">
+            <div class="progress-bar" id="progressBar"></div>
+        </div>
+    <div class="progress-bar-text">1.7/3 GB utilized</div>
+    </div>
+
+        <script>
+            window.onload = function() {
+                var progressBar = document.getElementById('progressBar');
+                var utilized = 1.7;
+                var total = 3;
+                var percentage = (utilized / total) * 100;
+                progressBar.style.width = percentage + '%';
+            };
+        </script>
+        
+      <!-- progress bar end-->
+
+
+        <!-- Loader starts-->
+        <div class="comman_loderrs" id="client_loaders">
+            <div class="loder_wraper_inn_pos">
+            <div class="dot"></div>
+            <div class="dot"></div>
+            <div class="dot"></div>
+            <div class="dot"> </div>
+            <div class="dot"></div>
+        </div>
 
                             </div>
                             
-  <script>
-    $(document).ready(function() {
-        // Show the loader when the page starts loading
-        $("#client_loaders").show();
+    <script>
+        $(document).ready(function() {
+            // Show the loader when the page starts loading
+            $("#client_loaders").show();
 
-        // Hide the loader after showing for 2 seconds
-        setTimeout(function() {
-            $("#client_loaders").fadeOut("slow");
-        }, 200); // 2000 milliseconds = 2 seconds
-    });
-</script>
+            // Hide the loader after showing for 2 seconds
+            setTimeout(function() {
+                $("#client_loaders").fadeOut("slow");
+            }, 200); // 2000 milliseconds = 2 seconds
+        });
+    </script>
 
     <!-- Loader ends-->
 
@@ -591,223 +592,208 @@ document.getElementById('need_help').addEventListener('click', function(event) {
 
 
 
-
-
-
                     @php
-$folders = $folders->sortBy('name');
-@endphp
+                    $folders = $folders->sortBy('name');
+                    @endphp
 
-@if (!function_exists('buildSubfolders'))
-    @php
-    function buildSubfolders($folders, $parentName = null) {
-        $html = '';
-        foreach ($folders as $folder) {
-            if ($folder->parent_name === $parentName) {
-                $html .= '<li class="dropdown">';
-                $html .= '<a href="#" class="folder-link" data-folder-path="' . $folder->path . '">';
-                $html = '<svg class="d_fadee" width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path fill-rule="evenodd" clip-rule="evenodd" d="M5.635 3.5525L6.01912 3.9375H10.9375C11.2856 3.9375 11.6194 4.07578 11.8656 4.32192C12.1117 4.56806 12.25 4.9019 12.25 5.25V9.625C12.25 9.9731 12.1117 10.3069 11.8656 10.5531C11.6194 10.7992 11.2856 10.9375 10.9375 10.9375H3.0625C2.7144 10.9375 2.38056 10.7992 2.13442 10.5531C1.88828 10.3069 1.75 9.9731 1.75 9.625V3.9375C1.75 3.5894 1.88828 3.25556 2.13442 3.00942C2.38056 2.76328 2.7144 2.625 3.0625 2.625H4.16237C4.33483 2.62504 4.50558 2.65906 4.66487 2.72512C4.82417 2.79118 4.96888 2.88798 5.09075 3.01L5.635 3.5525ZM0.4375 3.9375C0.4375 3.24131 0.714062 2.57363 1.20634 2.08134C1.69863 1.58906 2.36631 1.3125 3.0625 1.3125H4.16237C4.50721 1.31246 4.84868 1.38036 5.16727 1.51233C5.48586 1.6443 5.77532 1.83775 6.01912 2.08162L6.5625 2.625H10.9375C11.6337 2.625 12.3014 2.90156 12.7937 3.39384C13.2859 3.88613 13.5625 4.55381 13.5625 5.25V9.625C13.5625 10.3212 13.2859 10.9889 12.7937 11.4812C12.3014 11.9734 11.6337 12.25 10.9375 12.25H3.0625C2.36631 12.25 1.69863 11.9734 1.20634 11.4812C0.714062 10.9889 0.4375 10.3212 0.4375 9.625V3.9375ZM4.15625 5.6875C3.9822 5.6875 3.81528 5.75664 3.69221 5.87971C3.56914 6.00278 3.5 6.1697 3.5 6.34375C3.5 6.5178 3.56914 6.68472 3.69221 6.80779C3.81528 6.93086 3.9822 7 4.15625 7H9.84375C10.0178 7 10.1847 6.93086 10.3078 6.80779C10.4309 6.68472 10.5 6.5178 10.5 6.34375C10.5 6.1697 10.4309 6.00278 10.3078 5.87971C10.1847 5.75664 10.0178 5.6875 9.84375 5.6875H4.15625Z" fill="#C5C5C5"/>
-         </svg> ' . $folder->name . '</a>';
+                    @if (!function_exists('buildSubfolders'))
+                        @php
+                            function buildSubfolders($folders, $parentName = null) {
+                                $html = '';
+                                foreach ($folders as $folder) {
+                                    if ($folder->parent_name === $parentName) {
+                                        $html .= '<li class="dropdown">';
+                                        $html .= '<a href="#" class="folder-link" data-folder-path="' . $folder->path . '">';
+                                        $html = '<svg class="d_fadee" width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path fill-rule="evenodd" clip-rule="evenodd" d="M5.635 3.5525L6.01912 3.9375H10.9375C11.2856 3.9375 11.6194 4.07578 11.8656 4.32192C12.1117 4.56806 12.25 4.9019 12.25 5.25V9.625C12.25 9.9731 12.1117 10.3069 11.8656 10.5531C11.6194 10.7992 11.2856 10.9375 10.9375 10.9375H3.0625C2.7144 10.9375 2.38056 10.7992 2.13442 10.5531C1.88828 10.3069 1.75 9.9731 1.75 9.625V3.9375C1.75 3.5894 1.88828 3.25556 2.13442 3.00942C2.38056 2.76328 2.7144 2.625 3.0625 2.625H4.16237C4.33483 2.62504 4.50558 2.65906 4.66487 2.72512C4.82417 2.79118 4.96888 2.88798 5.09075 3.01L5.635 3.5525ZM0.4375 3.9375C0.4375 3.24131 0.714062 2.57363 1.20634 2.08134C1.69863 1.58906 2.36631 1.3125 3.0625 1.3125H4.16237C4.50721 1.31246 4.84868 1.38036 5.16727 1.51233C5.48586 1.6443 5.77532 1.83775 6.01912 2.08162L6.5625 2.625H10.9375C11.6337 2.625 12.3014 2.90156 12.7937 3.39384C13.2859 3.88613 13.5625 4.55381 13.5625 5.25V9.625C13.5625 10.3212 13.2859 10.9889 12.7937 11.4812C12.3014 11.9734 11.6337 12.25 10.9375 12.25H3.0625C2.36631 12.25 1.69863 11.9734 1.20634 11.4812C0.714062 10.9889 0.4375 10.3212 0.4375 9.625V3.9375ZM4.15625 5.6875C3.9822 5.6875 3.81528 5.75664 3.69221 5.87971C3.56914 6.00278 3.5 6.1697 3.5 6.34375C3.5 6.5178 3.56914 6.68472 3.69221 6.80779C3.81528 6.93086 3.9822 7 4.15625 7H9.84375C10.0178 7 10.1847 6.93086 10.3078 6.80779C10.4309 6.68472 10.5 6.5178 10.5 6.34375C10.5 6.1697 10.4309 6.00278 10.3078 5.87971C10.1847 5.75664 10.0178 5.6875 9.84375 5.6875H4.15625Z" fill="#C5C5C5"/>
+                                </svg> ' . $folder->name . '</a>';
 
-                $nestedSubfolders = $folders->filter(function($subfolder) use ($folder) {
-                    return $subfolder->parent_name === $folder->name;
-                });
+                                        $nestedSubfolders = $folders->filter(function($subfolder) use ($folder) {
+                                            return $subfolder->parent_name === $folder->name;
+                                        });
 
-                if ($nestedSubfolders->isNotEmpty()) {
-                    $html .= '<ul class="dropdown-menu">';
-                    $html .= buildSubfolders($nestedSubfolders, $folder->name);
-                    $html .= '</ul>';
-                }
-                $html .= '</li>';
-            }
-        }
-        return $html;
-    }
-    @endphp
-@endif
+                                        if ($nestedSubfolders->isNotEmpty()) {
+                                            $html .= '<ul class="dropdown-menu">';
+                                            $html .= buildSubfolders($nestedSubfolders, $folder->name);
+                                            $html .= '</ul>';
+                                        }
+                                        $html .= '</li>';
+                                    }
+                                }
+                                return $html;
+                            }
+                        @endphp
+                    @endif
 
 
 
    
-<script>
-    $(document).ready(function() {
-    // Attach event listener to elements with the mainhomedata class
-    $('body').on('click', '.mainhomedata', function(event) {
-        event.preventDefault(); // Prevent the default action
+                    <script>
+                        $(document).ready(function() {
+                         // Attach event listener to elements with the mainhomedata class
+                            $('body').on('click', '.mainhomedata', function(event) {
+                                event.preventDefault(); // Prevent the default action
 
-        // Redirect to the specified URL
-        window.location.href = '{{url('/docurepo')}}';
-    });
-});
+                                // Redirect to the specified URL
+                                window.location.href = '{{url('/docurepo')}}';
+                            });
+                         });
 
-</script>
+                    </script>
 
-<ul id="fresponsive" class="nav navbar-nav dropdown">
-    <li class="dropdown main_dropdown">
-    <b class="toggle_icconn "></b>
-            <a href=""  class="dropdown-toggle mainhomedata" >
-            <div class="folder-card">
-                    <div class="folder-image">
-                        <div class="folder_in">
-                        <svg width="100" height="100" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
-<path d="M49.9259 2.10898C49.5062 2.12346 49.1017 2.26969 48.7697 2.52695L2.76969 38.4215C2.35115 38.7478 2.07939 39.2271 2.01419 39.7538C1.94899 40.2805 2.0957 40.8115 2.42204 41.2301C2.74838 41.6486 3.22762 41.9204 3.75433 41.9856C4.28105 42.0508 4.81209 41.9041 5.23063 41.5777L8.00016 39.4176V91.9996C8.00022 92.53 8.21095 93.0387 8.58601 93.4138C8.96107 93.7888 9.46975 93.9996 10.0002 93.9996H37.6642C37.8802 94.0353 38.1006 94.0353 38.3166 93.9996H61.6642C61.8802 94.0353 62.1006 94.0353 62.3166 93.9996H90.0002C90.5306 93.9996 91.0393 93.7888 91.4143 93.4138C91.7894 93.0387 92.0001 92.53 92.0002 91.9996V39.4176L94.7697 41.5777C94.9769 41.7393 95.214 41.8585 95.4673 41.9285C95.7206 41.9985 95.9852 42.018 96.246 41.9857C96.5068 41.9534 96.7587 41.8701 96.9874 41.7404C97.216 41.6108 97.4168 41.4374 97.5784 41.2302C97.74 41.0229 97.8592 40.7859 97.9292 40.5325C97.9991 40.2792 98.0185 40.0146 97.9862 39.7538C97.954 39.493 97.8706 39.2411 97.741 39.0125C97.6113 38.7839 97.4379 38.5831 97.2306 38.4215L82.0002 26.5387V11.9996H70.0002V17.1715L51.2306 2.52695C50.8585 2.23839 50.3965 2.09038 49.9259 2.10898ZM50.0002 6.64414L88.0002 36.2965V89.9996H64.0002V51.9996H36.0002V89.9996H12.0002V36.2965L50.0002 6.64414ZM74.0002 15.9996H78.0002V23.4176L74.0002 20.2926V15.9996ZM40.0002 55.9996H60.0002V89.9996H40.0002V55.9996Z" fill="#D1D5E1"/>
-</svg>
+                    <ul id="fresponsive" class="nav navbar-nav dropdown">
+                        <li class="dropdown main_dropdown">
+                          <b class="toggle_icconn "></b>
+                            <a href=""  class="dropdown-toggle mainhomedata" >
+                            <div class="folder-card">
+                                    <div class="folder-image">
+                                        <div class="folder_in">
+                                        <svg width="100" height="100" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                            <path d="M49.9259 2.10898C49.5062 2.12346 49.1017 2.26969 48.7697 2.52695L2.76969 38.4215C2.35115 38.7478 2.07939 39.2271 2.01419 39.7538C1.94899 40.2805 2.0957 40.8115 2.42204 41.2301C2.74838 41.6486 3.22762 41.9204 3.75433 41.9856C4.28105 42.0508 4.81209 41.9041 5.23063 41.5777L8.00016 39.4176V91.9996C8.00022 92.53 8.21095 93.0387 8.58601 93.4138C8.96107 93.7888 9.46975 93.9996 10.0002 93.9996H37.6642C37.8802 94.0353 38.1006 94.0353 38.3166 93.9996H61.6642C61.8802 94.0353 62.1006 94.0353 62.3166 93.9996H90.0002C90.5306 93.9996 91.0393 93.7888 91.4143 93.4138C91.7894 93.0387 92.0001 92.53 92.0002 91.9996V39.4176L94.7697 41.5777C94.9769 41.7393 95.214 41.8585 95.4673 41.9285C95.7206 41.9985 95.9852 42.018 96.246 41.9857C96.5068 41.9534 96.7587 41.8701 96.9874 41.7404C97.216 41.6108 97.4168 41.4374 97.5784 41.2302C97.74 41.0229 97.8592 40.7859 97.9292 40.5325C97.9991 40.2792 98.0185 40.0146 97.9862 39.7538C97.954 39.493 97.8706 39.2411 97.741 39.0125C97.6113 38.7839 97.4379 38.5831 97.2306 38.4215L82.0002 26.5387V11.9996H70.0002V17.1715L51.2306 2.52695C50.8585 2.23839 50.3965 2.09038 49.9259 2.10898ZM50.0002 6.64414L88.0002 36.2965V89.9996H64.0002V51.9996H36.0002V89.9996H12.0002V36.2965L50.0002 6.64414ZM74.0002 15.9996H78.0002V23.4176L74.0002 20.2926V15.9996ZM40.0002 55.9996H60.0002V89.9996H40.0002V55.9996Z" fill="#D1D5E1"/>
+                                        </svg>
 
 
-                        <!-- <img src="../assets/images/solar_folder-bold.png"  id="folders" class="folder-icon" alt="Folder Icon"> -->
-                        </div>
-                        <div class="folder-title">
-                        <span>Home</span>
-                            </div>
-                    </div>
-                   
-                </div>
+                                        <!-- <img src="../assets/images/solar_folder-bold.png"  id="folders" class="folder-icon" alt="Folder Icon"> -->
+                                        </div>
+                                        <div class="folder-title">
+                                        <span>Home</span>
+                                        </div>
+                                    </div>
                 
-            </a>
+                                </div>
+                            </a>
             
-        </li>
-        @foreach($folders->where('parent_name', null) as $parent)
-            @php
-                if (strpos($parent->name, '_') !== false) {
-                    $dash_position_name = strpos($parent->name, '_');
-                    $parent->name = substr($parent->name, $dash_position_name + 1);
-                }
-            @endphp
-        <li class="dropdown main_dropdown">
-            <b class="toggle_icconn" data-folder-path="{{ $parent->path }}"></b>
-            <a href="#" class="dropdown-toggle folder-link" data-folder-path="{{ $parent->path }}">
-                <div class="folder-card">
-                    <div class="folder-image">
-                        <div class="folder_in">
-                            <svg class="d_fadee" width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                <path fill-rule="evenodd" clip-rule="evenodd" d="M5.635 3.5525L6.01912 3.9375H10.9375C11.2856 3.9375 11.6194 4.07578 11.8656 4.32192C12.1117 4.56806 12.25 4.9019 12.25 5.25V9.625C12.25 9.9731 12.1117 10.3069 11.8656 10.5531C11.6194 10.7992 11.2856 10.9375 10.9375 10.9375H3.0625C2.7144 10.9375 2.38056 10.7992 2.13442 10.5531C1.88828 10.3069 1.75 9.9731 1.75 9.625V3.9375C1.75 3.5894 1.88828 3.25556 2.13442 3.00942C2.38056 2.76328 2.7144 2.625 3.0625 2.625H4.16237C4.33483 2.62504 4.50558 2.65906 4.66487 2.72512C4.82417 2.79118 4.96888 2.88798 5.09075 3.01L5.635 3.5525ZM0.4375 3.9375C0.4375 3.24131 0.714062 2.57363 1.20634 2.08134C1.69863 1.58906 2.36631 1.3125 3.0625 1.3125H4.16237C4.50721 1.31246 4.84868 1.38036 5.16727 1.51233C5.48586 1.6443 5.77532 1.83775 6.01912 2.08162L6.5625 2.625H10.9375C11.6337 2.625 12.3014 2.90156 12.7937 3.39384C13.2859 3.88613 13.5625 4.55381 13.5625 5.25V9.625C13.5625 10.3212 13.2859 10.9889 12.7937 11.4812C12.3014 11.9734 11.6337 12.25 10.9375 12.25H3.0625C2.36631 12.25 1.69863 11.9734 1.20634 11.4812C0.714062 10.9889 0.4375 10.3212 0.4375 9.625V3.9375ZM4.15625 5.6875C3.9822 5.6875 3.81528 5.75664 3.69221 5.87971C3.56914 6.00278 3.5 6.1697 3.5 6.34375C3.5 6.5178 3.56914 6.68472 3.69221 6.80779C3.81528 6.93086 3.9822 7 4.15625 7H9.84375C10.0178 7 10.1847 6.93086 10.3078 6.80779C10.4309 6.68472 10.5 6.5178 10.5 6.34375C10.5 6.1697 10.4309 6.00278 10.3078 5.87971C10.1847 5.75664 10.0178 5.6875 9.84375 5.6875H4.15625Z" fill="#C5C5C5"/>
-                            </svg>
-                        </div>
-                        <div class="folder-title">
-                            <span>{{ $parent->name }}</span>
-                        </div>
-                    </div>
-                </div>
-            </a>
-            <ul class="dropdown-menu" id="subfolders-{{ urlencode(str_replace(['/', ' '], '_', $parent->path)) }}"></ul>
-        </li>
-    @endforeach
-</ul> 
+                        </li>
+
+                        @foreach($folders->where('parent_name', null) as $parent)
+                            @php
+                                if (strpos($parent->name, '_') !== false) {
+                                    $dash_position_name = strpos($parent->name, '_');
+                                    $parent->name = substr($parent->name, $dash_position_name + 1);
+                                }
+                            @endphp
+
+                            <li class="dropdown main_dropdown">
+                                <b class="toggle_icconn" data-folder-path="{{ $parent->path }}"></b>
+                                <a href="#" class="dropdown-toggle folder-link" data-folder-path="{{ $parent->path }}">
+                                    <div class="folder-card">
+                                        <div class="folder-image">
+                                            <div class="folder_in">
+                                                <svg class="d_fadee" width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                    <path fill-rule="evenodd" clip-rule="evenodd" d="M5.635 3.5525L6.01912 3.9375H10.9375C11.2856 3.9375 11.6194 4.07578 11.8656 4.32192C12.1117 4.56806 12.25 4.9019 12.25 5.25V9.625C12.25 9.9731 12.1117 10.3069 11.8656 10.5531C11.6194 10.7992 11.2856 10.9375 10.9375 10.9375H3.0625C2.7144 10.9375 2.38056 10.7992 2.13442 10.5531C1.88828 10.3069 1.75 9.9731 1.75 9.625V3.9375C1.75 3.5894 1.88828 3.25556 2.13442 3.00942C2.38056 2.76328 2.7144 2.625 3.0625 2.625H4.16237C4.33483 2.62504 4.50558 2.65906 4.66487 2.72512C4.82417 2.79118 4.96888 2.88798 5.09075 3.01L5.635 3.5525ZM0.4375 3.9375C0.4375 3.24131 0.714062 2.57363 1.20634 2.08134C1.69863 1.58906 2.36631 1.3125 3.0625 1.3125H4.16237C4.50721 1.31246 4.84868 1.38036 5.16727 1.51233C5.48586 1.6443 5.77532 1.83775 6.01912 2.08162L6.5625 2.625H10.9375C11.6337 2.625 12.3014 2.90156 12.7937 3.39384C13.2859 3.88613 13.5625 4.55381 13.5625 5.25V9.625C13.5625 10.3212 13.2859 10.9889 12.7937 11.4812C12.3014 11.9734 11.6337 12.25 10.9375 12.25H3.0625C2.36631 12.25 1.69863 11.9734 1.20634 11.4812C0.714062 10.9889 0.4375 10.3212 0.4375 9.625V3.9375ZM4.15625 5.6875C3.9822 5.6875 3.81528 5.75664 3.69221 5.87971C3.56914 6.00278 3.5 6.1697 3.5 6.34375C3.5 6.5178 3.56914 6.68472 3.69221 6.80779C3.81528 6.93086 3.9822 7 4.15625 7H9.84375C10.0178 7 10.1847 6.93086 10.3078 6.80779C10.4309 6.68472 10.5 6.5178 10.5 6.34375C10.5 6.1697 10.4309 6.00278 10.3078 5.87971C10.1847 5.75664 10.0178 5.6875 9.84375 5.6875H4.15625Z" fill="#C5C5C5"/>
+                                                </svg>
+                                            </div>
+                                            <div class="folder-title">
+                                                <span>{{ $parent->name }}</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </a>
+                                <ul class="dropdown-menu" id="subfolders-{{ urlencode(str_replace(['/', ' '], '_', $parent->path)) }}"></ul>
+                            </li>
+                        @endforeach
+                    </ul> 
 
 
 
-<script>
+            <script>
+                document.addEventListener('DOMContentLoaded', function() {
+                    document.body.addEventListener('click', function(event) {
+                        var target = event.target;
 
-document.addEventListener('DOMContentLoaded', function() {
-    document.body.addEventListener('click', function(event) {
-        var target = event.target;
+                        // Function to toggle submenu visibility
+                        function toggleSubMenu(element) {
+                            var subMenu = element.nextElementSibling;
 
-        // Function to toggle submenu visibility
-        function toggleSubMenu(element) {
-            var subMenu = element.nextElementSibling;
+                            // Debugging logs
+                            console.log('Element clicked:', element);
+                            if (subMenu && subMenu.classList.contains('dropdown-menu')) {
+                                subMenu.classList.toggle('show');
+                                console.log('SubMenu toggled:', subMenu);
+                            } else {
+                                console.log('Next sibling is not a dropdown-menu');
+                            }
+                        }
 
-            // Debugging logs
-            console.log('Element clicked:', element);
-            if (subMenu && subMenu.classList.contains('dropdown-menu')) {
-                subMenu.classList.toggle('show');
-                console.log('SubMenu toggled:', subMenu);
-            } else {
-                console.log('Next sibling is not a dropdown-menu');
-            }
-        }
+                        // Check if the clicked element is a dropdown link
+                        if (target.matches('.main_dropdown > a, .dropdown > a') || target.closest('.main_dropdown > a, .dropdown > a')) {
+                            event.preventDefault();
+                            var dropdownLink = target.closest('.main_dropdown > a, .dropdown > a');
+                            toggleSubMenu(dropdownLink);
+                        }
 
-        // Check if the clicked element is a dropdown link
-        if (target.matches('.main_dropdown > a, .dropdown > a') || target.closest('.main_dropdown > a, .dropdown > a')) {
-            event.preventDefault();
-            var dropdownLink = target.closest('.main_dropdown > a, .dropdown > a');
-            toggleSubMenu(dropdownLink);
-        }
+                        // Check if the clicked element is a toggle icon
+                        else if (target.matches('.toggle_icconn') || target.closest('.toggle_icconn')) {
+                            event.preventDefault();
+                            var toggleIcon = target.closest('.toggle_icconn');
 
-        // Check if the clicked element is a toggle icon
-        else if (target.matches('.toggle_icconn') || target.closest('.toggle_icconn')) {
-            event.preventDefault();
-            var toggleIcon = target.closest('.toggle_icconn');
+                            // Find the nearest parent dropdown to ensure correct submenu is toggled
+                            var parentDropdown = toggleIcon.closest('.dropdown');
+                            if (parentDropdown) {
+                                var dropdownLink = parentDropdown.querySelector('a');
+                                if (dropdownLink) {
+                                    toggleSubMenu(dropdownLink);
+                                }
+                            }
+                            
+                            // Alert to ensure the click on toggle_icconn is working
+                            // alert('Toggle icon clicked!');
+                        }
+                    });
+                });
 
-            // Find the nearest parent dropdown to ensure correct submenu is toggled
-            var parentDropdown = toggleIcon.closest('.dropdown');
-            if (parentDropdown) {
-                var dropdownLink = parentDropdown.querySelector('a');
-                if (dropdownLink) {
-                    toggleSubMenu(dropdownLink);
-                }
-            }
-            
-            // Alert to ensure the click on toggle_icconn is working
-            // alert('Toggle icon clicked!');
-        }
-    });
-});
+                // comment for on togle and remove class on other li click
 
+                // document.addEventListener('DOMContentLoaded', function() {
+                //     var dropdowns = document.querySelectorAll('.main_dropdown > a');
 
+                //     dropdowns.forEach(function(dropdown) {
+                //         dropdown.addEventListener('click', function(event) {
+                //             event.preventDefault();
 
+                //             var subMenu = this.nextElementSibling;
+                //             var isAlreadyOpen = subMenu.classList.contains('show');
 
+                //             // Close any currently open dropdowns
+                //             dropdowns.forEach(function(otherDropdown) {
+                //                 var otherSubMenu = otherDropdown.nextElementSibling;
+                //                 if (otherSubMenu && otherSubMenu.classList.contains('dropdown-menu')) {
+                //                     otherSubMenu.classList.remove('show');
+                //                 }
+                //             });
 
-
-// comment for on togle and remove class on other li click
-
-// document.addEventListener('DOMContentLoaded', function() {
-//     var dropdowns = document.querySelectorAll('.main_dropdown > a');
-
-//     dropdowns.forEach(function(dropdown) {
-//         dropdown.addEventListener('click', function(event) {
-//             event.preventDefault();
-
-//             var subMenu = this.nextElementSibling;
-//             var isAlreadyOpen = subMenu.classList.contains('show');
-
-//             // Close any currently open dropdowns
-//             dropdowns.forEach(function(otherDropdown) {
-//                 var otherSubMenu = otherDropdown.nextElementSibling;
-//                 if (otherSubMenu && otherSubMenu.classList.contains('dropdown-menu')) {
-//                     otherSubMenu.classList.remove('show');
-//                 }
-//             });
-
-//             // Toggle the clicked dropdown if it was not already open
-//             if (!isAlreadyOpen && subMenu && subMenu.classList.contains('dropdown-menu')) {
-//                 subMenu.classList.toggle('show');
-//             }
-//         });
-//     });
-// });
-</script>
+                //             // Toggle the clicked dropdown if it was not already open
+                //             if (!isAlreadyOpen && subMenu && subMenu.classList.contains('dropdown-menu')) {
+                //                 subMenu.classList.toggle('show');
+                //             }
+                //         });
+                //     });
+                // });
+            </script>
 
 
-<!-- jQuery -->
+        <!-- jQuery -->
 
 
-<!-- Bootstrap JavaScript -->
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
+        <!-- Bootstrap JavaScript -->
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
 
 
-<!-- Your custom script -->
-
-
-
-
-
-
-
-<script>
-    $(document).ready(function() {
-        $('.folder-link').on('click', function(e) {
-            e.preventDefault(); // Prevent the default link behavior
-            $('.folder-link').removeClass('active'); // Remove active class from all links
-            $(this).addClass('active'); // Add active class to the clicked link
-        });
-    });
-</script>
+                <!-- Your custom script -->
+                <script>
+                    $(document).ready(function() {
+                        $('.folder-link').on('click', function(e) {
+                            e.preventDefault(); // Prevent the default link behavior
+                            $('.folder-link').removeClass('active'); // Remove active class from all links
+                            $(this).addClass('active'); // Add active class to the clicked link
+                        });
+                    });
+                </script>
 
 
 
                 <li class="sidebar-list empty_li" style="opacity:0; visiblity:hidden;">            
-                        <span>empty<br>div<br>div</span>                    
+                    <span>empty<br>div<br>div</span>                    
                 </li>        
                 </ul>
             </div>
@@ -822,13 +808,13 @@ document.addEventListener('DOMContentLoaded', function() {
                 <span>Have a<br> Feedback ?</span>
                 <a id="click_fees_for">
                     <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-<path d="M0.5 15.5V2C0.5 1.5875 0.647 1.2345 0.941 0.941C1.235 0.6475 1.588 0.5005 2 0.5H14C14.4125 0.5 14.7657 0.647 15.0597 0.941C15.3538 1.235 15.5005 1.588 15.5 2V11C15.5 11.4125 15.3533 11.7657 15.0597 12.0597C14.7662 12.3537 14.413 12.5005 14 12.5H3.5L0.5 15.5ZM8 10.25C8.2125 10.25 8.39075 10.178 8.53475 10.034C8.67875 9.89 8.7505 9.712 8.75 9.5C8.7495 9.288 8.6775 9.11 8.534 8.966C8.3905 8.822 8.2125 8.75 8 8.75C7.7875 8.75 7.6095 8.822 7.466 8.966C7.3225 9.11 7.2505 9.288 7.25 9.5C7.2495 9.712 7.3215 9.89025 7.466 10.0347C7.6105 10.1792 7.7885 10.251 8 10.25ZM7.25 7.25H8.75V2.75H7.25V7.25Z" fill="white"/>
-</svg>
+                      <path d="M0.5 15.5V2C0.5 1.5875 0.647 1.2345 0.941 0.941C1.235 0.6475 1.588 0.5005 2 0.5H14C14.4125 0.5 14.7657 0.647 15.0597 0.941C15.3538 1.235 15.5005 1.588 15.5 2V11C15.5 11.4125 15.3533 11.7657 15.0597 12.0597C14.7662 12.3537 14.413 12.5005 14 12.5H3.5L0.5 15.5ZM8 10.25C8.2125 10.25 8.39075 10.178 8.53475 10.034C8.67875 9.89 8.7505 9.712 8.75 9.5C8.7495 9.288 8.6775 9.11 8.534 8.966C8.3905 8.822 8.2125 8.75 8 8.75C7.7875 8.75 7.6095 8.822 7.466 8.966C7.3225 9.11 7.2505 9.288 7.25 9.5C7.2495 9.712 7.3215 9.89025 7.466 10.0347C7.6105 10.1792 7.7885 10.251 8 10.25ZM7.25 7.25H8.75V2.75H7.25V7.25Z" fill="white"/>
+                    </svg>
                     Leave it here
                     <svg width="7" height="12" viewBox="0 0 7 12" fill="none" xmlns="http://www.w3.org/2000/svg">
-<path d="M1.19938 0.599609L0.359375 1.49961L4.79938 5.99961L0.359375 10.4996L1.19938 11.3996L6.59938 5.99961L1.19938 0.599609Z" fill="white"/>
-</svg>
-</a>
+                      <path d="M1.19938 0.599609L0.359375 1.49961L4.79938 5.99961L0.359375 10.4996L1.19938 11.3996L6.59938 5.99961L1.19938 0.599609Z" fill="white"/>
+                    </svg>
+                </a>
             </div>
             
             <div class="thanks_feedback">
@@ -838,271 +824,263 @@ document.addEventListener('DOMContentLoaded', function() {
                 @csrf
                    
                 <div class="textara_ann">
-<textarea placeholder="Write down your message" name="textarea" > </textarea>
+                <textarea placeholder="Write down your message" name="textarea" > </textarea>
 
-</div>
-<div class="root_btn">  
-<div class="attach_ann">
-<input type="file" id="aoa-file" name="file" accept="" >
-<svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-<g clip-path="url(#clip0_4033_7422)">
-<path d="M14.4031 8.00033L8.26234 14.1411C7.40991 14.9717 6.26465 15.433 5.07454 15.4252C3.88443 15.4175 2.74527 14.9413 1.90372 14.0997C1.06217 13.2582 0.585965 12.119 0.578221 10.9289C0.570477 9.73882 1.03182 8.59356 1.86234 7.74113L8.18661 1.41686C8.75241 0.851063 9.51979 0.533203 10.3199 0.533203C11.1201 0.533203 11.8875 0.851063 12.4533 1.41686C13.0191 1.98265 13.3369 2.75004 13.3369 3.55019C13.3369 4.35035 13.0191 5.11773 12.4533 5.68353L6.31141 11.8254C6.02851 12.1083 5.64482 12.2672 5.24474 12.2672C4.84467 12.2672 4.46097 12.1083 4.17808 11.8254C3.89518 11.5425 3.73625 11.1588 3.73625 10.7587C3.73625 10.3586 3.89518 9.97496 4.17808 9.69206L10.1365 3.73366" stroke="#A3AED0" stroke-width="1.5"/>
-</g>
-<defs>
-<clipPath id="clip0_4033_7422">
-<rect width="16" height="16" fill="white"/>
-</clipPath>
-</defs>
-</svg>
-</div>
-
-<button class="btn" style="border-radius:5px;" type="submit"> 
-<svg width="14" height="12" viewBox="0 0 14 12" fill="none" xmlns="http://www.w3.org/2000/svg">
-<path d="M1.26927 11.5999L12.9026 6.61327C13.0229 6.56204 13.1254 6.47658 13.1975 6.36754C13.2696 6.25849 13.308 6.13065 13.308 5.99994C13.308 5.86922 13.2696 5.74139 13.1975 5.63234C13.1254 5.52329 13.0229 5.43783 12.9026 5.3866L1.26927 0.399935C1.16854 0.355998 1.05845 0.337831 0.948943 0.347071C0.839435 0.356311 0.733949 0.392668 0.642003 0.452863C0.550057 0.513058 0.474543 0.595197 0.422274 0.691869C0.370005 0.788541 0.342625 0.896705 0.342604 1.0066L0.335938 4.07994C0.335938 4.41327 0.582604 4.69994 0.915937 4.73994L10.3359 5.99994L0.915937 7.25327C0.582604 7.29994 0.335938 7.5866 0.335938 7.91994L0.342604 10.9933C0.342604 11.4666 0.829271 11.7933 1.26927 11.5999Z" fill="white"/>
-</svg>
-</button>
-</div>
-
-</form>
             </div>
-        </div>
-        
-<ul class="setting_opt">
-    <li><a data-bs-toggle="modal" data-bs-target="#bin_filee">
-    <svg width="12" height="16" viewBox="0 0 12 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-<path d="M11.8346 1.33333H8.91797L8.08464 0.5H3.91797L3.08464 1.33333H0.167969V3H11.8346M1.0013 13.8333C1.0013 14.2754 1.1769 14.6993 1.48946 15.0118C1.80202 15.3244 2.22594 15.5 2.66797 15.5H9.33464C9.77666 15.5 10.2006 15.3244 10.5131 15.0118C10.8257 14.6993 11.0013 14.2754 11.0013 13.8333V3.83333H1.0013V13.8333Z" fill="#C5C5C5"/>
-</svg>
 
-Bin</a></li>
+            <div class="root_btn">  
+                <div class="attach_ann">
+                    <input type="file" id="aoa-file" name="file" accept="" >
+                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <g clip-path="url(#clip0_4033_7422)">
+                            <path d="M14.4031 8.00033L8.26234 14.1411C7.40991 14.9717 6.26465 15.433 5.07454 15.4252C3.88443 15.4175 2.74527 14.9413 1.90372 14.0997C1.06217 13.2582 0.585965 12.119 0.578221 10.9289C0.570477 9.73882 1.03182 8.59356 1.86234 7.74113L8.18661 1.41686C8.75241 0.851063 9.51979 0.533203 10.3199 0.533203C11.1201 0.533203 11.8875 0.851063 12.4533 1.41686C13.0191 1.98265 13.3369 2.75004 13.3369 3.55019C13.3369 4.35035 13.0191 5.11773 12.4533 5.68353L6.31141 11.8254C6.02851 12.1083 5.64482 12.2672 5.24474 12.2672C4.84467 12.2672 4.46097 12.1083 4.17808 11.8254C3.89518 11.5425 3.73625 11.1588 3.73625 10.7587C3.73625 10.3586 3.89518 9.97496 4.17808 9.69206L10.1365 3.73366" stroke="#A3AED0" stroke-width="1.5"/>
+                        </g>
+                        <defs>
+                            <clipPath id="clip0_4033_7422">
+                                <rect width="16" height="16" fill="white"/>
+                            </clipPath>
+                        </defs>
+                    </svg>
+                </div>
 
-</ul>
-</div>
-
-
-    </div>
-</div>
-
-<script>
-$(document).ready(function() {
-    $('.for_check').on('submit', function(e) {
-        e.preventDefault();
-
-        // Create a FormData object to handle file upload
-        var formData = new FormData(this);  // 'this' refers to the form element
-
-        $.ajax({
-            type: 'POST',
-            url: "{{ route('saveFeedback') }}",
-            data: formData,  // Pass the FormData object
-            contentType: false,  // Prevent jQuery from automatically setting the content type
-            processData: false,  // Prevent jQuery from processing the data
-            success: function(response) {
-                toastr.success(response.success); // Display success toaster message
-                // alert(response.success);
-                $('.for_check')[0].reset();  // Reset the form
-                $('#click_stop').click();
-            },
-            error: function(response) {
-                toastr.error("Something went wrong!!!");
-                // alert('Error: ' + response.responseJSON.message);
-            }
-        });
-    });
-});
-</script>
-
-          <!-- Bin model start -->
-        <div class="modal fade drop_coman_file have_title" id="bin_filee" tabindex="-1" role="dialog" aria-labelledby="bin_filee" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title bin_style" style="font-weight:700">
-                        <svg width="12" height="16" viewBox="0 0 12 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-<path d="M11.8346 1.33333H8.91797L8.08464 0.5H3.91797L3.08464 1.33333H0.167969V3H11.8346M1.0013 13.8333C1.0013 14.2754 1.1769 14.6993 1.48946 15.0118C1.80202 15.3244 2.22594 15.5 2.66797 15.5H9.33464C9.77666 15.5 10.2006 15.3244 10.5131 15.0118C10.8257 14.6993 11.0013 14.2754 11.0013 13.8333V3.83333H1.0013V13.8333Z" fill="#C5C5C5"></path>
-</svg>
-                    Bin</h5>
-                <button class="close" style="border-radius:5px;" type="button" data-bs-dismiss="modal">
-                    <span aria-hidden="true">
-                        <svg width="50" height="50" viewBox="0 0 50 50" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <rect width="4.27093" height="66.172" transform="matrix(0.702074 -0.712104 0.709324 0.704883 0 3.31244)" fill="black" />
-                            <rect width="4.27086" height="66.3713" transform="matrix(-0.704896 -0.70931 0.706518 -0.707695 3.10742 50)" fill="black" />
-                        </svg>
-                    </span>
+                <button class="btn" style="border-radius:5px;" type="submit"> 
+                    <svg width="14" height="12" viewBox="0 0 14 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M1.26927 11.5999L12.9026 6.61327C13.0229 6.56204 13.1254 6.47658 13.1975 6.36754C13.2696 6.25849 13.308 6.13065 13.308 5.99994C13.308 5.86922 13.2696 5.74139 13.1975 5.63234C13.1254 5.52329 13.0229 5.43783 12.9026 5.3866L1.26927 0.399935C1.16854 0.355998 1.05845 0.337831 0.948943 0.347071C0.839435 0.356311 0.733949 0.392668 0.642003 0.452863C0.550057 0.513058 0.474543 0.595197 0.422274 0.691869C0.370005 0.788541 0.342625 0.896705 0.342604 1.0066L0.335938 4.07994C0.335938 4.41327 0.582604 4.69994 0.915937 4.73994L10.3359 5.99994L0.915937 7.25327C0.582604 7.29994 0.335938 7.5866 0.335938 7.91994L0.342604 10.9933C0.342604 11.4666 0.829271 11.7933 1.26927 11.5999Z" fill="white"/>
+                    </svg>
                 </button>
             </div>
-            <div class="modal-body">
-                <h3>Bin</h3>
 
- 
-
-
-
-
-<div class="modal-body">
-    <h3>Bin</h3>
-
-    <!-- Filter Section -->
-    <div class="filter-section">
-        <div class="roww">
-            <p>The files in the trash will be accessible by the organization admin for 1 Year. Post that recovery of these deleted documents will not be possible.</p>
-        </div>
-        <div class="row">
-            <div class="col-md-4">
-                <label for="year-filter">Year</label>
-                <select id="year-filter" >
-                    <option value="">All</option>
-                    @for($year = date('Y'); $year >= date('Y') - 10; $year--)
-                        <option value="{{ $year }}">{{ $year }}</option>
-                    @endfor
-                </select>
-            </div>
-            <div class="col-md-4">
-                <label for="month-filter">Month</label>
-                <select id="month-filter" >
-                    <option value="">All</option>
-                    @foreach(range(1, 12) as $month)
-                        <option value="{{ $month }}">{{ date("F", mktime(0, 0, 0, $month, 1)) }}</option>
-                    @endforeach
-                </select>
-            </div>
-            <div class="col-md-4">
-                <label for="search-box">Search</label>
-                <input type="text" id="search-box"  placeholder="Search by name">
-            </div>
-        </div>
-    </div>
-
-    <div class="custom_table_wraap">
-        <table class="table table-striped">
-            <thead>
-                <tr>
-                    <th>Name</th>
-                    <th>Size</th>
-                    <th>Deleted by</th>
-                    <th>Deleted on</th>
-                    <th></th>
-                </tr>
-            </thead>
-            <tbody id="table-body">
-                @foreach($files4 as $file)
-                <tr data-date="{{ $file->updated_at }}">
-                    <td>{{$file->file_name}}</td>
-                    <td>{{ number_format($file->file_size / 1024, 2) }} KB</td>
-                    <td>{{$file->user_name}}</td>
-                    <td>{{$file->updated_at}}</td>
-                    <td>
-                        <!-- Dropdown for file actions -->
-                        <div class="dropdown">
-                            <button onclick="toggleDropdown()" class="dropbtn show_pp">
-                               <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <path d="M10.3994 4.19166C10.3994 4.37562 10.3632 4.55779 10.2929 4.72778C10.2226 4.89776 10.1194 5.05222 9.98937 5.18234C9.85934 5.31246 9.70494 5.4157 9.535 5.48615C9.36507 5.55661 9.18292 5.5929 8.99896 5.59296C8.81499 5.59302 8.63282 5.55684 8.46284 5.4865C8.29286 5.41615 8.1384 5.31302 8.00827 5.18298C7.87815 5.05294 7.77492 4.89854 7.70446 4.72861C7.63401 4.55867 7.59772 4.37652 7.59766 4.19256C7.59754 3.82103 7.74501 3.46467 8.00764 3.20188C8.27026 2.93908 8.62653 2.79138 8.99806 2.79126C9.36958 2.79114 9.72594 2.93862 9.98874 3.20124C10.2515 3.46387 10.3992 3.82013 10.3994 4.19166Z" fill="#8D8D8D"></path>
-                  <path d="M8.99806 10.3999C9.77148 10.3999 10.3985 9.77294 10.3985 8.99952C10.3985 8.2261 9.77148 7.59912 8.99806 7.59912C8.22464 7.59912 7.59766 8.2261 7.59766 8.99952C7.59766 9.77294 8.22464 10.3999 8.99806 10.3999Z" fill="#8D8D8D"></path>
-                  <path d="M8.99806 15.2085C9.77148 15.2085 10.3985 14.5815 10.3985 13.8081C10.3985 13.0347 9.77148 12.4077 8.99806 12.4077C8.22464 12.4077 7.59766 13.0347 7.59766 13.8081C7.59766 14.5815 8.22464 15.2085 8.99806 15.2085Z" fill="#8D8D8D"></path>
-                </svg>
-                            </button>
-                            <div id="myDropdown3" class="dropdown-content">
-                                <form method="POST" action="{{ route('file.restorefile', ['id' => $file->id]) }}" class="restore-form-file">
-                                    @csrf
-                                    @method('PUT')
-                                    <a class="dropdown-itemm rename_nt restore_button_file" data-id="{{ $file->id }}">
-                                        <svg width="14" height="15" viewBox="0 0 14 15" fill="none" xmlns="http://www.w3.org/2000/svg">
-<path d="M0.800781 4.39981C0.800781 3.92691 0.893951 3.45865 1.07497 3.02178C1.25598 2.5849 1.5213 2.18797 1.85576 1.85365C2.19022 1.51934 2.58727 1.2542 3.02423 1.07338C3.46119 0.892557 3.92949 0.799595 4.40238 0.799805C5.11433 0.800121 5.81019 1.01153 6.402 1.40729C6.9938 1.80306 7.45498 2.36541 7.72721 3.02325C7.99944 3.68109 8.0705 4.40488 7.93141 5.10311C7.79233 5.80134 7.44933 6.44265 6.9458 6.94595C6.44227 7.44926 5.80081 7.79197 5.10252 7.93075C4.40423 8.06953 3.68047 7.99814 3.02275 7.72562C2.36503 7.4531 1.80288 6.99167 1.40738 6.39969C1.01188 5.80771 0.800781 5.11175 0.800781 4.39981ZM5.91998 5.11661L5.20238 5.83421V4.59981C5.20238 4.31083 5.14545 4.02469 5.03484 3.75772C4.92423 3.49075 4.76211 3.24819 4.55773 3.04389C4.35336 2.83959 4.11074 2.67755 3.84373 2.56704C3.57672 2.45653 3.29056 2.3997 3.00158 2.39981H2.80158C2.69549 2.39981 2.59375 2.44195 2.51874 2.51696C2.44372 2.59198 2.40158 2.69372 2.40158 2.79981C2.40158 2.90589 2.44372 3.00763 2.51874 3.08265C2.59375 3.15766 2.69549 3.19981 2.80158 3.19981H3.00158C3.77518 3.19981 4.40158 3.82701 4.40158 4.59981V5.83421L3.68478 5.11661C3.60967 5.0416 3.50784 4.99951 3.4017 4.99958C3.29555 4.99966 3.19378 5.0419 3.11878 5.11701C3.04378 5.19211 3.00168 5.29394 3.00176 5.40009C3.00183 5.50623 3.04407 5.608 3.11918 5.68301L4.52078 7.08461C4.59597 7.15914 4.69764 7.20082 4.80351 7.20052C4.90938 7.20022 5.01082 7.15796 5.08558 7.08301L6.48558 5.68301C6.52277 5.64587 6.55228 5.60177 6.57243 5.55323C6.59258 5.50468 6.60297 5.45265 6.603 5.40009C6.60304 5.34753 6.59273 5.29548 6.57265 5.24691C6.55257 5.19834 6.52312 5.1542 6.48598 5.11701C6.44884 5.07981 6.40474 5.0503 6.3562 5.03016C6.30766 5.01001 6.25562 4.99962 6.20306 4.99958C6.15051 4.99955 6.09846 5.00986 6.04988 5.02994C6.00131 5.05002 5.95717 5.07947 5.91998 5.11661ZM8.80078 4.39981C8.8012 5.15354 8.60799 5.89475 8.23968 6.55237C7.87136 7.20998 7.34028 7.76196 6.69736 8.15537C6.05444 8.54878 5.32124 8.77044 4.56805 8.79909C3.81486 8.82775 3.06693 8.66243 2.39598 8.31901V12.7998C2.39598 13.2242 2.56455 13.6311 2.86461 13.9312C3.16467 14.2312 3.57163 14.3998 3.99598 14.3998H10.3984C10.6087 14.4001 10.817 14.359 11.0114 14.2787C11.2058 14.1984 11.3825 14.0806 11.5313 13.932C11.6801 13.7834 11.7982 13.6069 11.8788 13.4127C11.9593 13.2184 12.0008 13.0101 12.0008 12.7998V3.19981C12.0008 2.77546 11.8322 2.36849 11.5322 2.06843C11.2321 1.76838 10.8251 1.59981 10.4008 1.59981H7.79518C8.4468 2.38728 8.80278 3.37769 8.80158 4.39981M12.8008 4.79981H13.2008C13.3069 4.79981 13.4086 4.84195 13.4836 4.91696C13.5586 4.99198 13.6008 5.09372 13.6008 5.19981V6.39981C13.6008 6.50589 13.5586 6.60763 13.4836 6.68265C13.4086 6.75766 13.3069 6.79981 13.2008 6.79981H12.8008V4.79981ZM12.8008 7.5998H13.2008C13.3069 7.5998 13.4086 7.64195 13.4836 7.71696C13.5586 7.79198 13.6008 7.89372 13.6008 7.9998V9.19981C13.6008 9.30589 13.5586 9.40763 13.4836 9.48265C13.4086 9.55766 13.3069 9.5998 13.2008 9.5998H12.8008V7.5998ZM12.8008 10.3998H13.2008C13.3069 10.3998 13.4086 10.4419 13.4836 10.517C13.5586 10.592 13.6008 10.6937 13.6008 10.7998V11.9998C13.6008 12.1059 13.5586 12.2076 13.4836 12.2826C13.4086 12.3577 13.3069 12.3998 13.2008 12.3998H12.8008V10.3998Z" fill="#8D8D8D"/>
-</svg>
-                                        Restore
-                                    </a>
-                                </form>
-                            </div>
+            </form>
                         </div>
-                    </td>
-                </tr>
-                @endforeach
-            </tbody>
-        </table>
-    </div>
-</div>
+                    </div>
+                    
+            <ul class="setting_opt">
+                <li><a data-bs-toggle="modal" data-bs-target="#bin_filee">
+                        <svg width="12" height="16" viewBox="0 0 12 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M11.8346 1.33333H8.91797L8.08464 0.5H3.91797L3.08464 1.33333H0.167969V3H11.8346M1.0013 13.8333C1.0013 14.2754 1.1769 14.6993 1.48946 15.0118C1.80202 15.3244 2.22594 15.5 2.66797 15.5H9.33464C9.77666 15.5 10.2006 15.3244 10.5131 15.0118C10.8257 14.6993 11.0013 14.2754 11.0013 13.8333V3.83333H1.0013V13.8333Z" fill="#C5C5C5"/>
+                        </svg>
+                     Bin</a>
+                 </li>
 
-
-
-            </div>
+            </ul>
         </div>
     </div>
 </div>
-<script>
-    $(document).ready(function() {
-    $('#year-filter, #month-filter, #search-box').on('change keyup', function() {
-        filterTable();
-    });
 
-    function filterTable() {
-        let year = $('#year-filter').val();
-        let month = $('#month-filter').val();
-        let searchQuery = $('#search-box').val().toLowerCase();
+    <script>
+        $(document).ready(function() {
+            $('.for_check').on('submit', function(e) {
+                e.preventDefault();
 
-        $('#table-body tr').each(function() {
-            let date = $(this).data('date');
-            let fileName = $(this).find('td:first').text().toLowerCase();
-            let fileDate = new Date(date);
-            let showRow = true;
+                // Create a FormData object to handle file upload
+                var formData = new FormData(this);  // 'this' refers to the form element
 
-            if (year && fileDate.getFullYear() != year) {
-                showRow = false;
-            }
-
-            if (month && (fileDate.getMonth() + 1) != month) {
-                showRow = false;
-            }
-
-            if (searchQuery && !fileName.includes(searchQuery)) {
-                showRow = false;
-            }
-
-            if (showRow) {
-                $(this).show();
-            } else {
-                $(this).hide();
-            }
-        });
-    }
-});
-
-</script>
- <script>
-    document.addEventListener('DOMContentLoaded', function () {
-     
-
-        // Handle restore button click
-        document.querySelectorAll('.restore_button_file').forEach(button => {
-            button.addEventListener('click', function () {
-                const form = this.closest('.restore-form-file');
-                const fileId = this.getAttribute('data-id');
-
-                Swal.fire({
-                    title: 'Are you sure?',
-                    text: 'You want to restore this record!',
-                    icon: 'warning',
-                    showCancelButton: true,
-                    confirmButtonColor: '#3085d6',
-                    cancelButtonColor: '#d33',
-                    confirmButtonText: 'Yes, restore it!'
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        form.submit();
+                $.ajax({
+                    type: 'POST',
+                    url: "{{ route('saveFeedback') }}",
+                    data: formData,  // Pass the FormData object
+                    contentType: false,  // Prevent jQuery from automatically setting the content type
+                    processData: false,  // Prevent jQuery from processing the data
+                    success: function(response) {
+                        toastr.success(response.success); // Display success toaster message
+                        // alert(response.success);
+                        $('.for_check')[0].reset();  // Reset the form
+                        $('#click_stop').click();
+                    },
+                    error: function(response) {
+                        toastr.error("Something went wrong!!!");
+                        // alert('Error: ' + response.responseJSON.message);
                     }
                 });
             });
         });
+    </script>
 
-        // Show success message using SweetAlert
-         @if(session('success'))
-        toastr.success('{{ session('success') }}');
-    @endif
-    
-     @if(session('success2'))
-             toastr.success('{{ session('success2') }}');
-        @endif
-    });
-</script>
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+        <!-- Bin model start -->
+        <div class="modal fade drop_coman_file have_title" id="bin_filee" tabindex="-1" role="dialog" aria-labelledby="bin_filee" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title bin_style" style="font-weight:700">
+                                <svg width="12" height="16" viewBox="0 0 12 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M11.8346 1.33333H8.91797L8.08464 0.5H3.91797L3.08464 1.33333H0.167969V3H11.8346M1.0013 13.8333C1.0013 14.2754 1.1769 14.6993 1.48946 15.0118C1.80202 15.3244 2.22594 15.5 2.66797 15.5H9.33464C9.77666 15.5 10.2006 15.3244 10.5131 15.0118C10.8257 14.6993 11.0013 14.2754 11.0013 13.8333V3.83333H1.0013V13.8333Z" fill="#C5C5C5"></path>
+                                </svg>
+                            Bin
+                        </h5>
+                        <button class="close" style="border-radius:5px;" type="button" data-bs-dismiss="modal">
+                            <span aria-hidden="true">
+                                <svg width="50" height="50" viewBox="0 0 50 50" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <rect width="4.27093" height="66.172" transform="matrix(0.702074 -0.712104 0.709324 0.704883 0 3.31244)" fill="black" />
+                                    <rect width="4.27086" height="66.3713" transform="matrix(-0.704896 -0.70931 0.706518 -0.707695 3.10742 50)" fill="black" />
+                                </svg>
+                            </span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <h3>Bin</h3>
+                        <div class="modal-body">
+                            <h3>Bin</h3>
+
+                            <!-- Filter Section -->
+                            <div class="filter-section">
+                                <div class="roww">
+                                    <p>The files in the trash will be accessible by the organization admin for 1 Year. Post that recovery of these deleted documents will not be possible.</p>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <label for="year-filter">Year</label>
+                                        <select id="year-filter" >
+                                            <option value="">All</option>
+                                            @for($year = date('Y'); $year >= date('Y') - 10; $year--)
+                                                <option value="{{ $year }}">{{ $year }}</option>
+                                            @endfor
+                                        </select>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label for="month-filter">Month</label>
+                                        <select id="month-filter" >
+                                            <option value="">All</option>
+                                            @foreach(range(1, 12) as $month)
+                                                <option value="{{ $month }}">{{ date("F", mktime(0, 0, 0, $month, 1)) }}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label for="search-box">Search</label>
+                                        <input type="text" id="search-box"  placeholder="Search by name">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="custom_table_wraap">
+                                <table class="table table-striped">
+                                    <thead>
+                                        <tr>
+                                            <th>Name</th>
+                                            <th>Size</th>
+                                            <th>Deleted by</th>
+                                            <th>Deleted on</th>
+                                            <th></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="table-body">
+                                        @foreach($files4 as $file)
+                                        <tr data-date="{{ $file->updated_at }}">
+                                            <td>{{$file->file_name}}</td>
+                                            <td>{{ number_format($file->file_size / 1024, 2) }} KB</td>
+                                            <td>{{$file->user_name}}</td>
+                                            <td>{{$file->updated_at}}</td>
+                                            <td>
+                                                <!-- Dropdown for file actions -->
+                                                <div class="dropdown">
+                                                    <button onclick="toggleDropdown()" class="dropbtn show_pp">
+                                                    <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                        <path d="M10.3994 4.19166C10.3994 4.37562 10.3632 4.55779 10.2929 4.72778C10.2226 4.89776 10.1194 5.05222 9.98937 5.18234C9.85934 5.31246 9.70494 5.4157 9.535 5.48615C9.36507 5.55661 9.18292 5.5929 8.99896 5.59296C8.81499 5.59302 8.63282 5.55684 8.46284 5.4865C8.29286 5.41615 8.1384 5.31302 8.00827 5.18298C7.87815 5.05294 7.77492 4.89854 7.70446 4.72861C7.63401 4.55867 7.59772 4.37652 7.59766 4.19256C7.59754 3.82103 7.74501 3.46467 8.00764 3.20188C8.27026 2.93908 8.62653 2.79138 8.99806 2.79126C9.36958 2.79114 9.72594 2.93862 9.98874 3.20124C10.2515 3.46387 10.3992 3.82013 10.3994 4.19166Z" fill="#8D8D8D"></path>
+                                                        <path d="M8.99806 10.3999C9.77148 10.3999 10.3985 9.77294 10.3985 8.99952C10.3985 8.2261 9.77148 7.59912 8.99806 7.59912C8.22464 7.59912 7.59766 8.2261 7.59766 8.99952C7.59766 9.77294 8.22464 10.3999 8.99806 10.3999Z" fill="#8D8D8D"></path>
+                                                        <path d="M8.99806 15.2085C9.77148 15.2085 10.3985 14.5815 10.3985 13.8081C10.3985 13.0347 9.77148 12.4077 8.99806 12.4077C8.22464 12.4077 7.59766 13.0347 7.59766 13.8081C7.59766 14.5815 8.22464 15.2085 8.99806 15.2085Z" fill="#8D8D8D"></path>
+                                                    </svg>
+                                                    </button>
+                                                    <div id="myDropdown3" class="dropdown-content">
+                                                        <form method="POST" action="{{ route('file.restorefile', ['id' => $file->id]) }}" class="restore-form-file">
+                                                            @csrf
+                                                            @method('PUT')
+                                                            <a class="dropdown-itemm rename_nt restore_button_file" data-id="{{ $file->id }}">
+                                                                <svg width="14" height="15" viewBox="0 0 14 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                                 <path d="M0.800781 4.39981C0.800781 3.92691 0.893951 3.45865 1.07497 3.02178C1.25598 2.5849 1.5213 2.18797 1.85576 1.85365C2.19022 1.51934 2.58727 1.2542 3.02423 1.07338C3.46119 0.892557 3.92949 0.799595 4.40238 0.799805C5.11433 0.800121 5.81019 1.01153 6.402 1.40729C6.9938 1.80306 7.45498 2.36541 7.72721 3.02325C7.99944 3.68109 8.0705 4.40488 7.93141 5.10311C7.79233 5.80134 7.44933 6.44265 6.9458 6.94595C6.44227 7.44926 5.80081 7.79197 5.10252 7.93075C4.40423 8.06953 3.68047 7.99814 3.02275 7.72562C2.36503 7.4531 1.80288 6.99167 1.40738 6.39969C1.01188 5.80771 0.800781 5.11175 0.800781 4.39981ZM5.91998 5.11661L5.20238 5.83421V4.59981C5.20238 4.31083 5.14545 4.02469 5.03484 3.75772C4.92423 3.49075 4.76211 3.24819 4.55773 3.04389C4.35336 2.83959 4.11074 2.67755 3.84373 2.56704C3.57672 2.45653 3.29056 2.3997 3.00158 2.39981H2.80158C2.69549 2.39981 2.59375 2.44195 2.51874 2.51696C2.44372 2.59198 2.40158 2.69372 2.40158 2.79981C2.40158 2.90589 2.44372 3.00763 2.51874 3.08265C2.59375 3.15766 2.69549 3.19981 2.80158 3.19981H3.00158C3.77518 3.19981 4.40158 3.82701 4.40158 4.59981V5.83421L3.68478 5.11661C3.60967 5.0416 3.50784 4.99951 3.4017 4.99958C3.29555 4.99966 3.19378 5.0419 3.11878 5.11701C3.04378 5.19211 3.00168 5.29394 3.00176 5.40009C3.00183 5.50623 3.04407 5.608 3.11918 5.68301L4.52078 7.08461C4.59597 7.15914 4.69764 7.20082 4.80351 7.20052C4.90938 7.20022 5.01082 7.15796 5.08558 7.08301L6.48558 5.68301C6.52277 5.64587 6.55228 5.60177 6.57243 5.55323C6.59258 5.50468 6.60297 5.45265 6.603 5.40009C6.60304 5.34753 6.59273 5.29548 6.57265 5.24691C6.55257 5.19834 6.52312 5.1542 6.48598 5.11701C6.44884 5.07981 6.40474 5.0503 6.3562 5.03016C6.30766 5.01001 6.25562 4.99962 6.20306 4.99958C6.15051 4.99955 6.09846 5.00986 6.04988 5.02994C6.00131 5.05002 5.95717 5.07947 5.91998 5.11661ZM8.80078 4.39981C8.8012 5.15354 8.60799 5.89475 8.23968 6.55237C7.87136 7.20998 7.34028 7.76196 6.69736 8.15537C6.05444 8.54878 5.32124 8.77044 4.56805 8.79909C3.81486 8.82775 3.06693 8.66243 2.39598 8.31901V12.7998C2.39598 13.2242 2.56455 13.6311 2.86461 13.9312C3.16467 14.2312 3.57163 14.3998 3.99598 14.3998H10.3984C10.6087 14.4001 10.817 14.359 11.0114 14.2787C11.2058 14.1984 11.3825 14.0806 11.5313 13.932C11.6801 13.7834 11.7982 13.6069 11.8788 13.4127C11.9593 13.2184 12.0008 13.0101 12.0008 12.7998V3.19981C12.0008 2.77546 11.8322 2.36849 11.5322 2.06843C11.2321 1.76838 10.8251 1.59981 10.4008 1.59981H7.79518C8.4468 2.38728 8.80278 3.37769 8.80158 4.39981M12.8008 4.79981H13.2008C13.3069 4.79981 13.4086 4.84195 13.4836 4.91696C13.5586 4.99198 13.6008 5.09372 13.6008 5.19981V6.39981C13.6008 6.50589 13.5586 6.60763 13.4836 6.68265C13.4086 6.75766 13.3069 6.79981 13.2008 6.79981H12.8008V4.79981ZM12.8008 7.5998H13.2008C13.3069 7.5998 13.4086 7.64195 13.4836 7.71696C13.5586 7.79198 13.6008 7.89372 13.6008 7.9998V9.19981C13.6008 9.30589 13.5586 9.40763 13.4836 9.48265C13.4086 9.55766 13.3069 9.5998 13.2008 9.5998H12.8008V7.5998ZM12.8008 10.3998H13.2008C13.3069 10.3998 13.4086 10.4419 13.4836 10.517C13.5586 10.592 13.6008 10.6937 13.6008 10.7998V11.9998C13.6008 12.1059 13.5586 12.2076 13.4836 12.2826C13.4086 12.3577 13.3069 12.3998 13.2008 12.3998H12.8008V10.3998Z" fill="#8D8D8D"/>
+                                                                </svg>
+                                                                Restore
+                                                            </a>
+                                                        </form>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        @endforeach
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+    <script>
+        $(document).ready(function() {
+            $('#year-filter, #month-filter, #search-box').on('change keyup', function() {
+                filterTable();
+            });
+
+            function filterTable() {
+                let year = $('#year-filter').val();
+                let month = $('#month-filter').val();
+                let searchQuery = $('#search-box').val().toLowerCase();
+
+                $('#table-body tr').each(function() {
+                    let date = $(this).data('date');
+                    let fileName = $(this).find('td:first').text().toLowerCase();
+                    let fileDate = new Date(date);
+                    let showRow = true;
+
+                    if (year && fileDate.getFullYear() != year) {
+                        showRow = false;
+                    }
+
+                    if (month && (fileDate.getMonth() + 1) != month) {
+                        showRow = false;
+                    }
+
+                    if (searchQuery && !fileName.includes(searchQuery)) {
+                        showRow = false;
+                    }
+
+                    if (showRow) {
+                        $(this).show();
+                    } else {
+                        $(this).hide();
+                    }
+                });
+            }
+        });
+    </script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // Handle restore button click
+            document.querySelectorAll('.restore_button_file').forEach(button => {
+                button.addEventListener('click', function () {
+                    const form = this.closest('.restore-form-file');
+                    const fileId = this.getAttribute('data-id');
+
+                    Swal.fire({
+                        title: 'Are you sure?',
+                        text: 'You want to restore this record!',
+                        icon: 'warning',
+                        showCancelButton: true,
+                        confirmButtonColor: '#3085d6',
+                        cancelButtonColor: '#d33',
+                        confirmButtonText: 'Yes, restore it!'
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            form.submit();
+                        }
+                    });
+                });
+            });
+
+            // Show success message using SweetAlert
+            @if(session('success'))
+            toastr.success('{{ session('success') }}');
+            @endif
+        
+            @if(session('success2'))
+                toastr.success('{{ session('success2') }}');
+            @endif
+        });
+    </script>
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 
@@ -1142,12 +1120,12 @@ $(document).ready(function() {
 
     <style>
         span.milliondox {
-    color: white;
-    font-size: 20px;
-}
-.mill {
-    text-align: center;
-}
+        color: white;
+        font-size: 20px;
+        }
+        .mill {
+            text-align: center;
+        }
     </style>
 
         
@@ -1156,53 +1134,54 @@ $(document).ready(function() {
         <div class="page-body repo_page_body">
           <!-- greeting -->
           <div class="mlb-menu-header container-fluid" style="display:none;">
-           <h2>
-           Document Repository
-          </h2>
+            <h2>
+                Document Repository
+            </h2>
+         </div>
+
+        <!--comming soon toster start-->
+            <div class="tost_wrap">
+                <section id="toast" class="info">
+                    <div id="icon-wrapper">
+                        <div id="icon"></div>
+                    </div>
+                    <div id="toast-message">
+                        <h4>Stay Tuned!</h4>
+                        <p>Advanced search is coming soon.</p>
+                    </div>
+                    <button id="toast-close"></button>
+                    <div id="timer"></div>
+                </section>
             </div>
 
-<!--comming soon toster start-->
-<div class="tost_wrap">
-<section id="toast" class="info">
-  <div id="icon-wrapper">
-    <div id="icon"></div>
-  </div>
-  <div id="toast-message">
-<h4>Stay Tuned!</h4>
-<p>Advanced search is coming soon.</p>
-  </div>
-  <button id="toast-close"></button>
-  <div id="timer"></div>
-</section>
-</div>
-<script>
-const toast = document.querySelector("#toast");
-const toastTimer = document.querySelector("#timer");
-const closeToastBtn = document.querySelector("#toast-close");
-const toastWrap = document.querySelector(".tost_wrap");
-let countdown;
+            <script>
+                const toast = document.querySelector("#toast");
+                const toastTimer = document.querySelector("#timer");
+                const closeToastBtn = document.querySelector("#toast-close");
+                const toastWrap = document.querySelector(".tost_wrap");
+                let countdown;
 
-const closeToast = () => {
-  toast.style.animation = "close 0.3s cubic-bezier(.87,-1,.57,.97) forwards";
-  toastTimer.classList.remove("timer-animation");
-  clearTimeout(countdown);
-  toastWrap.classList.remove("active"); // Remove active class
-}
+                const closeToast = () => {
+                    toast.style.animation = "close 0.3s cubic-bezier(.87,-1,.57,.97) forwards";
+                    toastTimer.classList.remove("timer-animation");
+                    clearTimeout(countdown);
+                    toastWrap.classList.remove("active"); // Remove active class
+                }
 
-const openToast = (type) => {
-  toastWrap.classList.add("active"); // Add active class
-  toast.classList = [type];
-  toast.style.animation = "open 0.3s cubic-bezier(.47,.02,.44,2) forwards";
-  toastTimer.classList.add("timer-animation");
-  clearTimeout(countdown);
-  countdown = setTimeout(() => {
-    closeToast();
-  }, 5000);
-}
+                const openToast = (type) => {
+                    toastWrap.classList.add("active"); // Add active class
+                    toast.classList = [type];
+                    toast.style.animation = "open 0.3s cubic-bezier(.47,.02,.44,2) forwards";
+                    toastTimer.classList.add("timer-animation");
+                    clearTimeout(countdown);
+                    countdown = setTimeout(() => {
+                    closeToast();
+                    }, 5000);
+                }
 
-closeToastBtn.addEventListener("click", closeToast);
-</script>
-<!--comming soon toster end-->
+                closeToastBtn.addEventListener("click", closeToast);
+            </script>
+        <!--comming soon toster end-->
 
  <!-- Container-fluid start-->
  <div class="container-fluid depo-ress">
@@ -1450,62 +1429,64 @@ closeToastBtn.addEventListener("click", closeToast);
 --}}
 
              <ul>
-                
-                 <li>
+                <li>
                      <div class="go_and_search">
                          <a class="g_searttcg" onclick="openToast('info')">
                              Advanced Search
-                         <div class="gp_arrow">
-                             <svg width="16" height="12" viewBox="0 0 16 12" fill="none" xmlns="http://www.w3.org/2000/svg">
-<path d="M1.33317 6L14.6665 6M14.6665 6L9.6665 11M14.6665 6L9.6665 1" stroke="#1E1E1E" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-</svg>
-                         </div>
+                            <div class="gp_arrow">
+                                <svg width="16" height="12" viewBox="0 0 16 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M1.33317 6L14.6665 6M14.6665 6L9.6665 11M14.6665 6L9.6665 1" stroke="#1E1E1E" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                                </svg>
+                            </div>
                          </a>
                      </div>
-                 </li>
+                </li>
 
-<li>
-         <div class="mode">
-        <span class="slider"></span>
-   </div>
-</li>
+                <li>
+                    <div class="mode">
+                        <span class="slider"></span>
+                    </div>
+                </li>
 
                 <li class="setting_munal">
-<div class="repo_setting">
-    <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
-<path d="M6.64288 17.5706L6.30003 14.8277C6.11431 14.7563 5.93946 14.6706 5.77546 14.5706C5.61146 14.4706 5.4506 14.3634 5.29289 14.2492L2.74288 15.3206L0.385742 11.2492L2.59288 9.57773C2.5786 9.47773 2.57146 9.38145 2.57146 9.28888V8.71031C2.57146 8.61716 2.5786 8.52059 2.59288 8.42059L0.385742 6.74916L2.74288 2.67773L5.29289 3.74916C5.45003 3.63488 5.61431 3.52773 5.78574 3.42773C5.95717 3.32773 6.1286 3.24202 6.30003 3.17059L6.64288 0.427734H11.3572L11.7 3.17059C11.8857 3.24202 12.0609 3.32773 12.2255 3.42773C12.39 3.52773 12.5506 3.63488 12.7072 3.74916L15.2572 2.67773L17.6143 6.74916L15.4072 8.42059C15.4215 8.52059 15.4286 8.61716 15.4286 8.71031V9.28802C15.4286 9.38116 15.4143 9.47773 15.3857 9.57773L17.5929 11.2492L15.2357 15.3206L12.7072 14.2492C12.55 14.3634 12.3857 14.4706 12.2143 14.5706C12.0429 14.6706 11.8715 14.7563 11.7 14.8277L11.3572 17.5706H6.64288ZM9.04288 11.9992C9.87146 11.9992 10.5786 11.7063 11.1643 11.1206C11.75 10.5349 12.0429 9.82773 12.0429 8.99916C12.0429 8.17059 11.75 7.46345 11.1643 6.87773C10.5786 6.29202 9.87146 5.99916 9.04288 5.99916C8.20003 5.99916 7.48917 6.29202 6.91031 6.87773C6.33146 7.46345 6.04231 8.17059 6.04289 8.99916C6.04289 9.82773 6.33231 10.5349 6.91117 11.1206C7.49003 11.7063 8.2006 11.9992 9.04288 11.9992Z" fill="#BABABA"/>
-</svg>
-</div>
-<ul class="setting_opt">
-<li class="need_hellp">
-    <a href="#" id="need_help"> 
-    <svg width="20" height="18" viewBox="0 0 20 18" fill="none" xmlns="http://www.w3.org/2000/svg">
-<path d="M7.33814 12.9905C10.4946 12.8151 13 10.2003 13 7C13 3.68629 10.3137 1 7 1C3.68629 1 1 3.68629 1 7C1 8.18071 1.34094 9.2817 1.92989 10.21L1.50586 11.482L1.50518 11.4839C1.34278 11.9711 1.26154 12.2149 1.31938 12.3771C1.36979 12.5184 1.48169 12.6299 1.62305 12.6803C1.78472 12.7379 2.02675 12.6573 2.51069 12.4959L2.51758 12.4939L3.79004 12.0698C4.7183 12.6588 5.81935 12.9998 7.00006 12.9998C7.11352 12.9998 7.22624 12.9967 7.33814 12.9905ZM7.33814 12.9905V12.9905ZM7.33814 12.9905C8.15907 15.3259 10.3841 17.0002 13.0001 17.0002C14.1808 17.0002 15.2817 16.6588 16.2099 16.0698L17.482 16.4939L17.4845 16.4944C17.9717 16.6567 18.2158 16.7381 18.378 16.6803C18.5194 16.6299 18.6299 16.5184 18.6803 16.3771C18.7382 16.2146 18.6572 15.9706 18.4943 15.4821L18.0703 14.21L18.2123 13.9746C18.7138 13.0979 18.9995 12.0823 18.9995 11C18.9995 7.6863 16.3137 5 13 5L12.7754 5.00414L12.6621 5.00967" stroke="#707070" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-</svg> Need Help?
-    </a>
-</li>
+                    <div class="repo_setting">
+                        <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M6.64288 17.5706L6.30003 14.8277C6.11431 14.7563 5.93946 14.6706 5.77546 14.5706C5.61146 14.4706 5.4506 14.3634 5.29289 14.2492L2.74288 15.3206L0.385742 11.2492L2.59288 9.57773C2.5786 9.47773 2.57146 9.38145 2.57146 9.28888V8.71031C2.57146 8.61716 2.5786 8.52059 2.59288 8.42059L0.385742 6.74916L2.74288 2.67773L5.29289 3.74916C5.45003 3.63488 5.61431 3.52773 5.78574 3.42773C5.95717 3.32773 6.1286 3.24202 6.30003 3.17059L6.64288 0.427734H11.3572L11.7 3.17059C11.8857 3.24202 12.0609 3.32773 12.2255 3.42773C12.39 3.52773 12.5506 3.63488 12.7072 3.74916L15.2572 2.67773L17.6143 6.74916L15.4072 8.42059C15.4215 8.52059 15.4286 8.61716 15.4286 8.71031V9.28802C15.4286 9.38116 15.4143 9.47773 15.3857 9.57773L17.5929 11.2492L15.2357 15.3206L12.7072 14.2492C12.55 14.3634 12.3857 14.4706 12.2143 14.5706C12.0429 14.6706 11.8715 14.7563 11.7 14.8277L11.3572 17.5706H6.64288ZM9.04288 11.9992C9.87146 11.9992 10.5786 11.7063 11.1643 11.1206C11.75 10.5349 12.0429 9.82773 12.0429 8.99916C12.0429 8.17059 11.75 7.46345 11.1643 6.87773C10.5786 6.29202 9.87146 5.99916 9.04288 5.99916C8.20003 5.99916 7.48917 6.29202 6.91031 6.87773C6.33146 7.46345 6.04231 8.17059 6.04289 8.99916C6.04289 9.82773 6.33231 10.5349 6.91117 11.1206C7.49003 11.7063 8.2006 11.9992 9.04288 11.9992Z" fill="#BABABA"/>
+                        </svg>
+                    </div>
+                    <ul class="setting_opt">
+                        <li class="need_hellp">
+                            <a href="#" id="need_help"> 
+                                <svg width="20" height="18" viewBox="0 0 20 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M7.33814 12.9905C10.4946 12.8151 13 10.2003 13 7C13 3.68629 10.3137 1 7 1C3.68629 1 1 3.68629 1 7C1 8.18071 1.34094 9.2817 1.92989 10.21L1.50586 11.482L1.50518 11.4839C1.34278 11.9711 1.26154 12.2149 1.31938 12.3771C1.36979 12.5184 1.48169 12.6299 1.62305 12.6803C1.78472 12.7379 2.02675 12.6573 2.51069 12.4959L2.51758 12.4939L3.79004 12.0698C4.7183 12.6588 5.81935 12.9998 7.00006 12.9998C7.11352 12.9998 7.22624 12.9967 7.33814 12.9905ZM7.33814 12.9905V12.9905ZM7.33814 12.9905C8.15907 15.3259 10.3841 17.0002 13.0001 17.0002C14.1808 17.0002 15.2817 16.6588 16.2099 16.0698L17.482 16.4939L17.4845 16.4944C17.9717 16.6567 18.2158 16.7381 18.378 16.6803C18.5194 16.6299 18.6299 16.5184 18.6803 16.3771C18.7382 16.2146 18.6572 15.9706 18.4943 15.4821L18.0703 14.21L18.2123 13.9746C18.7138 13.0979 18.9995 12.0823 18.9995 11C18.9995 7.6863 16.3137 5 13 5L12.7754 5.00414L12.6621 5.00967" stroke="#707070" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                                </svg> Need Help?
+                            </a>
+                        </li>
 
-<script>
-$('body').on('click', '#need_help', function(event) {
-    event.preventDefault();
-    // WhatsApp URL with phone number and pre-filled custom message
-    const whatsappURL = 'https://wa.me/919910200287?text=Hello%2C%20I%20need%20assistance%20with%20MillionDox!';
-    window.location.href = whatsappURL;
-});
-</script>
-                    <li class="logout_out">
-                    <a class="logou_inn" href="{{ route('logout') }}"
-                    onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
-<svg width="18" height="14" viewBox="0 0 18 14" fill="none" xmlns="http://www.w3.org/2000/svg">
-<path d="M5.25 7C5.25 6.83424 5.31585 6.67527 5.43306 6.55806C5.55027 6.44085 5.70924 6.375 5.875 6.375H11.5V2.3125C11.5 1.0625 10.1801 0.125 9 0.125H3.0625C2.48253 0.12562 1.92649 0.356288 1.51639 0.766389C1.10629 1.17649 0.87562 1.73253 0.875 2.3125V11.6875C0.87562 12.2675 1.10629 12.8235 1.51639 13.2336C1.92649 13.6437 2.48253 13.8744 3.0625 13.875H9.3125C9.89247 13.8744 10.4485 13.6437 10.8586 13.2336C11.2687 12.8235 11.4994 12.2675 11.5 11.6875V7.625H5.875C5.70924 7.625 5.55027 7.55915 5.43306 7.44194C5.31585 7.32473 5.25 7.16576 5.25 7ZM16.9418 6.5582L13.8168 3.4332C13.6986 3.32094 13.5413 3.25928 13.3783 3.26137C13.2153 3.26345 13.0596 3.32912 12.9444 3.44437C12.8291 3.55962 12.7635 3.71534 12.7614 3.87831C12.7593 4.04129 12.8209 4.19863 12.9332 4.3168L14.991 6.375H11.5V7.625H14.991L12.9332 9.6832C12.8727 9.74066 12.8244 9.80965 12.791 9.88609C12.7576 9.96254 12.7398 10.0449 12.7387 10.1283C12.7377 10.2117 12.7533 10.2945 12.7847 10.3718C12.8162 10.4491 12.8628 10.5193 12.9217 10.5783C12.9807 10.6372 13.0509 10.6838 13.1282 10.7153C13.2055 10.7467 13.2883 10.7623 13.3717 10.7613C13.4551 10.7602 13.5375 10.7424 13.6139 10.709C13.6904 10.6756 13.7593 10.6273 13.8168 10.5668L16.9418 7.4418C17.0589 7.3246 17.1247 7.16569 17.1247 7C17.1247 6.83431 17.0589 6.6754 16.9418 6.5582Z" fill="#CEFFA8"/>
-</svg> Log Out
-                    </a>
-                    <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
-                        @csrf
-                    </form>
-                </li>
-                
-</ul>
+                        <script>
+                            $('body').on('click', '#need_help', function(event) {
+                                event.preventDefault();
+                                // WhatsApp URL with phone number and pre-filled custom message
+                                const whatsappURL = 'https://wa.me/919910200287?text=Hello%2C%20I%20need%20assistance%20with%20MillionDox!';
+                                window.location.href = whatsappURL;
+                            });
+                        </script>
+
+                        <li class="logout_out">
+                            <a class="logou_inn" href="{{ route('logout') }}"
+                                onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                                    <svg width="18" height="14" viewBox="0 0 18 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M5.25 7C5.25 6.83424 5.31585 6.67527 5.43306 6.55806C5.55027 6.44085 5.70924 6.375 5.875 6.375H11.5V2.3125C11.5 1.0625 10.1801 0.125 9 0.125H3.0625C2.48253 0.12562 1.92649 0.356288 1.51639 0.766389C1.10629 1.17649 0.87562 1.73253 0.875 2.3125V11.6875C0.87562 12.2675 1.10629 12.8235 1.51639 13.2336C1.92649 13.6437 2.48253 13.8744 3.0625 13.875H9.3125C9.89247 13.8744 10.4485 13.6437 10.8586 13.2336C11.2687 12.8235 11.4994 12.2675 11.5 11.6875V7.625H5.875C5.70924 7.625 5.55027 7.55915 5.43306 7.44194C5.31585 7.32473 5.25 7.16576 5.25 7ZM16.9418 6.5582L13.8168 3.4332C13.6986 3.32094 13.5413 3.25928 13.3783 3.26137C13.2153 3.26345 13.0596 3.32912 12.9444 3.44437C12.8291 3.55962 12.7635 3.71534 12.7614 3.87831C12.7593 4.04129 12.8209 4.19863 12.9332 4.3168L14.991 6.375H11.5V7.625H14.991L12.9332 9.6832C12.8727 9.74066 12.8244 9.80965 12.791 9.88609C12.7576 9.96254 12.7398 10.0449 12.7387 10.1283C12.7377 10.2117 12.7533 10.2945 12.7847 10.3718C12.8162 10.4491 12.8628 10.5193 12.9217 10.5783C12.9807 10.6372 13.0509 10.6838 13.1282 10.7153C13.2055 10.7467 13.2883 10.7623 13.3717 10.7613C13.4551 10.7602 13.5375 10.7424 13.6139 10.709C13.6904 10.6756 13.7593 10.6273 13.8168 10.5668L16.9418 7.4418C17.0589 7.3246 17.1247 7.16569 17.1247 7C17.1247 6.83431 17.0589 6.6754 16.9418 6.5582Z" fill="#CEFFA8"/>
+                                    </svg>
+                              Log Out
+                            </a>
+
+                            <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
+                                @csrf
+                            </form>
+                        </li>
+                                        
+                    </ul>
                 </li>
                 
 
@@ -1827,45 +1808,45 @@ $(document).ready(function() {
     </div>
 </div>
 
-<script>
-    // Function to handle click on .ba-we-love-subscribers-fab
-    $(".ba-we-love-subscribers-fab").click(function (event) {
-        event.stopPropagation(); // Prevents the click from propagating to the document body
-        $('.ba-we-love-subscribers-fab .wrap').toggleClass("ani");
-        $('.ba-we-love-subscribers').toggleClass("open");
-        $('.ba-we-love-subscribers-fab').toggleClass("grayy");
-        $('.img-fab.img').toggleClass("close");
-    });
+        <script>
+            // Function to handle click on .ba-we-love-subscribers-fab
+            $(".ba-we-love-subscribers-fab").click(function (event) {
+                event.stopPropagation(); // Prevents the click from propagating to the document body
+                $('.ba-we-love-subscribers-fab .wrap').toggleClass("ani");
+                $('.ba-we-love-subscribers').toggleClass("open");
+                $('.ba-we-love-subscribers-fab').toggleClass("grayy");
+                $('.img-fab.img').toggleClass("close");
+            });
 
-    // Click outside handler to remove classes
-    $(document).click(function (event) {
-        // Check if the clicked element is NOT .ba-we-love-subscribers-fab or its descendants
-        if (!$(event.target).closest('.ba-we-love-subscribers-fab').length) {
-            // Remove classes here
-            $('.ba-we-love-subscribers-fab .wrap').removeClass("ani");
-            $('.ba-we-love-subscribers').removeClass("open");
-            $('.ba-we-love-subscribers-fab').removeClass("grayy");
-            $('.img-fab.img').removeClass("close");
-        }
-    });
-</script>
-<!-- footer add folder or file button end -->
-</div>
+            // Click outside handler to remove classes
+            $(document).click(function (event) {
+                // Check if the clicked element is NOT .ba-we-love-subscribers-fab or its descendants
+                if (!$(event.target).closest('.ba-we-love-subscribers-fab').length) {
+                    // Remove classes here
+                    $('.ba-we-love-subscribers-fab .wrap').removeClass("ani");
+                    $('.ba-we-love-subscribers').removeClass("open");
+                    $('.ba-we-love-subscribers-fab').removeClass("grayy");
+                    $('.img-fab.img').removeClass("close");
+                }
+            });
+        </script>
+    <!-- footer add folder or file button end -->
+    </div>
 
-<!-- filter_open button start -->
-<a class="opn_redriect_filter" target="_blank" onclick="openToast('info')">
-<svg width="17" height="17" viewBox="0 0 17 17" fill="none" xmlns="http://www.w3.org/2000/svg">
-<g clip-path="url(#clip0_3290_3371)">
-<path d="M9.15381 10.8213L13.1538 14.8213M5.82048 12.1546C6.43331 12.1546 7.04015 12.0339 7.60633 11.7994C8.17252 11.5649 8.68697 11.2211 9.12031 10.7878C9.55365 10.3544 9.89739 9.84 10.1319 9.27381C10.3664 8.70763 10.4871 8.10079 10.4871 7.48796C10.4871 6.87512 10.3664 6.26829 10.1319 5.7021C9.89739 5.13591 9.55365 4.62146 9.12031 4.18812C8.68697 3.75478 8.17252 3.41104 7.60633 3.17652C7.04015 2.942 6.43331 2.82129 5.82048 2.82129C4.5828 2.82129 3.39581 3.31295 2.52064 4.18812C1.64547 5.06329 1.15381 6.25028 1.15381 7.48796C1.15381 8.72563 1.64547 9.91262 2.52064 10.7878C3.39581 11.663 4.5828 12.1546 5.82048 12.1546Z" stroke="#2C2C2C" stroke-width="1.5"/>
-<path d="M13.5455 0V2.45455H16V3.54545H13.5455V6H12.4545V3.54545H10V2.45455H12.4545V0H13.5455Z" fill="#1E1E1E"/>
-</g>
-<defs>
-<clipPath id="clip0_3290_3371">
-<rect width="16" height="16" fill="white" transform="translate(0.153809 0.154297)"/>
-</clipPath>
-</defs>
-</svg>
-</a>
+    <!-- filter_open button start -->
+    <a class="opn_redriect_filter" target="_blank" onclick="openToast('info')">
+        <svg width="17" height="17" viewBox="0 0 17 17" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <g clip-path="url(#clip0_3290_3371)">
+                <path d="M9.15381 10.8213L13.1538 14.8213M5.82048 12.1546C6.43331 12.1546 7.04015 12.0339 7.60633 11.7994C8.17252 11.5649 8.68697 11.2211 9.12031 10.7878C9.55365 10.3544 9.89739 9.84 10.1319 9.27381C10.3664 8.70763 10.4871 8.10079 10.4871 7.48796C10.4871 6.87512 10.3664 6.26829 10.1319 5.7021C9.89739 5.13591 9.55365 4.62146 9.12031 4.18812C8.68697 3.75478 8.17252 3.41104 7.60633 3.17652C7.04015 2.942 6.43331 2.82129 5.82048 2.82129C4.5828 2.82129 3.39581 3.31295 2.52064 4.18812C1.64547 5.06329 1.15381 6.25028 1.15381 7.48796C1.15381 8.72563 1.64547 9.91262 2.52064 10.7878C3.39581 11.663 4.5828 12.1546 5.82048 12.1546Z" stroke="#2C2C2C" stroke-width="1.5"/>
+                <path d="M13.5455 0V2.45455H16V3.54545H13.5455V6H12.4545V3.54545H10V2.45455H12.4545V0H13.5455Z" fill="#1E1E1E"/>
+            </g>
+            <defs>
+                <clipPath id="clip0_3290_3371">
+                    <rect width="16" height="16" fill="white" transform="translate(0.153809 0.154297)"/>
+                </clipPath>
+            </defs>
+        </svg>
+    </a>
 
 {{--
  <button id="open_repo_filter">
@@ -1882,174 +1863,164 @@ $(document).ready(function() {
 </div>
 
  <div class="comman_loderr" id="client_loader" style="display: none;">
-      <div class="loder_wraper_inn_pos">
-      <div class="dot"></div>
-      <div class="dot"></div>
-      <div class="dot"></div>
-      <div class="dot"> </div>
-      <div class="dot"></div>
+    <div class="loder_wraper_inn_pos">
+        <div class="dot"></div>
+        <div class="dot"></div>
+        <div class="dot"></div>
+        <div class="dot"> </div>
+        <div class="dot"></div>
     </div>
+ </div>
 
-                            </div>
-
-<div class="folder_comman_file">
-    <div class="main_folder">
-        <div class="filter_year_Data">
-            
-        </div>
-    <div class="nonfilter_year_data">
-        <div class="folder-container list_gr_id"  id="foldercont">
-            <!--<div class="loader" style="display: none;">Loading...</div>-->
-            <div class="folder-contents"></div>
-        </div>
-       
-        <div class="file-container" id="filecont" >
-            
-            <div class="file-contents"></div>
-        </div>
-        </div>
-
-
-<!-- Rename Modal -->
-
-<script>
-
-$(document).ready(function() {
-    $(document).on('click', '.downloadfolder', function() {
-        var folderid = $(this).data('id');
-
-        // Show a loading message or spinner
-        var loadingMessage = $("<div>Preparing your download...</div>").appendTo('body');
-
-        $.ajax({
-            url: '/download-folder/' + folderid,
-            type: 'GET',
-            xhrFields: {
-                responseType: 'blob' // Set response type to blob for file downloads
-            },
-            success: function(response, status, xhr) {
-                loadingMessage.remove();
-
-                // Check if the response is a file (not JSON)
-                const disposition = xhr.getResponseHeader('Content-Disposition');
-                if (disposition && disposition.indexOf('attachment') !== -1) {
-                    const filename = disposition.split('filename=')[1].replace(/"/g, '');
-
-                    // Create a download link for the blob
-                    const blob = new Blob([response], { type: 'application/zip' });
-                    const url = window.URL.createObjectURL(blob);
-                    const a = document.createElement('a');
-                    a.href = url;
-                    a.download = filename;
-                    document.body.appendChild(a);
-                    a.click();
-                    a.remove();
-                    window.URL.revokeObjectURL(url);
-                } else {
-                    alert('An error occurred. The file could not be downloaded.');
-                }
-            },
-            error: function(xhr, status, error) {
-                loadingMessage.remove();
-                console.error('Error details:', status, error, xhr.responseText);
-                alert('An error occurred while downloading the folder. Please try again.');
-            }
-        });
-    });
-});
-
-
-
-
-
-
-
-</script>
-<div class="modal fade drop_coman_file have_title" id="renamefolder" tabindex="-1" role="dialog" aria-labelledby="renamefolder" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered" role="document">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title" style="font-weight:700">Rename folder</h5>
-          <button class="close" style="border-radius:5px;" type="button" data-bs-dismiss="modal">
-            <span aria-hidden="true">
-              <svg width="50" height="50" viewBox="0 0 50 50" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <rect width="4.27093" height="66.172" transform="matrix(0.702074 -0.712104 0.709324 0.704883 0 3.31244)" fill="black" />
-                <rect width="4.27086" height="66.3713" transform="matrix(-0.704896 -0.70931 0.706518 -0.707695 3.10742 50)" fill="black" />
-              </svg>
-            </span>
-          </button>
-        </div>
-        <div class="modal-body">
-            <form id="rename-folder-form" action="{{ route('renamefolder') }}" method="POST">
-                @csrf
-
-                      <div class="gropu_form">
-                      <label for="fname">Folder Name</label>
-                      <input type="hidden" name="folder_id" id="folder_id"  value="">
-                      <input type="hidden" name="old_folder_name" id="old_folder_name"  value="">
-                      <input type="hidden" name="folder_path" id="folder_path"  value="">
-                      <input type="hidden" name="employee_id" id="employee_id"  value="">
-                      <input type="hidden" name="director_id" id="director_id"  value="">
-                      <input type="text" name="folder_name" id="folder_name" class="foldername" placeholder="Enter Folder Name" value="">
-                      </div>
-
-                      <div class="upp_input">
-                      <button class="btn btn-primary" id="renamefolderbtn" style="border-radius:5px;" type="submit">Submit</button>
-</div>
+    <div class="folder_comman_file">
+        <div class="main_folder">
+            <div class="filter_year_Data">
                 
-            </form>
-
-
-        </div>
-      </div>
-    </div>
-  </div>
-  <script>
-    $(document).ready(function () {
-        // Listen for click events on elements with the class .rename_nt, using event delegation on the document body
-        $(document).on('click', '.rename_nt', function () {
-            // Get folder data from the clicked link
-            let folderId = $(this).data('folder_id');
-            let folderName = $(this).data('folder_name');
-            let oldfolderName = $(this).data('folder_name');
-            let folderPath = $(this).data('folder_path');
-            let employeeid = $(this).data('employee_id');
-            let directorid = $(this).data('director_id');
+            </div>
+            <div class="nonfilter_year_data">
+                <div class="folder-container list_gr_id"  id="foldercont">
+                    <!--<div class="loader" style="display: none;">Loading...</div>-->
+                    <div class="folder-contents"></div>
+                </div>
             
-
-            // Set values in the form inputs
-            $('#rename-folder-form #folder_id').val(folderId);
-            $('#rename-folder-form #folder_name').val(folderName);
-            $('#rename-folder-form #old_folder_name').val(oldfolderName);
-            $('#rename-folder-form #folder_path').val(folderPath);
-            $('#rename-folder-form #employee_id').val(employeeid);
-            $('#rename-folder-form #director_id').val(directorid);
-        });
-    });
+                <div class="file-container" id="filecont" >
+                    <div class="file-contents"></div>
+                </div>
+            </div>
 
 
-</script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
-<script>
-    function encryptFileId(fileId) {
-        const secretKey = 'tu-amb-lene-aa'; // Use a secure key
-        const encryptedId = CryptoJS.AES.encrypt(fileId, secretKey).toString();
-        return encryptedId;
-    }
+            <!-- Rename Modal -->
 
-    function openFile(fileId) {
-        const encryptedId = encryptFileId(fileId);
-        const url = `/showfile/${encodeURIComponent(encryptedId)}`;
-        window.open(url, '_blank'); // Open in a new tab
-    }
-</script>
+            <script>
 
+                $(document).ready(function() {
+                    $(document).on('click', '.downloadfolder', function() {
+                        var folderid = $(this).data('id');
+
+                        // Show a loading message or spinner
+                        var loadingMessage = $("<div>Preparing your download...</div>").appendTo('body');
+
+                        $.ajax({
+                            url: '/download-folder/' + folderid,
+                            type: 'GET',
+                            xhrFields: {
+                                responseType: 'blob' // Set response type to blob for file downloads
+                            },
+                            success: function(response, status, xhr) {
+                                loadingMessage.remove();
+
+                                // Check if the response is a file (not JSON)
+                                const disposition = xhr.getResponseHeader('Content-Disposition');
+                                if (disposition && disposition.indexOf('attachment') !== -1) {
+                                    const filename = disposition.split('filename=')[1].replace(/"/g, '');
+
+                                    // Create a download link for the blob
+                                    const blob = new Blob([response], { type: 'application/zip' });
+                                    const url = window.URL.createObjectURL(blob);
+                                    const a = document.createElement('a');
+                                    a.href = url;
+                                    a.download = filename;
+                                    document.body.appendChild(a);
+                                    a.click();
+                                    a.remove();
+                                    window.URL.revokeObjectURL(url);
+                                } else {
+                                    alert('An error occurred. The file could not be downloaded.');
+                                }
+                            },
+                            error: function(xhr, status, error) {
+                                loadingMessage.remove();
+                                console.error('Error details:', status, error, xhr.responseText);
+                                alert('An error occurred while downloading the folder. Please try again.');
+                            }
+                        });
+                    });
+                });
+
+            </script>
+
+            <div class="modal fade drop_coman_file have_title" id="renamefolder" tabindex="-1" role="dialog" aria-labelledby="renamefolder" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                        <h5 class="modal-title" style="font-weight:700">Rename folder</h5>
+                        <button class="close" style="border-radius:5px;" type="button" data-bs-dismiss="modal">
+                            <span aria-hidden="true">
+                            <svg width="50" height="50" viewBox="0 0 50 50" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <rect width="4.27093" height="66.172" transform="matrix(0.702074 -0.712104 0.709324 0.704883 0 3.31244)" fill="black" />
+                                <rect width="4.27086" height="66.3713" transform="matrix(-0.704896 -0.70931 0.706518 -0.707695 3.10742 50)" fill="black" />
+                            </svg>
+                            </span>
+                        </button>
+                        </div>
+                        <div class="modal-body">
+                            <form id="rename-folder-form" action="{{ route('renamefolder') }}" method="POST">
+                                @csrf
+
+                                    <div class="gropu_form">
+                                        <label for="fname">Folder Name</label>
+                                        <input type="hidden" name="folder_id" id="folder_id"  value="">
+                                        <input type="hidden" name="old_folder_name" id="old_folder_name"  value="">
+                                        <input type="hidden" name="folder_path" id="folder_path"  value="">
+                                        <input type="hidden" name="employee_id" id="employee_id"  value="">
+                                        <input type="hidden" name="director_id" id="director_id"  value="">
+                                        <input type="text" name="folder_name" id="folder_name" class="foldername" placeholder="Enter Folder Name" value="">
+                                    </div>
+
+                                    <div class="upp_input">
+                                        <button class="btn btn-primary" id="renamefolderbtn" style="border-radius:5px;" type="submit">Submit</button>
+                                    </div>
+                    
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <script>
+                $(document).ready(function () {
+                    // Listen for click events on elements with the class .rename_nt, using event delegation on the document body
+                    $(document).on('click', '.rename_nt', function () {
+                        // Get folder data from the clicked link
+                        let folderId = $(this).data('folder_id');
+                        let folderName = $(this).data('folder_name');
+                        let oldfolderName = $(this).data('folder_name');
+                        let folderPath = $(this).data('folder_path');
+                        let employeeid = $(this).data('employee_id');
+                        let directorid = $(this).data('director_id');
+                        
+
+                        // Set values in the form inputs
+                        $('#rename-folder-form #folder_id').val(folderId);
+                        $('#rename-folder-form #folder_name').val(folderName);
+                        $('#rename-folder-form #old_folder_name').val(oldfolderName);
+                        $('#rename-folder-form #folder_path').val(folderPath);
+                        $('#rename-folder-form #employee_id').val(employeeid);
+                        $('#rename-folder-form #director_id').val(directorid);
+                    });
+                });
+
+            </script>
+
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
+
+            <script>
+                function encryptFileId(fileId) {
+                    const secretKey = 'tu-amb-lene-aa'; // Use a secure key
+                    const encryptedId = CryptoJS.AES.encrypt(fileId, secretKey).toString();
+                    return encryptedId;
+                }
+
+                function openFile(fileId) {
+                    const encryptedId = encryptFileId(fileId);
+                    const url = `/showfile/${encodeURIComponent(encryptedId)}`;
+                    window.open(url, '_blank'); // Open in a new tab
+                }
+            </script>
 
         </div>
-
-        </div>
-
     </div>
+</div>
     
     {{--
 
@@ -3637,53 +3608,53 @@ $(document).ready(function() {
 </div>
 </div>
 
-<script>
+    <script>
 
-// function filterList() {
-//     const searchInput = document.getElementById('search-input').value.toLowerCase();
-//     const listItems = document.querySelectorAll('#search-list li');
+        // function filterList() {
+        //     const searchInput = document.getElementById('search-input').value.toLowerCase();
+        //     const listItems = document.querySelectorAll('#search-list li');
 
-//     listItems.forEach((item) => {
-//         const text = item.querySelector('span').textContent.toLowerCase(); // Get text from the span only
-//         if (text.includes(searchInput)) {
-//             item.style.display = ''; // Show the matching item
-//             item.style.order = '0'; // Keep matching items in order
-//         } else {
-//             item.style.display = 'none'; // Hide non-matching items
-//         }
-//     });
-// }
+        //     listItems.forEach((item) => {
+        //         const text = item.querySelector('span').textContent.toLowerCase(); // Get text from the span only
+        //         if (text.includes(searchInput)) {
+        //             item.style.display = ''; // Show the matching item
+        //             item.style.order = '0'; // Keep matching items in order
+        //         } else {
+        //             item.style.display = 'none'; // Hide non-matching items
+        //         }
+        //     });
+        // }
 
-function filterList() {
-    const searchInput = document.getElementById('search-input').value.toLowerCase();
-    const listItems = document.querySelectorAll('#search-list li');
+        function filterList() {
+            const searchInput = document.getElementById('search-input').value.toLowerCase();
+            const listItems = document.querySelectorAll('#search-list li');
 
-    listItems.forEach((item) => {
-        const textElement = item.querySelector('span');
-        const text = textElement.textContent.toLowerCase(); // Get text from the span only
+            listItems.forEach((item) => {
+                const textElement = item.querySelector('span');
+                const text = textElement.textContent.toLowerCase(); // Get text from the span only
 
-        // Clear previous highlights
-        textElement.innerHTML = text; // Reset to original text
+                // Clear previous highlights
+                textElement.innerHTML = text; // Reset to original text
 
-        if (searchInput === '') {
-            // If the search input is empty, show all items
-            item.style.display = ''; // Show all items
-        } else if (text.includes(searchInput)) {
-            // Show the matching item
-            item.style.display = ''; 
-            
-            // Highlight the matched text
-            const regex = new RegExp(`(${searchInput})`, 'gi'); // Create a regex to match the search input
-            textElement.innerHTML = text.replace(regex, '<span class="highlight">$1</span>'); // Highlight the matched text
-        } else {
-            // Hide non-matching items
-            item.style.display = 'none'; 
+                if (searchInput === '') {
+                    // If the search input is empty, show all items
+                    item.style.display = ''; // Show all items
+                } else if (text.includes(searchInput)) {
+                    // Show the matching item
+                    item.style.display = ''; 
+                    
+                    // Highlight the matched text
+                    const regex = new RegExp(`(${searchInput})`, 'gi'); // Create a regex to match the search input
+                    textElement.innerHTML = text.replace(regex, '<span class="highlight">$1</span>'); // Highlight the matched text
+                } else {
+                    // Hide non-matching items
+                    item.style.display = 'none'; 
+                }
+            });
         }
-    });
-}
 
 
-</script>
+    </script>
 <!-- end -->
 
 	</div>
@@ -3695,61 +3666,60 @@ function filterList() {
 
 <div class="nav-path"><span></span></div>
 
-<script>
-$(document).ready(function() {
-  const $listViewButton = $('.list-view-button');
-  const $gridViewButton = $('.grid-view-button');
-  const $list = $('.list_gr_id');
+    <script>
+        $(document).ready(function() {
+            const $listViewButton = $('.list-view-button');
+            const $gridViewButton = $('.grid-view-button');
+            const $list = $('.list_gr_id');
 
-  if ($listViewButton.length && $gridViewButton.length && $list.length) {
-    $listViewButton.on('click', function() {
-      $list.removeClass('grid-view-filter').addClass('list-view-filter');
-      $listViewButton.addClass('active');
-      $gridViewButton.removeClass('active');
-    });
+            if ($listViewButton.length && $gridViewButton.length && $list.length) {
+                    $listViewButton.on('click', function() {
+                    $list.removeClass('grid-view-filter').addClass('list-view-filter');
+                    $listViewButton.addClass('active');
+                    $gridViewButton.removeClass('active');
+                });
 
-    $gridViewButton.on('click', function() {
-      $list.removeClass('list-view-filter').addClass('grid-view-filter');
-      $gridViewButton.addClass('active');
-      $listViewButton.removeClass('active');
-    });
-  } else {
-    console.error('One or more elements not found.');
-  }
-});
-</script>
- <script>
+                $gridViewButton.on('click', function() {
+                $list.removeClass('list-view-filter').addClass('grid-view-filter');
+                $gridViewButton.addClass('active');
+                $listViewButton.removeClass('active');
+                });
+            } else {
+                console.error('One or more elements not found.');
+            }
+        });
+    </script>
 
+    <script>
+    //   $('body').on('click', '.close', function() {
+    //             window.location.reload();
+    //         });
+    // </script>
 
-//   $('body').on('click', '.close', function() {
-//             window.location.reload();
-//         });
-// </script>
+    <script>
+        $(document).ready(function() {
+            $('body').on('click', '.close', function() {
+                // Find the closest modal
+                var $modal = $(this).closest('.modal');
+                
+                // Reset the form within the modal
+                $modal.find('form')[0].reset();
+                
+                // Remove the 'green-outline' class from the '.file-area' div
+                $modal.find('.file-area').removeClass('green-outline');
+                
+                // Empty the content of the '.selected-file' div
+                $modal.find('.selected-file').empty();
+                
+                // Remove the '.tag' div
+                $modal.find('.tag').remove();
+                
+                // Remove the '.file-item' div
+                $modal.find('.file-item').remove();
 
-<script>
-$(document).ready(function() {
-    $('body').on('click', '.close', function() {
-        // Find the closest modal
-        var $modal = $(this).closest('.modal');
-        
-        // Reset the form within the modal
-        $modal.find('form')[0].reset();
-        
-        // Remove the 'green-outline' class from the '.file-area' div
-        $modal.find('.file-area').removeClass('green-outline');
-        
-        // Empty the content of the '.selected-file' div
-        $modal.find('.selected-file').empty();
-        
-        // Remove the '.tag' div
-        $modal.find('.tag').remove();
-        
-          // Remove the '.file-item' div
-        $modal.find('.file-item').remove();
-
-    });
-});
-</script>
+            });
+        });
+    </script>
 
 
 
@@ -3780,157 +3750,158 @@ $(document).ready(function() {
                     @csrf
                             <div class="label_wrap">
                     <label>Path :</label>
+
                     <script>
-    $(document).ready(function() {
-        // Function to get query parameter by name
-        function getQueryParamd(param) {
-            var urlParams = new URLSearchParams(window.location.search);
-            return urlParams.get(param);
-        }
+                        $(document).ready(function() {
+                            // Function to get query parameter by name
+                            function getQueryParamd(param) {
+                                var urlParams = new URLSearchParams(window.location.search);
+                                return urlParams.get(param);
+                            }
 
-        // Function to update the folder path
-        function updateFolderPathd() {
-            var folder = getQueryParamd('folder');
+                            // Function to update the folder path
+                            function updateFolderPathd() {
+                                var folder = getQueryParamd('folder');
 
-            if (folder) {
-                folder = decodeURIComponent(folder); // Decode if folder exists
-                // console.log("Folder parameter: " + folder);
+                                if (folder) {
+                                    folder = decodeURIComponent(folder); // Decode if folder exists
+                                    // console.log("Folder parameter: " + folder);
 
-                // Set the folder value to data-my-folder attribute
-                $('#parent-folderd').attr('data-my-folder', folder);
-                
-                // Set the folder value in the input field using a template literal style
-                $('#parent-folderd').val(`${folder}`); // Using template literal syntax
-            }
-        }
+                                    // Set the folder value to data-my-folder attribute
+                                    $('#parent-folderd').attr('data-my-folder', folder);
+                                    
+                                    // Set the folder value in the input field using a template literal style
+                                    $('#parent-folderd').val(`${folder}`); // Using template literal syntax
+                                }
+                            }
 
-        // Call updateFolderPath immediately to set initial value
-        updateFolderPathd();
+                            // Call updateFolderPath immediately to set initial value
+                            updateFolderPathd();
 
-        // Fetch the URL parameter every second
-        setInterval(updateFolderPathd, 100);
-    });
-</script>
+                            // Fetch the URL parameter every second
+                            setInterval(updateFolderPathd, 100);
+                        });
+                    </script>
+
                     <input type="text" id="parent-folderd" name="parent_folder" value="" readonly disable>
-</div><div class="gropu_form">
-        <label for="fyear">Financial Year</label>
-        <select id="fyear" name="fyear" required="">
-            <option value="" disabled="" selected="">select</option>
-            <option value="2013-2014">2013-2014</option>
-              <option value="2014-2015">2014-2015</option>
-               <option value="2015-2016">2015-2016</option>
-                <option value="2016-2017">2016-2017</option>
-                 <option value="2017-2018">2017-2018</option>
-                  <option value="2018-2019">2018-2019</option>
-                   <option value="2019-2020">2019-2020</option>
-                  
-            <option value="2020-2021">2020-2021</option>
-            <option value="2021-2022">2021-2022</option>
-            <option value="2022-2023">2022-2023</option>
-            <option value="2023-2024">2023-2024</option>
-            <option value="2024-2025">2024-2025</option>
-            <option value="2025-2026">2025-2026</option>
-             <option value="2026-2027">2026-2027</option>
-
-              <option value="2027-2028">2027-2028</option>
-               <option value="2028-2029">2028-2029</option>
-                <option value="2029-2030">2029-2030</option>
-                 <option value="2030-2031">2030-2031</option>
-                  <option value="2031-2032">2031-2032</option>
-                   <option value="2032-2033">2032-2033</option>
-                    <option value="2033-2034">2033-2034</option>
-                     <option value="2034-2035">2034-2035</option>
-                      <option value="2035-2036">2035-2036</option>
-                       <option value="2036-2037">2036-2037</option>
-        </select>
-    </div>
-
-    <div class="gropu_form">
-        <label for="Month">Month</label>
-        <select id="Month" name="Month" required="">
-            <option value="" disabled="" selected="">select</option>
-            <option value="January">January</option>
-            <option value="February">February</option>
-            <option value="March">March</option>
-            <option value="April">April</option>
-            <option value="May">May</option>
-            <option value="June">June</option>
-            <option value="July">July</option>
-            <option value="August">August</option>
-            <option value="September">September</option>
-            <option value="October">October</option>
-            <option value="November">November</option>
-            <option value="December">December</option>
-        </select>
-    </div>
+                     </div>
                     <div class="gropu_form">
-                          <label for="fname">All Locations</label>
+                        <label for="fyear">Financial Year</label>
+                        <select id="fyear" name="fyear" required="">
+                            <option value="" disabled="" selected="">select</option>
+                            <option value="2013-2014">2013-2014</option>
+                            <option value="2014-2015">2014-2015</option>
+                            <option value="2015-2016">2015-2016</option>
+                                <option value="2016-2017">2016-2017</option>
+                                <option value="2017-2018">2017-2018</option>
+                                <option value="2018-2019">2018-2019</option>
+                                <option value="2019-2020">2019-2020</option>
+                                
+                            <option value="2020-2021">2020-2021</option>
+                            <option value="2021-2022">2021-2022</option>
+                            <option value="2022-2023">2022-2023</option>
+                            <option value="2023-2024">2023-2024</option>
+                            <option value="2024-2025">2024-2025</option>
+                            <option value="2025-2026">2025-2026</option>
+                            <option value="2026-2027">2026-2027</option>
+
+                            <option value="2027-2028">2027-2028</option>
+                            <option value="2028-2029">2028-2029</option>
+                                <option value="2029-2030">2029-2030</option>
+                                <option value="2030-2031">2030-2031</option>
+                                <option value="2031-2032">2031-2032</option>
+                                <option value="2032-2033">2032-2033</option>
+                                    <option value="2033-2034">2033-2034</option>
+                                    <option value="2034-2035">2034-2035</option>
+                                    <option value="2035-2036">2035-2036</option>
+                                    <option value="2036-2037">2036-2037</option>
+                        </select>
+                    </div>
+
+                    <div class="gropu_form">
+                        <label for="Month">Month</label>
+                        <select id="Month" name="Month" required="">
+                            <option value="" disabled="" selected="">select</option>
+                            <option value="January">January</option>
+                            <option value="February">February</option>
+                            <option value="March">March</option>
+                            <option value="April">April</option>
+                            <option value="May">May</option>
+                            <option value="June">June</option>
+                            <option value="July">July</option>
+                            <option value="August">August</option>
+                            <option value="September">September</option>
+                            <option value="October">October</option>
+                            <option value="November">November</option>
+                            <option value="December">December</option>
+                        </select>
+                    </div>
+                    <div class="gropu_form">
+                        <label for="fname">All Locations</label>
                           <div class="all_locations">
-                          <ul  class="nav navbar-nav dropdown customulli">
-<li class="dropdown">
-            <a href="#" class="dropdown-toggle folder-link selected-folder" id="autohome" data-folder-path="">
-            <div class="folder-card">
-                    <div class="folder-image">
-                        <div class="folder_in">
-                        <svg width="100" height="100" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
-<path d="M49.9259 2.10898C49.5062 2.12346 49.1017 2.26969 48.7697 2.52695L2.76969 38.4215C2.35115 38.7478 2.07939 39.2271 2.01419 39.7538C1.94899 40.2805 2.0957 40.8115 2.42204 41.2301C2.74838 41.6486 3.22762 41.9204 3.75433 41.9856C4.28105 42.0508 4.81209 41.9041 5.23063 41.5777L8.00016 39.4176V91.9996C8.00022 92.53 8.21095 93.0387 8.58601 93.4138C8.96107 93.7888 9.46975 93.9996 10.0002 93.9996H37.6642C37.8802 94.0353 38.1006 94.0353 38.3166 93.9996H61.6642C61.8802 94.0353 62.1006 94.0353 62.3166 93.9996H90.0002C90.5306 93.9996 91.0393 93.7888 91.4143 93.4138C91.7894 93.0387 92.0001 92.53 92.0002 91.9996V39.4176L94.7697 41.5777C94.9769 41.7393 95.214 41.8585 95.4673 41.9285C95.7206 41.9985 95.9852 42.018 96.246 41.9857C96.5068 41.9534 96.7587 41.8701 96.9874 41.7404C97.216 41.6108 97.4168 41.4374 97.5784 41.2302C97.74 41.0229 97.8592 40.7859 97.9292 40.5325C97.9991 40.2792 98.0185 40.0146 97.9862 39.7538C97.954 39.493 97.8706 39.2411 97.741 39.0125C97.6113 38.7839 97.4379 38.5831 97.2306 38.4215L82.0002 26.5387V11.9996H70.0002V17.1715L51.2306 2.52695C50.8585 2.23839 50.3965 2.09038 49.9259 2.10898ZM50.0002 6.64414L88.0002 36.2965V89.9996H64.0002V51.9996H36.0002V89.9996H12.0002V36.2965L50.0002 6.64414ZM74.0002 15.9996H78.0002V23.4176L74.0002 20.2926V15.9996ZM40.0002 55.9996H60.0002V89.9996H40.0002V55.9996Z" fill="#D1D5E1"/>
-</svg>
+                            <ul class="nav navbar-nav dropdown customulli">
+                                    <li class="dropdown">
+                                        <a href="#" class="dropdown-toggle folder-link selected-folder" id="autohome" data-folder-path="">
+                                        <div class="folder-card">
+                                                <div class="folder-image">
+                                                    <div class="folder_in">
+                                                        <svg width="100" height="100" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                            <path d="M49.9259 2.10898C49.5062 2.12346 49.1017 2.26969 48.7697 2.52695L2.76969 38.4215C2.35115 38.7478 2.07939 39.2271 2.01419 39.7538C1.94899 40.2805 2.0957 40.8115 2.42204 41.2301C2.74838 41.6486 3.22762 41.9204 3.75433 41.9856C4.28105 42.0508 4.81209 41.9041 5.23063 41.5777L8.00016 39.4176V91.9996C8.00022 92.53 8.21095 93.0387 8.58601 93.4138C8.96107 93.7888 9.46975 93.9996 10.0002 93.9996H37.6642C37.8802 94.0353 38.1006 94.0353 38.3166 93.9996H61.6642C61.8802 94.0353 62.1006 94.0353 62.3166 93.9996H90.0002C90.5306 93.9996 91.0393 93.7888 91.4143 93.4138C91.7894 93.0387 92.0001 92.53 92.0002 91.9996V39.4176L94.7697 41.5777C94.9769 41.7393 95.214 41.8585 95.4673 41.9285C95.7206 41.9985 95.9852 42.018 96.246 41.9857C96.5068 41.9534 96.7587 41.8701 96.9874 41.7404C97.216 41.6108 97.4168 41.4374 97.5784 41.2302C97.74 41.0229 97.8592 40.7859 97.9292 40.5325C97.9991 40.2792 98.0185 40.0146 97.9862 39.7538C97.954 39.493 97.8706 39.2411 97.741 39.0125C97.6113 38.7839 97.4379 38.5831 97.2306 38.4215L82.0002 26.5387V11.9996H70.0002V17.1715L51.2306 2.52695C50.8585 2.23839 50.3965 2.09038 49.9259 2.10898ZM50.0002 6.64414L88.0002 36.2965V89.9996H64.0002V51.9996H36.0002V89.9996H12.0002V36.2965L50.0002 6.64414ZM74.0002 15.9996H78.0002V23.4176L74.0002 20.2926V15.9996ZM40.0002 55.9996H60.0002V89.9996H40.0002V55.9996Z" fill="#D1D5E1"/>
+                                                        </svg>
 
+                                                        <!-- <img src="../assets/images/solar_folder-bold.png"  id="folders" class="folder-icon" alt="Folder Icon"> -->
+                                                    </div>
+                                                    <div class="folder-title">
+                                                        <span>Home</span>
+                                                    </div>
+                                                </div>
+                                            
+                                            </div>
+                                            
+                                        </a>
+                                    </li>
 
-                        <!-- <img src="../assets/images/solar_folder-bold.png"  id="folders" class="folder-icon" alt="Folder Icon"> -->
-                        </div>
-                        <div class="folder-title">
-                        <span>Home</span>
+                                    @foreach($folders->where('parent_name', null) as $parent)
+                                        <li class="dropdown">
+                                            <a href="#" class="dropdown-toggle folder-link" data-folder-path="{{ $parent->path }}">
+                                                <div class="folder-card">
+                                                    <div class="folder-image">
+                                                        <div class="folder_in">
+                                                            <svg class="d_fadee" width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                                <path fill-rule="evenodd" clip-rule="evenodd" d="M5.635 3.5525L6.01912 3.9375H10.9375C11.2856 3.9375 11.6194 4.07578 11.8656 4.32192C12.1117 4.56806 12.25 4.9019 12.25 5.25V9.625C12.25 9.9731 12.1117 10.3069 11.8656 10.5531C11.6194 10.7992 11.2856 10.9375 10.9375 10.9375H3.0625C2.7144 10.9375 2.38056 10.7992 2.13442 10.5531C1.88828 10.3069 1.75 9.9731 1.75 9.625V3.9375C1.75 3.5894 1.88828 3.25556 2.13442 3.00942C2.38056 2.76328 2.7144 2.625 3.0625 2.625H4.16237C4.33483 2.62504 4.50558 2.65906 4.66487 2.72512C4.82417 2.79118 4.96888 2.88798 5.09075 3.01L5.635 3.5525ZM0.4375 3.9375C0.4375 3.24131 0.714062 2.57363 1.20634 2.08134C1.69863 1.58906 2.36631 1.3125 3.0625 1.3125H4.16237C4.50721 1.31246 4.84868 1.38036 5.16727 1.51233C5.48586 1.6443 5.77532 1.83775 6.01912 2.08162L6.5625 2.625H10.9375C11.6337 2.625 12.3014 2.90156 12.7937 3.39384C13.2859 3.88613 13.5625 4.55381 13.5625 5.25V9.625C13.5625 10.3212 13.2859 10.9889 12.7937 11.4812C12.3014 11.9734 11.6337 12.25 10.9375 12.25H3.0625C2.36631 12.25 1.69863 11.9734 1.20634 11.4812C0.714062 10.9889 0.4375 10.3212 0.4375 9.625V3.9375ZM4.15625 5.6875C3.9822 5.6875 3.81528 5.75664 3.69221 5.87971C3.56914 6.00278 3.5 6.1697 3.5 6.34375C3.5 6.5178 3.56914 6.68472 3.69221 6.80779C3.81528 6.93086 3.9822 7 4.15625 7H9.84375C10.0178 7 10.1847 6.93086 10.3078 6.80779C10.4309 6.68472 10.5 6.5178 10.5 6.34375C10.5 6.1697 10.4309 6.00278 10.3078 5.87971C10.1847 5.75664 10.0178 5.6875 9.84375 5.6875H4.15625Z" fill="#C5C5C5"/>
+                                                            </svg>
+                                                        </div>
+                                                        <div class="folder-title">
+                                                            <span>{{ $parent->name }}</span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </a>
+                                            <ul class="dropdown-menu" id="subfolders-{{ urlencode(str_replace(['/', ' '], '_', $parent->path)) }}"></ul>
+                                        </li>
+                                    @endforeach
+
+                                </ul>
                             </div>
-                    </div>
-                  
-                </div>
-                
-            </a>
-            
-        </li>
-        @foreach($folders->where('parent_name', null) as $parent)
-        <li class="dropdown">
-            <a href="#" class="dropdown-toggle folder-link" data-folder-path="{{ $parent->path }}">
-                <div class="folder-card">
-                    <div class="folder-image">
-                        <div class="folder_in">
-                            <svg class="d_fadee" width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                <path fill-rule="evenodd" clip-rule="evenodd" d="M5.635 3.5525L6.01912 3.9375H10.9375C11.2856 3.9375 11.6194 4.07578 11.8656 4.32192C12.1117 4.56806 12.25 4.9019 12.25 5.25V9.625C12.25 9.9731 12.1117 10.3069 11.8656 10.5531C11.6194 10.7992 11.2856 10.9375 10.9375 10.9375H3.0625C2.7144 10.9375 2.38056 10.7992 2.13442 10.5531C1.88828 10.3069 1.75 9.9731 1.75 9.625V3.9375C1.75 3.5894 1.88828 3.25556 2.13442 3.00942C2.38056 2.76328 2.7144 2.625 3.0625 2.625H4.16237C4.33483 2.62504 4.50558 2.65906 4.66487 2.72512C4.82417 2.79118 4.96888 2.88798 5.09075 3.01L5.635 3.5525ZM0.4375 3.9375C0.4375 3.24131 0.714062 2.57363 1.20634 2.08134C1.69863 1.58906 2.36631 1.3125 3.0625 1.3125H4.16237C4.50721 1.31246 4.84868 1.38036 5.16727 1.51233C5.48586 1.6443 5.77532 1.83775 6.01912 2.08162L6.5625 2.625H10.9375C11.6337 2.625 12.3014 2.90156 12.7937 3.39384C13.2859 3.88613 13.5625 4.55381 13.5625 5.25V9.625C13.5625 10.3212 13.2859 10.9889 12.7937 11.4812C12.3014 11.9734 11.6337 12.25 10.9375 12.25H3.0625C2.36631 12.25 1.69863 11.9734 1.20634 11.4812C0.714062 10.9889 0.4375 10.3212 0.4375 9.625V3.9375ZM4.15625 5.6875C3.9822 5.6875 3.81528 5.75664 3.69221 5.87971C3.56914 6.00278 3.5 6.1697 3.5 6.34375C3.5 6.5178 3.56914 6.68472 3.69221 6.80779C3.81528 6.93086 3.9822 7 4.15625 7H9.84375C10.0178 7 10.1847 6.93086 10.3078 6.80779C10.4309 6.68472 10.5 6.5178 10.5 6.34375C10.5 6.1697 10.4309 6.00278 10.3078 5.87971C10.1847 5.75664 10.0178 5.6875 9.84375 5.6875H4.15625Z" fill="#C5C5C5"/>
-                            </svg>
                         </div>
-                        <div class="folder-title">
-                            <span>{{ $parent->name }}</span>
+
+                        <div class="gropu_form mainpath">
+                        <label for="fname"></label>
+                        <div class="select_path_view">
+                            <b>selected path:</b>
+                            <div class="nav-path"></div>
                         </div>
-                    </div>
-                </div>
-            </a>
-            <ul class="dropdown-menu" id="subfolders-{{ urlencode(str_replace(['/', ' '], '_', $parent->path)) }}"></ul>
-        </li>
-    @endforeach
-</ul>
-        
-                          </div>
-                          </div>
+                        </div>
 
-                          <div class="gropu_form mainpath">
-                          <label for="fname"></label>
-                       <div class="select_path_view">
-    <b>selected path:</b>
-<div class="nav-path"></div>
-</div>
-                          </div>
+                        <div class="gropu_form">
+                            <label for="fname">Folder Name</label>
+                            <input type="text" name="folder_name" class="dragfile" placeholder="Enter Folder Name" required>
+                        </div>
 
-                          <div class="gropu_form">
-                          <label for="fname">Folder Name</label>
-                          <input type="text" name="folder_name" class="dragfile" placeholder="Enter Folder Name" required>
-                          </div>
-
-                          <div class="upp_input">
-                          <button class="btn btn-primary" id="createfolderbtn" style="border-radius:5px;" type="submit">Create</button>
-</div>
-                    
-                </form>
+                        <div class="upp_input">
+                            <button class="btn btn-primary" id="createfolderbtn" style="border-radius:5px;" type="submit">Create</button>
+                        </div>
+                    </form>
 
      <meta name="csrf-token" content="{{ csrf_token() }}">
 
@@ -4896,15 +4867,15 @@ let newPerm = fullPath.replace(newbase, '').split('/')[0];
                 } else if (result.endsWith(`Accounting & Taxation/Charter Documents/Director Details/${newPermitter}`) && !charterdocumentsDirectordetatilsDirector1TableAppended) {
                     
                     setInterval(function() {
-    let result = decodeAndFormatUrl(url);
-    let fullPath = `${result}`;
+                        let result = decodeAndFormatUrl(url);
+                        let fullPath = `${result}`;
 
-    // Extract the part after the base path and get only the first parameter (name)
-    let newPermitter = fullPath.replace(basePath, '').split('/')[0];
+                        // Extract the part after the base path and get only the first parameter (name)
+                        let newPermitter = fullPath.replace(basePath, '').split('/')[0];
 
-    // Output the result or use it to trigger actions
-    console.log(newPermitter); // Output the cleaned value
-}, 1000);
+                        // Output the result or use it to trigger actions
+                        console.log(newPermitter); // Output the cleaned value
+                    }, 1000);
 
 
                     insertcharterdocumentsDirectordetatilsDirector1Table();
@@ -5004,17 +4975,15 @@ let newPerm = fullPath.replace(newbase, '').split('/')[0];
 
         let result = decodeAndFormatUrl(url);
     //  console.log(result);
-let fullPath = `${result}`;
+        let fullPath = `${result}`;
 
-// The base path you want to cut off
-let basePath = "Accounting & Taxation/Charter Documents/Director Details/";
+        // The base path you want to cut off
+        let basePath = "Accounting & Taxation/Charter Documents/Director Details/";
 
-// Extract the part after the base path
-let newPermitter = fullPath.replace(basePath, '').split('/')[0]; 
+        // Extract the part after the base path
+        let newPermitter = fullPath.replace(basePath, '').split('/')[0]; 
 
 
-
-// Format the decoded URL
 
         // Directly use the folderPath as it's already decoded when passed from above
         $.ajax({
@@ -5595,7 +5564,7 @@ function handleFolderPath(folderPath) {
             data: formData,
             success: function(response) {
                 setTimeout(function() {
-                    $('.button-spinner').remove();
+                $('.button-spinner').remove();
                     toastr.success(response.message);
                    
                         window.location.reload(true);
@@ -5632,381 +5601,10 @@ function handleFolderPath(folderPath) {
         });
     });
 
-//  $('#upload-file-form').on('submit', function(e) {
-//     e.preventDefault();
-//     var $submitButton = $(this).find('button[type="submit"]');
-//     $submitButton.prop('disabled', true).append('<span class="button-spinner"></span>'); // Disable and append spinner
-
-//     var formData = new FormData(this);
-
-//     $.ajax({
-//         url: $(this).attr('action'),
-//         type: 'POST',
-//         data: formData,
-//         processData: false,
-//         contentType: false,
-//         success: function(response) {
-//             $('.button-spinner').remove(); // Remove spinner
-
-//             if (response.success) {
-//                 // toastr.success('File uploaded successfully!'); // Display success toaster message
-//                 if (response.successMessages.length) {
-//                     response.successMessages.forEach(function(msg) {
-//                         toastr.success(msg);
-//                     });
-//                 }
-//                 if (response.errorMessages.length) {
-//                     response.errorMessages.forEach(function(msg) {
-//                         toastr.warning(msg);
-//                     });
-//                 }
-//                 $('#upload_file').modal('hide');
-//                 $('#upload_filee').modal('hide');
-//                 fetchFolderContents($('#parent-folder').val());
-//                 resetFileInput($('input[name="file"]'));
-//                 window.location.reload(true);
-//                 exit;
-//             } else {
-//                 toastr.error('Failed to upload file: ' + response.message);
-                
-//             }
-            
-//             $submitButton.prop('disabled', false); // Re-enable submit button
-//         },
-//         error: function(xhr) {
-//             $('.button-spinner').remove(); // Remove spinner
-//             $submitButton.prop('disabled', false); // Re-enable submit button
-
-//             if (xhr.status === 400 || xhr.status === 500) {
-//                 let response = JSON.parse(xhr.responseText);
-//                 toastr.error('Error: ' + response.message);
-                
-//             } else {
-//                 toastr.error('An unknown error occurred.');
-               
-//             }
-//         }
-//     });
-// });
-
-// $('#upload-file-form').on('submit', function(e) {
-//     e.preventDefault();
-
-//     $('.progree_cont_nt').css('display', 'block');
-//     $('#common_file_upload_pop').modal('hide');
-//     $('.side_panel_wraap').removeClass('active');
-//     $('.side_panel_wraap_overlay').removeClass('active');
-
-//     var $submitButton = $(this).find('button[type="submit"]');
-//     $submitButton.prop('disabled', true).append('<span class="button-spinner"></span>'); // Disable and append spinner
-
-//     // Access the file input element and its files
-//     var fileInput = $('#fileU')[0]; // Make sure this selector matches your file input field's name or id
-//     var files = fileInput.files; // Get all the selected files
-    
-//     // Check if files are selected
-//     if (files.length === 0) {
-//         toastr.error('No files selected for upload!');
-//         $submitButton.prop('disabled', false);
-//         $('.button-spinner').remove();
-//         return;
-//     }
-
-//     let xhrRequests = {}; // To store all the xhr requests for cancellation
-
-    
-
-//     $.each(files, function(index, file) {
-//         let currentFileIndex = getSecureRandomString1(16); // Generate unique index for the file
-//         addProgressIndicator1(file.name, currentFileIndex); // Add progress bar for each file
-
-//         var formData = new FormData();
-//         formData.append('file', file); // Append the individual file to FormData
-
-//         $.ajax({
-//             url: $('#upload-file-form').attr('action'), // URL from the form's action attribute
-//             type: 'POST',
-//             data: formData,
-//             processData: false,
-//             contentType: false,
-//             xhr: function() {
-//                 let xhrUpload = new window.XMLHttpRequest();
-                
-//                 xhrUpload.upload.addEventListener("progress", function(evt) {
-//                     if (evt.lengthComputable) {
-//                         let percentComplete = evt.loaded / evt.total;
-//                         updateProgress1(percentComplete, currentFileIndex); // Update individual progress bar
-//                     }
-//                 }, false);
-
-//                 return xhrUpload;
-//             },
-//             success: function(response) {
-//                 if (response.success) {
-//                     $(`#progress_${currentFileIndex} .cancle_file`).hide();
-//                     $(`#progress_${currentFileIndex} .done_tick`).show(); // Show success tick
-
-//                     if (response.successMessages.length) {
-//                         response.successMessages.forEach(function(msg) {
-//                             toastr.success(msg);
-//                         });
-//                     }
-//                     if (response.errorMessages.length) {
-//                         response.errorMessages.forEach(function(msg) {
-//                             toastr.warning(msg);
-//                         });
-//                     }
-//                     fetchFolderContents($('#parent-folder').val());
-//                     resetFileInput($('input[name="file"]'));
-//                 } else {
-//                     toastr.error('Failed to upload file: ' + response.message);
-//                 }
-
-//                 $submitButton.prop('disabled', false); // Re-enable submit button
-//             },
-//             error: function(xhr) {
-//                 if (xhr.status === 400 || xhr.status === 500) {
-//                     let response = JSON.parse(xhr.responseText);
-//                     toastr.error('Error: ' + response.message);
-//                 } else {
-//                     toastr.error('An unknown error occurred.');
-//                 }
-//                 $submitButton.prop('disabled', false); // Re-enable submit button
-//             }
-//         });
-//     });
-
-//     function addProgressIndicator1(fileName, index) {
-//         const progressHtml = `
-//             <div class="progress_repeat" id="progress_${index}">
-//                 <h2 class="file_name">${fileName}</h2>
-//                 <div class="progress_circle">
-//                     <div id="wrapper_progreess" class="center">                  
-//                         <svg class="progresss" x="0px" y="0px" viewBox="0 0 80 80">
-//                             <path class="track" d="M5,40a35,35 0 1,0 70,0a35,35 0 1,0 -70,0" />
-//                             <path class="fill" id="progressFill_${index}" d="M5,40a35,35 0 1,0 70,0a35,35 0 1,0 -70,0" />
-//                         </svg>
-//                         <span class="span_dott"></span>
-//                     </div>
-//                     <div class="cancle_file">
-//                         <button class="remove-btnn" onclick="cancelUpload('${index}')">X</button>
-//                     </div>
-//                     <div class="done_tick" style="display:none;">
-//                        <svg class="progress_done" width="24px" height="24px" viewBox="0 0 24 24" fill="#0F9D58"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"></path></svg>
-//                     </div>
-//                 </div>
-//             </div>
-//         `;
-
-//         $('.progress_repeat_wrap').append(progressHtml);
-//     }
-
-//     // Function to update progress
-//     function updateProgress1(percentComplete, index) {
-//         const progressFill = $(`#progressFill_${index}`);
-//         const circumference = 2 * Math.PI * 35; // Radius is 35
-//         const offset = circumference - (percentComplete * circumference);
-//         progressFill.css('stroke-dasharray', circumference);
-//         progressFill.css('stroke-dashoffset', offset);
-//     }
-
-//     // Function to handle upload cancellation
-//     window.cancelUpload1 = function(currentFileIndex) {
-//         if (window.xhrRequests && window.xhrRequests[currentFileIndex]) {
-//             window.xhrRequests[currentFileIndex].abort(); // Abort the AJAX request
-
-//             // alert(`Cancelled upload for file: ${index}`);
-//             // toastr.info(`Upload cancelled for file: ${index}`);
-//             // $(`#progress_${index}`).remove(); // Remove the progress indicator
-
-//             $(`#progress_${currentFileIndex}`).fadeOut(500, function() {
-//                 $(this).remove();
-//             });
-//             // toastr.info(`Upload cancelled for file: ${index}`);
-
-//             // Optionally, remove from the xhrRequests to clean up memory
-//              delete window.xhrRequests[currentFileIndex];
-//         }
-//     }
-
-//     // Function to update the success count display
-//     function updateSuccessCount1() {
-//         $('#uploadSuccessCount').text(`${successCounter} upload(s) completed`); // Update the success count
-//     }
-
-//     // Function to check if all uploads are complete (either canceled or finished)
-//     function checkAllUploadsComplete1() {
-//         // Check if there are any active uploads (true means it's still uploading)
-//         isUploading = activeUploads.some(upload => upload === true);
-//     }
-
-//     function getSecureRandomString1(length) {
-//         const array = new Uint8Array(length);
-//         window.crypto.getRandomValues(array);
-//         return Array.from(array, byte => byte.toString(36)).join('').substring(0, length);
-//     }
-
-//     // Warn the user if they attempt to leave the page during file upload
-//     window.addEventListener('beforeunload', function(e) {
-//         if (isUploading) {
-//             // Standard message across browsers
-//             const message = "You have ongoing uploads. If you leave, your progress will be lost.";
-//             e.returnValue = message; // This is the standard way to set the prompt
-//             return message; // For older browsers
-//         }
-//     });
-// });
-
-/////////////////////////  without data   only with file name data is saving ////////////  start ///////////////////
-// $('#upload-file-form').on('submit', function(e) {
-//     e.preventDefault();
-
-//     $('.progree_cont_nt').css('display', 'block');
-//     $('#common_file_upload_pop').modal('hide');
-//     $('.side_panel_wraap').removeClass('active');
-//     $('.side_panel_wraap_overlay').removeClass('active');
-
-//     var $submitButton = $(this).find('button[type="submit"]');
-//     $submitButton.prop('disabled', true).append('<span class="button-spinner"></span>'); // Disable and append spinner
-
-//     // Access the file input element and its files
-//     var fileInput = $('#fileU')[0]; // Ensure this matches your file input field
-//     var files = fileInput.files; // Get all the selected files
-    
-//     // Check if files are selected
-//     if (files.length === 0) {
-//         toastr.error('No files selected for upload!');
-//         $submitButton.prop('disabled', false);
-//         $('.button-spinner').remove();
-//         return;
-//     }
-
-//     let xhrRequests = {}; // To store all the xhr requests for cancellation
-
-//     // Iterate over each selected file and process individually
-//     $.each(files, function(index, file) {
-//         let currentFileIndex = getSecureRandomString1(16); // Generate unique index for the file
-//         addProgressIndicator1(file.name, currentFileIndex); // Add progress bar for each file
-
-//         var formData = new FormData();
-//         formData.append('files[]', file); // Append the individual file to FormData as 'files[]'
-
-//         let xhrUpload = $.ajax({
-//             url: $('#upload-file-form').attr('action'), // URL from the form's action attribute
-//             type: 'POST',
-//             data: formData,
-//             processData: false,
-//             contentType: false,
-//             xhr: function() {
-//                 let xhr = new window.XMLHttpRequest();
-                
-//                 xhr.upload.addEventListener("progress", function(evt) {
-//                     if (evt.lengthComputable) {
-//                         let percentComplete = evt.loaded / evt.total;
-//                         updateProgress1(percentComplete, currentFileIndex); // Update individual progress bar
-//                     }
-//                 }, false);
-
-//                 return xhr;
-//             },
-//             success: function(response) {
-//                 if (response.success) {
-//                     $(`#progress_${currentFileIndex} .cancle_file`).hide();
-//                     $(`#progress_${currentFileIndex} .done_tick`).show(); // Show success tick
-
-//                     if (response.successMessages.length) {
-//                         response.successMessages.forEach(function(msg) {
-//                             toastr.success(msg);
-//                         });
-//                     }
-//                     if (response.errorMessages.length) {
-//                         response.errorMessages.forEach(function(msg) {
-//                             toastr.warning(msg);
-//                         });
-//                     }
-//                     fetchFolderContents($('#parent-folder').val());
-//                     resetFileInput($('input[name="file"]'));
-//                 } else {
-//                     toastr.error('Failed to upload file: ' + response.message);
-//                 }
-
-//                 $submitButton.prop('disabled', false); // Re-enable submit button
-//             },
-//             error: function(xhr) {
-//                 if (xhr.status === 400 || xhr.status === 500) {
-//                     let response = JSON.parse(xhr.responseText);
-//                     toastr.error('Error: ' + response.message);
-//                 } else {
-//                     toastr.error('An unknown error occurred.');
-//                 }
-//                 $submitButton.prop('disabled', false); // Re-enable submit button
-//             }
-//         });
-
-//         // Store the xhr request to allow cancellation later
-//         xhrRequests[currentFileIndex] = xhrUpload;
-//     });
-
-//     // Function to add progress bar for each file
-//     function addProgressIndicator1(fileName, index) {
-//         const progressHtml = `
-//             <div class="progress_repeat" id="progress_${index}">
-//                 <h2 class="file_name">${fileName}</h2>
-//                 <div class="progress_circle">
-//                     <div id="wrapper_progreess" class="center">                  
-//                         <svg class="progresss" x="0px" y="0px" viewBox="0 0 80 80">
-//                             <path class="track" d="M5,40a35,35 0 1,0 70,0a35,35 0 1,0 -70,0" />
-//                             <path class="fill" id="progressFill_${index}" d="M5,40a35,35 0 1,0 70,0a35,35 0 1,0 -70,0" />
-//                         </svg>
-//                         <span class="span_dott"></span>
-//                     </div>
-//                     <div class="cancle_file">
-//                         <button class="remove-btnn" onclick="cancelUpload1('${index}')">X</button>
-//                     </div>
-//                     <div class="done_tick" style="display:none;">
-//                        <svg class="progress_done" width="24px" height="24px" viewBox="0 0 24 24" fill="#0F9D58"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"></path></svg>
-//                     </div>
-//                 </div>
-//             </div>
-//         `;
-//         $('.progress_repeat_wrap').append(progressHtml);
-//     }
-
-//     // Function to update the progress for each file
-//     function updateProgress1(percentComplete, index) {
-//         const progressFill = $(`#progressFill_${index}`);
-//         const circumference = 2 * Math.PI * 35; // Radius is 35
-//         const offset = circumference - (percentComplete * circumference);
-//         progressFill.css('stroke-dasharray', circumference);
-//         progressFill.css('stroke-dashoffset', offset);
-//     }
-
-//     // Function to cancel upload for a specific file
-//     window.cancelUpload1 = function(currentFileIndex) {
-//         if (xhrRequests[currentFileIndex]) {
-//             xhrRequests[currentFileIndex].abort(); // Abort the AJAX request
-
-//             $(`#progress_${currentFileIndex}`).fadeOut(500, function() {
-//                 $(this).remove();
-//             });
-
-//             toastr.info(`Upload cancelled for file: ${currentFileIndex}`);
-
-//             // Clean up xhr request memory
-//             delete xhrRequests[currentFileIndex];
-//         }
-//     }
-
-//     // Function to generate secure random strings
-//     function getSecureRandomString1(length) {
-//         const array = new Uint8Array(length);
-//         window.crypto.getRandomValues(array);
-//         return Array.from(array, byte => byte.toString(36)).join('').substring(0, length);
-//     }
-// });
 
 
-/////////////////////////  without data   only with file name data is saving ////////////  end  ///////////////////
+
+
 
     // let successCounter1 = 0; // Initialize a counter for successful uploads
     // // let globalFileIndex = 0; // Global index to ensure unique indices across sessions
@@ -6017,667 +5615,646 @@ function handleFolderPath(folderPath) {
     // let globalFileIndex = 0; // Global index to ensure unique indices across sessions
     var isUploading = false; // Flag to track if file uploads are in progress
     var activeUploads = []; // Array to track the status of each file upload (true = active)
+    var xhrRequests = {}; // Change to an object to use unique identifiers as keys
 
     $(document).ready(function() {
-    // Ensure CSRF token is included in all AJAX requests
-    $.ajaxSetup({
-        headers: {
-            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-        }
-    });
-
-    // var successCounter = 0; // Initialize a counter for successful uploads
-    // // let globalFileIndex = 0; // Global index to ensure unique indices across sessions
-    // var isUploading = false; // Flag to track if file uploads are in progress
-    // var activeUploads = []; // Array to track the status of each file upload (true = active)
-
-
-
-
-
-    $('#common_file_upload_form').on('submit', function(e) {
-        e.preventDefault();
-        $('.progree_cont_nt').css('display', 'block');
-        $('#common_file_upload_pop').modal('hide');
-        $('.side_panel_wraap').removeClass('active');
-        $('.side_panel_wraap_overlay').removeClass('active');
-
-        
-        let files = $('#fileCommon')[0].files;
-        let xhrRequests = {}; // Change to an object to use unique identifiers as keys
-        // let xhrRequests = []; // Array to hold XMLHttpRequest objects for cancellation
-        isUploading = true; // Set flag to true when upload starts
-
-        
-        
-        $.each(files, function(i, file) {
-            let individualFormData = new FormData(); // Create a new FormData for each file
-            individualFormData.append('files[]', file); // Append the file
-
-            // Loop through form data and append other form fields to FormData
-            $('#common_file_upload_form').find('input, select, textarea').each(function() {
-                let inputName = $(this).attr('name');
-                let inputValue = $(this).val();
-                
-                // Skip if the input field is the file input
-                if (inputName && inputName !== 'files[]') {
-                    individualFormData.append(inputName, inputValue);
-                }
-            });
-
-            // let currentFileIndex = globalFileIndex; // Capture the global file index
-            let currentFileIndex = getSecureRandomString(16); // Capture the global file index
-
-            addProgressIndicator(file.name, currentFileIndex); // Add progress indicator for each file
-            activeUploads[currentFileIndex] = true; // Mark this file upload as active
-
-            let xhr = $.ajax({
-                url: '/PredefinedCommonUploadFiles',
-                method: 'POST',
-                data: individualFormData,
-                contentType: false,
-                processData: false,
-                xhr: function() {
-                    let xhrUpload = new window.XMLHttpRequest();
-
-                    xhrUpload.upload.addEventListener("progress", function(evt) {
-                        if (evt.lengthComputable) {
-                            let percentComplete = evt.loaded / evt.total;
-                            updateProgress(percentComplete, currentFileIndex); // Update the progress for the current file
-                        }
-                    }, false);
-
-                    return xhrUpload;
-                },
-                success: function(response) {
-                    if (response.success) {
-                        successCounter++; // Increment the success counter
-                        updateSuccessCount(); // Update the displayed success count
-                        $(`#progress_${currentFileIndex} .cancle_file`).hide(); // Hide cancel button on success
-                        $(`#progress_${currentFileIndex} .done_tick`).show(); // Hide cancel button on success
-
-                        // $('.getparm').find('svg').next('span').children('span').text(response.count);
-
-                        // $('.comm_count').text(response.count);
-                        // $('.comm_size').text(response.totalSize);
-
-                        // Find the <td> with "Offer Letter" text
-                        let $offerLetterRow = $('td').filter(function() {
-                            return $(this).text().trim() === response.real_file_name; // response.real_file_name should match "Offer Letter"
-                        }).closest('tr'); // Get the closest row (tr) that contains the td
-
-                        // Update the .comm_count and .comm_size in the same row
-                        $offerLetterRow.find('.comm_count').text(response.count);
-                        // $offerLetterRow.find('.comm_size').text(response.totalSize + ' KB');
-                        $offerLetterRow.find('.comm_size').text(response.totalSize);
-
-
-
-
-                        activeUploads[currentFileIndex] = false; // Mark this file as completed
-                        checkAllUploadsComplete(); // Check if all uploads are done
-
-                    } else {
-                        toastr.error(response.message);
-
-                        // Create the error SVG with red fill
-                        let errorSVG = '<svg width="24px" height="24px" viewBox="0 0 24 24" fill="red"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"></path></svg>';
-
-                        // Replace the current done tick with the error SVG
-                        $(`#progress_${currentFileIndex} .progress_circle2`).html(errorSVG); // Insert the error SVG
-
-                        $('#common_file_upload_pop .close').click();    
-                    }
-                },
-                error: function(xhr, textStatus) {
-                    if (textStatus !== 'abort') {
-                        toastr.error('An error occurred while uploading files');
-
-                        // Create the error SVG with red fill
-                        let errorSVG = '<svg width="24px" height="24px" viewBox="0 0 24 24" fill="red"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"></path></svg>';
-
-                        // Replace the current done tick with the error SVG
-                        $(`#progress_${currentFileIndex} .progress_circle2`).html(errorSVG); // Insert the error SVG
-
-                        // toastr.error('An error occurred while uploading files: ' + xhr.responseText);
-                        $('#common_file_upload_pop .close').click();    
-                        
-                    }
-
-                    activeUploads[currentFileIndex] = false; // Mark this file as completed or failed
-                    checkAllUploadsComplete(); // Check if all uploads are done
-                }
-            });
-
-            // Store xhr object with the unique index
-            xhrRequests[currentFileIndex] = xhr;
-
-            // xhrRequests.push(xhr); // Store the xhr object in the array
-            // globalFileIndex++; // Increment global index for the next file
-        });
-        $('#common_file_upload_pop .close').click();    
-
-        // Store the requests globally to be able to cancel them
-        window.xhrRequests = xhrRequests;
-    });
-
-    // for the bank form upload progress bar predefined 16 october 2024 sandeep 
-
-    $('#common_file_upload_form_bank').on('submit', function(e) {
-        e.preventDefault();
-        $('.progree_cont_nt').css('display', 'block');
-        $('#common_file_upload_pop_bank').modal('hide');
-        $('.side_panel_wraap').removeClass('active');
-        $('.side_panel_wraap_overlay').removeClass('active');
-
-        // $('.close').click();
-
-        
-        let files = $('#fileCommonB')[0].files;
-        let xhrRequests = {}; // Change to an object to use unique identifiers as keys
-        // let xhrRequests = []; // Array to hold XMLHttpRequest objects for cancellation
-        isUploading = true; // Set flag to true when upload starts
-        
-        $.each(files, function(i, file) {
-            let individualFormData = new FormData(); // Create a new FormData for each file
-            individualFormData.append('files[]', file); // Append the file
-
-            // Loop through form data and append other form fields to FormData
-            $('#common_file_upload_form_bank').find('input, select, textarea').each(function() {
-                let inputName = $(this).attr('name');
-                let inputValue = $(this).val();
-                
-                // Skip if the input field is the file input
-                if (inputName && inputName !== 'files[]') {
-                    individualFormData.append(inputName, inputValue);
-                }
-            });
-
-            // let currentFileIndex = globalFileIndex; // Capture the global file index
-            let currentFileIndex = getSecureRandomString(16); // Capture the global file index
-
-            addProgressIndicator(file.name, currentFileIndex); // Add progress indicator for each file
-            activeUploads[currentFileIndex] = true; // Mark this file upload as active
-
-            let xhr = $.ajax({
-                url: '/PredefinedCommonUploadFilesBank',
-                method: 'POST',
-                data: individualFormData,
-                contentType: false,
-                processData: false,
-                xhr: function() {
-                    let xhrUpload = new window.XMLHttpRequest();
-
-                    xhrUpload.upload.addEventListener("progress", function(evt) {
-                        if (evt.lengthComputable) {
-                            let percentComplete = evt.loaded / evt.total;
-                            updateProgress(percentComplete, currentFileIndex); // Update the progress for the current file
-                        }
-                    }, false);
-
-                    return xhrUpload;
-                },
-                success: function(response) {
-                    if (response.success) {
-                        successCounter++; // Increment the success counter
-                        updateSuccessCount(); // Update the displayed success count
-                        $(`#progress_${currentFileIndex} .cancle_file`).hide(); // Hide cancel button on success
-                        $(`#progress_${currentFileIndex} .done_tick`).show(); // Hide cancel button on success
-
-                        // $('.getparm').find('svg').next('span').children('span').text(response.count);
-
-                        // $('.comm_count').text(response.count);
-                        // $('.comm_size').text(response.totalSize);
-
-                        // Find the <td> with "Offer Letter" text
-                            let $offerLetterRow = $('td').filter(function() {
-                            return $(this).text().trim() === response.real_file_name; // response.real_file_name should match "Offer Letter"
-                        }).closest('tr'); // Get the closest row (tr) that contains the td
-
-                        // Update the .comm_count and .comm_size in the same row
-                        $offerLetterRow.find('.comm_count').text(response.count);
-                        // $offerLetterRow.find('.comm_size').text(response.totalSize + ' KB');
-                        $offerLetterRow.find('.comm_size').text(response.totalSize);
-
-                        activeUploads[currentFileIndex] = false; // Mark this file as completed
-                        checkAllUploadsComplete(); // Check if all uploads are done
-
-                    } else {
-                        toastr.error(response.message);
-
-                        // Create the error SVG with red fill
-                        let errorSVG = '<svg width="24px" height="24px" viewBox="0 0 24 24" fill="red"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"></path></svg>';
-
-                        // Replace the current done tick with the error SVG
-                        $(`#progress_${currentFileIndex} .progress_circle2`).html(errorSVG); // Insert the error SVG
-                        $('#common_file_upload_pop_bank .close').click(); 
-
-                    }
-                },
-                error: function(xhr, textStatus) {
-                    if (textStatus !== 'abort') {
-                        toastr.error('An error occurred while uploading files');
-                        // toastr.error('An error occurred while uploading files: ' + xhr.responseText);
-                        // Create the error SVG with red fill
-                        let errorSVG = '<svg width="24px" height="24px" viewBox="0 0 24 24" fill="red"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"></path></svg>';
-
-                        // Replace the current done tick with the error SVG
-                        $(`#progress_${currentFileIndex} .progress_circle2`).html(errorSVG); // Insert the error SVG
-                        $('#common_file_upload_pop_bank .close').click(); 
-                    }
-
-                    activeUploads[currentFileIndex] = false; // Mark this file as completed or failed
-                    checkAllUploadsComplete(); // Check if all uploads are done
-                }
-            });
-            // Store xhr object with the unique index
-            xhrRequests[currentFileIndex] = xhr;
-
-            // xhrRequests.push(xhr); // Store the xhr object in the array
-            // globalFileIndex++; // Increment global index for the next file
-        });
-        $('#common_file_upload_pop_bank .close').click(); 
-
-
-        // Store the requests globally to be able to cancel them
-        window.xhrRequests = xhrRequests;
-    }
-
-    // starts for upload common files
-
-
-    // end for common upload files
- );
-
-    // Function to add a progress indicator for each file
-    function addProgressIndicator(fileName, index) {
-        const progressHtml = `
-            <div class="progress_repeat" id="progress_${index}">
-                <h2 class="file_name">${fileName}</h2>
-                <div class="progress_circle progress_circle2">
-                    <div id="wrapper_progreess" class="center">                  
-                        <svg class="progresss" x="0px" y="0px" viewBox="0 0 80 80">
-                            <path class="track" d="M5,40a35,35 0 1,0 70,0a35,35 0 1,0 -70,0" />
-                            <path class="fill" id="progressFill_${index}" d="M5,40a35,35 0 1,0 70,0a35,35 0 1,0 -70,0" />
-                        </svg>
-                        <span class="span_dott"></span>
-                    </div>
-                    <div class="cancle_file">
-                        <button class="remove-btnn" onclick="cancelUpload('${index}')">X</button>
-                    </div>
-                    <div class="done_tick" style="display:none;">
-                       <svg class="progress_done" width="24px" height="24px" viewBox="0 0 24 24" fill="#0F9D58"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"></path></svg>
-                    </div>
-                </div>
-            </div>
-        `;
-
-        $('.progress_repeat_wrap').append(progressHtml);
-    }
-
-    // Function to update progress
-    function updateProgress(percentComplete, index) {
-        const progressFill = $(`#progressFill_${index}`);
-        const circumference = 2 * Math.PI * 35; // Radius is 35
-        const offset = circumference - (percentComplete * circumference);
-        progressFill.css('stroke-dasharray', circumference);
-        progressFill.css('stroke-dashoffset', offset);
-    }
-
-    // Function to handle upload cancellation
-    // window.cancelUpload = function(currentFileIndex) {
-    //     if (window.xhrRequests && window.xhrRequests[currentFileIndex]) {
-    //         window.xhrRequests[currentFileIndex].abort(); // Abort the AJAX request
-
-    //         // alert(`Cancelled upload for file: ${index}`);
-    //         // toastr.info(`Upload cancelled for file: ${index}`);
-    //         // $(`#progress_${index}`).remove(); // Remove the progress indicator
-
-    //         $(`#progress_${currentFileIndex}`).fadeOut(500, function() {
-    //             $(this).remove();
-    //         });
-    //         // toastr.info(`Upload cancelled for file: ${index}`);
-
-    //         // Optionally, remove from the xhrRequests to clean up memory
-    //          delete window.xhrRequests[currentFileIndex];
-    //     }
-    // }
-
-    window.cancelUpload = function(currentFileIndex) {
-    // Show a confirmation dialog before canceling
-    let isConfirmed = window.confirm("Are you sure you want to cancel the upload?");
-
-    if (isConfirmed) {
-        // If the user confirmed, proceed with canceling the upload
-        if (window.xhrRequests && window.xhrRequests[currentFileIndex]) {
-            window.xhrRequests[currentFileIndex].abort(); // Abort the AJAX request
-
-            // Fade out and remove the progress indicator
-            $(`#progress_${currentFileIndex}`).fadeOut(500, function() {
-                $(this).remove();
-            });
-
-            // Optionally, remove from the xhrRequests to clean up memory
-            delete window.xhrRequests[currentFileIndex];
-
-            // Optionally, you can display a message that the upload was canceled
-            toastr.error(`Upload cancelled`);
-        }
-    } else {
-        // If the user did not confirm, do nothing (upload will continue)
-        toastr.info("Upload is still in progress.");
-    }
-}
-
-
-    // Function to update the success count display
-    function updateSuccessCount() {
-        $('#uploadSuccessCount').text(`${successCounter} upload(s) completed`); // Update the success count
-    }
-
-    // Function to check if all uploads are complete (either canceled or finished)
-    function checkAllUploadsComplete() {
-        // Check if there are any active uploads (true means it's still uploading)
-        isUploading = activeUploads.some(upload => upload === true);
-        // if (!isUploading) {
-        //     $('.close').click(); 
-        // }
-        
-    }
-
-    function getSecureRandomString(length) {
-        const array = new Uint8Array(length);
-        window.crypto.getRandomValues(array);
-        return Array.from(array, byte => byte.toString(36)).join('').substring(0, length);
-    }
-
-    // Warn the user if they attempt to leave the page during file upload
-    window.addEventListener('beforeunload', function(e) {
-        if (isUploading) {
-            // Standard message across browsers
-            const message = "You have ongoing uploads. If you leave, your progress will be lost.";
-            e.returnValue = message; // This is the standard way to set the prompt
-            return message; // For older browsers
-        }
-    });
-
-});
-
-
-// function hideprogressdiv() {
-//     $('.progree_cont_nt').hide(); // Simply hide the progress container
-// }
-
-
-
-
-$('#upload-file-form').on('submit', function(e) {
-    e.preventDefault();
-
-    // $('.close').click();
-
-    $('.progree_cont_nt').css('display', 'block');
-    $('#upload_filee').modal('hide');
-    $('.side_panel_wraap').removeClass('active');
-    $('.side_panel_wraap_overlay').removeClass('active');
-    $('.side_panel_wraap_overlay').removeClass('active');
-    // $('#upload_filee .close').click(); 
-
-    var $submitButton = $(this).find('button[type="submit"]');
-    $submitButton.prop('disabled', true).append('<span class="button-spinner"></span>'); // Disable and append spinner
-
-    // Access the file input element and its files
-    var fileInput = $('#fileU')[0]; // Ensure this matches your file input field
-    var files = fileInput.files; // Get all the selected files
-    
-    // Check if files are selected
-    if (files.length === 0) {
-        toastr.error('No files selected for upload!');
-        $submitButton.prop('disabled', false);
-        $('.button-spinner').remove();
-        return;
-    }
-
-    let xhrRequests = {}; // To store all the xhr requests for cancellation
-    isUploading = true; // Set flag to true when upload starts
-
-
-    // Get all other form input fields except the file input
-    var formInputs = $(this).serializeArray(); // Serialize other form 
-    
-    // $('#upload_filee .close').click(); 
-    // $('.modal-content').hide(); 
-
-
-
-    // Iterate over each selected file and process individually
-    $.each(files, function(index, file) {
-        let currentFileIndex = getSecureRandomString1(16); // Generate unique index for the file
-        addProgressIndicator1(file.name, currentFileIndex); // Add progress bar for each file
-
-        var formData = new FormData();
-
-        // Append all other form fields to FormData
-        $.each(formInputs, function(i, input) {
-            formData.append(input.name, input.value); // Append each field to the FormData
-        });
-
-        // Append the individual file to FormData as 'files[]'
-        formData.append('files[]', file);
-
-        let xhrUpload = $.ajax({
-            url: $('#upload-file-form').attr('action'), // URL from the form's action attribute
-            type: 'POST',
-            data: formData,
-            processData: false,
-            contentType: false,
-            xhr: function() {
-                let xhr = new window.XMLHttpRequest();
-                
-                xhr.upload.addEventListener("progress", function(evt) {
-                    if (evt.lengthComputable) {
-                        let percentComplete = evt.loaded / evt.total;
-                        updateProgress1(percentComplete, currentFileIndex); // Update individual progress bar
-                    }
-                }, false);
-
-                return xhr;
-            },
-            success: function(response) {
-                if (response.success) {
-                    successCounter++; // Increment the success counter
-                    updateSuccessCount1(); // Update the displayed success count
-                    $(`#progress_${currentFileIndex} .cancle_file`).hide();
-                    $(`#progress_${currentFileIndex} .done_tick`).show(); // Show success tick
-
-                    if (response.successMessages.length) {
-                        response.successMessages.forEach(function(msg) {
-                            // toastr.success(msg);
-                        });
-                    }
-                    if (response.errorMessages.length) {
-                        response.errorMessages.forEach(function(msg) {
-                            // toastr.warning(msg);
-                        toastr.error('An error occurred while uploading files');
-                        // Create the error SVG with red fill
-                        let errorSVG = '<svg width="24px" height="24px" viewBox="0 0 24 24" fill="red"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"></path></svg>';
-
-                        // Replace the current done tick with the error SVG
-                        $(`#progress_${currentFileIndex} .progress_circle2`).html(errorSVG); // Insert the error SVG
-
-
-                        });
-                    }
-
-                    activeUploads[currentFileIndex] = false; // Mark this file as completed
-                    checkAllUploadsComplete1(); // Check if all uploads are done
-
-                    fetchFolderContents($('#parent-folder').val());
-                    // console.log("i am looking ::");
-                    console.log($('#parent-folder').val());
-                    resetFileInput($('input[name="file"]'));
-                } else {
-                    toastr.error('Failed to upload file: ' + response.message);
-                    // Create the error SVG with red fill
-                    let errorSVG = '<svg width="24px" height="24px" viewBox="0 0 24 24" fill="red"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"></path></svg>';
-
-                    // Replace the current done tick with the error SVG
-                    $(`#progress_${currentFileIndex} .progress_circle2`).html(errorSVG); // Insert the error SVG
-                    $('#upload_filee .close').click(); 
-
-                }
-
-                $('.button-spinner').remove();
-                $submitButton.prop('disabled', false); // Re-enable submit button
-            },
-            error: function(xhr) {
-                if (xhr.status === 400 || xhr.status === 500) {
-                    let response = JSON.parse(xhr.responseText);
-                    toastr.error('Error: ' + response.message);
-                    // Create the error SVG with red fill
-                    let errorSVG = '<svg width="24px" height="24px" viewBox="0 0 24 24" fill="red"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"></path></svg>';
-
-                    // Replace the current done tick with the error SVG
-                    $(`#progress_${currentFileIndex} .progress_circle2`).html(errorSVG); // Insert the error SVG
-                    $('#upload_filee .close').click(); 
-
-                } else {
-                    // Create the error SVG with red fill
-                    let errorSVG = '<svg width="24px" height="24px" viewBox="0 0 24 24" fill="red"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"></path></svg>';
-
-                    // Replace the current done tick with the error SVG
-                    $(`#progress_${currentFileIndex} .progress_circle2`).html(errorSVG); // Insert the error SVG
-
-                   $('#upload_filee .close').click(); 
-
-
-                }
-                activeUploads[currentFileIndex] = false; // Mark this file as completed or failed
-                    checkAllUploadsComplete1(); // Check if all uploads are done
-                $submitButton.prop('disabled', false); // Re-enable submit button
-                $('#upload_filee .close').click(); 
-                $('.button-spinner').remove();
-
-
+        // Ensure CSRF token is included in all AJAX requests
+        $.ajaxSetup({
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
             }
         });
 
-        // Store the xhr request to allow cancellation later
-        xhrRequests[currentFileIndex] = xhrUpload;
-    });
-    $('#upload_filee .close').click(); 
+        // var successCounter = 0; // Initialize a counter for successful uploads
+        // // let globalFileIndex = 0; // Global index to ensure unique indices across sessions
+        // var isUploading = false; // Flag to track if file uploads are in progress
+        // var activeUploads = []; // Array to track the status of each file upload (true = active)
 
 
-    // Function to add progress bar for each file
-    function addProgressIndicator1(fileName, index) {
-        const progressHtml = `
-            <div class="progress_repeat" id="progress_${index}">
-                <h2 class="file_name">${fileName}</h2>
-                <div class="progress_circle progress_circle2">
-                    <div id="wrapper_progreess" class="center">                  
-                        <svg class="progresss" x="0px" y="0px" viewBox="0 0 80 80">
-                            <path class="track" d="M5,40a35,35 0 1,0 70,0a35,35 0 1,0 -70,0" />
-                            <path class="fill" id="progressFill_${index}" d="M5,40a35,35 0 1,0 70,0a35,35 0 1,0 -70,0" />
-                        </svg>
-                        <span class="span_dott"></span>
-                    </div>
-                    <div class="cancle_file">
-                        <button class="remove-btnn" onclick="cancelUpload1('${index}')">X</button>
-                    </div>
-                    <div class="done_tick" style="display:none;">
-                       <svg class="progress_done" width="24px" height="24px" viewBox="0 0 24 24" fill="#0F9D58"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"></path></svg>
+
+
+
+        $('#common_file_upload_form').on('submit', function(e) {
+            e.preventDefault();
+            $('.progree_cont_nt').css('display', 'block');
+            $('#common_file_upload_pop').modal('hide');
+            $('.side_panel_wraap').removeClass('active');
+            $('.side_panel_wraap_overlay').removeClass('active');
+
+            
+            let files = $('#fileCommon')[0].files;
+            // let xhrRequests = {}; // Change to an object to use unique identifiers as keys
+            // let xhrRequests = []; // Array to hold XMLHttpRequest objects for cancellation
+            isUploading = true; // Set flag to true when upload starts
+
+            
+            
+            $.each(files, function(i, file) {
+                let individualFormData = new FormData(); // Create a new FormData for each file
+                individualFormData.append('files[]', file); // Append the file
+
+                // Loop through form data and append other form fields to FormData
+                $('#common_file_upload_form').find('input, select, textarea').each(function() {
+                    let inputName = $(this).attr('name');
+                    let inputValue = $(this).val();
+                    
+                    // Skip if the input field is the file input
+                    if (inputName && inputName !== 'files[]') {
+                        individualFormData.append(inputName, inputValue);
+                    }
+                });
+
+                // let currentFileIndex = globalFileIndex; // Capture the global file index
+                let currentFileIndex = getSecureRandomString(16); // Capture the global file index
+
+                addProgressIndicator(file.name, currentFileIndex); // Add progress indicator for each file
+                activeUploads[currentFileIndex] = true; // Mark this file upload as active
+
+                let xhr = $.ajax({
+                    url: '/PredefinedCommonUploadFiles',
+                    method: 'POST',
+                    data: individualFormData,
+                    contentType: false,
+                    processData: false,
+                    xhr: function() {
+                        let xhrUpload = new window.XMLHttpRequest();
+
+                        xhrUpload.upload.addEventListener("progress", function(evt) {
+                            if (evt.lengthComputable) {
+                                let percentComplete = evt.loaded / evt.total;
+                                updateProgress(percentComplete, currentFileIndex); // Update the progress for the current file
+                            }
+                        }, false);
+
+                        return xhrUpload;
+                    },
+                    success: function(response) {
+                        if (response.success) {
+                            successCounter++; // Increment the success counter
+                            updateSuccessCount(); // Update the displayed success count
+                            $(`#progress_${currentFileIndex} .cancle_file`).hide(); // Hide cancel button on success
+                            $(`#progress_${currentFileIndex} .done_tick`).show(); // Hide cancel button on success
+
+                            // $('.getparm').find('svg').next('span').children('span').text(response.count);
+
+                            // $('.comm_count').text(response.count);
+                            // $('.comm_size').text(response.totalSize);
+
+                            // Find the <td> with "Offer Letter" text
+                            let $offerLetterRow = $('td').filter(function() {
+                                return $(this).text().trim() === response.real_file_name; // response.real_file_name should match "Offer Letter"
+                            }).closest('tr'); // Get the closest row (tr) that contains the td
+
+                            // Update the .comm_count and .comm_size in the same row
+                            $offerLetterRow.find('.comm_count').text(response.count);
+                            // $offerLetterRow.find('.comm_size').text(response.totalSize + ' KB');
+                            $offerLetterRow.find('.comm_size').text(response.totalSize);
+
+
+
+
+                            activeUploads[currentFileIndex] = false; // Mark this file as completed
+                            checkAllUploadsComplete(); // Check if all uploads are done
+
+                        } else {
+                            toastr.error(response.message);
+
+                            // Create the error SVG with red fill
+                            let errorSVG = '<svg width="24px" height="24px" viewBox="0 0 24 24" fill="red"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"></path></svg>';
+
+                            // Replace the current done tick with the error SVG
+                            $(`#progress_${currentFileIndex} .progress_circle2`).html(errorSVG); // Insert the error SVG
+
+                            $('#common_file_upload_pop .close').click();    
+                        }
+                    },
+                    error: function(xhr, textStatus) {
+                        if (textStatus !== 'abort') {
+                            toastr.error('An error occurred while uploading files');
+
+                            // Create the error SVG with red fill
+                            let errorSVG = '<svg width="24px" height="24px" viewBox="0 0 24 24" fill="red"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"></path></svg>';
+
+                            // Replace the current done tick with the error SVG
+                            $(`#progress_${currentFileIndex} .progress_circle2`).html(errorSVG); // Insert the error SVG
+
+                            // toastr.error('An error occurred while uploading files: ' + xhr.responseText);
+                            $('#common_file_upload_pop .close').click();    
+                            
+                        }
+
+                        activeUploads[currentFileIndex] = false; // Mark this file as completed or failed
+                        checkAllUploadsComplete(); // Check if all uploads are done
+                    }
+                });
+
+                // Store xhr object with the unique index
+                xhrRequests[currentFileIndex] = xhr;
+
+                // xhrRequests.push(xhr); // Store the xhr object in the array
+                // globalFileIndex++; // Increment global index for the next file
+            });
+            $('#common_file_upload_pop .close').click();    
+
+            // Store the requests globally to be able to cancel them
+            window.xhrRequests = xhrRequests;
+        });
+
+         // for the bank form upload progress bar predefined 16 october 2024 sandeep 
+
+        $('#common_file_upload_form_bank').on('submit', function(e) {
+            e.preventDefault();
+            $('.progree_cont_nt').css('display', 'block');
+            $('#common_file_upload_pop_bank').modal('hide');
+            $('.side_panel_wraap').removeClass('active');
+            $('.side_panel_wraap_overlay').removeClass('active');
+
+            // $('.close').click();
+
+            
+            let files = $('#fileCommonB')[0].files;
+            // let xhrRequests = {}; // Change to an object to use unique identifiers as keys
+            // let xhrRequests = []; // Array to hold XMLHttpRequest objects for cancellation
+            isUploading = true; // Set flag to true when upload starts
+            
+            $.each(files, function(i, file) {
+                let individualFormData = new FormData(); // Create a new FormData for each file
+                individualFormData.append('files[]', file); // Append the file
+
+                // Loop through form data and append other form fields to FormData
+                $('#common_file_upload_form_bank').find('input, select, textarea').each(function() {
+                    let inputName = $(this).attr('name');
+                    let inputValue = $(this).val();
+                    
+                    // Skip if the input field is the file input
+                    if (inputName && inputName !== 'files[]') {
+                        individualFormData.append(inputName, inputValue);
+                    }
+                });
+
+                // let currentFileIndex = globalFileIndex; // Capture the global file index
+                let currentFileIndex = getSecureRandomString(16); // Capture the global file index
+
+                addProgressIndicator(file.name, currentFileIndex); // Add progress indicator for each file
+                activeUploads[currentFileIndex] = true; // Mark this file upload as active
+
+                let xhr = $.ajax({
+                    url: '/PredefinedCommonUploadFilesBank',
+                    method: 'POST',
+                    data: individualFormData,
+                    contentType: false,
+                    processData: false,
+                    xhr: function() {
+                        let xhrUpload = new window.XMLHttpRequest();
+
+                        xhrUpload.upload.addEventListener("progress", function(evt) {
+                            if (evt.lengthComputable) {
+                                let percentComplete = evt.loaded / evt.total;
+                                updateProgress(percentComplete, currentFileIndex); // Update the progress for the current file
+                            }
+                        }, false);
+
+                        return xhrUpload;
+                    },
+                    success: function(response) {
+                        if (response.success) {
+                            successCounter++; // Increment the success counter
+                            updateSuccessCount(); // Update the displayed success count
+                            $(`#progress_${currentFileIndex} .cancle_file`).hide(); // Hide cancel button on success
+                            $(`#progress_${currentFileIndex} .done_tick`).show(); // Hide cancel button on success
+
+                            // $('.getparm').find('svg').next('span').children('span').text(response.count);
+
+                            // $('.comm_count').text(response.count);
+                            // $('.comm_size').text(response.totalSize);
+
+                            // Find the <td> with "Offer Letter" text
+                                let $offerLetterRow = $('td').filter(function() {
+                                return $(this).text().trim() === response.real_file_name; // response.real_file_name should match "Offer Letter"
+                            }).closest('tr'); // Get the closest row (tr) that contains the td
+
+                            // Update the .comm_count and .comm_size in the same row
+                            $offerLetterRow.find('.comm_count').text(response.count);
+                            // $offerLetterRow.find('.comm_size').text(response.totalSize + ' KB');
+                            $offerLetterRow.find('.comm_size').text(response.totalSize);
+
+                            activeUploads[currentFileIndex] = false; // Mark this file as completed
+                            checkAllUploadsComplete(); // Check if all uploads are done
+
+                        } else {
+                            toastr.error(response.message);
+
+                            // Create the error SVG with red fill
+                            let errorSVG = '<svg width="24px" height="24px" viewBox="0 0 24 24" fill="red"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"></path></svg>';
+
+                            // Replace the current done tick with the error SVG
+                            $(`#progress_${currentFileIndex} .progress_circle2`).html(errorSVG); // Insert the error SVG
+                            $('#common_file_upload_pop_bank .close').click(); 
+
+                        }
+                    },
+                    error: function(xhr, textStatus) {
+                        if (textStatus !== 'abort') {
+                            toastr.error('An error occurred while uploading files');
+                            // toastr.error('An error occurred while uploading files: ' + xhr.responseText);
+                            // Create the error SVG with red fill
+                            let errorSVG = '<svg width="24px" height="24px" viewBox="0 0 24 24" fill="red"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"></path></svg>';
+
+                            // Replace the current done tick with the error SVG
+                            $(`#progress_${currentFileIndex} .progress_circle2`).html(errorSVG); // Insert the error SVG
+                            $('#common_file_upload_pop_bank .close').click(); 
+                        }
+
+                        activeUploads[currentFileIndex] = false; // Mark this file as completed or failed
+                        checkAllUploadsComplete(); // Check if all uploads are done
+                    }
+                });
+                // Store xhr object with the unique index
+                xhrRequests[currentFileIndex] = xhr;
+
+                // xhrRequests.push(xhr); // Store the xhr object in the array
+                // globalFileIndex++; // Increment global index for the next file
+            });
+            $('#common_file_upload_pop_bank .close').click(); 
+
+
+            // Store the requests globally to be able to cancel them
+            window.xhrRequests = xhrRequests;
+        });
+
+        $('#upload-file-form').on('submit', function(e) {
+            e.preventDefault();
+
+            // $('.close').click();
+
+            $('.progree_cont_nt').css('display', 'block');
+            $('#upload_filee').modal('hide');
+            $('.side_panel_wraap').removeClass('active');
+            $('.side_panel_wraap_overlay').removeClass('active');
+            $('.side_panel_wraap_overlay').removeClass('active');
+            // $('#upload_filee .close').click(); 
+
+            var $submitButton = $(this).find('button[type="submit"]');
+            $submitButton.prop('disabled', true).append('<span class="button-spinner"></span>'); // Disable and append spinner
+
+            // Access the file input element and its files
+            var fileInput = $('#fileU')[0]; // Ensure this matches your file input field
+            var files = fileInput.files; // Get all the selected files
+            
+            // Check if files are selected
+            if (files.length === 0) {
+                toastr.error('No files selected for upload!');
+                $submitButton.prop('disabled', false);
+                $('.button-spinner').remove();
+                return;
+            }
+
+            // let xhrRequests = {}; // To store all the xhr requests for cancellation
+            isUploading = true; // Set flag to true when upload starts
+
+            // Get all other form input fields except the file input
+            var formInputs = $(this).serializeArray(); // Serialize other form 
+            
+            // $('#upload_filee .close').click(); 
+            // $('.modal-content').hide(); 
+
+            // Iterate over each selected file and process individually
+            $.each(files, function(index, file) {
+                let currentFileIndex = getSecureRandomString(16); // Generate unique index for the file
+                addProgressIndicator(file.name, currentFileIndex); // Add progress bar for each file
+
+                var formData = new FormData();
+
+                // Append all other form fields to FormData
+                $.each(formInputs, function(i, input) {
+                    formData.append(input.name, input.value); // Append each field to the FormData
+                });
+
+                // Append the individual file to FormData as 'files[]'
+                formData.append('files[]', file);
+
+                let xhrUpload = $.ajax({
+                    url: $('#upload-file-form').attr('action'), // URL from the form's action attribute
+                    type: 'POST',
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                    xhr: function() {
+                        let xhr = new window.XMLHttpRequest();
+                        
+                        xhr.upload.addEventListener("progress", function(evt) {
+                            if (evt.lengthComputable) {
+                                let percentComplete = evt.loaded / evt.total;
+                                updateProgress(percentComplete, currentFileIndex); // Update individual progress bar
+                            }
+                        }, false);
+
+                        return xhr;
+                    },
+                    success: function(response) {
+                        if (response.success) {
+                            successCounter++; // Increment the success counter
+                            updateSuccessCount(); // Update the displayed success count
+                            $(`#progress_${currentFileIndex} .cancle_file`).hide();
+                            $(`#progress_${currentFileIndex} .done_tick`).show(); // Show success tick
+
+                            if (response.successMessages.length) {
+                                response.successMessages.forEach(function(msg) {
+                                    // toastr.success(msg);
+                                });
+                            }
+                            if (response.errorMessages.length) {
+                                response.errorMessages.forEach(function(msg) {
+                                    // toastr.warning(msg);
+                                toastr.error('An error occurred while uploading files');
+                                // Create the error SVG with red fill
+                                let errorSVG = '<svg width="24px" height="24px" viewBox="0 0 24 24" fill="red"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"></path></svg>';
+
+                                // Replace the current done tick with the error SVG
+                                $(`#progress_${currentFileIndex} .progress_circle2`).html(errorSVG); // Insert the error SVG
+
+
+                                });
+                            }
+
+                            activeUploads[currentFileIndex] = false; // Mark this file as completed
+                            checkAllUploadsComplete(); // Check if all uploads are done
+
+                            fetchFolderContents($('#parent-folder').val());
+                            // console.log("i am looking ::");
+                            console.log($('#parent-folder').val());
+                            resetFileInput($('input[name="file"]'));
+                        } else {
+                            toastr.error('Failed to upload file: ' + response.message);
+                            // Create the error SVG with red fill
+                            let errorSVG = '<svg width="24px" height="24px" viewBox="0 0 24 24" fill="red"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"></path></svg>';
+
+                            // Replace the current done tick with the error SVG
+                            $(`#progress_${currentFileIndex} .progress_circle2`).html(errorSVG); // Insert the error SVG
+                            $('#upload_filee .close').click(); 
+
+                        }
+
+                        $('.button-spinner').remove();
+                        $submitButton.prop('disabled', false); // Re-enable submit button
+                    },
+                    error: function(xhr) {
+                        if (xhr.status === 400 || xhr.status === 500) {
+                            let response = JSON.parse(xhr.responseText);
+                            toastr.error('Error: ' + response.message);
+                            // Create the error SVG with red fill
+                            let errorSVG = '<svg width="24px" height="24px" viewBox="0 0 24 24" fill="red"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"></path></svg>';
+
+                            // Replace the current done tick with the error SVG
+                            $(`#progress_${currentFileIndex} .progress_circle2`).html(errorSVG); // Insert the error SVG
+                            $('#upload_filee .close').click(); 
+
+                        } else {
+                            // Create the error SVG with red fill
+                            let errorSVG = '<svg width="24px" height="24px" viewBox="0 0 24 24" fill="red"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"></path></svg>';
+
+                            // Replace the current done tick with the error SVG
+                            $(`#progress_${currentFileIndex} .progress_circle2`).html(errorSVG); // Insert the error SVG
+
+                        $('#upload_filee .close').click(); 
+
+
+                        }
+                        activeUploads[currentFileIndex] = false; // Mark this file as completed or failed
+                            checkAllUploadsComplete(); // Check if all uploads are done
+                        $submitButton.prop('disabled', false); // Re-enable submit button
+                        $('#upload_filee .close').click(); 
+                        $('.button-spinner').remove();
+
+
+                    }
+                });
+
+                // Store the xhr request to allow cancellation later
+                xhrRequests[currentFileIndex] = xhrUpload;
+            });
+            $('#upload_filee .close').click(); 
+
+            window.xhrRequests = xhrRequests;
+
+            // functions with postfix1 are now not in used for after optimising the code sandeep
+
+                                // Function to add progress bar for each file
+                                function addProgressIndicator1(fileName, index) {
+                                    const progressHtml = `
+                                        <div class="progress_repeat" id="progress_${index}">
+                                            <h2 class="file_name">${fileName}</h2>
+                                            <div class="progress_circle progress_circle2">
+                                                <div id="wrapper_progreess" class="center">                  
+                                                    <svg class="progresss" x="0px" y="0px" viewBox="0 0 80 80">
+                                                        <path class="track" d="M5,40a35,35 0 1,0 70,0a35,35 0 1,0 -70,0" />
+                                                        <path class="fill" id="progressFill_${index}" d="M5,40a35,35 0 1,0 70,0a35,35 0 1,0 -70,0" />
+                                                    </svg>
+                                                    <span class="span_dott"></span>
+                                                </div>
+                                                <div class="cancle_file">
+                                                    <button class="remove-btnn" onclick="cancelUpload1('${index}')">X</button>
+                                                </div>
+                                                <div class="done_tick" style="display:none;">
+                                                <svg class="progress_done" width="24px" height="24px" viewBox="0 0 24 24" fill="#0F9D58"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"></path></svg>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    `;
+                                    $('.progress_repeat_wrap').append(progressHtml);
+                                }
+
+                                // Function to update the progress for each file
+                                function updateProgress1(percentComplete, index) {
+                                    const progressFill = $(`#progressFill_${index}`);
+                                    const circumference = 2 * Math.PI * 35; // Radius is 35
+                                    const offset = circumference - (percentComplete * circumference);
+                                    progressFill.css('stroke-dasharray', circumference);
+                                    progressFill.css('stroke-dashoffset', offset);
+                                }
+                                // // Function to cancel upload for a specific file
+                                // window.cancelUpload1 = function(currentFileIndex) {
+                                //     if (xhrRequests[currentFileIndex]) {
+                                //         xhrRequests[currentFileIndex].abort(); // Abort the AJAX request
+
+                                //         $(`#progress_${currentFileIndex}`).fadeOut(500, function() {
+                                //             $(this).remove();
+                                //         });
+                                //         $('.button-spinner').remove();
+
+                                //         // toastr.info(`Upload cancelled for file: ${currentFileIndex}`);
+
+                                //         // Clean up xhr request memory
+                                //         delete xhrRequests[currentFileIndex];
+                                //     }
+                                // }
+                                // Function to cancel upload for a specific file
+                                window.cancelUpload1 = function(currentFileIndex) {
+                                    // Show a confirmation dialog before canceling
+                                    let isConfirmed = window.confirm("Are you sure you want to cancel the upload?");
+
+                                    if (isConfirmed) {
+                                        // If the user confirmed, proceed with canceling the upload
+                                        if (xhrRequests[currentFileIndex]) {
+                                            xhrRequests[currentFileIndex].abort(); // Abort the AJAX request
+
+                                            // Fade out and remove the progress indicator
+                                            $(`#progress_${currentFileIndex}`).fadeOut(500, function() {
+                                                $(this).remove();
+                                            });
+                                            
+                                            // Remove any button spinner if present
+                                            $('.button-spinner').remove();
+
+                                            // Optionally, display a message that the upload was canceled
+                                            toastr.error(`Upload cancelled`);
+
+                                            // Clean up xhr request memory
+                                            delete xhrRequests[currentFileIndex];
+                                        }
+                                    } else {
+                                        // If the user did not confirm, do nothing (upload will continue)
+                                        toastr.info("Upload is still in progress.");
+                                    }
+                                }
+                                // Function to update the success count display
+                                function updateSuccessCount1() {
+                                    $('#uploadSuccessCount').text(`${successCounter} upload(s) completed`); // Update the success count
+                                }
+                                // Function to check if all uploads are complete (either canceled or finished)
+                                function checkAllUploadsComplete1() {
+                                    // Check if there are any active uploads (true means it's still uploading)
+                                    isUploading = activeUploads.some(upload => upload === true);
+                                }
+                                // Function to generate secure random strings
+                                function getSecureRandomString1(length) {
+                                    const array = new Uint8Array(length);
+                                    window.crypto.getRandomValues(array);
+                                    return Array.from(array, byte => byte.toString(36)).join('').substring(0, length);
+                                }
+                                // Warn the user if they attempt to leave the page during file upload
+                                window.addEventListener('beforeunload', function(e) {
+                                    if (isUploading1) {
+                                        // Standard message across browsers
+                                        const message = "You have ongoing uploads. If you leave, your progress will be lost.";
+                                        e.returnValue = message; // This is the standard way to set the prompt
+                                        return message; // For older browsers
+                                    }
+                                });
+            // functions with postfix1 are now not in used for after optimising the code sandeep
+        });
+
+        // Function to add a progress indicator for each file
+        function addProgressIndicator(fileName, index) {
+            const progressHtml = `
+                <div class="progress_repeat" id="progress_${index}">
+                    <h2 class="file_name">${fileName}</h2>
+                    <div class="progress_circle progress_circle2">
+                        <div id="wrapper_progreess" class="center">                  
+                            <svg class="progresss" x="0px" y="0px" viewBox="0 0 80 80">
+                                <path class="track" d="M5,40a35,35 0 1,0 70,0a35,35 0 1,0 -70,0" />
+                                <path class="fill" id="progressFill_${index}" d="M5,40a35,35 0 1,0 70,0a35,35 0 1,0 -70,0" />
+                            </svg>
+                            <span class="span_dott"></span>
+                        </div>
+                        <div class="cancle_file">
+                            <button class="remove-btnn" onclick="cancelUpload('${index}')">X</button>
+                        </div>
+                        <div class="done_tick" style="display:none;">
+                        <svg class="progress_done" width="24px" height="24px" viewBox="0 0 24 24" fill="#0F9D58"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"></path></svg>
+                        </div>
                     </div>
                 </div>
-            </div>
-        `;
-        $('.progress_repeat_wrap').append(progressHtml);
-    }
+            `;
 
-    // Function to update the progress for each file
-    function updateProgress1(percentComplete, index) {
-        const progressFill = $(`#progressFill_${index}`);
-        const circumference = 2 * Math.PI * 35; // Radius is 35
-        const offset = circumference - (percentComplete * circumference);
-        progressFill.css('stroke-dasharray', circumference);
-        progressFill.css('stroke-dashoffset', offset);
-    }
+            $('.progress_repeat_wrap').append(progressHtml);
+        }
+        // Function to update progress
+        function updateProgress(percentComplete, index) {
+            const progressFill = $(`#progressFill_${index}`);
+            const circumference = 2 * Math.PI * 35; // Radius is 35
+            const offset = circumference - (percentComplete * circumference);
+            progressFill.css('stroke-dasharray', circumference);
+            progressFill.css('stroke-dashoffset', offset);
+        }
+        // Function to handle upload cancellation
+        // window.cancelUpload = function(currentFileIndex) {
+        //     if (window.xhrRequests && window.xhrRequests[currentFileIndex]) {
+        //         window.xhrRequests[currentFileIndex].abort(); // Abort the AJAX request
 
-    // // Function to cancel upload for a specific file
-    // window.cancelUpload1 = function(currentFileIndex) {
-    //     if (xhrRequests[currentFileIndex]) {
-    //         xhrRequests[currentFileIndex].abort(); // Abort the AJAX request
+        //         // alert(`Cancelled upload for file: ${index}`);
+        //         // toastr.info(`Upload cancelled for file: ${index}`);
+        //         // $(`#progress_${index}`).remove(); // Remove the progress indicator
 
-    //         $(`#progress_${currentFileIndex}`).fadeOut(500, function() {
-    //             $(this).remove();
-    //         });
-    //         $('.button-spinner').remove();
+        //         $(`#progress_${currentFileIndex}`).fadeOut(500, function() {
+        //             $(this).remove();
+        //         });
+        //         // toastr.info(`Upload cancelled for file: ${index}`);
+        //         // Optionally, remove from the xhrRequests to clean up memory
+        //          delete window.xhrRequests[currentFileIndex];
+        //     }
+        // }
 
+        window.cancelUpload = function(currentFileIndex) {
+         // Show a confirmation dialog before canceling
+            let isConfirmed = window.confirm("Are you sure you want to cancel the upload?");
 
-    //         // toastr.info(`Upload cancelled for file: ${currentFileIndex}`);
+            if (isConfirmed) {
+                // If the user confirmed, proceed with canceling the upload
+                if (window.xhrRequests && window.xhrRequests[currentFileIndex]) {
+                    window.xhrRequests[currentFileIndex].abort(); // Abort the AJAX request
 
-    //         // Clean up xhr request memory
-    //         delete xhrRequests[currentFileIndex];
-    //     }
-    // }
-    // Function to cancel upload for a specific file
-window.cancelUpload1 = function(currentFileIndex) {
-    // Show a confirmation dialog before canceling
-    let isConfirmed = window.confirm("Are you sure you want to cancel the upload?");
+                    // Fade out and remove the progress indicator
+                    $(`#progress_${currentFileIndex}`).fadeOut(500, function() {
+                        $(this).remove();
+                    });
 
-    if (isConfirmed) {
-        // If the user confirmed, proceed with canceling the upload
-        if (xhrRequests[currentFileIndex]) {
-            xhrRequests[currentFileIndex].abort(); // Abort the AJAX request
+                    // Optionally, remove from the xhrRequests to clean up memory
+                    delete window.xhrRequests[currentFileIndex];
 
-            // Fade out and remove the progress indicator
-            $(`#progress_${currentFileIndex}`).fadeOut(500, function() {
-                $(this).remove();
-            });
+                    // Optionally, you can display a message that the upload was canceled
+                    toastr.error(`Upload cancelled`);
+                }
+            } else {
+                // If the user did not confirm, do nothing (upload will continue)
+                toastr.info("Upload is still in progress.");
+            }
+        }
+        // Function to update the success count display
+        function updateSuccessCount() {
+            $('#uploadSuccessCount').text(`${successCounter} upload(s) completed`); // Update the success count
+        }
+        // Function to check if all uploads are complete (either canceled or finished)
+        function checkAllUploadsComplete() {
+            // Check if there are any active uploads (true means it's still uploading)
+            isUploading = activeUploads.some(upload => upload === true);
+            // if (!isUploading) {
+            //     $('.close').click(); 
+            // }
             
-            // Remove any button spinner if present
-            $('.button-spinner').remove();
-
-            // Optionally, display a message that the upload was canceled
-            toastr.error(`Upload cancelled`);
-
-            // Clean up xhr request memory
-            delete xhrRequests[currentFileIndex];
         }
-    } else {
-        // If the user did not confirm, do nothing (upload will continue)
-        toastr.info("Upload is still in progress.");
-    }
-}
-
-
-    // Function to update the success count display
-    function updateSuccessCount1() {
-        $('#uploadSuccessCount').text(`${successCounter} upload(s) completed`); // Update the success count
-    }
-
-     // Function to check if all uploads are complete (either canceled or finished)
-     function checkAllUploadsComplete1() {
-        // Check if there are any active uploads (true means it's still uploading)
-        isUploading = activeUploads.some(upload => upload === true);
-    }
-
-    // Function to generate secure random strings
-    function getSecureRandomString1(length) {
-        const array = new Uint8Array(length);
-        window.crypto.getRandomValues(array);
-        return Array.from(array, byte => byte.toString(36)).join('').substring(0, length);
-    }
-
-    // Warn the user if they attempt to leave the page during file upload
-    window.addEventListener('beforeunload', function(e) {
-        if (isUploading1) {
-            // Standard message across browsers
-            const message = "You have ongoing uploads. If you leave, your progress will be lost.";
-            e.returnValue = message; // This is the standard way to set the prompt
-            return message; // For older browsers
+        function getSecureRandomString(length) {
+            const array = new Uint8Array(length);
+            window.crypto.getRandomValues(array);
+            return Array.from(array, byte => byte.toString(36)).join('').substring(0, length);
         }
+        // Warn the user if they attempt to leave the page during file upload
+        window.addEventListener('beforeunload', function(e) {
+            if (isUploading) {
+                // Standard message across browsers
+                const message = "You have ongoing uploads. If you leave, your progress will be lost.";
+                e.returnValue = message; // This is the standard way to set the prompt
+                return message; // For older browsers
+            }
+        });
     });
-});
+
+    // function hideprogressdiv() {
+    //     $('.progree_cont_nt').hide(); // Simply hide the progress container
+    // }
+
+
+    
 
 
 
@@ -8073,12 +7650,33 @@ $(window).on('load', function() {
 
 // Function to hide the progress div and cancel all uploads if confirmed
 function hideprogressdiv() {
+
+    // Check if there are any active AJAX requests
+    let activeRequests = Object.keys(xhrRequests).some(key => xhrRequests[key] && xhrRequests[key].readyState !== 4);
+
+    if (!activeRequests) {
+        // If no active requests, hide the progress container without confirmation
+        $('.progree_cont_nt').hide();
+        // toastr.info("All uploads are completed.");
+        $('.progress_repeat_wrap').empty(); // Clear the progress wrapper
+
+        successCounter = 0;
+        console.log("i am here ");
+        console.log(successCounter);
+
+        $('#uploadSuccessCount').text(`${successCounter} upload(s) completed`); // Update the success count
+        return;
+    }
+
+
     // Show confirmation dialog
     let isConfirmed = window.confirm("Are you sure you want to cancel all uploads?");
     $('.progree_cont_nt').hide(); // Simply hide the progress container
 
 
     if (isConfirmed) {
+        successCounter = 0;
+        console.log(successCounter);
         // Loop through all xhrRequests and abort each if they exist
         for (let key in xhrRequests) {
             if (xhrRequests[key]) {
@@ -8091,11 +7689,17 @@ function hideprogressdiv() {
                 
                 // Remove spinner, if applicable
                 $('.button-spinner').remove();
+                
 
                 // Clean up xhrRequests memory
                 delete xhrRequests[key];
             }
         }
+
+        // Clear the contents of .progress_repeat_wrap
+        $('.progress_repeat_wrap').empty();
+        $('#uploadSuccessCount').text(`${successCounter} upload(s) completed`); // Update the success count
+
         
 
         // Optionally, display a message indicating all uploads were canceled
