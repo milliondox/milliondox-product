@@ -300,7 +300,7 @@
                               </svg>
                             </div>
                           </td>
-                          <td>INC-34 SPICe MoA (e-Articles of Association)</td>
+                          <td>INC-34 SPICe AoA (e-Articles of Association)</td>
                            <td><span class="comm_size" id="total-size-order35t-td" data-variable="totalSizeKBentrieinnerinc34">{{$totalSizeKBentrieinnerinc34}} KB</span> </td>
                               <td> 
                             <div class="type_number getparm" data-location="" data-bs-toggle="modal" data-bs-target="#inco_INC_34_count" id="inco_INC_34_countt">
@@ -314,7 +314,7 @@
  
                           <td>
                            
-                            <button class="btndd hidebdnotice getparm" style="border-radius:5px;"   data-bs-toggle="modal" data-bs-target="#common_file_upload_pop" data-location="" data-real-file-name="INC-34 SPICe MoA (e-Articles of Association)">
+                            <button class="btndd hidebdnotice getparm" style="border-radius:5px;"   data-bs-toggle="modal" data-bs-target="#common_file_upload_pop" data-location="" data-real-file-name="INC-34 SPICe AoA (e-Articles of Association)">
                               <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
 <g clip-path="url(#clip0_2867_6271)">
 <path fill-rule="evenodd" clip-rule="evenodd" d="M8.00065 0.833008C8.07284 0.832962 8.14419 0.848551 8.20979 0.878702C8.27539 0.908854 8.33368 0.952853 8.38065 1.00767L10.3807 3.34101C10.4669 3.44179 10.5096 3.57272 10.4994 3.705C10.4891 3.83727 10.4268 3.96006 10.326 4.04634C10.2252 4.13262 10.0943 4.17534 9.962 4.16509C9.82972 4.15483 9.70693 4.09246 9.62065 3.99167L8.50065 2.68501V9.99967C8.50065 10.1323 8.44797 10.2595 8.3542 10.3532C8.26044 10.447 8.13326 10.4997 8.00065 10.4997C7.86804 10.4997 7.74087 10.447 7.6471 10.3532C7.55333 10.2595 7.50065 10.1323 7.50065 9.99967V2.68434L6.38065 3.99167C6.33793 4.04158 6.28579 4.08258 6.22723 4.11233C6.16866 4.14208 6.1048 4.16001 6.03931 4.16509C5.97381 4.17016 5.90796 4.16229 5.8455 4.14191C5.78305 4.12154 5.72522 4.08906 5.67532 4.04634C5.62542 4.00362 5.58442 3.95148 5.55466 3.89292C5.52491 3.83435 5.50698 3.77049 5.5019 3.705C5.49683 3.6395 5.5047 3.57365 5.52508 3.51119C5.54545 3.44874 5.57793 3.39091 5.62065 3.34101L7.62065 1.00767C7.66763 0.952853 7.72591 0.908854 7.79151 0.878702C7.85711 0.848551 7.92846 0.832962 8.00065 0.833008ZM4.66465 5.50101C4.79726 5.5003 4.92472 5.5523 5.01899 5.64557C5.11325 5.73884 5.16661 5.86573 5.16732 5.99834C5.16802 6.13095 5.11602 6.25841 5.02276 6.35268C4.92949 6.44694 4.80259 6.5003 4.66998 6.50101C3.94132 6.50501 3.42465 6.52367 3.03198 6.59567C2.65465 6.66567 2.43532 6.77701 2.27332 6.93901C2.08865 7.12367 1.96865 7.38301 1.90265 7.87234C1.83532 8.37567 1.83398 9.04301 1.83398 9.99967V10.6663C1.83398 11.6237 1.83532 12.291 1.90265 12.7943C1.96865 13.2837 2.08932 13.5423 2.27332 13.7277C2.45798 13.9117 2.71665 14.0317 3.20665 14.0977C3.70932 14.1657 4.37732 14.1663 5.33398 14.1663H10.6673C11.624 14.1663 12.2913 14.1657 12.7953 14.0977C13.2846 14.0317 13.5433 13.9117 13.728 13.727C13.9127 13.5423 14.0326 13.2837 14.0986 12.7943C14.166 12.291 14.1673 11.6237 14.1673 10.6663V9.99967C14.1673 9.04301 14.166 8.37567 14.0986 7.87167C14.0326 7.38301 13.912 7.12367 13.728 6.93901C13.5653 6.77701 13.3467 6.66567 12.9693 6.59567C12.5766 6.52367 12.06 6.50501 11.3313 6.50101C11.2657 6.50066 11.2007 6.48738 11.1402 6.46193C11.0796 6.43648 11.0247 6.39935 10.9785 6.35268C10.9324 6.306 10.8958 6.25068 10.871 6.18989C10.8462 6.12909 10.8336 6.064 10.834 5.99834C10.8343 5.93268 10.8476 5.86773 10.8731 5.8072C10.8985 5.74667 10.9356 5.69175 10.9823 5.64557C11.029 5.59939 11.0843 5.56285 11.1451 5.53805C11.2059 5.51324 11.271 5.50066 11.3366 5.50101C12.058 5.50501 12.6587 5.52234 13.15 5.61234C13.6553 5.70567 14.0853 5.88234 14.4353 6.23234C14.8367 6.63301 15.0087 7.13901 15.09 7.73901C15.1673 8.31634 15.1673 9.05167 15.1673 9.96301V10.703C15.1673 11.615 15.1673 12.3497 15.09 12.9277C15.0087 13.5277 14.8367 14.033 14.4353 14.4343C14.034 14.8357 13.5287 15.0077 12.9287 15.089C12.3507 15.1663 11.6153 15.1663 10.704 15.1663H5.29732C4.38598 15.1663 3.65065 15.1663 3.07265 15.089C2.47265 15.0083 1.96732 14.8357 1.56598 14.4343C1.16465 14.033 0.992651 13.5277 0.911984 12.9277C0.833984 12.3497 0.833984 11.6143 0.833984 10.703V9.96301C0.833984 9.05167 0.833984 8.31634 0.911984 7.73834C0.991984 7.13834 1.16532 6.63301 1.56598 6.23167C1.91598 5.88234 2.34598 5.70501 2.85132 5.61234C3.34265 5.52234 3.94332 5.50501 4.66465 5.50101Z" fill="#868686"/>
@@ -1470,7 +1470,7 @@
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" style="font-weight:700">INC-34 SPICe MoA</h5>
+                    <h5 class="modal-title" style="font-weight:700">INC-34 SPICe AoA</h5>
                     <button class="close" style="border-radius:5px;" type="button" data-bs-dismiss="modal">
                         <span aria-hidden="true">
                             <svg width="50" height="50" viewBox="0 0 50 50" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -1494,7 +1494,7 @@
 
 <div class="retreve_inn_sec"> 
     <span>Retrieve documents quickly with Advanced Search.</span>
-    <a href="{{ url("/showAdvSearch") }}?category=Secretarial&section=Incorporation&subsection=INC-34 SPICe MoA (e-Articles of Association)" id="load-notices-btn">TRY OUT
+    <a href="{{ url("/showAdvSearch") }}?category=Secretarial&section=Incorporation&subsection=INC-34 SPICe AoA (e-Articles of Association)" id="load-notices-btn">TRY OUT
      <!-- <a href="{{url('/user/advsearch')}}">TRY OUT -->
     <svg width="12" height="10" viewBox="0 0 12 10" fill="none" xmlns="http://www.w3.org/2000/svg">
     <path d="M0.666341 5L11.333 5M11.333 5L7.33301 9M11.333 5L7.33301 1" stroke="#CEFFA8" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
@@ -1503,7 +1503,7 @@
     </div>
 </div>
                 <div class="modal-body">
-                    <h3>INC-34 SPICe MoA</h3>
+                    <h3>INC-34 SPICe AoA</h3>
                     <div class="custom_table_wraap">
                         <table class="table table-striped display" style="width:100%" id="filesTableinnerinc334st">
                             <thead>
