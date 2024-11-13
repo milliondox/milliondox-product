@@ -4817,6 +4817,14 @@ let basePath = "Accounting & Taxation/Charter Documents/Director Details/";
 
 // Extract the part after the base path
 let newPermitter = fullPath.replace(basePath, '').split('/')[0];
+
+
+
+
+
+let newbase = "Human Resources/Employee Database/";
+
+let newPerm = fullPath.replace(newbase, '').split('/')[0];
 //  alert(result);
         // let resultto = removeDynamicPrefix(pathToUse);
 
@@ -4911,31 +4919,33 @@ let newPermitter = fullPath.replace(basePath, '').split('/')[0];
                     insertcharterdocumentsRegistrationsTableAppendedTable();
                     charterdocumentsRegistrationsTableAppended = true;
                 }
-                else if (result.endsWith("Employee Database/Onboarding documents") && !hronboarTableAppended) {
+                else if (result.endsWith("Onboarding documents") && !hronboarTableAppended) {
+
+    
                    
                     inserthronboarTableAppended();  // Call the function to append the table
                     hronboarTableAppended = true;  // Set the flag to true to prevent further appends
                 }
-                else if (result.endsWith("Employee Database/KYC Documents") && !hrkycTableAppended) {
+                else if (result.endsWith("KYC Documents") && !hrkycTableAppended) {
                   
                     inserthrkycTableAppended();  // Call the function to append the table
                     hrkycTableAppended = true;  // Set the flag to true to prevent further appends
                 }
 
-                else if (result.endsWith("Employee Database/Declarations") && !hrdecTableAppended) {
+                else if (result.endsWith("Declarations") && !hrdecTableAppended) {
                   
                     inserthrdecTableAppended();  // Call the function to append the table
                     hrdecTableAppended = true;  // Set the flag to true to prevent further appends
                 }
 
 
-                else if (result.endsWith("Employee Database/Offboarding") && !hroffboardTableAppended) {
+                else if (result.endsWith("Offboarding") && !hroffboardTableAppended) {
                    
                     inserthroffboardTableAppended();  // Call the function to append the table
                     hroffboardTableAppended = true;  // Set the flag to true to prevent further appends
                 }
 
-                else if (result.endsWith("Employee Database/ESOP") && !hresopTableAppended) {
+                else if (result.endsWith("ESOP") && !hresopTableAppended) {
 
                     inserthresopTableAppended();  // Call the function to append the table
                     hresopTableAppended = true;  // Set the flag to true to prevent further appends
@@ -5001,6 +5011,8 @@ let basePath = "Accounting & Taxation/Charter Documents/Director Details/";
 
 // Extract the part after the base path
 let newPermitter = fullPath.replace(basePath, '').split('/')[0]; 
+
+
 
 // Format the decoded URL
 
@@ -5138,32 +5150,33 @@ let newPermitter = fullPath.replace(basePath, '').split('/')[0];
                     insertcharterdocumentsRegistrationsTableAppendedTable();
                     charterdocumentsRegistrationsTableAppended = true;
                 }
-                else if (result.endsWith("Employee Database/Onboarding documents") && !hronboarTableAppended) {
-                    
-                   
-                    inserthronboarTableAppended();  // Call the function to append the table
-                    hronboarTableAppended = true;  // Set the flag to true to prevent further appends
-                }
+                else if (result.endsWith(`Onboarding documents`) && !hronboarTableAppended) {
 
-                else if (result.endsWith("Employee Database/KYC Documents") && !hrkycTableAppended) {
+
+
+inserthronboarTableAppended();  // Call the function to append the table
+hronboarTableAppended = true;  // Set the flag to true to prevent further appends
+}
+
+                else if (result.endsWith("KYC Documents") && !hrkycTableAppended) {
                    
                     inserthrkycTableAppended();  // Call the function to append the table
                     hrkycTableAppended = true;  // Set the flag to true to prevent further appends
                 }
 
-                else if (result.endsWith("Employee Database/Declarations") && !hrdecTableAppended) {
+                else if (result.endsWith("Declarations") && !hrdecTableAppended) {
                   
                     inserthrdecTableAppended();  // Call the function to append the table
                     hrdecTableAppended = true;  // Set the flag to true to prevent further appends
                 }
 
-                else if (result.endsWith("Employee Database/Offboarding") && !hroffboardTableAppended) {
+                else if (result.endsWith("Offboarding") && !hroffboardTableAppended) {
                    
                     inserthroffboardTableAppended();  // Call the function to append the table
                     hroffboardTableAppended = true;  // Set the flag to true to prevent further appends
                 }
 
-                else if (result.endsWith("Employee Database/ESOP") && !hresopTableAppended) {
+                else if (result.endsWith("ESOP") && !hresopTableAppended) {
                    
                     inserthresopTableAppended();  // Call the function to append the table
                     hresopTableAppended = true;  // Set the flag to true to prevent further appends
