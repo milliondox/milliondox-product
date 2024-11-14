@@ -860,12 +860,12 @@ public function storecompanyemployee(Request $request)
 
     // Create fixed folders with prefix
     foreach ($fixedFolders as $mainFolder => $subFolders) {
-        $mainFolderPath = "{$hrFolderPath}/{$otherPrefix}{$mainFolder}";
+        $mainFolderPath = "{$hrFolderPath}/{$hrPrefix}{$mainFolder}";
 
         if (!Storage::exists($mainFolderPath)) {
             Storage::makeDirectory($mainFolderPath);
             Folder::create([
-                'name' => "{$otherPrefix}{$mainFolder}",
+                'name' => "{$hrPrefix}{$mainFolder}",
                 'path' => $mainFolderPath,
                 'parent_name' => $hrFolderPath,
                 'user_id' => $userId,
@@ -874,12 +874,12 @@ public function storecompanyemployee(Request $request)
         }
 
         foreach ($subFolders as $subFolder) {
-            $subFolderPath = "{$mainFolderPath}/{$otherPrefix}{$subFolder}";
+            $subFolderPath = "{$mainFolderPath}/{$hrPrefix}{$subFolder}";
 
             if (!Storage::exists($subFolderPath)) {
                 Storage::makeDirectory($subFolderPath);
                 Folder::create([
-                    'name' => "{$otherPrefix}{$subFolder}",
+                    'name' => "{$hrPrefix}{$subFolder}",
                     'path' => $subFolderPath,
                     'parent_name' => $mainFolderPath,
                     'user_id' => $userId,
@@ -890,11 +890,11 @@ public function storecompanyemployee(Request $request)
     }
 
     // Create Employee Database folder with prefix
-    $employeeDatabasePath = "{$hrFolderPath}/{$otherPrefix}Employee Database";
+    $employeeDatabasePath = "{$hrFolderPath}/{$hrPrefix}Employee Database";
     if (!Storage::exists($employeeDatabasePath)) {
         Storage::makeDirectory($employeeDatabasePath);
         Folder::create([
-            'name' => "{$otherPrefix}Employee Database",
+            'name' => "{$hrPrefix}Employee Database",
             'path' => $employeeDatabasePath,
             'parent_name' => $hrFolderPath,
             'user_id' => $userId,
@@ -1113,18 +1113,17 @@ public function updatecompanyemployee(Request $request)
 
 public function delcompemp(Request $request)
 {
-    $empId = $request->input('emp_id');
+   
+$empId = $request->emp_id;
+    // Update the is_delete status in storecompanydirector
+    StoreCompanyEmployee::where('id', $empId)
+        ->update(['is_delete' => 1]);
 
-    // Find the employee by ID and delete
-    $employee = StoreCompanyEmployee::find($empId);
+    // Update the is_delete status in folder
+    Folder::where('employee_id', $empId)
+        ->update(['is_delete' => 1]);
 
-    if ($employee) {
-        $employee->delete();
-
-        return response()->json(['success' => true]);
-    }
-
-    return response()->json(['success' => false, 'message' => 'Employee not found.']);
+    return response()->json(['success' => true]);
 }
 
 public function downloadCsv()
@@ -1238,127 +1237,90 @@ public function uploadempcsv(Request $request)
     ]);
 
     if ($validator->fails()) {
-        // Redirect back with validation errors
         return redirect()->back()->withErrors($validator)->withInput();
     }
 
-    // Get the authenticated user's ID
     $userId = Auth::id();
-
-    // Get the uploaded file
     $file = $request->file('csv_file');
-
-    // Open the CSV file for reading
     $file_handle = fopen($file->getRealPath(), 'r');
-    
-    // Skip the header row
-    $header = fgetcsv($file_handle); 
+    $header = fgetcsv($file_handle);
 
     $employeesToInsert = [];
     $existingEmpCodes = [];
     $skippedRecords = 0;
 
-    // Process the CSV file row by row
-    while (($row = fgetcsv($file_handle, 1000, ",")) !== FALSE) {
+    while (($row = fgetcsv($file_handle, 1000, ",")) !== false) {
         $emp_code = $row[3];
 
-        // Check if the emp_code already exists in the database
         if (StoreCompanyEmployee::where('emp_code', $emp_code)->exists()) {
-            // If the emp_code exists, increment the skipped record count
             $skippedRecords++;
         } else {
-            // If it's unique, prepare it for insertion
             $employeesToInsert[] = [
                 'user_id' => $userId,
                 'name' => $row[0],
-                'app_date' => \Carbon\Carbon::parse($row[1])->format('Y-m-d'), // Convert date to Y-m-d format
+                'app_date' => \Carbon\Carbon::parse($row[1])->format('Y-m-d'),
                 'termi_date' => !empty($row[2]) ? \Carbon\Carbon::parse($row[2])->format('Y-m-d') : null,
                 'emp_code' => $emp_code,
-                'created_at' => now(), // Set the created_at timestamp
-                'updated_at' => now(), // Set the updated_at timestamp
+                'created_at' => now(),
+                'updated_at' => now(),
             ];
-
-            // Create the folder structure for each employee
-            $employeeName = $row[0];
-            $this->createFolderStructure($employeeName, $userId);
         }
     }
 
     fclose($file_handle);
 
-    // Insert only the unique employee records into the database
-    $storedRecords = count($employeesToInsert);
-    if ($storedRecords > 0) {
+    $storedRecords = 0;
+    $lastStoredEmployee = null;
+
+    if (count($employeesToInsert) > 0) {
         StoreCompanyEmployee::insert($employeesToInsert);
+
+        // Retrieve the last stored employee
+        $lastStoredEmployee = StoreCompanyEmployee::latest('id')->first();
+        $storedRecords = count($employeesToInsert);
     }
 
-    // Return a success message with the count of stored and skipped records
+    if ($lastStoredEmployee) {
+        $this->createFolderStructure($lastStoredEmployee->name, $userId, $lastStoredEmployee->id);
+    }
+
     return redirect()->back()->with('success', "{$storedRecords} employees stored successfully and {$skippedRecords} duplicate employees were skipped.");
 }
 
 /**
  * Create folder structure for the employee
  */
-protected function createFolderStructure($employeeName, $userId)
+protected function createFolderStructure($employeeName, $userId, $employeeId)
 {
-    // Get current year and month
+   
+
     $currentYear = now()->year;
-    $currentMonth = now()->format('F'); // Full month name (e.g., 'October')
+    $currentMonth = now()->format('F');
+    $uniqueId = Auth::id();
+    $fiscalYear = now()->month < 4 ? ($currentYear - 1) . '-' . $currentYear : $currentYear . '-' . ($currentYear + 1);
+    
+    $hrPrefix = "{$fiscalYear}{$currentMonth}0_";
+    $otherPrefix ="{$fiscalYear}{$currentMonth}{$uniqueId}_";
 
-    // Determine fiscal year
-    if (now()->month < 4) {
-        $fiscalYear = ($currentYear - 1) . '-' . $currentYear;
-    } else {
-        $fiscalYear = $currentYear . '-' . ($currentYear + 1);
-    }
+    // Define Human Resources folder path with prefix
+    $hrFolderPath = "{$hrPrefix}Human Resources";
 
-    // Step 1: Create Human Resources folder
-    $hrFolderName = "{$fiscalYear}{$currentMonth}0_Human Resources";
-    $hrFolderPath = "{$hrFolderName}";
-
+    // Ensure HR folder exists
     if (!Storage::exists($hrFolderPath)) {
         Storage::makeDirectory($hrFolderPath);
-        // Store in database
-        $hrFolder = new Folder();
-        $hrFolder->name = basename($hrFolderPath);
-        $hrFolder->path = $hrFolderPath;
-        $hrFolder->parent_name = null;
-        $hrFolder->user_id = $userId;
-        $hrFolder->common_folder = 1;
-        $hrFolder->save();
+        Folder::create([
+            'name' => basename($hrFolderPath),
+            'path' => $hrFolderPath,
+            'parent_name' => null,
+            'user_id' => $userId,
+            'common_folder' => 1,
+        ]);
     }
 
-    // Step 2: Create Employee folder inside Human Resources folder
-    $employeeFolderName = "{$fiscalYear}{$currentMonth}{$userId}_{$employeeName}";
-    $employeeFolderPath = "{$hrFolderPath}/{$employeeFolderName}";
-
-    if (!Storage::exists($employeeFolderPath)) {
-        Storage::makeDirectory($employeeFolderPath);
-        // Store in database
-        $employeeFolder = new Folder();
-        $employeeFolder->name = basename($employeeFolderPath);
-        $employeeFolder->path = $employeeFolderPath;
-        $employeeFolder->parent_name = $hrFolderPath;
-        $employeeFolder->user_id = $userId;
-        // $employeeFolder->common_folder = 1;
-        $employeeFolder->save();
-    }
-
-    // Define the folder structures for Employee Database, Pay Registers, Policies & Handbook, and Appraisals
-    $folders = [
-        'Employee Database' => [
-            'Onboarding documents',
-            'KYC Documents',
-            'Offboarding',
-            'Reference Checks',
-            'ESOP',
-            'Declarations',
-        ],
-        'Pay Registers' => [
-            'Monthly Payrun',
-            'Reimbursements',
-            'Salary Slips',
-        ],
+    // Define main and non-fixed folders with their subfolders
+    $fixedFolders = [
+        'Employee Database' => [],
+        'Pay Registers' => ['Monthly Payrun', 'Reimbursements', 'Salary Slips'],
         'Policies & Handbook' => [
             'Leave policy',
             'Attendance policy',
@@ -1366,45 +1328,136 @@ protected function createFolderStructure($employeeName, $userId)
             'Organisation Chart',
             'Code of conduct',
             'Health Insurance',
-            'Asset Allocation & Usage Policy',
-        ],
-        'Appraisals' => [
-            'Appraisals forms',
-            'Management approvals',
-            'KRAs and OKRs',
+            'Asset Allocation & Usage Policy'
         ],
     ];
 
-    // Create folders dynamically based on the defined structure
-    foreach ($folders as $mainFolder => $subFolders) {
-        $mainFolderPath = "{$employeeFolderPath}/{$fiscalYear}{$currentMonth}{$userId}_{$mainFolder}";
+    // Real file names for specific folders
+    $realFileNames = [
+        'Onboarding documents' => ["Offer Letter", "Acceptance Letter", "Employment Agreement", "Non Disclosure Agreement", "Non-compete", "Contractual Bond", "Form 11 - EPF", "Form 12BB - Income Tax"],
+        'KYC Documents' => ["Photo", "Aadhar KYC", "PAN KYC", "Address Proof", "Contact Details"],
+        'Offboarding' => ["Resignation letter", "Experience Letter", "No Dues certificate", "Character certificate"],
+        'ESOP' => ["Policy", "Grant Letters", "Acceptance Letters", "Nominations"],
+        'Declarations' => ["Asset Declaration Forms", "Employee Master"],
+        'Monthly Payrun' => ["Attendance log", "Variable pays", "Terminations/ Exits", "New Hires", "Pay Register"],
+        'Reimbursements' => ["Reimbursement forms & Invoices", "Approvals"],
+    ];
+
+    // Create fixed folders with prefix
+    foreach ($fixedFolders as $mainFolder => $subFolders) {
+        $mainFolderPath = "{$hrFolderPath}/{$hrPrefix}{$mainFolder}";
 
         if (!Storage::exists($mainFolderPath)) {
             Storage::makeDirectory($mainFolderPath);
-            // Store in database
-            $mainFolderDb = new Folder();
-            $mainFolderDb->name = basename($mainFolderPath);
-            $mainFolderDb->path = $mainFolderPath;
-            $mainFolderDb->parent_name = $employeeFolderPath;
-            $mainFolderDb->user_id = $userId;
-            // $mainFolderDb->common_folder = 1;
-            $mainFolderDb->save();
+            Folder::create([
+                'name' => "{$hrPrefix}{$mainFolder}",
+                'path' => $mainFolderPath,
+                'parent_name' => $hrFolderPath,
+                'user_id' => $userId,
+                'common_folder' => 1,
+            ]);
         }
 
-        // Create subfolders inside each main folder
         foreach ($subFolders as $subFolder) {
-            $subFolderPath = "{$mainFolderPath}/{$fiscalYear}{$currentMonth}{$userId}_{$subFolder}";
+            $subFolderPath = "{$mainFolderPath}/{$hrPrefix}{$subFolder}";
 
             if (!Storage::exists($subFolderPath)) {
                 Storage::makeDirectory($subFolderPath);
-                // Store in database
-                $subFolderDb = new Folder();
-                $subFolderDb->name = basename($subFolderPath);
-                $subFolderDb->path = $subFolderPath;
-                $subFolderDb->parent_name = $mainFolderPath;
-                $subFolderDb->user_id = $userId;
-                // $subFolderDb->common_folder = 1;
-                $subFolderDb->save();
+                Folder::create([
+                    'name' => "{$hrPrefix}{$subFolder}",
+                    'path' => $subFolderPath,
+                    'parent_name' => $mainFolderPath,
+                    'user_id' => $userId,
+                    'common_folder' => 1,
+                ]);
+            }
+        }
+    }
+
+    // Create Employee Database folder with prefix
+    $employeeDatabasePath = "{$hrFolderPath}/{$hrPrefix}Employee Database";
+    if (!Storage::exists($employeeDatabasePath)) {
+        Storage::makeDirectory($employeeDatabasePath);
+        Folder::create([
+            'name' => "{$hrPrefix}Employee Database",
+            'path' => $employeeDatabasePath,
+            'parent_name' => $hrFolderPath,
+            'user_id' => $userId,
+            'common_folder' => 1,
+        ]);
+    }
+
+    // Create employee-specific folder with prefix
+    $employeeFolderPath = "{$employeeDatabasePath}/{$otherPrefix}{$employeeName}";
+    if (!Storage::exists($employeeFolderPath)) {
+        Storage::makeDirectory($employeeFolderPath);
+        Folder::create([
+            'name' => "{$otherPrefix}{$employeeName}",
+            'path' => $employeeFolderPath,
+            'parent_name' => $employeeDatabasePath,
+            'user_id' => $userId,
+            'employee_id' => $employeeId,
+            
+        ]);
+    }
+
+    // Define non-fixed folders for the employee with prefix
+    $employeeFolders = [
+        'Onboarding documents',
+        'KYC Documents',
+        'Offboarding',
+        'Reference Checks',
+        'ESOP',
+        'Declarations',
+        'Appraisals' => [
+            'Appraisals forms',
+            'Management approvals',
+            'KRAs and OKRs'
+        ]
+    ];
+
+    // Create non-fixed folders and add files with prefix if defined
+    foreach ($employeeFolders as $folder => $subFolders) {
+        $folderName = is_string($folder) ? $folder : $subFolders;
+        $folderPath = "{$employeeFolderPath}/{$otherPrefix}{$folderName}";
+
+        if (!Storage::exists($folderPath)) {
+            Storage::makeDirectory($folderPath);
+            Folder::create([
+                'name' => "{$otherPrefix}{$folderName}",
+                'path' => $folderPath,
+                'parent_name' => $employeeFolderPath,
+                'user_id' => $userId,
+                'employee_id' => $employeeId,
+                'common_folder' => 1,
+            ]);
+        }
+
+        // Check if the folder has predefined files to create with prefix
+        if (isset($realFileNames[$folderName])) {
+            foreach ($realFileNames[$folderName] as $fileName) {
+                $filePath = "{$folderPath}/{$otherPrefix}{$fileName}.txt";  // Adjust extension if needed
+                if (!Storage::exists($filePath)) {
+                    Storage::put($filePath, "Placeholder content for {$fileName}");
+                }
+            }
+        }
+
+        // Create subfolders with prefix if applicable
+        if (is_array($subFolders)) {
+            foreach ($subFolders as $subFolder) {
+                $subFolderPath = "{$folderPath}/{$otherPrefix}{$subFolder}";
+                if (!Storage::exists($subFolderPath)) {
+                    Storage::makeDirectory($subFolderPath);
+                    Folder::create([
+                        'name' => "{$otherPrefix}{$subFolder}",
+                        'path' => $subFolderPath,
+                        'parent_name' => $folderPath,
+                        'user_id' => $userId,
+                        'employee_id' => $employeeId,
+                        'common_folder' => 1,
+                    ]);
+                }
             }
         }
     }
@@ -17289,6 +17342,24 @@ public function trashbox()
                     ->where('is_delete', 1)
                      ->orderBy('created_at', 'desc')
                     ->get();
+
+
+                    $folders = Folder::with('user')
+                    ->where('user_id', $user->id)
+                    ->where('is_delete', 2)
+                     ->orderBy('created_at', 'desc')
+                    ->get();
+                    
+                    $totalCountfolder = Folder::where('user_id', $user->id)
+    ->where('is_delete', 2)
+    ->count();
+
+                    
+                    $delfolder = Folder::with('user')
+                    ->where('user_id', $user->id)
+                    ->where('is_delete', 1)
+                     ->orderBy('created_at', 'desc')
+                    ->get();
                     
                     
                         $user = auth()->user();
@@ -17303,7 +17374,7 @@ public function trashbox()
     // Find the UserRole record where the role matches the user's role
     $userRoleRecord = UserRole::where('role', $userRole)->first();
     
-   return view('user.Trash.trash',compact('cli_announcements','files','filess','totalCount','user'));
+   return view('user.Trash.trash',compact('cli_announcements','files','filess','totalCount','user','folders','totalCountfolder','delfolder'));
 }
 
 // public function update(Request $request)
@@ -17446,6 +17517,21 @@ public function deletefilecommon($id)
 
     return redirect()->back()->with('success', 'File deleted successfully.');
 }
+
+public function rejectfolder($id)
+{
+    // $file = CommonTable::findOrFail($id);
+    
+  
+    $totalCount = Folder::where('id', $id)
+    ->where('is_delete', 2)
+    ->update(['is_delete' => 1]);
+  
+   
+   
+
+    return redirect()->back()->with('success', 'Folder deleted successfully.');
+}
 // BoardNoticeController.php
 public function fetchBoardNoticesCount()
 {
@@ -17465,6 +17551,16 @@ public function restore($id)
     $file->update(['is_delete' => 0]);
 
     return redirect()->back()->with('success', 'File restored successfully.');
+}
+
+public function restorefold($id)
+{
+    $file = Folder::findOrFail($id);
+
+    // Perform restore action
+    $file->update(['is_delete' => 0]);
+
+    return redirect()->back()->with('success', 'Folder restored successfully.');
 }
 
 // public function restorefile($id)
@@ -17503,7 +17599,30 @@ public function restorefile($id)
 }
 
 
+public function restorefolder($id)
+{
+    $userId = auth()->id();
+   
 
+    // Fetch the file from all tables
+    $folderCommon = DB::table('folders')->where('id', $id)->where('user_id', $userId)->first();
+   
+   
+
+    // Determine which table to update
+    if ($folderCommon) {
+      
+            DB::table('folders')->where('id', $id)->where('user_id', $userId)->update(['is_delete' => 2]);
+           
+            return redirect()->back()->with('success', 'Folder restore requested successfully.');
+       
+    }
+
+   
+
+    Log::error("Folder not found or permission denied for ID: {$id} and user ID: {$userId}");
+    return redirect()->back()->with('error', 'Folder not found or you do not have permission to restore it.');
+}
 
 
 
@@ -18538,6 +18657,16 @@ $commonColumns = [
 $files4 = CommonTable::where('user_id', $user->id)
     ->where('is_delete', 1)
     ->get();
+
+
+    $deleteFolder = Folder::with('user')
+    ->where('user_id', $user->id)
+    ->where('is_delete', 1)
+    ->get();
+
+
+    // dd($deleteFolder);
+
     $folderLocation = request()->query('folder');
 
     // Ensure the parameter is not null or empty before proceeding
@@ -20214,7 +20343,7 @@ $entriesinc9 = CommonTable::where('user_id', $user->id)
     // return view('Secretarial_Annual_Filings', compact('countentriesafs','countentriescfs', 'countentriesmgt7','countentriesmgt7a','totalSizeKBentrieafs','totalSizeKBentriecfs', 'totalSizeKBentriemgt7', 'totalSizeKBentriemgt7a'));
         
         
-        return view('docurepo', compact('RealFileFoldersBank','RealFileFolders','counthroff4','totalSizeKBhroff4','counthroff3','totalSizeKBhroff3','counthroff2','totalSizeKBhroff2','counthroff1','totalSizeKBhroff1','counthremppol4','totalSizeKBhremppol4','counthremppol3','totalSizeKBhremppol3','counthremppol2','totalSizeKBhremppol2','counthremppol1','totalSizeKBhremppol1','counthrhrpaymoney5','totalSizeKBhrpaymoney5','counthrhrpaymoney4','totalSizeKBhrpaymoney4','counthrhrpaymoney3','totalSizeKBhrpaymoney3','counthrhrpaymoney2','totalSizeKBhrpaymoney2','counthrhrpaymoney1','totalSizeKBhrpaymoney1','counthrhrempdecmaster','totalSizeKBhrempdecmaster','counthrhrempdec','totalSizeKBhrempdec','counthrpayrimapprove','totalSizeKBhrpayrimapprove','counthrpayrim','totalSizeKBhrpayrim','countkyccontactdetails','totalSizeKBkyccontactdetails','countkycaddressproof','totalSizeKBkycaddressproof','countkycpan','totalSizeKBkycpan','countkycaadhar','totalSizeKBkycaadhar','countkycphoto','totalSizeKBkycphoto','countemponboardincometax','totalSizeKBemponboardincometax','countemponboardepf','totalSizeKBemponboardepf','countemponboardcb','totalSizeKBemponboardcb','countemponboardnc','totalSizeKBemponboardnc','countemponboardnda','totalSizeKBemponboardnda','countemponboardea','totalSizeKBemponboardea','countemponboardal','totalSizeKBemponboardal','totalSizeKBemponboard','countemponboard','totalSizeKBdirectorappointmentsdir3din','countdirectorappointmentsdir3din','cli_announcements','fileCount','fileCount1','user','commondataroom','countSECAASR','totalSizeKBSECAASR','countSECAAALA','totalSizeKBSECAAALA','countSECAACRCAA','totalSizeKBSECAACRCAA','countSECAALA','totalSizeKBSECAALA','countSECAAIA','totalSizeKBSECAAIA','countSECAABRAA','totalSizeKBSECAABRAA','countcharregPP','totalSizeKBcharregPP','countcharregLWFC','totalSizeKBcharregLWFC','countcharregPTC','totalSizeKBcharregPTC','countcharregESIC','totalSizeKBcharregESIC','countcharregPFC','totalSizeKBcharregPFC','countcharregTrademark','totalSizeKBcharregTrademark','countcharregMSME','totalSizeKBcharregMSME','countcharregGSTIN','totalSizeKBcharregGSTIN','countcharregtan','totalSizeKBcharregtan','countcharregpan','totalSizeKBcharregpan','countIncorporationSharecertifF',
+        return view('docurepo', compact('deleteFolder','RealFileFoldersBank','RealFileFolders','counthroff4','totalSizeKBhroff4','counthroff3','totalSizeKBhroff3','counthroff2','totalSizeKBhroff2','counthroff1','totalSizeKBhroff1','counthremppol4','totalSizeKBhremppol4','counthremppol3','totalSizeKBhremppol3','counthremppol2','totalSizeKBhremppol2','counthremppol1','totalSizeKBhremppol1','counthrhrpaymoney5','totalSizeKBhrpaymoney5','counthrhrpaymoney4','totalSizeKBhrpaymoney4','counthrhrpaymoney3','totalSizeKBhrpaymoney3','counthrhrpaymoney2','totalSizeKBhrpaymoney2','counthrhrpaymoney1','totalSizeKBhrpaymoney1','counthrhrempdecmaster','totalSizeKBhrempdecmaster','counthrhrempdec','totalSizeKBhrempdec','counthrpayrimapprove','totalSizeKBhrpayrimapprove','counthrpayrim','totalSizeKBhrpayrim','countkyccontactdetails','totalSizeKBkyccontactdetails','countkycaddressproof','totalSizeKBkycaddressproof','countkycpan','totalSizeKBkycpan','countkycaadhar','totalSizeKBkycaadhar','countkycphoto','totalSizeKBkycphoto','countemponboardincometax','totalSizeKBemponboardincometax','countemponboardepf','totalSizeKBemponboardepf','countemponboardcb','totalSizeKBemponboardcb','countemponboardnc','totalSizeKBemponboardnc','countemponboardnda','totalSizeKBemponboardnda','countemponboardea','totalSizeKBemponboardea','countemponboardal','totalSizeKBemponboardal','totalSizeKBemponboard','countemponboard','totalSizeKBdirectorappointmentsdir3din','countdirectorappointmentsdir3din','cli_announcements','fileCount','fileCount1','user','commondataroom','countSECAASR','totalSizeKBSECAASR','countSECAAALA','totalSizeKBSECAAALA','countSECAACRCAA','totalSizeKBSECAACRCAA','countSECAALA','totalSizeKBSECAALA','countSECAAIA','totalSizeKBSECAAIA','countSECAABRAA','totalSizeKBSECAABRAA','countcharregPP','totalSizeKBcharregPP','countcharregLWFC','totalSizeKBcharregLWFC','countcharregPTC','totalSizeKBcharregPTC','countcharregESIC','totalSizeKBcharregESIC','countcharregPFC','totalSizeKBcharregPFC','countcharregTrademark','totalSizeKBcharregTrademark','countcharregMSME','totalSizeKBcharregMSME','countcharregGSTIN','totalSizeKBcharregGSTIN','countcharregtan','totalSizeKBcharregtan','countcharregpan','totalSizeKBcharregpan','countIncorporationSharecertifF',
         'totalSizeKBIncorporationSharecertifF','countIncorporationTrustDeed'
         ,'totalSizeKBIncorporationTrustDeed','countIncorporationLLPAgreement',
         'totalSizeKBIncorporationLLPAgreement','countIncorporationPartnerdeed',
@@ -20554,6 +20683,8 @@ public function shareFolder(Request $request)
                                 $userFoldersQuery = Folder::where('parent_name', $folderPath)
                                 ->where('user_id', Auth::id())
                                 ->where('is_delete', 0);
+                                
+
                                 // ->where('real_file_name', NULL);
 
     // Apply sorting logic based on the selected sort option
@@ -20632,7 +20763,7 @@ public function shareFolder(Request $request)
             {
             $folderHtml .= 
            
-            '<li><a href="#" class="folder-link wedcolor" data-folder-path="' . $folder->path . '">
+            '<li><a href="#" class="folder-link wedcolor ' . ($folder->is_delete == 1 ? 'deleted_button' : '') . '" data-folder-path="' . $folder->path . '">
                                 <div class="folder_wraap">
                                     <img src="../assets/images/solar_folder-bold.png" id="folders" class="folder-icon" alt="Folder Icon">
                                     <span>' . $folder->name . '</span>
@@ -20650,6 +20781,10 @@ public function shareFolder(Request $request)
                                       <path d="M2.40625 12.25C2.00014 12.25 1.61066 12.0887 1.32349 11.8015C1.03633 11.5143 0.875 11.1249 0.875 10.7188V8.53125C0.875 8.3572 0.94414 8.19028 1.06721 8.06721C1.19028 7.94414 1.3572 7.875 1.53125 7.875C1.7053 7.875 1.87222 7.94414 1.99529 8.06721C2.11836 8.19028 2.1875 8.3572 2.1875 8.53125V10.7188C2.1875 10.8395 2.2855 10.9375 2.40625 10.9375H11.5938C11.6518 10.9375 11.7074 10.9145 11.7484 10.8734C11.7895 10.8324 11.8125 10.7768 11.8125 10.7188V8.53125C11.8125 8.3572 11.8816 8.19028 12.0047 8.06721C12.1278 7.94414 12.2947 7.875 12.4688 7.875C12.6428 7.875 12.8097 7.94414 12.9328 8.06721C13.0559 8.19028 13.125 8.3572 13.125 8.53125V10.7188C13.125 11.1249 12.9637 11.5143 12.6765 11.8015C12.3893 12.0887 11.9999 12.25 11.5938 12.25H2.40625Z" fill="#CEFFA8"></path>
                                       <path d="M6.34334 6.72788V1.75C6.34334 1.57595 6.41248 1.40903 6.53555 1.28596C6.65862 1.16289 6.82554 1.09375 6.99959 1.09375C7.17364 1.09375 7.34056 1.16289 7.46363 1.28596C7.5867 1.40903 7.65584 1.57595 7.65584 1.75V6.72788L9.37959 5.005C9.44049 4.9441 9.51279 4.89579 9.59236 4.86283C9.67193 4.82987 9.75722 4.81291 9.84334 4.81291C9.92947 4.81291 10.0148 4.82987 10.0943 4.86283C10.1739 4.89579 10.2462 4.9441 10.3071 5.005C10.368 5.0659 10.4163 5.1382 10.4493 5.21777C10.4822 5.29734 10.4992 5.38262 10.4992 5.46875C10.4992 5.55488 10.4822 5.64016 10.4493 5.71973C10.4163 5.7993 10.368 5.8716 10.3071 5.9325L7.46334 8.77625C7.40247 8.83721 7.33018 8.88556 7.25061 8.91856C7.17103 8.95155 7.08574 8.96853 6.99959 8.96853C6.91345 8.96853 6.82815 8.95155 6.74857 8.91856C6.669 8.88556 6.59671 8.83721 6.53584 8.77625L3.69209 5.9325C3.63119 5.8716 3.58288 5.7993 3.54992 5.71973C3.51696 5.64016 3.5 5.55488 3.5 5.46875C3.5 5.38262 3.51696 5.29734 3.54992 5.21777C3.58288 5.1382 3.63119 5.0659 3.69209 5.005C3.75299 4.9441 3.82529 4.89579 3.90486 4.86283C3.98443 4.82987 4.06972 4.81291 4.15584 4.81291C4.24197 4.81291 4.32725 4.82987 4.40682 4.86283C4.48639 4.89579 4.55869 4.9441 4.61959 5.005L6.34334 6.72788Z" fill="#CEFFA8"></path>
                                   </svg>Download</a>
+
+                                  <a class="dropdown-itemm delete_nt ' . ($folder->is_delete == 1 ? 'deleted_button' : '') . '" data-bs-toggle="modal" data-folder_id="' . $folder->id . '"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                      <path d="M5.07536 13.3334C4.77759 13.3334 4.52359 13.2285 4.31336 13.0187C4.10359 12.809 3.9987 12.555 3.9987 12.2567V4.00007H3.33203V3.3334H5.9987V2.82007H9.9987V3.3334H12.6654V4.00007H11.9987V12.2567C11.9987 12.5634 11.896 12.8194 11.6907 13.0247C11.4849 13.2305 11.2287 13.3334 10.922 13.3334H5.07536ZM11.332 4.00007H4.66536V12.2567C4.66536 12.3763 4.70381 12.4745 4.7807 12.5514C4.85759 12.6283 4.95581 12.6667 5.07536 12.6667H10.922C11.0243 12.6667 11.1183 12.6241 11.204 12.5387C11.2894 12.453 11.332 12.359 11.332 12.2567V4.00007ZM6.53736 11.3334H7.20403V5.3334H6.53736V11.3334ZM8.79337 11.3334H9.46003V5.3334H8.79337V11.3334Z" fill="#FA4A4A"></path>
+                                    </svg>Delete</a>
                                 </div>
                                 <div class="modal fade drop_coman_file have_title drive_permissions_share" id="share_folder" tabindex="-1" role="dialog" aria-labelledby="share_folder" aria-hidden="true">
                                 <div class="modal-dialog modal-dialog-centered" role="document">
@@ -20892,6 +21027,23 @@ public function shareFolder(Request $request)
     
         return response()->json(['folderHtml' => $folderHtml,  'fileHtml' => $fileHtml]);
     }
+
+    public function updateFolderStatus(Request $request)
+{
+    $folderId = $request->input('folder_id');
+
+    // Find the folder by ID and update `is_delete`
+    $folder = Folder::find($folderId);
+    if ($folder) {
+        $folder->is_delete = 1;
+        $folder->save();
+
+        return response()->json(['success' => true, 'message' => 'Folder deleted successfully.']);
+    }
+
+    return response()->json(['success' => false, 'message' => 'Folder not found.']);
+}
+
 //     public function downloadFolders(Request $request)
 // {
 //     $folderId = $request->input('folder_id');

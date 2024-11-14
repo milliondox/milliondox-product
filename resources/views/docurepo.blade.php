@@ -55,7 +55,7 @@
     </style>
     
 
-
+{{-- 
     @if(session('success'))
         <script>
             Swal.fire({
@@ -76,7 +76,7 @@
                 confirmButtonText: 'OK'
             });
         </script>
-    @endif
+    @endif --}}
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
@@ -997,6 +997,42 @@
                                         </tr>
                                         @endforeach
                                     </tbody>
+
+                                    <tbody id="table-body">
+                                        @foreach($deleteFolder as $fold)
+                                        <tr data-date="{{ $fold->updated_at }}">
+                                            <td><img src="../assets/images/solar_folder-bold.png" id="folders" class="folder-icon" alt="Folder Icon">
+                                                <span class="folderName">{{$fold->name}}</span></td>
+                                            <td></td>
+                                            <td>{{$fold->user->name}}</td>
+                                            <td>{{$fold->updated_at}}</td>
+                                            <td>
+                                                <!-- Dropdown for file actions -->
+                                                <div class="dropdown">
+                                                    <button onclick="toggleDropdown()" class="dropbtn show_pp">
+                                                    <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                        <path d="M10.3994 4.19166C10.3994 4.37562 10.3632 4.55779 10.2929 4.72778C10.2226 4.89776 10.1194 5.05222 9.98937 5.18234C9.85934 5.31246 9.70494 5.4157 9.535 5.48615C9.36507 5.55661 9.18292 5.5929 8.99896 5.59296C8.81499 5.59302 8.63282 5.55684 8.46284 5.4865C8.29286 5.41615 8.1384 5.31302 8.00827 5.18298C7.87815 5.05294 7.77492 4.89854 7.70446 4.72861C7.63401 4.55867 7.59772 4.37652 7.59766 4.19256C7.59754 3.82103 7.74501 3.46467 8.00764 3.20188C8.27026 2.93908 8.62653 2.79138 8.99806 2.79126C9.36958 2.79114 9.72594 2.93862 9.98874 3.20124C10.2515 3.46387 10.3992 3.82013 10.3994 4.19166Z" fill="#8D8D8D"></path>
+                                                        <path d="M8.99806 10.3999C9.77148 10.3999 10.3985 9.77294 10.3985 8.99952C10.3985 8.2261 9.77148 7.59912 8.99806 7.59912C8.22464 7.59912 7.59766 8.2261 7.59766 8.99952C7.59766 9.77294 8.22464 10.3999 8.99806 10.3999Z" fill="#8D8D8D"></path>
+                                                        <path d="M8.99806 15.2085C9.77148 15.2085 10.3985 14.5815 10.3985 13.8081C10.3985 13.0347 9.77148 12.4077 8.99806 12.4077C8.22464 12.4077 7.59766 13.0347 7.59766 13.8081C7.59766 14.5815 8.22464 15.2085 8.99806 15.2085Z" fill="#8D8D8D"></path>
+                                                    </svg>
+                                                    </button>
+                                                    <div id="myDropdown3" class="dropdown-content">
+                                                        <form method="POST" action="{{ route('folder.restorefolder', ['id' => $fold->id]) }}" class="restore-form-folder">
+                                                            @csrf
+                                                            @method('PUT')
+                                                            <a class="dropdown-itemm rename_nt restore_button_folder" data-id="{{ $fold->id }}">
+                                                                <svg width="14" height="15" viewBox="0 0 14 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                                 <path d="M0.800781 4.39981C0.800781 3.92691 0.893951 3.45865 1.07497 3.02178C1.25598 2.5849 1.5213 2.18797 1.85576 1.85365C2.19022 1.51934 2.58727 1.2542 3.02423 1.07338C3.46119 0.892557 3.92949 0.799595 4.40238 0.799805C5.11433 0.800121 5.81019 1.01153 6.402 1.40729C6.9938 1.80306 7.45498 2.36541 7.72721 3.02325C7.99944 3.68109 8.0705 4.40488 7.93141 5.10311C7.79233 5.80134 7.44933 6.44265 6.9458 6.94595C6.44227 7.44926 5.80081 7.79197 5.10252 7.93075C4.40423 8.06953 3.68047 7.99814 3.02275 7.72562C2.36503 7.4531 1.80288 6.99167 1.40738 6.39969C1.01188 5.80771 0.800781 5.11175 0.800781 4.39981ZM5.91998 5.11661L5.20238 5.83421V4.59981C5.20238 4.31083 5.14545 4.02469 5.03484 3.75772C4.92423 3.49075 4.76211 3.24819 4.55773 3.04389C4.35336 2.83959 4.11074 2.67755 3.84373 2.56704C3.57672 2.45653 3.29056 2.3997 3.00158 2.39981H2.80158C2.69549 2.39981 2.59375 2.44195 2.51874 2.51696C2.44372 2.59198 2.40158 2.69372 2.40158 2.79981C2.40158 2.90589 2.44372 3.00763 2.51874 3.08265C2.59375 3.15766 2.69549 3.19981 2.80158 3.19981H3.00158C3.77518 3.19981 4.40158 3.82701 4.40158 4.59981V5.83421L3.68478 5.11661C3.60967 5.0416 3.50784 4.99951 3.4017 4.99958C3.29555 4.99966 3.19378 5.0419 3.11878 5.11701C3.04378 5.19211 3.00168 5.29394 3.00176 5.40009C3.00183 5.50623 3.04407 5.608 3.11918 5.68301L4.52078 7.08461C4.59597 7.15914 4.69764 7.20082 4.80351 7.20052C4.90938 7.20022 5.01082 7.15796 5.08558 7.08301L6.48558 5.68301C6.52277 5.64587 6.55228 5.60177 6.57243 5.55323C6.59258 5.50468 6.60297 5.45265 6.603 5.40009C6.60304 5.34753 6.59273 5.29548 6.57265 5.24691C6.55257 5.19834 6.52312 5.1542 6.48598 5.11701C6.44884 5.07981 6.40474 5.0503 6.3562 5.03016C6.30766 5.01001 6.25562 4.99962 6.20306 4.99958C6.15051 4.99955 6.09846 5.00986 6.04988 5.02994C6.00131 5.05002 5.95717 5.07947 5.91998 5.11661ZM8.80078 4.39981C8.8012 5.15354 8.60799 5.89475 8.23968 6.55237C7.87136 7.20998 7.34028 7.76196 6.69736 8.15537C6.05444 8.54878 5.32124 8.77044 4.56805 8.79909C3.81486 8.82775 3.06693 8.66243 2.39598 8.31901V12.7998C2.39598 13.2242 2.56455 13.6311 2.86461 13.9312C3.16467 14.2312 3.57163 14.3998 3.99598 14.3998H10.3984C10.6087 14.4001 10.817 14.359 11.0114 14.2787C11.2058 14.1984 11.3825 14.0806 11.5313 13.932C11.6801 13.7834 11.7982 13.6069 11.8788 13.4127C11.9593 13.2184 12.0008 13.0101 12.0008 12.7998V3.19981C12.0008 2.77546 11.8322 2.36849 11.5322 2.06843C11.2321 1.76838 10.8251 1.59981 10.4008 1.59981H7.79518C8.4468 2.38728 8.80278 3.37769 8.80158 4.39981M12.8008 4.79981H13.2008C13.3069 4.79981 13.4086 4.84195 13.4836 4.91696C13.5586 4.99198 13.6008 5.09372 13.6008 5.19981V6.39981C13.6008 6.50589 13.5586 6.60763 13.4836 6.68265C13.4086 6.75766 13.3069 6.79981 13.2008 6.79981H12.8008V4.79981ZM12.8008 7.5998H13.2008C13.3069 7.5998 13.4086 7.64195 13.4836 7.71696C13.5586 7.79198 13.6008 7.89372 13.6008 7.9998V9.19981C13.6008 9.30589 13.5586 9.40763 13.4836 9.48265C13.4086 9.55766 13.3069 9.5998 13.2008 9.5998H12.8008V7.5998ZM12.8008 10.3998H13.2008C13.3069 10.3998 13.4086 10.4419 13.4836 10.517C13.5586 10.592 13.6008 10.6937 13.6008 10.7998V11.9998C13.6008 12.1059 13.5586 12.2076 13.4836 12.2826C13.4086 12.3577 13.3069 12.3998 13.2008 12.3998H12.8008V10.3998Z" fill="#8D8D8D"/>
+                                                                </svg>
+                                                                Restore
+                                                            </a>
+                                                        </form>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        @endforeach
+                                    </tbody>
                                 </table>
                             </div>
                         </div>
@@ -1005,7 +1041,21 @@
                 </div>
             </div>
         </div>
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+        // Get all elements with the class 'folderName'
+        let folderElements = document.querySelectorAll('.folderName');
         
+        // Regular expression to match the pattern (year range, month, day, and underscore)
+        let regex = /^(19|20|21|22|23|24|25|26|27|28|29|30)\d{2}-(19|20|21|22|23|24|25|26|27|28|29|30)\d{2}(January|February|March|April|May|June|July|August|September|October|November|December)\d{1,2000000}_/;
+
+        // Loop through all folder elements and apply the regex replacement
+        folderElements.forEach(function(folderElement) {
+            // Replace the matched pattern with an empty string
+            folderElement.textContent = folderElement.textContent.replace(regex, '');
+        });
+    });
+        </script>
     <script>
         $(document).ready(function() {
             $('#year-filter, #month-filter, #search-box').on('change keyup', function() {
@@ -1079,6 +1129,37 @@
             @endif
         });
     </script>
+
+
+
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        // Handle restore button click
+        document.querySelectorAll('.restore_button_folder').forEach(button => {
+            button.addEventListener('click', function () {
+                const form = this.closest('.restore-form-folder');
+                const fileId = this.getAttribute('data-id');
+
+                Swal.fire({
+                    title: 'Are you sure?',
+                    text: 'You want to restore this record!',
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Yes, restore it!'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        form.submit();
+                    }
+                });
+            });
+        });
+
+     
+    });
+</script>
 
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
@@ -8875,6 +8956,56 @@ $(document).ready(function () {
 
 
 </script>
+<script>
+    $(document).on('click', '.delete_nt', function(e) {
+        e.preventDefault();
+
+        let folderId = $(this).data('folder_id');
+
+        // Show confirmation dialog before delete
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "This action will delete the folder.",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, delete it!'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                // Proceed with AJAX request to update is_delete status
+                $.ajax({
+                    url: '/update-folder-status',  // Update with your actual route
+                    method: 'POST',
+                    data: {
+                        folder_id: folderId,
+                        is_delete: 1,
+                        _token: '{{ csrf_token() }}'  // CSRF token for security
+                    },
+                    success: function(response) {
+                        if (response.success) {
+                            // Show success message with Toastr
+                            toastr.success('Folder deleted successfully!');
+
+                            // Refresh the page after a short delay to allow the toastr message to display
+                            setTimeout(() => {
+                                window.location.reload();
+                            }, 1500);
+                        } else {
+                            // Handle error case with Toastr
+                            toastr.error(response.message || 'Could not delete the folder.');
+                        }
+                    },
+                    error: function() {
+                        // Show error message with Toastr
+                        toastr.error('An error occurred while deleting the folder.');
+                    }
+                });
+            }
+        });
+    });
+</script>
+
 
 
 @endsection

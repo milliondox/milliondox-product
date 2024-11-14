@@ -455,7 +455,7 @@ closeToastBtn.addEventListener("click", closeToast);
 <script src="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/js/intlTelInput.min.js"></script>
 
 <!-- Phone input field -->
-<input id="phone" class="form-control @error('phone') is-invalid @enderror" type="tel" placeholder="Contact no" name="phone" value="{{ $user->phone }}">
+<input id="phone" class="form-control @error('phone') is-invalid @enderror" type="tel" pattern="[2-9]{1}[0-9]{9}" title="Phone number with 2-9 and remaing 9 digit with 0-9" placeholder="Contact no" name="phone" value="{{ $user->phone }}">
 @error('phone')
     <span class="invalid-feedback" role="alert">
         <strong>{{ $message }}</strong>

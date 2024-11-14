@@ -19,6 +19,7 @@ class StoreCompanyEmployee extends Model
         'app_date',
         'termi_date',
         'emp_code',
+        'is_delete',
        
     ];
 
