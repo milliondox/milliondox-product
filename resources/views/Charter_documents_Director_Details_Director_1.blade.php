@@ -342,7 +342,7 @@
             </td>
                         </tr>
 
-                        <tr class="" >
+                        {{-- <tr class="" >
                           
                           <td>
                             <div class="finish">
@@ -405,7 +405,7 @@
 
             </td>
 
-                        </tr>
+                        </tr> --}}
 
                        
 

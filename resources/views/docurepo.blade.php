@@ -4801,7 +4801,7 @@ let newPerm = fullPath.replace(newbase, '').split('/')[0];
 
      
         
-        // console.log("Path to use ::  "+pathToUse);
+        // // console.log("Path to use ::  "+pathToUse);
         // if(pathToUse===undefined || pathToUse=== null){
         //     // console.log("inside null undefined");
         //     // setTimeout(() => {
@@ -4815,6 +4815,16 @@ let newPerm = fullPath.replace(newbase, '').split('/')[0];
             method: 'GET',
             data: { folderName: pathToUse },  // Use the folderPath as is
             success: function(response) {
+                
+                // console.log("Path to use ::  "+pathToUse);
+                if(pathToUse===undefined || pathToUse=== null){
+                    // console.log("inside null undefined");
+                    // setTimeout(() => {
+
+                        hideLoader();
+                    // }, 1000);
+                }
+
                 $('.folder-contents').html(response.folderHtml);
                 $('.file-container').html(response.fileHtml);
 
@@ -5098,15 +5108,16 @@ let newPerm = fullPath.replace(newbase, '').split('/')[0];
                     
                     
                     setInterval(function() {
-    let result = decodeAndFormatUrl(url);
-    let fullPath = `${result}`;
+                        let result = decodeAndFormatUrl(url);
+                        let fullPath = `${result}`;
 
-    // Extract the part after the base path and get only the first parameter (name)
-    let newPermitter = fullPath.replace(basePath, '').split('/')[0];
+                        // Extract the part after the base path and get only the first parameter (name)
+                        let newPermitter = fullPath.replace(basePath, '').split('/')[0];
 
-    // Output the result or use it to trigger actions
-    console.log(newPermitter); // Output the cleaned value
-}, 1000);
+                        // Output the result or use it to trigger actions
+                        console.log(newPermitter); // Output the cleaned value
+                    }, 1000);
+
                     insertcharterdocumentsDirectordetatilsDirector1Table();
                     charterdocumentsDirectordetatilsDirector1TableAppended = true;
                 }  
@@ -5120,49 +5131,33 @@ let newPerm = fullPath.replace(newbase, '').split('/')[0];
                     charterdocumentsRegistrationsTableAppended = true;
                 }
                 else if (result.endsWith(`Onboarding documents`) && !hronboarTableAppended) {
-
-
-
-inserthronboarTableAppended();  // Call the function to append the table
-hronboarTableAppended = true;  // Set the flag to true to prevent further appends
-}
-
-                else if (result.endsWith("KYC Documents") && !hrkycTableAppended) {
-                   
+                        inserthronboarTableAppended();  // Call the function to append the table
+                        hronboarTableAppended = true;  // Set the flag to true to prevent further appends
+                    }
+                else if (result.endsWith("KYC Documents") && !hrkycTableAppended) {   
                     inserthrkycTableAppended();  // Call the function to append the table
                     hrkycTableAppended = true;  // Set the flag to true to prevent further appends
                 }
-
-                else if (result.endsWith("Declarations") && !hrdecTableAppended) {
-                  
+                else if (result.endsWith("Declarations") && !hrdecTableAppended) { 
                     inserthrdecTableAppended();  // Call the function to append the table
                     hrdecTableAppended = true;  // Set the flag to true to prevent further appends
                 }
-
-                else if (result.endsWith("Offboarding") && !hroffboardTableAppended) {
-                   
+                else if (result.endsWith("Offboarding") && !hroffboardTableAppended) {   
                     inserthroffboardTableAppended();  // Call the function to append the table
                     hroffboardTableAppended = true;  // Set the flag to true to prevent further appends
                 }
-
-                else if (result.endsWith("ESOP") && !hresopTableAppended) {
-                   
+                else if (result.endsWith("ESOP") && !hresopTableAppended) {    
                     inserthresopTableAppended();  // Call the function to append the table
                     hresopTableAppended = true;  // Set the flag to true to prevent further appends
                 }
-
-                else if (result.endsWith("Pay Registers/Monthly Payrun") && !hrmpTableAppended) {
-                   
+                else if (result.endsWith("Pay Registers/Monthly Payrun") && !hrmpTableAppended) {  
                     inserthrmpTableAppended();  // Call the function to append the table
                     hrmpTableAppended = true;  // Set the flag to true to prevent further appends
                 }
-
-                else if (result.endsWith("Pay Registers/Reimbursements") && !hrreimbTableAppended) {
-                   
+                else if (result.endsWith("Pay Registers/Reimbursements") && !hrreimbTableAppended) { 
                     inserthrreimTableAppended();  // Call the function to append the table
                     hrreimbTableAppended = true;  // Set the flag to true to prevent further appends
                 }
-
                 bindFolderClickEvents();
                 updateBreadcrumb(pathToUse);
                 // hideLoader(); // Hide loader after contents are updated
