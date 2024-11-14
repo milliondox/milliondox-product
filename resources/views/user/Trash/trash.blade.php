@@ -71,7 +71,14 @@
 
 <div class="tabs">
   <button class="tab-link active" onclick="openTabbb('kyc')">Deleted</button>
-  <button class="tab-link" onclick="openTabbb('dsc')">Restore Requests @if($totalCount == 0)<span ></span>@else<span id="totalCount">{{$totalCount}}</span>@endif</button>
+  <button class="tab-link" onclick="openTabbb('dsc')">
+    Restore Requests 
+    @if($totalCount > 0 or $totalCountfolder > 0)
+        <span id="totalCount">{{ $totalCount + $totalCountfolder }}</span>
+    @else
+        <span></span>
+    @endif
+</button>
 </div>
 
 <div id="tab-kyc" class="tab active">
@@ -99,11 +106,39 @@
 					  </tr>  
 					  @endforeach
                         </tbody>
+
+                        <tbody>
+                          @foreach($delfolder as $fold)
+                    <tr>
+          <td>{{$fold->id}}</td>
+          <td><img src="../assets/images/solar_folder-bold.png" id="folders" class="folder-icon" alt="Folder Icon">
+            <span class="folderName">{{$fold->name}}</span></td>
+            <td>{{$fold->user->name}}</td>
+           <td>{{ \Carbon\Carbon::parse($fold->updated_at)->format('Y-m-d') }}</td> 
+                       <td>{{ \Carbon\Carbon::parse($fold->updated_at)->format('H:i:s') }}</td> 
+                         
+          </tr>  
+          @endforeach
+                      </tbody>
                       </table>
                       </div>
 
 </div>
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+// Get all elements with the class 'folderName'
+let folderElements = document.querySelectorAll('.folderName');
 
+// Regular expression to match the pattern (year range, month, day, and underscore)
+let regex = /^(19|20|21|22|23|24|25|26|27|28|29|30)\d{2}-(19|20|21|22|23|24|25|26|27|28|29|30)\d{2}(January|February|March|April|May|June|July|August|September|October|November|December)\d{1,2000000}_/;
+
+// Loop through all folder elements and apply the regex replacement
+folderElements.forEach(function(folderElement) {
+  // Replace the matched pattern with an empty string
+  folderElement.textContent = folderElement.textContent.replace(regex, '');
+});
+});
+</script>
 <div id="tab-dsc" class="tab">
 
 <div class="table_wrap_vtr filtr_tabble ">
@@ -172,6 +207,63 @@
 					  </tr>  
 					  @endforeach                                                           
                         </tbody>
+
+                        <tbody>
+                          @foreach($folders as $fold)
+                    <tr>
+          <td>{{$fold->id}}</td>
+          <td><img src="../assets/images/solar_folder-bold.png" id="folders" class="folder-icon" alt="Folder Icon">
+            <span class="folderName">{{$fold->name}}</span></td>
+            <td>{{$fold->user->name}}</td>
+           <td>{{ \Carbon\Carbon::parse($fold->updated_at)->format('Y-m-d') }}</td> 
+                       <td>{{ \Carbon\Carbon::parse($fold->updated_at)->format('H:i:s') }}</td> 
+
+
+                       <td style="text-align:right;">
+                        <div class="dropdown">
+                          <button onclick="toggleDropdown()" class="dropbtn show_pp">
+                            <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+                              <path d="M10.3994 4.19166C10.3994 4.37562 10.3632 4.55779 10.2929 4.72778C10.2226 4.89776 10.1194 5.05222 9.98937 5.18234C9.85934 5.31246 9.70494 5.4157 9.535 5.48615C9.36507 5.55661 9.18292 5.5929 8.99896 5.59296C8.81499 5.59302 8.63282 5.55684 8.46284 5.4865C8.29286 5.41615 8.1384 5.31302 8.00827 5.18298C7.87815 5.05294 7.77492 4.89854 7.70446 4.72861C7.63401 4.55867 7.59772 4.37652 7.59766 4.19256C7.59754 3.82103 7.74501 3.46467 8.00764 3.20188C8.27026 2.93908 8.62653 2.79138 8.99806 2.79126C9.36958 2.79114 9.72594 2.93862 9.98874 3.20124C10.2515 3.46387 10.3992 3.82013 10.3994 4.19166Z" fill="#8D8D8D"></path>
+                              <path d="M8.99806 10.3999C9.77148 10.3999 10.3985 9.77294 10.3985 8.99952C10.3985 8.2261 9.77148 7.59912 8.99806 7.59912C8.22464 7.59912 7.59766 8.2261 7.59766 8.99952C7.59766 9.77294 8.22464 10.3999 8.99806 10.3999Z" fill="#8D8D8D"></path>
+                              <path d="M8.99806 15.2085C9.77148 15.2085 10.3985 14.5815 10.3985 13.8081C10.3985 13.0347 9.77148 12.4077 8.99806 12.4077C8.22464 12.4077 7.59766 13.0347 7.59766 13.8081C7.59766 14.5815 8.22464 15.2085 8.99806 15.2085Z" fill="#8D8D8D"></path>
+                            </svg>
+                          </button>
+                          <div id="myDropdown3" class="dropdown-content">
+                              
+            <ul class="action">
+                <!-- Delete form -->
+                 <li class="restore" id="restore-{{ $fold->id }}">
+                    <form method="POST" action="{{ route('fold.restore', ['id' => $fold->id]) }}" class="restore-form">
+                        @csrf
+                        @method('PUT')
+                      
+                        
+                        <a class="dropdown-itemm restore-button" data-id="{{ $fold->id }}">
+                               Approve </a>
+                    </form>
+                </li>
+                <li class="delete" id="delete-{{ $fold->id }}">
+                    <form method="POST" action="{{ route('folder.rejectfolder', ['id' => $fold->id]) }}" class="delete-form">
+                        @csrf
+                        @method('DELETE')
+                        
+                           <a class="delete-button dropdown-itemm" data-id="{{ $fold->id }}">
+                               Reject </a>
+                      
+                    </form>
+                </li>
+                <!-- Restore button -->
+               
+            </ul>
+                          
+                            
+                          </div>
+                        </div>
+                      </td>
+                         
+          </tr>  
+          @endforeach
+                      </tbody>
                       </table>
                       </div>
 
