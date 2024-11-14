@@ -265,13 +265,20 @@ Route::post('/members', [App\Http\Controllers\HomeController::class, 'members'])
 
 Route::delete('/file/{id}', [App\Http\Controllers\HomeController::class, 'deletefilecommon'])->name('file.deleteboardnotic');
 
+Route::delete('/fold/{id}', [App\Http\Controllers\HomeController::class, 'rejectfolder'])->name('folder.rejectfolder');
+
 Route::put('/file/{id}/restore', [App\Http\Controllers\HomeController::class, 'restore'])->name('file.restore');
+
+Route::put('/fold/{id}/restore', [App\Http\Controllers\HomeController::class, 'restorefold'])->name('fold.restore');
 
 Route::get('/download-folder/{folderid}', [App\Http\Controllers\HomeController::class, 'downloadFolder']);
 // Route::post('/downloadFolders', [App\Http\Controllers\HomeController::class, 'downloadFolders'])->name('downloadFolders');
 
 
 Route::put('/file/{id}/restorefile', [App\Http\Controllers\HomeController::class, 'restorefile'])->name('file.restorefile');
+
+
+Route::put('/folder/{id}/restorefolder', [App\Http\Controllers\HomeController::class, 'restorefolder'])->name('folder.restorefolder');
 
 // web.php or api.php
 Route::get('/fetch-board-notices-count', [App\Http\Controllers\HomeController::class,'fetchBoardNoticesCount']);
@@ -873,6 +880,7 @@ Route::get('/fetch-SecretarialStatutoryRegistersRPB-file-data', [App\Http\Contro
 
 Route::post('/renamefolder', [App\Http\Controllers\HomeController::class, 'renamefolder'])->name('renamefolder');
 
+Route::post('/update-folder-status', [App\Http\Controllers\HomeController::class, 'updateFolderStatus']);
 
 
 // path end
