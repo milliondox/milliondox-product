@@ -13719,8 +13719,8 @@ $(document).ready(function() {
                         <td colspan="8" style="text-align:center;">
                             Something went wrong. Please try again ...
                             <a class="type_number getparm" 
-                                    data-location=${location}
-                                    data-real_file_name=${real_file_name}
+                                    data-location="${location}"
+                                    data-real_file_name="${real_file_name}"
                                     
                                     id="StautoryReg_ballot_countt" type="button">
                                 Refresh
