@@ -694,7 +694,7 @@ public function storecompanydirector(Request $request)
 
     // Create the directory
     Storage::makeDirectory($newFolderPath);
-    $DIR_real_file_name=["Photo","Signature image","Aadhar KYC","PAN KYC","Address Proof","Contact Details"];
+    $DIR_real_file_name=["Photo","Signature image","Aadhar KYC","PAN KYC","Address Proof"];
 
     // Create a new Folder record and associate the director ID
     $folder = new Folder();
@@ -15492,14 +15492,29 @@ public function fetchSecretarialStatutoryRegistersSBOFileData(Request $request)
     return response()->json(['files' => $files]);
 }
 
+// public function fetchSecretarialStatutoryRegistersRPBFileData(Request $request)
+// {
+//     $location = $request->input('location');
+//     $user = auth()->user();
+//     $files = CommonTable::where('user_id', $user->id)
+//     ->where('is_delete', 0)
+//     ->where('location', $location)
+//     ->where('real_file_name', 'Register of Postal Ballot')
+//     ->get();
+   
+//     return response()->json(['files' => $files]);
+// }
+
 public function fetchSecretarialStatutoryRegistersRPBFileData(Request $request)
 {
     $location = $request->input('location');
+    $real_file_name = $request->input('real_file_name');
+    // dd($location);
     $user = auth()->user();
     $files = CommonTable::where('user_id', $user->id)
     ->where('is_delete', 0)
     ->where('location', $location)
-    ->where('real_file_name', 'Register of Postal Ballot')
+    ->where('real_file_name', $real_file_name)
     ->get();
    
     return response()->json(['files' => $files]);
@@ -15529,6 +15544,7 @@ public function fetchSecretarialStatutoryRegistersRPBFileData(Request $request)
 }
 public function fetchSecretarialStatutoryRegistersRMFileData(Request $request)
 {
+    
     $location = $request->input('location');
     $user = auth()->user();
     $files = CommonTable::where('user_id', $user->id)

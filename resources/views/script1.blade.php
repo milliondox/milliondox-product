@@ -12237,130 +12237,129 @@ $(document).ready(function() {
 
 
 
-<!-- sandeep start here 1 October 2024 secretrial statury register-->
-<script>
+    <!-- sandeep start here 1 October 2024 secretrial statury register-->
+    <script>
         $(document).ready(function() {
-function fetchSecretarialStatutoryRegistersRMFileData(location) {
-        
-        $.ajax({
-            url: '{{ route('fetch-SecretarialStatutoryRegistersRM-file-data') }}',
-            type: 'GET',
-            data: { location: location }, // Pass the location parameter
-            success: function(response) {
-                if (response && Array.isArray(response.files)) {
-                    const tableBody = $('#filesTableRegisterMember tbody');
-                    tableBody.empty();
+           function fetchSecretarialStatutoryRegistersRMFileData(location) {
+                $.ajax({
+                    url: '{{ route('fetch-SecretarialStatutoryRegistersRM-file-data') }}',
+                    type: 'GET',
+                    data: { location: location }, // Pass the location parameter
+                    success: function(response) {
+                        if (response && Array.isArray(response.files)) {
+                            const tableBody = $('#filesTableRegisterMember tbody');
+                            tableBody.empty();
 
-                    response.files.forEach(file => {
-                        const fileName = file.file_name.split('/').pop();
-                        const fileSize = (file.file_size / 1024).toFixed(2) + ' KB';
-                          const createdAt = new Date(file.created_at);
+                            response.files.forEach(file => {
+                                const fileName = file.file_name.split('/').pop();
+                                const fileSize = (file.file_size / 1024).toFixed(2) + ' KB';
+                                const createdAt = new Date(file.created_at);
 
-    // Format the date (e.g., 'MM/DD/YYYY')
-    const formattedDate = createdAt.toLocaleDateString('en-GB', {
-        day: '2-digit',
-        month: '2-digit',
-        year: 'numeric',
-    });
-                        const row = `
-                            <tr>
-                            <td class="check_boox"><input type="checkbox" name="fileCheckbox" value="${fileName}"></td>
-                                <td class="file_nammmee">${fileName}</td>
-                                <td class="file_dess">${file.descp}</td>
-                                <td>${file.fyear}</td>
-                                <td>${file.month}</td>
-                                <td>${fileSize}</td>
-                                <td>${formattedDate}</td>
-                                <td>
-                                    <div class="qucik_axec_ain">
-                                        <div class="quick_access">
-                                      {{--      <a class="dropdown-itemm share_nt" >
- <svg width="16" height="10" viewBox="0 0 16 10" fill="none" xmlns="http://www.w3.org/2000/svg">
- <path d="M10.668 4.33301C11.7746 4.33301 12.6613 3.43967 12.6613 2.33301C12.6613 1.22634 11.7746 0.333008 10.668 0.333008C9.5613 0.333008 8.66797 1.22634 8.66797 2.33301C8.66797 3.43967 9.5613 4.33301 10.668 4.33301ZM5.33464 4.33301C6.4413 4.33301 7.32797 3.43967 7.32797 2.33301C7.32797 1.22634 6.4413 0.333008 5.33464 0.333008C4.22797 0.333008 3.33464 1.22634 3.33464 2.33301C3.33464 3.43967 4.22797 4.33301 5.33464 4.33301ZM5.33464 5.66634C3.7813 5.66634 0.667969 6.44634 0.667969 7.99967V9.66634H10.0013V7.99967C10.0013 6.44634 6.88797 5.66634 5.33464 5.66634ZM10.668 5.66634C10.4746 5.66634 10.2546 5.67967 10.0213 5.69967C10.7946 6.25967 11.3346 7.01301 11.3346 7.99967V9.66634H15.3346V7.99967C15.3346 6.44634 12.2213 5.66634 10.668 5.66634Z" fill="#8D8D8D"/>
- </svg>
- </a> --}}
- 
- <a class="dropdown-itemm download_nt" href="{{ url('/download-common-file/${file.id}') }}">
- <svg width="13" height="12" viewBox="0 0 13 12" fill="none" xmlns="http://www.w3.org/2000/svg">
- <g clip-path="url(#clip0_380_4)">
- <path d="M1.53125 11.1562C1.12514 11.1563 0.735658 10.9949 0.448493 10.7078C0.161328 10.4206 0 10.0311 0 9.625V7.4375C2.59352e-09 7.26345 0.0691404 7.09653 0.192211 6.97346C0.315282 6.85039 0.482202 6.78125 0.65625 6.78125C0.830298 6.78125 0.997218 6.85039 1.12029 6.97346C1.24336 7.09653 1.3125 7.26345 1.3125 7.4375V9.625C1.3125 9.74575 1.4105 9.84375 1.53125 9.84375H10.7188C10.7768 9.84375 10.8324 9.8207 10.8734 9.77968C10.9145 9.73866 10.9375 9.68302 10.9375 9.625V7.4375C10.9375 7.26345 11.0066 7.09653 11.1297 6.97346C11.2528 6.85039 11.4197 6.78125 11.5938 6.78125C11.7678 6.78125 11.9347 6.85039 12.0578 6.97346C12.1809 7.09653 12.25 7.26345 12.25 7.4375V9.625C12.25 10.0311 12.0887 10.4206 11.8015 10.7078C11.5143 10.9949 11.1249 11.1563 10.7188 11.1562H1.53125Z" fill="#8D8D8D"/>
- <path d="M5.46834 5.63413V0.65625C5.46834 0.482202 5.53748 0.315282 5.66055 0.192211C5.78362 0.0691404 5.95054 0 6.12459 0C6.29864 0 6.46556 0.0691404 6.58863 0.192211C6.7117 0.315282 6.78084 0.482202 6.78084 0.65625V5.63413L8.50459 3.91125C8.56549 3.85035 8.63779 3.80204 8.71736 3.76908C8.79693 3.73612 8.88222 3.71916 8.96834 3.71916C9.05447 3.71916 9.13975 3.73612 9.21932 3.76908C9.29889 3.80204 9.37119 3.85035 9.43209 3.91125C9.49299 3.97215 9.5413 4.04445 9.57426 4.12402C9.60722 4.20359 9.62418 4.28887 9.62418 4.375C9.62418 4.46113 9.60722 4.54641 9.57426 4.62598C9.5413 4.70555 9.49299 4.77785 9.43209 4.83875L6.58834 7.6825C6.52747 7.74346 6.45518 7.79181 6.37561 7.82481C6.29603 7.8578 6.21074 7.87478 6.12459 7.87478C6.03845 7.87478 5.95315 7.8578 5.87357 7.82481C5.794 7.79181 5.72171 7.74346 5.66084 7.6825L2.81709 4.83875C2.75619 4.77785 2.70788 4.70555 2.67492 4.62598C2.64196 4.54641 2.625 4.46113 2.625 4.375C2.625 4.28887 2.64196 4.20359 2.67492 4.12402C2.70788 4.04445 2.75619 3.97215 2.81709 3.91125C2.87799 3.85035 2.95029 3.80204 3.02986 3.76908C3.10943 3.73612 3.19472 3.71916 3.28084 3.71916C3.36697 3.71916 3.45225 3.73612 3.53182 3.76908C3.61139 3.80204 3.68369 3.85035 3.74459 3.91125L5.46834 5.63413Z" fill="#8D8D8D"/>
- </g>
- <defs>
- <clipPath id="clip0_380_4">
- <rect width="13" height="12" fill="white"/>
- </clipPath>
- </defs>
- </svg>
- </a>
-         <button type="button" class="delete-button" id="delbtdtst1" data-unique_tb_id="${file.id}">
-                                                            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                      <path d="M5.07536 13.3334C4.77759 13.3334 4.52359 13.2285 4.31336 13.0187C4.10359 12.809 3.9987 12.555 3.9987 12.2567V4.00007H3.33203V3.3334H5.9987V2.82007H9.9987V3.3334H12.6654V4.00007H11.9987V12.2567C11.9987 12.5634 11.896 12.8194 11.6907 13.0247C11.4849 13.2305 11.2287 13.3334 10.922 13.3334H5.07536ZM11.332 4.00007H4.66536V12.2567C4.66536 12.3763 4.70381 12.4745 4.7807 12.5514C4.85759 12.6283 4.95581 12.6667 5.07536 12.6667H10.922C11.0243 12.6667 11.1183 12.6241 11.204 12.5387C11.2894 12.453 11.332 12.359 11.332 12.2567V4.00007ZM6.53736 11.3334H7.20403V5.3334H6.53736V11.3334ZM8.79337 11.3334H9.46003V5.3334H8.79337V11.3334Z" fill="#FA4A4A"></path>
-                                    </svg> 
-                                                            </button> 
-                                                            
-                                                            <div class="dropdown">
-               <button class="dropbtn show_pp">
-                <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <path d="M10.3994 4.19166C10.3994 4.37562 10.3632 4.55779 10.2929 4.72778C10.2226 4.89776 10.1194 5.05222 9.98937 5.18234C9.85934 5.31246 9.70494 5.4157 9.535 5.48615C9.36507 5.55661 9.18292 5.5929 8.99896 5.59296C8.81499 5.59302 8.63282 5.55684 8.46284 5.4865C8.29286 5.41615 8.1384 5.31302 8.00827 5.18298C7.87815 5.05294 7.77492 4.89854 7.70446 4.72861C7.63401 4.55867 7.59772 4.37652 7.59766 4.19256C7.59754 3.82103 7.74501 3.46467 8.00764 3.20188C8.27026 2.93908 8.62653 2.79138 8.99806 2.79126C9.36958 2.79114 9.72594 2.93862 9.98874 3.20124C10.2515 3.46387 10.3992 3.82013 10.3994 4.19166Z" fill="#8D8D8D"></path>
-                  <path d="M8.99806 10.3999C9.77148 10.3999 10.3985 9.77294 10.3985 8.99952C10.3985 8.2261 9.77148 7.59912 8.99806 7.59912C8.22464 7.59912 7.59766 8.2261 7.59766 8.99952C7.59766 9.77294 8.22464 10.3999 8.99806 10.3999Z" fill="#8D8D8D"></path>
-                  <path d="M8.99806 15.2085C9.77148 15.2085 10.3985 14.5815 10.3985 13.8081C10.3985 13.0347 9.77148 12.4077 8.99806 12.4077C8.22464 12.4077 7.59766 13.0347 7.59766 13.8081C7.59766 14.5815 8.22464 15.2085 8.99806 15.2085Z" fill="#8D8D8D"></path>
-                </svg>
-              </button>
-              <div id="myDropdown3" class="dropdown-content"> 
-                <a class="dropdown-itemm chck_slect">
-                  Select Files </a>
-                  <a class="dropdown-itemm open_eye_pdf" href="{{ url('/showfile/${file.id}') }}" target="_blank">
-                  View </a>
-            </div>
-            
-                                        </div>
-                                    </div>
-                                </td>
-                            </tr>
-                        `;
-                        tableBody.append(row);
+                                    // Format the date (e.g., 'MM/DD/YYYY')
+                                    const formattedDate = createdAt.toLocaleDateString('en-GB', {
+                                        day: '2-digit',
+                                        month: '2-digit',
+                                        year: 'numeric',
+                                    });
+                                const row = `
+                                    <tr>
+                                    <td class="check_boox"><input type="checkbox" name="fileCheckbox" value="${fileName}"></td>
+                                        <td class="file_nammmee">${fileName}</td>
+                                        <td class="file_dess">${file.descp}</td>
+                                        <td>${file.fyear}</td>
+                                        <td>${file.month}</td>
+                                        <td>${fileSize}</td>
+                                        <td>${formattedDate}</td>
+                                        <td>
+                                            <div class="qucik_axec_ain">
+                                                <div class="quick_access">
+                                            {{--      <a class="dropdown-itemm share_nt" >
+                                            <svg width="16" height="10" viewBox="0 0 16 10" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                            <path d="M10.668 4.33301C11.7746 4.33301 12.6613 3.43967 12.6613 2.33301C12.6613 1.22634 11.7746 0.333008 10.668 0.333008C9.5613 0.333008 8.66797 1.22634 8.66797 2.33301C8.66797 3.43967 9.5613 4.33301 10.668 4.33301ZM5.33464 4.33301C6.4413 4.33301 7.32797 3.43967 7.32797 2.33301C7.32797 1.22634 6.4413 0.333008 5.33464 0.333008C4.22797 0.333008 3.33464 1.22634 3.33464 2.33301C3.33464 3.43967 4.22797 4.33301 5.33464 4.33301ZM5.33464 5.66634C3.7813 5.66634 0.667969 6.44634 0.667969 7.99967V9.66634H10.0013V7.99967C10.0013 6.44634 6.88797 5.66634 5.33464 5.66634ZM10.668 5.66634C10.4746 5.66634 10.2546 5.67967 10.0213 5.69967C10.7946 6.25967 11.3346 7.01301 11.3346 7.99967V9.66634H15.3346V7.99967C15.3346 6.44634 12.2213 5.66634 10.668 5.66634Z" fill="#8D8D8D"/>
+                                            </svg>
+                                            </a> --}}
+                                            
+                                            <a class="dropdown-itemm download_nt" href="{{ url('/download-common-file/${file.id}') }}">
+                                            <svg width="13" height="12" viewBox="0 0 13 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                            <g clip-path="url(#clip0_380_4)">
+                                            <path d="M1.53125 11.1562C1.12514 11.1563 0.735658 10.9949 0.448493 10.7078C0.161328 10.4206 0 10.0311 0 9.625V7.4375C2.59352e-09 7.26345 0.0691404 7.09653 0.192211 6.97346C0.315282 6.85039 0.482202 6.78125 0.65625 6.78125C0.830298 6.78125 0.997218 6.85039 1.12029 6.97346C1.24336 7.09653 1.3125 7.26345 1.3125 7.4375V9.625C1.3125 9.74575 1.4105 9.84375 1.53125 9.84375H10.7188C10.7768 9.84375 10.8324 9.8207 10.8734 9.77968C10.9145 9.73866 10.9375 9.68302 10.9375 9.625V7.4375C10.9375 7.26345 11.0066 7.09653 11.1297 6.97346C11.2528 6.85039 11.4197 6.78125 11.5938 6.78125C11.7678 6.78125 11.9347 6.85039 12.0578 6.97346C12.1809 7.09653 12.25 7.26345 12.25 7.4375V9.625C12.25 10.0311 12.0887 10.4206 11.8015 10.7078C11.5143 10.9949 11.1249 11.1563 10.7188 11.1562H1.53125Z" fill="#8D8D8D"/>
+                                            <path d="M5.46834 5.63413V0.65625C5.46834 0.482202 5.53748 0.315282 5.66055 0.192211C5.78362 0.0691404 5.95054 0 6.12459 0C6.29864 0 6.46556 0.0691404 6.58863 0.192211C6.7117 0.315282 6.78084 0.482202 6.78084 0.65625V5.63413L8.50459 3.91125C8.56549 3.85035 8.63779 3.80204 8.71736 3.76908C8.79693 3.73612 8.88222 3.71916 8.96834 3.71916C9.05447 3.71916 9.13975 3.73612 9.21932 3.76908C9.29889 3.80204 9.37119 3.85035 9.43209 3.91125C9.49299 3.97215 9.5413 4.04445 9.57426 4.12402C9.60722 4.20359 9.62418 4.28887 9.62418 4.375C9.62418 4.46113 9.60722 4.54641 9.57426 4.62598C9.5413 4.70555 9.49299 4.77785 9.43209 4.83875L6.58834 7.6825C6.52747 7.74346 6.45518 7.79181 6.37561 7.82481C6.29603 7.8578 6.21074 7.87478 6.12459 7.87478C6.03845 7.87478 5.95315 7.8578 5.87357 7.82481C5.794 7.79181 5.72171 7.74346 5.66084 7.6825L2.81709 4.83875C2.75619 4.77785 2.70788 4.70555 2.67492 4.62598C2.64196 4.54641 2.625 4.46113 2.625 4.375C2.625 4.28887 2.64196 4.20359 2.67492 4.12402C2.70788 4.04445 2.75619 3.97215 2.81709 3.91125C2.87799 3.85035 2.95029 3.80204 3.02986 3.76908C3.10943 3.73612 3.19472 3.71916 3.28084 3.71916C3.36697 3.71916 3.45225 3.73612 3.53182 3.76908C3.61139 3.80204 3.68369 3.85035 3.74459 3.91125L5.46834 5.63413Z" fill="#8D8D8D"/>
+                                            </g>
+                                            <defs>
+                                            <clipPath id="clip0_380_4">
+                                            <rect width="13" height="12" fill="white"/>
+                                            </clipPath>
+                                            </defs>
+                                            </svg>
+                                            </a>
+                                            <button type="button" class="delete-button" id="delbtdtst1" data-unique_tb_id="${file.id}">
+                                                                                                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                                        <path d="M5.07536 13.3334C4.77759 13.3334 4.52359 13.2285 4.31336 13.0187C4.10359 12.809 3.9987 12.555 3.9987 12.2567V4.00007H3.33203V3.3334H5.9987V2.82007H9.9987V3.3334H12.6654V4.00007H11.9987V12.2567C11.9987 12.5634 11.896 12.8194 11.6907 13.0247C11.4849 13.2305 11.2287 13.3334 10.922 13.3334H5.07536ZM11.332 4.00007H4.66536V12.2567C4.66536 12.3763 4.70381 12.4745 4.7807 12.5514C4.85759 12.6283 4.95581 12.6667 5.07536 12.6667H10.922C11.0243 12.6667 11.1183 12.6241 11.204 12.5387C11.2894 12.453 11.332 12.359 11.332 12.2567V4.00007ZM6.53736 11.3334H7.20403V5.3334H6.53736V11.3334ZM8.79337 11.3334H9.46003V5.3334H8.79337V11.3334Z" fill="#FA4A4A"></path>
+                                                                        </svg> 
+                                                                                                </button> 
+                                                                                                
+                                                                    <div class="dropdown">
+                                                            <button class="dropbtn show_pp">
+                                                                <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                                <path d="M10.3994 4.19166C10.3994 4.37562 10.3632 4.55779 10.2929 4.72778C10.2226 4.89776 10.1194 5.05222 9.98937 5.18234C9.85934 5.31246 9.70494 5.4157 9.535 5.48615C9.36507 5.55661 9.18292 5.5929 8.99896 5.59296C8.81499 5.59302 8.63282 5.55684 8.46284 5.4865C8.29286 5.41615 8.1384 5.31302 8.00827 5.18298C7.87815 5.05294 7.77492 4.89854 7.70446 4.72861C7.63401 4.55867 7.59772 4.37652 7.59766 4.19256C7.59754 3.82103 7.74501 3.46467 8.00764 3.20188C8.27026 2.93908 8.62653 2.79138 8.99806 2.79126C9.36958 2.79114 9.72594 2.93862 9.98874 3.20124C10.2515 3.46387 10.3992 3.82013 10.3994 4.19166Z" fill="#8D8D8D"></path>
+                                                                <path d="M8.99806 10.3999C9.77148 10.3999 10.3985 9.77294 10.3985 8.99952C10.3985 8.2261 9.77148 7.59912 8.99806 7.59912C8.22464 7.59912 7.59766 8.2261 7.59766 8.99952C7.59766 9.77294 8.22464 10.3999 8.99806 10.3999Z" fill="#8D8D8D"></path>
+                                                                <path d="M8.99806 15.2085C9.77148 15.2085 10.3985 14.5815 10.3985 13.8081C10.3985 13.0347 9.77148 12.4077 8.99806 12.4077C8.22464 12.4077 7.59766 13.0347 7.59766 13.8081C7.59766 14.5815 8.22464 15.2085 8.99806 15.2085Z" fill="#8D8D8D"></path>
+                                                                </svg>
+                                                            </button>
+                                                            <div id="myDropdown3" class="dropdown-content"> 
+                                                                <a class="dropdown-itemm chck_slect">
+                                                                Select Files </a>
+                                                                <a class="dropdown-itemm open_eye_pdf" href="{{ url('/showfile/${file.id}') }}" target="_blank">
+                                                                View </a>
+                                                            </div>
+                    
+                                                </div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    `;
+                                    tableBody.append(row);
+                                });
+                            } else {
+                                console.error('Unexpected response format:', response);
+                            }
+                        },
+                        error: function(xhr, status, error) {
+                            console.error('Failed to fetch data:', status, error);
+                        }
                     });
-                } else {
-                    console.error('Unexpected response format:', response);
-                }
-            },
-            error: function(xhr, status, error) {
-                console.error('Failed to fetch data:', status, error);
             }
-        });
-    }
     
     
-        $('body').on('click', '#StautoryReg_meber_countt', function() {
-            const location  = $(this).data('location');
-            fetchSecretarialStatutoryRegistersRMFileData(location);
-        });
+            $('body').on('click', '#StautoryReg_meber_countt', function() {
+                const location  = $(this).data('location');
+                fetchSecretarialStatutoryRegistersRMFileData(location);
+            });
    
     
     
-    function fetchSecretarialStatutoryRegistersROSHFileData(location) {
-        
-        $.ajax({
-            url: '{{ route('fetch-SecretarialStatutoryRegistersROSH-file-data') }}',
-            type: 'GET',
-            data: { location: location }, // Pass the location parameter
-            success: function(response) {
-                if (response && Array.isArray(response.files)) {
-                    const tableBody = $('#filesTableROSH tbody');
-                    tableBody.empty();
+           function fetchSecretarialStatutoryRegistersROSHFileData(location) {
+            
+            $.ajax({
+                url: '{{ route('fetch-SecretarialStatutoryRegistersROSH-file-data') }}',
+                type: 'GET',
+                data: { location: location }, // Pass the location parameter
+                success: function(response) {
+                    if (response && Array.isArray(response.files)) {
+                        const tableBody = $('#filesTableROSH tbody');
+                        tableBody.empty();
 
-                    response.files.forEach(file => {
-                        const fileName = file.file_name.split('/').pop();
-                        const fileSize = (file.file_size / 1024).toFixed(2) + ' KB';
-                          const createdAt = new Date(file.created_at);
+                        response.files.forEach(file => {
+                            const fileName = file.file_name.split('/').pop();
+                            const fileSize = (file.file_size / 1024).toFixed(2) + ' KB';
+                            const createdAt = new Date(file.created_at);
 
-    // Format the date (e.g., 'MM/DD/YYYY')
-    const formattedDate = createdAt.toLocaleDateString('en-GB', {
-        day: '2-digit',
-        month: '2-digit',
-        year: 'numeric',
-    });
+                        // Format the date (e.g., 'MM/DD/YYYY')
+                        const formattedDate = createdAt.toLocaleDateString('en-GB', {
+                            day: '2-digit',
+                            month: '2-digit',
+                            year: 'numeric',
+                        });
                         const row = `
                             <tr>
                             <td class="check_boox"><input type="checkbox" name="fileCheckbox" value="${fileName}"></td>
@@ -12374,44 +12373,44 @@ function fetchSecretarialStatutoryRegistersRMFileData(location) {
                                     <div class="qucik_axec_ain">
                                         <div class="quick_access">
                                       {{--      <a class="dropdown-itemm share_nt" >
- <svg width="16" height="10" viewBox="0 0 16 10" fill="none" xmlns="http://www.w3.org/2000/svg">
- <path d="M10.668 4.33301C11.7746 4.33301 12.6613 3.43967 12.6613 2.33301C12.6613 1.22634 11.7746 0.333008 10.668 0.333008C9.5613 0.333008 8.66797 1.22634 8.66797 2.33301C8.66797 3.43967 9.5613 4.33301 10.668 4.33301ZM5.33464 4.33301C6.4413 4.33301 7.32797 3.43967 7.32797 2.33301C7.32797 1.22634 6.4413 0.333008 5.33464 0.333008C4.22797 0.333008 3.33464 1.22634 3.33464 2.33301C3.33464 3.43967 4.22797 4.33301 5.33464 4.33301ZM5.33464 5.66634C3.7813 5.66634 0.667969 6.44634 0.667969 7.99967V9.66634H10.0013V7.99967C10.0013 6.44634 6.88797 5.66634 5.33464 5.66634ZM10.668 5.66634C10.4746 5.66634 10.2546 5.67967 10.0213 5.69967C10.7946 6.25967 11.3346 7.01301 11.3346 7.99967V9.66634H15.3346V7.99967C15.3346 6.44634 12.2213 5.66634 10.668 5.66634Z" fill="#8D8D8D"/>
- </svg>
- </a> --}}
- 
- <a class="dropdown-itemm download_nt" href="{{ url('/download-common-file/${file.id}') }}">
- <svg width="13" height="12" viewBox="0 0 13 12" fill="none" xmlns="http://www.w3.org/2000/svg">
- <g clip-path="url(#clip0_380_4)">
- <path d="M1.53125 11.1562C1.12514 11.1563 0.735658 10.9949 0.448493 10.7078C0.161328 10.4206 0 10.0311 0 9.625V7.4375C2.59352e-09 7.26345 0.0691404 7.09653 0.192211 6.97346C0.315282 6.85039 0.482202 6.78125 0.65625 6.78125C0.830298 6.78125 0.997218 6.85039 1.12029 6.97346C1.24336 7.09653 1.3125 7.26345 1.3125 7.4375V9.625C1.3125 9.74575 1.4105 9.84375 1.53125 9.84375H10.7188C10.7768 9.84375 10.8324 9.8207 10.8734 9.77968C10.9145 9.73866 10.9375 9.68302 10.9375 9.625V7.4375C10.9375 7.26345 11.0066 7.09653 11.1297 6.97346C11.2528 6.85039 11.4197 6.78125 11.5938 6.78125C11.7678 6.78125 11.9347 6.85039 12.0578 6.97346C12.1809 7.09653 12.25 7.26345 12.25 7.4375V9.625C12.25 10.0311 12.0887 10.4206 11.8015 10.7078C11.5143 10.9949 11.1249 11.1563 10.7188 11.1562H1.53125Z" fill="#8D8D8D"/>
- <path d="M5.46834 5.63413V0.65625C5.46834 0.482202 5.53748 0.315282 5.66055 0.192211C5.78362 0.0691404 5.95054 0 6.12459 0C6.29864 0 6.46556 0.0691404 6.58863 0.192211C6.7117 0.315282 6.78084 0.482202 6.78084 0.65625V5.63413L8.50459 3.91125C8.56549 3.85035 8.63779 3.80204 8.71736 3.76908C8.79693 3.73612 8.88222 3.71916 8.96834 3.71916C9.05447 3.71916 9.13975 3.73612 9.21932 3.76908C9.29889 3.80204 9.37119 3.85035 9.43209 3.91125C9.49299 3.97215 9.5413 4.04445 9.57426 4.12402C9.60722 4.20359 9.62418 4.28887 9.62418 4.375C9.62418 4.46113 9.60722 4.54641 9.57426 4.62598C9.5413 4.70555 9.49299 4.77785 9.43209 4.83875L6.58834 7.6825C6.52747 7.74346 6.45518 7.79181 6.37561 7.82481C6.29603 7.8578 6.21074 7.87478 6.12459 7.87478C6.03845 7.87478 5.95315 7.8578 5.87357 7.82481C5.794 7.79181 5.72171 7.74346 5.66084 7.6825L2.81709 4.83875C2.75619 4.77785 2.70788 4.70555 2.67492 4.62598C2.64196 4.54641 2.625 4.46113 2.625 4.375C2.625 4.28887 2.64196 4.20359 2.67492 4.12402C2.70788 4.04445 2.75619 3.97215 2.81709 3.91125C2.87799 3.85035 2.95029 3.80204 3.02986 3.76908C3.10943 3.73612 3.19472 3.71916 3.28084 3.71916C3.36697 3.71916 3.45225 3.73612 3.53182 3.76908C3.61139 3.80204 3.68369 3.85035 3.74459 3.91125L5.46834 5.63413Z" fill="#8D8D8D"/>
- </g>
- <defs>
- <clipPath id="clip0_380_4">
- <rect width="13" height="12" fill="white"/>
- </clipPath>
- </defs>
- </svg>
- </a>
-         <button type="button" class="delete-button" id="delbtdtst1" data-unique_tb_id="${file.id}">
-                                                            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                      <path d="M5.07536 13.3334C4.77759 13.3334 4.52359 13.2285 4.31336 13.0187C4.10359 12.809 3.9987 12.555 3.9987 12.2567V4.00007H3.33203V3.3334H5.9987V2.82007H9.9987V3.3334H12.6654V4.00007H11.9987V12.2567C11.9987 12.5634 11.896 12.8194 11.6907 13.0247C11.4849 13.2305 11.2287 13.3334 10.922 13.3334H5.07536ZM11.332 4.00007H4.66536V12.2567C4.66536 12.3763 4.70381 12.4745 4.7807 12.5514C4.85759 12.6283 4.95581 12.6667 5.07536 12.6667H10.922C11.0243 12.6667 11.1183 12.6241 11.204 12.5387C11.2894 12.453 11.332 12.359 11.332 12.2567V4.00007ZM6.53736 11.3334H7.20403V5.3334H6.53736V11.3334ZM8.79337 11.3334H9.46003V5.3334H8.79337V11.3334Z" fill="#FA4A4A"></path>
-                                    </svg> 
-                                                            </button> 
-                                                            
-                                                            <div class="dropdown">
-               <button class="dropbtn show_pp">
-                <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <path d="M10.3994 4.19166C10.3994 4.37562 10.3632 4.55779 10.2929 4.72778C10.2226 4.89776 10.1194 5.05222 9.98937 5.18234C9.85934 5.31246 9.70494 5.4157 9.535 5.48615C9.36507 5.55661 9.18292 5.5929 8.99896 5.59296C8.81499 5.59302 8.63282 5.55684 8.46284 5.4865C8.29286 5.41615 8.1384 5.31302 8.00827 5.18298C7.87815 5.05294 7.77492 4.89854 7.70446 4.72861C7.63401 4.55867 7.59772 4.37652 7.59766 4.19256C7.59754 3.82103 7.74501 3.46467 8.00764 3.20188C8.27026 2.93908 8.62653 2.79138 8.99806 2.79126C9.36958 2.79114 9.72594 2.93862 9.98874 3.20124C10.2515 3.46387 10.3992 3.82013 10.3994 4.19166Z" fill="#8D8D8D"></path>
-                  <path d="M8.99806 10.3999C9.77148 10.3999 10.3985 9.77294 10.3985 8.99952C10.3985 8.2261 9.77148 7.59912 8.99806 7.59912C8.22464 7.59912 7.59766 8.2261 7.59766 8.99952C7.59766 9.77294 8.22464 10.3999 8.99806 10.3999Z" fill="#8D8D8D"></path>
-                  <path d="M8.99806 15.2085C9.77148 15.2085 10.3985 14.5815 10.3985 13.8081C10.3985 13.0347 9.77148 12.4077 8.99806 12.4077C8.22464 12.4077 7.59766 13.0347 7.59766 13.8081C7.59766 14.5815 8.22464 15.2085 8.99806 15.2085Z" fill="#8D8D8D"></path>
-                </svg>
-              </button>
-              <div id="myDropdown3" class="dropdown-content"> 
-                <a class="dropdown-itemm chck_slect">
-                  Select Files </a>
-                  <a class="dropdown-itemm open_eye_pdf" href="{{ url('/showfile/${file.id}') }}" target="_blank">
-                  View </a>
-            </div>
+                                        <svg width="16" height="10" viewBox="0 0 16 10" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M10.668 4.33301C11.7746 4.33301 12.6613 3.43967 12.6613 2.33301C12.6613 1.22634 11.7746 0.333008 10.668 0.333008C9.5613 0.333008 8.66797 1.22634 8.66797 2.33301C8.66797 3.43967 9.5613 4.33301 10.668 4.33301ZM5.33464 4.33301C6.4413 4.33301 7.32797 3.43967 7.32797 2.33301C7.32797 1.22634 6.4413 0.333008 5.33464 0.333008C4.22797 0.333008 3.33464 1.22634 3.33464 2.33301C3.33464 3.43967 4.22797 4.33301 5.33464 4.33301ZM5.33464 5.66634C3.7813 5.66634 0.667969 6.44634 0.667969 7.99967V9.66634H10.0013V7.99967C10.0013 6.44634 6.88797 5.66634 5.33464 5.66634ZM10.668 5.66634C10.4746 5.66634 10.2546 5.67967 10.0213 5.69967C10.7946 6.25967 11.3346 7.01301 11.3346 7.99967V9.66634H15.3346V7.99967C15.3346 6.44634 12.2213 5.66634 10.668 5.66634Z" fill="#8D8D8D"/>
+                                        </svg>
+                                        </a> --}}
+                                        
+                                        <a class="dropdown-itemm download_nt" href="{{ url('/download-common-file/${file.id}') }}">
+                                        <svg width="13" height="12" viewBox="0 0 13 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <g clip-path="url(#clip0_380_4)">
+                                        <path d="M1.53125 11.1562C1.12514 11.1563 0.735658 10.9949 0.448493 10.7078C0.161328 10.4206 0 10.0311 0 9.625V7.4375C2.59352e-09 7.26345 0.0691404 7.09653 0.192211 6.97346C0.315282 6.85039 0.482202 6.78125 0.65625 6.78125C0.830298 6.78125 0.997218 6.85039 1.12029 6.97346C1.24336 7.09653 1.3125 7.26345 1.3125 7.4375V9.625C1.3125 9.74575 1.4105 9.84375 1.53125 9.84375H10.7188C10.7768 9.84375 10.8324 9.8207 10.8734 9.77968C10.9145 9.73866 10.9375 9.68302 10.9375 9.625V7.4375C10.9375 7.26345 11.0066 7.09653 11.1297 6.97346C11.2528 6.85039 11.4197 6.78125 11.5938 6.78125C11.7678 6.78125 11.9347 6.85039 12.0578 6.97346C12.1809 7.09653 12.25 7.26345 12.25 7.4375V9.625C12.25 10.0311 12.0887 10.4206 11.8015 10.7078C11.5143 10.9949 11.1249 11.1563 10.7188 11.1562H1.53125Z" fill="#8D8D8D"/>
+                                        <path d="M5.46834 5.63413V0.65625C5.46834 0.482202 5.53748 0.315282 5.66055 0.192211C5.78362 0.0691404 5.95054 0 6.12459 0C6.29864 0 6.46556 0.0691404 6.58863 0.192211C6.7117 0.315282 6.78084 0.482202 6.78084 0.65625V5.63413L8.50459 3.91125C8.56549 3.85035 8.63779 3.80204 8.71736 3.76908C8.79693 3.73612 8.88222 3.71916 8.96834 3.71916C9.05447 3.71916 9.13975 3.73612 9.21932 3.76908C9.29889 3.80204 9.37119 3.85035 9.43209 3.91125C9.49299 3.97215 9.5413 4.04445 9.57426 4.12402C9.60722 4.20359 9.62418 4.28887 9.62418 4.375C9.62418 4.46113 9.60722 4.54641 9.57426 4.62598C9.5413 4.70555 9.49299 4.77785 9.43209 4.83875L6.58834 7.6825C6.52747 7.74346 6.45518 7.79181 6.37561 7.82481C6.29603 7.8578 6.21074 7.87478 6.12459 7.87478C6.03845 7.87478 5.95315 7.8578 5.87357 7.82481C5.794 7.79181 5.72171 7.74346 5.66084 7.6825L2.81709 4.83875C2.75619 4.77785 2.70788 4.70555 2.67492 4.62598C2.64196 4.54641 2.625 4.46113 2.625 4.375C2.625 4.28887 2.64196 4.20359 2.67492 4.12402C2.70788 4.04445 2.75619 3.97215 2.81709 3.91125C2.87799 3.85035 2.95029 3.80204 3.02986 3.76908C3.10943 3.73612 3.19472 3.71916 3.28084 3.71916C3.36697 3.71916 3.45225 3.73612 3.53182 3.76908C3.61139 3.80204 3.68369 3.85035 3.74459 3.91125L5.46834 5.63413Z" fill="#8D8D8D"/>
+                                        </g>
+                                        <defs>
+                                        <clipPath id="clip0_380_4">
+                                        <rect width="13" height="12" fill="white"/>
+                                        </clipPath>
+                                        </defs>
+                                        </svg>
+                                        </a>
+                                        <button type="button" class="delete-button" id="delbtdtst1" data-unique_tb_id="${file.id}">
+                                                                                            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                                    <path d="M5.07536 13.3334C4.77759 13.3334 4.52359 13.2285 4.31336 13.0187C4.10359 12.809 3.9987 12.555 3.9987 12.2567V4.00007H3.33203V3.3334H5.9987V2.82007H9.9987V3.3334H12.6654V4.00007H11.9987V12.2567C11.9987 12.5634 11.896 12.8194 11.6907 13.0247C11.4849 13.2305 11.2287 13.3334 10.922 13.3334H5.07536ZM11.332 4.00007H4.66536V12.2567C4.66536 12.3763 4.70381 12.4745 4.7807 12.5514C4.85759 12.6283 4.95581 12.6667 5.07536 12.6667H10.922C11.0243 12.6667 11.1183 12.6241 11.204 12.5387C11.2894 12.453 11.332 12.359 11.332 12.2567V4.00007ZM6.53736 11.3334H7.20403V5.3334H6.53736V11.3334ZM8.79337 11.3334H9.46003V5.3334H8.79337V11.3334Z" fill="#FA4A4A"></path>
+                                                                    </svg> 
+                                                                                            </button> 
+                                                                                            
+                                                                                            <div class="dropdown">
+                                                                <button class="dropbtn show_pp">
+                                                                    <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                                    <path d="M10.3994 4.19166C10.3994 4.37562 10.3632 4.55779 10.2929 4.72778C10.2226 4.89776 10.1194 5.05222 9.98937 5.18234C9.85934 5.31246 9.70494 5.4157 9.535 5.48615C9.36507 5.55661 9.18292 5.5929 8.99896 5.59296C8.81499 5.59302 8.63282 5.55684 8.46284 5.4865C8.29286 5.41615 8.1384 5.31302 8.00827 5.18298C7.87815 5.05294 7.77492 4.89854 7.70446 4.72861C7.63401 4.55867 7.59772 4.37652 7.59766 4.19256C7.59754 3.82103 7.74501 3.46467 8.00764 3.20188C8.27026 2.93908 8.62653 2.79138 8.99806 2.79126C9.36958 2.79114 9.72594 2.93862 9.98874 3.20124C10.2515 3.46387 10.3992 3.82013 10.3994 4.19166Z" fill="#8D8D8D"></path>
+                                                                    <path d="M8.99806 10.3999C9.77148 10.3999 10.3985 9.77294 10.3985 8.99952C10.3985 8.2261 9.77148 7.59912 8.99806 7.59912C8.22464 7.59912 7.59766 8.2261 7.59766 8.99952C7.59766 9.77294 8.22464 10.3999 8.99806 10.3999Z" fill="#8D8D8D"></path>
+                                                                    <path d="M8.99806 15.2085C9.77148 15.2085 10.3985 14.5815 10.3985 13.8081C10.3985 13.0347 9.77148 12.4077 8.99806 12.4077C8.22464 12.4077 7.59766 13.0347 7.59766 13.8081C7.59766 14.5815 8.22464 15.2085 8.99806 15.2085Z" fill="#8D8D8D"></path>
+                                                                    </svg>
+                                                                </button>
+                                                                <div id="myDropdown3" class="dropdown-content"> 
+                                                                    <a class="dropdown-itemm chck_slect">
+                                                                    Select Files </a>
+                                                                    <a class="dropdown-itemm open_eye_pdf" href="{{ url('/showfile/${file.id}') }}" target="_blank">
+                                                                    View </a>
+                                                                </div>
             
                                         </div>
                                     </div>
@@ -12427,14 +12426,14 @@ function fetchSecretarialStatutoryRegistersRMFileData(location) {
             error: function(xhr, status, error) {
                 console.error('Failed to fetch data:', status, error);
             }
-        });
-    }
+            });
+          }
     
   
-        $('body').on('click', '#StautoryReg_security_countt', function() {
-            const location  = $(this).data('location');
-            fetchSecretarialStatutoryRegistersROSHFileData(location);
-        });
+            $('body').on('click', '#StautoryReg_security_countt', function() {
+                const location  = $(this).data('location');
+                fetchSecretarialStatutoryRegistersROSHFileData(location);
+            });
   
     
     
@@ -13622,28 +13621,33 @@ function fetchSecretarialStatutoryRegistersRMFileData(location) {
    
     
     
-    function fetchSecretarialStatutoryRegistersRPBFileData(location) {
-        
+    function fetchSecretarialStatutoryRegistersRPBFileData(location , real_file_name) {
+        // Show loading message before fetching data
+        $('#filesTableRPB tbody').html('<tr><td colspan="8" style="text-align:center;" >Loading...</td></tr>');
+
         $.ajax({
             url: '{{ route('fetch-SecretarialStatutoryRegistersRPB-file-data') }}',
             type: 'GET',
-            data: { location: location }, // Pass the location parameter
+            data: { location: location,
+                real_file_name: real_file_name
+             }, // Pass the location parameter
             success: function(response) {
-                if (response && Array.isArray(response.files)) {
+                
+                if (response && Array.isArray(response.files) && response.files.length > 0) {
                     const tableBody = $('#filesTableRPB tbody');
                     tableBody.empty();
 
                     response.files.forEach(file => {
                         const fileName = file.file_name.split('/').pop();
                         const fileSize = (file.file_size / 1024).toFixed(2) + ' KB';
-                          const createdAt = new Date(file.created_at);
+                        const createdAt = new Date(file.created_at);
 
-    // Format the date (e.g., 'MM/DD/YYYY')
-    const formattedDate = createdAt.toLocaleDateString('en-GB', {
-        day: '2-digit',
-        month: '2-digit',
-        year: 'numeric',
-    });
+                        // Format the date (e.g., 'MM/DD/YYYY')
+                        const formattedDate = createdAt.toLocaleDateString('en-GB', {
+                            day: '2-digit',
+                            month: '2-digit',
+                            year: 'numeric',
+                        });
                         const row = `
                             <tr>
                             <td class="check_boox"><input type="checkbox" name="fileCheckbox" value="${fileName}"></td>
@@ -13657,44 +13661,44 @@ function fetchSecretarialStatutoryRegistersRMFileData(location) {
                                     <div class="qucik_axec_ain">
                                         <div class="quick_access">
                                       {{--      <a class="dropdown-itemm share_nt" >
- <svg width="16" height="10" viewBox="0 0 16 10" fill="none" xmlns="http://www.w3.org/2000/svg">
- <path d="M10.668 4.33301C11.7746 4.33301 12.6613 3.43967 12.6613 2.33301C12.6613 1.22634 11.7746 0.333008 10.668 0.333008C9.5613 0.333008 8.66797 1.22634 8.66797 2.33301C8.66797 3.43967 9.5613 4.33301 10.668 4.33301ZM5.33464 4.33301C6.4413 4.33301 7.32797 3.43967 7.32797 2.33301C7.32797 1.22634 6.4413 0.333008 5.33464 0.333008C4.22797 0.333008 3.33464 1.22634 3.33464 2.33301C3.33464 3.43967 4.22797 4.33301 5.33464 4.33301ZM5.33464 5.66634C3.7813 5.66634 0.667969 6.44634 0.667969 7.99967V9.66634H10.0013V7.99967C10.0013 6.44634 6.88797 5.66634 5.33464 5.66634ZM10.668 5.66634C10.4746 5.66634 10.2546 5.67967 10.0213 5.69967C10.7946 6.25967 11.3346 7.01301 11.3346 7.99967V9.66634H15.3346V7.99967C15.3346 6.44634 12.2213 5.66634 10.668 5.66634Z" fill="#8D8D8D"/>
- </svg>
- </a> --}}
- 
- <a class="dropdown-itemm download_nt" href="{{ url('/download-common-file/${file.id}') }}">
- <svg width="13" height="12" viewBox="0 0 13 12" fill="none" xmlns="http://www.w3.org/2000/svg">
- <g clip-path="url(#clip0_380_4)">
- <path d="M1.53125 11.1562C1.12514 11.1563 0.735658 10.9949 0.448493 10.7078C0.161328 10.4206 0 10.0311 0 9.625V7.4375C2.59352e-09 7.26345 0.0691404 7.09653 0.192211 6.97346C0.315282 6.85039 0.482202 6.78125 0.65625 6.78125C0.830298 6.78125 0.997218 6.85039 1.12029 6.97346C1.24336 7.09653 1.3125 7.26345 1.3125 7.4375V9.625C1.3125 9.74575 1.4105 9.84375 1.53125 9.84375H10.7188C10.7768 9.84375 10.8324 9.8207 10.8734 9.77968C10.9145 9.73866 10.9375 9.68302 10.9375 9.625V7.4375C10.9375 7.26345 11.0066 7.09653 11.1297 6.97346C11.2528 6.85039 11.4197 6.78125 11.5938 6.78125C11.7678 6.78125 11.9347 6.85039 12.0578 6.97346C12.1809 7.09653 12.25 7.26345 12.25 7.4375V9.625C12.25 10.0311 12.0887 10.4206 11.8015 10.7078C11.5143 10.9949 11.1249 11.1563 10.7188 11.1562H1.53125Z" fill="#8D8D8D"/>
- <path d="M5.46834 5.63413V0.65625C5.46834 0.482202 5.53748 0.315282 5.66055 0.192211C5.78362 0.0691404 5.95054 0 6.12459 0C6.29864 0 6.46556 0.0691404 6.58863 0.192211C6.7117 0.315282 6.78084 0.482202 6.78084 0.65625V5.63413L8.50459 3.91125C8.56549 3.85035 8.63779 3.80204 8.71736 3.76908C8.79693 3.73612 8.88222 3.71916 8.96834 3.71916C9.05447 3.71916 9.13975 3.73612 9.21932 3.76908C9.29889 3.80204 9.37119 3.85035 9.43209 3.91125C9.49299 3.97215 9.5413 4.04445 9.57426 4.12402C9.60722 4.20359 9.62418 4.28887 9.62418 4.375C9.62418 4.46113 9.60722 4.54641 9.57426 4.62598C9.5413 4.70555 9.49299 4.77785 9.43209 4.83875L6.58834 7.6825C6.52747 7.74346 6.45518 7.79181 6.37561 7.82481C6.29603 7.8578 6.21074 7.87478 6.12459 7.87478C6.03845 7.87478 5.95315 7.8578 5.87357 7.82481C5.794 7.79181 5.72171 7.74346 5.66084 7.6825L2.81709 4.83875C2.75619 4.77785 2.70788 4.70555 2.67492 4.62598C2.64196 4.54641 2.625 4.46113 2.625 4.375C2.625 4.28887 2.64196 4.20359 2.67492 4.12402C2.70788 4.04445 2.75619 3.97215 2.81709 3.91125C2.87799 3.85035 2.95029 3.80204 3.02986 3.76908C3.10943 3.73612 3.19472 3.71916 3.28084 3.71916C3.36697 3.71916 3.45225 3.73612 3.53182 3.76908C3.61139 3.80204 3.68369 3.85035 3.74459 3.91125L5.46834 5.63413Z" fill="#8D8D8D"/>
- </g>
- <defs>
- <clipPath id="clip0_380_4">
- <rect width="13" height="12" fill="white"/>
- </clipPath>
- </defs>
- </svg>
- </a>
-         <button type="button" class="delete-button" id="delbtdtst1" data-unique_tb_id="${file.id}">
-                                                            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                      <path d="M5.07536 13.3334C4.77759 13.3334 4.52359 13.2285 4.31336 13.0187C4.10359 12.809 3.9987 12.555 3.9987 12.2567V4.00007H3.33203V3.3334H5.9987V2.82007H9.9987V3.3334H12.6654V4.00007H11.9987V12.2567C11.9987 12.5634 11.896 12.8194 11.6907 13.0247C11.4849 13.2305 11.2287 13.3334 10.922 13.3334H5.07536ZM11.332 4.00007H4.66536V12.2567C4.66536 12.3763 4.70381 12.4745 4.7807 12.5514C4.85759 12.6283 4.95581 12.6667 5.07536 12.6667H10.922C11.0243 12.6667 11.1183 12.6241 11.204 12.5387C11.2894 12.453 11.332 12.359 11.332 12.2567V4.00007ZM6.53736 11.3334H7.20403V5.3334H6.53736V11.3334ZM8.79337 11.3334H9.46003V5.3334H8.79337V11.3334Z" fill="#FA4A4A"></path>
-                                    </svg> 
-                                                            </button> 
+                                        <svg width="16" height="10" viewBox="0 0 16 10" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M10.668 4.33301C11.7746 4.33301 12.6613 3.43967 12.6613 2.33301C12.6613 1.22634 11.7746 0.333008 10.668 0.333008C9.5613 0.333008 8.66797 1.22634 8.66797 2.33301C8.66797 3.43967 9.5613 4.33301 10.668 4.33301ZM5.33464 4.33301C6.4413 4.33301 7.32797 3.43967 7.32797 2.33301C7.32797 1.22634 6.4413 0.333008 5.33464 0.333008C4.22797 0.333008 3.33464 1.22634 3.33464 2.33301C3.33464 3.43967 4.22797 4.33301 5.33464 4.33301ZM5.33464 5.66634C3.7813 5.66634 0.667969 6.44634 0.667969 7.99967V9.66634H10.0013V7.99967C10.0013 6.44634 6.88797 5.66634 5.33464 5.66634ZM10.668 5.66634C10.4746 5.66634 10.2546 5.67967 10.0213 5.69967C10.7946 6.25967 11.3346 7.01301 11.3346 7.99967V9.66634H15.3346V7.99967C15.3346 6.44634 12.2213 5.66634 10.668 5.66634Z" fill="#8D8D8D"/>
+                                        </svg>
+                                        </a> --}}
+                                        
+                                        <a class="dropdown-itemm download_nt" href="{{ url('/download-common-file/${file.id}') }}">
+                                        <svg width="13" height="12" viewBox="0 0 13 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                            <g clip-path="url(#clip0_380_4)">
+                                                <path d="M1.53125 11.1562C1.12514 11.1563 0.735658 10.9949 0.448493 10.7078C0.161328 10.4206 0 10.0311 0 9.625V7.4375C2.59352e-09 7.26345 0.0691404 7.09653 0.192211 6.97346C0.315282 6.85039 0.482202 6.78125 0.65625 6.78125C0.830298 6.78125 0.997218 6.85039 1.12029 6.97346C1.24336 7.09653 1.3125 7.26345 1.3125 7.4375V9.625C1.3125 9.74575 1.4105 9.84375 1.53125 9.84375H10.7188C10.7768 9.84375 10.8324 9.8207 10.8734 9.77968C10.9145 9.73866 10.9375 9.68302 10.9375 9.625V7.4375C10.9375 7.26345 11.0066 7.09653 11.1297 6.97346C11.2528 6.85039 11.4197 6.78125 11.5938 6.78125C11.7678 6.78125 11.9347 6.85039 12.0578 6.97346C12.1809 7.09653 12.25 7.26345 12.25 7.4375V9.625C12.25 10.0311 12.0887 10.4206 11.8015 10.7078C11.5143 10.9949 11.1249 11.1563 10.7188 11.1562H1.53125Z" fill="#8D8D8D"/>
+                                                <path d="M5.46834 5.63413V0.65625C5.46834 0.482202 5.53748 0.315282 5.66055 0.192211C5.78362 0.0691404 5.95054 0 6.12459 0C6.29864 0 6.46556 0.0691404 6.58863 0.192211C6.7117 0.315282 6.78084 0.482202 6.78084 0.65625V5.63413L8.50459 3.91125C8.56549 3.85035 8.63779 3.80204 8.71736 3.76908C8.79693 3.73612 8.88222 3.71916 8.96834 3.71916C9.05447 3.71916 9.13975 3.73612 9.21932 3.76908C9.29889 3.80204 9.37119 3.85035 9.43209 3.91125C9.49299 3.97215 9.5413 4.04445 9.57426 4.12402C9.60722 4.20359 9.62418 4.28887 9.62418 4.375C9.62418 4.46113 9.60722 4.54641 9.57426 4.62598C9.5413 4.70555 9.49299 4.77785 9.43209 4.83875L6.58834 7.6825C6.52747 7.74346 6.45518 7.79181 6.37561 7.82481C6.29603 7.8578 6.21074 7.87478 6.12459 7.87478C6.03845 7.87478 5.95315 7.8578 5.87357 7.82481C5.794 7.79181 5.72171 7.74346 5.66084 7.6825L2.81709 4.83875C2.75619 4.77785 2.70788 4.70555 2.67492 4.62598C2.64196 4.54641 2.625 4.46113 2.625 4.375C2.625 4.28887 2.64196 4.20359 2.67492 4.12402C2.70788 4.04445 2.75619 3.97215 2.81709 3.91125C2.87799 3.85035 2.95029 3.80204 3.02986 3.76908C3.10943 3.73612 3.19472 3.71916 3.28084 3.71916C3.36697 3.71916 3.45225 3.73612 3.53182 3.76908C3.61139 3.80204 3.68369 3.85035 3.74459 3.91125L5.46834 5.63413Z" fill="#8D8D8D"/>
+                                            </g>
+                                            <defs>
+                                                <clipPath id="clip0_380_4">
+                                                 <rect width="13" height="12" fill="white"/>
+                                                </clipPath>
+                                            </defs>
+                                        </svg>
+                                        </a>
+                                        <button type="button" class="delete-button" id="delbtdtst1" data-unique_tb_id="${file.id}">
+                                            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                <path d="M5.07536 13.3334C4.77759 13.3334 4.52359 13.2285 4.31336 13.0187C4.10359 12.809 3.9987 12.555 3.9987 12.2567V4.00007H3.33203V3.3334H5.9987V2.82007H9.9987V3.3334H12.6654V4.00007H11.9987V12.2567C11.9987 12.5634 11.896 12.8194 11.6907 13.0247C11.4849 13.2305 11.2287 13.3334 10.922 13.3334H5.07536ZM11.332 4.00007H4.66536V12.2567C4.66536 12.3763 4.70381 12.4745 4.7807 12.5514C4.85759 12.6283 4.95581 12.6667 5.07536 12.6667H10.922C11.0243 12.6667 11.1183 12.6241 11.204 12.5387C11.2894 12.453 11.332 12.359 11.332 12.2567V4.00007ZM6.53736 11.3334H7.20403V5.3334H6.53736V11.3334ZM8.79337 11.3334H9.46003V5.3334H8.79337V11.3334Z" fill="#FA4A4A"></path>
+                                            </svg> 
+                                        </button> 
                                                             
                                                             <div class="dropdown">
-                <button class="dropbtn show_pp">
-                <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <path d="M10.3994 4.19166C10.3994 4.37562 10.3632 4.55779 10.2929 4.72778C10.2226 4.89776 10.1194 5.05222 9.98937 5.18234C9.85934 5.31246 9.70494 5.4157 9.535 5.48615C9.36507 5.55661 9.18292 5.5929 8.99896 5.59296C8.81499 5.59302 8.63282 5.55684 8.46284 5.4865C8.29286 5.41615 8.1384 5.31302 8.00827 5.18298C7.87815 5.05294 7.77492 4.89854 7.70446 4.72861C7.63401 4.55867 7.59772 4.37652 7.59766 4.19256C7.59754 3.82103 7.74501 3.46467 8.00764 3.20188C8.27026 2.93908 8.62653 2.79138 8.99806 2.79126C9.36958 2.79114 9.72594 2.93862 9.98874 3.20124C10.2515 3.46387 10.3992 3.82013 10.3994 4.19166Z" fill="#8D8D8D"></path>
-                  <path d="M8.99806 10.3999C9.77148 10.3999 10.3985 9.77294 10.3985 8.99952C10.3985 8.2261 9.77148 7.59912 8.99806 7.59912C8.22464 7.59912 7.59766 8.2261 7.59766 8.99952C7.59766 9.77294 8.22464 10.3999 8.99806 10.3999Z" fill="#8D8D8D"></path>
-                  <path d="M8.99806 15.2085C9.77148 15.2085 10.3985 14.5815 10.3985 13.8081C10.3985 13.0347 9.77148 12.4077 8.99806 12.4077C8.22464 12.4077 7.59766 13.0347 7.59766 13.8081C7.59766 14.5815 8.22464 15.2085 8.99806 15.2085Z" fill="#8D8D8D"></path>
-                </svg>
-              </button>
-              <div id="myDropdown3" class="dropdown-content"> 
-                <a class="dropdown-itemm chck_slect">
-                  Select Files </a>
-                  <a class="dropdown-itemm open_eye_pdf" href="{{ url('/showfile/${file.id}') }}" target="_blank">
-                  View </a>
-            </div>
+                                            <button class="dropbtn show_pp">
+                                            <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                            <path d="M10.3994 4.19166C10.3994 4.37562 10.3632 4.55779 10.2929 4.72778C10.2226 4.89776 10.1194 5.05222 9.98937 5.18234C9.85934 5.31246 9.70494 5.4157 9.535 5.48615C9.36507 5.55661 9.18292 5.5929 8.99896 5.59296C8.81499 5.59302 8.63282 5.55684 8.46284 5.4865C8.29286 5.41615 8.1384 5.31302 8.00827 5.18298C7.87815 5.05294 7.77492 4.89854 7.70446 4.72861C7.63401 4.55867 7.59772 4.37652 7.59766 4.19256C7.59754 3.82103 7.74501 3.46467 8.00764 3.20188C8.27026 2.93908 8.62653 2.79138 8.99806 2.79126C9.36958 2.79114 9.72594 2.93862 9.98874 3.20124C10.2515 3.46387 10.3992 3.82013 10.3994 4.19166Z" fill="#8D8D8D"></path>
+                                            <path d="M8.99806 10.3999C9.77148 10.3999 10.3985 9.77294 10.3985 8.99952C10.3985 8.2261 9.77148 7.59912 8.99806 7.59912C8.22464 7.59912 7.59766 8.2261 7.59766 8.99952C7.59766 9.77294 8.22464 10.3999 8.99806 10.3999Z" fill="#8D8D8D"></path>
+                                            <path d="M8.99806 15.2085C9.77148 15.2085 10.3985 14.5815 10.3985 13.8081C10.3985 13.0347 9.77148 12.4077 8.99806 12.4077C8.22464 12.4077 7.59766 13.0347 7.59766 13.8081C7.59766 14.5815 8.22464 15.2085 8.99806 15.2085Z" fill="#8D8D8D"></path>
+                                            </svg>
+                                        </button>
+                                        <div id="myDropdown3" class="dropdown-content"> 
+                                            <a class="dropdown-itemm chck_slect">
+                                            Select Files </a>
+                                            <a class="dropdown-itemm open_eye_pdf" href="{{ url('/showfile/${file.id}') }}" target="_blank">
+                                            View </a>
+                                        </div>
             
                                         </div>
                                     </div>
@@ -13704,11 +13708,38 @@ function fetchSecretarialStatutoryRegistersRMFileData(location) {
                         tableBody.append(row);
                     });
                 } else {
-                    console.error('Unexpected response format:', response);
+                    // Show "No data found" message if files array is empty
+                    $('#filesTableRPB tbody').html('<tr><td colspan="8" style="text-align:center;" > No data found. </td></tr>');
+                    // console.error('Unexpected response format:', response);
                 }
             },
             error: function(xhr, status, error) {
-                console.error('Failed to fetch data:', status, error);
+                $('#filesTableRPB tbody').html(`
+                    <tr>
+                        <td colspan="8" style="text-align:center;">
+                            <div class="refresh_custom">
+                            Something went wrong. Please try again
+                            <a class="type_number getparm" 
+                                    data-location="${location}"
+                                    data-real_file_name="${real_file_name}"
+                                    
+                                    id="StautoryReg_ballot_countt" type="button">
+                                    <svg fill="#000000" height="800px" width="800px" version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" 
+                                        viewBox="0 0 367.136 367.136" xml:space="preserve">
+                                        <path d="M336.554,86.871c-11.975-18.584-27.145-34.707-44.706-47.731L330.801,0H217.436v113.91L270.4,60.691
+                                            c40.142,28.131,65.042,74.724,65.042,124.571c0,83.744-68.13,151.874-151.874,151.874S31.694,269.005,31.694,185.262
+                                            c0-58.641,32.781-111.009,85.551-136.669l-13.119-26.979C73.885,36.318,48.315,59.1,30.182,87.494
+                                            c-18.637,29.184-28.488,62.991-28.488,97.768c0,100.286,81.588,181.874,181.874,181.874s181.874-81.588,181.874-181.874
+                                            C365.442,150.223,355.453,116.201,336.554,86.871z"/>
+                                    </svg>
+                            </a>
+                            </div>
+                        </td>
+                    </tr>
+                `);
+
+
+                // console.error('Failed to fetch data:', status, error);
             }
         });
     }
@@ -13716,12 +13747,15 @@ function fetchSecretarialStatutoryRegistersRMFileData(location) {
    
         $('body').on('click', '#StautoryReg_ballot_countt', function() {
             const location  = $(this).data('location');
-            fetchSecretarialStatutoryRegistersRPBFileData(location);
+            const real_file_name  = $(this).data('real_file_name');
+             $('.common_title').html(real_file_name);
+
+            fetchSecretarialStatutoryRegistersRPBFileData( location , real_file_name );
         });
+    
     });
 
 
 </script>
-
 
 

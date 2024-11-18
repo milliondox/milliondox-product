@@ -3113,6 +3113,29 @@ ul.dropdown-menu {
     height: 15px;
 }
 
+/***view table reload css start***/
+.refresh_custom {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0px 7px;
+}
+
+.refresh_custom svg {
+    width: 16px;
+    height: 16px;
+}
+
+.refresh_custom svg path {
+    fill: #d2ff94;
+}
+
+.dark-only .refresh_custom svg path {
+    fill: #99DB66;
+}
+
+/***view table reload css end***/
+
 /******/
 
 .dark-only .depo-ress .setting_munal .setting_opt {
