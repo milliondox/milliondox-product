@@ -8957,15 +8957,16 @@ $(document).ready(function () {
 
 </script>
 <script>
-    $(document).on('click', '.delete_nt', function(e) {
+   $(document).on('click', '.delete_nt', function(e) {
         e.preventDefault();
 
         let folderId = $(this).data('folder_id');
+        let folderName = $(this).data('folder_name');
 
-        // Show confirmation dialog before delete
+        // Show confirmation dialog
         Swal.fire({
             title: 'Are you sure?',
-            text: "This action will delete the folder.",
+            text: `This action will delete the folder: ${folderName}.`,
             icon: 'warning',
             showCancelButton: true,
             confirmButtonColor: '#3085d6',
@@ -8973,31 +8974,29 @@ $(document).ready(function () {
             confirmButtonText: 'Yes, delete it!'
         }).then((result) => {
             if (result.isConfirmed) {
-                // Proceed with AJAX request to update is_delete status
+                // Perform AJAX request
                 $.ajax({
-                    url: '/update-folder-status',  // Update with your actual route
+                    url: '/update-folder-status',
                     method: 'POST',
                     data: {
                         folder_id: folderId,
+                        folder_name: folderName,
                         is_delete: 1,
-                        _token: '{{ csrf_token() }}'  // CSRF token for security
+                        _token: '{{ csrf_token() }}'
                     },
                     success: function(response) {
                         if (response.success) {
-                            // Show success message with Toastr
                             toastr.success('Folder deleted successfully!');
 
-                            // Refresh the page after a short delay to allow the toastr message to display
+                            // Reload page
                             setTimeout(() => {
                                 window.location.reload();
                             }, 1500);
                         } else {
-                            // Handle error case with Toastr
                             toastr.error(response.message || 'Could not delete the folder.');
                         }
                     },
                     error: function() {
-                        // Show error message with Toastr
                         toastr.error('An error occurred while deleting the folder.');
                     }
                 });

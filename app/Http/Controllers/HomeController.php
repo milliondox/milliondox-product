@@ -1113,18 +1113,20 @@ public function updatecompanyemployee(Request $request)
 
 public function delcompemp(Request $request)
 {
-   
-$empId = $request->emp_id;
-    // Update the is_delete status in storecompanydirector
+    $empId = $request->emp_id;
+    $folderName = $request->folder_name;
     StoreCompanyEmployee::where('id', $empId)
+    ->update(['is_delete' => 1]);
+    // Update the folder is_delete field
+    $update = Folder::where('employee_id', $empId)
+        ->where('name', 'like', '%' . $folderName . '%')
         ->update(['is_delete' => 1]);
 
-    // Update the is_delete status in folder
-    Folder::where('employee_id', $empId)
-        ->update(['is_delete' => 1]);
-
-    return response()->json(['success' => true]);
+    return response()->json([
+        'status' => $update ? 'success' : 'error',
+    ]);
 }
+
 
 public function downloadCsv()
 {
@@ -17520,18 +17522,35 @@ public function deletefilecommon($id)
 
 public function rejectfolder($id)
 {
-    // $file = CommonTable::findOrFail($id);
-    
-  
-    $totalCount = Folder::where('id', $id)
-    ->where('is_delete', 2)
-    ->update(['is_delete' => 1]);
-  
-   
-   
+    // Find the folder by its ID
+    $file = Folder::findOrFail($id);
 
-    return redirect()->back()->with('success', 'Folder deleted successfully.');
+    // Get the employee_id associated with the folder
+    $employeeId = $file->employee_id;
+
+    // Perform the reject action on the folder by setting is_delete to 1
+    $totalCount = Folder::where('id', $id)
+        ->where('is_delete', 2) // Assuming 2 is the current status that allows deletion
+        ->update(['is_delete' => 1]);
+
+    // Check if the folder was successfully updated
+    if ($totalCount > 0) {
+        // Find the corresponding employee and update their is_delete status to 1 as well
+        $employee = StoreCompanyEmployee::where('id', $employeeId)->first();
+        
+        if ($employee) {
+            // Update the is_delete status in the storecompanyemployee table
+            $employee->update(['is_delete' => 1]);
+        }
+
+        // Return a success message after successfully deleting the folder and updating employee status
+        return redirect()->back()->with('success', 'Folder and employee status marked as deleted successfully.');
+    } else {
+        // In case the folder was not found or not updated
+        return redirect()->back()->with('error', 'Failed to delete folder. The folder may not be in the correct state.');
+    }
 }
+
 // BoardNoticeController.php
 public function fetchBoardNoticesCount()
 {
@@ -17555,13 +17574,27 @@ public function restore($id)
 
 public function restorefold($id)
 {
+    // Find the folder by its ID
     $file = Folder::findOrFail($id);
 
-    // Perform restore action
+    // Get the employee_id from the folder
+    $employeeId = $file->employee_id;
+
+    // Perform the restore action on the folder by setting is_delete to 0
     $file->update(['is_delete' => 0]);
 
-    return redirect()->back()->with('success', 'Folder restored successfully.');
+    // Also restore the is_delete status in the storecompanyemployee table where employee_id matches
+    $employee = StoreCompanyEmployee::where('id', $employeeId)->first();
+
+    if ($employee) {
+        // Update the is_delete status in storecompanyemployee to 0 as well
+        $employee->update(['is_delete' => 0]);
+    }
+
+    // Redirect back with a success message
+    return redirect()->back()->with('success', 'Folder and employee status restored successfully.');
 }
+
 
 // public function restorefile($id)
 // {
@@ -20683,6 +20716,8 @@ public function shareFolder(Request $request)
                                 $userFoldersQuery = Folder::where('parent_name', $folderPath)
                                 ->where('user_id', Auth::id())
                                 ->where('is_delete', 0);
+
+                                // dd($userFoldersQuery);
                                 
 
                                 // ->where('real_file_name', NULL);
@@ -20782,7 +20817,7 @@ public function shareFolder(Request $request)
                                       <path d="M6.34334 6.72788V1.75C6.34334 1.57595 6.41248 1.40903 6.53555 1.28596C6.65862 1.16289 6.82554 1.09375 6.99959 1.09375C7.17364 1.09375 7.34056 1.16289 7.46363 1.28596C7.5867 1.40903 7.65584 1.57595 7.65584 1.75V6.72788L9.37959 5.005C9.44049 4.9441 9.51279 4.89579 9.59236 4.86283C9.67193 4.82987 9.75722 4.81291 9.84334 4.81291C9.92947 4.81291 10.0148 4.82987 10.0943 4.86283C10.1739 4.89579 10.2462 4.9441 10.3071 5.005C10.368 5.0659 10.4163 5.1382 10.4493 5.21777C10.4822 5.29734 10.4992 5.38262 10.4992 5.46875C10.4992 5.55488 10.4822 5.64016 10.4493 5.71973C10.4163 5.7993 10.368 5.8716 10.3071 5.9325L7.46334 8.77625C7.40247 8.83721 7.33018 8.88556 7.25061 8.91856C7.17103 8.95155 7.08574 8.96853 6.99959 8.96853C6.91345 8.96853 6.82815 8.95155 6.74857 8.91856C6.669 8.88556 6.59671 8.83721 6.53584 8.77625L3.69209 5.9325C3.63119 5.8716 3.58288 5.7993 3.54992 5.71973C3.51696 5.64016 3.5 5.55488 3.5 5.46875C3.5 5.38262 3.51696 5.29734 3.54992 5.21777C3.58288 5.1382 3.63119 5.0659 3.69209 5.005C3.75299 4.9441 3.82529 4.89579 3.90486 4.86283C3.98443 4.82987 4.06972 4.81291 4.15584 4.81291C4.24197 4.81291 4.32725 4.82987 4.40682 4.86283C4.48639 4.89579 4.55869 4.9441 4.61959 5.005L6.34334 6.72788Z" fill="#CEFFA8"></path>
                                   </svg>Download</a>
 
-                                  <a class="dropdown-itemm delete_nt ' . ($folder->is_delete == 1 ? 'deleted_button' : '') . '" data-bs-toggle="modal" data-folder_id="' . $folder->id . '"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                  <a class="dropdown-itemm delete_nt ' . ($folder->is_delete == 1 ? 'deleted_button' : '') . '" data-folder_name="' . $folder->name . '" data-bs-toggle="modal" data-folder_id="' . $folder->id . '"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
                                       <path d="M5.07536 13.3334C4.77759 13.3334 4.52359 13.2285 4.31336 13.0187C4.10359 12.809 3.9987 12.555 3.9987 12.2567V4.00007H3.33203V3.3334H5.9987V2.82007H9.9987V3.3334H12.6654V4.00007H11.9987V12.2567C11.9987 12.5634 11.896 12.8194 11.6907 13.0247C11.4849 13.2305 11.2287 13.3334 10.922 13.3334H5.07536ZM11.332 4.00007H4.66536V12.2567C4.66536 12.3763 4.70381 12.4745 4.7807 12.5514C4.85759 12.6283 4.95581 12.6667 5.07536 12.6667H10.922C11.0243 12.6667 11.1183 12.6241 11.204 12.5387C11.2894 12.453 11.332 12.359 11.332 12.2567V4.00007ZM6.53736 11.3334H7.20403V5.3334H6.53736V11.3334ZM8.79337 11.3334H9.46003V5.3334H8.79337V11.3334Z" fill="#FA4A4A"></path>
                                     </svg>Delete</a>
                                 </div>
@@ -21029,20 +21064,25 @@ public function shareFolder(Request $request)
     }
 
     public function updateFolderStatus(Request $request)
-{
-    $folderId = $request->input('folder_id');
-
-    // Find the folder by ID and update `is_delete`
-    $folder = Folder::find($folderId);
-    if ($folder) {
-        $folder->is_delete = 1;
-        $folder->save();
-
-        return response()->json(['success' => true, 'message' => 'Folder deleted successfully.']);
+    {
+        $folderId = $request->input('folder_id');
+        $folderName = $request->input('folder_name');
+    
+        // Find the folder by ID and match its name
+        $folder = Folder::where('id', $folderId)
+        ->where('name', 'like', '%' . $folderName . '%')  // Partial match using LIKE
+                        ->first();
+    
+        if ($folder) {
+            $folder->is_delete = 1;
+            $folder->save();
+    
+            return response()->json(['success' => true, 'message' => 'Folder deleted successfully.']);
+        }
+    
+        return response()->json(['success' => false, 'message' => 'Folder not found or name mismatch.']);
     }
-
-    return response()->json(['success' => false, 'message' => 'Folder not found.']);
-}
+    
 
 //     public function downloadFolders(Request $request)
 // {
@@ -22740,16 +22780,16 @@ public function updateoutofexpense(request $request)
     
     $gstno = StoreGST::where('user_id', $user->id)->get();
     $gstnocount = StoreGST::where('user_id', $user->id)->count();
-    $employeescompany = StoreCompanyEmployee ::where('user_id', $user->id)->get();
+    $employeescompany = StoreCompanyEmployee ::where('user_id', $user->id)->where('is_delete', 0)->get();
     
-    $employeescount = StoreCompanyEmployee::where('user_id', $user->id)->count();
+    $employeescount = StoreCompanyEmployee::where('user_id', $user->id)->where('is_delete', 0)->count();
     
     // dd($gstnocount);
     // Find the UserRole record where the role matches the user's role
     $userRoleRecord = UserRole::where('role', $userRole)->first();
 
     $directorcompany = StoreCompanydirector ::where('user_id', $user->id)->where('is_delete', 0)->get();
-    
+    // dd($directorcompany);
     $directorcount = StoreCompanydirector::where('user_id', $user->id)->where('is_delete', 0)->count();
     $progressPercentage = 0;
 

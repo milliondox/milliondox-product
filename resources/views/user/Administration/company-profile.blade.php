@@ -1165,7 +1165,7 @@ $(document).ready(function() {
 
  </div>
  <div class="two_edit_del_button">
-     <button class="director_full_del compempdel" id="director_full_del_{{ $emp->id }}" type="button">
+     <button class="director_full_del compempdel" name="{{ $emp->name }}"id="director_full_del_{{ $emp->id }}" type="button">
          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
 <path d="M6.42969 2.67871H9.42969C9.42969 2.28089 9.27165 1.89936 8.99035 1.61805C8.70904 1.33675 8.32751 1.17871 7.92969 1.17871C7.53186 1.17871 7.15033 1.33675 6.86903 1.61805C6.58772 1.89936 6.42969 2.28089 6.42969 2.67871ZM5.30469 2.67871C5.30469 2.33399 5.37259 1.99265 5.5045 1.67417C5.63642 1.35569 5.82978 1.06631 6.07353 0.822556C6.31729 0.578802 6.60666 0.385446 6.92514 0.253527C7.24362 0.121609 7.58497 0.0537109 7.92969 0.0537109C8.27441 0.0537109 8.61575 0.121609 8.93423 0.253527C9.25271 0.385446 9.54209 0.578802 9.78584 0.822556C10.0296 1.06631 10.223 1.35569 10.3549 1.67417C10.4868 1.99265 10.5547 2.33399 10.5547 2.67871H14.8672C15.0164 2.67871 15.1594 2.73797 15.2649 2.84346C15.3704 2.94895 15.4297 3.09203 15.4297 3.24121C15.4297 3.3904 15.3704 3.53347 15.2649 3.63896C15.1594 3.74445 15.0164 3.80371 14.8672 3.80371H13.8772L12.9997 12.887C12.9324 13.5829 12.6082 14.2289 12.0904 14.6988C11.5727 15.1688 10.8984 15.429 10.1992 15.4287H5.66019C4.96109 15.4288 4.28701 15.1685 3.7694 14.6986C3.25179 14.2287 2.92774 13.5828 2.86044 12.887L1.98219 3.80371H0.992188C0.843003 3.80371 0.699929 3.74445 0.59444 3.63896C0.488951 3.53347 0.429688 3.3904 0.429688 3.24121C0.429688 3.09203 0.488951 2.94895 0.59444 2.84346C0.699929 2.73797 0.843003 2.67871 0.992188 2.67871H5.30469ZM6.80469 6.24121C6.80469 6.09203 6.74542 5.94895 6.63994 5.84346C6.53445 5.73797 6.39137 5.67871 6.24219 5.67871C6.093 5.67871 5.94993 5.73797 5.84444 5.84346C5.73895 5.94895 5.67969 6.09203 5.67969 6.24121V11.8662C5.67969 12.0154 5.73895 12.1585 5.84444 12.264C5.94993 12.3694 6.093 12.4287 6.24219 12.4287C6.39137 12.4287 6.53445 12.3694 6.63994 12.264C6.74542 12.1585 6.80469 12.0154 6.80469 11.8662V6.24121ZM9.61719 5.67871C9.76637 5.67871 9.90945 5.73797 10.0149 5.84346C10.1204 5.94895 10.1797 6.09203 10.1797 6.24121V11.8662C10.1797 12.0154 10.1204 12.1585 10.0149 12.264C9.90945 12.3694 9.76637 12.4287 9.61719 12.4287C9.468 12.4287 9.32493 12.3694 9.21944 12.264C9.11395 12.1585 9.05469 12.0154 9.05469 11.8662V6.24121C9.05469 6.09203 9.11395 5.94895 9.21944 5.84346C9.32493 5.73797 9.468 5.67871 9.61719 5.67871ZM3.98019 12.779C4.02064 13.1964 4.21512 13.5839 4.52571 13.8658C4.83631 14.1477 5.24075 14.3038 5.66019 14.3037H10.1992C10.6186 14.3038 11.0231 14.1477 11.3337 13.8658C11.6443 13.5839 11.8387 13.1964 11.8792 12.779L12.7477 3.80371H3.11169L3.98019 12.779Z" fill="#1C1C1C"/>
 </svg>
@@ -1739,13 +1739,12 @@ h2.busiimage {
 </script>
 
 <script>
-    $(document).on('click', '.compempdel', function(e) {
+$(document).on('click', '.compempdel', function(e) {
     e.preventDefault(); // Prevent the form from submitting
 
     var button = $(this);
-    var form = button.closest('form'); // Find the closest form
-    var empId = form.find('input[name="emp_id"]').val(); // Get employee ID
-    var empName = form.find('input[name="name"]').val(); // Get employee name
+    var empId = button.closest('form').find('input[name="emp_id"]').val(); // Get employee ID
+    var empName = button.attr('name'); // Get employee name directly from button
 
     // Use SweetAlert for confirmation
     Swal.fire({
@@ -1753,40 +1752,43 @@ h2.busiimage {
         text: "You are about to delete " + empName + "'s data.",
         icon: 'warning',
         showCancelButton: true,
-        confirmButtonColor: '#3085d6',
-        cancelButtonColor: '#d33',
-        confirmButtonText: 'Yes, delete it!'
+        confirmButtonText: 'Yes, delete it!',
+        cancelButtonText: 'Cancel'
     }).then((result) => {
         if (result.isConfirmed) {
-            // Send AJAX request to delete the employee
+            // Send AJAX request
             $.ajax({
-                url: '/delcompemp', // Your route to delete employee
+                url: '/delcompemp',
                 type: 'POST',
                 data: {
-                    _token: '{{ csrf_token() }}', // CSRF protection
-                    emp_id: empId // Pass employee ID
+                    _token: '{{ csrf_token() }}',
+                    emp_id: empId,
+                    folder_name: empName,
                 },
                 success: function(response) {
-                    if (response.success) {
-                        // Show success notification
-                        toastr.success('The employee has been deleted.');
-                        form.remove(); // Optionally remove the form from the DOM
-                        setTimeout(function() {
-                                location.reload(); // Reload the page
-                            }, 1000); // Delay in milliseconds (1 second)
+                    if (response.status === 'success') {
+                        Swal.fire(
+                            'Deleted!',
+                            empName + ' has been deleted.',
+                            'success'
+                        );
+                        setTimeout(() => {
+                                window.location.reload();
+                            }, 1500);
+                        // Optionally refresh page or update UI
                     } else {
-                        // Show error notification
-                        toastr.error(response.message || 'An error occurred.');
+                        Swal.fire(
+                            'Error!',
+                            'There was an issue deleting the employee data.',
+                            'error'
+                        );
                     }
-                },
-                error: function(xhr) {
-                    // Show error notification for AJAX error
-                    toastr.error('An error occurred while deleting the employee.');
                 }
             });
         }
     });
 });
+
 
 </script>
 
