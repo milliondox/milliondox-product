@@ -2792,7 +2792,7 @@ $(document).ready(function() {
         @foreach ($realFileNames as $fileName)
             <li>
                 <span>{{ $formattedPath }} / {{ $fileName }}</span>
-                <button data-bs-toggle="modal" data-bs-target="#common_file_upload_pop"
+                <button class="btndd" data-bs-toggle="modal" data-bs-target="#common_file_upload_pop"
                         data-location="{{ $folder->path }}"
                         data-real-file-name="{{ $fileName }}">
                         <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -4751,7 +4751,7 @@ function navigateToFolder1(folderPath) {
 }
 
 function navigateToFolder(folderPath) {
-    showLoader();
+    // showLoader();
 
     // Decode the folder path to remove unwanted encoding
     folderPath = decodeURIComponent(folderPath);
@@ -4834,7 +4834,7 @@ function decodeAndFormatUrl(url) {
 // Example usage
 
  function fetchFolderContents(folderPath) {
-        showLoader(); // Ensure the loader is shown when the request starts
+        // showLoader(); // Ensure the loader is shown when the request starts
        
          function getQueryParam(param) {
             const queryString = window.location.search.substring(1);
@@ -4882,7 +4882,7 @@ let newPerm = fullPath.replace(newbase, '').split('/')[0];
 
      
         
-        // console.log("Path to use ::  "+pathToUse);
+        // // console.log("Path to use ::  "+pathToUse);
         // if(pathToUse===undefined || pathToUse=== null){
         //     // console.log("inside null undefined");
         //     // setTimeout(() => {
@@ -4896,6 +4896,16 @@ let newPerm = fullPath.replace(newbase, '').split('/')[0];
             method: 'GET',
             data: { folderName: pathToUse },  // Use the folderPath as is
             success: function(response) {
+                
+                // console.log("Path to use ::  "+pathToUse);
+                if(pathToUse===undefined || pathToUse=== null){
+                    // console.log("inside null undefined");
+                    // setTimeout(() => {
+
+                        hideLoader();
+                    // }, 1000);
+                }
+
                 $('.folder-contents').html(response.folderHtml);
                 $('.file-container').html(response.fileHtml);
 
@@ -4955,7 +4965,7 @@ let newPerm = fullPath.replace(newbase, '').split('/')[0];
                         let newPermitter = fullPath.replace(basePath, '').split('/')[0];
 
                         // Output the result or use it to trigger actions
-                        console.log(newPermitter); // Output the cleaned value
+                        // console.log(newPermitter); // Output the cleaned value
                     }, 1000);
 
 
@@ -5031,7 +5041,7 @@ let newPerm = fullPath.replace(newbase, '').split('/')[0];
 //     });
     
     function fetchFolderContents2(folderPath) {
-        // showLoader(); // Ensure the loader is shown when the request starts
+        showLoader(); // Ensure the loader is shown when the request starts
        
          function getQueryParam(param) {
             const queryString = window.location.search.substring(1);
@@ -5179,15 +5189,16 @@ let newPerm = fullPath.replace(newbase, '').split('/')[0];
                     
                     
                     setInterval(function() {
-    let result = decodeAndFormatUrl(url);
-    let fullPath = `${result}`;
+                        let result = decodeAndFormatUrl(url);
+                        let fullPath = `${result}`;
 
-    // Extract the part after the base path and get only the first parameter (name)
-    let newPermitter = fullPath.replace(basePath, '').split('/')[0];
+                        // Extract the part after the base path and get only the first parameter (name)
+                        let newPermitter = fullPath.replace(basePath, '').split('/')[0];
 
-    // Output the result or use it to trigger actions
-    console.log(newPermitter); // Output the cleaned value
-}, 1000);
+                        // Output the result or use it to trigger actions
+                        console.log(newPermitter); // Output the cleaned value
+                    }, 1000);
+
                     insertcharterdocumentsDirectordetatilsDirector1Table();
                     charterdocumentsDirectordetatilsDirector1TableAppended = true;
                 }  
@@ -5201,56 +5212,40 @@ let newPerm = fullPath.replace(newbase, '').split('/')[0];
                     charterdocumentsRegistrationsTableAppended = true;
                 }
                 else if (result.endsWith(`Onboarding documents`) && !hronboarTableAppended) {
-
-
-
-inserthronboarTableAppended();  // Call the function to append the table
-hronboarTableAppended = true;  // Set the flag to true to prevent further appends
-}
-
-                else if (result.endsWith("KYC Documents") && !hrkycTableAppended) {
-                   
+                        inserthronboarTableAppended();  // Call the function to append the table
+                        hronboarTableAppended = true;  // Set the flag to true to prevent further appends
+                    }
+                else if (result.endsWith("KYC Documents") && !hrkycTableAppended) {   
                     inserthrkycTableAppended();  // Call the function to append the table
                     hrkycTableAppended = true;  // Set the flag to true to prevent further appends
                 }
-
-                else if (result.endsWith("Declarations") && !hrdecTableAppended) {
-                  
+                else if (result.endsWith("Declarations") && !hrdecTableAppended) { 
                     inserthrdecTableAppended();  // Call the function to append the table
                     hrdecTableAppended = true;  // Set the flag to true to prevent further appends
                 }
-
-                else if (result.endsWith("Offboarding") && !hroffboardTableAppended) {
-                   
+                else if (result.endsWith("Offboarding") && !hroffboardTableAppended) {   
                     inserthroffboardTableAppended();  // Call the function to append the table
                     hroffboardTableAppended = true;  // Set the flag to true to prevent further appends
                 }
-
-                else if (result.endsWith("ESOP") && !hresopTableAppended) {
-                   
+                else if (result.endsWith("ESOP") && !hresopTableAppended) {    
                     inserthresopTableAppended();  // Call the function to append the table
                     hresopTableAppended = true;  // Set the flag to true to prevent further appends
                 }
-
-                else if (result.endsWith("Pay Registers/Monthly Payrun") && !hrmpTableAppended) {
-                   
+                else if (result.endsWith("Pay Registers/Monthly Payrun") && !hrmpTableAppended) {  
                     inserthrmpTableAppended();  // Call the function to append the table
                     hrmpTableAppended = true;  // Set the flag to true to prevent further appends
                 }
-
-                else if (result.endsWith("Pay Registers/Reimbursements") && !hrreimbTableAppended) {
-                   
+                else if (result.endsWith("Pay Registers/Reimbursements") && !hrreimbTableAppended) { 
                     inserthrreimTableAppended();  // Call the function to append the table
                     hrreimbTableAppended = true;  // Set the flag to true to prevent further appends
                 }
-
                 bindFolderClickEvents();
                 updateBreadcrumb(pathToUse);
-                // hideLoader(); // Hide loader after contents are updated
+                hideLoader(); // Hide loader after contents are updated
             },
             error: function(xhr) {
                 console.error('Error fetching folder contents:', xhr.responseText);
-                // hideLoader(); // Hide loader in case of error
+                hideLoader(); // Hide loader in case of error
             }
         });
     }
@@ -6756,8 +6751,18 @@ $(window).on('load', function() {
 </div>
 
   
-  
-  
+  <script>
+    $(document).on('click', '.btndd', function () {
+        // Get the value of data-real-file-name from the clicked button
+        const realFileName = $(this).data('real-file-name');
+
+        // Update the modal's h5 with the realFileName
+        $('#common_file_upload_pop .modal-title').text(realFileName);
+    });
+
+  </script>
+
+
   
   <!--<div class="modal fade drop_coman_file have_title" id="StautoryReg_ballot_pop" tabindex="-1" role="dialog"-->
   <div class="modal fade drop_coman_file have_title" id="common_file_upload_pop" tabindex="-1" role="dialog"
@@ -6917,7 +6922,80 @@ $(window).on('load', function() {
       </div>
   </div>
   <!-- upload file model end -->
-  <!-- common modal upload 4 October 2024   Sandeep -->
+
+
+  {{-- common view file modal here start sandeep date:18 November 2024 --}}
+  
+    <!-- data show table model satrt StautoryReg_ballot_count-->
+    <div class="modal fade drop_coman_file have_title borde_show_fulll_data" id="StautoryReg_ballot_count" tabindex="-1" role="dialog" aria-labelledby="StautoryReg_ballot_count" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title common_title" style="font-weight:700">Register of Postal Ballot</h5>
+                    <button class="close" style="border-radius:5px;" type="button" data-bs-dismiss="modal">
+                        <span aria-hidden="true">
+                            <svg width="50" height="50" viewBox="0 0 50 50" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <rect width="4.27093" height="66.172" transform="matrix(0.702074 -0.712104 0.709324 0.704883 0 3.31244)" fill="black" />
+                                <rect width="4.27086" height="66.3713" transform="matrix(-0.704896 -0.70931 0.706518 -0.707695 3.10742 50)" fill="black" />
+                            </svg>
+                        </span>
+                    </button>
+                </div>
+
+                <div class="retreve_document">
+                    <div class="retreve_in">
+                        <div class="retreve_inn" style="display:none;">    
+                            <div id="moveToDataRoomContainer" class="movecontainer" style="display:none;">
+                                <button id="moveToDataRoomBtn" class="btn btn-primary movebtn" data-bs-toggle="modal" data-bs-target="#dataRoomModal">
+                                    Move Files to Data Room
+                                </button>
+                            </div>
+                            <a class="done_chcel">Reset</a>
+                        </div>
+                    </div>
+
+                    <div class="retreve_inn_sec"> 
+                        <span>Retrieve documents quickly with Advanced Search.</span>
+                        <a href="{{ url("/showAdvSearch") }}?category=Secretarial&section=Statutory Registers&subsection=Register of Postal Ballot" id="load-notices-btn">TRY OUT
+                         <!-- <a href="{{url('/user/advsearch')}}">TRY OUT -->
+                            <svg width="12" height="10" viewBox="0 0 12 10" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                "M0.666341 5L11.333 5M11.333 5L7.33301 9M11.333 5L7.33301 1" stroke="#CEFFA8" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                        </a>
+                    </div>
+                </div>
+                <div class="modal-body">
+                    <h3>Register of Postal Ballot</h3>
+                    <div class="custom_table_wraap">
+                        <table class="table table-striped display" style="width:100%" id="filesTableRPB">
+                            <thead>
+                                <tr>
+                                    <th class="check_boox"></th>
+                                    <th>Name</th>
+                                    <th>Description</th>
+                                    <th>Financial Year</th>
+                                    <th>Month</th>
+                                    <th>Size</th>
+                                    <th>Date</th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <!-- Table rows will be dynamically inserted here -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- data show table model end -->
+
+
+
+  {{-- common view file modal end here sandeep date: 18 November 2024 --}}
+
+  <!-- common modal upload 4 October 2024 sandeep -->
 
  
   <meta name="csrf-token" content="{{ csrf_token() }}">

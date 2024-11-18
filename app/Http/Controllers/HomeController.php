@@ -694,7 +694,7 @@ public function storecompanydirector(Request $request)
 
     // Create the directory
     Storage::makeDirectory($newFolderPath);
-    $DIR_real_file_name=["Photo","Signature image","Aadhar KYC","PAN KYC","Address Proof","Contact Details"];
+    $DIR_real_file_name=["Photo","Signature image","Aadhar KYC","PAN KYC","Address Proof"];
 
     // Create a new Folder record and associate the director ID
     $folder = new Folder();
@@ -15492,14 +15492,29 @@ public function fetchSecretarialStatutoryRegistersSBOFileData(Request $request)
     return response()->json(['files' => $files]);
 }
 
+// public function fetchSecretarialStatutoryRegistersRPBFileData(Request $request)
+// {
+//     $location = $request->input('location');
+//     $user = auth()->user();
+//     $files = CommonTable::where('user_id', $user->id)
+//     ->where('is_delete', 0)
+//     ->where('location', $location)
+//     ->where('real_file_name', 'Register of Postal Ballot')
+//     ->get();
+   
+//     return response()->json(['files' => $files]);
+// }
+
 public function fetchSecretarialStatutoryRegistersRPBFileData(Request $request)
 {
     $location = $request->input('location');
+    $real_file_name = $request->input('real_file_name');
+    // dd($location);
     $user = auth()->user();
     $files = CommonTable::where('user_id', $user->id)
     ->where('is_delete', 0)
     ->where('location', $location)
-    ->where('real_file_name', 'Register of Postal Ballot')
+    ->where('real_file_name', $real_file_name)
     ->get();
    
     return response()->json(['files' => $files]);
@@ -15529,6 +15544,7 @@ public function fetchSecretarialStatutoryRegistersRPBFileData(Request $request)
 }
 public function fetchSecretarialStatutoryRegistersRMFileData(Request $request)
 {
+    
     $location = $request->input('location');
     $user = auth()->user();
     $files = CommonTable::where('user_id', $user->id)
@@ -17528,6 +17544,8 @@ public function rejectfolder($id)
     // Get the employee_id associated with the folder
     $employeeId = $file->employee_id;
 
+    $directorId = $file->director_id;
+
     // Perform the reject action on the folder by setting is_delete to 1
     $totalCount = Folder::where('id', $id)
         ->where('is_delete', 2) // Assuming 2 is the current status that allows deletion
@@ -17537,10 +17555,17 @@ public function rejectfolder($id)
     if ($totalCount > 0) {
         // Find the corresponding employee and update their is_delete status to 1 as well
         $employee = StoreCompanyEmployee::where('id', $employeeId)->first();
+
+        $director = StoreCompanyDirector::where('id', $directorId)->first();
         
         if ($employee) {
             // Update the is_delete status in the storecompanyemployee table
             $employee->update(['is_delete' => 1]);
+        }
+
+        if ($director) {
+            // Update the is_delete status in the storecompanyemployee table
+            $director->update(['is_delete' => 1]);
         }
 
         // Return a success message after successfully deleting the folder and updating employee status
@@ -17580,15 +17605,25 @@ public function restorefold($id)
     // Get the employee_id from the folder
     $employeeId = $file->employee_id;
 
+    $directorId = $file->director_id;
+
     // Perform the restore action on the folder by setting is_delete to 0
     $file->update(['is_delete' => 0]);
 
     // Also restore the is_delete status in the storecompanyemployee table where employee_id matches
     $employee = StoreCompanyEmployee::where('id', $employeeId)->first();
 
+    $director = StoreCompanyDirector::where('id', $directorId)->first();
+
+
     if ($employee) {
         // Update the is_delete status in storecompanyemployee to 0 as well
         $employee->update(['is_delete' => 0]);
+    }
+
+    if ($director) {
+        // Update the is_delete status in storecompanyemployee to 0 as well
+        $director->update(['is_delete' => 0]);
     }
 
     // Redirect back with a success message
@@ -21072,11 +21107,29 @@ public function shareFolder(Request $request)
         $folder = Folder::where('id', $folderId)
         ->where('name', 'like', '%' . $folderName . '%')  // Partial match using LIKE
                         ->first();
-    
+                      
+
+                        // Get the employee_id associated with the folder
+                        $employeeId = $folder->employee_id;
+
+                        $directorId = $folder->director_id;
         if ($folder) {
             $folder->is_delete = 1;
             $folder->save();
     
+            $employee = StoreCompanyEmployee::where('id', $employeeId)->first();
+
+            $director = StoreCompanydirector::where('id', $directorId)->first();
+        
+        if ($employee) {
+            // Update the is_delete status in the storecompanyemployee table
+            $employee->update(['is_delete' => 1]);
+        }
+
+        if ($director) {
+            // Update the is_delete status in the storecompanyemployee table
+            $director->update(['is_delete' => 1]);
+        }
             return response()->json(['success' => true, 'message' => 'Folder deleted successfully.']);
         }
     
