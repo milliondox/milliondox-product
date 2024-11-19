@@ -372,7 +372,7 @@
             });
 
             function autoSelectFile(file) {
-                const fileInput = document.querySelector('#upload_filee #file');
+                const fileInput = document.querySelector('#upload_filee #fileU');
                 if (fileInput) {
                     const dataTransfer = new DataTransfer();
                     dataTransfer.items.add(file);
@@ -384,7 +384,7 @@
             }
 
             // Handle the file selection UI update
-            $('#file').on('change', function() {
+            $('#fileU').on('change', function() {
                 if (this.files.length > 0) {
                     $('.file-dummy .success').show();  // Show success message
                     $('.file-dummy .default').hide();  // Hide the default message
