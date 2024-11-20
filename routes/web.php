@@ -274,6 +274,7 @@ Route::put('/fold/{id}/restore', [App\Http\Controllers\HomeController::class, 'r
 Route::get('/download-folder/{folderid}', [App\Http\Controllers\HomeController::class, 'downloadFolder']);
 // Route::post('/downloadFolders', [App\Http\Controllers\HomeController::class, 'downloadFolders'])->name('downloadFolders');
 
+Route::post('/check-folder-status', [App\Http\Controllers\HomeController::class, 'checkFolderStatus']);
 
 Route::put('/file/{id}/restorefile', [App\Http\Controllers\HomeController::class, 'restorefile'])->name('file.restorefile');
 

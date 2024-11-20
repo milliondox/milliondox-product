@@ -20530,7 +20530,7 @@ $entriesinc9 = CommonTable::where('user_id', $user->id)
 
     public function fetchFolderData()
     {
-        $folders = Folder::where('user_id', Auth::id())->orderBy('name')->get();
+        $folders = Folder::where('user_id', Auth::id())->orderBy('name')->where('is_delete', 0)->get();
         return response()->json($folders);
     }
 public function fetchDataForYear(Request $request)
@@ -20540,6 +20540,7 @@ public function fetchDataForYear(Request $request)
         // Fetch records based on the selected year
         $records = Folder::whereYear('created_at', $selectedYear)
                       ->whereNull('parent_name')
+                      ->where('is_delete', 0)
                       ->get();
 
         // Log the records to the console
@@ -20551,9 +20552,37 @@ public function fetchDataForYear(Request $request)
 public function getFolders(Request $request)
     {
      
-        $folders =Folder::where('user_id', Auth::id())->orderBy('name')->get();
+        $folders =Folder::where('user_id', Auth::id())->orderBy('name') ->where('is_delete', 0)->get();
         return response()->json($folders);
     }
+    public function checkFolderStatus(Request $request)
+    {
+        $folderName = $request->input('folder_name');
+        
+        // Query to find the folder by parent_name or name, matching the last part of the path
+        $folder = Folder::where(function($query) use ($folderName) {
+            $query->where('parent_name', 'LIKE', '%' . $folderName . '%')
+                  ->orWhere('name', 'LIKE', '%' . $folderName . '%');
+        })->first();
+    
+        // Debugging: Dump the folder for inspection
+        // dd($folder);
+        
+        if ($folder) {
+            // Return the folder's status
+            return response()->json([
+                'success' => true,
+                'is_delete' => $folder->is_delete
+            ]);
+        } else {
+            return response()->json([
+                'success' => false,
+                'message' => 'Folder not found.'
+            ]);
+        }
+    }
+    
+
     public function fetchSubfolders(Request $request)
     {
         $path = $request->input('path');
@@ -20566,6 +20595,7 @@ $commonSubfolders = Folder::where('parent_name', $path)
 // Fetch the authenticated user's subfolders within the same path
 $userSubfolders = Folder::where('parent_name', $path)
                         ->where('user_id', Auth::id())
+                        ->where('is_delete', 0)
                         ->get();
 
 // Combine both results
@@ -20630,7 +20660,8 @@ $commonFoldersQuery = Folder::where('parent_name', $path)
                             ->where('common_folder', 1);
 
 $userFoldersQuery = Folder::where('parent_name', $path)
-                          ->where('user_id', Auth::id());
+                          ->where('user_id', Auth::id())
+                          ->where('is_delete', 0);
 
 // Apply sorting logic based on the selected sort option
 switch ($sortOption) {

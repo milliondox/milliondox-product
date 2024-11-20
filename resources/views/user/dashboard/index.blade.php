@@ -1375,7 +1375,28 @@ $(document.body).on('click', '.his_edit_event', function(e) {
                                 </div>
 
                               </div>
+<script>
+  $(document).ready(function() {
+    $('#eventDate').on('change', function() {
+        // Get the selected date from the input
+        let selectedDate = $(this).val();
+        
+        if (selectedDate) {
+            // Format the selected date using Moment.js or manually
+            let formattedDate = new Date(selectedDate);
+            
+            // Get day, month, and year
+            let day = formattedDate.getDate();
+            let month = formattedDate.toLocaleString('default', { month: 'long' }); // Full month name
+            let year = formattedDate.getFullYear();
+            
+            // Update the h2 content
+            $('.svg_caldr h2').html(`${day} ${month} <span>${year}</span>`);
+        }
+    });
+});
 
+</script>
                               <div class="reinder_an_history">
                                 <h3>Tasks</h3>
                                 <ul class="main_repo_ul" id="re-render-list">
@@ -2275,7 +2296,7 @@ $(document).ready(function() {
                                       <circle cx="14" cy="14" r="13.25" stroke="black" stroke-width="1.5"></circle>
                                       <path d="M18.9 7.46652H17.7333V6.29985C17.7333 6.1142 17.6596 5.93615 17.5283 5.80488C17.397 5.6736 17.219 5.59985 17.0333 5.59985C16.8477 5.59985 16.6696 5.6736 16.5384 5.80488C16.4071 5.93615 16.3333 6.1142 16.3333 6.29985V7.46652H12.1333V6.29985C12.1333 6.1142 12.0596 5.93615 11.9283 5.80488C11.797 5.6736 11.619 5.59985 11.4333 5.59985C11.2477 5.59985 11.0696 5.6736 10.9384 5.80488C10.8071 5.93615 10.7333 6.1142 10.7333 6.29985V7.46652H9.56667C8.88594 7.46652 8.2331 7.73694 7.75176 8.21828C7.27042 8.69962 7 9.35246 7 10.0332V20.2999C7 20.9806 7.27042 21.6334 7.75176 22.1148C8.2331 22.5961 8.88594 22.8665 9.56667 22.8665H18.9C19.5807 22.8665 20.2336 22.5961 20.7149 22.1148C21.1963 21.6334 21.4667 20.9806 21.4667 20.2999V10.0332C21.4667 9.35246 21.1963 8.69962 20.7149 8.21828C20.2336 7.73694 19.5807 7.46652 18.9 7.46652ZM9.56667 8.86652H10.7333V10.0332C10.7333 10.2188 10.8071 10.3969 10.9384 10.5282C11.0696 10.6594 11.2477 10.7332 11.4333 10.7332C11.619 10.7332 11.797 10.6594 11.9283 10.5282C12.0596 10.3969 12.1333 10.2188 12.1333 10.0332V8.86652H16.3333V10.0332C16.3333 10.2188 16.4071 10.3969 16.5384 10.5282C16.6696 10.6594 16.8477 10.7332 17.0333 10.7332C17.219 10.7332 17.397 10.6594 17.5283 10.5282C17.6596 10.3969 17.7333 10.2188 17.7333 10.0332V8.86652H18.9C19.2094 8.86652 19.5062 8.98944 19.725 9.20823C19.9438 9.42702 20.0667 9.72377 20.0667 10.0332V12.5999H8.4V10.0332C8.4 9.72377 8.52292 9.42702 8.74171 9.20823C8.9605 8.98944 9.25725 8.86652 9.56667 8.86652ZM18.9 21.4665H9.56667C9.25725 21.4665 8.9605 21.3436 8.74171 21.1248C8.52292 20.906 8.4 20.6093 8.4 20.2999V13.9999H20.0667V20.2999C20.0667 20.6093 19.9438 20.906 19.725 21.1248C19.5062 21.3436 19.2094 21.4665 18.9 21.4665Z" fill="black"></path>
                                     </svg>
-                                    <input type="date" class="EventDatePick" id="eventDate" name="eventDate">
+                                    <input type="date" class="EventDatePick eventsdates" id="eventDate" name="eventDate">
                                   </div>
                                   <script>
                                     // $today = Carbon::now() -> toDateString(); // Get the current date in YYYY-MM-DD format
@@ -2289,7 +2310,28 @@ $(document).ready(function() {
                                 </div>
 
                               </div>
+<script>
+  $(document).ready(function() {
+    $('.eventsdates').on('change', function() {
+        // Get the selected date from the input
+        let selectedDate = $(this).val();
+        
+        if (selectedDate) {
+            // Format the selected date using Moment.js or manually
+            let formattedDate = new Date(selectedDate);
+            
+            // Get day, month, and year
+            let day = formattedDate.getDate();
+            let month = formattedDate.toLocaleString('default', { month: 'long' }); // Full month name
+            let year = formattedDate.getFullYear();
+            
+            // Update the h2 content
+            $('.svg_caldr h2').html(`${day} ${month} <span>${year}</span>`);
+        }
+    });
+});
 
+</script>
                               <div class="reinder_an_history">
                                 <h3>Events & Reminders</h3>
                                 <ul id="re_render_events">
