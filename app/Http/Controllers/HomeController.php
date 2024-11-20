@@ -221,6 +221,14 @@ class HomeController extends Controller
     public function index()
     {
         $user = Auth::user(); // Get the currently authenticated user
+
+        // // Log the activity
+        // DB::table('user_logs')->insert([
+        //     'user_id' => auth()->id(),
+        //     'logged_in_at' => now(), // or the specific timestamp of the action
+        // ]);
+
+
         $employees = User::where('role', 'Employee')->get();
         $clients = User::where('role', 'Client')->get();
         $results = DB::table('assignments as a')
@@ -16290,9 +16298,68 @@ public function whiteboard()
 public function masteradmin()
 {
     $cli_announcements = Announcement::where('role', 'Client')->latest()->get();
+    $user = Auth::user();
+    $user_id= $user->id;
+    // dd($user_id);
+    // dd($user);
+    if($user_id==1 or $user_id==269){
+        
+
+        // Monthly Active Users (MAU)
+        $mau = DB::table('user_logs')
+        // ->select(DB::raw('DATE_FORMAT(logged_in_at, "%Y-%m") as month, COUNT(user_id) as active_users'))
+        ->select(DB::raw('DATE_FORMAT(logged_in_at, "%Y-%m") as month, COUNT(DISTINCT user_id) as active_users'))
+        ->groupBy('month')
+        ->orderBy('month', 'ASC')
+        ->get();
     
-   return view('master_admin.dashboard.dashboard',compact('cli_announcements'));
+        // dd($mau);
+        $dau = DB::table('user_logs')
+        ->select(DB::raw('DATE(logged_in_at) as date, COUNT(DISTINCT user_id) as active_users'))
+        // ->select(DB::raw('DATE(logged_in_at) as date, COUNT( user_id) as active_users'))
+        ->groupBy('date')
+        ->orderBy('date', 'ASC')
+        ->get();
+    
+        // return response()->json([
+        //     // 'dau' => $dau,
+        //     'mau' => $mau,
+        // ]);
+       return view('master_admin.dashboard.dashboard',compact('cli_announcements', 'user' , 'mau' , 'dau'));
+
+    }
+    else{
+        return redirect()->back()->with('error', 'You are not authorized to access this page');
+    }
+   
 }
+
+// sandeep added code here for MAU DAU   start 20 November 2024
+
+// public function getUserActivityData()
+// {
+//     // Daily Active Users (DAU)
+//     // $dau = DB::table('user_logs')
+//     //     ->select(DB::raw('DATE(logged_in_at) as date, COUNT(DISTINCT user_id) as active_users'))
+//     //     ->groupBy('date')
+//     //     ->orderBy('date', 'ASC')
+//     //     ->get();
+
+//     // Monthly Active Users (MAU)
+//     $mau = DB::table('user_logs')
+//         ->select(DB::raw('DATE_FORMAT(logged_in_at, "%Y-%m") as month, COUNT(DISTINCT user_id) as active_users'))
+//         ->groupBy('month')
+//         ->orderBy('month', 'ASC')
+//         ->get();
+
+//     return response()->json([
+//         'dau' => $dau,
+//         'mau' => $mau,
+//     ]);
+// }
+
+// sandeep added code here for MAU DAU   end 20 November 2024
+
 
 
 public function publicclink()

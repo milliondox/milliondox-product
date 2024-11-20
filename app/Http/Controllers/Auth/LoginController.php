@@ -9,6 +9,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Laravel\Socialite\Facades\Socialite;
 use App\Models\UserInfo;
+use Illuminate\Support\Facades\DB;
 
 class LoginController extends Controller
 {
@@ -30,7 +31,24 @@ class LoginController extends Controller
      *
      * @var string
      */
+    
+   
     protected $redirectTo = RouteServiceProvider::HOME;
+
+    /**
+     * Log the user's login activity after successful authentication.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  mixed  $user
+     * @return void
+     */
+    protected function authenticated($request, $user)
+    {
+        DB::table('user_logs')->insert([
+            'user_id' => $user->id,
+            'logged_in_at' => now(),
+        ]);
+    }
 
     /**
      * Create a new controller instance.
