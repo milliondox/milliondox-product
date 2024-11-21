@@ -4681,6 +4681,95 @@ $(document).on('click', '.folder-link', function(e) {
                         $('.comm_size[data-variable="totalSizeKBemponboardincometax"]').text(response.totalSizeKBemponboardincometax + ' KB');
                         $('.comm_count[data-variable="countemponboardincometax"]').text(response.countemponboardincometax);
 
+                        $('.comm_size[data-variable="totalSizeKBdirecttaxmonthlyworking"]').text(response.totalSizeKBdirecttaxmonthlyworking + ' KB');
+                        $('.comm_count[data-variable="countdirecttaxmonthlyworking"]').text(response.countdirecttaxmonthlyworking);
+
+                        $('.comm_size[data-variable="totalSizeKBdirecttaxmonthlyChallan"]').text(response.totalSizeKBdirecttaxmonthlyChallan + ' KB');
+                        $('.comm_count[data-variable="countdirecttaxmonthlyChallan"]').text(response.countdirecttaxmonthlyChallan);
+
+
+                        $('.comm_size[data-variable="totalSizeKBdirecttaxQuarterlyFilingsWorkings"]').text(response.totalSizeKBdirecttaxQuarterlyFilingsWorkings + ' KB');
+                        $('.comm_count[data-variable="countdirecttaxQuarterlyFilingsWorkings"]').text(response.countdirecttaxQuarterlyFilingsWorkings);
+
+
+                        $('.comm_size[data-variable="totalSizeKBdirecttaxQuarterlyFilingsReturn"]').text(response.totalSizeKBdirecttaxQuarterlyFilingsReturn + ' KB');
+                        $('.comm_count[data-variable="countdirecttaxQuarterlyFilingsReturn"]').text(response.countdirecttaxQuarterlyFilingsReturn);
+
+                        $('.comm_size[data-variable="totalSizeKBdirecttaxQuarterlyFilingsAcknowledgement"]').text(response.totalSizeKBdirecttaxQuarterlyFilingsAcknowledgement + ' KB');
+                        $('.comm_count[data-variable="countdirecttaxQuarterlyFilingsAcknowledgement"]').text(response.countdirecttaxQuarterlyFilingsAcknowledgement);
+
+
+                        $('.comm_size[data-variable="totalSizeKBdirecttaxLitigationsNotices"]').text(response.totalSizeKBdirecttaxLitigationsNotices + ' KB');
+                        $('.comm_count[data-variable="countdirecttaxLitigationsNotices"]').text(response.countdirecttaxLitigationsNotices);
+
+
+                        $('.comm_size[data-variable="totalSizeKBdirecttaxLitigationsResponses"]').text(response.totalSizeKBdirecttaxLitigationsResponses + ' KB');
+                        $('.comm_count[data-variable="countdirecttaxLitigationsResponses"]').text(response.countdirecttaxLitigationsResponses);
+
+                        $('.comm_size[data-variable="totalSizeKBdirecttaxLitigationsOrders"]').text(response.totalSizeKBdirecttaxLitigationsOrders + ' KB');
+                        $('.comm_count[data-variable="countdirecttaxLitigationsOrders"]').text(response.countdirecttaxLitigationsOrders);
+
+
+                        $('.comm_size[data-variable="totalSizeKBdirecttaxQuarterlyPaymentsWorkings"]').text(response.totalSizeKBdirecttaxQuarterlyPaymentsWorkings + ' KB');
+                        $('.comm_count[data-variable="countdirecttaxQuarterlyPaymentsWorkings"]').text(response.countdirecttaxQuarterlyPaymentsWorkings);
+
+                        $('.comm_size[data-variable="totalSizeKBdirecttaxQuarterlyPaymentsChallan"]').text(response.totalSizeKBdirecttaxQuarterlyPaymentsChallan + ' KB');
+                        $('.comm_count[data-variable="countdirecttaxQuarterlyPaymentsChallan"]').text(response.countdirecttaxQuarterlyPaymentsChallan);
+
+                        $('.comm_size[data-variable="totalSizeKBdirecttaxIncomeTaxAnnualReturnsFinancialStatements"]').text(response.totalSizeKBdirecttaxIncomeTaxAnnualReturnsFinancialStatements + ' KB');
+                        $('.comm_count[data-variable="countdirecttaxIncomeTaxAnnualReturnsFinancialStatements"]').text(response.countdirecttaxIncomeTaxAnnualReturnsFinancialStatements);
+
+
+                        $('.comm_size[data-variable="totalSizeKBdirecttaxIncomeTaxAnnualReturnsCOI"]').text(response.totalSizeKBdirecttaxIncomeTaxAnnualReturnsCOI + ' KB');
+                        $('.comm_count[data-variable="countdirecttaxIncomeTaxAnnualReturnsCOI"]').text(response.countdirecttaxIncomeTaxAnnualReturnsCOI);
+
+                        $('.comm_size[data-variable="totalSizeKBdirecttaxIncomeTaxAnnualReturnsReturn"]').text(response.totalSizeKBdirecttaxIncomeTaxAnnualReturnsReturn + ' KB');
+                        $('.comm_count[data-variable="countdirecttaxIncomeTaxAnnualReturnsReturn"]').text(response.countdirecttaxIncomeTaxAnnualReturnsReturn);
+
+
+                        $('.comm_size[data-variable="totalSizeKBdirecttaxIncomeTaxAnnualReturnsAcknowledgement"]').text(response.totalSizeKBdirecttaxIncomeTaxAnnualReturnsAcknowledgement + ' KB');
+                        $('.comm_count[data-variable="countdirecttaxIncomeTaxAnnualReturnsAcknowledgement"]').text(response.countdirecttaxIncomeTaxAnnualReturnsAcknowledgement);
+
+
+                        $('.comm_size[data-variable="totalSizeKBdirecttaxIncomeTaxLitigationsNotices"]').text(response.totalSizeKBdirecttaxIncomeTaxLitigationsNotices + ' KB');
+                        $('.comm_count[data-variable="countdirecttaxIncomeTaxLitigationsNotices"]').text(response.countdirecttaxIncomeTaxLitigationsNotices);
+
+                        $('.comm_size[data-variable="totalSizeKBdirecttaxIncomeTaxLitigationsResponses"]').text(response.totalSizeKBdirecttaxIncomeTaxLitigationsResponses + ' KB');
+                        $('.comm_count[data-variable="countdirecttaxIncomeTaxLitigationsResponses"]').text(response.countdirecttaxIncomeTaxLitigationsResponses);
+
+                        $('.comm_size[data-variable="totalSizeKBindirecttaxIncomeTaxLitigationsNotices"]').text(response.totalSizeKBindirecttaxIncomeTaxLitigationsNotices + ' KB');
+                        $('.comm_count[data-variable="countindirecttaxIncomeTaxLitigationsNotices"]').text(response.countindirecttaxIncomeTaxLitigationsNotices);
+
+                        $('.comm_size[data-variable="totalSizeKBindirecttaxIncomeTaxLitigationsResponses"]').text(response.totalSizeKBindirecttaxIncomeTaxLitigationsResponses + ' KB');
+                        $('.comm_count[data-variable="countindirecttaxIncomeTaxLitigationsResponses"]').text(response.countindirecttaxIncomeTaxLitigationsResponses);
+
+                        $('.comm_size[data-variable="totalSizeKBindirecttaxIncomeTaxLitigationsOrders"]').text(response.totalSizeKBindirecttaxIncomeTaxLitigationsOrders + ' KB');
+                        $('.comm_count[data-variable="countindirecttaxIncomeTaxLitigationsOrders"]').text(response.countindirecttaxIncomeTaxLitigationsOrders);
+
+
+                        $('.comm_size[data-variable="totalSizeKBindirecttaxIncomeTaxGSTR1Workings"]').text(response.totalSizeKBindirecttaxIncomeTaxGSTR1Workings + ' KB');
+                        $('.comm_count[data-variable="countindirecttaxIncomeTaxGSTR1Workings"]').text(response.countindirecttaxIncomeTaxGSTR1Workings);
+
+                        $('.comm_size[data-variable="totalSizeKBindirecttaxIncomeTaxGSTR1Return"]').text(response.totalSizeKBindirecttaxIncomeTaxGSTR1Return + ' KB');
+                        $('.comm_count[data-variable="countindirecttaxIncomeTaxGSTR1Return"]').text(response.countindirecttaxIncomeTaxGSTR1Return);
+
+                        $('.comm_size[data-variable="totalSizeKBindirecttaxIncomeTaxGSTR1Acknowledgement"]').text(response.totalSizeKBindirecttaxIncomeTaxGSTR1Acknowledgement + ' KB');
+                        $('.comm_count[data-variable="countindirecttaxIncomeTaxGSTR1Acknowledgement"]').text(response.countindirecttaxIncomeTaxGSTR1Acknowledgement);
+
+
+                        $('.comm_size[data-variable="totalSizeKBindirecttaxIncomeTaxGSTR3bWorkings"]').text(response.totalSizeKBindirecttaxIncomeTaxGSTR3bWorkings + ' KB');
+                        $('.comm_count[data-variable="countindirecttaxIncomeTaxGSTR3bWorkings"]').text(response.countindirecttaxIncomeTaxGSTR3bWorkings);
+
+                        $('.comm_size[data-variable="totalSizeKBindirecttaxIncomeTaxGSTR3bReturn"]').text(response.totalSizeKBindirecttaxIncomeTaxGSTR3bReturn + ' KB');
+                        $('.comm_count[data-variable="countindirecttaxIncomeTaxGSTR3bReturn"]').text(response.countindirecttaxIncomeTaxGSTR3bReturn);
+
+
+                        $('.comm_size[data-variable="totalSizeKBindirecttaxIncomeTaxGSTR3bChallanReceipt"]').text(response.totalSizeKBindirecttaxIncomeTaxGSTR3bChallanReceipt + ' KB');
+                        $('.comm_count[data-variable="countindirecttaxIncomeTaxGSTR3bChallanReceipt"]').text(response.countindirecttaxIncomeTaxGSTR3bChallanReceipt);
+
+                        $('.comm_size[data-variable="totalSizeKBindirecttaxIncomeTaxGSTR3bAcknowledgement"]').text(response.totalSizeKBindirecttaxIncomeTaxGSTR3bAcknowledgement + ' KB');
+                        $('.comm_count[data-variable="countindirecttaxIncomeTaxGSTR3bAcknowledgement"]').text(response.countindirecttaxIncomeTaxGSTR3bAcknowledgement);
+
 
                     }, 1000); 
             },
