@@ -26692,7 +26692,12 @@ display:none !important;
     justify-content: flex-start;
     gap: 0px 20px;
 }
-
+.sidebar-wrapper .sidebar-main .simplebar-wrapper .simplebar-mask .simplebar-offset {
+    top: 5% !Important;
+}
+body.dark-only .page-wrapper .page-header .header-logo-wrapper {
+    background-color: #1a1e25;
+}
 
 }
 

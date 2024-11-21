@@ -221,6 +221,14 @@ class HomeController extends Controller
     public function index()
     {
         $user = Auth::user(); // Get the currently authenticated user
+
+        // // Log the activity
+        // DB::table('user_logs')->insert([
+        //     'user_id' => auth()->id(),
+        //     'logged_in_at' => now(), // or the specific timestamp of the action
+        // ]);
+
+
         $employees = User::where('role', 'Employee')->get();
         $clients = User::where('role', 'Client')->get();
         $results = DB::table('assignments as a')
@@ -16290,8 +16298,108 @@ public function whiteboard()
 public function masteradmin()
 {
     $cli_announcements = Announcement::where('role', 'Client')->latest()->get();
+    $user = Auth::user();
+    $user_id= $user->id;
+    // dd($user_id);
+    // dd($user);
+    if($user_id==1 or $user_id==269){
+        
+
+        // Monthly Active Users (MAU)
+        $mau = DB::table('user_logs')
+        // ->select(DB::raw('DATE_FORMAT(logged_in_at, "%Y-%m") as month, COUNT(user_id) as active_users'))
+        ->select(DB::raw('DATE_FORMAT(logged_in_at, "%Y-%m") as month, COUNT(DISTINCT user_id) as active_users'))
+        ->groupBy('month')
+        ->orderBy('month', 'ASC')
+        ->get();
     
-   return view('master_admin.dashboard.dashboard',compact('cli_announcements'));
+        // dd($mau);
+        $dau = DB::table('user_logs')
+        ->select(DB::raw('DATE(logged_in_at) as date, COUNT(DISTINCT user_id) as active_users'))
+        // ->select(DB::raw('DATE(logged_in_at) as date, COUNT( user_id) as active_users'))
+        ->groupBy('date')
+        ->orderBy('date', 'ASC')
+        ->get();
+    
+        // return response()->json([
+        //     // 'dau' => $dau,
+        //     'mau' => $mau,
+        // ]);
+       return view('master_admin.dashboard.dashboard',compact('cli_announcements', 'user' , 'mau' , 'dau'));
+
+    }
+    else{
+        return redirect()->back()->with('error', 'You are not authorized to access this page');
+    }
+   
+}
+
+// sandeep added code here for MAU DAU   start 20 November 2024
+
+// public function getUserActivityData()
+// {
+//     // Daily Active Users (DAU)
+//     // $dau = DB::table('user_logs')
+//     //     ->select(DB::raw('DATE(logged_in_at) as date, COUNT(DISTINCT user_id) as active_users'))
+//     //     ->groupBy('date')
+//     //     ->orderBy('date', 'ASC')
+//     //     ->get();
+
+//     // Monthly Active Users (MAU)
+//     $mau = DB::table('user_logs')
+//         ->select(DB::raw('DATE_FORMAT(logged_in_at, "%Y-%m") as month, COUNT(DISTINCT user_id) as active_users'))
+//         ->groupBy('month')
+//         ->orderBy('month', 'ASC')
+//         ->get();
+
+//     return response()->json([
+//         'dau' => $dau,
+//         'mau' => $mau,
+//     ]);
+// }
+
+// sandeep added code here for MAU DAU   end 20 November 2024
+
+
+public function masterclientanagement()
+{
+    $cli_announcements = Announcement::where('role', 'Client')->latest()->get();
+    $user = Auth::user();
+    $user_id= $user->id;
+    // dd($user_id);
+    // dd($user);
+    if($user_id==1 or $user_id==269){
+
+        $clients  = User::whereNotNull('name_of_the_business')
+        ->whereNull('is_delete') // Use whereNull() for checking NULL values
+        ->get();
+        // dd($users_data);
+    
+        // Monthly Active Users (MAU)
+        // $mau = DB::table('user_logs')
+        // // ->select(DB::raw('DATE_FORMAT(logged_in_at, "%Y-%m") as month, COUNT(user_id) as active_users'))
+        // ->select(DB::raw('DATE_FORMAT(logged_in_at, "%Y-%m") as month, COUNT(DISTINCT user_id) as active_users'))
+        // ->groupBy('month')
+        // ->orderBy('month', 'ASC')
+        // ->get();
+    
+        // return response()->json([
+        //     // 'dau' => $dau,
+        //     'mau' => $mau,
+        // ]);
+        return view('master_admin.client_management.client_management',compact('cli_announcements', 'user' , 'clients'));
+    }
+    else{
+        return redirect()->back()->with('error', 'You are not authorized to access this page');
+    }
+//    return view('master_admin.client_management.client_management',compact('cli_announcements', 'user'));
+}
+
+public function masterclientanagementdetail()
+{
+    $cli_announcements = Announcement::where('role', 'Client')->latest()->get();
+    $user = Auth::user();
+   return view('master_admin.client_management.client_management_detail',compact('cli_announcements', 'user'));
 }
 
 
@@ -20145,6 +20253,288 @@ $entriesinc9 = CommonTable::where('user_id', $user->id)
 
 
 
+        $entriesdirecttaxmonthlyworking = CommonTable::where('user_id', $user->id)
+        ->where('is_delete', 0)
+        ->where('location', $decodedFolderLocation) // Use the decoded folder parameter here
+        ->where('real_file_name', 'Workings')
+        ->get();
+            // dd($decodedFolderLocation);
+        $countdirecttaxmonthlyworking = $entriesdirecttaxmonthlyworking->count();
+        $totalSizeBytesdirecttaxmonthlyworking = $entriesdirecttaxmonthlyworking->sum('file_size');
+        $totalSizeKBdirecttaxmonthlyworking = round($totalSizeBytesdirecttaxmonthlyworking  / 1024, 2);
+
+
+
+        $entriesdirecttaxmonthlyChallan = CommonTable::where('user_id', $user->id)
+        ->where('is_delete', 0)
+        ->where('location', $decodedFolderLocation) // Use the decoded folder parameter here
+        ->where('real_file_name', 'Challan')
+        ->get();
+            // dd($decodedFolderLocation);
+        $countdirecttaxmonthlyChallan = $entriesdirecttaxmonthlyChallan->count();
+        $totalSizeBytesdirecttaxmonthlyChallan = $entriesdirecttaxmonthlyChallan->sum('file_size');
+        $totalSizeKBdirecttaxmonthlyChallan = round($totalSizeBytesdirecttaxmonthlyChallan  / 1024, 2);
+
+
+        $entriesdirecttaxQuarterlyFilingsWorkings = CommonTable::where('user_id', $user->id)
+        ->where('is_delete', 0)
+        ->where('location', $decodedFolderLocation) // Use the decoded folder parameter here
+        ->where('real_file_name', 'Workings')
+        ->get();
+            // dd($decodedFolderLocation);
+        $countdirecttaxQuarterlyFilingsWorkings = $entriesdirecttaxQuarterlyFilingsWorkings->count();
+        $totalSizeBytesdirecttaxQuarterlyFilingsWorkings = $entriesdirecttaxQuarterlyFilingsWorkings->sum('file_size');
+        $totalSizeKBdirecttaxQuarterlyFilingsWorkings = round($totalSizeBytesdirecttaxQuarterlyFilingsWorkings  / 1024, 2);
+
+
+        $entriesdirecttaxQuarterlyFilingsReturn = CommonTable::where('user_id', $user->id)
+        ->where('is_delete', 0)
+        ->where('location', $decodedFolderLocation) // Use the decoded folder parameter here
+        ->where('real_file_name', 'Return')
+        ->get();
+            // dd($decodedFolderLocation);
+        $countdirecttaxQuarterlyFilingsReturn = $entriesdirecttaxQuarterlyFilingsReturn->count();
+        $totalSizeBytesdirecttaxQuarterlyFilingsReturn = $entriesdirecttaxQuarterlyFilingsReturn->sum('file_size');
+        $totalSizeKBdirecttaxQuarterlyFilingsReturn = round($totalSizeBytesdirecttaxQuarterlyFilingsReturn  / 1024, 2);
+
+
+        $entriesdirecttaxQuarterlyFilingsAcknowledgement = CommonTable::where('user_id', $user->id)
+        ->where('is_delete', 0)
+        ->where('location', $decodedFolderLocation) // Use the decoded folder parameter here
+        ->where('real_file_name', 'Acknowledgement')
+        ->get();
+            // dd($decodedFolderLocation);
+        $countdirecttaxQuarterlyFilingsAcknowledgement = $entriesdirecttaxQuarterlyFilingsAcknowledgement->count();
+        $totalSizeBytesdirecttaxQuarterlyFilingsAcknowledgement = $entriesdirecttaxQuarterlyFilingsAcknowledgement->sum('file_size');
+        $totalSizeKBdirecttaxQuarterlyFilingsAcknowledgement = round($totalSizeBytesdirecttaxQuarterlyFilingsAcknowledgement  / 1024, 2);
+
+
+
+        $entriesdirecttaxLitigationsNotices = CommonTable::where('user_id', $user->id)
+        ->where('is_delete', 0)
+        ->where('location', $decodedFolderLocation) // Use the decoded folder parameter here
+        ->where('real_file_name', 'Notices')
+        ->get();
+            // dd($decodedFolderLocation);
+        $countdirecttaxLitigationsNotices = $entriesdirecttaxLitigationsNotices->count();
+        $totalSizeBytesdirecttaxLitigationsNotices = $entriesdirecttaxLitigationsNotices->sum('file_size');
+        $totalSizeKBdirecttaxLitigationsNotices = round($totalSizeBytesdirecttaxLitigationsNotices  / 1024, 2);
+
+
+        $entriesdirecttaxLitigationsResponses = CommonTable::where('user_id', $user->id)
+        ->where('is_delete', 0)
+        ->where('location', $decodedFolderLocation) // Use the decoded folder parameter here
+        ->where('real_file_name', 'Responses')
+        ->get();
+            // dd($decodedFolderLocation);
+        $countdirecttaxLitigationsResponses = $entriesdirecttaxLitigationsResponses->count();
+        $totalSizeBytesdirecttaxLitigationsResponses = $entriesdirecttaxLitigationsResponses->sum('file_size');
+        $totalSizeKBdirecttaxLitigationsResponses = round($totalSizeBytesdirecttaxLitigationsResponses  / 1024, 2);
+
+
+        $entriesdirecttaxLitigationsOrders = CommonTable::where('user_id', $user->id)
+        ->where('is_delete', 0)
+        ->where('location', $decodedFolderLocation) // Use the decoded folder parameter here
+        ->where('real_file_name', 'Orders')
+        ->get();
+            // dd($decodedFolderLocation);
+        $countdirecttaxLitigationsOrders = $entriesdirecttaxLitigationsOrders->count();
+        $totalSizeBytesdirecttaxLitigationsOrders = $entriesdirecttaxLitigationsOrders->sum('file_size');
+        $totalSizeKBdirecttaxLitigationsOrders = round($totalSizeBytesdirecttaxLitigationsOrders  / 1024, 2);
+
+
+        $entriesdirecttaxQuarterlyPaymentsWorkings = CommonTable::where('user_id', $user->id)
+        ->where('is_delete', 0)
+        ->where('location', $decodedFolderLocation) // Use the decoded folder parameter here
+        ->where('real_file_name', 'Workings')
+        ->get();
+            // dd($decodedFolderLocation);
+        $countdirecttaxQuarterlyPaymentsWorkings = $entriesdirecttaxQuarterlyPaymentsWorkings->count();
+        $totalSizeBytesdirecttaxQuarterlyPaymentsWorkings = $entriesdirecttaxQuarterlyPaymentsWorkings->sum('file_size');
+        $totalSizeKBdirecttaxQuarterlyPaymentsWorkings = round($totalSizeBytesdirecttaxQuarterlyPaymentsWorkings  / 1024, 2);
+
+
+        $entriesdirecttaxQuarterlyPaymentsChallan = CommonTable::where('user_id', $user->id)
+        ->where('is_delete', 0)
+        ->where('location', $decodedFolderLocation) // Use the decoded folder parameter here
+        ->where('real_file_name', 'Challan')
+        ->get();
+            // dd($decodedFolderLocation);
+        $countdirecttaxQuarterlyPaymentsChallan = $entriesdirecttaxQuarterlyPaymentsChallan->count();
+        $totalSizeBytesdirecttaxQuarterlyPaymentsChallan = $entriesdirecttaxQuarterlyPaymentsChallan->sum('file_size');
+        $totalSizeKBdirecttaxQuarterlyPaymentsChallan = round($totalSizeBytesdirecttaxQuarterlyPaymentsChallan  / 1024, 2);
+
+
+        $entriesdirecttaxIncomeTaxAnnualReturnsFinancialStatements  = CommonTable::where('user_id', $user->id)
+        ->where('is_delete', 0)
+        ->where('location', $decodedFolderLocation) // Use the decoded folder parameter here
+        ->where('real_file_name', 'Financial Statements')
+        ->get();
+            // dd($decodedFolderLocation);
+        $countdirecttaxIncomeTaxAnnualReturnsFinancialStatements = $entriesdirecttaxIncomeTaxAnnualReturnsFinancialStatements->count();
+        $totalSizeBytesdirecttaxIncomeTaxAnnualReturnsFinancialStatements = $entriesdirecttaxIncomeTaxAnnualReturnsFinancialStatements->sum('file_size');
+        $totalSizeKBdirecttaxIncomeTaxAnnualReturnsFinancialStatements = round($totalSizeBytesdirecttaxIncomeTaxAnnualReturnsFinancialStatements  / 1024, 2);
+
+
+        $entriesdirecttaxIncomeTaxAnnualReturnsCOI  = CommonTable::where('user_id', $user->id)
+        ->where('is_delete', 0)
+        ->where('location', $decodedFolderLocation) // Use the decoded folder parameter here
+        ->where('real_file_name', 'COI')
+        ->get();
+            // dd($decodedFolderLocation);
+        $countdirecttaxIncomeTaxAnnualReturnsCOI = $entriesdirecttaxIncomeTaxAnnualReturnsCOI->count();
+        $totalSizeBytesdirecttaxIncomeTaxAnnualReturnsCOI = $entriesdirecttaxIncomeTaxAnnualReturnsCOI->sum('file_size');
+        $totalSizeKBdirecttaxIncomeTaxAnnualReturnsCOI = round($totalSizeBytesdirecttaxIncomeTaxAnnualReturnsCOI  / 1024, 2);
+
+        $entriesdirecttaxIncomeTaxAnnualReturnsReturn  = CommonTable::where('user_id', $user->id)
+        ->where('is_delete', 0)
+        ->where('location', $decodedFolderLocation) // Use the decoded folder parameter here
+        ->where('real_file_name', 'Return')
+        ->get();
+            // dd($decodedFolderLocation);
+        $countdirecttaxIncomeTaxAnnualReturnsReturn = $entriesdirecttaxIncomeTaxAnnualReturnsReturn->count();
+        $totalSizeBytesdirecttaxIncomeTaxAnnualReturnsReturn = $entriesdirecttaxIncomeTaxAnnualReturnsReturn->sum('file_size');
+        $totalSizeKBdirecttaxIncomeTaxAnnualReturnsReturn = round($totalSizeBytesdirecttaxIncomeTaxAnnualReturnsReturn  / 1024, 2);
+
+        $entriesdirecttaxIncomeTaxAnnualReturnsAcknowledgement  = CommonTable::where('user_id', $user->id)
+        ->where('is_delete', 0)
+        ->where('location', $decodedFolderLocation) // Use the decoded folder parameter here
+        ->where('real_file_name', 'Acknowledgement')
+        ->get();
+            // dd($decodedFolderLocation);
+        $countdirecttaxIncomeTaxAnnualReturnsAcknowledgement = $entriesdirecttaxIncomeTaxAnnualReturnsAcknowledgement->count();
+        $totalSizeBytesdirecttaxIncomeTaxAnnualReturnsAcknowledgement = $entriesdirecttaxIncomeTaxAnnualReturnsAcknowledgement->sum('file_size');
+        $totalSizeKBdirecttaxIncomeTaxAnnualReturnsAcknowledgement = round($totalSizeBytesdirecttaxIncomeTaxAnnualReturnsAcknowledgement  / 1024, 2);
+
+
+        $entriesdirecttaxIncomeTaxLitigationsNotices  = CommonTable::where('user_id', $user->id)
+        ->where('is_delete', 0)
+        ->where('location', $decodedFolderLocation) // Use the decoded folder parameter here
+        ->where('real_file_name', 'Notices')
+        ->get();
+            // dd($entriesdirecttaxIncomeTaxLitigationsNotices);
+        $countdirecttaxIncomeTaxLitigationsNotices = $entriesdirecttaxIncomeTaxLitigationsNotices->count();
+        $totalSizeBytesdirecttaxIncomeTaxLitigationsNotices = $entriesdirecttaxIncomeTaxLitigationsNotices->sum('file_size');
+        $totalSizeKBdirecttaxIncomeTaxLitigationsNotices = round($totalSizeBytesdirecttaxIncomeTaxLitigationsNotices  / 1024, 2);
+
+
+        $entriesdirecttaxIncomeTaxLitigationsResponses  = CommonTable::where('user_id', $user->id)
+        ->where('is_delete', 0)
+        ->where('location', $decodedFolderLocation) // Use the decoded folder parameter here
+        ->where('real_file_name', 'Responses')
+        ->get();
+            // dd($decodedFolderLocation);
+        $countdirecttaxIncomeTaxLitigationsResponses = $entriesdirecttaxIncomeTaxLitigationsResponses->count();
+        $totalSizeBytesdirecttaxIncomeTaxLitigationsResponses = $entriesdirecttaxIncomeTaxLitigationsResponses->sum('file_size');
+        $totalSizeKBdirecttaxIncomeTaxLitigationsResponses = round($totalSizeBytesdirecttaxIncomeTaxLitigationsResponses  / 1024, 2);
+
+
+        $entriesindirecttaxIncomeTaxLitigationsNotices  = CommonTable::where('user_id', $user->id)
+        ->where('is_delete', 0)
+        ->where('location', $decodedFolderLocation) // Use the decoded folder parameter here
+        ->where('real_file_name', 'Notices')
+        ->get();
+            // dd($decodedFolderLocation);
+        $countindirecttaxIncomeTaxLitigationsNotices = $entriesindirecttaxIncomeTaxLitigationsNotices->count();
+        $totalSizeBytesindirecttaxIncomeTaxLitigationsNotices = $entriesindirecttaxIncomeTaxLitigationsNotices->sum('file_size');
+        $totalSizeKBindirecttaxIncomeTaxLitigationsNotices = round($totalSizeBytesindirecttaxIncomeTaxLitigationsNotices  / 1024, 2);
+
+
+        $entriesindirecttaxIncomeTaxLitigationsResponses  = CommonTable::where('user_id', $user->id)
+        ->where('is_delete', 0)
+        ->where('location', $decodedFolderLocation) // Use the decoded folder parameter here
+        ->where('real_file_name', 'Responses')
+        ->get();
+            // dd($decodedFolderLocation);
+        $countindirecttaxIncomeTaxLitigationsResponses = $entriesindirecttaxIncomeTaxLitigationsResponses->count();
+        $totalSizeBytesindirecttaxIncomeTaxLitigationsResponses = $entriesindirecttaxIncomeTaxLitigationsResponses->sum('file_size');
+        $totalSizeKBindirecttaxIncomeTaxLitigationsResponses = round($totalSizeBytesindirecttaxIncomeTaxLitigationsResponses  / 1024, 2);
+
+        $entriesindirecttaxIncomeTaxLitigationsOrders  = CommonTable::where('user_id', $user->id)
+        ->where('is_delete', 0)
+        ->where('location', $decodedFolderLocation) // Use the decoded folder parameter here
+        ->where('real_file_name', 'Orders')
+        ->get();
+            // dd($decodedFolderLocation);
+        $countindirecttaxIncomeTaxLitigationsOrders = $entriesindirecttaxIncomeTaxLitigationsOrders->count();
+        $totalSizeBytesindirecttaxIncomeTaxLitigationsOrders = $entriesindirecttaxIncomeTaxLitigationsOrders->sum('file_size');
+        $totalSizeKBindirecttaxIncomeTaxLitigationsOrders = round($totalSizeBytesindirecttaxIncomeTaxLitigationsOrders  / 1024, 2);
+
+
+        $entriesindirecttaxIncomeTaxGSTR1Workings  = CommonTable::where('user_id', $user->id)
+        ->where('is_delete', 0)
+        ->where('location', $decodedFolderLocation) // Use the decoded folder parameter here
+        ->where('real_file_name', 'Workings')
+        ->get();
+            // dd($decodedFolderLocation);
+        $countindirecttaxIncomeTaxGSTR1Workings = $entriesindirecttaxIncomeTaxGSTR1Workings->count();
+        $totalSizeBytesindirecttaxIncomeTaxGSTR1Workings = $entriesindirecttaxIncomeTaxGSTR1Workings->sum('file_size');
+        $totalSizeKBindirecttaxIncomeTaxGSTR1Workings = round($totalSizeBytesindirecttaxIncomeTaxGSTR1Workings  / 1024, 2);
+
+        $entriesindirecttaxIncomeTaxGSTR1Return  = CommonTable::where('user_id', $user->id)
+        ->where('is_delete', 0)
+        ->where('location', $decodedFolderLocation) // Use the decoded folder parameter here
+        ->where('real_file_name', 'Return')
+        ->get();
+            // dd($decodedFolderLocation);
+        $countindirecttaxIncomeTaxGSTR1Return = $entriesindirecttaxIncomeTaxGSTR1Return->count();
+        $totalSizeBytesindirecttaxIncomeTaxGSTR1Return = $entriesindirecttaxIncomeTaxGSTR1Return->sum('file_size');
+        $totalSizeKBindirecttaxIncomeTaxGSTR1Return = round($totalSizeBytesindirecttaxIncomeTaxGSTR1Return  / 1024, 2);
+
+
+        $entriesindirecttaxIncomeTaxGSTR1Acknowledgement  = CommonTable::where('user_id', $user->id)
+        ->where('is_delete', 0)
+        ->where('location', $decodedFolderLocation) // Use the decoded folder parameter here
+        ->where('real_file_name', 'Acknowledgement')
+        ->get();
+            // dd($decodedFolderLocation);
+        $countindirecttaxIncomeTaxGSTR1Acknowledgement = $entriesindirecttaxIncomeTaxGSTR1Acknowledgement->count();
+        $totalSizeBytesindirecttaxIncomeTaxGSTR1Acknowledgement = $entriesindirecttaxIncomeTaxGSTR1Acknowledgement->sum('file_size');
+        $totalSizeKBindirecttaxIncomeTaxGSTR1Acknowledgement = round($totalSizeBytesindirecttaxIncomeTaxGSTR1Acknowledgement  / 1024, 2);
+
+
+        $entriesindirecttaxIncomeTaxGSTR3bWorkings  = CommonTable::where('user_id', $user->id)
+        ->where('is_delete', 0)
+        ->where('location', $decodedFolderLocation) // Use the decoded folder parameter here
+        ->where('real_file_name', 'Workings')
+        ->get();
+            // dd($decodedFolderLocation);
+        $countindirecttaxIncomeTaxGSTR3bWorkings = $entriesindirecttaxIncomeTaxGSTR3bWorkings->count();
+        $totalSizeBytesindirecttaxIncomeTaxGSTR3bWorkings = $entriesindirecttaxIncomeTaxGSTR3bWorkings->sum('file_size');
+        $totalSizeKBindirecttaxIncomeTaxGSTR3bWorkings = round($totalSizeBytesindirecttaxIncomeTaxGSTR3bWorkings  / 1024, 2);
+
+
+        $entriesindirecttaxIncomeTaxGSTR3bReturn  = CommonTable::where('user_id', $user->id)
+        ->where('is_delete', 0)
+        ->where('location', $decodedFolderLocation) // Use the decoded folder parameter here
+        ->where('real_file_name', 'Return')
+        ->get();
+            // dd($decodedFolderLocation);
+        $countindirecttaxIncomeTaxGSTR3bReturn = $entriesindirecttaxIncomeTaxGSTR3bReturn->count();
+        $totalSizeBytesindirecttaxIncomeTaxGSTR3bReturn = $entriesindirecttaxIncomeTaxGSTR3bReturn->sum('file_size');
+        $totalSizeKBindirecttaxIncomeTaxGSTR3bReturn = round($totalSizeBytesindirecttaxIncomeTaxGSTR3bReturn  / 1024, 2);
+
+
+        $entriesindirecttaxIncomeTaxGSTR3bChallanReceipt  = CommonTable::where('user_id', $user->id)
+        ->where('is_delete', 0)
+        ->where('location', $decodedFolderLocation) // Use the decoded folder parameter here
+        ->where('real_file_name', 'Challan & Receipt')
+        ->get();
+            // dd($decodedFolderLocation);
+        $countindirecttaxIncomeTaxGSTR3bChallanReceipt = $entriesindirecttaxIncomeTaxGSTR3bChallanReceipt->count();
+        $totalSizeBytesindirecttaxIncomeTaxGSTR3bChallanReceipt = $entriesindirecttaxIncomeTaxGSTR3bChallanReceipt->sum('file_size');
+        $totalSizeKBindirecttaxIncomeTaxGSTR3bChallanReceipt = round($totalSizeBytesindirecttaxIncomeTaxGSTR3bChallanReceipt  / 1024, 2);
+
+
+        $entriesindirecttaxIncomeTaxGSTR3bAcknowledgement  = CommonTable::where('user_id', $user->id)
+        ->where('is_delete', 0)
+        ->where('location', $decodedFolderLocation) // Use the decoded folder parameter here
+        ->where('real_file_name', 'Acknowledgement')
+        ->get();
+            // dd($decodedFolderLocation);
+        $countindirecttaxIncomeTaxGSTR3bAcknowledgement = $entriesindirecttaxIncomeTaxGSTR3bAcknowledgement->count();
+        $totalSizeBytesindirecttaxIncomeTaxGSTR3bAcknowledgement = $entriesindirecttaxIncomeTaxGSTR3bAcknowledgement->sum('file_size');
+        $totalSizeKBindirecttaxIncomeTaxGSTR3bAcknowledgement = round($totalSizeBytesindirecttaxIncomeTaxGSTR3bAcknowledgement  / 1024, 2);
 
 
         
@@ -20162,6 +20552,92 @@ $entriesinc9 = CommonTable::where('user_id', $user->id)
 
     if($iamhereSKY === true){
         return response()->json([
+
+            'countindirecttaxIncomeTaxGSTR3bAcknowledgement' => $countindirecttaxIncomeTaxGSTR3bAcknowledgement,
+            'totalSizeKBindirecttaxIncomeTaxGSTR3bAcknowledgement' => $totalSizeKBindirecttaxIncomeTaxGSTR3bAcknowledgement,
+
+            'countindirecttaxIncomeTaxGSTR3bChallanReceipt' => $countindirecttaxIncomeTaxGSTR3bChallanReceipt,
+            'totalSizeKBindirecttaxIncomeTaxGSTR3bChallanReceipt' => $totalSizeKBindirecttaxIncomeTaxGSTR3bChallanReceipt,
+
+            'countindirecttaxIncomeTaxGSTR3bReturn' => $countindirecttaxIncomeTaxGSTR3bReturn,
+            'totalSizeKBindirecttaxIncomeTaxGSTR3bReturn' => $totalSizeKBindirecttaxIncomeTaxGSTR3bReturn,
+
+
+            'countindirecttaxIncomeTaxGSTR3bWorkings' => $countindirecttaxIncomeTaxGSTR3bWorkings,
+            'totalSizeKBindirecttaxIncomeTaxGSTR3bWorkings' => $totalSizeKBindirecttaxIncomeTaxGSTR3bWorkings,
+
+
+            'countindirecttaxIncomeTaxGSTR1Acknowledgement' => $countindirecttaxIncomeTaxGSTR1Acknowledgement,
+            'totalSizeKBindirecttaxIncomeTaxGSTR1Acknowledgement' => $totalSizeKBindirecttaxIncomeTaxGSTR1Acknowledgement,
+
+
+            'countindirecttaxIncomeTaxGSTR1Return' => $countindirecttaxIncomeTaxGSTR1Return,
+            'totalSizeKBindirecttaxIncomeTaxGSTR1Return' => $totalSizeKBindirecttaxIncomeTaxGSTR1Return,
+
+            'countindirecttaxIncomeTaxGSTR1Workings' => $countindirecttaxIncomeTaxGSTR1Workings,
+            'totalSizeKBindirecttaxIncomeTaxGSTR1Workings' => $totalSizeKBindirecttaxIncomeTaxGSTR1Workings,
+
+            'countindirecttaxIncomeTaxLitigationsOrders' => $countindirecttaxIncomeTaxLitigationsOrders,
+            'totalSizeKBindirecttaxIncomeTaxLitigationsOrders' => $totalSizeKBindirecttaxIncomeTaxLitigationsOrders,
+
+
+
+            'countindirecttaxIncomeTaxLitigationsResponses' => $countindirecttaxIncomeTaxLitigationsResponses,
+            'totalSizeKBindirecttaxIncomeTaxLitigationsResponses' => $totalSizeKBindirecttaxIncomeTaxLitigationsResponses,
+
+            'countindirecttaxIncomeTaxLitigationsNotices' => $countindirecttaxIncomeTaxLitigationsNotices,
+            'totalSizeKBindirecttaxIncomeTaxLitigationsNotices' => $totalSizeKBindirecttaxIncomeTaxLitigationsNotices,
+
+
+            'countdirecttaxIncomeTaxLitigationsResponses' => $countdirecttaxIncomeTaxLitigationsResponses,
+            'totalSizeKBdirecttaxIncomeTaxLitigationsResponses' => $totalSizeKBdirecttaxIncomeTaxLitigationsResponses,
+
+            'countdirecttaxIncomeTaxLitigationsNotices' => $countdirecttaxIncomeTaxLitigationsNotices,
+            'totalSizeKBdirecttaxIncomeTaxLitigationsNotices' => $totalSizeKBdirecttaxIncomeTaxLitigationsNotices,
+
+
+            'countdirecttaxIncomeTaxAnnualReturnsAcknowledgement' => $countdirecttaxIncomeTaxAnnualReturnsAcknowledgement,
+            'totalSizeKBdirecttaxIncomeTaxAnnualReturnsAcknowledgement' => $totalSizeKBdirecttaxIncomeTaxAnnualReturnsAcknowledgement,
+
+            'countdirecttaxIncomeTaxAnnualReturnsReturn' => $countdirecttaxIncomeTaxAnnualReturnsReturn,
+            'totalSizeKBdirecttaxIncomeTaxAnnualReturnsReturn' => $totalSizeKBdirecttaxIncomeTaxAnnualReturnsReturn,
+
+            'countdirecttaxIncomeTaxAnnualReturnsCOI' => $countdirecttaxIncomeTaxAnnualReturnsCOI,
+            'totalSizeKBdirecttaxIncomeTaxAnnualReturnsCOI' => $totalSizeKBdirecttaxIncomeTaxAnnualReturnsCOI,
+
+            'countdirecttaxIncomeTaxAnnualReturnsFinancialStatements' => $countdirecttaxIncomeTaxAnnualReturnsFinancialStatements,
+            'totalSizeKBdirecttaxIncomeTaxAnnualReturnsFinancialStatements' => $totalSizeKBdirecttaxIncomeTaxAnnualReturnsFinancialStatements,
+
+            'countdirecttaxQuarterlyPaymentsChallan' => $countdirecttaxQuarterlyPaymentsChallan,
+            'totalSizeKBdirecttaxQuarterlyPaymentsChallan' => $totalSizeKBdirecttaxQuarterlyPaymentsChallan,
+
+            'countdirecttaxQuarterlyPaymentsWorkings' => $countdirecttaxQuarterlyPaymentsWorkings,
+            'totalSizeKBdirecttaxQuarterlyPaymentsWorkings' => $totalSizeKBdirecttaxQuarterlyPaymentsWorkings,
+
+            'countdirecttaxLitigationsOrders' => $countdirecttaxLitigationsOrders,
+            'totalSizeKBdirecttaxLitigationsOrders' => $totalSizeKBdirecttaxLitigationsOrders,
+
+            'countdirecttaxLitigationsResponses' => $countdirecttaxLitigationsResponses,
+            'totalSizeKBdirecttaxLitigationsResponses' => $totalSizeKBdirecttaxLitigationsResponses,
+
+            'countdirecttaxLitigationsNotices' => $countdirecttaxLitigationsNotices,
+            'totalSizeKBdirecttaxLitigationsNotices' => $totalSizeKBdirecttaxLitigationsNotices,
+
+            'countdirecttaxQuarterlyFilingsAcknowledgement' => $countdirecttaxQuarterlyFilingsAcknowledgement,
+            'totalSizeKBdirecttaxQuarterlyFilingsAcknowledgement' => $totalSizeKBdirecttaxQuarterlyFilingsAcknowledgement,
+
+            'countdirecttaxQuarterlyFilingsReturn' => $countdirecttaxQuarterlyFilingsReturn,
+            'totalSizeKBdirecttaxQuarterlyFilingsReturn' => $totalSizeKBdirecttaxQuarterlyFilingsReturn,
+
+            'countdirecttaxQuarterlyFilingsWorkings' => $countdirecttaxQuarterlyFilingsWorkings,
+            'totalSizeKBdirecttaxQuarterlyFilingsWorkings' => $totalSizeKBdirecttaxQuarterlyFilingsWorkings,
+
+            'countdirecttaxmonthlyChallan' => $countdirecttaxmonthlyChallan,
+            'totalSizeKBdirecttaxmonthlyChallan' => $totalSizeKBdirecttaxmonthlyChallan,
+
+
+            'countdirecttaxmonthlyworking' => $countdirecttaxmonthlyworking,
+            'totalSizeKBdirecttaxmonthlyworking' => $totalSizeKBdirecttaxmonthlyworking,
             'counthroff4' => $counthroff4,
             'totalSizeKBhroff4' => $totalSizeKBhroff4,
             'counthroff3' => $counthroff3,
@@ -20411,7 +20887,7 @@ $entriesinc9 = CommonTable::where('user_id', $user->id)
     // return view('Secretarial_Annual_Filings', compact('countentriesafs','countentriescfs', 'countentriesmgt7','countentriesmgt7a','totalSizeKBentrieafs','totalSizeKBentriecfs', 'totalSizeKBentriemgt7', 'totalSizeKBentriemgt7a'));
         
         
-        return view('docurepo', compact('deleteFolder','RealFileFoldersBank','RealFileFolders','counthroff4','totalSizeKBhroff4','counthroff3','totalSizeKBhroff3','counthroff2','totalSizeKBhroff2','counthroff1','totalSizeKBhroff1','counthremppol4','totalSizeKBhremppol4','counthremppol3','totalSizeKBhremppol3','counthremppol2','totalSizeKBhremppol2','counthremppol1','totalSizeKBhremppol1','counthrhrpaymoney5','totalSizeKBhrpaymoney5','counthrhrpaymoney4','totalSizeKBhrpaymoney4','counthrhrpaymoney3','totalSizeKBhrpaymoney3','counthrhrpaymoney2','totalSizeKBhrpaymoney2','counthrhrpaymoney1','totalSizeKBhrpaymoney1','counthrhrempdecmaster','totalSizeKBhrempdecmaster','counthrhrempdec','totalSizeKBhrempdec','counthrpayrimapprove','totalSizeKBhrpayrimapprove','counthrpayrim','totalSizeKBhrpayrim','countkyccontactdetails','totalSizeKBkyccontactdetails','countkycaddressproof','totalSizeKBkycaddressproof','countkycpan','totalSizeKBkycpan','countkycaadhar','totalSizeKBkycaadhar','countkycphoto','totalSizeKBkycphoto','countemponboardincometax','totalSizeKBemponboardincometax','countemponboardepf','totalSizeKBemponboardepf','countemponboardcb','totalSizeKBemponboardcb','countemponboardnc','totalSizeKBemponboardnc','countemponboardnda','totalSizeKBemponboardnda','countemponboardea','totalSizeKBemponboardea','countemponboardal','totalSizeKBemponboardal','totalSizeKBemponboard','countemponboard','totalSizeKBdirectorappointmentsdir3din','countdirectorappointmentsdir3din','cli_announcements','fileCount','fileCount1','user','commondataroom','countSECAASR','totalSizeKBSECAASR','countSECAAALA','totalSizeKBSECAAALA','countSECAACRCAA','totalSizeKBSECAACRCAA','countSECAALA','totalSizeKBSECAALA','countSECAAIA','totalSizeKBSECAAIA','countSECAABRAA','totalSizeKBSECAABRAA','countcharregPP','totalSizeKBcharregPP','countcharregLWFC','totalSizeKBcharregLWFC','countcharregPTC','totalSizeKBcharregPTC','countcharregESIC','totalSizeKBcharregESIC','countcharregPFC','totalSizeKBcharregPFC','countcharregTrademark','totalSizeKBcharregTrademark','countcharregMSME','totalSizeKBcharregMSME','countcharregGSTIN','totalSizeKBcharregGSTIN','countcharregtan','totalSizeKBcharregtan','countcharregpan','totalSizeKBcharregpan','countIncorporationSharecertifF',
+        return view('docurepo', compact('countindirecttaxIncomeTaxGSTR3bAcknowledgement','totalSizeKBindirecttaxIncomeTaxGSTR3bAcknowledgement','countindirecttaxIncomeTaxGSTR3bChallanReceipt','totalSizeKBindirecttaxIncomeTaxGSTR3bChallanReceipt','countindirecttaxIncomeTaxGSTR3bReturn','totalSizeKBindirecttaxIncomeTaxGSTR3bReturn','countindirecttaxIncomeTaxGSTR3bWorkings','totalSizeKBindirecttaxIncomeTaxGSTR3bWorkings','countindirecttaxIncomeTaxGSTR1Acknowledgement','totalSizeKBindirecttaxIncomeTaxGSTR1Acknowledgement','countindirecttaxIncomeTaxGSTR1Return','totalSizeKBindirecttaxIncomeTaxGSTR1Return','countindirecttaxIncomeTaxGSTR1Workings','totalSizeKBindirecttaxIncomeTaxGSTR1Workings','countindirecttaxIncomeTaxLitigationsOrders','totalSizeKBindirecttaxIncomeTaxLitigationsOrders','countindirecttaxIncomeTaxLitigationsResponses','totalSizeKBindirecttaxIncomeTaxLitigationsResponses','countindirecttaxIncomeTaxLitigationsNotices','totalSizeKBindirecttaxIncomeTaxLitigationsNotices','countdirecttaxIncomeTaxLitigationsResponses','totalSizeKBdirecttaxIncomeTaxLitigationsResponses','countdirecttaxIncomeTaxLitigationsNotices','totalSizeKBdirecttaxIncomeTaxLitigationsNotices','countdirecttaxIncomeTaxAnnualReturnsAcknowledgement','totalSizeKBdirecttaxIncomeTaxAnnualReturnsAcknowledgement','countdirecttaxIncomeTaxAnnualReturnsReturn','totalSizeKBdirecttaxIncomeTaxAnnualReturnsReturn','countdirecttaxIncomeTaxAnnualReturnsCOI','totalSizeKBdirecttaxIncomeTaxAnnualReturnsCOI','countdirecttaxIncomeTaxAnnualReturnsFinancialStatements','totalSizeKBdirecttaxIncomeTaxAnnualReturnsFinancialStatements','countdirecttaxQuarterlyPaymentsChallan','totalSizeKBdirecttaxQuarterlyPaymentsChallan','countdirecttaxQuarterlyPaymentsWorkings','totalSizeKBdirecttaxQuarterlyPaymentsWorkings','countdirecttaxLitigationsResponses','totalSizeKBdirecttaxLitigationsResponses','countdirecttaxLitigationsOrders','totalSizeKBdirecttaxLitigationsOrders','countdirecttaxLitigationsNotices','totalSizeKBdirecttaxLitigationsNotices','countdirecttaxQuarterlyFilingsAcknowledgement','totalSizeKBdirecttaxQuarterlyFilingsAcknowledgement','countdirecttaxQuarterlyFilingsWorkings','totalSizeKBdirecttaxQuarterlyFilingsWorkings','countdirecttaxQuarterlyFilingsReturn','totalSizeKBdirecttaxQuarterlyFilingsReturn','countdirecttaxmonthlyChallan','totalSizeKBdirecttaxmonthlyChallan','countdirecttaxmonthlyworking','totalSizeKBdirecttaxmonthlyworking','deleteFolder','RealFileFoldersBank','RealFileFolders','counthroff4','totalSizeKBhroff4','counthroff3','totalSizeKBhroff3','counthroff2','totalSizeKBhroff2','counthroff1','totalSizeKBhroff1','counthremppol4','totalSizeKBhremppol4','counthremppol3','totalSizeKBhremppol3','counthremppol2','totalSizeKBhremppol2','counthremppol1','totalSizeKBhremppol1','counthrhrpaymoney5','totalSizeKBhrpaymoney5','counthrhrpaymoney4','totalSizeKBhrpaymoney4','counthrhrpaymoney3','totalSizeKBhrpaymoney3','counthrhrpaymoney2','totalSizeKBhrpaymoney2','counthrhrpaymoney1','totalSizeKBhrpaymoney1','counthrhrempdecmaster','totalSizeKBhrempdecmaster','counthrhrempdec','totalSizeKBhrempdec','counthrpayrimapprove','totalSizeKBhrpayrimapprove','counthrpayrim','totalSizeKBhrpayrim','countkyccontactdetails','totalSizeKBkyccontactdetails','countkycaddressproof','totalSizeKBkycaddressproof','countkycpan','totalSizeKBkycpan','countkycaadhar','totalSizeKBkycaadhar','countkycphoto','totalSizeKBkycphoto','countemponboardincometax','totalSizeKBemponboardincometax','countemponboardepf','totalSizeKBemponboardepf','countemponboardcb','totalSizeKBemponboardcb','countemponboardnc','totalSizeKBemponboardnc','countemponboardnda','totalSizeKBemponboardnda','countemponboardea','totalSizeKBemponboardea','countemponboardal','totalSizeKBemponboardal','totalSizeKBemponboard','countemponboard','totalSizeKBdirectorappointmentsdir3din','countdirectorappointmentsdir3din','cli_announcements','fileCount','fileCount1','user','commondataroom','countSECAASR','totalSizeKBSECAASR','countSECAAALA','totalSizeKBSECAAALA','countSECAACRCAA','totalSizeKBSECAACRCAA','countSECAALA','totalSizeKBSECAALA','countSECAAIA','totalSizeKBSECAAIA','countSECAABRAA','totalSizeKBSECAABRAA','countcharregPP','totalSizeKBcharregPP','countcharregLWFC','totalSizeKBcharregLWFC','countcharregPTC','totalSizeKBcharregPTC','countcharregESIC','totalSizeKBcharregESIC','countcharregPFC','totalSizeKBcharregPFC','countcharregTrademark','totalSizeKBcharregTrademark','countcharregMSME','totalSizeKBcharregMSME','countcharregGSTIN','totalSizeKBcharregGSTIN','countcharregtan','totalSizeKBcharregtan','countcharregpan','totalSizeKBcharregpan','countIncorporationSharecertifF',
         'totalSizeKBIncorporationSharecertifF','countIncorporationTrustDeed'
         ,'totalSizeKBIncorporationTrustDeed','countIncorporationLLPAgreement',
         'totalSizeKBIncorporationLLPAgreement','countIncorporationPartnerdeed',
@@ -20530,7 +21006,7 @@ $entriesinc9 = CommonTable::where('user_id', $user->id)
 
     public function fetchFolderData()
     {
-        $folders = Folder::where('user_id', Auth::id())->orderBy('name')->get();
+        $folders = Folder::where('user_id', Auth::id())->orderBy('name')->where('is_delete', 0)->get();
         return response()->json($folders);
     }
 public function fetchDataForYear(Request $request)
@@ -20540,6 +21016,7 @@ public function fetchDataForYear(Request $request)
         // Fetch records based on the selected year
         $records = Folder::whereYear('created_at', $selectedYear)
                       ->whereNull('parent_name')
+                      ->where('is_delete', 0)
                       ->get();
 
         // Log the records to the console
@@ -20551,9 +21028,37 @@ public function fetchDataForYear(Request $request)
 public function getFolders(Request $request)
     {
      
-        $folders =Folder::where('user_id', Auth::id())->orderBy('name')->get();
+        $folders =Folder::where('user_id', Auth::id())->orderBy('name') ->where('is_delete', 0)->get();
         return response()->json($folders);
     }
+    public function checkFolderStatus(Request $request)
+    {
+        $folderName = $request->input('folder_name');
+        
+        // Query to find the folder by parent_name or name, matching the last part of the path
+        $folder = Folder::where(function($query) use ($folderName) {
+            $query->where('parent_name', 'LIKE', '%' . $folderName . '%')
+                  ->orWhere('name', 'LIKE', '%' . $folderName . '%');
+        })->first();
+    
+        // Debugging: Dump the folder for inspection
+        // dd($folder);
+        
+        if ($folder) {
+            // Return the folder's status
+            return response()->json([
+                'success' => true,
+                'is_delete' => $folder->is_delete
+            ]);
+        } else {
+            return response()->json([
+                'success' => false,
+                'message' => 'Folder not found.'
+            ]);
+        }
+    }
+    
+
     public function fetchSubfolders(Request $request)
     {
         $path = $request->input('path');
@@ -20566,6 +21071,7 @@ $commonSubfolders = Folder::where('parent_name', $path)
 // Fetch the authenticated user's subfolders within the same path
 $userSubfolders = Folder::where('parent_name', $path)
                         ->where('user_id', Auth::id())
+                        ->where('is_delete', 0)
                         ->get();
 
 // Combine both results
@@ -20630,7 +21136,8 @@ $commonFoldersQuery = Folder::where('parent_name', $path)
                             ->where('common_folder', 1);
 
 $userFoldersQuery = Folder::where('parent_name', $path)
-                          ->where('user_id', Auth::id());
+                          ->where('user_id', Auth::id())
+                          ->where('is_delete', 0);
 
 // Apply sorting logic based on the selected sort option
 switch ($sortOption) {
@@ -24329,8 +24836,8 @@ public function eventsstore(Request $request)
 public function ticktingdetails()
 {
     $cli_announcements = Announcement::where('role', 'Client')->latest()->get();
-    
-   return view('user.ticket.tickting',compact('cli_announcements'));
+    $user = Auth::user();
+   return view('user.ticket.tickting',compact('cli_announcements', 'user'));
 }
 
 // public function event(Request $request)

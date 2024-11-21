@@ -426,14 +426,7 @@
                 </div>
                 <div class="retreve_document">
                     <div class="retreve_in">
-    <div class="retreve_inn" style="display:none;">                
-    <div id="moveToDataRoomContainer" class="movecontainer" style="display:none;">
-    <button id="moveToDataRoomBtn" class="btn btn-primary movebtn" data-bs-toggle="modal" data-bs-target="#dataRoomModal">
-    Move Files to Data Room
-    </button>
-    </div>
-    <a class="done_chcel">Reset</a>
-    </div>
+    
     </div>
 
 <div class="retreve_inn_sec"> 
@@ -624,14 +617,7 @@
                 </div>
                 <div class="retreve_document">
                     <div class="retreve_in">
-    <div class="retreve_inn" style="display:none;">                
-    <div id="moveToDataRoomContainer" class="movecontainer" style="display:none;">
-    <button id="moveToDataRoomBtn" class="btn btn-primary movebtn" data-bs-toggle="modal" data-bs-target="#dataRoomModal">
-    Move Files to Data Room
-    </button>
-    </div>
-    <a class="done_chcel">Reset</a>
-    </div>
+    
     </div>
 
 <div class="retreve_inn_sec"> 
@@ -822,14 +808,7 @@
                 </div>
                 <div class="retreve_document">
                     <div class="retreve_in">
-    <div class="retreve_inn" style="display:none;">                
-    <div id="moveToDataRoomContainer" class="movecontainer" style="display:none;">
-    <button id="moveToDataRoomBtn" class="btn btn-primary movebtn" data-bs-toggle="modal" data-bs-target="#dataRoomModal">
-    Move Files to Data Room
-    </button>
-    </div>
-    <a class="done_chcel">Reset</a>
-    </div>
+  
     </div>
 
 <div class="retreve_inn_sec"> 
@@ -1020,14 +999,7 @@
                 </div>
                 <div class="retreve_document">
                     <div class="retreve_in">
-    <div class="retreve_inn" style="display:none;">                
-    <div id="moveToDataRoomContainer" class="movecontainer" style="display:none;">
-    <button id="moveToDataRoomBtn" class="btn btn-primary movebtn" data-bs-toggle="modal" data-bs-target="#dataRoomModal">
-    Move Files to Data Room
-    </button>
-    </div>
-    <a class="done_chcel">Reset</a>
-    </div>
+   
     </div>
 
 <div class="retreve_inn_sec"> 

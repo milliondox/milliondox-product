@@ -1982,7 +1982,6 @@ ul.dropdown-menu .toggle_icconn {
 
 .entry_body_wraap .entery_body.left_side_wraap.left_side_wraap_active {
     overflow: hidden;
-    min-height: 100%;
     max-height: 1;
 }
 
@@ -5039,5 +5038,10 @@ td.file_dess {
     right: 10px;
     width: 320px;
 }
+
+#fresponsive .dropdown .folder-title span {
+    text-align: left;
+}
+
 
 }

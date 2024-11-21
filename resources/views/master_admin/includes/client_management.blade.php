@@ -10,7 +10,7 @@
     <link rel="icon" href="../assets/images/favicon/favicon.png" type="image/x-icon">
     <link rel="shortcut icon" href="../assets/images/favicon/favicon.png" type="image/x-icon">
     <title>Milliondox</title>
-    
+
     <!-- website font start -->
     <link rel="preconnect" href="https://fonts.googleapis.com/">
     <link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin>
@@ -20,7 +20,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@200..800&display=swap" rel="stylesheet">
     <!-- website font end -->
-    
+
     <link rel="stylesheet" type="text/css" href="../assets/css/vendors/font-awesome.css">
     <!-- ico-font-->
     <link rel="stylesheet" type="text/css" href="../assets/css/vendors/icofont.css">
@@ -42,37 +42,19 @@
     <link rel="stylesheet" type="text/css" href="../assets/css/style.css">
     <link rel="stylesheet" type="text/css" href="../assets/css/client-custom.css">
     <link id="color" rel="stylesheet" href="../assets/css/color-1.css" media="screen">
+    <link rel="stylesheet" type="text/css" href="../assets/css/masteradmin.css">
+    
     <!-- Responsive css-->
     <link rel="stylesheet" type="text/css" href="../assets/css/responsive.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <style>
-        ul.action {
-    display: block;
-}
-button.delete-button {
-    margin: 10px;
-}
-ul.action {
-    text-align: center;
-}
-div .action i {
-    font-size: 20px !important;
-}
-    </style>
 
   </head>
-  <body>
+  <body class="master_adin_panel">
    @yield('content')
    <!-- latest jquery-->
     <!-- <script src="../assets/js/jquery-3.6.0.min.js"></script> -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
- 
     <!-- Bootstrap js-->
     <script src="../assets/js/bootstrap/bootstrap.bundle.min.js"></script>
     <!-- feather icon js-->
@@ -89,59 +71,140 @@ div .action i {
     <script src="/../assets/js/datatable/datatables/jquery.dataTables.min.js"></script>
     <script src="/../assets/js/datatable/datatables/datatable.custom.js"></script>
     <script src="../assets/js/script.js"></script>
-    <script src="../assets/js/comon_toggle_theme.js"></script>
-
-<script>
-  function openTabbb(tabName) {
-    var tabss = document.querySelectorAll('.tab');
-    var tabLinkss = document.querySelectorAll('.tab-link');
-
-    tabss.forEach(function(tab) {
-      tab.classList.remove('active');
-    });
-
-    tabLinkss.forEach(function(link) {
-      link.classList.remove('active');
-    });
-
-    document.getElementById('tab-' + tabName).classList.add('active');
-    event.currentTarget.classList.add('active');
-  }
-</script>
-
-    <script src="../assets/js/theme-customizer/customizer.js">  </script>
-    
+    <script src="../assets/js/theme-customizer/customizer.js">  </script>    
     <!-- login js-->
-
-
-<script>
-$(document).ready(function() {
-  // Toggle the dropdown-content when button is clicked
-  $('body').on('click', '.dropbtn', function(e) {
-    // Prevent body click from immediately closing the dropdown
-    e.stopPropagation();
-
-    // Get the dropdown content of the clicked button
-    var dropdownContent = $(this).siblings('.dropdown-content');
-    
-    // Close any currently open dropdowns by removing the active class from all dropdown-content
-    $('.dropdown-content').not(dropdownContent).removeClass('active');
-    
-    // Toggle the active class on the clicked dropdown-content
-    dropdownContent.toggleClass('active');
-  });
-
-  // Close dropdown-content if clicking outside
-  $('body').on('click', function() {
-    $('.dropdown-content').removeClass('active');
-  });
-});
-
-
-</script>
-
         
     <!--<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>-->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/store.js/1.3.14/store.min.js"></script>
+
+    <script>
+    $(document).ready(function() {
+        $('body').removeClass('dark-only');
+    });
+    </script>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+  // Daily Activity Chart
+  const dailyActivityCtx = document.getElementById('dailyActivityChart').getContext('2d');
+  const dailyActivityChart = new Chart(dailyActivityCtx, {
+    type: 'bar',
+    data: {
+      labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+      datasets: [{
+        data: [2, 3, 2.5, 3.5, 4, 2.7, 3.2, 2.8, 3.1, 3.6, 4.1, 3.5, 2.9, 3.3],
+        backgroundColor: '#5790FF',
+        borderRadius: 10,
+        borderSkipped: false,
+        barThickness: 10, // Set the width of the bars
+        maxBarThickness: 15  // Limit the maximum width of bars
+      }]
+    },
+    options: {
+      plugins: {
+        legend: { display: false }
+      },
+      responsive: true,
+      maintainAspectRatio: false,
+      layout: {
+        padding: {
+          left: 10,
+          right: 10,
+          top: 10,
+          bottom: 10
+        }
+      },
+      scales: {
+        x: {
+          display: false,  // Show the X-axis
+          // No need for barPercentage/categoryPercentage if using barThickness
+        },
+        y: {
+          display: false,
+          beginAtZero: true
+        }
+      },
+      elements: {
+        bar: {
+          borderRadius: 5,  // Optional: smooth edges for the bars
+          borderSkipped: false
+        }
+      }
+    }
+  });
+
+  // Daily Transactions Chart
+  const dailyTransactionsCtx = document.getElementById('dailyTransactionsChart').getContext('2d');
+  const dailyTransactionsChart = new Chart(dailyTransactionsCtx, {
+    type: 'bar',
+    data: {
+      labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+      datasets: [{
+        data: [30, 33, 50, 32, 28, 35, 34, 31, 30, 86, 33, 32, 31, 29],
+        backgroundColor: '#9ADB67',
+        borderRadius: 10,
+        borderSkipped: false,
+        barThickness: 10, // Set the width of the bars
+        maxBarThickness: 15  // Limit the maximum width of bars
+      }]
+    },
+    options: {
+      plugins: {
+        legend: { display: false }
+      },
+      responsive: true,
+      maintainAspectRatio: false,
+      layout: {
+        padding: {
+          left: 10,
+          right: 10,
+          top: 10,
+          bottom: 10
+        }
+      },
+      scales: {
+        x: {
+          display: false,  // Show the X-axis
+          // No need for barPercentage/categoryPercentage if using barThickness
+        },
+        y: {
+          display: false,
+          beginAtZero: true
+        }
+      },
+      elements: {
+        bar: {
+          borderRadius: 5,  // Optional: smooth edges for the bars
+          borderSkipped: false
+        }
+      }
+    }
+  });
+</script>
+
+
+
+<script>
+// Dynamic progress update function
+const progressBar = document.querySelector('.progress-bar');
+const percentageText = document.querySelector('.percentage');
+const storageInfo = document.querySelector('.storage-info');
+
+function updateProgress(percentage, usedStorage, totalStorage) {
+  // Use a timeout to simulate smooth progress on load
+  setTimeout(() => {
+    progressBar.style.width = `${percentage}%`;
+    percentageText.textContent = `${percentage}%`;
+    storageInfo.textContent = `${usedStorage}/${totalStorage} GB`;
+  }, 100); // Delay to allow for animation
+}
+
+// Example: Updating the progress to 60%
+updateProgress(60, 1.8, 3.0);
+</script>
+
+    
   </body>
 </html>
