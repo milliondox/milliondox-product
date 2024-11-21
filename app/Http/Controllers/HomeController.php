@@ -16365,7 +16365,34 @@ public function masterclientanagement()
 {
     $cli_announcements = Announcement::where('role', 'Client')->latest()->get();
     $user = Auth::user();
-   return view('master_admin.client_management.client_management',compact('cli_announcements', 'user'));
+    $user_id= $user->id;
+    // dd($user_id);
+    // dd($user);
+    if($user_id==1 or $user_id==269){
+
+        $clients  = User::whereNotNull('name_of_the_business')
+        ->whereNull('is_delete') // Use whereNull() for checking NULL values
+        ->get();
+        // dd($users_data);
+    
+        // Monthly Active Users (MAU)
+        // $mau = DB::table('user_logs')
+        // // ->select(DB::raw('DATE_FORMAT(logged_in_at, "%Y-%m") as month, COUNT(user_id) as active_users'))
+        // ->select(DB::raw('DATE_FORMAT(logged_in_at, "%Y-%m") as month, COUNT(DISTINCT user_id) as active_users'))
+        // ->groupBy('month')
+        // ->orderBy('month', 'ASC')
+        // ->get();
+    
+        // return response()->json([
+        //     // 'dau' => $dau,
+        //     'mau' => $mau,
+        // ]);
+        return view('master_admin.client_management.client_management',compact('cli_announcements', 'user' , 'clients'));
+    }
+    else{
+        return redirect()->back()->with('error', 'You are not authorized to access this page');
+    }
+//    return view('master_admin.client_management.client_management',compact('cli_announcements', 'user'));
 }
 
 public function masterclientanagementdetail()
