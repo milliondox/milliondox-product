@@ -16298,6 +16298,7 @@ public function whiteboard()
 public function masteradmin()
 {
     $cli_announcements = Announcement::where('role', 'Client')->latest()->get();
+    
     return view('master_admin.dashboard.dashboard',compact('cli_announcements'));
 }
 
