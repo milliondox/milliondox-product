@@ -274,6 +274,7 @@ Route::put('/fold/{id}/restore', [App\Http\Controllers\HomeController::class, 'r
 Route::get('/download-folder/{folderid}', [App\Http\Controllers\HomeController::class, 'downloadFolder']);
 // Route::post('/downloadFolders', [App\Http\Controllers\HomeController::class, 'downloadFolders'])->name('downloadFolders');
 
+Route::post('/check-folder-status', [App\Http\Controllers\HomeController::class, 'checkFolderStatus']);
 
 Route::put('/file/{id}/restorefile', [App\Http\Controllers\HomeController::class, 'restorefile'])->name('file.restorefile');
 
@@ -1279,8 +1280,9 @@ Route::post('/admin/event/calendar', [App\Http\Controllers\HomeController::class
     Route::get('/user/whiteboard', [App\Http\Controllers\HomeController::class, 'whiteboard'])->name('user/whiteboard');
     
     Route::get('/master_admin/masteradmin', [App\Http\Controllers\HomeController::class, 'masteradmin'])->name('master_admin/masteradmin');
-    
-        Route::get('/user/publicclink', [App\Http\Controllers\HomeController::class, 'publicclink'])->name('user/publicclink');
+    Route::get('/master_admin/masterclientanagement', [App\Http\Controllers\HomeController::class, 'masterclientanagement'])->name('master_admin/masterclientanagement');
+    Route::get('/master_admin/masterclientanagementdetail', [App\Http\Controllers\HomeController::class, 'masterclientanagementdetail'])->name('master_admin/masterclientanagementdetail');
+    Route::get('/user/publicclink', [App\Http\Controllers\HomeController::class, 'publicclink'])->name('user/publicclink');
     Route::get('/user/advsearch', [App\Http\Controllers\HomeController::class, 'advsearch'])->name('user/advsearch');
     
     
