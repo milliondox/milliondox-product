@@ -176,7 +176,7 @@
                                                                     $class = 'platinum';
                                                                 }
                                                                 else{
-                                                                    $class='gold';
+                                                                    $class='basic';
                                                                 }
                                                             @endphp
                                                             <div class="user_grade  {{ $class }}">
