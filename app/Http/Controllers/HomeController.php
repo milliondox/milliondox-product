@@ -221,6 +221,14 @@ class HomeController extends Controller
     public function index()
     {
         $user = Auth::user(); // Get the currently authenticated user
+
+        // // Log the activity
+        // DB::table('user_logs')->insert([
+        //     'user_id' => auth()->id(),
+        //     'logged_in_at' => now(), // or the specific timestamp of the action
+        // ]);
+
+
         $employees = User::where('role', 'Employee')->get();
         $clients = User::where('role', 'Client')->get();
         $results = DB::table('assignments as a')
@@ -16326,19 +16334,32 @@ public function masteradmin()
    
 }
 
-public function masterclientanagement()
-{
-    $cli_announcements = Announcement::where('role', 'Client')->latest()->get();
-    $user = Auth::user();
-   return view('master_admin.client_management.client_management',compact('cli_announcements', 'user'));
-}
+// sandeep added code here for MAU DAU   start 20 November 2024
 
-public function masterclientanagementdetail()
-{
-    $cli_announcements = Announcement::where('role', 'Client')->latest()->get();
-    $user = Auth::user();
-   return view('master_admin.client_management.client_management_detail',compact('cli_announcements', 'user'));
-}
+// public function getUserActivityData()
+// {
+//     // Daily Active Users (DAU)
+//     // $dau = DB::table('user_logs')
+//     //     ->select(DB::raw('DATE(logged_in_at) as date, COUNT(DISTINCT user_id) as active_users'))
+//     //     ->groupBy('date')
+//     //     ->orderBy('date', 'ASC')
+//     //     ->get();
+
+//     // Monthly Active Users (MAU)
+//     $mau = DB::table('user_logs')
+//         ->select(DB::raw('DATE_FORMAT(logged_in_at, "%Y-%m") as month, COUNT(DISTINCT user_id) as active_users'))
+//         ->groupBy('month')
+//         ->orderBy('month', 'ASC')
+//         ->get();
+
+//     return response()->json([
+//         'dau' => $dau,
+//         'mau' => $mau,
+//     ]);
+// }
+
+// sandeep added code here for MAU DAU   end 20 November 2024
+
 
 
 public function publicclink()

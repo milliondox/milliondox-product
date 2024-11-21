@@ -178,11 +178,30 @@
     
 
  <script>
-        const mauData = {
-            labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+
+        // Pass MAU data from PHP to JavaScript
+        let mauData = @json($mau);
+        // Extract and transform the labels
+        const monthNames = ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC'];
+        // Transform labels
+        const mauLabels = mauData.map(item => {
+            const [year, month] = item.month.split('-'); // Split "2024-11" into "2024" and "11"
+            return monthNames[parseInt(month) - 1]; // Convert "11" to 10 (index for NOV)
+        });
+
+        // Extract values
+        const mauValues = mauData.map(item => item.active_users);
+
+        console.log("Labels:", mauLabels); // ["NOV", "DEC", ...]
+        console.log("Values:", mauValues); // [2, 5, ...]
+
+         mauData = {
+            // labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+            labels: mauLabels,
             datasets: [{
                 label: 'MAU',
-                data: [400, 450, 500, 563, 480, 510],
+                // data: [100, 450, 500, 563, 480, 510],
+                data: mauValues,
                 borderColor: 'rgba(75, 192, 192, 1)',
                 borderWidth: 2,
                 pointRadius: 4,
@@ -192,11 +211,31 @@
             }]
         };
 
-        const dauData = {
-            labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+        let dauData = @json($dau);
+        // Pass PHP DAU data to JavaScript
+        let rawDauData = @json($dau);
+
+        // Month names for mapping
+        // const monthNames = ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC'];
+
+        // Extract and format labels (dates -> months) and data (active users)
+        const dauLabels = rawDauData.map(item => {
+            const [year, month, day] = item.date.split('-'); // Split "2024-11-20" into "2024", "11", "20"
+            return `${monthNames[parseInt(month) - 1]} ${day}`; // Convert "11" to "NOV 20"
+        });
+
+        const dauValues = rawDauData.map(item => item.active_users);
+        console.log(dauLabels);
+
+
+
+        dauData = {
+            // labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+            labels: dauLabels,
             datasets: [{
                 label: 'DAU',
-                data: [100, 150, 200, 263, 180, 210],
+                // data: [100, 150, 200, 263, 180, 210],
+                data: dauValues,
                 borderColor: 'rgba(255, 99, 132, 1)',
                 borderWidth: 2,
                 pointRadius: 4,
@@ -214,7 +253,10 @@
                     y: {
                         beginAtZero: true,
                         ticks: {
-                            color: '#666'
+                            color: '#666',
+                            callback: function(value) {
+                                return Math.floor(value) === value ? value : ''; // Show only integer values
+                            }
                         },
                         grid: {
                             display: false
