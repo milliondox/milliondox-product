@@ -113,6 +113,33 @@ div .action i {
     
     <!-- login js-->
 
+
+<script>
+$(document).ready(function() {
+  // Toggle the dropdown-content when button is clicked
+  $('body').on('click', '.dropbtn', function(e) {
+    // Prevent body click from immediately closing the dropdown
+    e.stopPropagation();
+
+    // Get the dropdown content of the clicked button
+    var dropdownContent = $(this).siblings('.dropdown-content');
+    
+    // Close any currently open dropdowns by removing the active class from all dropdown-content
+    $('.dropdown-content').not(dropdownContent).removeClass('active');
+    
+    // Toggle the active class on the clicked dropdown-content
+    dropdownContent.toggleClass('active');
+  });
+
+  // Close dropdown-content if clicking outside
+  $('body').on('click', function() {
+    $('.dropdown-content').removeClass('active');
+  });
+});
+
+
+</script>
+
         
     <!--<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>-->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/store.js/1.3.14/store.min.js"></script>
