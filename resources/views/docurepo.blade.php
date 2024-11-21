@@ -3,6 +3,8 @@
  @include('script1')
  @include('script2')
  @include('hr_on_board')
+ @include('directtax')
+ @include('indirecttax')
     <!-- tap on top starts-->
   <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
     <script>window.jQuery || document.write('<script src="{{ asset('assets/js/jquerylocal.js') }}"><\/script>')</script>
@@ -5025,6 +5027,62 @@ let newPerm = fullPath.replace(newbase, '').split('/')[0];
                     hrreimbTableAppended = true;  // Set the flag to true to prevent further appends
                 }
 
+                else if (result.endsWith("Accounting & Taxation/Direct Tax/Tax Deducted at Source (TDS)/Monthly Payments") && !directtaxmonthlyTableAppended)  {
+                    insertdirecttaxmonthlyTableAppendeds();
+                    directtaxmonthlyTableAppended = true;
+                }
+
+                else if (result.endsWith("Accounting & Taxation/Direct Tax/Tax Deducted at Source (TDS)/Quarterly Filings") && !directtaxquarterlyTableAppended)  {
+                    insertdirecttaxQuarterlyTableAppendeds();
+                    directtaxquarterlyTableAppended = true;
+                }
+
+                else if (result.endsWith("Accounting & Taxation/Direct Tax/Tax Deducted at Source (TDS)/Litigations") && !directtaxLitigationsTableAppended)  {
+                    insertdirecttaxLitigationsTableAppendeds();
+                    directtaxLitigationsTableAppended = true;
+                }
+                else if (result.endsWith("Accounting & Taxation/Direct Tax/Advance Tax/Quarterly Payments") && !directtaxQuarterlyPaymentsTableAppended)  {
+                    insertdirecttaxQuarterlyPaymentsTableAppendeds();
+                    directtaxQuarterlyPaymentsTableAppended = true;
+                }
+
+
+                else if (result.endsWith("Accounting & Taxation/Direct Tax/Income Tax/Annual Returns") && !directtaxAnnualReturnsTableAppended)  {
+                    insertdirecttaxAnnualReturnsTableAppendeds();
+                    directtaxAnnualReturnsTableAppended = true;
+                }
+                else if (result.endsWith("Accounting & Taxation/Direct Tax/Income Tax/Litigations") && !directtaxincomeLitigationsTableAppended)  {
+                    insertdirecttaxincomeLitigationsTableAppendeds();
+                    directtaxincomeLitigationsTableAppended = true;
+                }
+
+                else if (result.endsWith("Accounting & Taxation/Indirect Tax/Indirect/GST/Monthly & Quarterly Returns/GSTR-1") && !indirecttaxGSTR1TableAppended)  {
+                    insertindirecttaxGSTR1TableAppendeds();
+                    indirecttaxGSTR1TableAppended = true;
+                }
+
+                else if (result.endsWith("Accounting & Taxation/Indirect Tax/Indirect/GST/Monthly & Quarterly Returns/GSTR 3B") && !indirecttaxGSTR3bTableAppended)  {
+                    insertindirecttaxGSTR3bTableAppendeds();
+                    indirecttaxGSTR3bTableAppended = true;
+                }
+                else if (result.endsWith("Accounting & Taxation/Indirect Tax/Indirect/GST/Monthly & Quarterly Returns/GSTR 9") && !indirecttaxGSTR9TableAppended)  {
+                    insertindirecttaxGSTR9TableAppendeds();
+                    indirecttaxGSTR9TableAppended = true;
+                }
+                else if (result.endsWith("Accounting & Taxation/Indirect Tax/Indirect/GST/Monthly & Quarterly Returns/GSTR 9C") && !indirecttaxGSTR9cTableAppended)  {
+                    insertindirecttaxGSTR9cTableAppendeds();
+                    indirecttaxGSTR9cTableAppended = true;
+                }
+                
+                else if (result.endsWith("Accounting & Taxation/Indirect Tax/Indirect/GST/Litigations") && !indirecttaxLitigationsTableAppended)  {
+                    insertindirecttaxLitigationsTableAppendeds();
+                    indirecttaxLitigationsTableAppended = true;
+                }
+
+                
+                
+                
+                
                 bindFolderClickEvents();
                 updateBreadcrumb(pathToUse);
                 hideLoader(); // Hide loader after contents are updated
@@ -5239,6 +5297,64 @@ let newPerm = fullPath.replace(newbase, '').split('/')[0];
                     inserthrreimTableAppended();  // Call the function to append the table
                     hrreimbTableAppended = true;  // Set the flag to true to prevent further appends
                 }
+                else if (result.endsWith("Accounting & Taxation/Direct Tax/Tax Deducted at Source (TDS)/Monthly Payments") && !directtaxmonthlyTableAppended)  {
+                    insertdirecttaxmonthlyTableAppendeds();
+                    directtaxmonthlyTableAppended = true;
+                }
+
+                else if (result.endsWith("Accounting & Taxation/Direct Tax/Tax Deducted at Source (TDS)/Quarterly Filings") && !directtaxquarterlyTableAppended)  {
+                    insertdirecttaxQuarterlyTableAppendeds();
+                    directtaxquarterlyTableAppended = true;
+                }
+
+                else if (result.endsWith("Accounting & Taxation/Direct Tax/Tax Deducted at Source (TDS)/Quarterly Filings") && !directtaxquarterlyTableAppended)  {
+                    insertdirecttaxQuarterlyTableAppendeds();
+                    directtaxquarterlyTableAppended = true;
+                }
+                else if (result.endsWith("Accounting & Taxation/Direct Tax/Tax Deducted at Source (TDS)/Litigations") && !directtaxLitigationsTableAppended)  {
+                    insertdirecttaxLitigationsTableAppendeds();
+                    directtaxLitigationsTableAppended = true;
+                }
+                else if (result.endsWith("Accounting & Taxation/Direct Tax/Advance Tax/Quarterly Payments") && !directtaxQuarterlyPaymentsTableAppended)  {
+                    insertdirecttaxQuarterlyPaymentsTableAppendeds();
+                    directtaxQuarterlyPaymentsTableAppended = true;
+                }
+
+                else if (result.endsWith("Accounting & Taxation/Direct Tax/Income Tax/Annual Returns") && !directtaxAnnualReturnsTableAppended)  {
+                    insertdirecttaxAnnualReturnsTableAppendeds();
+                    directtaxAnnualReturnsTableAppended = true;
+                }
+
+                else if (result.endsWith("Accounting & Taxation/Direct Tax/Income Tax/Litigations") && !directtaxincomeLitigationsTableAppended)  {
+                    insertdirecttaxincomeLitigationsTableAppendeds();
+                    directtaxincomeLitigationsTableAppended = true;
+                }
+
+                else if (result.endsWith("Accounting & Taxation/Indirect Tax/Indirect/GST/Monthly & Quarterly Returns/GSTR-1") && !indirecttaxGSTR1TableAppended)  {
+                    insertindirecttaxGSTR1TableAppendeds();
+                    indirecttaxGSTR1TableAppended = true;
+                }
+
+                else if (result.endsWith("Accounting & Taxation/Indirect Tax/Indirect/GST/Monthly & Quarterly Returns/GSTR 3B") && !indirecttaxGSTR3bTableAppended)  {
+                    insertindirecttaxGSTR3bTableAppendeds();
+                    indirecttaxGSTR3bTableAppended = true;
+                }
+
+                else if (result.endsWith("Accounting & Taxation/Indirect Tax/Indirect/GST/Monthly & Quarterly Returns/GSTR 9") && !indirecttaxGSTR9TableAppended)  {
+                    insertindirecttaxGSTR9TableAppendeds();
+                    indirecttaxGSTR9TableAppended = true;
+                }
+
+                else if (result.endsWith("Accounting & Taxation/Indirect Tax/Indirect/GST/Monthly & Quarterly Returns/GSTR 9C") && !indirecttaxGSTR9cTableAppended)  {
+                    insertindirecttaxGSTR9cTableAppendeds();
+                    indirecttaxGSTR9cTableAppended = true;
+                }
+
+                else if (result.endsWith("Accounting & Taxation/Indirect Tax/Indirect/GST/Litigations") && !indirecttaxLitigationsTableAppended)  {
+                    insertindirecttaxLitigationsTableAppendeds();
+                    indirecttaxLitigationsTableAppended = true;
+                }
+
                 bindFolderClickEvents();
                 updateBreadcrumb(pathToUse);
                 hideLoader(); // Hide loader after contents are updated
@@ -5277,6 +5393,22 @@ let newPerm = fullPath.replace(newbase, '').split('/')[0];
     var hresopTableAppended = false; 
     var hrmpTableAppended = false;
     var hrreimbTableAppended = false;
+    var directtaxmonthlyTableAppended = false;
+    var directtaxquarterlyTableAppended = false;
+    var directtaxLitigationsTableAppended = false;
+    var directtaxQuarterlyPaymentsTableAppended = false;
+    var directtaxAnnualReturnsTableAppended = false;
+    var directtaxincomeLitigationsTableAppended = false;
+
+    var indirecttaxGSTR1TableAppended = false;
+
+    var indirecttaxGSTR3bTableAppended = false;
+
+    var indirecttaxGSTR9TableAppended = false;
+
+    var indirecttaxGSTR9cTableAppended = false;
+
+    var indirecttaxLitigationsTableAppended = false;
     
 
 
@@ -5452,6 +5584,81 @@ function handleFolderPath(folderPath) {
                      inserthrreimTableAppended();  // Call the function to append the table
                      hrreimbTableAppended = true;  // Set the flag to true to prevent further appends
                  }
+
+
+                
+                 else if (folderPath === "Accounting & Taxation/Direct Tax/Tax Deducted at Source (TDS)/Monthly Payments" && !directtaxmonthlyTableAppended) {
+                     // alert(resultto);  // Display the result
+                     insertdirecttaxmonthlyTableAppendeds();  // Call the function to append the table
+                     directtaxmonthlyTableAppended = true;  // Set the flag to true to prevent further appends
+                 }
+                 else if (folderPath === "Accounting & Taxation/Direct Tax/Tax Deducted at Source (TDS)/Quarterly Filings" && !directtaxquarterlyTableAppended) {
+                     // alert(resultto);  // Display the result
+                     insertdirecttaxQuarterlyTableAppendeds();  // Call the function to append the table
+                     directtaxquarterlyTableAppended = true;  // Set the flag to true to prevent further appends
+                 }
+                 else if (folderPath === "Accounting & Taxation/Direct Tax/Tax Deducted at Source (TDS)/Litigations" && !directtaxLitigationsTableAppended) {
+                     // alert(resultto);  // Display the result
+                     insertdirecttaxLitigationsTableAppendeds();  // Call the function to append the table
+                     directtaxLitigationsTableAppended = true;  // Set the flag to true to prevent further appends
+                 }
+
+                 else if (folderPath === "Accounting & Taxation/Direct Tax/Advance Tax/Quarterly Payments" && !directtaxQuarterlyPaymentsTableAppended) {
+                     // alert(resultto);  // Display the result
+                     insertdirecttaxQuarterlyPaymentsTableAppendeds();  // Call the function to append the table
+                     directtaxQuarterlyPaymentsTableAppended = true;  // Set the flag to true to prevent further appends
+                 }
+                 else if (folderPath === "Accounting & Taxation/Direct Tax/Income Tax/Annual Returns" && !directtaxAnnualReturnsTableAppended) {
+                     // alert(resultto);  // Display the result
+                     insertdirecttaxAnnualReturnsTableAppendeds();  // Call the function to append the table
+                     directtaxAnnualReturnsTableAppended = true;  // Set the flag to true to prevent further appends
+                 }
+
+
+                 else if (folderPath === "Accounting & Taxation/Direct Tax/Income Tax/Litigations" && !directtaxincomeLitigationsTableAppended) {
+                     // alert(resultto);  // Display the result
+                     insertdirecttaxincomeLitigationsTableAppendeds();  // Call the function to append the table
+                     directtaxincomeLitigationsTableAppended = true;  // Set the flag to true to prevent further appends
+                 }
+
+                 else if (folderPath === "Accounting & Taxation/Indirect Tax/Indirect/GST/Monthly & Quarterly Returns/GSTR-1" && !indirecttaxGSTR1TableAppended) {
+                     // alert(resultto);  // Display the result
+                     insertindirecttaxGSTR1TableAppendeds();  // Call the function to append the table
+                     indirecttaxGSTR1TableAppended = true;  // Set the flag to true to prevent further appends
+                 }
+                 else if (folderPath === "Accounting & Taxation/Indirect Tax/Indirect/GST/Monthly & Quarterly Returns/GSTR 3B" && !indirecttaxGSTR3bTableAppended) {
+                     // alert(resultto);  // Display the result
+                     insertindirecttaxGSTR3bTableAppendeds();  // Call the function to append the table
+                     indirecttaxGSTR3bTableAppended = true;  // Set the flag to true to prevent further appends
+                 }
+
+                 else if (folderPath === "Accounting & Taxation/Indirect Tax/Indirect/GST/Monthly & Quarterly Returns/GSTR 9" && !indirecttaxGSTR9TableAppended) {
+                     // alert(resultto);  // Display the result
+                     insertindirecttaxGSTR9TableAppendeds();  // Call the function to append the table
+                     indirecttaxGSTR9TableAppended = true;  // Set the flag to true to prevent further appends
+                 }
+
+                 else if (folderPath === "Accounting & Taxation/Indirect Tax/Indirect/GST/Monthly & Quarterly Returns/GSTR 9C" && !indirecttaxGSTR9cTableAppended) {
+                     // alert(resultto);  // Display the result
+                     indirecttaxGSTR9cTableAppended();  // Call the function to append the table
+                     indirecttaxGSTR9cTableAppended = true;  // Set the flag to true to prevent further appends
+                 }
+
+                 
+                 else if (folderPath === "AAccounting & Taxation/Indirect Tax/Indirect/GST/Litigations" && !indirecttaxLitigationsTableAppended) {
+                     // alert(resultto);  // Display the result
+                     insertindirecttaxLitigationsTableAppendeds();  // Call the function to append the table
+                     indirecttaxLitigationsTableAppended = true;  // Set the flag to true to prevent further appends
+                 }
+               
+                
+
+               
+
+                 
+
+                
+                 
 }
 
 // Fetch folder contents
@@ -5483,9 +5690,21 @@ function handleFolderPath(folderPath) {
         hresopTableAppended = false;
         hrmpTableAppended = false;
         hrreimbTableAppended = false;
+        directtaxmonthlyTableAppended = false;
+        directtaxquarterlyTableAppended = false;
+        directtaxLitigationsTableAppended = false;
+        directtaxQuarterlyPaymentsTableAppended = false;
+        directtaxAnnualReturnsTableAppended = false;
+        directtaxincomeLitigationsTableAppended = false;
+        indirecttaxGSTR1TableAppended = false;
+        indirecttaxGSTR3bTableAppended = false;
+        indirecttaxGSTR9TableAppended = false;
+        indirecttaxGSTR9cTableAppended = false;  
+        indirecttaxLitigationsTableAppended = false; 
     }
     
     
+   
     
      function insertcharterdocumentsRegistrationsTableAppendedTable() {
         const tableHtml = `
@@ -9082,7 +9301,66 @@ $(document).ready(function () {
         });
     });
 </script>
+<script>
+$(document).ready(function() {
+    // Get the current URL
+    var currentUrl = window.location.href;
 
+    // Create a URL object and use URLSearchParams to get the 'folder' parameter
+    var urlParams = new URLSearchParams(window.location.search);
+    var folderParam = urlParams.get('folder');
+
+    // If the folder parameter exists, decode it
+    if (folderParam) {
+        // Decode the folder parameter (it may be double-encoded, so decode twice if necessary)
+        var decodedFolderParam = decodeURIComponent(decodeURIComponent(folderParam));
+
+        // Split the decoded folder path by slashes '/' and get the last part
+        var pathParts = decodedFolderParam.split('/');
+        var lastPerm = pathParts[pathParts.length - 2]; // Get the last part after the last '/'
+
+        // Log the last permission part (for debugging purposes)
+        console.log("Decoded Folder Parameter: ", decodedFolderParam);
+        console.log("Last Permission: ", lastPerm);
+
+        // Alert the decoded folder and last permission for debugging
+     
+
+        // AJAX request to check the folder status from the database
+        $.ajax({
+            url: '/check-folder-status', // API to check the folder status
+            method: 'POST',
+            data: {
+                folder_name: lastPerm, // Send the last permission as the folder name
+                _token: '{{ csrf_token() }}' // CSRF token for security
+            },
+            success: function(response) {
+                if (response.success) {
+                    // Log the response for debugging purposes
+                    console.log("Folder Status Response: ", response);
+
+                    if (response.is_delete === 1) {
+                        // If folder is deleted (is_delete = 1), redirect to the docurepo route
+                     
+                        window.location.href = '/docurepo';
+                    } else {
+                        console.log("Folder is not deleted.");
+                    }
+                } else {
+                    console.log("Folder check failed: ", response.message);
+                }
+            },
+            error: function() {
+                console.log('Error occurred while checking folder status.');
+            }
+        });
+    }
+});
+
+
+
+
+</script>
 
 
 @endsection

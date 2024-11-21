@@ -546,58 +546,74 @@ closeToastBtn.addEventListener("click", closeToast);
 
 <script>
 $(document).ready(function() {
+    let initialEmail = $('#Email').val();
+    let initialPhone = $('#phone').val();
+
     let emailExists = false;
     let phoneExists = false;
 
-    // Check email on blur
-    $('#Email').on('blur', function() {
-        let email = $(this).val();
+    $('#companystore').on('submit', function(e) {
+        e.preventDefault(); // Prevent default form submission
 
-        // Make AJAX request to check email existence
-        $.ajax({
-            url: "{{ route('checkUserExistence') }}",
-            method: "POST",
-            data: {
-                email: email,
-                _token: '{{ csrf_token() }}'
-            },
-            success: function(response) {
-                if (response.emailExists) {
-                    toastr.error("Email already exists!");  // Toastr error notification
-                    $('#Email').addClass('is-invalid');  // Add invalid class for styling
-                    emailExists = true;  // Set flag to true if email exists
-                } else {
-                    $('#Email').removeClass('is-invalid');  // Remove invalid class if valid
-                    emailExists = false;  // Set flag to false if email is valid
+        let email = $('#Email').val();
+        let phone = $('#phone').val();
+
+        // Reset flags
+        emailExists = false;
+        phoneExists = false;
+
+        // Check if email or phone has changed
+        if (email !== initialEmail || phone !== initialPhone) {
+            $.when(
+                // Check email existence
+                $.ajax({
+                    url: "{{ route('checkUserExistence') }}",
+                    method: "POST",
+                    data: {
+                        email: email,
+                        _token: '{{ csrf_token() }}'
+                    },
+                    success: function(response) {
+                        if (response.emailExists) {
+                            toastr.error("Email already exists!");
+                            $('#Email').addClass('is-invalid');
+                            emailExists = true;
+                        } else {
+                            $('#Email').removeClass('is-invalid');
+                        }
+                    }
+                }),
+                // Check phone existence
+                $.ajax({
+                    url: "{{ route('checkUserExistence') }}",
+                    method: "POST",
+                    data: {
+                        phone: phone,
+                        _token: '{{ csrf_token() }}'
+                    },
+                    success: function(response) {
+                        if (response.phoneExists) {
+                            toastr.error("Phone number already exists!");
+                            $('#phone').addClass('is-invalid');
+                            phoneExists = true;
+                        } else {
+                            $('#phone').removeClass('is-invalid');
+                        }
+                    }
+                })
+            ).done(function() {
+                // Both AJAX calls completed
+                if (!emailExists && !phoneExists) {
+                    // Submit the form if both validations pass
+                    $('#companystore')[0].submit();
                 }
-            }
-        });
+            });
+        } else {
+            // If email and phone are unchanged, submit the form directly
+            $('#companystore')[0].submit();
+        }
     });
 
-    // Check phone on blur
-    $('#phone').on('blur', function() {
-        let phone = $(this).val();
-
-        // Make AJAX request to check phone existence
-        $.ajax({
-            url: "{{ route('checkUserExistence') }}",
-            method: "POST",
-            data: {
-                phone: phone,
-                _token: '{{ csrf_token() }}'
-            },
-            success: function(response) {
-                if (response.phoneExists) {
-                    toastr.error("Phone number already exists!");  // Toastr error notification
-                    $('#phone').addClass('is-invalid');  // Add invalid class for styling
-                    phoneExists = true;  // Set flag to true if phone exists
-                } else {
-                    $('#phone').removeClass('is-invalid');  // Remove invalid class if valid
-                    phoneExists = false;  // Set flag to false if phone is valid
-                }
-            }
-        });
-    });
 
     // Prevent form submission if email or phone exists
     $('#companystore').on('submit', function(event) {
