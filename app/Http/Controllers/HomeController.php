@@ -16290,8 +16290,7 @@ public function whiteboard()
 public function masteradmin()
 {
     $cli_announcements = Announcement::where('role', 'Client')->latest()->get();
-    $user = Auth::user();
-   return view('master_admin.dashboard.dashboard',compact('cli_announcements', 'user'));
+   return view('master_admin.dashboard.dashboard',compact('cli_announcements'));
 }
 
 public function masterclientanagement()
