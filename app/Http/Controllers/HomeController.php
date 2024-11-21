@@ -16298,40 +16298,7 @@ public function whiteboard()
 public function masteradmin()
 {
     $cli_announcements = Announcement::where('role', 'Client')->latest()->get();
-    $user = Auth::user();
-    $user_id= $user->id;
-    // dd($user_id);
-    // dd($user);
-    if($user_id==1 or $user_id==269){
-        
-
-        // Monthly Active Users (MAU)
-        $mau = DB::table('user_logs')
-        // ->select(DB::raw('DATE_FORMAT(logged_in_at, "%Y-%m") as month, COUNT(user_id) as active_users'))
-        ->select(DB::raw('DATE_FORMAT(logged_in_at, "%Y-%m") as month, COUNT(DISTINCT user_id) as active_users'))
-        ->groupBy('month')
-        ->orderBy('month', 'ASC')
-        ->get();
-    
-        // dd($mau);
-        $dau = DB::table('user_logs')
-        ->select(DB::raw('DATE(logged_in_at) as date, COUNT(DISTINCT user_id) as active_users'))
-        // ->select(DB::raw('DATE(logged_in_at) as date, COUNT( user_id) as active_users'))
-        ->groupBy('date')
-        ->orderBy('date', 'ASC')
-        ->get();
-    
-        // return response()->json([
-        //     // 'dau' => $dau,
-        //     'mau' => $mau,
-        // ]);
-       return view('master_admin.dashboard.dashboard',compact('cli_announcements', 'user' , 'mau' , 'dau'));
-
-    }
-    else{
-        return redirect()->back()->with('error', 'You are not authorized to access this page');
-    }
-   
+    return view('master_admin.dashboard.dashboard',compact('cli_announcements'));
 }
 
 // sandeep added code here for MAU DAU   start 20 November 2024
