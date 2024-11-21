@@ -16361,6 +16361,20 @@ public function masteradmin()
 // sandeep added code here for MAU DAU   end 20 November 2024
 
 
+public function masterclientanagement()
+{
+    $cli_announcements = Announcement::where('role', 'Client')->latest()->get();
+    $user = Auth::user();
+   return view('master_admin.client_management.client_management',compact('cli_announcements', 'user'));
+}
+
+public function masterclientanagementdetail()
+{
+    $cli_announcements = Announcement::where('role', 'Client')->latest()->get();
+    $user = Auth::user();
+   return view('master_admin.client_management.client_management_detail',compact('cli_announcements', 'user'));
+}
+
 
 public function publicclink()
 {
