@@ -218,7 +218,7 @@ closeToastBtn.addEventListener("click", closeToast);
     <p>Your account was created on <b>{{ \Carbon\Carbon::parse($user->created_at)->format('M d, Y') }}</b></p>
 </div>
 <div class="pay_edit">
-    <a class="hvr-rotate" target="_blank" href="https://milliondox.com/blogs/beta-test-user-guide/">Guide for Beta Testers<svg width="12" height="10" viewBox="0 0 12 10" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <a class="hvr-rotate" target="_blank" href="https://milliondox.com/blogs/beta-test/">Guide for Beta Testers<svg width="12" height="10" viewBox="0 0 12 10" fill="none" xmlns="http://www.w3.org/2000/svg">
 <path d="M1.33203 5H10.6654M10.6654 5L6.66536 9M10.6654 5L6.66536 1" stroke="#5790FF" stroke-width="1.16667" stroke-linecap="round" stroke-linejoin="round"/>
 </svg>
 </a>

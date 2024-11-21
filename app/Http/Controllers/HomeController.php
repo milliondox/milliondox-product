@@ -16290,8 +16290,22 @@ public function whiteboard()
 public function masteradmin()
 {
     $cli_announcements = Announcement::where('role', 'Client')->latest()->get();
-    
-   return view('master_admin.dashboard.dashboard',compact('cli_announcements'));
+    $user = Auth::user();
+   return view('master_admin.dashboard.dashboard',compact('cli_announcements', 'user'));
+}
+
+public function masterclientanagement()
+{
+    $cli_announcements = Announcement::where('role', 'Client')->latest()->get();
+    $user = Auth::user();
+   return view('master_admin.client_management.client_management',compact('cli_announcements', 'user'));
+}
+
+public function masterclientanagementdetail()
+{
+    $cli_announcements = Announcement::where('role', 'Client')->latest()->get();
+    $user = Auth::user();
+   return view('master_admin.client_management.client_management_detail',compact('cli_announcements', 'user'));
 }
 
 
@@ -24329,8 +24343,8 @@ public function eventsstore(Request $request)
 public function ticktingdetails()
 {
     $cli_announcements = Announcement::where('role', 'Client')->latest()->get();
-    
-   return view('user.ticket.tickting',compact('cli_announcements'));
+    $user = Auth::user();
+   return view('user.ticket.tickting',compact('cli_announcements', 'user'));
 }
 
 // public function event(Request $request)
