@@ -16395,12 +16395,49 @@ public function masterclientanagement()
 //    return view('master_admin.client_management.client_management',compact('cli_announcements', 'user'));
 }
 
-public function masterclientanagementdetail()
+public function masterclientanagementdetail($id)
 {
-    $cli_announcements = Announcement::where('role', 'Client')->latest()->get();
+    // dd($id);
     $user = Auth::user();
-   return view('master_admin.client_management.client_management_detail',compact('cli_announcements', 'user'));
+    $user_id= $user->id;
+    // dd($user_id);
+    // dd($user);
+    if($user_id==1 or $user_id==269){
+        // Fetch the client by ID
+         $client = User::find($id);
+          // Check if client exists
+            if (!$client) {
+                abort(404, 'Client not found');
+            }
+          // ->whereNull('is_delete') // Use whereNull() for checking NULL values
+          $fileSizeSum = CommonTable::where('user_id', $client->id)->sum('file_size');
+        
+          // Convert to human-readable format
+        //   $formattedSize = formatFileSize($fileSizeSum);
+
+        // dd($client);
+        $cli_announcements = Announcement::where('role', 'Client')->latest()->get();
+        return view('master_admin.client_management.client_management_detail',compact('cli_announcements', 'user' , 'client' , 'fileSizeSum' ));
+    }
+    else{
+        return redirect()->back()->with('error', 'You are not authorized to access this page');
+    }
 }
+
+// public function formatFileSize($size)
+// {
+//     if ($size < 1024) {
+//         return $size . ' Bytes';
+//     } elseif ($size < 1048576) {
+//         return round($size / 1024, 2) . ' KB';
+//     } elseif ($size < 1073741824) {
+//         return round($size / 1048576, 2) . ' MB';
+//     } else {
+//         return round($size / 1073741824, 2) . ' GB';
+//     }
+// }
+
+
 
 
 public function publicclink()

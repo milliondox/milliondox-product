@@ -1281,7 +1281,7 @@ Route::post('/admin/event/calendar', [App\Http\Controllers\HomeController::class
     
     Route::get('/master_admin/masteradmin', [App\Http\Controllers\HomeController::class, 'masteradmin'])->name('master_admin/masteradmin');
     Route::get('/master_admin/masterclientanagement', [App\Http\Controllers\HomeController::class, 'masterclientanagement'])->name('master_admin/masterclientanagement');
-    Route::get('/master_admin/masterclientanagementdetail', [App\Http\Controllers\HomeController::class, 'masterclientanagementdetail'])->name('master_admin/masterclientanagementdetail');
+    Route::get('/master_admin/masterclientanagementdetail/{id}', [App\Http\Controllers\HomeController::class, 'masterclientanagementdetail'])->name('master_admin/masterclientanagementdetail');
     Route::get('/user/publicclink', [App\Http\Controllers\HomeController::class, 'publicclink'])->name('user/publicclink');
     Route::get('/user/advsearch', [App\Http\Controllers\HomeController::class, 'advsearch'])->name('user/advsearch');
     

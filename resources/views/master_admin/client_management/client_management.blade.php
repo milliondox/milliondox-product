@@ -194,7 +194,7 @@
 
 
                                         <!-- div repeat start -->
-                                        <div class="repeat_clientt">
+                                        {{-- <div class="repeat_clientt">
                                             <a href="{{ url('/master_admin/masterclientanagementdetail') }}">
                                                 <div class="client_left_por">
                                                     <div class="iamge_client">
@@ -321,7 +321,7 @@
                                                     </div>
                                                 </div>
                                             </a>
-                                        </div>
+                                        </div> --}}
                                         <!-- div repeat end -->
 
 
