@@ -79,7 +79,10 @@ class User extends Authenticatable
         'PAN',
         'state',
         'authorized_capital',
-        'paid_up_capital'
+        'paid_up_capital',
+        'user_plan',
+        'plan_start',
+        'plan_expire'
     ];
 
     /**

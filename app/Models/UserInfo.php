@@ -70,7 +70,10 @@ class UserInfo extends Model
         'PAN',
         'state',
         'authorized_capital',
-        'paid_up_capital'
+        'paid_up_capital',
+        'user_plan',
+        'plan_start',
+        'plan_expire'
     ];
     public function user()
     {

@@ -221,6 +221,10 @@ class HomeController extends Controller
     public function index()
     {
         $user = Auth::user(); // Get the currently authenticated user
+        // Check if the user is the master admin
+        if ($user->id == 1) {
+            return $this->masterAdmin(); // Call the master admin function
+        }
 
         // // Log the activity
         // DB::table('user_logs')->insert([
@@ -16373,15 +16377,6 @@ public function masterclientanagement()
         $clients  = User::whereNotNull('name_of_the_business')
         ->whereNull('is_delete') // Use whereNull() for checking NULL values
         ->get();
-        // dd($users_data);
-    
-        // Monthly Active Users (MAU)
-        // $mau = DB::table('user_logs')
-        // // ->select(DB::raw('DATE_FORMAT(logged_in_at, "%Y-%m") as month, COUNT(user_id) as active_users'))
-        // ->select(DB::raw('DATE_FORMAT(logged_in_at, "%Y-%m") as month, COUNT(DISTINCT user_id) as active_users'))
-        // ->groupBy('month')
-        // ->orderBy('month', 'ASC')
-        // ->get();
     
         // return response()->json([
         //     // 'dau' => $dau,
@@ -16404,41 +16399,79 @@ public function masterclientanagementdetail($id)
     // dd($user);
     if($user_id==1 or $user_id==269){
         // Fetch the client by ID
-         $client = User::find($id);
+        $client = User::find($id);
           // Check if client exists
-            if (!$client) {
-                abort(404, 'Client not found');
-            }
-          // ->whereNull('is_delete') // Use whereNull() for checking NULL values
-          $fileSizeSum = CommonTable::where('user_id', $client->id)->sum('file_size');
-        
-          // Convert to human-readable format
-        //   $formattedSize = formatFileSize($fileSizeSum);
+        if (!$client) {
+            abort(404, 'Client not found');
+        }
+      
+        $totalStorage = 3.0; // Assume total storage in GB
+        $usedStorageBytes = CommonTable::where('user_id', $client->id)->sum('file_size'); // Example sum in bytes
 
-        // dd($client);
+        $client_user_ids = User::where('createdby_id', $client->id)->pluck('id'); // Get all related user IDs
+
+        $usedStorageBytes+= CommonTable::whereIn('user_id', $client_user_ids)->sum('file_size'); // Sum file_size for those user IDs
+        //   dd($client_user_ids); 
+        
+        $usedStorage = round($usedStorageBytes / (1024 * 1024 * 1024), 2); // Convert to GB
+        $percentage = round(($usedStorage / $totalStorage) * 100, 2); // Calculate percentage
+
+        // dd($fileSizeSum);
+        // client and client_users login counts start
+        // $loginCounts = DB::table('user_logs')
+        // ->selectRaw('DATE(logged_in_at) as login_date, COUNT(*) as login_count')
+        // ->where('user_id', $client->id)
+        // ->where('logged_in_at', '>=', Carbon::now()->subDays(14)) // Last 14 days
+        // ->groupBy('login_date')
+        // ->orderBy('login_date', 'asc')
+        // ->get();
+
+        // Initialize an array for the last 14 days
+        $last14Days = collect();
+        for ($i = 13; $i >= 0; $i--) {
+            $date = Carbon::now()->subDays($i);
+            $last14Days[$date->format('D') . ' ' . $date->format('Y-m-d')] = 0; // Example: MON 2024-11-08 => 0
+        }
+
+        $client_user_ids[] = $client->id;  // or array_push($client_user_ids, $client->id);
+
+        $loginCounts = DB::table('user_logs')
+        ->selectRaw('DATE(logged_in_at) as log_date, COUNT(*) as login_count')
+        // ->where('user_id', $client->id)
+        ->whereIn('user_id', $client_user_ids)  // Filter by user IDs
+        ->where('logged_in_at', '>=', Carbon::now()->subDays(14))
+        ->groupBy('log_date')
+        ->get()
+        ->mapWithKeys(function ($item) {
+            $date = Carbon::parse($item->log_date);
+            return [$date->format('D') . ' ' . $date->format('Y-m-d') => $item->login_count];
+        });
+
+        // Merge the login counts into the initialized array
+        $finalData = $last14Days->mapWithKeys(function ($count, $day) use ($loginCounts) {
+            return [$day => $loginCounts->get($day, 0)]; // Replace 0 with actual count if available
+        });
+
+        // Convert collection to array
+        $finalDataArray = $finalData->toArray();
+
+        // Extract labels and data
+        $labels_logins = array_keys($finalDataArray);
+        $data_logins = array_values($finalDataArray);
+        $total_login_count = array_sum($data_logins);
+
+
+        // dd($finalData);
+        // client and client_users login counts end
+
+
         $cli_announcements = Announcement::where('role', 'Client')->latest()->get();
-        return view('master_admin.client_management.client_management_detail',compact('cli_announcements', 'user' , 'client' , 'fileSizeSum' ));
+        return view('master_admin.client_management.client_management_detail',compact('cli_announcements', 'user' , 'client' , 'totalStorage', 'usedStorage','percentage','labels_logins','data_logins','total_login_count' ));
     }
     else{
         return redirect()->back()->with('error', 'You are not authorized to access this page');
     }
 }
-
-// public function formatFileSize($size)
-// {
-//     if ($size < 1024) {
-//         return $size . ' Bytes';
-//     } elseif ($size < 1048576) {
-//         return round($size / 1024, 2) . ' KB';
-//     } elseif ($size < 1073741824) {
-//         return round($size / 1048576, 2) . ' MB';
-//     } else {
-//         return round($size / 1073741824, 2) . ' GB';
-//     }
-// }
-
-
-
 
 public function publicclink()
 {
