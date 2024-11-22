@@ -60,8 +60,29 @@ class LoginController extends Controller
         $this->middleware('guest')->except('logout');
     }
     public function logout(Request $request)
-    {
+    {       
+        // dd(session()->all());
+
+        $user = Auth::user();
+        // dd($user);
+         // Find the most recent log entry for the user where logged_out_at is NULL
+        $latestLog = DB::table('user_logs')
+        ->where('user_id', $user->id)
+        ->whereNull('logged_out_at')  // Ensures we're updating the active (not yet logged out) session
+        ->orderBy('logged_in_at', 'desc')  // Get the most recent entry
+        ->first();
+
+        if ($latestLog) {
+            // Update the logout time for the most recent record
+            DB::table('user_logs')
+                ->where('id', $latestLog->id)  // Target the latest entry using its ID
+                ->update([
+                    'logged_out_at' => now(),  // Set the logout time
+                ]);
+        }
+
         Auth::logout();
+       
         $request->session()->invalidate();
         $request->session()->regenerateToken();
         return redirect('https://milliondox.com');

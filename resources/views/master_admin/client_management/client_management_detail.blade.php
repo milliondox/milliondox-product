@@ -150,12 +150,13 @@
                                         <div class="activity crd2">
                                             <!-- Daily Transactions Card -->
                                             <div class="cardd">
-                                                <div class="title">Daily Transactions</div>
+                                                {{-- <div class="title">Daily Transactions</div> --}}
+                                                <div class="title">Daily Login Transactions</div>
                                                 <div class="can_warp">
                                                     <canvas id="dailyTransactionsChart"></canvas>
                                                     <div class="subtitle">
                                                         <h2>Average Transactions (last 14 days)</h2>
-                                                        <span>33m</span>
+                                                        <span>{{$total_login_count}}</span>
                                                     </div>
                                                 </div>
                                             </div>
@@ -220,6 +221,119 @@
     </div>
     </div>
 
+    {{--  --}}
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+
+    <script>
+        // Daily Activity Chart
+        const dailyActivityCtx = document.getElementById('dailyActivityChart').getContext('2d');
+        const dailyActivityChart = new Chart(dailyActivityCtx, {
+          type: 'bar',
+          data: {
+            labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+            datasets: [{
+              data: [2, 3, 2.5, 3.5, 4, 2.7, 3.2, 2.8, 3.1, 3.6, 4.1, 3.5, 2.9, 3.3],
+              backgroundColor: '#5790FF',
+              borderRadius: 10,
+              borderSkipped: false,
+              barThickness: 10, // Set the width of the bars
+              maxBarThickness: 15  // Limit the maximum width of bars
+            }]
+          },
+          options: {
+            plugins: {
+              legend: { display: false }
+            },
+            responsive: true,
+            maintainAspectRatio: false,
+            layout: {
+              padding: {
+                left: 10,
+                right: 10,
+                top: 10,
+                bottom: 10
+              }
+            },
+            scales: {
+              x: {
+                display: false,  // Show the X-axis
+                // No need for barPercentage/categoryPercentage if using barThickness
+              },
+              y: {
+                display: false,
+                beginAtZero: true
+              }
+            },
+            elements: {
+              bar: {
+                borderRadius: 5,  // Optional: smooth edges for the bars
+                borderSkipped: false
+              }
+            }
+          }
+        });
+      
+        // Daily Transactions Chart
+        const dailyTransactionsCtx = document.getElementById('dailyTransactionsChart').getContext('2d');
+        const dailyTransactionsChart = new Chart(dailyTransactionsCtx, {
+            type: 'bar',
+            data: {
+                labels: @json($labels_logins),
+                datasets: [{
+                data: @json($data_logins),
+                backgroundColor: '#9ADB67',
+                borderRadius: 10,
+                borderSkipped: false,
+                barThickness: 10, // Set the width of the bars
+                maxBarThickness: 15  // Limit the maximum width of bars
+                }]
+            },
+            options: {
+                plugins: {
+                legend: { display: false },
+                tooltip: { enabled: true } // Ensure tooltips are enabled
+                },
+                responsive: true,
+                maintainAspectRatio: false,
+                layout: {
+                padding: {
+                    left: 10,
+                    right: 10,
+                    top: 10,
+                    bottom: 10
+                }
+                },
+                scales: {
+                x: {
+                    display: false // Show the X-axis
+                },
+                y: {
+                    display: false, // Show the Y-axis for better visibility
+                    beginAtZero: true
+                }
+                },
+                elements: {
+                bar: {
+                    borderRadius: 5,
+                    borderSkipped: false
+                }
+                },
+                interaction: {
+                mode: 'nearest', // Ensures hover works for nearby points
+                axis: 'x',       // Hover interactions are based on the x-axis
+                intersect: false // Hover even if the cursor is not directly over the bar
+                },
+                hover: {
+                mode: 'index',  // Hover on bars close to the pointer
+                axis: 'x',
+                intersect: false
+                }
+            }
+        });
+
+      </script>
+
     {{-- script for storage progress start  sandeep 21 Nov 2024 --}}
     
 <script>
@@ -237,8 +351,16 @@
     }, 100); // Delay to allow for animation
   }
   
-  // Example: Updating the progress to 60%
-  updateProgress(60, 1.8, 3.0);
+   // Pass dynamic data from server-side
+    const usedStorage = @json($usedStorage); // e.g., 1.8
+    const totalStorage = @json($totalStorage); // e.g., 3.0
+    const percentage = @json($percentage); // e.g., 60
+  
+    // Update progress with dynamic values
+    updateProgress(percentage, usedStorage, totalStorage);
+    // Example: Updating the progress to 60%
+    //   updateProgress(60, 1.8, 3.0);
+
 </script>
 
 {{-- script for storage progress end    sandeep 21 Nov 2024 --}}
