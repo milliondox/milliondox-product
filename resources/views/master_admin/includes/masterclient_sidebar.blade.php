@@ -211,7 +211,7 @@ window.addEventListener('load', function() {
         // Your code here
         $('#client_loader').hide();
     scrollActiveListItemIntoView();
-    }, 3000); // Adjust the delay time (in milliseconds) as needed
+    }, 500); // Adjust the delay time (in milliseconds) as needed
 
 });
 
