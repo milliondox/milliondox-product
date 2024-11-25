@@ -16377,12 +16377,74 @@ public function masterclientanagement()
         $clients  = User::whereNotNull('name_of_the_business')
         ->whereNull('is_delete') // Use whereNull() for checking NULL values
         ->get();
+
+        // dd($clients->pluck('id')->toArray());
+        $clients_arr= $clients->pluck('id')->toArray();
+        // dd($clients_arr);
     
         // return response()->json([
         //     // 'dau' => $dau,
         //     'mau' => $mau,
         // ]);
-        return view('master_admin.client_management.client_management',compact('cli_announcements', 'user' , 'clients'));
+         // daily activity tracking start sandeep 22 November 2024
+
+        $time_arr=[];
+
+        $last14Days = collect();
+            for ($i = 13; $i >= 0; $i--) {
+                $date = Carbon::now()->subDays($i);
+                $last14Days[$date->format('D') . ' ' . $date->format('Y-m-d')] = 0; // Example: MON 2024-11-08 => 0
+            }
+
+        foreach($clients_arr as $key){
+            // dd($key);
+          $client_user_ids = User::where('createdby_id', $key)->pluck('id'); // Get all related user IDs
+          $client_user_ids[]=$key;
+        //   dd($client_user_ids);
+
+            
+
+            // Query to calculate the time difference in minutes
+            $timeDifferences = DB::table('user_logs')
+            ->selectRaw(
+                'DATE(logged_in_at) as log_date, SUM(TIMESTAMPDIFF(MINUTE, logged_in_at, last_activity_at)) as total_minutes'
+            )
+            ->whereIn('user_id', $client_user_ids)  // Filter by user IDs
+            ->where('logged_in_at', '>=', Carbon::now()->subDays(14)) // Last 14 days
+            ->groupBy('log_date')
+            ->get()
+            ->mapWithKeys(function ($item) {
+                $date = Carbon::parse($item->log_date);
+                return [$date->format('D') . ' ' . $date->format('Y-m-d') => (int)$item->total_minutes];
+            });
+
+            // Merge the time differences into the initialized array
+            $finalDataTime = $last14Days->mapWithKeys(function ($count, $day) use ($timeDifferences) {
+            return [$day => $timeDifferences->get($day, 0)]; // Use the calculated total minutes or 0
+            });
+
+            // Convert collection to array
+            $finalDataTimeArray = $finalDataTime->toArray();
+
+            // Extract labels and data
+            $labels_durations = array_keys($finalDataTimeArray);
+            $data_durations = array_values($finalDataTimeArray);
+            $total_minutes = array_sum($data_durations); // Total time difference in minutes
+            
+            // Convert total minutes to hours and minutes
+            $hours = intdiv($total_minutes, 60); // Get the number of hours
+            $minutes = $total_minutes % 60; // Get the remaining minutes
+
+            // Format the result
+            $time_formatted = "{$hours}h {$minutes}m";
+            $time_arr[] = $time_formatted;
+
+        }
+        // dd($time_arr);
+
+       
+
+        return view('master_admin.client_management.client_management',compact('cli_announcements', 'user' , 'clients','time_formatted', 'time_arr'));
     }
     else{
         return redirect()->back()->with('error', 'You are not authorized to access this page');
@@ -16465,7 +16527,43 @@ public function masterclientanagementdetail($id)
         // client and client_users login counts end
 
         // daily activity tracking start sandeep 22 November 2024
+
+        // Query to calculate the time difference in minutes
+        $timeDifferences = DB::table('user_logs')
+        ->selectRaw(
+            'DATE(logged_in_at) as log_date, SUM(TIMESTAMPDIFF(MINUTE, logged_in_at, last_activity_at)) as total_minutes'
+        )
+        ->whereIn('user_id', $client_user_ids)  // Filter by user IDs
+        ->where('logged_in_at', '>=', Carbon::now()->subDays(14)) // Last 14 days
+        ->groupBy('log_date')
+        ->get()
+        ->mapWithKeys(function ($item) {
+            $date = Carbon::parse($item->log_date);
+            return [$date->format('D') . ' ' . $date->format('Y-m-d') => (int)$item->total_minutes];
+        });
+
+        // Merge the time differences into the initialized array
+        $finalDataTime = $last14Days->mapWithKeys(function ($count, $day) use ($timeDifferences) {
+        return [$day => $timeDifferences->get($day, 0)]; // Use the calculated total minutes or 0
+        });
+
+        // Convert collection to array
+        $finalDataTimeArray = $finalDataTime->toArray();
+
+        // Extract labels and data
+        $labels_durations = array_keys($finalDataTimeArray);
+        $data_durations = array_values($finalDataTimeArray);
+        $total_minutes = array_sum($data_durations); // Total time difference in minutes
         
+        // Convert total minutes to hours and minutes
+        $hours = intdiv($total_minutes, 60); // Get the number of hours
+        $minutes = $total_minutes % 60; // Get the remaining minutes
+
+        // Format the result
+        $time_formatted = "{$hours} h {$minutes} m";
+
+        
+
 
 
 
@@ -16475,7 +16573,7 @@ public function masterclientanagementdetail($id)
 
 
         $cli_announcements = Announcement::where('role', 'Client')->latest()->get();
-        return view('master_admin.client_management.client_management_detail',compact('cli_announcements', 'user' , 'client' , 'totalStorage', 'usedStorage','percentage','labels_logins','data_logins','total_login_count' ));
+        return view('master_admin.client_management.client_management_detail',compact('cli_announcements', 'user' , 'client' , 'totalStorage', 'usedStorage','percentage','labels_logins','data_logins','total_login_count','labels_durations','data_durations','time_formatted'));
     }
     else{
         return redirect()->back()->with('error', 'You are not authorized to access this page');

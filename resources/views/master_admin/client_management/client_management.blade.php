@@ -117,7 +117,11 @@
 
                                 <div class="table_body_warp">
                                     <div class="list_clients">
+                                        <?php 
+                                            $i=0;
+                                        ?>
                                         @foreach($clients as $client)
+                                        
                                             <div class="repeat_clientt">
                                                 <a href="{{ url('/master_admin/masterclientanagementdetail', ['id' => $client->id]) }}">
                                                     <div class="client_left_por">
@@ -162,7 +166,11 @@
                                                     <div class="client_right_por">
                                                         <div class="daily_activity">
                                                             <span>Average Daily Activity</span>
-                                                            <h2>1h 38m</h2> <!-- Placeholder for activity; update dynamically if available -->
+                                                            {{-- <h2>1h 38m</h2> <!-- Placeholder for activity; update dynamically if available --> --}}
+                                                            <h2>{{ $time_arr[$i] }}</h2>
+                                                            <?php 
+                                                            $i++;
+                                                            ?>
                                                         </div>
                                                         <hr>
                                                         <div class="user_since">
