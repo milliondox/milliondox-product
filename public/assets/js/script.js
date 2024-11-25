@@ -735,5 +735,24 @@ $('body').on('click touchend', '.toggle-password', function(e) {
 
 
 
-
+setInterval(() => {
+    if (window.location.pathname !== '/login') {
+        fetch('/check-session', {
+            method: 'GET',
+            credentials: 'same-origin', // Include session cookie
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest' // Indicate AJAX request
+            }
+        })
+        .then(response => {
+            if (response.status === 401) {
+                // If session expired, redirect to the login page
+                window.location.href = '/login';
+            }
+        })
+        .catch(error => {
+            console.error('Error checking session:', error);
+        });
+    }
+}, 5000); // Check every 5 seconds
     

@@ -18922,7 +18922,12 @@ $files4 = CommonTable::where('user_id', $user->id)
 
     // dd($deleteFolder);
 
-    $folderLocation = request()->query('folder');
+    $folderLocation = $request->query('folder');
+    // dd($folderLocation);
+    // 2024-2025November301_Accounting%20%26%20Taxation%2F2024-2025November301_Indirect%20Tax%2F2024-2025November301_Indirect%2F2024-2025November301_GST%2F2024-2025Nov
+
+
+    // $folderPath = $request->query('folderPath');
 
     // Ensure the parameter is not null or empty before proceeding
 
@@ -18932,16 +18937,21 @@ $files4 = CommonTable::where('user_id', $user->id)
     // Decode the folder parameter
     $decodedFolderLocation = urldecode($folderLocation);  
     // dd($decodedFolderLocation);
+    // 2024-2025November301_Accounting & Taxation/2024-2025November301_Indirect Tax/2024-2025November301_Indirect/2024-2025November301_GST/2024-2025November301_Litigations
+
     $iamhereSKY = false;
 
     if($request->query('folderPath') ){
         $decodedFolderLocation =  $request->query('folderPath');  
+        // dd("i am here INSIDE");
         // folderPath: 2024-2025November301_Legal/2024-2025November301_Secretarial/2024-2025November301_Annual Filings
         $decodedFolderLocation = str_replace("folderPath: ", "", $decodedFolderLocation);
         $iamhereSKY = true;
-        // dd($decodedFolderLocation);
+        // dd("i AM HERE INSIDE ::   ".$decodedFolderLocation);
+        // 2024-2025November301_Accounting & Taxation/2024-2025November301_Indirect Tax/2024-2025November301_Indirect/2024-2025November301_GST/2024-2025November301_Litigations
 
     }
+    // dd("I AM OUTSIDE");
 
 
                     
@@ -19419,6 +19429,7 @@ $entriesinc9 = CommonTable::where('user_id', $user->id)
     // ->where('location', 'LIKE', '%Taxation / Charter documents / Director Details / Director 1')
     ->where('location', $decodedFolderLocation)
     ->where('real_file_name', 'Aadhar KYC')
+    
     ->get();
         $countDirector1AadharKYC = $entriesDirector1AadharKYC->count();
         $totalSizeBytesDirector1AadharKYC = $entriesDirector1AadharKYC->sum('file_size');
@@ -19997,7 +20008,7 @@ $entriesinc9 = CommonTable::where('user_id', $user->id)
 
 
     // Decode the folder parameter
-    $decodedFolderLocation = urldecode($folderLocation);
+    // $decodedFolderLocation = urldecode($folderLocation);
 
     // Fetch entries from the database based on the user ID, is_delete status, location, and real_file_name
     $entriesemponboard = CommonTable::where('user_id', $user->id)
@@ -20507,14 +20518,29 @@ $entriesinc9 = CommonTable::where('user_id', $user->id)
         $totalSizeBytesdirecttaxIncomeTaxLitigationsResponses = $entriesdirecttaxIncomeTaxLitigationsResponses->sum('file_size');
         $totalSizeKBdirecttaxIncomeTaxLitigationsResponses = round($totalSizeBytesdirecttaxIncomeTaxLitigationsResponses  / 1024, 2);
 
-
+        // dd($user->id);
         $entriesindirecttaxIncomeTaxLitigationsNotices  = CommonTable::where('user_id', $user->id)
         ->where('is_delete', 0)
         ->where('location', $decodedFolderLocation) // Use the decoded folder parameter here
         ->where('real_file_name', 'Notices')
         ->get();
-            // dd($decodedFolderLocation);
+
+        // dd("Hey   i am herr  ::: ".$decodedFolderLocation);
+        // $entriesindirecttaxIncomeTaxLitigationsNotices = CommonTable::where('user_id', $user->id)
+        // ->where('is_delete', 0)
+        // ->where('location', $decodedFolderLocation)
+        // ->where('real_file_name', 'Notices');
+
+        // // Print the query with bindings
+        // $query = $entriesindirecttaxIncomeTaxLitigationsNotices->toSql();
+        // $bindings = $entriesindirecttaxIncomeTaxLitigationsNotices->getBindings();
+
+        // dd(vsprintf(str_replace('?', '%s', $query), array_map(fn($binding) => is_numeric($binding) ? $binding : "'$binding'", $bindings)));
+
+
+            // dd($entriesindirecttaxIncomeTaxLitigationsNotices);
         $countindirecttaxIncomeTaxLitigationsNotices = $entriesindirecttaxIncomeTaxLitigationsNotices->count();
+        // dd($countindirecttaxIncomeTaxLitigationsNotices);
         $totalSizeBytesindirecttaxIncomeTaxLitigationsNotices = $entriesindirecttaxIncomeTaxLitigationsNotices->sum('file_size');
         $totalSizeKBindirecttaxIncomeTaxLitigationsNotices = round($totalSizeBytesindirecttaxIncomeTaxLitigationsNotices  / 1024, 2);
 
@@ -20616,6 +20642,99 @@ $entriesinc9 = CommonTable::where('user_id', $user->id)
         $totalSizeKBindirecttaxIncomeTaxGSTR3bAcknowledgement = round($totalSizeBytesindirecttaxIncomeTaxGSTR3bAcknowledgement  / 1024, 2);
 
 
+
+
+        $entriesindirecttaxIncomeTaxGSTR9Workings  = CommonTable::where('user_id', $user->id)
+        ->where('is_delete', 0)
+        ->where('location', $decodedFolderLocation) // Use the decoded folder parameter here
+        ->where('real_file_name', 'Workings')
+        ->get();
+            // dd($decodedFolderLocation);
+        $countindirecttaxIncomeTaxGSTR9Workings = $entriesindirecttaxIncomeTaxGSTR9Workings->count();
+        $totalSizeBytesindirecttaxIncomeTaxGSTR9Workings = $entriesindirecttaxIncomeTaxGSTR9Workings->sum('file_size');
+        $totalSizeKBindirecttaxIncomeTaxGSTR9Workings = round($totalSizeBytesindirecttaxIncomeTaxGSTR9Workings  / 1024, 2);
+
+
+        $entriesindirecttaxIncomeTaxGSTR9Return  = CommonTable::where('user_id', $user->id)
+        ->where('is_delete', 0)
+        ->where('location', $decodedFolderLocation) // Use the decoded folder parameter here
+        ->where('real_file_name', 'Return')
+        ->get();
+            // dd($decodedFolderLocation);
+        $countindirecttaxIncomeTaxGSTR9Return = $entriesindirecttaxIncomeTaxGSTR9Return->count();
+        $totalSizeBytesindirecttaxIncomeTaxGSTR9Return = $entriesindirecttaxIncomeTaxGSTR9Return->sum('file_size');
+        $totalSizeKBindirecttaxIncomeTaxGSTR9Return = round($totalSizeBytesindirecttaxIncomeTaxGSTR9Return  / 1024, 2);
+
+
+        $entriesindirecttaxIncomeTaxGSTR9ChallanReceipt  = CommonTable::where('user_id', $user->id)
+        ->where('is_delete', 0)
+        ->where('location', $decodedFolderLocation) // Use the decoded folder parameter here
+        ->where('real_file_name', 'Challan & Receipt')
+        ->get();
+            // dd($decodedFolderLocation);
+        $countindirecttaxIncomeTaxGSTR9ChallanReceipt = $entriesindirecttaxIncomeTaxGSTR9ChallanReceipt->count();
+        $totalSizeBytesindirecttaxIncomeTaxGSTR9ChallanReceipt = $entriesindirecttaxIncomeTaxGSTR9ChallanReceipt->sum('file_size');
+        $totalSizeKBindirecttaxIncomeTaxGSTR9ChallanReceipt = round($totalSizeBytesindirecttaxIncomeTaxGSTR9ChallanReceipt  / 1024, 2);
+
+
+        $entriesindirecttaxIncomeTaxGSTR9Acknowledgement  = CommonTable::where('user_id', $user->id)
+        ->where('is_delete', 0)
+        ->where('location', $decodedFolderLocation) // Use the decoded folder parameter here
+        ->where('real_file_name', 'Acknowledgement')
+        ->get();
+            // dd($decodedFolderLocation);
+        $countindirecttaxIncomeTaxGSTR9Acknowledgement = $entriesindirecttaxIncomeTaxGSTR9Acknowledgement->count();
+        $totalSizeBytesindirecttaxIncomeTaxGSTR9Acknowledgement = $entriesindirecttaxIncomeTaxGSTR9Acknowledgement->sum('file_size');
+        $totalSizeKBindirecttaxIncomeTaxGSTR9Acknowledgement = round($totalSizeBytesindirecttaxIncomeTaxGSTR9Acknowledgement  / 1024, 2);
+
+
+
+
+
+        $entriesindirecttaxIncomeTaxGSTR9cWorkings  = CommonTable::where('user_id', $user->id)
+        ->where('is_delete', 0)
+        ->where('location', $decodedFolderLocation) // Use the decoded folder parameter here
+        ->where('real_file_name', 'Workings')
+        ->get();
+            // dd($decodedFolderLocation);
+        $countindirecttaxIncomeTaxGSTR9cWorkings = $entriesindirecttaxIncomeTaxGSTR9cWorkings->count();
+        $totalSizeBytesindirecttaxIncomeTaxGSTR9cWorkings = $entriesindirecttaxIncomeTaxGSTR9cWorkings->sum('file_size');
+        $totalSizeKBindirecttaxIncomeTaxGSTR9cWorkings = round($totalSizeBytesindirecttaxIncomeTaxGSTR9cWorkings  / 1024, 2);
+
+
+        $entriesindirecttaxIncomeTaxGSTR9cReturn  = CommonTable::where('user_id', $user->id)
+        ->where('is_delete', 0)
+        ->where('location', $decodedFolderLocation) // Use the decoded folder parameter here
+        ->where('real_file_name', 'Return')
+        ->get();
+            // dd($decodedFolderLocation);
+        $countindirecttaxIncomeTaxGSTR9cReturn = $entriesindirecttaxIncomeTaxGSTR9cReturn->count();
+        $totalSizeBytesindirecttaxIncomeTaxGSTR9cReturn = $entriesindirecttaxIncomeTaxGSTR9cReturn->sum('file_size');
+        $totalSizeKBindirecttaxIncomeTaxGSTR9cReturn = round($totalSizeBytesindirecttaxIncomeTaxGSTR9cReturn  / 1024, 2);
+
+
+        $entriesindirecttaxIncomeTaxGSTR9cChallanReceipt  = CommonTable::where('user_id', $user->id)
+        ->where('is_delete', 0)
+        ->where('location', $decodedFolderLocation) // Use the decoded folder parameter here
+        ->where('real_file_name', 'Challan & Receipt')
+        ->get();
+            // dd($decodedFolderLocation);
+        $countindirecttaxIncomeTaxGSTR9cChallanReceipt = $entriesindirecttaxIncomeTaxGSTR9cChallanReceipt->count();
+        $totalSizeBytesindirecttaxIncomeTaxGSTR9cChallanReceipt = $entriesindirecttaxIncomeTaxGSTR9cChallanReceipt->sum('file_size');
+        $totalSizeKBindirecttaxIncomeTaxGSTR9cChallanReceipt = round($totalSizeBytesindirecttaxIncomeTaxGSTR9cChallanReceipt  / 1024, 2);
+
+
+        $entriesindirecttaxIncomeTaxGSTR9cAcknowledgement  = CommonTable::where('user_id', $user->id)
+        ->where('is_delete', 0)
+        ->where('location', $decodedFolderLocation) // Use the decoded folder parameter here
+        ->where('real_file_name', 'Acknowledgement')
+        ->get();
+            // dd($decodedFolderLocation);
+        $countindirecttaxIncomeTaxGSTR9cAcknowledgement = $entriesindirecttaxIncomeTaxGSTR9cAcknowledgement->count();
+        $totalSizeBytesindirecttaxIncomeTaxGSTR9cAcknowledgement = $entriesindirecttaxIncomeTaxGSTR9cAcknowledgement->sum('file_size');
+        $totalSizeKBindirecttaxIncomeTaxGSTR9cAcknowledgement = round($totalSizeBytesindirecttaxIncomeTaxGSTR9cAcknowledgement  / 1024, 2);
+
+
         
         $user = auth()->user();
          $userRole = $user->role; // Ensure 'role' field exists in the users table
@@ -20629,8 +20748,39 @@ $entriesinc9 = CommonTable::where('user_id', $user->id)
     // Find the UserRole record where the role matches the user's role
     $userRoleRecord = UserRole::where('role', $userRole)->first();
 
-    if($iamhereSKY === true){
+    if($iamhereSKY == true){
         return response()->json([
+
+
+            'countindirecttaxIncomeTaxGSTR9cAcknowledgement' => $countindirecttaxIncomeTaxGSTR9cAcknowledgement,
+            'totalSizeKBindirecttaxIncomeTaxGSTR9cAcknowledgement' => $totalSizeKBindirecttaxIncomeTaxGSTR9cAcknowledgement,
+
+            'countindirecttaxIncomeTaxGSTR9cChallanReceipt' => $countindirecttaxIncomeTaxGSTR9cChallanReceipt,
+            'totalSizeKBindirecttaxIncomeTaxGSTR9cChallanReceipt' => $totalSizeKBindirecttaxIncomeTaxGSTR9cChallanReceipt,
+
+            'countindirecttaxIncomeTaxGSTR9cReturn' => $countindirecttaxIncomeTaxGSTR9cReturn,
+            'totalSizeKBindirecttaxIncomeTaxGSTR9cReturn' => $totalSizeKBindirecttaxIncomeTaxGSTR9cReturn,
+
+
+            'countindirecttaxIncomeTaxGSTR9cWorkings' => $countindirecttaxIncomeTaxGSTR9cWorkings,
+            'totalSizeKBindirecttaxIncomeTaxGSTR9cWorkings' => $totalSizeKBindirecttaxIncomeTaxGSTR9cWorkings,
+
+
+
+            'countindirecttaxIncomeTaxGSTR9Acknowledgement' => $countindirecttaxIncomeTaxGSTR9Acknowledgement,
+            'totalSizeKBindirecttaxIncomeTaxGSTR9Acknowledgement' => $totalSizeKBindirecttaxIncomeTaxGSTR9Acknowledgement,
+
+            'countindirecttaxIncomeTaxGSTR9ChallanReceipt' => $countindirecttaxIncomeTaxGSTR9ChallanReceipt,
+            'totalSizeKBindirecttaxIncomeTaxGSTR9ChallanReceipt' => $totalSizeKBindirecttaxIncomeTaxGSTR9ChallanReceipt,
+
+            'countindirecttaxIncomeTaxGSTR9Return' => $countindirecttaxIncomeTaxGSTR9Return,
+            'totalSizeKBindirecttaxIncomeTaxGSTR9Return' => $totalSizeKBindirecttaxIncomeTaxGSTR9Return,
+
+
+            'countindirecttaxIncomeTaxGSTR9Workings' => $countindirecttaxIncomeTaxGSTR9Workings,
+            'totalSizeKBindirecttaxIncomeTaxGSTR9Workings' => $totalSizeKBindirecttaxIncomeTaxGSTR9Workings,
+
+
 
             'countindirecttaxIncomeTaxGSTR3bAcknowledgement' => $countindirecttaxIncomeTaxGSTR3bAcknowledgement,
             'totalSizeKBindirecttaxIncomeTaxGSTR3bAcknowledgement' => $totalSizeKBindirecttaxIncomeTaxGSTR3bAcknowledgement,
@@ -20966,7 +21116,11 @@ $entriesinc9 = CommonTable::where('user_id', $user->id)
     // return view('Secretarial_Annual_Filings', compact('countentriesafs','countentriescfs', 'countentriesmgt7','countentriesmgt7a','totalSizeKBentrieafs','totalSizeKBentriecfs', 'totalSizeKBentriemgt7', 'totalSizeKBentriemgt7a'));
         
         
-        return view('docurepo', compact('countindirecttaxIncomeTaxGSTR3bAcknowledgement','totalSizeKBindirecttaxIncomeTaxGSTR3bAcknowledgement','countindirecttaxIncomeTaxGSTR3bChallanReceipt','totalSizeKBindirecttaxIncomeTaxGSTR3bChallanReceipt','countindirecttaxIncomeTaxGSTR3bReturn','totalSizeKBindirecttaxIncomeTaxGSTR3bReturn','countindirecttaxIncomeTaxGSTR3bWorkings','totalSizeKBindirecttaxIncomeTaxGSTR3bWorkings','countindirecttaxIncomeTaxGSTR1Acknowledgement','totalSizeKBindirecttaxIncomeTaxGSTR1Acknowledgement','countindirecttaxIncomeTaxGSTR1Return','totalSizeKBindirecttaxIncomeTaxGSTR1Return','countindirecttaxIncomeTaxGSTR1Workings','totalSizeKBindirecttaxIncomeTaxGSTR1Workings','countindirecttaxIncomeTaxLitigationsOrders','totalSizeKBindirecttaxIncomeTaxLitigationsOrders','countindirecttaxIncomeTaxLitigationsResponses','totalSizeKBindirecttaxIncomeTaxLitigationsResponses','countindirecttaxIncomeTaxLitigationsNotices','totalSizeKBindirecttaxIncomeTaxLitigationsNotices','countdirecttaxIncomeTaxLitigationsResponses','totalSizeKBdirecttaxIncomeTaxLitigationsResponses','countdirecttaxIncomeTaxLitigationsNotices','totalSizeKBdirecttaxIncomeTaxLitigationsNotices','countdirecttaxIncomeTaxAnnualReturnsAcknowledgement','totalSizeKBdirecttaxIncomeTaxAnnualReturnsAcknowledgement','countdirecttaxIncomeTaxAnnualReturnsReturn','totalSizeKBdirecttaxIncomeTaxAnnualReturnsReturn','countdirecttaxIncomeTaxAnnualReturnsCOI','totalSizeKBdirecttaxIncomeTaxAnnualReturnsCOI','countdirecttaxIncomeTaxAnnualReturnsFinancialStatements','totalSizeKBdirecttaxIncomeTaxAnnualReturnsFinancialStatements','countdirecttaxQuarterlyPaymentsChallan','totalSizeKBdirecttaxQuarterlyPaymentsChallan','countdirecttaxQuarterlyPaymentsWorkings','totalSizeKBdirecttaxQuarterlyPaymentsWorkings','countdirecttaxLitigationsResponses','totalSizeKBdirecttaxLitigationsResponses','countdirecttaxLitigationsOrders','totalSizeKBdirecttaxLitigationsOrders','countdirecttaxLitigationsNotices','totalSizeKBdirecttaxLitigationsNotices','countdirecttaxQuarterlyFilingsAcknowledgement','totalSizeKBdirecttaxQuarterlyFilingsAcknowledgement','countdirecttaxQuarterlyFilingsWorkings','totalSizeKBdirecttaxQuarterlyFilingsWorkings','countdirecttaxQuarterlyFilingsReturn','totalSizeKBdirecttaxQuarterlyFilingsReturn','countdirecttaxmonthlyChallan','totalSizeKBdirecttaxmonthlyChallan','countdirecttaxmonthlyworking','totalSizeKBdirecttaxmonthlyworking','deleteFolder','RealFileFoldersBank','RealFileFolders','counthroff4','totalSizeKBhroff4','counthroff3','totalSizeKBhroff3','counthroff2','totalSizeKBhroff2','counthroff1','totalSizeKBhroff1','counthremppol4','totalSizeKBhremppol4','counthremppol3','totalSizeKBhremppol3','counthremppol2','totalSizeKBhremppol2','counthremppol1','totalSizeKBhremppol1','counthrhrpaymoney5','totalSizeKBhrpaymoney5','counthrhrpaymoney4','totalSizeKBhrpaymoney4','counthrhrpaymoney3','totalSizeKBhrpaymoney3','counthrhrpaymoney2','totalSizeKBhrpaymoney2','counthrhrpaymoney1','totalSizeKBhrpaymoney1','counthrhrempdecmaster','totalSizeKBhrempdecmaster','counthrhrempdec','totalSizeKBhrempdec','counthrpayrimapprove','totalSizeKBhrpayrimapprove','counthrpayrim','totalSizeKBhrpayrim','countkyccontactdetails','totalSizeKBkyccontactdetails','countkycaddressproof','totalSizeKBkycaddressproof','countkycpan','totalSizeKBkycpan','countkycaadhar','totalSizeKBkycaadhar','countkycphoto','totalSizeKBkycphoto','countemponboardincometax','totalSizeKBemponboardincometax','countemponboardepf','totalSizeKBemponboardepf','countemponboardcb','totalSizeKBemponboardcb','countemponboardnc','totalSizeKBemponboardnc','countemponboardnda','totalSizeKBemponboardnda','countemponboardea','totalSizeKBemponboardea','countemponboardal','totalSizeKBemponboardal','totalSizeKBemponboard','countemponboard','totalSizeKBdirectorappointmentsdir3din','countdirectorappointmentsdir3din','cli_announcements','fileCount','fileCount1','user','commondataroom','countSECAASR','totalSizeKBSECAASR','countSECAAALA','totalSizeKBSECAAALA','countSECAACRCAA','totalSizeKBSECAACRCAA','countSECAALA','totalSizeKBSECAALA','countSECAAIA','totalSizeKBSECAAIA','countSECAABRAA','totalSizeKBSECAABRAA','countcharregPP','totalSizeKBcharregPP','countcharregLWFC','totalSizeKBcharregLWFC','countcharregPTC','totalSizeKBcharregPTC','countcharregESIC','totalSizeKBcharregESIC','countcharregPFC','totalSizeKBcharregPFC','countcharregTrademark','totalSizeKBcharregTrademark','countcharregMSME','totalSizeKBcharregMSME','countcharregGSTIN','totalSizeKBcharregGSTIN','countcharregtan','totalSizeKBcharregtan','countcharregpan','totalSizeKBcharregpan','countIncorporationSharecertifF',
+        return view('docurepo', compact('countindirecttaxIncomeTaxGSTR9cAcknowledgement','totalSizeKBindirecttaxIncomeTaxGSTR9cAcknowledgement','countindirecttaxIncomeTaxGSTR9cChallanReceipt','totalSizeKBindirecttaxIncomeTaxGSTR9cChallanReceipt','countindirecttaxIncomeTaxGSTR9cReturn','totalSizeKBindirecttaxIncomeTaxGSTR9cReturn','countindirecttaxIncomeTaxGSTR9cWorkings','totalSizeKBindirecttaxIncomeTaxGSTR9cWorkings',
+            
+            'countindirecttaxIncomeTaxGSTR9Acknowledgement','totalSizeKBindirecttaxIncomeTaxGSTR9Acknowledgement','countindirecttaxIncomeTaxGSTR9ChallanReceipt','totalSizeKBindirecttaxIncomeTaxGSTR9ChallanReceipt','countindirecttaxIncomeTaxGSTR9Return','totalSizeKBindirecttaxIncomeTaxGSTR9Return','countindirecttaxIncomeTaxGSTR9Workings','totalSizeKBindirecttaxIncomeTaxGSTR9Workings',
+            
+            'countindirecttaxIncomeTaxGSTR3bAcknowledgement','totalSizeKBindirecttaxIncomeTaxGSTR3bAcknowledgement','countindirecttaxIncomeTaxGSTR3bChallanReceipt','totalSizeKBindirecttaxIncomeTaxGSTR3bChallanReceipt','countindirecttaxIncomeTaxGSTR3bReturn','totalSizeKBindirecttaxIncomeTaxGSTR3bReturn','countindirecttaxIncomeTaxGSTR3bWorkings','totalSizeKBindirecttaxIncomeTaxGSTR3bWorkings','countindirecttaxIncomeTaxGSTR1Acknowledgement','totalSizeKBindirecttaxIncomeTaxGSTR1Acknowledgement','countindirecttaxIncomeTaxGSTR1Return','totalSizeKBindirecttaxIncomeTaxGSTR1Return','countindirecttaxIncomeTaxGSTR1Workings','totalSizeKBindirecttaxIncomeTaxGSTR1Workings','countindirecttaxIncomeTaxLitigationsOrders','totalSizeKBindirecttaxIncomeTaxLitigationsOrders','countindirecttaxIncomeTaxLitigationsResponses','totalSizeKBindirecttaxIncomeTaxLitigationsResponses','countindirecttaxIncomeTaxLitigationsNotices','totalSizeKBindirecttaxIncomeTaxLitigationsNotices','countdirecttaxIncomeTaxLitigationsResponses','totalSizeKBdirecttaxIncomeTaxLitigationsResponses','countdirecttaxIncomeTaxLitigationsNotices','totalSizeKBdirecttaxIncomeTaxLitigationsNotices','countdirecttaxIncomeTaxAnnualReturnsAcknowledgement','totalSizeKBdirecttaxIncomeTaxAnnualReturnsAcknowledgement','countdirecttaxIncomeTaxAnnualReturnsReturn','totalSizeKBdirecttaxIncomeTaxAnnualReturnsReturn','countdirecttaxIncomeTaxAnnualReturnsCOI','totalSizeKBdirecttaxIncomeTaxAnnualReturnsCOI','countdirecttaxIncomeTaxAnnualReturnsFinancialStatements','totalSizeKBdirecttaxIncomeTaxAnnualReturnsFinancialStatements','countdirecttaxQuarterlyPaymentsChallan','totalSizeKBdirecttaxQuarterlyPaymentsChallan','countdirecttaxQuarterlyPaymentsWorkings','totalSizeKBdirecttaxQuarterlyPaymentsWorkings','countdirecttaxLitigationsResponses','totalSizeKBdirecttaxLitigationsResponses','countdirecttaxLitigationsOrders','totalSizeKBdirecttaxLitigationsOrders','countdirecttaxLitigationsNotices','totalSizeKBdirecttaxLitigationsNotices','countdirecttaxQuarterlyFilingsAcknowledgement','totalSizeKBdirecttaxQuarterlyFilingsAcknowledgement','countdirecttaxQuarterlyFilingsWorkings','totalSizeKBdirecttaxQuarterlyFilingsWorkings','countdirecttaxQuarterlyFilingsReturn','totalSizeKBdirecttaxQuarterlyFilingsReturn','countdirecttaxmonthlyChallan','totalSizeKBdirecttaxmonthlyChallan','countdirecttaxmonthlyworking','totalSizeKBdirecttaxmonthlyworking','deleteFolder','RealFileFoldersBank','RealFileFolders','counthroff4','totalSizeKBhroff4','counthroff3','totalSizeKBhroff3','counthroff2','totalSizeKBhroff2','counthroff1','totalSizeKBhroff1','counthremppol4','totalSizeKBhremppol4','counthremppol3','totalSizeKBhremppol3','counthremppol2','totalSizeKBhremppol2','counthremppol1','totalSizeKBhremppol1','counthrhrpaymoney5','totalSizeKBhrpaymoney5','counthrhrpaymoney4','totalSizeKBhrpaymoney4','counthrhrpaymoney3','totalSizeKBhrpaymoney3','counthrhrpaymoney2','totalSizeKBhrpaymoney2','counthrhrpaymoney1','totalSizeKBhrpaymoney1','counthrhrempdecmaster','totalSizeKBhrempdecmaster','counthrhrempdec','totalSizeKBhrempdec','counthrpayrimapprove','totalSizeKBhrpayrimapprove','counthrpayrim','totalSizeKBhrpayrim','countkyccontactdetails','totalSizeKBkyccontactdetails','countkycaddressproof','totalSizeKBkycaddressproof','countkycpan','totalSizeKBkycpan','countkycaadhar','totalSizeKBkycaadhar','countkycphoto','totalSizeKBkycphoto','countemponboardincometax','totalSizeKBemponboardincometax','countemponboardepf','totalSizeKBemponboardepf','countemponboardcb','totalSizeKBemponboardcb','countemponboardnc','totalSizeKBemponboardnc','countemponboardnda','totalSizeKBemponboardnda','countemponboardea','totalSizeKBemponboardea','countemponboardal','totalSizeKBemponboardal','totalSizeKBemponboard','countemponboard','totalSizeKBdirectorappointmentsdir3din','countdirectorappointmentsdir3din','cli_announcements','fileCount','fileCount1','user','commondataroom','countSECAASR','totalSizeKBSECAASR','countSECAAALA','totalSizeKBSECAAALA','countSECAACRCAA','totalSizeKBSECAACRCAA','countSECAALA','totalSizeKBSECAALA','countSECAAIA','totalSizeKBSECAAIA','countSECAABRAA','totalSizeKBSECAABRAA','countcharregPP','totalSizeKBcharregPP','countcharregLWFC','totalSizeKBcharregLWFC','countcharregPTC','totalSizeKBcharregPTC','countcharregESIC','totalSizeKBcharregESIC','countcharregPFC','totalSizeKBcharregPFC','countcharregTrademark','totalSizeKBcharregTrademark','countcharregMSME','totalSizeKBcharregMSME','countcharregGSTIN','totalSizeKBcharregGSTIN','countcharregtan','totalSizeKBcharregtan','countcharregpan','totalSizeKBcharregpan','countIncorporationSharecertifF',
         'totalSizeKBIncorporationSharecertifF','countIncorporationTrustDeed'
         ,'totalSizeKBIncorporationTrustDeed','countIncorporationLLPAgreement',
         'totalSizeKBIncorporationLLPAgreement','countIncorporationPartnerdeed',
@@ -21328,6 +21482,15 @@ public function shareFolder(Request $request)
     
     $oldpath = $request->get('folderNamep');
 
+    $directorfolderNames = Folder::where('parent_name', 'LIKE', '2024-2025November301_Accounting & Taxation/2024-2025November301_Charter Documents/2024-2025November301_Director Details')
+    ->whereNotNull('director_id')
+    ->where('user_id', Auth::id())
+    ->pluck('name'); // Retrieves only the `name` column
+
+    // dd($directorfolderNames);
+
+    
+
     // Base query for fetching folders
     $commonFoldersQuery = Folder::where('parent_name', $folderPath)
                                 ->where('common_folder', 1);
@@ -21337,6 +21500,7 @@ public function shareFolder(Request $request)
                                 $userFoldersQuery = Folder::where('parent_name', $folderPath)
                                 ->where('user_id', Auth::id())
                                 ->where('is_delete', 0);
+                            //    ->whereNotNull('director_id');
 
                                 // dd($userFoldersQuery);
                                 
@@ -21681,7 +21845,7 @@ public function shareFolder(Request $request)
         $fileHtml .= '</div>';
        
     
-        return response()->json(['folderHtml' => $folderHtml,  'fileHtml' => $fileHtml]);
+        return response()->json(['folderHtml' => $folderHtml,  'fileHtml' => $fileHtml,'directorfolderNames' =>$directorfolderNames]);
     }
 
     public function updateFolderStatus(Request $request)

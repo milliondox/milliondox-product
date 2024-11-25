@@ -7,6 +7,7 @@ use App\Http\Controllers\FolderController;
 use App\Http\Controllers\FileController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\NavigationController;
+use Illuminate\Support\Facades\Auth;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -202,6 +203,14 @@ Route::post('/check-email-phone', [App\Http\Controllers\HomeController::class, '
 Route::post('/check-user-existence', [App\Http\Controllers\HomeController::class, 'checkUserExistence'])->name('checkUserExistence');
 
 Route::post('/changeemppassword', [App\Http\Controllers\HomeController::class, 'changeemppassword'])->name('changeemppassword');
+
+
+Route::get('/check-session', function () {
+    if (!Auth::check()) {
+        return response()->json(['message' => 'Session expired'], 401);
+    }
+    return response()->json(['message' => 'Session active'], 200);
+});
 
 
 // sandeep routes start 
@@ -901,7 +910,7 @@ Route::get('/download-file/{id}', [App\Http\Controllers\HomeController::class,'d
 Route::get('/view-file/{id}', [App\Http\Controllers\HomeController::class, 'viewFile'])->name('view.file');
 Route::post('/advancedelete-file/{id}', [App\Http\Controllers\HomeController::class, 'advancedeleteFile'])->name('advancedelete.file');
 
-Route::get('/docurepo', [App\Http\Controllers\HomeController::class, 'docurepo'])->name('docurepo');
+Route::get('/docurepo', [App\Http\Controllers\HomeController::class, 'docurepo'])->name('docurepo')->middleware('auth');
 Route::get('/fetch-folder-contents',[App\Http\Controllers\HomeController::class, 'fetchFolderContents'])->name('fetchFolderContents');
 
 Route::get('/reposidebar', [App\Http\Controllers\HomeController::class, 'reposidebar'])->name('reposidebar');
@@ -1104,7 +1113,7 @@ Route::get('/download-aoa7-file/{id}',[App\Http\Controllers\UploadedFileControll
 Route::get('/user/MiscellaneousDocuments', [App\Http\Controllers\HomeController::class, 'MiscellaneousDocuments'])->name('user/MiscellaneousDocuments');
 Route::get('/user/Management', [App\Http\Controllers\HomeController::class, 'Management'])->name('user/Management');
     Route::get('/user/manageprofile', [App\Http\Controllers\HomeController::class, 'manageprofile'])->name('user/manageprofile');
-Route::get('/user/ContractManagement', [App\Http\Controllers\HomeController::class, 'ContractManagement'])->name('user/ContractManagement');
+Route::get('/user/ContractManagement', [App\Http\Controllers\HomeController::class, 'ContractManagement'])->name('user/ContractManagement')->middleware('auth');
 Route::get('/user/companyprofile', [App\Http\Controllers\HomeController::class, 'companyprofile'])->name('user/companyprofile');
 Route::get('/user/Sop', [App\Http\Controllers\HomeController::class, 'Sop'])->name('user/Sop');
 	Route::get('/user/Employeelifecycle', [App\Http\Controllers\HomeController::class, 'Employeelifecycle'])->name('user/Employeelifecycle');
