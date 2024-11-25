@@ -21,6 +21,7 @@ class Kernel extends HttpKernel
         \Illuminate\Foundation\Http\Middleware\ValidatePostSize::class,
         \App\Http\Middleware\TrimStrings::class,
         \Illuminate\Foundation\Http\Middleware\ConvertEmptyStringsToNull::class,
+        // \App\Http\Middleware\UpdateLastActivity::class,
     ];
 
     /**
@@ -37,6 +38,8 @@ class Kernel extends HttpKernel
             \App\Http\Middleware\VerifyCsrfToken::class,
             \Illuminate\Routing\Middleware\SubstituteBindings::class,
             \App\Http\Middleware\RestrictRegisterMiddleware::class,
+            // \App\Http\Middleware\Authenticate::class, // Ensure this comes before UpdateLastActivity
+            \App\Http\Middleware\UpdateLastActivity::class, // Your custom middleware
         ],
 
         'api' => [
