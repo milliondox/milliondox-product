@@ -8,8 +8,10 @@ use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Laravel\Socialite\Facades\Socialite;
+use Illuminate\Support\Facades\Session;
 use App\Models\UserInfo;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Cache;
 
 class LoginController extends Controller
 {
@@ -61,9 +63,17 @@ class LoginController extends Controller
     }
     public function logout(Request $request)
     {
+        
         Auth::logout();
+         // Clear the session
+         Session::flush();
+        
+         // Clear any cached data related to the user (optional, if needed)
+         Cache::flush();
         $request->session()->invalidate();
         $request->session()->regenerateToken();
+        Session::invalidate();
+        Session::regenerateToken();
         return redirect('https://milliondox.com');
     }
 

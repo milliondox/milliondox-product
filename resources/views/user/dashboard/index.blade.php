@@ -2913,7 +2913,7 @@ $(document).ready(function() {
                 <h2>What makes MillionDox so secure?</h2>
                 <div class="date_blog_read">
                   <span>11th May, 2024</span>
-                  <a target="_blank" href="https://milliondox.com/blogs/">read blog <svg width="7" height="10" viewBox="0 0 7 10" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <a target="_blank" href="https://milliondox.com/blogs/beta-test/">read blog <svg width="7" height="10" viewBox="0 0 7 10" fill="none" xmlns="http://www.w3.org/2000/svg">
                       <path d="M1 1L5 5L1 9" stroke="#5790FF" stroke-width="1.6" />
                     </svg>
                   </a>

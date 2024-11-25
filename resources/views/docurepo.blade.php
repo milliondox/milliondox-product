@@ -1974,7 +1974,7 @@ $(document).ready(function() {
 
             <!-- Rename Modal -->
 
-            <script>
+            {{-- <script>
 
                 $(document).ready(function() {
                     $(document).on('click', '.downloadfolder', function() {
@@ -2020,7 +2020,81 @@ $(document).ready(function() {
                     });
                 });
 
+            </script> --}}
+            <script>
+  $(document).ready(function () {
+    $(document).on('click', '.downloadfolder', async function () {
+    var $thisButton = $(this); // Reference to the clicked button
+    var folderid = $thisButton.data('id');
+    
+    // Show a toastr message that the download is in progress
+    toastr.success('Your Download is in Progress');
+
+    // Disable the button to prevent multiple clicks while the download is in progress
+    $thisButton.prop('disabled', true).text('Downloading...');
+
+    try {
+        // Call the downloadFolder function, which returns a promise
+        await downloadFolder(folderid, $thisButton);
+    } catch (error) {
+        // If there's an error during the download, log it and re-enable the button
+        console.error(error);
+        $thisButton.prop('disabled', false).text('Download');
+        toastr.error('An error occurred while downloading the folder. Please try again.', 'Download Error');
+    }
+});
+
+// Function to handle the folder download
+async function downloadFolder(folderid, $thisButton) {
+    return new Promise((resolve, reject) => {
+        $.ajax({
+            url: '/download-folder/' + folderid,
+            type: 'GET',
+            xhrFields: {
+                responseType: 'blob' // Set response type to blob for file downloads
+            },
+            success: function (response, status, xhr) {
+                const disposition = xhr.getResponseHeader('Content-Disposition');
+                if (disposition && disposition.indexOf('attachment') !== -1) {
+                    const filename = disposition.split('filename=')[1].replace(/"/g, '');
+
+                    // Create a download link for the blob
+                    const blob = new Blob([response], { type: 'application/zip' });
+                    const url = window.URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = filename;
+                    document.body.appendChild(a);
+                    a.click();
+                    a.remove();
+                    window.URL.revokeObjectURL(url);
+
+                    // Show success message
+                    toastr.success('Your folder has been downloaded successfully!', 'Download Complete');
+                    resolve(); // Resolve the promise after successful download
+                } else {
+                    reject('Download failed: No file attachment found');
+                }
+            },
+            error: function (xhr, status, error) {
+                console.error('Error details:', status, error, xhr.responseText);
+                reject('Download failed: ' + error);
+            },
+            complete: function () {
+                // Re-enable the button after the request completes
+                $thisButton.prop('disabled', false).text('Download');
+            }
+        });
+    });
+}
+
+
+});
+
             </script>
+            
+            
+            
 
             <div class="modal fade drop_coman_file have_title" id="renamefolder" tabindex="-1" role="dialog" aria-labelledby="renamefolder" aria-hidden="true">
                 <div class="modal-dialog modal-dialog-centered" role="document">
@@ -4261,45 +4335,28 @@ $(document).on('click', '.breadcrumb-link', function(e) {
     navigateToFolder(folderPath);
 });
 
-$(document).on('click', '.folder-link', function(e) {
-    e.preventDefault();
-    e.stopPropagation();
-    var $this = $(this);
-    var folderPath = $this.data('folder-path');
-    // alert(folderPath);
-    
-    // alert(folderPath);
-    
-    // Remove 'selected-folder' class from all folder links and toggle icons
-    $('.folder-link').removeClass('selected-folder');
-    $('.toggle_icconn').removeClass('selected-folder');
+$(document).ready(function () {
+    // Function to trigger the /docurepo request
+    function triggerDocurepo(folderPath) {
+        console.log("i am here insode trigger docurepo");
+        console.log(folderPath);
+        // 2024-2025November301_Accounting & Taxation/2024-2025November301_Indirect Tax/2024-2025November301_Indirect/2024-2025November301_GST/2024-2025November301_Litigations
+        console.log("after jhdfhsfjkjkhkj");
 
-    // Toggle 'selected-folder' class on the clicked element
-    if ($this.hasClass('selected-folder')) {
-        $this.removeClass('selected-folder');
-    } else {
-        $this.addClass('selected-folder');
+        // Remove 'selected-folder' class from all folder links and toggle icons
+        $('.folder-link').removeClass('selected-folder');
+        $('.toggle_icconn').removeClass('selected-folder');
 
-        // function getQueryParam(param) {
-        //     const params = new URLSearchParams(window.location.search);
-        //     return params.get(param); // Get specific parameter value
-        // }
+        // Add 'selected-folder' class to the relevant folder link
+        $(`.folder-link[data-folder-path="${folderPath}"]`).addClass('selected-folder');
 
-        // let path = getQueryParam('folderpath'); // Replace 'yourParamName' with the actual parameter name you want
-        // alert(path);
-        // console.log("Path is: " + path);
-
-        // Make AJAX request to send folderPath to the controller
         $.ajax({
             url: '/docurepo', // URL for the GET request
             method: 'GET',
             data: { folderPath: folderPath }, // Pass folderPath directly as query parameter
-            
-            success: function(response) {
-               
-                    setTimeout(function() {
-                        
-                        $('.comm_size[data-variable="totalSizeKBentrieafs"]').text(response.totalSizeKBentrieafs + ' KB');
+            success: function (response) {
+                setTimeout(function () {
+                    $('.comm_size[data-variable="totalSizeKBentrieafs"]').text(response.totalSizeKBentrieafs + ' KB');
                         $('.comm_count[data-variable="countentriesafs"]').text(response.countentriesafs);
 
                         $('.comm_size[data-variable="totalSizeKBentriecfs"]').text(response.totalSizeKBentriecfs + ' KB');
@@ -4771,14 +4828,72 @@ $(document).on('click', '.folder-link', function(e) {
                         $('.comm_count[data-variable="countindirecttaxIncomeTaxGSTR3bAcknowledgement"]').text(response.countindirecttaxIncomeTaxGSTR3bAcknowledgement);
 
 
-                    }, 1000); 
+
+                        $('.comm_size[data-variable="totalSizeKBindirecttaxIncomeTaxGSTR9Workings"]').text(response.totalSizeKBindirecttaxIncomeTaxGSTR9Workings + ' KB');
+                        $('.comm_count[data-variable="countindirecttaxIncomeTaxGSTR9Workings"]').text(response.countindirecttaxIncomeTaxGSTR9Workings);
+
+                        $('.comm_size[data-variable="totalSizeKBindirecttaxIncomeTaxGSTR9Return"]').text(response.totalSizeKBindirecttaxIncomeTaxGSTR9Return + ' KB');
+                        $('.comm_count[data-variable="countindirecttaxIncomeTaxGSTR9Return"]').text(response.countindirecttaxIncomeTaxGSTR9Return);
+
+
+                        $('.comm_size[data-variable="totalSizeKBindirecttaxIncomeTaxGSTR9ChallanReceipt"]').text(response.totalSizeKBindirecttaxIncomeTaxGSTR9ChallanReceipt + ' KB');
+                        $('.comm_count[data-variable="countindirecttaxIncomeTaxGSTR9ChallanReceipt"]').text(response.countindirecttaxIncomeTaxGSTR9ChallanReceipt);
+
+                        $('.comm_size[data-variable="totalSizeKBindirecttaxIncomeTaxGSTR9Acknowledgement"]').text(response.totalSizeKBindirecttaxIncomeTaxGSTR9Acknowledgement + ' KB');
+                        $('.comm_count[data-variable="countindirecttaxIncomeTaxGSTR9Acknowledgement"]').text(response.countindirecttaxIncomeTaxGSTR9Acknowledgement);
+
+
+
+
+                        $('.comm_size[data-variable="totalSizeKBindirecttaxIncomeTaxGSTR9cWorkings"]').text(response.totalSizeKBindirecttaxIncomeTaxGSTR9cWorkings + ' KB');
+                        $('.comm_count[data-variable="countindirecttaxIncomeTaxGSTR9cWorkings"]').text(response.countindirecttaxIncomeTaxGSTR9cWorkings);
+
+                        $('.comm_size[data-variable="totalSizeKBindirecttaxIncomeTaxGSTR9cReturn"]').text(response.totalSizeKBindirecttaxIncomeTaxGSTR9cReturn + ' KB');
+                        $('.comm_count[data-variable="countindirecttaxIncomeTaxGSTR9cReturn"]').text(response.countindirecttaxIncomeTaxGSTR9cReturn);
+
+
+                        $('.comm_size[data-variable="totalSizeKBindirecttaxIncomeTaxGSTR9cChallanReceipt"]').text(response.totalSizeKBindirecttaxIncomeTaxGSTR9cChallanReceipt + ' KB');
+                        $('.comm_count[data-variable="countindirecttaxIncomeTaxGSTR9cChallanReceipt"]').text(response.countindirecttaxIncomeTaxGSTR9cChallanReceipt);
+
+                        $('.comm_size[data-variable="totalSizeKBindirecttaxIncomeTaxGSTR9cAcknowledgement"]').text(response.totalSizeKBindirecttaxIncomeTaxGSTR9cAcknowledgement + ' KB');
+                        $('.comm_count[data-variable="countindirecttaxIncomeTaxGSTR9cAcknowledgement"]').text(response.countindirecttaxIncomeTaxGSTR9cAcknowledgement);
+                }, 1000);
+
             },
-            error: function(xhr, status, error) {
+            
+            error: function (xhr, status, error) {
                 console.error(error); // Log any error for debugging
             }
         });
+    //     setInterval(function () {
+    //     triggerDocurepo(folderPath);
+    //     window.reload();
+    // }, 10000); // 1000 ms = 1 second
+    }
+
+    // Trigger on click of a folder link
+    $(document).on('click', '.folder-link', function (e) {
+        e.preventDefault();
+        e.stopPropagation();
+        var folderPath = $(this).data('folder-path'); // Get folder path from data attribute
+        // alert(folderPath);
+        triggerDocurepo(folderPath); // Call the reusable function
+    });
+
+    // Trigger on window reload
+    var currentUrl = window.location.href;
+    var urlParams = new URLSearchParams(window.location.search);
+    var folderParam = urlParams.get('folder');
+
+    if (folderParam) {
+        // Decode the folder parameter (handle double encoding)
+        var decodedFolderParam = decodeURIComponent(decodeURIComponent(folderParam));
+        triggerDocurepo(decodedFolderParam); // Call the reusable function with the folder path
     }
 });
+
+
+
 // Function to fetch data from the server
 function fetchTotalSize(folderPath) {
     $.ajax({
@@ -5004,6 +5119,7 @@ let newPerm = fullPath.replace(newbase, '').split('/')[0];
                 if (result.endsWith("Secretarial/Board Meetings") && !incorporationTableAppended) {
                     insertIncorporationTable();
                     incorporationTableAppended = true;
+                    
                 } else if (result.endsWith("Secretarial/Annual General Meeting") && !meetingTableAppended){
                     insertMeetingTable();
                     meetingTableAppended = true;
@@ -5059,9 +5175,10 @@ let newPerm = fullPath.replace(newbase, '').split('/')[0];
                         // console.log(newPermitter); // Output the cleaned value
                     }, 1000);
 
-
+if(response.directorfolder){
                     insertcharterdocumentsDirectordetatilsDirector1Table();
                     charterdocumentsDirectordetatilsDirector1TableAppended = true;
+                }
                 } 
                 
                 else if (result.endsWith("Accounting & Taxation/Charter Documents/Incorporation") && !charterdocumentsIncorporationTableAppended)  {
@@ -5164,8 +5281,11 @@ let newPerm = fullPath.replace(newbase, '').split('/')[0];
                 }
                 
                 else if (result.endsWith("Accounting & Taxation/Indirect Tax/Indirect/GST/Litigations") && !indirecttaxLitigationsTableAppended)  {
+                    // ('alert1');
                     insertindirecttaxLitigationsTableAppendeds();
+                    // alert('2');
                     indirecttaxLitigationsTableAppended = true;
+                    // alert('3');
                 }
 
                 
@@ -5204,9 +5324,15 @@ let newPerm = fullPath.replace(newbase, '').split('/')[0];
 
         // Retrieve the folder path from the URL parameters
         const folderPaths = getQueryParam('folder');
+        // alert(folderPaths);  
+        // console.log(folderPaths);
+        // 2024-2025November301_Accounting%20%26%20Taxation%2F2024-2025November301_Indirect%20Tax%2F2024-2025November301_Indirect%2F2024-2025November301_GST%2F2024-2025November301_Litigations
         
           const decodedFolderPath = folderPaths ? decodeURIComponent(folderPaths) : null;
         const pathToUse = decodedFolderPath ? decodedFolderPath : folderPath;
+        // console.log(pathToUse);
+        // 2024-2025November301_Accounting & Taxation/2024-2025November301_Indirect Tax/2024-2025November301_Indirect/2024-2025November301_GST/2024-2025November301_Litigations
+
        
         let url = `${pathToUse}`;
         // let result = decodeAndFormatUrl(url);
@@ -5214,6 +5340,10 @@ let newPerm = fullPath.replace(newbase, '').split('/')[0];
         let result = decodeAndFormatUrl(url);
     //  console.log(result);
         let fullPath = `${result}`;
+        console.log(fullPath);
+        // Accounting & Taxation/Indirect Tax/Indirect/GST/Litigations
+
+        
 
         // The base path you want to cut off
         let basePath = "Accounting & Taxation/Charter Documents/Director Details/";
@@ -5333,7 +5463,37 @@ let newPerm = fullPath.replace(newbase, '').split('/')[0];
                     insertbankMutualFundStatementsTable();
                     bankMutualFundStatementsTableAppended = true;
                 } else if (result.endsWith(`Accounting & Taxation/Charter Documents/Director Details/${newPermitter}`) && !charterdocumentsDirectordetatilsDirector1TableAppended) {
-                    
+                   
+                    // alert(response.directorfolderNames);
+                    // console.log(response.directorfolderNames);
+
+                    // Declare a variable to store the matched parts
+                    let matchedParts = null;
+                    var pkk ='';
+
+                    // Ensure response.directorfolderNames is an array
+                    if (Array.isArray(response.directorfolderNames)) {
+                        response.directorfolderNames.forEach((name) => {
+                            var parts = name.split('_', 2); // Split each string in the array
+                            console.log("First Part:", parts[0]);
+                            console.log("Second Part:", parts[1]);
+                            pkk = parts[1];
+
+                            // Check for a match
+                            if (pkk == newPermitter) {
+                                matchedParts = parts; // Store the matched parts
+                            }
+                        });
+
+                        // If matchedParts is set, proceed with the logic
+                        if (matchedParts) {
+                            console.log("Matched Parts:", matchedParts);
+                            insertcharterdocumentsDirectordetatilsDirector1Table();
+                            charterdocumentsDirectordetatilsDirector1TableAppended = true;
+                        }
+                    } else {
+                        console.error('directorfolderNames is not an array');
+                    }
                     
                     setInterval(function() {
                         let result = decodeAndFormatUrl(url);
@@ -5343,11 +5503,13 @@ let newPerm = fullPath.replace(newbase, '').split('/')[0];
                         let newPermitter = fullPath.replace(basePath, '').split('/')[0];
 
                         // Output the result or use it to trigger actions
-                        console.log(newPermitter); // Output the cleaned value
+                        // console.log(newPermitter); // Output the cleaned value
                     }, 1000);
 
-                    insertcharterdocumentsDirectordetatilsDirector1Table();
-                    charterdocumentsDirectordetatilsDirector1TableAppended = true;
+                    // if(pkk == newPermitter){
+                    // insertcharterdocumentsDirectordetatilsDirector1Table();
+                    // charterdocumentsDirectordetatilsDirector1TableAppended = true;
+                   // }
                 }  
                 
                 else if (result.endsWith("Accounting & Taxation/Charter Documents/Incorporation") && !charterdocumentsIncorporationTableAppended)  {
@@ -5440,8 +5602,11 @@ let newPerm = fullPath.replace(newbase, '').split('/')[0];
                 }
 
                 else if (result.endsWith("Accounting & Taxation/Indirect Tax/Indirect/GST/Litigations") && !indirecttaxLitigationsTableAppended)  {
+                    // alert('4');
                     insertindirecttaxLitigationsTableAppendeds();
+                    // alert('5');
                     indirecttaxLitigationsTableAppended = true;
+                    // alert('6');
                 }
 
                 bindFolderClickEvents();
@@ -5502,253 +5667,255 @@ let newPerm = fullPath.replace(newbase, '').split('/')[0];
 
 
 
-// Define the folder-to-function mappings and appended status
-const tableFunctions = {
-    'Legal/Secretarial/Board Meetings': ['insertIncorporationTable', 'incorporationTableAppended'],
-    'Legal/Secretarial/Annual General Meeting': ['insertMeetingTable', 'meetingTableAppended'],
-    'Legal/Secretarial/Extra Ordinary General Meeting': ['insertOrderTable', 'orderTableAppended'],
-    'Legal/Secretarial/Incorporation': ['insertINCTable', 'incTableAppended'],
-    'Legal/Secretarial/Annual Filings': ['insertANNTable', 'annTableAppended'],
-    'Legal/Secretarial/Director Appointments': ['insertDirectTable', 'directTableAppended'],
-    'Legal/Secretarial/Director Resignation': ['insertDirectexitTable', 'directexitTableAppended'],
-    'Legal/Secretarial/Auditor Appointment': ['insertauditappTable', 'auditappTableAppended'],
-    'Legal/Secretarial/Auditor Exits': ['insertauditexitTable', 'auditexitTableAppended'],
-    'Legal/Secretarial/Statutory Registers': ['insertstaturegiTable', 'staturegiTableAppended'],
-    'Legal/Secretarial/Deposit Undertakings': ['insertundertakingTable', 'undertakingTableAppended'],
-    'Accounting & Taxation/Book-Keeping/Bank Account Statements': ['insertbankAccountStatementsTable', 'bankAccountStatementsTableAppended'],
-    'Accounting & Taxation/Book-Keeping/Fixed Deposit Statements': ['insertbankFixedDepositStatementsTable', 'bankFixedDepositStatementsTableAppended'],
-    'Accounting & Taxation/Book-Keeping/Credit Card Statements': ['insertbankCreditCardStatementsTable', 'bankCreditCardStatementsTableAppended'],
-    'Accounting & Taxation/Book-Keeping/Mutual Fund Statements': ['insertbankMutualFundStatementsTable', 'bankMutualFundStatementsTableAppended'],
-    'Accounting & Taxation/Charter documents/Director Details/Director 1': ['insertcharterdocumentsDirectordetatilsDirector1Table', 'charterdocumentsDirectordetatilsDirector1TableAppended'],
-    'Accounting & Taxation/Charter documents/Director Details/Director 2': ['insertcharterdocumentsDirectordetatilsDirector2Table', 'charterdocumentsDirectordetatilsDirector2TableAppended'],
-    'Accounting & Taxation/Charter documents/Incorporation': ['insertcharterdocumentsIncorporationTable', 'charterdocumentsIncorporationTableAppended'],
-    'Accounting & Taxation/Charter documents/Registrations': ['insertcharterdocumentsRegistrationsTable', 'charterdocumentsRegistrationsTableAppended']
-};
+    // Define the folder-to-function mappings and appended status
+    const tableFunctions = {
+        'Legal/Secretarial/Board Meetings': ['insertIncorporationTable', 'incorporationTableAppended'],
+        'Legal/Secretarial/Annual General Meeting': ['insertMeetingTable', 'meetingTableAppended'],
+        'Legal/Secretarial/Extra Ordinary General Meeting': ['insertOrderTable', 'orderTableAppended'],
+        'Legal/Secretarial/Incorporation': ['insertINCTable', 'incTableAppended'],
+        'Legal/Secretarial/Annual Filings': ['insertANNTable', 'annTableAppended'],
+        'Legal/Secretarial/Director Appointments': ['insertDirectTable', 'directTableAppended'],
+        'Legal/Secretarial/Director Resignation': ['insertDirectexitTable', 'directexitTableAppended'],
+        'Legal/Secretarial/Auditor Appointment': ['insertauditappTable', 'auditappTableAppended'],
+        'Legal/Secretarial/Auditor Exits': ['insertauditexitTable', 'auditexitTableAppended'],
+        'Legal/Secretarial/Statutory Registers': ['insertstaturegiTable', 'staturegiTableAppended'],
+        'Legal/Secretarial/Deposit Undertakings': ['insertundertakingTable', 'undertakingTableAppended'],
+        'Accounting & Taxation/Book-Keeping/Bank Account Statements': ['insertbankAccountStatementsTable', 'bankAccountStatementsTableAppended'],
+        'Accounting & Taxation/Book-Keeping/Fixed Deposit Statements': ['insertbankFixedDepositStatementsTable', 'bankFixedDepositStatementsTableAppended'],
+        'Accounting & Taxation/Book-Keeping/Credit Card Statements': ['insertbankCreditCardStatementsTable', 'bankCreditCardStatementsTableAppended'],
+        'Accounting & Taxation/Book-Keeping/Mutual Fund Statements': ['insertbankMutualFundStatementsTable', 'bankMutualFundStatementsTableAppended'],
+        'Accounting & Taxation/Charter documents/Director Details/Director 1': ['insertcharterdocumentsDirectordetatilsDirector1Table', 'charterdocumentsDirectordetatilsDirector1TableAppended'],
+        'Accounting & Taxation/Charter documents/Director Details/Director 2': ['insertcharterdocumentsDirectordetatilsDirector2Table', 'charterdocumentsDirectordetatilsDirector2TableAppended'],
+        'Accounting & Taxation/Charter documents/Incorporation': ['insertcharterdocumentsIncorporationTable', 'charterdocumentsIncorporationTableAppended'],
+        'Accounting & Taxation/Charter documents/Registrations': ['insertcharterdocumentsRegistrationsTable', 'charterdocumentsRegistrationsTableAppended'],
+        'Accounting & Taxation/Indirect Tax/Indirect/GST/Litigations': ['insertindirecttaxLitigationsTableAppendeds', 'indirecttaxLitigationsTableAppended']
 
-// Function to check if the table is already appended
-function isTableAppended(folderPath) {
-    const tableFuncEntry = tableFunctions[folderPath];
-    if (tableFuncEntry) {
-        const flagName = tableFuncEntry[1];
-        return JSON.parse(localStorage.getItem(flagName) || 'false');
+    };
+
+    // Function to check if the table is already appended
+    function isTableAppended(folderPath) {
+        const tableFuncEntry = tableFunctions[folderPath];
+        if (tableFuncEntry) {
+            const flagName = tableFuncEntry[1];
+            return JSON.parse(localStorage.getItem(flagName) || 'false');
+        }
+        return false;
     }
-    return false;
-}
 
-// Function to set table appended status in localStorage
-function setTableAppended(folderPath, status) {
-    const tableFuncEntry = tableFunctions[folderPath];
-    if (tableFuncEntry) {
-        const flagName = tableFuncEntry[1];
-        localStorage.setItem(flagName, JSON.stringify(status));
+    // Function to set table appended status in localStorage
+    function setTableAppended(folderPath, status) {
+        const tableFuncEntry = tableFunctions[folderPath];
+        if (tableFuncEntry) {
+            const flagName = tableFuncEntry[1];
+            localStorage.setItem(flagName, JSON.stringify(status));
+        }
     }
-}
 
-// Clear appended table status
-function clearAppendedTables() {
-    for (let folderPath in tableFunctions) {
-        const flagName = tableFunctions[folderPath][1];
-        localStorage.removeItem(flagName);
+    // Clear appended table status
+    function clearAppendedTables() {
+        for (let folderPath in tableFunctions) {
+            const flagName = tableFunctions[folderPath][1];
+            localStorage.removeItem(flagName);
+        }
     }
-}
 
-// Function to handle table insertion
-function handleFolderPath(folderPath) {
-    console.log("Handling folder path:", folderPath);
-    clearAppendedTables();
+    // Function to handle table insertion
+    function handleFolderPath(folderPath) {
+        console.log("Handling folder path:", folderPath);
+        clearAppendedTables();
 
-    if (folderPath === 'Legal/Secretarial/Board Meetings' && !incorporationTableAppended) {
-        console.log("Inserting Incorporation Table");
-        insertIncorporationTable();
-        incorporationTableAppended = true;
-    } else if (folderPath === 'Legal/Secretarial/Annual General Meeting' && !meetingTableAppended) {
-        console.log("Inserting Meeting Table");
-        insertMeetingTable();
-        meetingTableAppended = true;
-    } else if (folderPath === 'Legal/Secretarial/Extra Ordinary General Meeting' && !orderTableAppended) {
-        console.log("Inserting Order Table");
-        insertOrderTable();
-        orderTableAppended = true;
-    } else if (folderPath === 'Legal/Secretarial/Incorporation' && !incTableAppended) {
-        console.log("Inserting INC Table");
-        insertINCTable();
-        incTableAppended = true;
-    } else if (folderPath === 'Legal/Secretarial/Annual Filings' && !annTableAppended) {
-        console.log("Inserting ANN Table");
-        insertANNTable();
-        annTableAppended = true;
-    } else if (folderPath === 'Legal/Secretarial/Director Appointments' && !directTableAppended) {
-        console.log("Inserting Direct Table");
-        insertDirectTable();
-        directTableAppended = true;
-    } else if (folderPath === 'Legal/Secretarial/Director Resignation' && !directexitTableAppended) {
-        console.log("Inserting Direct Exit Table");
-        insertDirectexitTable();
-        directexitTableAppended = true;
-    } else if (folderPath === 'Legal/Secretarial/Auditor Appointment' && !auditappTableAppended) {
-        console.log("Inserting Audit App Table");
-        insertauditappTable();
-        auditappTableAppended = true;
-    } else if (folderPath === 'Legal/Secretarial/Auditor Exits' && !auditexitTableAppended) {
-        console.log("Inserting Audit Exit Table");
-        insertauditexitTable();
-        auditexitTableAppended = true;
-    } else if (folderPath === 'Legal/Secretarial/Statutory Registers' && !staturegiTableAppended) {
-        console.log("Inserting Statutory Registers Table");
-        insertstaturegiTable();
-        staturegiTableAppended = true;
-    } else if (folderPath === 'Legal/Secretarial/Deposit Undertakings' && !undertakingTableAppended) {
-        console.log("Inserting Undertaking Table");
-        insertundertakingTable();
-        undertakingTableAppended = true;
-    } else if (folderPath === 'Accounting & Taxation/Book-Keeping/Bank Account Statements' && !bankAccountStatementsTableAppended) {
-        console.log("Inserting Bank Account Statements Table");
-        insertbankAccountStatementsTable();
-        bankAccountStatementsTableAppended = true;
-    } else if (folderPath === 'Accounting & Taxation/Book-Keeping/Fixed Deposit Statements' && !bankFixedDepositStatementsTableAppended) {
-        console.log("Inserting Fixed Deposit Statements Table");
-        insertbankFixedDepositStatementsTable();
-        bankFixedDepositStatementsTableAppended = true;
-    } else if (folderPath === 'Accounting & Taxation/Book-Keeping/Credit Card Statements' && !bankCreditCardStatementsTableAppended) {
-        console.log("Inserting Credit Card Statements Table");
-        insertbankCreditCardStatementsTable();
-        bankCreditCardStatementsTableAppended = true;
-    } else if (folderPath === 'Accounting & Taxation/Book-Keeping/Mutual Fund Statements' && !bankMutualFundStatementsTableAppended) {
-        console.log("Inserting Mutual Fund Statements Table");
-        insertbankMutualFundStatementsTable();
-        bankMutualFundStatementsTableAppended = true;
-    } else if (folderPath === `Accounting & Taxation/Charter Documents/Director Details/${newPermitter}` && !charterdocumentsDirectordetatilsDirector1TableAppended) {
-        console.log("Inserting Director 1 Table");
-        insertcharterdocumentsDirectordetatilsDirector1Table();
-        charterdocumentsDirectordetatilsDirector1TableAppended = true;
-    } 
-     
-   
-    else if (folderPath === 'Accounting & Taxation/Charter documents/Incorporation' && !charterdocumentsIncorporationTableAppended) {
-        console.log("Inserting Incorporation Table");
-        insertcharterdocumentsIncorporationTableAppendedTable();
-        charterdocumentsIncorporationTableAppended = true;
-    } else if (folderPath === 'Accounting & Taxation/Charter documents/Registrations' && !charterdocumentsRegistrationsTableAppended) {
-        console.log("Inserting Registrations Table");
-        insertcharterdocumentsRegistrationsTableAppendedTable();
-        charterdocumentsRegistrationsTableAppended = true;
+        if (folderPath === 'Legal/Secretarial/Board Meetings' && !incorporationTableAppended) {
+            console.log("Inserting Incorporation Table");
+            insertIncorporationTable();
+            incorporationTableAppended = true;
+        } else if (folderPath === 'Legal/Secretarial/Annual General Meeting' && !meetingTableAppended) {
+            console.log("Inserting Meeting Table");
+            insertMeetingTable();
+            meetingTableAppended = true;
+        } else if (folderPath === 'Legal/Secretarial/Extra Ordinary General Meeting' && !orderTableAppended) {
+            console.log("Inserting Order Table");
+            insertOrderTable();
+            orderTableAppended = true;
+        } else if (folderPath === 'Legal/Secretarial/Incorporation' && !incTableAppended) {
+            console.log("Inserting INC Table");
+            insertINCTable();
+            incTableAppended = true;
+        } else if (folderPath === 'Legal/Secretarial/Annual Filings' && !annTableAppended) {
+            console.log("Inserting ANN Table");
+            insertANNTable();
+            annTableAppended = true;
+        } else if (folderPath === 'Legal/Secretarial/Director Appointments' && !directTableAppended) {
+            console.log("Inserting Direct Table");
+            insertDirectTable();
+            directTableAppended = true;
+        } else if (folderPath === 'Legal/Secretarial/Director Resignation' && !directexitTableAppended) {
+            console.log("Inserting Direct Exit Table");
+            insertDirectexitTable();
+            directexitTableAppended = true;
+        } else if (folderPath === 'Legal/Secretarial/Auditor Appointment' && !auditappTableAppended) {
+            console.log("Inserting Audit App Table");
+            insertauditappTable();
+            auditappTableAppended = true;
+        } else if (folderPath === 'Legal/Secretarial/Auditor Exits' && !auditexitTableAppended) {
+            console.log("Inserting Audit Exit Table");
+            insertauditexitTable();
+            auditexitTableAppended = true;
+        } else if (folderPath === 'Legal/Secretarial/Statutory Registers' && !staturegiTableAppended) {
+            console.log("Inserting Statutory Registers Table");
+            insertstaturegiTable();
+            staturegiTableAppended = true;
+        } else if (folderPath === 'Legal/Secretarial/Deposit Undertakings' && !undertakingTableAppended) {
+            console.log("Inserting Undertaking Table");
+            insertundertakingTable();
+            undertakingTableAppended = true;
+        } else if (folderPath === 'Accounting & Taxation/Book-Keeping/Bank Account Statements' && !bankAccountStatementsTableAppended) {
+            console.log("Inserting Bank Account Statements Table");
+            insertbankAccountStatementsTable();
+            bankAccountStatementsTableAppended = true;
+        } else if (folderPath === 'Accounting & Taxation/Book-Keeping/Fixed Deposit Statements' && !bankFixedDepositStatementsTableAppended) {
+            console.log("Inserting Fixed Deposit Statements Table");
+            insertbankFixedDepositStatementsTable();
+            bankFixedDepositStatementsTableAppended = true;
+        } else if (folderPath === 'Accounting & Taxation/Book-Keeping/Credit Card Statements' && !bankCreditCardStatementsTableAppended) {
+            console.log("Inserting Credit Card Statements Table");
+            insertbankCreditCardStatementsTable();
+            bankCreditCardStatementsTableAppended = true;
+        } else if (folderPath === 'Accounting & Taxation/Book-Keeping/Mutual Fund Statements' && !bankMutualFundStatementsTableAppended) {
+            console.log("Inserting Mutual Fund Statements Table");
+            insertbankMutualFundStatementsTable();
+            bankMutualFundStatementsTableAppended = true;
+        } else if (folderPath === `Accounting & Taxation/Charter Documents/Director Details/${newPermitter}` && !charterdocumentsDirectordetatilsDirector1TableAppended) {
+            console.log("Inserting Director 1 Table");
+            insertcharterdocumentsDirectordetatilsDirector1Table();
+            charterdocumentsDirectordetatilsDirector1TableAppended = true;
+        } 
+        
+    
+        else if (folderPath === 'Accounting & Taxation/Charter documents/Incorporation' && !charterdocumentsIncorporationTableAppended) {
+            console.log("Inserting Incorporation Table");
+            insertcharterdocumentsIncorporationTableAppendedTable();
+            charterdocumentsIncorporationTableAppended = true;
+        } else if (folderPath === 'Accounting & Taxation/Charter documents/Registrations' && !charterdocumentsRegistrationsTableAppended) {
+            console.log("Inserting Registrations Table");
+            insertcharterdocumentsRegistrationsTableAppendedTable();
+            charterdocumentsRegistrationsTableAppended = true;
+        }
+        else if  ("Employee Database/Onboarding documents" && !hronboarTableAppended) {
+        
+        inserthronboarTableAppended();  
+        hronboarTableAppended = true;  
     }
-    else if  ("Employee Database/Onboarding documents" && !hronboarTableAppended) {
-     
-     inserthronboarTableAppended();  
-     hronboarTableAppended = true;  
- }
- 
- else if (folderPath === "Employee Database/KYC Documents" && !hrkycTableAppended) {
-                     // alert(resultto);  // Display the result
-                     inserthrkycTableAppended();  // Call the function to append the table
-                     hrkycTableAppended = true;  // Set the flag to true to prevent further appends
-                 }
- 
-                 else if (folderPath === "Employee Database/Declarations" && !hrdecTableAppended) {
-                     // alert(resultto);  // Display the result
-                     inserthrdecTableAppended();  // Call the function to append the table
-                     hrdecTableAppended = true;  // Set the flag to true to prevent further appends
-                 }
- 
-                 else if (folderPath === "Employee Database/Offboarding" && !hroffboardTableAppended) {
-                     // alert(resultto);  // Display the result
-                     inserthroffboardTableAppended();  // Call the function to append the table
-                     hroffboardTableAppended = true;  // Set the flag to true to prevent further appends
-                 }
-                 else if (folderPath === "Employee Database/ESOP" && !hresopTableAppended) {
-                     // alert(resultto);  // Display the result
-                     inserthresopTableAppended();  // Call the function to append the table
-                     hresopTableAppended = true;  // Set the flag to true to prevent further appends
-                 }
- 
-                 else if (folderPath === "Pay Registers/Monthly Payrun" && !hrmpTableAppended) {
-                     // alert(resultto);  // Display the result
-                     inserthrmpTableAppended();  // Call the function to append the table
-                     hrmpTableAppended = true;  // Set the flag to true to prevent further appends
-                 }
- 
-                 else if (folderPath === "Pay Registers/Reimbursements" && !hrreimbTableAppended) {
-                     // alert(resultto);  // Display the result
-                     inserthrreimTableAppended();  // Call the function to append the table
-                     hrreimbTableAppended = true;  // Set the flag to true to prevent further appends
-                 }
+    
+    else if (folderPath === "Employee Database/KYC Documents" && !hrkycTableAppended) {
+                        // alert(resultto);  // Display the result
+                        inserthrkycTableAppended();  // Call the function to append the table
+                        hrkycTableAppended = true;  // Set the flag to true to prevent further appends
+                    }
+    
+                    else if (folderPath === "Employee Database/Declarations" && !hrdecTableAppended) {
+                        // alert(resultto);  // Display the result
+                        inserthrdecTableAppended();  // Call the function to append the table
+                        hrdecTableAppended = true;  // Set the flag to true to prevent further appends
+                    }
+    
+                    else if (folderPath === "Employee Database/Offboarding" && !hroffboardTableAppended) {
+                        // alert(resultto);  // Display the result
+                        inserthroffboardTableAppended();  // Call the function to append the table
+                        hroffboardTableAppended = true;  // Set the flag to true to prevent further appends
+                    }
+                    else if (folderPath === "Employee Database/ESOP" && !hresopTableAppended) {
+                        // alert(resultto);  // Display the result
+                        inserthresopTableAppended();  // Call the function to append the table
+                        hresopTableAppended = true;  // Set the flag to true to prevent further appends
+                    }
+    
+                    else if (folderPath === "Pay Registers/Monthly Payrun" && !hrmpTableAppended) {
+                        // alert(resultto);  // Display the result
+                        inserthrmpTableAppended();  // Call the function to append the table
+                        hrmpTableAppended = true;  // Set the flag to true to prevent further appends
+                    }
+    
+                    else if (folderPath === "Pay Registers/Reimbursements" && !hrreimbTableAppended) {
+                        // alert(resultto);  // Display the result
+                        inserthrreimTableAppended();  // Call the function to append the table
+                        hrreimbTableAppended = true;  // Set the flag to true to prevent further appends
+                    }
 
+
+                    
+                    else if (folderPath === "Accounting & Taxation/Direct Tax/Tax Deducted at Source (TDS)/Monthly Payments" && !directtaxmonthlyTableAppended) {
+                        // alert(resultto);  // Display the result
+                        insertdirecttaxmonthlyTableAppendeds();  // Call the function to append the table
+                        directtaxmonthlyTableAppended = true;  // Set the flag to true to prevent further appends
+                    }
+                    else if (folderPath === "Accounting & Taxation/Direct Tax/Tax Deducted at Source (TDS)/Quarterly Filings" && !directtaxquarterlyTableAppended) {
+                        // alert(resultto);  // Display the result
+                        insertdirecttaxQuarterlyTableAppendeds();  // Call the function to append the table
+                        directtaxquarterlyTableAppended = true;  // Set the flag to true to prevent further appends
+                    }
+                    else if (folderPath === "Accounting & Taxation/Direct Tax/Tax Deducted at Source (TDS)/Litigations" && !directtaxLitigationsTableAppended) {
+                        // alert(resultto);  // Display the result
+                        insertdirecttaxLitigationsTableAppendeds();  // Call the function to append the table
+                        directtaxLitigationsTableAppended = true;  // Set the flag to true to prevent further appends
+                    }
+
+                    else if (folderPath === "Accounting & Taxation/Direct Tax/Advance Tax/Quarterly Payments" && !directtaxQuarterlyPaymentsTableAppended) {
+                        // alert(resultto);  // Display the result
+                        insertdirecttaxQuarterlyPaymentsTableAppendeds();  // Call the function to append the table
+                        directtaxQuarterlyPaymentsTableAppended = true;  // Set the flag to true to prevent further appends
+                    }
+                    else if (folderPath === "Accounting & Taxation/Direct Tax/Income Tax/Annual Returns" && !directtaxAnnualReturnsTableAppended) {
+                        // alert(resultto);  // Display the result
+                        insertdirecttaxAnnualReturnsTableAppendeds();  // Call the function to append the table
+                        directtaxAnnualReturnsTableAppended = true;  // Set the flag to true to prevent further appends
+                    }
+
+
+                    else if (folderPath === "Accounting & Taxation/Direct Tax/Income Tax/Litigations" && !directtaxincomeLitigationsTableAppended) {
+                        // alert(resultto);  // Display the result
+                        insertdirecttaxincomeLitigationsTableAppendeds();  // Call the function to append the table
+                        directtaxincomeLitigationsTableAppended = true;  // Set the flag to true to prevent further appends
+                    }
+
+                    else if (folderPath === "Accounting & Taxation/Indirect Tax/Indirect/GST/Monthly & Quarterly Returns/GSTR-1" && !indirecttaxGSTR1TableAppended) {
+                        // alert(resultto);  // Display the result
+                        insertindirecttaxGSTR1TableAppendeds();  // Call the function to append the table
+                        indirecttaxGSTR1TableAppended = true;  // Set the flag to true to prevent further appends
+                    }
+                    else if (folderPath === "Accounting & Taxation/Indirect Tax/Indirect/GST/Monthly & Quarterly Returns/GSTR 3B" && !indirecttaxGSTR3bTableAppended) {
+                        // alert(resultto);  // Display the result
+                        insertindirecttaxGSTR3bTableAppendeds();  // Call the function to append the table
+                        indirecttaxGSTR3bTableAppended = true;  // Set the flag to true to prevent further appends
+                    }
+
+                    else if (folderPath === "Accounting & Taxation/Indirect Tax/Indirect/GST/Monthly & Quarterly Returns/GSTR 9" && !indirecttaxGSTR9TableAppended) {
+                        // alert(resultto);  // Display the result
+                        insertindirecttaxGSTR9TableAppendeds();  // Call the function to append the table
+                        indirecttaxGSTR9TableAppended = true;  // Set the flag to true to prevent further appends
+                    }
+
+                    else if (folderPath === "Accounting & Taxation/Indirect Tax/Indirect/GST/Monthly & Quarterly Returns/GSTR 9C" && !indirecttaxGSTR9cTableAppended) {
+                        // alert(resultto);  // Display the result
+                        indirecttaxGSTR9cTableAppended();  // Call the function to append the table
+                        indirecttaxGSTR9cTableAppended = true;  // Set the flag to true to prevent further appends
+                    }
+
+                    
+                    else if (folderPath === "AAccounting & Taxation/Indirect Tax/Indirect/GST/Litigations" && !indirecttaxLitigationsTableAppended) {
+                        // alert(resultto);  // Display the result
+                        insertindirecttaxLitigationsTableAppendeds();  // Call the function to append the table
+                        indirecttaxLitigationsTableAppended = true;  // Set the flag to true to prevent further appends
+                    }
+                
+                    
 
                 
-                 else if (folderPath === "Accounting & Taxation/Direct Tax/Tax Deducted at Source (TDS)/Monthly Payments" && !directtaxmonthlyTableAppended) {
-                     // alert(resultto);  // Display the result
-                     insertdirecttaxmonthlyTableAppendeds();  // Call the function to append the table
-                     directtaxmonthlyTableAppended = true;  // Set the flag to true to prevent further appends
-                 }
-                 else if (folderPath === "Accounting & Taxation/Direct Tax/Tax Deducted at Source (TDS)/Quarterly Filings" && !directtaxquarterlyTableAppended) {
-                     // alert(resultto);  // Display the result
-                     insertdirecttaxQuarterlyTableAppendeds();  // Call the function to append the table
-                     directtaxquarterlyTableAppended = true;  // Set the flag to true to prevent further appends
-                 }
-                 else if (folderPath === "Accounting & Taxation/Direct Tax/Tax Deducted at Source (TDS)/Litigations" && !directtaxLitigationsTableAppended) {
-                     // alert(resultto);  // Display the result
-                     insertdirecttaxLitigationsTableAppendeds();  // Call the function to append the table
-                     directtaxLitigationsTableAppended = true;  // Set the flag to true to prevent further appends
-                 }
 
-                 else if (folderPath === "Accounting & Taxation/Direct Tax/Advance Tax/Quarterly Payments" && !directtaxQuarterlyPaymentsTableAppended) {
-                     // alert(resultto);  // Display the result
-                     insertdirecttaxQuarterlyPaymentsTableAppendeds();  // Call the function to append the table
-                     directtaxQuarterlyPaymentsTableAppended = true;  // Set the flag to true to prevent further appends
-                 }
-                 else if (folderPath === "Accounting & Taxation/Direct Tax/Income Tax/Annual Returns" && !directtaxAnnualReturnsTableAppended) {
-                     // alert(resultto);  // Display the result
-                     insertdirecttaxAnnualReturnsTableAppendeds();  // Call the function to append the table
-                     directtaxAnnualReturnsTableAppended = true;  // Set the flag to true to prevent further appends
-                 }
+                    
 
-
-                 else if (folderPath === "Accounting & Taxation/Direct Tax/Income Tax/Litigations" && !directtaxincomeLitigationsTableAppended) {
-                     // alert(resultto);  // Display the result
-                     insertdirecttaxincomeLitigationsTableAppendeds();  // Call the function to append the table
-                     directtaxincomeLitigationsTableAppended = true;  // Set the flag to true to prevent further appends
-                 }
-
-                 else if (folderPath === "Accounting & Taxation/Indirect Tax/Indirect/GST/Monthly & Quarterly Returns/GSTR-1" && !indirecttaxGSTR1TableAppended) {
-                     // alert(resultto);  // Display the result
-                     insertindirecttaxGSTR1TableAppendeds();  // Call the function to append the table
-                     indirecttaxGSTR1TableAppended = true;  // Set the flag to true to prevent further appends
-                 }
-                 else if (folderPath === "Accounting & Taxation/Indirect Tax/Indirect/GST/Monthly & Quarterly Returns/GSTR 3B" && !indirecttaxGSTR3bTableAppended) {
-                     // alert(resultto);  // Display the result
-                     insertindirecttaxGSTR3bTableAppendeds();  // Call the function to append the table
-                     indirecttaxGSTR3bTableAppended = true;  // Set the flag to true to prevent further appends
-                 }
-
-                 else if (folderPath === "Accounting & Taxation/Indirect Tax/Indirect/GST/Monthly & Quarterly Returns/GSTR 9" && !indirecttaxGSTR9TableAppended) {
-                     // alert(resultto);  // Display the result
-                     insertindirecttaxGSTR9TableAppendeds();  // Call the function to append the table
-                     indirecttaxGSTR9TableAppended = true;  // Set the flag to true to prevent further appends
-                 }
-
-                 else if (folderPath === "Accounting & Taxation/Indirect Tax/Indirect/GST/Monthly & Quarterly Returns/GSTR 9C" && !indirecttaxGSTR9cTableAppended) {
-                     // alert(resultto);  // Display the result
-                     indirecttaxGSTR9cTableAppended();  // Call the function to append the table
-                     indirecttaxGSTR9cTableAppended = true;  // Set the flag to true to prevent further appends
-                 }
-
-                 
-                 else if (folderPath === "AAccounting & Taxation/Indirect Tax/Indirect/GST/Litigations" && !indirecttaxLitigationsTableAppended) {
-                     // alert(resultto);  // Display the result
-                     insertindirecttaxLitigationsTableAppendeds();  // Call the function to append the table
-                     indirecttaxLitigationsTableAppended = true;  // Set the flag to true to prevent further appends
-                 }
-               
-                
-
-               
-
-                 
-
-                
-                 
-}
+                    
+                    
+    }
 
 // Fetch folder contents
 
@@ -7264,7 +7431,8 @@ $(window).on('load', function() {
 
                     <div class="retreve_inn_sec"> 
                         <span>Retrieve documents quickly with Advanced Search.</span>
-                        <a href="{{ url("/showAdvSearch") }}?category=Secretarial&section=Statutory Registers&subsection=Register of Postal Ballot" id="load-notices-btn">TRY OUT
+                        <a onclick="openToast('info')" class="positionaage" id="load-notices-btn"> TRY OUT
+                        {{-- <a href="{{ url("/showAdvSearch") }}?category=Secretarial&section=Statutory Registers&subsection=Register of Postal Ballot" id="load-notices-btn">TRY OUT --}}
                          <!-- <a href="{{url('/user/advsearch')}}">TRY OUT -->
                             <svg width="12" height="10" viewBox="0 0 12 10" fill="none" xmlns="http://www.w3.org/2000/svg">
                                 "M0.666341 5L11.333 5M11.333 5L7.33301 9M11.333 5L7.33301 1" stroke="#CEFFA8" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
@@ -9451,7 +9619,23 @@ $(document).ready(function() {
 
 </script>
 
-
+<style>
+    /*  model try oout css */
+    .modal-backdrop.show {
+    opacity: 0.1;
+}
+.modal {
+    position: fixed;
+    top: 5px !important;
+    left: 0;
+    z-index: 1050;
+    display: none;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    outline: 0;
+}
+</style>
 @endsection
    
 
