@@ -16464,6 +16464,15 @@ public function masterclientanagementdetail($id)
         // dd($finalData);
         // client and client_users login counts end
 
+        // daily activity tracking start sandeep 22 November 2024
+        
+
+
+
+
+        // daily activity tracking end sandeep 22 November 2024
+
+
 
         $cli_announcements = Announcement::where('role', 'Client')->latest()->get();
         return view('master_admin.client_management.client_management_detail',compact('cli_announcements', 'user' , 'client' , 'totalStorage', 'usedStorage','percentage','labels_logins','data_logins','total_login_count' ));

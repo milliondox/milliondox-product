@@ -21,21 +21,21 @@ class UpdateLastActivity
     // dd($user);
 
     // Ensure the user is authenticated
-    // if (Auth::check()) {
-    //     dd($user); // Debug the authenticated user
+    if (Auth::check()) {
+        // dd($user->id); // Debug the authenticated user
 
-    //     // Prepare the query to update the last_activity_at field
-    //     $query = DB::table('user_logs')
-    //         ->where('user_id', $user->id)
-    //         ->orderBy('id', 'desc') // Order by ID
-    //         ->limit(1);
+        // Prepare the query to update the last_activity_at field
+        $query = DB::table('user_logs')
+            ->where('user_id', $user->id)
+            ->orderBy('id', 'desc') // Order by ID
+            ->limit(1);
 
-    //     // Debug the query
-    //     dd($query->toSql(), $query->getBindings());
+        // Debug the query
+        // dd($query->toSql(), $query->getBindings());
 
-    //     // Execute the update
-    //     $query->update(['last_activity_at' => now()]);
-    // }
+        // Execute the update
+        $query->update(['last_activity_at' => now()]);
+    }
 
     // Proceed to the next middleware or request handler
     return $next($request);
