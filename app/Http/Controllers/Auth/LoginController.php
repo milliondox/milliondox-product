@@ -8,8 +8,10 @@ use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Laravel\Socialite\Facades\Socialite;
+use Illuminate\Support\Facades\Session;
 use App\Models\UserInfo;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Cache;
 
 class LoginController extends Controller
 {
@@ -60,7 +62,13 @@ class LoginController extends Controller
         $this->middleware('guest')->except('logout');
     }
     public function logout(Request $request)
-    {       
+
+    {
+        
+      
+         // Clear the session
+        
+    
         // dd(session()->all());
 
         $user = Auth::user();
@@ -83,8 +91,15 @@ class LoginController extends Controller
 
         Auth::logout();
        
+        Session::flush();
+        
+        // Clear any cached data related to the user (optional, if needed)
+        Cache::flush();
+        
         $request->session()->invalidate();
         $request->session()->regenerateToken();
+        Session::invalidate();
+        Session::regenerateToken();
         return redirect('https://milliondox.com');
     }
 
