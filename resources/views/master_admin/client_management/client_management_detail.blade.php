@@ -141,7 +141,7 @@
                                                     <canvas id="dailyActivityChart"></canvas>
                                                     <div class="subtitle">
                                                         <h2>Average Activity (last 14 days)</h2>
-                                                        <span>1h 38m</span>
+                                                        <span>{{ $time_formatted }}</span>
                                                     </div>
                                                 </div>
                                             </div>
@@ -231,9 +231,11 @@
         const dailyActivityChart = new Chart(dailyActivityCtx, {
           type: 'bar',
           data: {
-            labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+            // labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+            labels: @json($labels_durations),
             datasets: [{
-              data: [2, 3, 2.5, 3.5, 4, 2.7, 3.2, 2.8, 3.1, 3.6, 4.1, 3.5, 2.9, 3.3],
+            //   data: [2, 3, 2.5, 3.5, 4, 2.7, 3.2, 2.8, 3.1, 3.6, 4.1, 3.5, 2.9, 3.3],
+            data: @json($data_durations),
               backgroundColor: '#5790FF',
               borderRadius: 10,
               borderSkipped: false,
@@ -243,7 +245,8 @@
           },
           options: {
             plugins: {
-              legend: { display: false }
+              legend: { display: false },
+              tooltip: { enabled: true } // Ensure tooltips are enabled
             },
             responsive: true,
             maintainAspectRatio: false,
@@ -270,7 +273,18 @@
                 borderRadius: 5,  // Optional: smooth edges for the bars
                 borderSkipped: false
               }
+            },
+            interaction: {
+                mode: 'nearest', // Ensures hover works for nearby points
+                axis: 'x',       // Hover interactions are based on the x-axis
+                intersect: false // Hover even if the cursor is not directly over the bar
+                },
+                hover: {
+                mode: 'index',  // Hover on bars close to the pointer
+                axis: 'x',
+                intersect: false
             }
+
           }
         });
       
