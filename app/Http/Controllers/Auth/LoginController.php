@@ -65,12 +65,9 @@ class LoginController extends Controller
 
     {
         
-        Auth::logout();
+      
          // Clear the session
-         Session::flush();
         
-         // Clear any cached data related to the user (optional, if needed)
-         Cache::flush();
     
         // dd(session()->all());
 
@@ -94,7 +91,11 @@ class LoginController extends Controller
 
         Auth::logout();
        
-
+        Session::flush();
+        
+        // Clear any cached data related to the user (optional, if needed)
+        Cache::flush();
+        
         $request->session()->invalidate();
         $request->session()->regenerateToken();
         Session::invalidate();
