@@ -1156,7 +1156,7 @@ $(document).ready(function () {
                               
                               
                               <!--edit form Task start-->
-                              @foreach($tasks as $taskslist)
+                              @foreach($tasksall as $taskslist)
                                                    <form id="event_edit{{$taskslist->id}}" action="{{ route('editTask') }}" method="POST" class="event_edit_form" style="display: none;"> 
                                       @csrf
                                       <button class="close_form" id="closee_edit_event" data-event-id="{{$taskslist->id}}">
@@ -2133,7 +2133,7 @@ $(document).ready(function() {
                               </form>
                               
                                  <!--edit form start for event-->
-                                 @foreach ($eventsData as $eventsDataList)
+                                 @foreach ($eventsDataall as $eventsDataList)
                                 <form id="eventFormddd_edit{{ $eventsDataList->id }}" action="{{ route('editEvents') }}" method="POST"
                                     class="upload-form eventsformedit">
                                     <!-- <input type="hidden" name="_token" value="#" autocomplete="off"> -->

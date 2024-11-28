@@ -279,11 +279,22 @@ if ($userRoleRecord) {
         ->groupBy('title')
         ->get();
 
-    $tasks = Tasks::where('status', '!=', 'deleted')->where('user_id', $user->id)->get();
+    $tasks = Tasks::where('status', '!=', 'deleted')->where('user_id', $user->id)->whereDate('taskDeadline', Carbon::today())->get();
                     // ->whereDate('taskDeadline', Carbon::today())->get();
 
         // $eventsData = TaskEvents::whereDate('eventDate', Carbon::today())->get();
-         $eventsData = TaskEvents::where('user_id', $user->id)->get();
+         $eventsData = TaskEvents::where('user_id', $user->id)->whereDate('eventDate', Carbon::today())->get();
+
+
+
+         $tasksall = Tasks::where('status', '!=', 'deleted')->where('user_id', $user->id)->get();
+                // ->whereDate('taskDeadline', Carbon::today())->get();
+
+        // $eventsData = TaskEvents::whereDate('eventDate', Carbon::today())->get();
+        $eventsDataall = TaskEvents::where('user_id', $user->id)->get();
+
+
+
         // dd($eventsData);
         $upcomingevent = TaskEvents::whereDate('eventDate', '>=', Carbon::today())
         ->where('user_id', $user->id)
@@ -346,6 +357,8 @@ $progressPercentage = 0;
         'currentDate' => $currentDate,
         'eventsData' => $eventsData,
         'progressPercentage' => $progressPercentage,
+        'tasksall' => $tasksall,
+        'eventsDataall' => $eventsDataall,
         'upcomingevent' => $upcomingevent
     ]);
 
@@ -1260,7 +1273,6 @@ public function uploadempcsv(Request $request)
     $header = fgetcsv($file_handle);
 
     $employeesToInsert = [];
-    $existingEmpCodes = [];
     $skippedRecords = 0;
 
     while (($row = fgetcsv($file_handle, 1000, ",")) !== false) {
@@ -1284,18 +1296,19 @@ public function uploadempcsv(Request $request)
     fclose($file_handle);
 
     $storedRecords = 0;
-    $lastStoredEmployee = null;
 
     if (count($employeesToInsert) > 0) {
+        // Insert employees and fetch their IDs
         StoreCompanyEmployee::insert($employeesToInsert);
-
-        // Retrieve the last stored employee
-        $lastStoredEmployee = StoreCompanyEmployee::latest('id')->first();
         $storedRecords = count($employeesToInsert);
-    }
 
-    if ($lastStoredEmployee) {
-        $this->createFolderStructure($lastStoredEmployee->name, $userId, $lastStoredEmployee->id);
+        // Fetch all newly inserted employees
+        $newEmployees = StoreCompanyEmployee::whereIn('emp_code', array_column($employeesToInsert, 'emp_code'))->get();
+
+        // Create folders for each employee
+        foreach ($newEmployees as $employee) {
+            $this->createFolderStructure($employee->name, $userId, $employee->id);
+        }
     }
 
     return redirect()->back()->with('success', "{$storedRecords} employees stored successfully and {$skippedRecords} duplicate employees were skipped.");
@@ -1875,7 +1888,7 @@ public function softdeleteCommonFile($id)
     if($file->is_delete == 0){
         $file->is_delete = 1; // Or set to a specific value like 0 or 1
         $file->save();
-        return response()->json(['success' => 'File Moved to Trash']);
+        return response()->json(['success' => 'File Moved to Bin']);
         // return redirect()->back()->with('success', 'File Moved to Trash.');
     }
      else {
@@ -1891,7 +1904,7 @@ public function deleteCustomFile($id)
     if($file->is_delete == 0){
         $file->is_delete = 1; // Or set to a specific value like 0 or 1
         $file->save();
-        return response()->json(['success' => 'File is Deleted']);
+        return response()->json(['success' => 'File Moved to Bin']);
         // return redirect()->back()->with('success', 'File Moved to Trash.');
     }
      else {
@@ -21946,6 +21959,130 @@ public function shareFolder(Request $request)
         return response()->json(['folderHtml' => $folderHtml,  'fileHtml' => $fileHtml,'directorfolderNames' =>$directorfolderNames]);
     }
 
+    public function fetchfolderfold(Request $request)
+    {
+        $folderPath = $request->get('folderName');
+        $folderPaths = preg_replace('/\//', ' / ', $folderPath);
+      //   dd($folderPath);
+  $sortOption = $request->get('sortOption');  // Get the selected sorting option
+  
+  $oldpath = $request->get('folderNamep');
+
+  $directorfolderNames = Folder::where('parent_name', 'LIKE', '2024-2025November301_Accounting & Taxation/2024-2025November301_Charter Documents/2024-2025November301_Director Details')
+  ->whereNotNull('director_id')
+  ->where('user_id', Auth::id())
+  ->pluck('name'); // Retrieves only the `name` column
+
+  // dd($directorfolderNames);
+
+  
+
+  // Base query for fetching folders
+  $commonFoldersQuery = Folder::where('parent_name', $folderPath)
+                              ->where('common_folder', 1);
+                              // ->where('real_file_name', NULL);
+
+
+                              $userFoldersQuery = Folder::where('parent_name', $folderPath)
+                              ->where('user_id', Auth::id())
+                              ->where('is_delete', 0);
+                          //    ->whereNotNull('director_id');
+
+                              // dd($userFoldersQuery);
+                              
+
+                              // ->where('real_file_name', NULL);
+
+  // Apply sorting logic based on the selected sort option
+  switch ($sortOption) {
+      case 'a-to-z':
+          $commonFolders = $commonFoldersQuery->orderBy('name', 'asc')->get();
+          $userFolders = $userFoldersQuery->orderBy('name', 'asc')->get();
+          break;
+
+      case 'z-to-a':
+          $commonFolders = $commonFoldersQuery->orderBy('name', 'desc')->get();
+          $userFolders = $userFoldersQuery->orderBy('name', 'desc')->get();
+          break;
+
+   
+
+      default:
+          // Default to A → Z if no valid sorting option is provided
+          $commonFolders = $commonFoldersQuery->orderBy('name', 'asc')->get();
+          $userFolders = $userFoldersQuery->orderBy('name', 'asc')->get();
+          break;
+  }
+
+  // Combine both results
+  $folderContents = $commonFolders->merge($userFolders);
+
+  // Optionally, if you want to sort the merged collection again (depends on your requirements)
+  if ($sortOption === 'a-to-z' || $sortOption === 'z-to-a') {
+      $folderContents = ($sortOption === 'a-to-z') ? $folderContents->sortBy('name') : $folderContents->sortByDesc('name');
+  }
+
+
+   
+      $folderHtml = '<ul class="customulli">';
+      foreach ($folderContents as $folder) {
+          
+          // 11 sept sandeep merge code here start
+          // $original_path = $folder->path;
+      
+          // if (strpos($original_path, '_') !== false) {
+          //     // Find the position of the '-' character
+          //     $dash_position = strpos($original_path, '_');
+              
+          //     // Get the substring after the '-'
+          //     $replacedPath = substr($original_path, $dash_position + 1);
+          //     $original_path = $replacedPath;
+          //     $folder->path = $replacedPath ;
+              
+          // }
+          // else{
+          //     $original_path = $folder->path;
+          //     $folder->path = $folder->path;
+          // }
+          
+          if (strpos($folder->name, '_') !== false) {
+              // Find the position of the '-' character
+              $dash_position_name = strpos($folder->name, '_');
+              
+              // Get the substring after the '-'
+              $replacedName = substr($folder->name, $dash_position_name + 1);
+              $folder->name = $replacedName ;
+              
+          }
+          else{
+              $folder->name = $folder->name;
+          }
+          // 11 sept sandeep merge code here end
+          
+          
+          $folderHtml .= 
+         
+          '<li><a href="#" class="fold-link wedcolor" data-folder-path="' . $folder->path . '">
+                              <div class="folder_wraap">
+                                  <img src="../assets/images/solar_folder-bold.png" id="folders" class="folder-icon" alt="Folder Icon">
+                                  <span>' . $folder->name . '</span>
+                              </div>
+                          </a>
+                                               
+                      </li>';
+        
+                    
+      }
+        
+        
+      $folderHtml .= '</ul>';
+  
+  
+     
+  
+      return response()->json(['folderHtml' => $folderHtml]);
+    }
+
     // start **** sandeep added above route "fetchfixedFiles" for dynamic fetch fixed path files i.e real_file_name 26 November 2024 
 
     public function fetchfixedFiles(Request $request)
@@ -22473,6 +22610,12 @@ public function renameFolder(Request $request)
         $folder->save();
     }
 
+    CommonTable::where('file_path', 'LIKE', '%' . $searchTerm . '%')
+    ->update([
+        'file_path' => DB::raw("REPLACE(file_path, '$searchTerm', '$newTerm')"),
+        'location' => DB::raw("REPLACE(location, '$searchTerm', '$newTerm')")
+    ]);
+
     // Update other related fields in the database based on employee_id or director_id
     if (!is_null($employeeId)) {
         // Only update folders related to the specified employee
@@ -22868,61 +23011,55 @@ public function saveBreadcrumb(Request $request)
 
     public function uploadFile(Request $request)
     {
-    // dd($request);
-    
         // Validate the request
         $request->validate([
             'files.*' => 'required|file|max:102400|mimes:pdf,ppt,pot,pps,pptx,pptm,potx,ppam,ppsx,sldx,sldm,odp,ods,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,xlsx,docx,docm,xlam,txt,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv,xltx,xltm', // Allow specific file types up to 100MB
-            'tagList' => 'nullable', // Allow tagList to be nullable
+            'tagList' => 'nullable',
         ], [
             'files.*.required' => 'Each file is required.',
             'files.*.file' => 'The uploaded item must be a valid file.',
             'files.*.max' => 'Each file may not be larger than 100MB.',
-            'files.*.mimes' => 'The file type must be one of the following: PDF, ODP, ODS, PPT, DOC, ODT, RTF, CSV, JSON, XML, HTML, ICO, SVG, WEBP, ZIP, XLS, DOCX, WAV, OGG, MP3, AVI, MOV, WMV, WEBM, TIFF, MP4, JPG, PNG, GIF, JPEG, 3GP, MKV, FLV.',
+            'files.*.mimes' => 'The file type must be valid.',
         ]);
     
-        // Check if folder path is provided
-        $folderPath = $request->input('parent_folder');
+        $folderPath = $request->input('parent_folder', 'uploads'); // Default folder path
         $folderPaths = preg_replace('/\s*\/\s*/', ' / ', $folderPath);
-        // if (!$folderPath) {
-        //     return response()->json(['success' => false, 'message' => 'Folder path is required.'], 400);
-        // }
     
-        // Check if files are uploaded
         if ($request->hasFile('files')) {
             try {
-                $totalSize = 0;
                 $successMessages = [];
                 $errorMessages = [];
                 $tag_list = [];
     
-    // Handle tagList whether it's an array, a comma-separated string, or empty
-    $userTags = $request->input('tagList', []);
+                // Handle tags
+                $userTags = $request->input('tagList', []);
+                if (is_string($userTags)) {
+                    $userTags = explode(',', $userTags);
+                }
+                $tag_list = array_filter((array)$userTags);
+                $tags = empty($tag_list) ? null : json_encode($tag_list);
     
-    // Convert to array if it's a comma-separated string
-    if (is_string($userTags)) {
-        $userTags = explode(',', $userTags);
-    }
-    // Ensure $userTags is an array and remove any empty values
-    if (is_array($userTags)) {
-        $userTags = array_filter($userTags); // Remove empty values
-    } else {
-        $userTags = []; // Fallback to empty array if not an array
-    }
-    
-    // Merge with default tags
-    $tag_list = array_merge($tag_list, $userTags);
-    $tags = empty($tag_list) ? NULL : json_encode($tag_list);
-    
-                // Process each file
                 foreach ($request->file('files') as $file) {
                     try {
-                        $filePath = $file->store($folderPath);
+                        $originalFileName = $file->getClientOriginalName();
+                        $fileExtension = $file->getClientOriginalExtension();
+                        $baseFileName = pathinfo($originalFileName, PATHINFO_FILENAME); // File name without extension
+                        $counter = 1;
+                        $fileName = $originalFileName;
     
-                        // Store file details in the database
+                        // Check if the file name exists and increment if necessary
+                        while (CommonTable::where('file_name', $fileName)->exists()) {
+                            $fileName = $baseFileName . ' (' . $counter . ').' . $fileExtension;
+                            $counter++;
+                        }
+    
+                        // Save the file to storage
+                        $filePath = $file->storeAs($folderPath, $fileName);
+    
+                        // Save file details to the database
                         CommonTable::create([
                             'file_type' => $file->getClientMimeType(),
-                            'file_name' => $file->getClientOriginalName(),
+                            'file_name' => $fileName,
                             'file_size' => $file->getSize(),
                             'file_path' => $filePath,
                             'user_name' => auth()->user()->name,
@@ -22930,33 +23067,31 @@ public function saveBreadcrumb(Request $request)
                             'file_status' => $request->input('file_status', 0),
                             'fyear' => $request->input('fyear'),
                             'month' => $request->input('Month'),
-                            'tags' => $tags, // Store tags as JSON
+                            'tags' => $tags,
                             'location' => $folderPaths,
                             'descp' => $request->input('desc'),
                         ]);
     
-                        $totalSize += $file->getSize();
-                        $successMessages[] = "File {$file->getClientOriginalName()} uploaded successfully.";
+                        $successMessages[] = "File {$fileName} uploaded successfully.";
                     } catch (\Exception $e) {
-                        $errorMessages[] = "Failed to save file {$file->getClientOriginalName()} to the database.";
+                        $errorMessages[] = "Failed to upload file {$file->getClientOriginalName()}.";
                     }
                 }
     
-                // Compile the response
                 return response()->json([
                     'success' => empty($errorMessages),
                     'successMessages' => $successMessages,
                     'errorMessages' => $errorMessages,
                 ]);
             } catch (\Exception $e) {
-                return response()->json(['success' => false, 'message' => 'Failed to process file uploads.'], 500);
+                return response()->json(['success' => false, 'message' => 'An error occurred while processing the upload.'], 500);
             }
         } else {
-            // No files were uploaded
-            return response()->json(['success' => false, 'message' => 'No files uploaded.'], 400);
+            return response()->json(['success' => false, 'message' => 'No files were uploaded.'], 400);
         }
     }
-
+    
+    
 
 
     
