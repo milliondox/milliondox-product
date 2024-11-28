@@ -21946,6 +21946,75 @@ public function shareFolder(Request $request)
         return response()->json(['folderHtml' => $folderHtml,  'fileHtml' => $fileHtml,'directorfolderNames' =>$directorfolderNames]);
     }
 
+    // start **** sandeep added above route "fetchfixedFiles" for dynamic fetch fixed path files i.e real_file_name 26 November 2024 
+
+    public function fetchfixedFiles(Request $request)
+    {
+        $user_id = Auth::id();
+        if($user_id == 269){
+             // Fetch folder path from the request query
+            $path = $request->query('path');
+            // Ensure the folder path is provided
+            if (!$path) {
+                return response()->json(['error' => 'Folder path is required'], 400);
+            }
+            // dd($path);
+            // Fetch data from the database where `path` matches and `real_file_name` is not null
+            $data = DB::table('folders')
+            ->where('path', $path)
+            ->whereNotNull('real_file_name')
+            ->first();
+
+            if ($data) {
+                $real_file_names = $data->real_file_name; // Access the real_file_name column
+                // dd($real_file_names);
+                // $counts = [];
+                // foreach ($real_file_names as $file_name) {
+                //     $count = DB::table('common_table')
+                //         ->where('location', $path) // Match the same path
+                //         ->where('real_file_name', $file_name) // Match the specific file name
+                //         ->count();
+
+                //     $counts[$file_name] = $count; // Store the count for each file name
+                // }
+                $real_file_names = json_decode($data->real_file_name, true); // Decode JSON as an array
+                $counts = DB::table('common_table')
+                ->where('location', $path)
+                ->whereIn('real_file_name', $real_file_names)
+                ->select('real_file_name', DB::raw('COUNT(*) as count'))
+                ->groupBy('real_file_name')
+                ->pluck('count', 'real_file_name')
+                ->toArray();
+
+                // dd($counts);
+
+                // return response()->json($counts);
+
+                
+            } else {
+                dd('No data found.');
+            }
+            // dd($counts);
+
+            // $data = DB::table('folders')->where('path','2024-2025November301_Accounting & Taxation/2024-2025November301_Indirect Tax/2024-2025November301_Indirect/2024-2025November301_GST/2024-2025November301_Litigations')->whereNotNull('real_file_name')->get(); // Replace with a model if available
+            // Accounting & Taxation > Indirect Tax > Indirect > GST > Litigations
+            // 2024-2025November301_Accounting%2520%2526%2520Taxation%252F2024-2025November301_Indirect%2520Tax%252F2024-2025November301_Indirect%252F2024-2025November301_GST%252F2024-2025November301_Litigations#
+    
+            // parent_name = "2024-2025November301_Accounting & Taxation/2024-2025November301_Indirect Tax/2024-2025November301_Indirect/2024-2025November301_GST"
+            // path        = "2024-2025November301_Accounting & Taxation/2024-2025November301_Indirect Tax/2024-2025November301_Indirect/2024-2025November301_GST/2024-2025November301_Litigations";
+            // dd($data);
+            return response()->json(['data'=>$data, 'counts'=>$counts]);
+
+        }
+        else{
+            return response()->json($data="User is not authorised");
+        }
+       
+    }
+
+    // end **** sandeep added above route "fetchfixedFiles" for dynamic fetch fixed path files i.e real_file_name 26 November 2024 
+
+
     public function updateFolderStatus(Request $request)
     {
         $folderId = $request->input('folder_id');

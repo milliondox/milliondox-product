@@ -5281,11 +5281,13 @@ if(response.directorfolder){
                 }
                 
                 else if (result.endsWith("Accounting & Taxation/Indirect Tax/Indirect/GST/Litigations") && !indirecttaxLitigationsTableAppended)  {
-                    // ('alert1');
+                    // alert("jijijij");
                     insertindirecttaxLitigationsTableAppendeds();
                     // alert('2');
                     indirecttaxLitigationsTableAppended = true;
                     // alert('3');
+
+
                 }
 
                 
@@ -5901,8 +5903,9 @@ if(response.directorfolder){
                     }
 
                     
-                    else if (folderPath === "AAccounting & Taxation/Indirect Tax/Indirect/GST/Litigations" && !indirecttaxLitigationsTableAppended) {
+                    else if (folderPath === "Accounting & Taxation/Indirect Tax/Indirect/GST/Litigations" && !indirecttaxLitigationsTableAppended) {
                         // alert(resultto);  // Display the result
+                        alert("i am inside Litigations");
                         insertindirecttaxLitigationsTableAppendeds();  // Call the function to append the table
                         indirecttaxLitigationsTableAppended = true;  // Set the flag to true to prevent further appends
                     }
