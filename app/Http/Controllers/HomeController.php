@@ -22949,89 +22949,174 @@ public function saveBreadcrumb(Request $request)
     // }
     
 
+    // public function uploadFile(Request $request)
+    // {
+    //     // Validate the request
+    //     $request->validate([
+    //         'files.*' => 'required|file|max:102400|mimes:pdf,ppt,pot,pps,pptx,pptm,potx,ppam,ppsx,sldx,sldm,odp,ods,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,xlsx,docx,docm,xlam,txt,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv,xltx,xltm', // Allow specific file types up to 100MB
+    //         'tagList' => 'nullable',
+    //     ], [
+    //         'files.*.required' => 'Each file is required.',
+    //         'files.*.file' => 'The uploaded item must be a valid file.',
+    //         'files.*.max' => 'Each file may not be larger than 100MB.',
+    //         'files.*.mimes' => 'The file type must be valid.',
+    //     ]);
+    
+    //     $folderPath = $request->input('parent_folder', 'uploads'); // Default folder path
+    //     $folderPaths = preg_replace('/\s*\/\s*/', ' / ', $folderPath);
+    
+    //     if ($request->hasFile('files')) {
+    //         try {
+    //             $successMessages = [];
+    //             $errorMessages = [];
+    //             $tag_list = [];
+    
+    //             // Handle tags
+    //             $userTags = $request->input('tagList', []);
+    //             if (is_string($userTags)) {
+    //                 $userTags = explode(',', $userTags);
+    //             }
+    //             $tag_list = array_filter((array)$userTags);
+    //             $tags = empty($tag_list) ? null : json_encode($tag_list);
+    
+    //             foreach ($request->file('files') as $file) {
+    //                 try {
+    //                     $originalFileName = $file->getClientOriginalName();
+    //                     $fileExtension = $file->getClientOriginalExtension();
+    //                     $baseFileName = pathinfo($originalFileName, PATHINFO_FILENAME); // File name without extension
+    //                     $counter = 1;
+    //                     $fileName = $originalFileName;
+    
+    //                     // Check if the file name exists and increment if necessary
+    //                     while (CommonTable::where('file_name', $fileName)->exists()) {
+    //                         $fileName = $baseFileName . ' (' . $counter . ').' . $fileExtension;
+    //                         $counter++;
+    //                     }
+    
+    //                     // Save the file to storage
+    //                     $filePath = $file->storeAs($folderPath, $fileName);
+    
+    //                     // Save file details to the database
+    //                     CommonTable::create([
+    //                         'file_type' => $file->getClientMimeType(),
+    //                         'file_name' => $fileName,
+    //                         'file_size' => $file->getSize(),
+    //                         'file_path' => $filePath,
+    //                         'user_name' => auth()->user()->name,
+    //                         'user_id' => auth()->user()->id,
+    //                         'file_status' => $request->input('file_status', 0),
+    //                         'fyear' => $request->input('fyear'),
+    //                         'month' => $request->input('Month'),
+    //                         'tags' => $tags,
+    //                         'location' => $folderPaths,
+    //                         'descp' => $request->input('desc'),
+    //                     ]);
+    
+    //                     $successMessages[] = "File {$fileName} uploaded successfully.";
+    //                 } catch (\Exception $e) {
+    //                     $errorMessages[] = "Failed to upload file {$file->getClientOriginalName()}.";
+    //                 }
+    //             }
+    
+    //             return response()->json([
+    //                 'success' => empty($errorMessages),
+    //                 'successMessages' => $successMessages,
+    //                 'errorMessages' => $errorMessages,
+    //             ]);
+    //         } catch (\Exception $e) {
+    //             return response()->json(['success' => false, 'message' => 'An error occurred while processing the upload.'], 500);
+    //         }
+    //     } else {
+    //         return response()->json(['success' => false, 'message' => 'No files were uploaded.'], 400);
+    //     }
+    // }
+    
+    
     public function uploadFile(Request $request)
-    {
-        // Validate the request
-        $request->validate([
-            'files.*' => 'required|file|max:102400|mimes:pdf,ppt,pot,pps,pptx,pptm,potx,ppam,ppsx,sldx,sldm,odp,ods,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,xlsx,docx,docm,xlam,txt,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv,xltx,xltm', // Allow specific file types up to 100MB
-            'tagList' => 'nullable',
-        ], [
-            'files.*.required' => 'Each file is required.',
-            'files.*.file' => 'The uploaded item must be a valid file.',
-            'files.*.max' => 'Each file may not be larger than 100MB.',
-            'files.*.mimes' => 'The file type must be valid.',
-        ]);
-    
-        $folderPath = $request->input('parent_folder', 'uploads'); // Default folder path
-        $folderPaths = preg_replace('/\s*\/\s*/', ' / ', $folderPath);
-    
-        if ($request->hasFile('files')) {
-            try {
-                $successMessages = [];
-                $errorMessages = [];
-                $tag_list = [];
-    
-                // Handle tags
-                $userTags = $request->input('tagList', []);
-                if (is_string($userTags)) {
-                    $userTags = explode(',', $userTags);
-                }
-                $tag_list = array_filter((array)$userTags);
-                $tags = empty($tag_list) ? null : json_encode($tag_list);
-    
-                foreach ($request->file('files') as $file) {
-                    try {
-                        $originalFileName = $file->getClientOriginalName();
-                        $fileExtension = $file->getClientOriginalExtension();
-                        $baseFileName = pathinfo($originalFileName, PATHINFO_FILENAME); // File name without extension
-                        $counter = 1;
-                        $fileName = $originalFileName;
-    
-                        // Check if the file name exists and increment if necessary
-                        while (CommonTable::where('file_name', $fileName)->exists()) {
-                            $fileName = $baseFileName . ' (' . $counter . ').' . $fileExtension;
-                            $counter++;
-                        }
-    
-                        // Save the file to storage
-                        $filePath = $file->storeAs($folderPath, $fileName);
-    
-                        // Save file details to the database
-                        CommonTable::create([
-                            'file_type' => $file->getClientMimeType(),
-                            'file_name' => $fileName,
-                            'file_size' => $file->getSize(),
-                            'file_path' => $filePath,
-                            'user_name' => auth()->user()->name,
-                            'user_id' => auth()->user()->id,
-                            'file_status' => $request->input('file_status', 0),
-                            'fyear' => $request->input('fyear'),
-                            'month' => $request->input('Month'),
-                            'tags' => $tags,
-                            'location' => $folderPaths,
-                            'descp' => $request->input('desc'),
-                        ]);
-    
-                        $successMessages[] = "File {$fileName} uploaded successfully.";
-                    } catch (\Exception $e) {
-                        $errorMessages[] = "Failed to upload file {$file->getClientOriginalName()}.";
-                    }
-                }
-    
-                return response()->json([
-                    'success' => empty($errorMessages),
-                    'successMessages' => $successMessages,
-                    'errorMessages' => $errorMessages,
-                ]);
-            } catch (\Exception $e) {
-                return response()->json(['success' => false, 'message' => 'An error occurred while processing the upload.'], 500);
+{
+    // Validate the request
+    $request->validate([
+        'files.*' => 'required|file|max:102400|mimes:pdf,ppt,pot,pps,pptx,pptm,potx,ppam,ppsx,sldx,sldm,odp,ods,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,xlsx,docx,docm,xlam,txt,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv,xltx,xltm', // Allow specific file types up to 100MB
+        'tagList' => 'nullable',
+    ], [
+        'files.*.required' => 'Each file is required.',
+        'files.*.file' => 'The uploaded item must be a valid file.',
+        'files.*.max' => 'Each file may not be larger than 100MB.',
+        'files.*.mimes' => 'The file type must be valid.',
+    ]);
+
+    $folderPath = $request->input('parent_folder', 'uploads'); // Default folder path
+    $folderPaths = preg_replace('/\s*\/\s*/', ' / ', $folderPath);
+
+    if ($request->hasFile('files')) {
+        try {
+            $successMessages = [];
+            $errorMessages = [];
+            $tag_list = [];
+
+            // Handle tags
+            $userTags = $request->input('tagList', []);
+            if (is_string($userTags)) {
+                $userTags = explode(',', $userTags);
             }
-        } else {
-            return response()->json(['success' => false, 'message' => 'No files were uploaded.'], 400);
+            $tag_list = array_filter((array)$userTags);
+            $tags = empty($tag_list) ? null : json_encode($tag_list);
+
+            foreach ($request->file('files') as $file) {
+                $originalFileName = $file->getClientOriginalName();
+                $fileExtension = $file->getClientOriginalExtension();
+                $baseFileName = pathinfo($originalFileName, PATHINFO_FILENAME); // File name without extension
+                
+                // Check if file exists in the same folder path
+                $fileExists = CommonTable::where('file_name', $originalFileName)
+                    ->where('location', $folderPaths) // Check for same location
+                    ->exists();
+
+                if ($fileExists) {
+                    // File already exists, send response for SweetAlert prompt
+                    return response()->json([
+                        'success' => false,
+                        'exists' => true,
+                        'message' => 'File already exists in the same location. Replace or keep both?',
+                        'fileName' => $originalFileName,
+                        'folderPath' => $folderPaths,
+                    ]);
+                } else {
+                    // Save the file to storage
+                    $filePath = $file->storeAs($folderPath, $originalFileName);
+
+                    // Save file details to the database
+                    CommonTable::create([
+                        'file_type' => $file->getClientMimeType(),
+                        'file_name' => $originalFileName,
+                        'file_size' => $file->getSize(),
+                        'file_path' => $filePath,
+                        'user_name' => auth()->user()->name,
+                        'user_id' => auth()->user()->id,
+                        'file_status' => $request->input('file_status', 0),
+                        'fyear' => $request->input('fyear'),
+                        'month' => $request->input('Month'),
+                        'tags' => $tags,
+                        'location' => $folderPaths,
+                        'descp' => $request->input('desc'),
+                    ]);
+
+                    $successMessages[] = "File {$originalFileName} uploaded successfully.";
+                }
+            }
+
+            return response()->json([
+                'success' => empty($errorMessages),
+                'successMessages' => $successMessages,
+                'errorMessages' => $errorMessages,
+            ]);
+        } catch (\Exception $e) {
+            return response()->json(['success' => false, 'message' => 'An error occurred while processing the upload.'], 500);
         }
+    } else {
+        return response()->json(['success' => false, 'message' => 'No files were uploaded.'], 400);
     }
-    
-    
+}
 
 
     
