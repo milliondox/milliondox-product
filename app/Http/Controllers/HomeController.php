@@ -22055,18 +22055,46 @@ public function shareFolder(Request $request)
                 //     $counts[$file_name] = $count; // Store the count for each file name
                 // }
                 $real_file_names = json_decode($data->real_file_name, true); // Decode JSON as an array
+
                 $counts = DB::table('common_table')
+                ->where('user_id', $user_id)
                 ->where('location', $path)
+                ->where('is_delete', 0)
                 ->whereIn('real_file_name', $real_file_names)
                 ->select('real_file_name', DB::raw('COUNT(*) as count'))
                 ->groupBy('real_file_name')
                 ->pluck('count', 'real_file_name')
                 ->toArray();
 
+                // Fetch the sum of file sizes for all real_file_names at once
+                $file_sizes = DB::table('common_table')
+                ->where('user_id', $user_id) // Filter by user_id
+                ->where('location', $path) // Filter by location
+                ->where('is_delete', 0) // Only consider non-deleted records
+                ->whereIn('real_file_name', $real_file_names) // Filter by real_file_name from the decoded array
+                ->select('real_file_name', DB::raw('SUM(file_size) as total_size')) // Sum the file sizes
+                ->groupBy('real_file_name') // Group by real_file_name to get sum per file name
+                ->pluck('total_size', 'real_file_name') // Get the sum of file sizes for each real_file_name
+                ->toArray(); // Convert the result to an array
+                 // Convert the result to an array
+
                 // dd($counts);
 
-                // return response()->json($counts);
+                // Convert the file sizes to KB, MB, or GB
+                foreach ($file_sizes as $real_file_name => $total_size) {
+                    // Convert total_size from bytes to human-readable format (KB, MB, GB)
+                    if ($total_size < 1024) {
+                        $file_sizes[$real_file_name] = number_format($total_size, 2) . ' Bytes';
+                    } elseif ($total_size < 1048576) { // 1024 KB = 1 MB
+                        $file_sizes[$real_file_name] = number_format($total_size / 1024, 2) . ' KB';
+                    } elseif ($total_size < 1073741824) { // 1024 MB = 1 GB
+                        $file_sizes[$real_file_name] = number_format($total_size / 1048576, 2) . ' MB';
+                    } else {
+                        $file_sizes[$real_file_name] = number_format($total_size / 1073741824, 2) . ' GB';
+                    }
+                }
 
+                // return response()->json($counts);
                 
             } else {
                 dd('No data found.');
@@ -22080,7 +22108,7 @@ public function shareFolder(Request $request)
             // parent_name = "2024-2025November301_Accounting & Taxation/2024-2025November301_Indirect Tax/2024-2025November301_Indirect/2024-2025November301_GST"
             // path        = "2024-2025November301_Accounting & Taxation/2024-2025November301_Indirect Tax/2024-2025November301_Indirect/2024-2025November301_GST/2024-2025November301_Litigations";
             // dd($data);
-            return response()->json(['data'=>$data, 'counts'=>$counts]);
+            return response()->json(['data'=>$data, 'counts'=>$counts, 'file_sizes'=>$file_sizes]);
 
         }
         else{
