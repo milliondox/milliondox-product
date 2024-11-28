@@ -6789,7 +6789,7 @@ public function fixeddepoiststatement(Request $request)
      public function fetchfixeddepoiststatementData()
 {
     $user = Auth::user(); // Retrieve authenticated user
-
+// ok
         // Fetch entries for the authenticated user
         $entries = CommonTable::where('user_id', $user->id)
     ->where('is_delete', 0)
