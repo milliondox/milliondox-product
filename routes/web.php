@@ -265,6 +265,9 @@ Route::post('/deleteCustomFile/{id}', [App\Http\Controllers\HomeController::clas
 Route::post('/PredefinedCommonUploadFiles', [App\Http\Controllers\HomeController::class, 'PredefinedCommonUploadFiles'])->name('PredefinedCommonUploadFiles');
 Route::post('/PredefinedCommonUploadFilesBank', [App\Http\Controllers\HomeController::class, 'PredefinedCommonUploadFilesBank'])->name('PredefinedCommonUploadFilesBank');
 
+Route::get('/fetchfixedFiles', [App\Http\Controllers\HomeController::class, 'fetchfixedFiles'])->name('fetchfixedFiles');
+// sandeep added above route "fetchfixedFiles" for dynamic fetch fixed path files i.e real_file_name 26 November 2024 
+
 
 // sandeep routes end
 Route::get('/export-contractsss', [App\Http\Controllers\HomeController::class, 'exportContractsss'])->name('export.contractsss');
