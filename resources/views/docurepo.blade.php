@@ -1617,9 +1617,16 @@
 </div>
 
              </div>
-             
+             <div class="back-button-container">
+                <!-- The back button or home button will be dynamically inserted here -->
+                <!-- Example when a parent folder exists -->
+                <!-- <button class="btn-back backbutton" data-folder-path="ParentFolderPath">&larr; Back</button> -->
+            
+                <!-- Example when at the root (Home) -->
+                <!-- <button class="btn-docurepo">Home</button> -->
+            </div>  
         <div class="table_title">
-
+            
 <div class="filter-buttons-ff">
     
 <div class="lg_coman folder-file-button active">
@@ -1861,7 +1868,49 @@ $(document).ready(function() {
             <svg width="22" height="22" viewBox="0 0 22 22" fill="none" xmlns="http://www.w3.org/2000/svg">
 <path fill-rule="evenodd" clip-rule="evenodd" d="M1.8962 4.82C1.83203 5.15733 1.83203 5.5625 1.83203 6.371V12.8335C1.83203 16.2902 1.83203 18.0191 2.90636 19.0925C3.97978 20.1668 5.70861 20.1668 9.16536 20.1668H12.832C16.2888 20.1668 18.0176 20.1668 19.091 19.0925C20.1654 18.0191 20.1654 16.2902 20.1654 12.8335V10.815C20.1654 8.40233 20.1654 7.19508 19.4595 6.41133C19.3948 6.33898 19.3263 6.27014 19.2542 6.20508C18.4704 5.50016 17.2632 5.50016 14.8505 5.50016H14.5077C13.4508 5.50016 12.9219 5.50016 12.4287 5.35991C12.1581 5.28255 11.8972 5.17428 11.6514 5.03725C11.204 4.78883 10.83 4.41391 10.082 3.66683L9.57786 3.16266C9.3267 2.9115 9.20203 2.78683 9.07003 2.67683C8.50231 2.20625 7.80589 1.91778 7.0717 1.84908C6.9012 1.8335 6.72336 1.8335 6.36953 1.8335C5.56011 1.8335 5.15586 1.8335 4.81853 1.89766C4.09422 2.03445 3.42795 2.38637 2.90664 2.90751C2.38534 3.42865 2.03321 4.09573 1.8962 4.82ZM11.2279 9.16683C11.2279 8.98449 11.3003 8.80962 11.4292 8.68069C11.5582 8.55176 11.733 8.47933 11.9154 8.47933H16.4987C16.681 8.47933 16.8559 8.55176 16.9848 8.68069C17.1138 8.80962 17.1862 8.98449 17.1862 9.16683C17.1862 9.34917 17.1138 9.52403 16.9848 9.65296C16.8559 9.7819 16.681 9.85433 16.4987 9.85433H11.9154C11.733 9.85433 11.5582 9.7819 11.4292 9.65296C11.3003 9.52403 11.2279 9.34917 11.2279 9.16683Z" fill="#1E1E1E"/>
 </svg> Create a folder</button>
-            <button class="hvr-rotatee" id="upload_file" data-bs-toggle="modal" data-bs-target="#upload_filee">
+            <button class="hvr-rotatee" id="upload_file" data-bs-toggle="modal"  data-bs-target="#upload_filee">
+                <script>
+                    // Define the function outside the event handler to make it globally accessible
+                    function fetchfolderfold() {
+                        function getQueryParam(param) {
+                            const queryString = window.location.search.substring(1);
+                            const params = queryString.split('&');
+                            for (let i = 0; i < params.length; i++) {
+                                const pair = params[i].split('=');
+                                if (pair[0] === param) {
+                                    return pair[1] ? decodeURIComponent(pair[1]) : null;
+                                }
+                            }
+                            return null;
+                        }
+                
+                        // Retrieve the folder path from the URL parameters
+                        const folderPaths = getQueryParam('folder');
+                
+                        // If a folder path is found in the URL, use it; otherwise, use a default value
+                        const finalPathToUse = folderPaths ? decodeURIComponent(folderPaths) : 'defaultPathHere'; // Replace 'defaultPathHere' with a fallback if needed
+                
+                        $.ajax({
+                            url: '/fetchfolderfold',
+                            method: 'GET',
+                            data: { folderName: finalPathToUse },
+                            success: function(response) {
+                                $('.folder-cont').html(response.folderHtml);
+                                bindFolderClickEventsfold();
+                            },
+                            error: function(xhr) {
+                                console.error('Error fetching folder contents:', xhr.responseText);
+                                hideLoader(); // Hide loader in case of error
+                            }
+                        });
+                    }
+                
+                    // Set up the click event handler for the button
+                    $(document).on('click', '#upload_file', function() {
+                        fetchfolderfold(); // Call the function without arguments to use the URL parameter or default path
+                    });
+                </script>
+                
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
 <path fill-rule="evenodd" clip-rule="evenodd" d="M12.0004 15.7501C12.1993 15.7501 12.39 15.6711 12.5307 15.5304C12.6713 15.3897 12.7504 15.199 12.7504 15.0001V4.02707L14.4304 5.98807C14.5598 6.13924 14.744 6.23281 14.9424 6.24819C15.1408 6.26357 15.3372 6.19949 15.4884 6.07007C15.6395 5.94064 15.7331 5.75647 15.7485 5.55805C15.7639 5.35964 15.6998 5.16324 15.5704 5.01207L12.5704 1.51207C12.5 1.42973 12.4125 1.36363 12.3141 1.31831C12.2157 1.27298 12.1087 1.24951 12.0004 1.24951C11.892 1.24951 11.785 1.27298 11.6866 1.31831C11.5882 1.36363 11.5008 1.42973 11.4304 1.51207L8.43036 5.01207C8.36628 5.08692 8.31756 5.17367 8.287 5.26735C8.25644 5.36103 8.24463 5.45981 8.25224 5.55805C8.25986 5.6563 8.28675 5.75208 8.33138 5.83993C8.37601 5.92778 8.43751 6.00598 8.51236 6.07007C8.58722 6.13415 8.67396 6.18287 8.76764 6.21343C8.86132 6.24399 8.9601 6.2558 9.05835 6.24819C9.15659 6.24057 9.25237 6.21368 9.34022 6.16905C9.42808 6.12442 9.50628 6.06292 9.57036 5.98807L11.2504 4.02807V15.0001C11.2504 15.4141 11.5864 15.7501 12.0004 15.7501Z" fill="#1E1E1E"/>
 <path d="M16 9C15.298 9 14.947 9 14.694 9.169C14.5852 9.24179 14.4918 9.33522 14.419 9.444C14.25 9.697 14.25 10.048 14.25 10.75V15C14.25 15.5967 14.0129 16.169 13.591 16.591C13.169 17.0129 12.5967 17.25 12 17.25C11.4033 17.25 10.831 17.0129 10.409 16.591C9.98705 16.169 9.75 15.5967 9.75 15V10.75C9.75 10.048 9.75 9.697 9.581 9.444C9.50821 9.33522 9.41478 9.24179 9.306 9.169C9.053 9 8.702 9 8 9C5.172 9 3.757 9 2.879 9.879C2 10.757 2 12.17 2 14.999V15.999C2 18.829 2 20.242 2.879 21.121C3.757 22 5.172 22 8 22H16C18.828 22 20.243 22 21.121 21.121C22 20.242 22 18.828 22 16V15C22 12.171 22 10.757 21.121 9.879C20.243 9 18.828 9 16 9Z" fill="#1E1E1E"/>
@@ -4096,12 +4145,10 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 });
 
-// Now use it inside your event listener
 $(document).on('change', '#sortOptions', function() {
     let sortOption = $(this).val();   // Get the selected sorting option
-     const encodedString = getQueryParamf('folder');
-     const decodedString = decodeURIComponent(encodedString);
-     
+    const encodedString = getQueryParamf('folder');
+    const decodedString = decodeURIComponent(encodedString);
 
     $.ajax({
         url: '/fetch-folder-contents',  // Adjust the URL to your route
@@ -4124,7 +4171,6 @@ $(document).on('change', '#sortOptions', function() {
         }
     });
 });
-
 
 $(document).on('change', '#sortOptions', function() {
     let sortOption = $(this).val();   // Get the selected sorting option
@@ -4158,6 +4204,7 @@ $(document).on('change', '#sortOptions', function() {
         }
     });
 });
+
 
 
 
@@ -4252,6 +4299,10 @@ function openNewFolder(folderPath) {
     }
 }
 
+
+
+
+
 function updateBreadcrumb(folderPath) {
     function getQueryParam(param) {
         const params = new URLSearchParams(window.location.search);
@@ -4261,20 +4312,21 @@ function updateBreadcrumb(folderPath) {
     // Retrieve the folder path from the URL parameters
     const folderPaths = getQueryParam('folder');
     const decodedFolderPath = folderPaths ? decodeURIComponent(folderPaths) : null;
-    const pathToUse = decodedFolderPath || folderPath;
+    const pathToUse = decodedFolderPath || folderPath || ''; // Ensure a fallback to an empty string
+
+    const folderNames = pathToUse.split('/').filter(Boolean); // Filter out empty elements
+    const parentFolderPath = folderNames.slice(0, -1).join('/'); // Parent folder path
 
     let breadcrumbHtml = '';
-    const folderNames = pathToUse.split('/');
     let fullPath = '';
 
     folderNames.forEach((folderName, index) => {
         fullPath += (index > 0 ? '/' : '') + folderName;
 
-        // Check if the folderName contains '2024-2025October240_'
+        // Check if the folderName contains a specific pattern
         const pattern = /^\d{4}-\d{4}(January|February|March|April|May|June|July|August|September|October|November|December)\d{1,}_/;
-
         if (pattern.test(folderName)) {
-            // Extract the substring after '2024-2025October240_'
+            // Extract the substring after the underscore
             let underscorePosition = folderName.indexOf('_');
             folderName = folderName.slice(underscorePosition + 1);
         }
@@ -4288,12 +4340,19 @@ function updateBreadcrumb(folderPath) {
         }
     });
 
-    if (!breadcrumbHtml.trim() || breadcrumbHtml === '<span></span>') {
-        breadcrumbHtml = '<span>Home</span>'; // Set to Home if breadcrumb is empty
+    // Set breadcrumb to 'Home' if it is empty
+    if (!breadcrumbHtml.trim()) {
+        breadcrumbHtml = '<span>Home</span>';
     }
 
-    // Update the breadcrumb navigation path
+    // Generate the back button if there is a parent folder
+    const backButtonHtml = parentFolderPath
+        ? `<button class="btn-back backbutton" data-folder-path="${parentFolderPath}">&larr; Back</button>`
+        : `<button class="btn-docurepo">Home</button>`; // Show "Home" button if no parent folder
+
+    // Update the breadcrumb navigation path and back button
     $('.nav-path').html(breadcrumbHtml);
+    $('.back-button-container').html(backButtonHtml);
 
     // Show or hide select_path_view based on breadcrumb content
     if (!breadcrumbHtml.trim() || breadcrumbHtml === '<span>Home</span>') {
@@ -4302,16 +4361,63 @@ function updateBreadcrumb(folderPath) {
         $('.select_path_view').show(); // Show if breadcrumbHtml has content
     }
 
-    // Attach click event handler to breadcrumb links
-    // Attach click event handler to breadcrumb links
+    // Attach click event handlers
     $(document).off('click', '.breadcrumb-link').on('click', '.breadcrumb-link', function(e) {
         e.preventDefault();
         const folderPath = $(this).data('folder-path');
- console.log("gjkhgjhgfgjjhghjghjgjhgjhgjhgjhgjhghjghjgjhgjyg: "+folderPath);
         console.log("Navigating to folder: " + folderPath);
         navigateToFolder(folderPath); // Function to handle navigation
     });
+
+    $(document).off('click', '.btn-back').on('click', '.btn-back', function (e) {
+        e.preventDefault();
+        const folderPath = $(this).data('folder-path');
+        console.log("Navigating back to folder: " + folderPath);
+        navigateToFolder(folderPath);
+    });
+
+    // Redirect to Home (DocuRepo)
+    $(document).off('click', '.btn-docurepo').on('click', '.btn-docurepo', function (e) {
+        e.preventDefault();
+        console.log("Redirecting to DocuRepo");
+        redirectToDocuRepo(); // Function to redirect to /docurepo
+    });
 }
+
+function redirectToDocuRepo() {
+    window.location.href = '/docurepo';
+}
+
+function toggleLabelWrap() {
+    if ($('#parent-folder').val() || $('#parent-folders').val()) {
+        $('.label_wrap').show();
+    } else {
+        $('.label_wrap').hide();
+    }
+}
+
+// $(document).on('click', '.breadcrumb-link', function(e) {
+//     e.preventDefault();
+//     var folderPath = $(this).data('folder-path');
+//     navigateToFolder(folderPath);
+// });
+
+$(document).on('click', '.breadcrumb-link', function(e) {
+    e.preventDefault(); // Ensure this is used only when you intend to stop the browser's default behavior
+    const folderPath = $(this).data('folder-path');
+    console.log("gjkhgjhgfgjjhghjghjgjhgjhgjhgjhgjhghjghjgjhgjyg: "+folderPath);
+    navigateToFolder(folderPath);
+});
+
+
+// Function to handle navigation to /docurepo without reloading
+function navigateToDocuRepo() {
+    const docuRepoUrl = '/docurepo';
+    history.pushState(null, null, docuRepoUrl); // Update browser URL
+    // Load DocuRepo content dynamically (AJAX request or other logic)
+    $('.content-container').load(docuRepoUrl + ' .content-container > *');
+}
+
 
 
 function toggleLabelWrap() {
@@ -4334,6 +4440,68 @@ $(document).on('click', '.breadcrumb-link', function(e) {
     console.log("gjkhgjhgfgjjhghjghjgjhgjhgjhgjhgjhghjghjgjhgjyg: "+folderPath);
     navigateToFolder(folderPath);
 });
+
+
+
+
+function navigateToFolderfold(folderPath) {
+    // showLoader();
+
+    // Decode the folder path to remove unwanted encoding
+    folderPath = decodeURIComponent(folderPath);
+
+   
+       
+        fetchFolderfold(folderPath, false);
+        openNewFolderfold(folderPath);
+        $('li a').removeClass('selected-folder');
+        $(`[data-folder-path="${folderPath}"]`).addClass('selected-folder');
+        $('#parent-folder, #parent-folders').val(folderPath);
+        toggleLabelWrap();
+        
+        // Save breadcrumb to session (implement this part as needed)
+
+        // Trigger a success alert with the folder path
+      
+
+ 
+
+    if (folderPath) {
+        const newUrl = new URL(window.location);
+        newUrl.searchParams.set('folder', encodeURIComponent(folderPath));
+        window.history.pushState({ path: newUrl.href }, '', newUrl.href);
+    }
+}
+
+function openNewFolderfold(folderPath) {
+    const $newFolderLink = $(`[data-folder-path="${folderPath}"]`);
+    if ($newFolderLink.length) {
+        fetchSubfoldersfold(folderPath, updateFolderList);
+    } else {
+        console.warn(`Folder link not found for path: ${folderPath}`);
+    }
+}
+function fetchSubfoldersfold(folderPath, callback) {
+    $.ajax({
+        url: '/fetch-subfolders', 
+        method: 'GET',
+        data: { path: folderPath },
+        success: function(response) {
+            const subfolderHtml = response.html;
+            const $parentFolder = $(`[data-folder-path="${folderPath}"]`).parent();
+            const $dropdownMenu = $parentFolder.find('.dropdown-menu');
+            // Clear existing content and populate with new subfolder HTML
+            $dropdownMenu.html(subfolderHtml);
+            // Fetch folder contents and ensure visibility
+            fetchFolderContents2(folderPath, false);
+            // Invoke callback with the latest folder path if provided
+            // if (callback) callback(response.latestFolderPath);
+        },
+        error: function(xhr) {
+            console.error('Error fetching subfolder data:', xhr.responseText);
+        }
+    });
+}
 
 $(document).ready(function () {
     // Function to trigger the /docurepo request
@@ -4880,6 +5048,14 @@ $(document).ready(function () {
         triggerDocurepo(folderPath); // Call the reusable function
     });
 
+    $(document).on('click', '.fold-link', function (e) {
+        e.preventDefault();
+        e.stopPropagation();
+        var folderPath = $(this).data('folder-path'); // Get folder path from data attribute
+        // alert(folderPath);
+       
+    });
+
     // Trigger on window reload
     var currentUrl = window.location.href;
     var urlParams = new URLSearchParams(window.location.search);
@@ -4915,6 +5091,17 @@ function fetchTotalSize(folderPath) {
 
 // Event listener for folder links
 $('.folder-link').on('click', function(event) {
+    event.preventDefault(); // Prevent default link behavior
+
+    // Get the folder path from the clicked link (assuming data-folder-path is an attribute)
+    const folderPath = $(this).data('folder-path'); // Change to your actual attribute
+
+    // Call the fetchTotalSize function with the folder path
+
+   
+});
+
+$('.fold-link').on('click', function(event) {
     event.preventDefault(); // Prevent default link behavior
 
     // Get the folder path from the clicked link (assuming data-folder-path is an attribute)
@@ -5007,6 +5194,14 @@ function getQueryParamSKY(param) {
 
 function bindFolderClickEvents() {
     $('.folder-link').off('click').on('click', function(e) {
+        e.preventDefault();
+        var folderPath = $(this).data('folder-path');
+        navigateToFolder(folderPath);
+    });
+}
+
+function bindFoldClickEventsfold() {
+    $('.fold-link').off('click').on('click', function(e) {
         e.preventDefault();
         var folderPath = $(this).data('folder-path');
         navigateToFolder(folderPath);
@@ -5302,6 +5497,7 @@ if(response.directorfolder){
             }
         });
     }
+
 //   $('#sortOptions').on('change', function() {
 //     const folderPath = getQueryParamf('folder');
 //     fetchFolderContents(folderPath);  // Call the function with the selected sorting option
@@ -7048,7 +7244,7 @@ $(window).on('load', function() {
                           <div class="gropu_form">
                           <label for="fname">All Locations</label>
                           <div class="all_locations">
-                          <ul  class="nav navbar-nav dropdown customulli">
+                          {{-- <ul  class="nav navbar-nav dropdown customulli">
 <li class="dropdown">
             <a href="#" class="dropdown-toggle folder-link selected-folder" id="autohome" data-folder-path="">
             <div class="folder-card">
@@ -7090,7 +7286,8 @@ $(window).on('load', function() {
             <ul class="dropdown-menu" id="subfolders-{{ urlencode(str_replace(['/', ' '], '_', $parent->path)) }}"></ul>
         </li>
     @endforeach
-</ul>
+</ul> --}}
+<div class="folder-cont"></div>
         
                           </div>
                           </div>
@@ -9634,6 +9831,18 @@ $(document).ready(function() {
     height: 100%;
     overflow: hidden;
     outline: 0;
+}
+button.btn-docurepo {
+    background: transparent;
+    border: none;
+    margin-top: 20px;
+    color: lightgreen;
+}
+.backbutton {
+    background: transparent;
+    border: none;
+    margin-top: 20px;
+    color: lightgreen;
 }
 </style>
 @endsection
