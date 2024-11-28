@@ -1870,45 +1870,48 @@ $(document).ready(function() {
 </svg> Create a folder</button>
             <button class="hvr-rotatee" id="upload_file" data-bs-toggle="modal"  data-bs-target="#upload_filee">
                 <script>
-                    // Define the function outside the event handler to make it globally accessible
-                    function fetchfolderfold() {
-                        function getQueryParam(param) {
-                            const queryString = window.location.search.substring(1);
-                            const params = queryString.split('&');
-                            for (let i = 0; i < params.length; i++) {
-                                const pair = params[i].split('=');
-                                if (pair[0] === param) {
-                                    return pair[1] ? decodeURIComponent(pair[1]) : null;
-                                }
-                            }
-                            return null;
-                        }
-                
-                        // Retrieve the folder path from the URL parameters
-                        const folderPaths = getQueryParam('folder');
-                
-                        // If a folder path is found in the URL, use it; otherwise, use a default value
-                        const finalPathToUse = folderPaths ? decodeURIComponent(folderPaths) : 'defaultPathHere'; // Replace 'defaultPathHere' with a fallback if needed
-                
-                        $.ajax({
-                            url: '/fetchfolderfold',
-                            method: 'GET',
-                            data: { folderName: finalPathToUse },
-                            success: function(response) {
-                                $('.folder-cont').html(response.folderHtml);
-                                bindFolderClickEventsfold();
-                            },
-                            error: function(xhr) {
-                                console.error('Error fetching folder contents:', xhr.responseText);
-                                hideLoader(); // Hide loader in case of error
-                            }
-                        });
-                    }
-                
-                    // Set up the click event handler for the button
-                    $(document).on('click', '#upload_file', function() {
-                        fetchfolderfold(); // Call the function without arguments to use the URL parameter or default path
-                    });
+                 function fetchfolderfold() {
+    // Retrieve the folder path from the URL or use the default folder
+    function getQueryParam(param) {
+        const queryString = window.location.search.substring(1);
+        const params = queryString.split('&');
+        for (let i = 0; i < params.length; i++) {
+            const pair = params[i].split('=');
+            if (pair[0] === param) {
+                return pair[1] ? decodeURIComponent(pair[1]) : null;
+            }
+        }
+        return null;
+    }
+
+    // Default folder when no parent is defined
+    const defaultFolder = 'root'; // Replace 'root' with the actual default folder name in your database
+
+    // Retrieve the folder path from the URL parameters or use the default
+    const folderPaths = getQueryParam('folder');
+    const finalPathToUse = folderPaths ? decodeURIComponent(folderPaths) : defaultFolder;
+
+    // Perform AJAX request
+    $.ajax({
+        url: '/fetchfolderfold',
+        method: 'GET',
+        data: { folderName: finalPathToUse },
+        success: function (response) {
+            $('.folder-cont').html(response.folderHtml);
+            $('.file-cont').html(response.filesHtml);
+           
+        },
+        error: function (xhr) {
+            console.error('Error fetching folder contents:', xhr.responseText);
+        }
+    });
+}
+
+// Call the function when the page loads
+$(document).ready(function () {
+    fetchfolderfold();
+});
+
                 </script>
                 
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -4444,64 +4447,7 @@ $(document).on('click', '.breadcrumb-link', function(e) {
 
 
 
-function navigateToFolderfold(folderPath) {
-    // showLoader();
 
-    // Decode the folder path to remove unwanted encoding
-    folderPath = decodeURIComponent(folderPath);
-
-   
-       
-        fetchFolderfold(folderPath, false);
-        openNewFolderfold(folderPath);
-        $('li a').removeClass('selected-folder');
-        $(`[data-folder-path="${folderPath}"]`).addClass('selected-folder');
-        $('#parent-folder, #parent-folders').val(folderPath);
-        toggleLabelWrap();
-        
-        // Save breadcrumb to session (implement this part as needed)
-
-        // Trigger a success alert with the folder path
-      
-
- 
-
-    if (folderPath) {
-        const newUrl = new URL(window.location);
-        newUrl.searchParams.set('folder', encodeURIComponent(folderPath));
-        window.history.pushState({ path: newUrl.href }, '', newUrl.href);
-    }
-}
-
-function openNewFolderfold(folderPath) {
-    const $newFolderLink = $(`[data-folder-path="${folderPath}"]`);
-    if ($newFolderLink.length) {
-        fetchSubfoldersfold(folderPath, updateFolderList);
-    } else {
-        console.warn(`Folder link not found for path: ${folderPath}`);
-    }
-}
-function fetchSubfoldersfold(folderPath, callback) {
-    $.ajax({
-        url: '/fetch-subfolders', 
-        method: 'GET',
-        data: { path: folderPath },
-        success: function(response) {
-            const subfolderHtml = response.html;
-            const $parentFolder = $(`[data-folder-path="${folderPath}"]`).parent();
-            const $dropdownMenu = $parentFolder.find('.dropdown-menu');
-            // Clear existing content and populate with new subfolder HTML
-            $dropdownMenu.html(subfolderHtml);
-            // Fetch folder contents and ensure visibility
-            fetchFolderContents2(folderPath, false);
-            // Invoke callback with the latest folder path if provided
-            // if (callback) callback(response.latestFolderPath);
-        },
-        error: function(xhr) {
-            console.error('Error fetching subfolder data:', xhr.responseText);
-        }
-    });
-}
 
 $(document).ready(function () {
     // Function to trigger the /docurepo request
@@ -5200,13 +5146,7 @@ function bindFolderClickEvents() {
     });
 }
 
-function bindFoldClickEventsfold() {
-    $('.fold-link').off('click').on('click', function(e) {
-        e.preventDefault();
-        var folderPath = $(this).data('folder-path');
-        navigateToFolder(folderPath);
-    });
-}
+
 function removeDynamicPrefix(path) {
     // Extract the first segment before the first underscore (_) as the dynamic prefix
     let dynamicPrefix = path.match(/^\d{4}-\d{4}[A-Za-z]+\d+_/);
@@ -7290,7 +7230,10 @@ $(window).on('load', function() {
         </li>
     @endforeach
 </ul> --}}
-<div class="folder-cont"></div>
+<div class="folder-cont" id="folderscont"></div>
+
+
+
         
                           </div>
                           </div>
@@ -7300,7 +7243,7 @@ $(window).on('load', function() {
                           
                           <div class="select_path_view">
     <b>selected path:</b>
-<div class="nav-path"></div>
+<div class="nav-paths"></div>
 </div>
 
                           </div>
@@ -9813,6 +9756,121 @@ $(document).ready(function() {
         });
     }
 });
+
+
+
+
+</script>
+<script>
+$(document).on('click', '.fold-link', function (e) {
+    e.preventDefault();
+
+    // Get the folder path from the clicked element
+    const folderPath = $(this).data('folder-path');
+
+    // Update the breadcrumb navigation
+    updateBreadcrumbs(folderPath);
+
+    // Show a loading spinner or message (optional)
+    $('#folderscont').html('<p>Loading...</p>');
+
+    // Send an AJAX request to fetch the folder contents
+    $.ajax({
+        url: '/fetchfolderfold', // Adjust this to match your route
+        method: 'POST',
+        data: {
+            folderName: folderPath,
+            _token: $('meta[name="csrf-token"]').attr('content') // CSRF token for security
+        },
+        success: function (response) {
+            // Update the folder contents with the HTML response
+            $('#folderscont').html(response.folderHtml);
+        },
+        error: function (xhr, status, error) {
+            // Handle errors
+            console.error(error);
+            alert('Failed to load folder contents. Please try again.');
+        }
+    });
+});
+
+function updateBreadcrumbs(folderPath) {
+    // Split the folder path into individual parts
+    const folderParts = folderPath.split('/');
+    
+    // Generate the breadcrumb HTML
+    let breadcrumbHtmlz = '<div class="breadcrumbs-container">';
+    
+    // Add the "Back" button
+    if (folderParts.length > 1) {
+        // Construct the path for the parent folder
+        const parentPath = folderParts.slice(0, -1).join('/');
+        breadcrumbHtmlz += `
+            <button class="backs-button" data-folder-path="${parentPath}">
+                Back
+            </button>`;
+    }
+
+    breadcrumbHtmlz += '<nav><ul class="breadcrumbs">';
+    let cumulativePath = '';
+
+    folderParts.forEach((part) => {
+        cumulativePath += part + '/';
+
+        // Remove the prefix (e.g., "2024-2025November0_") from the folder name
+        const cleanName = part.includes('_') ? part.split('_')[1] : part;
+
+        // Append each folder as a breadcrumb link
+        breadcrumbHtmlz += `
+            <li>
+                <a href="#" class="breadcrumbs-link" data-folder-path="${cumulativePath.slice(0, -1)}">
+                    ${cleanName}
+                </a>
+            </li>`;
+    });
+
+    breadcrumbHtmlz += '</ul></nav></div>';
+
+    // Update the breadcrumb div
+    $('.nav-paths').html(breadcrumbHtmlz);
+}
+
+// Handle breadcrumb link clicks
+$(document).on('click', '.breadcrumbs-link', function (e) {
+    e.preventDefault();
+
+    const folderPath = $(this).data('folder-path');
+    navigateToFolders(folderPath);
+});
+
+// Handle "Back" button clicks
+$(document).on('click', '.backs-button', function (e) {
+    e.preventDefault();
+
+    const folderPath = $(this).data('folder-path');
+    navigateToFolders(folderPath);
+});
+
+// Function to navigate to a folder and update contents
+function navigateToFolders(folderPath) {
+    updateBreadcrumbs(folderPath);
+
+    // Fetch folder contents via AJAX
+    $.ajax({
+        url: '/fetchfolderfold',
+        method: 'POST',
+        data: {
+            folderName: folderPath,
+            _token: $('meta[name="csrf-token"]').attr('content')
+        },
+        success: function (response) {
+            $('#folderscont').html(response.folderHtml);
+        },
+        error: function (xhr) {
+            console.error('Error fetching folder contents:', xhr.responseText);
+        }
+    });
+}
 
 
 

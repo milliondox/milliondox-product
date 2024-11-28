@@ -72,7 +72,7 @@ Route::get('/fetch-subfolders',  [App\Http\Controllers\HomeController::class, 'f
 Route::get('/fetch-subfolders2',  [App\Http\Controllers\HomeController::class, 'fetchSubfolders2']);
 Route::get('/fetch-folder-contents', [App\Http\Controllers\HomeController::class,'fetchFolderContents']);
 Route::get('/fetch-users', [App\Http\Controllers\HomeController::class, 'fetchUsers'])->name('fetchUsers');
-Route::get('/fetchfolderfold', [App\Http\Controllers\HomeController::class,'fetchfolderfold']);
+Route::match(['get', 'post'], '/fetchfolderfold', [App\Http\Controllers\HomeController::class,'fetchfolderfold']);
 
 
 

@@ -21961,127 +21961,67 @@ public function shareFolder(Request $request)
 
     public function fetchfolderfold(Request $request)
     {
-        $folderPath = $request->get('folderName');
-        $folderPaths = preg_replace('/\//', ' / ', $folderPath);
-      //   dd($folderPath);
-  $sortOption = $request->get('sortOption');  // Get the selected sorting option
-  
-  $oldpath = $request->get('folderNamep');
+        // Get the requested folder name or set a default value
+        $folderPath = $request->get('folderName', null); // Default is null for root-level folders
+    
+        // If no folder is specified, fetch folders where parent_name is NULL and common_folder is 1
+        if (is_null($folderPath) || $folderPath === 'root') {
+            $commonFoldersQuery = Folder::whereNull('parent_name')
+                ->where('common_folder', 1);
+        } else {
+            // Fetch folders based on the requested folder path
+            $commonFoldersQuery = Folder::where('parent_name', $folderPath)
+                ->where('common_folder', 1);
+        }
+    
+        // Fetch user-specific folders
+        $userFoldersQuery = Folder::where('parent_name', $folderPath)
+            ->where('user_id', Auth::id())
+            ->where('is_delete', 0);
+    
+        // Sorting (default to A → Z)
+        $sortOption = $request->get('sortOption', 'a-to-z');
+        switch ($sortOption) {
+            case 'z-to-a':
+                $commonFolders = $commonFoldersQuery->orderBy('name', 'desc')->get();
+                $userFolders = $userFoldersQuery->orderBy('name', 'desc')->get();
+                break;
+    
+            default: // 'a-to-z' and fallback
+                $commonFolders = $commonFoldersQuery->orderBy('name', 'asc')->get();
+                $userFolders = $userFoldersQuery->orderBy('name', 'asc')->get();
+                break;
+        }
+    
+        // Merge folder results
+        $folderContents = $commonFolders->merge($userFolders);
+    
+        // Prepare folder HTML
+        $folderHtml = '<ul class="customulli">';
+        foreach ($folderContents as $folder) {
+            // Clean folder name if it contains underscores
+            if (strpos($folder->name, '_') !== false) {
+                $folder->name = substr($folder->name, strpos($folder->name, '_') + 1);
+            }
+    
+            $folderHtml .= 
+                '<li>
+                    <a href="#" class="fold-link wedcolor" data-folder-path="' . $folder->path . '">
+                        <div class="folder_wraap">
+                            <img src="../assets/images/solar_folder-bold.png" id="folders" class="folder-icon" alt="Folder Icon">
+                            <span>' . htmlspecialchars($folder->name) . '</span>
+                        </div>
+                    </a>
+                </li>';
+        }
+        $folderHtml .= '</ul>';
 
-  $directorfolderNames = Folder::where('parent_name', 'LIKE', '2024-2025November301_Accounting & Taxation/2024-2025November301_Charter Documents/2024-2025November301_Director Details')
-  ->whereNotNull('director_id')
-  ->where('user_id', Auth::id())
-  ->pluck('name'); // Retrieves only the `name` column
-
-  // dd($directorfolderNames);
-
-  
-
-  // Base query for fetching folders
-  $commonFoldersQuery = Folder::where('parent_name', $folderPath)
-                              ->where('common_folder', 1);
-                              // ->where('real_file_name', NULL);
-
-
-                              $userFoldersQuery = Folder::where('parent_name', $folderPath)
-                              ->where('user_id', Auth::id())
-                              ->where('is_delete', 0);
-                          //    ->whereNotNull('director_id');
-
-                              // dd($userFoldersQuery);
-                              
-
-                              // ->where('real_file_name', NULL);
-
-  // Apply sorting logic based on the selected sort option
-  switch ($sortOption) {
-      case 'a-to-z':
-          $commonFolders = $commonFoldersQuery->orderBy('name', 'asc')->get();
-          $userFolders = $userFoldersQuery->orderBy('name', 'asc')->get();
-          break;
-
-      case 'z-to-a':
-          $commonFolders = $commonFoldersQuery->orderBy('name', 'desc')->get();
-          $userFolders = $userFoldersQuery->orderBy('name', 'desc')->get();
-          break;
-
-   
-
-      default:
-          // Default to A → Z if no valid sorting option is provided
-          $commonFolders = $commonFoldersQuery->orderBy('name', 'asc')->get();
-          $userFolders = $userFoldersQuery->orderBy('name', 'asc')->get();
-          break;
-  }
-
-  // Combine both results
-  $folderContents = $commonFolders->merge($userFolders);
-
-  // Optionally, if you want to sort the merged collection again (depends on your requirements)
-  if ($sortOption === 'a-to-z' || $sortOption === 'z-to-a') {
-      $folderContents = ($sortOption === 'a-to-z') ? $folderContents->sortBy('name') : $folderContents->sortByDesc('name');
-  }
-
-
-   
-      $folderHtml = '<ul class="customulli">';
-      foreach ($folderContents as $folder) {
-          
-          // 11 sept sandeep merge code here start
-          // $original_path = $folder->path;
-      
-          // if (strpos($original_path, '_') !== false) {
-          //     // Find the position of the '-' character
-          //     $dash_position = strpos($original_path, '_');
-              
-          //     // Get the substring after the '-'
-          //     $replacedPath = substr($original_path, $dash_position + 1);
-          //     $original_path = $replacedPath;
-          //     $folder->path = $replacedPath ;
-              
-          // }
-          // else{
-          //     $original_path = $folder->path;
-          //     $folder->path = $folder->path;
-          // }
-          
-          if (strpos($folder->name, '_') !== false) {
-              // Find the position of the '-' character
-              $dash_position_name = strpos($folder->name, '_');
-              
-              // Get the substring after the '-'
-              $replacedName = substr($folder->name, $dash_position_name + 1);
-              $folder->name = $replacedName ;
-              
-          }
-          else{
-              $folder->name = $folder->name;
-          }
-          // 11 sept sandeep merge code here end
-          
-          
-          $folderHtml .= 
-         
-          '<li><a href="#" class="fold-link wedcolor" data-folder-path="' . $folder->path . '">
-                              <div class="folder_wraap">
-                                  <img src="../assets/images/solar_folder-bold.png" id="folders" class="folder-icon" alt="Folder Icon">
-                                  <span>' . $folder->name . '</span>
-                              </div>
-                          </a>
-                                               
-                      </li>';
         
-                    
-      }
-        
-        
-      $folderHtml .= '</ul>';
-  
-  
-     
-  
-      return response()->json(['folderHtml' => $folderHtml]);
+    
+        // Return JSON response
+        return response()->json(['folderHtml' => $folderHtml]);
     }
+    
 
     // start **** sandeep added above route "fetchfixedFiles" for dynamic fetch fixed path files i.e real_file_name 26 November 2024 
 
