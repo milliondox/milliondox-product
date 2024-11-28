@@ -6572,267 +6572,423 @@ if(response.directorfolder){
             window.xhrRequests = xhrRequests;
         });
 
-        $('#upload-file-form').on('submit', function(e) {
-            e.preventDefault();
+        // $('#upload-file-form').on('submit', function(e) {
+        //     e.preventDefault();
 
-            // $('.close').click();
+        //     // $('.close').click();
 
-            $('.progree_cont_nt').css('display', 'block');
-            $('#upload_filee').modal('hide');
-            $('.side_panel_wraap').removeClass('active');
-            $('.side_panel_wraap_overlay').removeClass('active');
-            $('.side_panel_wraap_overlay').removeClass('active');
-            // $('#upload_filee .close').click(); 
+        //     $('.progree_cont_nt').css('display', 'block');
+        //     $('#upload_filee').modal('hide');
+        //     $('.side_panel_wraap').removeClass('active');
+        //     $('.side_panel_wraap_overlay').removeClass('active');
+        //     $('.side_panel_wraap_overlay').removeClass('active');
+        //     // $('#upload_filee .close').click(); 
 
-            var $submitButton = $(this).find('button[type="submit"]');
-            $submitButton.prop('disabled', true).append('<span class="button-spinner"></span>'); // Disable and append spinner
+        //     var $submitButton = $(this).find('button[type="submit"]');
+        //     $submitButton.prop('disabled', true).append('<span class="button-spinner"></span>'); // Disable and append spinner
 
-            // Access the file input element and its files
-            var fileInput = $('#fileU')[0]; // Ensure this matches your file input field
-            var files = fileInput.files; // Get all the selected files
+        //     // Access the file input element and its files
+        //     var fileInput = $('#fileU')[0]; // Ensure this matches your file input field
+        //     var files = fileInput.files; // Get all the selected files
             
-            // Check if files are selected
-            if (files.length === 0) {
-                toastr.error('No files selected for upload!');
-                $submitButton.prop('disabled', false);
-                $('.button-spinner').remove();
-                return;
-            }
+        //     // Check if files are selected
+        //     if (files.length === 0) {
+        //         toastr.error('No files selected for upload!');
+        //         $submitButton.prop('disabled', false);
+        //         $('.button-spinner').remove();
+        //         return;
+        //     }
 
-            // let xhrRequests = {}; // To store all the xhr requests for cancellation
-            isUploading = true; // Set flag to true when upload starts
+        //     // let xhrRequests = {}; // To store all the xhr requests for cancellation
+        //     isUploading = true; // Set flag to true when upload starts
 
-            // Get all other form input fields except the file input
-            var formInputs = $(this).serializeArray(); // Serialize other form 
+        //     // Get all other form input fields except the file input
+        //     var formInputs = $(this).serializeArray(); // Serialize other form 
             
-            // $('#upload_filee .close').click(); 
-            // $('.modal-content').hide(); 
+        //     // $('#upload_filee .close').click(); 
+        //     // $('.modal-content').hide(); 
 
-            // Iterate over each selected file and process individually
-            $.each(files, function(index, file) {
-                let currentFileIndex = getSecureRandomString(16); // Generate unique index for the file
-                addProgressIndicator(file.name, currentFileIndex); // Add progress bar for each file
+        //     // Iterate over each selected file and process individually
+        //     $.each(files, function(index, file) {
+        //         let currentFileIndex = getSecureRandomString(16); // Generate unique index for the file
+        //         addProgressIndicator(file.name, currentFileIndex); // Add progress bar for each file
 
-                var formData = new FormData();
+        //         var formData = new FormData();
 
-                // Append all other form fields to FormData
-                $.each(formInputs, function(i, input) {
-                    formData.append(input.name, input.value); // Append each field to the FormData
-                });
+        //         // Append all other form fields to FormData
+        //         $.each(formInputs, function(i, input) {
+        //             formData.append(input.name, input.value); // Append each field to the FormData
+        //         });
 
-                // Append the individual file to FormData as 'files[]'
-                formData.append('files[]', file);
+        //         // Append the individual file to FormData as 'files[]'
+        //         formData.append('files[]', file);
 
-                let xhrUpload = $.ajax({
-                    url: $('#upload-file-form').attr('action'), // URL from the form's action attribute
-                    type: 'POST',
-                    data: formData,
-                    processData: false,
-                    contentType: false,
-                    xhr: function() {
-                        let xhr = new window.XMLHttpRequest();
+        //         let xhrUpload = $.ajax({
+        //             url: $('#upload-file-form').attr('action'), // URL from the form's action attribute
+        //             type: 'POST',
+        //             data: formData,
+        //             processData: false,
+        //             contentType: false,
+        //             xhr: function() {
+        //                 let xhr = new window.XMLHttpRequest();
                         
-                        xhr.upload.addEventListener("progress", function(evt) {
-                            if (evt.lengthComputable) {
-                                let percentComplete = evt.loaded / evt.total;
-                                updateProgress(percentComplete, currentFileIndex); // Update individual progress bar
-                            }
-                        }, false);
+        //                 xhr.upload.addEventListener("progress", function(evt) {
+        //                     if (evt.lengthComputable) {
+        //                         let percentComplete = evt.loaded / evt.total;
+        //                         updateProgress(percentComplete, currentFileIndex); // Update individual progress bar
+        //                     }
+        //                 }, false);
 
-                        return xhr;
-                    },
-                    success: function(response) {
-                        if (response.success) {
-                            successCounter++; // Increment the success counter
-                            updateSuccessCount(); // Update the displayed success count
-                            $(`#progress_${currentFileIndex} .cancle_file`).hide();
-                            $(`#progress_${currentFileIndex} .done_tick`).show(); // Show success tick
+        //                 return xhr;
+        //             },
+        //             success: function(response) {
+        //                 if (response.success) {
+        //                     successCounter++; // Increment the success counter
+        //                     updateSuccessCount(); // Update the displayed success count
+        //                     $(`#progress_${currentFileIndex} .cancle_file`).hide();
+        //                     $(`#progress_${currentFileIndex} .done_tick`).show(); // Show success tick
 
-                            if (response.successMessages.length) {
-                                response.successMessages.forEach(function(msg) {
-                                    // toastr.success(msg);
-                                });
-                            }
-                            if (response.errorMessages.length) {
-                                response.errorMessages.forEach(function(msg) {
-                                    // toastr.warning(msg);
-                                toastr.error('An error occurred while uploading files');
-                                // Create the error SVG with red fill
-                                let errorSVG = '<svg width="24px" height="24px" viewBox="0 0 24 24" fill="red"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"></path></svg>';
+        //                     if (response.successMessages.length) {
+        //                         response.successMessages.forEach(function(msg) {
+        //                             // toastr.success(msg);
+        //                         });
+        //                     }
+        //                     if (response.errorMessages.length) {
+        //                         response.errorMessages.forEach(function(msg) {
+        //                             // toastr.warning(msg);
+        //                         toastr.error('An error occurred while uploading files');
+        //                         // Create the error SVG with red fill
+        //                         let errorSVG = '<svg width="24px" height="24px" viewBox="0 0 24 24" fill="red"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"></path></svg>';
 
-                                // Replace the current done tick with the error SVG
-                                $(`#progress_${currentFileIndex} .progress_circle2`).html(errorSVG); // Insert the error SVG
-
-
-                                });
-                            }
-
-                            activeUploads[currentFileIndex] = false; // Mark this file as completed
-                            checkAllUploadsComplete(); // Check if all uploads are done
-
-                            fetchFolderContents($('#parent-folder').val());
-                            // console.log("i am looking ::");
-                            console.log($('#parent-folder').val());
-                            resetFileInput($('input[name="file"]'));
-                        } else {
-                            toastr.error('Failed to upload file: ' + response.message);
-                            // Create the error SVG with red fill
-                            let errorSVG = '<svg width="24px" height="24px" viewBox="0 0 24 24" fill="red"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"></path></svg>';
-
-                            // Replace the current done tick with the error SVG
-                            $(`#progress_${currentFileIndex} .progress_circle2`).html(errorSVG); // Insert the error SVG
-                            $('#upload_filee .close').click(); 
-
-                        }
-
-                        $('.button-spinner').remove();
-                        $submitButton.prop('disabled', false); // Re-enable submit button
-                    },
-                    error: function(xhr) {
-                        if (xhr.status === 400 || xhr.status === 500) {
-                            let response = JSON.parse(xhr.responseText);
-                            toastr.error('Error: ' + response.message);
-                            // Create the error SVG with red fill
-                            let errorSVG = '<svg width="24px" height="24px" viewBox="0 0 24 24" fill="red"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"></path></svg>';
-
-                            // Replace the current done tick with the error SVG
-                            $(`#progress_${currentFileIndex} .progress_circle2`).html(errorSVG); // Insert the error SVG
-                            $('#upload_filee .close').click(); 
-
-                        } else {
-                            // Create the error SVG with red fill
-                            let errorSVG = '<svg width="24px" height="24px" viewBox="0 0 24 24" fill="red"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"></path></svg>';
-
-                            // Replace the current done tick with the error SVG
-                            $(`#progress_${currentFileIndex} .progress_circle2`).html(errorSVG); // Insert the error SVG
-
-                        $('#upload_filee .close').click(); 
+        //                         // Replace the current done tick with the error SVG
+        //                         $(`#progress_${currentFileIndex} .progress_circle2`).html(errorSVG); // Insert the error SVG
 
 
-                        }
-                        activeUploads[currentFileIndex] = false; // Mark this file as completed or failed
-                            checkAllUploadsComplete(); // Check if all uploads are done
-                        $submitButton.prop('disabled', false); // Re-enable submit button
-                        $('#upload_filee .close').click(); 
-                        $('.button-spinner').remove();
+        //                         });
+        //                     }
+
+        //                     activeUploads[currentFileIndex] = false; // Mark this file as completed
+        //                     checkAllUploadsComplete(); // Check if all uploads are done
+
+        //                     fetchFolderContents($('#parent-folder').val());
+        //                     // console.log("i am looking ::");
+        //                     console.log($('#parent-folder').val());
+        //                     resetFileInput($('input[name="file"]'));
+        //                 } else {
+        //                     toastr.error('Failed to upload file: ' + response.message);
+        //                     // Create the error SVG with red fill
+        //                     let errorSVG = '<svg width="24px" height="24px" viewBox="0 0 24 24" fill="red"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"></path></svg>';
+
+        //                     // Replace the current done tick with the error SVG
+        //                     $(`#progress_${currentFileIndex} .progress_circle2`).html(errorSVG); // Insert the error SVG
+        //                     $('#upload_filee .close').click(); 
+
+        //                 }
+
+        //                 $('.button-spinner').remove();
+        //                 $submitButton.prop('disabled', false); // Re-enable submit button
+        //             },
+        //             error: function(xhr) {
+        //                 if (xhr.status === 400 || xhr.status === 500) {
+        //                     let response = JSON.parse(xhr.responseText);
+        //                     toastr.error('Error: ' + response.message);
+        //                     // Create the error SVG with red fill
+        //                     let errorSVG = '<svg width="24px" height="24px" viewBox="0 0 24 24" fill="red"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"></path></svg>';
+
+        //                     // Replace the current done tick with the error SVG
+        //                     $(`#progress_${currentFileIndex} .progress_circle2`).html(errorSVG); // Insert the error SVG
+        //                     $('#upload_filee .close').click(); 
+
+        //                 } else {
+        //                     // Create the error SVG with red fill
+        //                     let errorSVG = '<svg width="24px" height="24px" viewBox="0 0 24 24" fill="red"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"></path></svg>';
+
+        //                     // Replace the current done tick with the error SVG
+        //                     $(`#progress_${currentFileIndex} .progress_circle2`).html(errorSVG); // Insert the error SVG
+
+        //                 $('#upload_filee .close').click(); 
 
 
+        //                 }
+        //                 activeUploads[currentFileIndex] = false; // Mark this file as completed or failed
+        //                     checkAllUploadsComplete(); // Check if all uploads are done
+        //                 $submitButton.prop('disabled', false); // Re-enable submit button
+        //                 $('#upload_filee .close').click(); 
+        //                 $('.button-spinner').remove();
+
+
+        //             }
+        //         });
+
+        //         // Store the xhr request to allow cancellation later
+        //         xhrRequests[currentFileIndex] = xhrUpload;
+        //     });
+        //     $('#upload_filee .close').click(); 
+
+        //     window.xhrRequests = xhrRequests;
+
+        //     // functions with postfix1 are now not in used for after optimising the code sandeep
+
+        //                         // Function to add progress bar for each file
+        //                         function addProgressIndicator1(fileName, index) {
+        //                             const progressHtml = `
+        //                                 <div class="progress_repeat" id="progress_${index}">
+        //                                     <h2 class="file_name">${fileName}</h2>
+        //                                     <div class="progress_circle progress_circle2">
+        //                                         <div id="wrapper_progreess" class="center">                  
+        //                                             <svg class="progresss" x="0px" y="0px" viewBox="0 0 80 80">
+        //                                                 <path class="track" d="M5,40a35,35 0 1,0 70,0a35,35 0 1,0 -70,0" />
+        //                                                 <path class="fill" id="progressFill_${index}" d="M5,40a35,35 0 1,0 70,0a35,35 0 1,0 -70,0" />
+        //                                             </svg>
+        //                                             <span class="span_dott"></span>
+        //                                         </div>
+        //                                         <div class="cancle_file">
+        //                                             <button class="remove-btnn" onclick="cancelUpload1('${index}')">X</button>
+        //                                         </div>
+        //                                         <div class="done_tick" style="display:none;">
+        //                                         <svg class="progress_done" width="24px" height="24px" viewBox="0 0 24 24" fill="#0F9D58"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"></path></svg>
+        //                                         </div>
+        //                                     </div>
+        //                                 </div>
+        //                             `;
+        //                             $('.progress_repeat_wrap').append(progressHtml);
+        //                         }
+
+        //                         // Function to update the progress for each file
+        //                         function updateProgress1(percentComplete, index) {
+        //                             const progressFill = $(`#progressFill_${index}`);
+        //                             const circumference = 2 * Math.PI * 35; // Radius is 35
+        //                             const offset = circumference - (percentComplete * circumference);
+        //                             progressFill.css('stroke-dasharray', circumference);
+        //                             progressFill.css('stroke-dashoffset', offset);
+        //                         }
+        //                         // // Function to cancel upload for a specific file
+        //                         // window.cancelUpload1 = function(currentFileIndex) {
+        //                         //     if (xhrRequests[currentFileIndex]) {
+        //                         //         xhrRequests[currentFileIndex].abort(); // Abort the AJAX request
+
+        //                         //         $(`#progress_${currentFileIndex}`).fadeOut(500, function() {
+        //                         //             $(this).remove();
+        //                         //         });
+        //                         //         $('.button-spinner').remove();
+
+        //                         //         // toastr.info(`Upload cancelled for file: ${currentFileIndex}`);
+
+        //                         //         // Clean up xhr request memory
+        //                         //         delete xhrRequests[currentFileIndex];
+        //                         //     }
+        //                         // }
+        //                         // Function to cancel upload for a specific file
+        //                         window.cancelUpload1 = function(currentFileIndex) {
+        //                             // Show a confirmation dialog before canceling
+        //                             let isConfirmed = window.confirm("Are you sure you want to cancel the upload?");
+
+        //                             if (isConfirmed) {
+        //                                 // If the user confirmed, proceed with canceling the upload
+        //                                 if (xhrRequests[currentFileIndex]) {
+        //                                     xhrRequests[currentFileIndex].abort(); // Abort the AJAX request
+
+        //                                     // Fade out and remove the progress indicator
+        //                                     $(`#progress_${currentFileIndex}`).fadeOut(500, function() {
+        //                                         $(this).remove();
+        //                                     });
+                                            
+        //                                     // Remove any button spinner if present
+        //                                     $('.button-spinner').remove();
+
+        //                                     // Optionally, display a message that the upload was canceled
+        //                                     toastr.error(`Upload cancelled`);
+
+        //                                     // Clean up xhr request memory
+        //                                     delete xhrRequests[currentFileIndex];
+        //                                 }
+        //                             } else {
+        //                                 // If the user did not confirm, do nothing (upload will continue)
+        //                                 toastr.info("Upload is still in progress.");
+        //                             }
+        //                         }
+        //                         // Function to update the success count display
+        //                         function updateSuccessCount1() {
+        //                             $('#uploadSuccessCount').text(`${successCounter} upload(s) completed`); // Update the success count
+        //                         }
+        //                         // Function to check if all uploads are complete (either canceled or finished)
+        //                         function checkAllUploadsComplete1() {
+        //                             // Check if there are any active uploads (true means it's still uploading)
+        //                             isUploading = activeUploads.some(upload => upload === true);
+        //                         }
+        //                         // Function to generate secure random strings
+        //                         function getSecureRandomString1(length) {
+        //                             const array = new Uint8Array(length);
+        //                             window.crypto.getRandomValues(array);
+        //                             return Array.from(array, byte => byte.toString(36)).join('').substring(0, length);
+        //                         }
+        //                         // Warn the user if they attempt to leave the page during file upload
+        //                         window.addEventListener('beforeunload', function(e) {
+        //                             if (isUploading1) {
+        //                                 // Standard message across browsers
+        //                                 const message = "You have ongoing uploads. If you leave, your progress will be lost.";
+        //                                 e.returnValue = message; // This is the standard way to set the prompt
+        //                                 return message; // For older browsers
+        //                             }
+        //                         });
+        //     // functions with postfix1 are now not in used for after optimising the code sandeep
+        // });
+
+        $('#upload-file-form').on('submit', function (e) {
+    e.preventDefault();
+
+    // Show loader and disable the submit button
+    var $submitButton = $(this).find('button[type="submit"]');
+    $submitButton.prop('disabled', true).append('<span class="button-spinner"></span>');
+    $('.progree_cont_nt').css('display', 'block');
+    $('#upload_filee').modal('hide');
+    $('.side_panel_wraap, .side_panel_wraap_overlay').removeClass('active');
+
+    // Access the file input element
+    var fileInput = $('#fileU')[0];
+    var files = fileInput.files;
+
+    if (files.length === 0) {
+        toastr.error('No files selected for upload!');
+        cleanupSubmitButton($submitButton);
+        return;
+    }
+
+    // Serialize other form inputs
+    var formInputs = $(this).serializeArray();
+
+    // Initialize upload tracking variables
+    let xhrRequests = {};
+    let isUploading = true;
+
+    // Process each file
+    $.each(files, function (index, file) {
+        let currentFileIndex = generateSecureRandomString(16);
+        addProgressIndicator(file.name, currentFileIndex);
+
+        var formData = new FormData();
+        $.each(formInputs, function (i, input) {
+            formData.append(input.name, input.value);
+        });
+        formData.append('files[]', file);
+
+        xhrRequests[currentFileIndex] = $.ajax({
+            url: $('#upload-file-form').attr('action'),
+            type: 'POST',
+            data: formData,
+            processData: false,
+            contentType: false,
+            xhr: function () {
+                let xhr = new window.XMLHttpRequest();
+                xhr.upload.addEventListener("progress", function (evt) {
+                    if (evt.lengthComputable) {
+                        updateProgress(evt.loaded / evt.total, currentFileIndex);
                     }
                 });
-
-                // Store the xhr request to allow cancellation later
-                xhrRequests[currentFileIndex] = xhrUpload;
-            });
-            $('#upload_filee .close').click(); 
-
-            window.xhrRequests = xhrRequests;
-
-            // functions with postfix1 are now not in used for after optimising the code sandeep
-
-                                // Function to add progress bar for each file
-                                function addProgressIndicator1(fileName, index) {
-                                    const progressHtml = `
-                                        <div class="progress_repeat" id="progress_${index}">
-                                            <h2 class="file_name">${fileName}</h2>
-                                            <div class="progress_circle progress_circle2">
-                                                <div id="wrapper_progreess" class="center">                  
-                                                    <svg class="progresss" x="0px" y="0px" viewBox="0 0 80 80">
-                                                        <path class="track" d="M5,40a35,35 0 1,0 70,0a35,35 0 1,0 -70,0" />
-                                                        <path class="fill" id="progressFill_${index}" d="M5,40a35,35 0 1,0 70,0a35,35 0 1,0 -70,0" />
-                                                    </svg>
-                                                    <span class="span_dott"></span>
-                                                </div>
-                                                <div class="cancle_file">
-                                                    <button class="remove-btnn" onclick="cancelUpload1('${index}')">X</button>
-                                                </div>
-                                                <div class="done_tick" style="display:none;">
-                                                <svg class="progress_done" width="24px" height="24px" viewBox="0 0 24 24" fill="#0F9D58"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"></path></svg>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    `;
-                                    $('.progress_repeat_wrap').append(progressHtml);
-                                }
-
-                                // Function to update the progress for each file
-                                function updateProgress1(percentComplete, index) {
-                                    const progressFill = $(`#progressFill_${index}`);
-                                    const circumference = 2 * Math.PI * 35; // Radius is 35
-                                    const offset = circumference - (percentComplete * circumference);
-                                    progressFill.css('stroke-dasharray', circumference);
-                                    progressFill.css('stroke-dashoffset', offset);
-                                }
-                                // // Function to cancel upload for a specific file
-                                // window.cancelUpload1 = function(currentFileIndex) {
-                                //     if (xhrRequests[currentFileIndex]) {
-                                //         xhrRequests[currentFileIndex].abort(); // Abort the AJAX request
-
-                                //         $(`#progress_${currentFileIndex}`).fadeOut(500, function() {
-                                //             $(this).remove();
-                                //         });
-                                //         $('.button-spinner').remove();
-
-                                //         // toastr.info(`Upload cancelled for file: ${currentFileIndex}`);
-
-                                //         // Clean up xhr request memory
-                                //         delete xhrRequests[currentFileIndex];
-                                //     }
-                                // }
-                                // Function to cancel upload for a specific file
-                                window.cancelUpload1 = function(currentFileIndex) {
-                                    // Show a confirmation dialog before canceling
-                                    let isConfirmed = window.confirm("Are you sure you want to cancel the upload?");
-
-                                    if (isConfirmed) {
-                                        // If the user confirmed, proceed with canceling the upload
-                                        if (xhrRequests[currentFileIndex]) {
-                                            xhrRequests[currentFileIndex].abort(); // Abort the AJAX request
-
-                                            // Fade out and remove the progress indicator
-                                            $(`#progress_${currentFileIndex}`).fadeOut(500, function() {
-                                                $(this).remove();
-                                            });
-                                            
-                                            // Remove any button spinner if present
-                                            $('.button-spinner').remove();
-
-                                            // Optionally, display a message that the upload was canceled
-                                            toastr.error(`Upload cancelled`);
-
-                                            // Clean up xhr request memory
-                                            delete xhrRequests[currentFileIndex];
-                                        }
-                                    } else {
-                                        // If the user did not confirm, do nothing (upload will continue)
-                                        toastr.info("Upload is still in progress.");
-                                    }
-                                }
-                                // Function to update the success count display
-                                function updateSuccessCount1() {
-                                    $('#uploadSuccessCount').text(`${successCounter} upload(s) completed`); // Update the success count
-                                }
-                                // Function to check if all uploads are complete (either canceled or finished)
-                                function checkAllUploadsComplete1() {
-                                    // Check if there are any active uploads (true means it's still uploading)
-                                    isUploading = activeUploads.some(upload => upload === true);
-                                }
-                                // Function to generate secure random strings
-                                function getSecureRandomString1(length) {
-                                    const array = new Uint8Array(length);
-                                    window.crypto.getRandomValues(array);
-                                    return Array.from(array, byte => byte.toString(36)).join('').substring(0, length);
-                                }
-                                // Warn the user if they attempt to leave the page during file upload
-                                window.addEventListener('beforeunload', function(e) {
-                                    if (isUploading1) {
-                                        // Standard message across browsers
-                                        const message = "You have ongoing uploads. If you leave, your progress will be lost.";
-                                        e.returnValue = message; // This is the standard way to set the prompt
-                                        return message; // For older browsers
-                                    }
-                                });
-            // functions with postfix1 are now not in used for after optimising the code sandeep
+                return xhr;
+            },
+            success: function (response) {
+                handleUploadSuccess(response, currentFileIndex, $submitButton);
+            },
+            error: function (xhr) {
+                handleUploadError(xhr, currentFileIndex, $submitButton);
+            }
         });
+    });
+
+    window.xhrRequests = xhrRequests;
+
+    // // Functions
+    // function addProgressIndicator(fileName, index) {
+    //     const progressHtml = `
+    //         <div class="progress_repeat" id="progress_${index}">
+    //             <h2 class="file_name">${fileName}</h2>
+    //             <div class="progress_circle progress_circle2">
+    //                 <div id="wrapper_progreess" class="center">
+    //                     <svg class="progresss" viewBox="0 0 80 80">
+    //                         <path class="track" d="M5,40a35,35 0 1,0 70,0a35,35 0 1,0 -70,0" />
+    //                         <path class="fill" id="progressFill_${index}" d="M5,40a35,35 0 1,0 70,0a35,35 0 1,0 -70,0" />
+    //                     </svg>
+    //                 </div>
+    //                 <div class="cancle_file">
+    //                     <button class="remove-btnn" onclick="cancelUpload('${index}')">X</button>
+    //                 </div>
+    //                 <div class="done_tick" style="display:none;">
+    //                     <svg width="24px" height="24px" viewBox="0 0 24 24" fill="#0F9D58">
+    //                         <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"></path>
+    //                     </svg>
+    //                 </div>
+    //             </div>
+    //         </div>`;
+    //     $('.progress_repeat_wrap').append(progressHtml);
+    // }
+
+    // function updateProgress(percentComplete, index) {
+    //     const progressFill = $(`#progressFill_${index}`);
+    //     const circumference = 2 * Math.PI * 35; // Circle's radius is 35
+    //     progressFill.css({
+    //         'stroke-dasharray': circumference,
+    //         'stroke-dashoffset': circumference - (percentComplete * circumference)
+    //     });
+    // }
+
+    // function handleUploadSuccess(response, index, $submitButton) {
+    //     if (response.success) {
+    //         toastr.success('File uploaded successfully!');
+    //         $(`#progress_${index} .done_tick`).show();
+    //     } else {
+    //         displayErrorSVG(index, 'Upload failed.');
+    //     }
+    //     cleanupSubmitButton($submitButton);
+    // }
+
+    // function handleUploadError(xhr, index, $submitButton) {
+    //     displayErrorSVG(index, 'Error during upload.');
+    //     cleanupSubmitButton($submitButton);
+    // }
+
+    // function displayErrorSVG(index, message) {
+    //     const errorSVG = `
+    //         <svg width="24px" height="24px" viewBox="0 0 24 24" fill="red">
+    //             <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"></path>
+    //         </svg>`;
+    //     $(`#progress_${index} .progress_circle2`).html(errorSVG);
+    //     toastr.error(message);
+    // }
+
+    // function cleanupSubmitButton($submitButton) {
+    //     $submitButton.prop('disabled', false);
+    //     $('.button-spinner').remove();
+    // }
+
+    // function generateSecureRandomString(length) {
+    //     const array = new Uint8Array(length);
+    //     window.crypto.getRandomValues(array);
+    //     return Array.from(array, byte => byte.toString(36)).join('').substring(0, length);
+    // }
+
+    window.cancelUpload = function (index) {
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "You won't be able to resume this upload!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, cancel it!'
+        }).then((result) => {
+            if (result.isConfirmed && xhrRequests[index]) {
+                xhrRequests[index].abort();
+                $(`#progress_${index}`).fadeOut(500, function () {
+                    $(this).remove();
+                });
+                toastr.error('Upload canceled.');
+            }
+        });
+    };
+    
+});
+
 
         // Function to add a progress indicator for each file
         function addProgressIndicator(fileName, index) {
