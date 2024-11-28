@@ -4350,7 +4350,7 @@ function updateBreadcrumb(folderPath) {
 
     // Generate the back button if there is a parent folder
     const backButtonHtml = parentFolderPath
-        ? `<button class="btn-back backbutton" data-folder-path="${parentFolderPath}">&larr; Back</button>`
+        ? `<button class="btn-back backbutton" data-folder-path="${parentFolderPath}">Back</button>`
         : `<button class="btn-docurepo">Home</button>`; // Show "Home" button if no parent folder
 
     // Update the breadcrumb navigation path and back button
@@ -7343,6 +7343,10 @@ $(window).on('load', function() {
                           <div class="gropu_form">
                           <label for="fname">All Locations</label>
                           <div class="all_locations">
+                          <div class="select_path_view">
+<div class="nav-paths"></div>
+</div>
+
                           {{-- <ul  class="nav navbar-nav dropdown customulli">
 <li class="dropdown">
             <a href="#" class="dropdown-toggle folder-link selected-folder" id="autohome" data-folder-path="">
@@ -7392,16 +7396,6 @@ $(window).on('load', function() {
 
         
                           </div>
-                          </div>
-
-                          <div class="gropu_form">
-                          <label for="fname"></label>
-                          
-                          <div class="select_path_view">
-    <b>selected path:</b>
-<div class="nav-paths"></div>
-</div>
-
                           </div>
 
                           <div class="gropu_form ivoice-upload">
@@ -10049,18 +10043,7 @@ function navigateToFolders(folderPath) {
     overflow: hidden;
     outline: 0;
 }
-button.btn-docurepo {
-    background: transparent;
-    border: none;
-    margin-top: 20px;
-    color: lightgreen;
-}
-.backbutton {
-    background: transparent;
-    border: none;
-    margin-top: 20px;
-    color: lightgreen;
-}
+
 </style>
 @endsection
    
