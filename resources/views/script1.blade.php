@@ -13639,7 +13639,20 @@ $(document).ready(function() {
 
                     response.files.forEach(file => {
                         const fileName = file.file_name.split('/').pop();
-                        const fileSize = (file.file_size / 1024).toFixed(2) + ' KB';
+                        // const fileSize = (file.file_size / 1024).toFixed(2) + ' KB';
+                        const fileSizeInBytes = file.file_size;
+                        let fileSize;
+
+                        if (fileSizeInBytes < 1024) {
+                            fileSize = fileSizeInBytes.toFixed(2) + ' Bytes';
+                        } else if (fileSizeInBytes < 1048576) {
+                            fileSize = (fileSizeInBytes / 1024).toFixed(2) + ' KB';
+                        } else if (fileSizeInBytes < 1073741824) {
+                            fileSize = (fileSizeInBytes / 1048576).toFixed(2) + ' MB';
+                        } else {
+                            fileSize = (fileSizeInBytes / 1073741824).toFixed(2) + ' GB';
+                        }
+
                         const createdAt = new Date(file.created_at);
 
                         // Format the date (e.g., 'MM/DD/YYYY')

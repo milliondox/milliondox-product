@@ -162,6 +162,8 @@
         if (response && response.data) {
             const data = response.data;
             const counts = response.counts;
+            const file_sizes = response.file_sizes;
+
 
             // Parse the real_file_name string into an array
             const realFileNames = JSON.parse(data.real_file_name);
@@ -172,6 +174,8 @@
             // Now, you can loop through `realFileNames` and access count from `counts`
             realFileNames.forEach(fileName => {
               let fileCount = counts[fileName] || 0; // Default to 0 if the file name doesn't exist in the counts object
+              let filesizes = file_sizes[fileName] || 0; // Default to 0 if the file size doesn't exist in the filesize object
+
                     // Build a table row for each file
                     let newRow = `
                     <tr>
@@ -196,7 +200,7 @@
                                 </div>
                               </td>
                               <td>${fileName}</td>
-                                <td><span class="comm_size" id="total-size-order4100tt-td" data-variable="comm_size">{{ "... 0" }} KB</span> </td>
+                                <td><span class="comm_size" id="total-size-order4100tt-td" data-variable="comm_size">${filesizes} </span> </td>
                                   <td> 
                                 <div class="type_number getparm" data-location=""  data-bs-toggle="modal" data-real_file_name="${fileName}" data-bs-target="#StautoryReg_ballot_count" id="StautoryReg_ballot_countt">
                                 <svg width="22" height="22" viewBox="0 0 22 22" fill="none" xmlns="http://www.w3.org/2000/svg">
