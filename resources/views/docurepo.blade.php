@@ -1923,50 +1923,7 @@ $(document).ready(function() {
 <path fill-rule="evenodd" clip-rule="evenodd" d="M1.8962 4.82C1.83203 5.15733 1.83203 5.5625 1.83203 6.371V12.8335C1.83203 16.2902 1.83203 18.0191 2.90636 19.0925C3.97978 20.1668 5.70861 20.1668 9.16536 20.1668H12.832C16.2888 20.1668 18.0176 20.1668 19.091 19.0925C20.1654 18.0191 20.1654 16.2902 20.1654 12.8335V10.815C20.1654 8.40233 20.1654 7.19508 19.4595 6.41133C19.3948 6.33898 19.3263 6.27014 19.2542 6.20508C18.4704 5.50016 17.2632 5.50016 14.8505 5.50016H14.5077C13.4508 5.50016 12.9219 5.50016 12.4287 5.35991C12.1581 5.28255 11.8972 5.17428 11.6514 5.03725C11.204 4.78883 10.83 4.41391 10.082 3.66683L9.57786 3.16266C9.3267 2.9115 9.20203 2.78683 9.07003 2.67683C8.50231 2.20625 7.80589 1.91778 7.0717 1.84908C6.9012 1.8335 6.72336 1.8335 6.36953 1.8335C5.56011 1.8335 5.15586 1.8335 4.81853 1.89766C4.09422 2.03445 3.42795 2.38637 2.90664 2.90751C2.38534 3.42865 2.03321 4.09573 1.8962 4.82ZM11.2279 9.16683C11.2279 8.98449 11.3003 8.80962 11.4292 8.68069C11.5582 8.55176 11.733 8.47933 11.9154 8.47933H16.4987C16.681 8.47933 16.8559 8.55176 16.9848 8.68069C17.1138 8.80962 17.1862 8.98449 17.1862 9.16683C17.1862 9.34917 17.1138 9.52403 16.9848 9.65296C16.8559 9.7819 16.681 9.85433 16.4987 9.85433H11.9154C11.733 9.85433 11.5582 9.7819 11.4292 9.65296C11.3003 9.52403 11.2279 9.34917 11.2279 9.16683Z" fill="#1E1E1E"/>
 </svg> Create a folder</button>
             <button class="hvr-rotatee" id="upload_file" data-bs-toggle="modal"  data-bs-target="#upload_filee">
-                <script>
-                 function fetchfolderfold() {
-    // Retrieve the folder path from the URL or use the default folder
-    function getQueryParam(param) {
-        const queryString = window.location.search.substring(1);
-        const params = queryString.split('&');
-        for (let i = 0; i < params.length; i++) {
-            const pair = params[i].split('=');
-            if (pair[0] === param) {
-                return pair[1] ? decodeURIComponent(pair[1]) : null;
-            }
-        }
-        return null;
-    }
-
-    // Default folder when no parent is defined
-    const defaultFolder = 'root'; // Replace 'root' with the actual default folder name in your database
-
-    // Retrieve the folder path from the URL parameters or use the default
-    const folderPaths = getQueryParam('folder');
-    const finalPathToUse = folderPaths ? decodeURIComponent(folderPaths) : defaultFolder;
-
-    // Perform AJAX request
-    $.ajax({
-        url: '/fetchfolderfold',
-        method: 'GET',
-        data: { folderName: finalPathToUse },
-        success: function (response) {
-            $('.folder-cont').html(response.folderHtml);
-            $('.file-cont').html(response.filesHtml);
-           
-        },
-        error: function (xhr) {
-            console.error('Error fetching folder contents:', xhr.responseText);
-        }
-    });
-}
-
-// Call the function when the page loads
-$(document).ready(function () {
-    fetchfolderfold();
-});
-
-                </script>
+                
                 
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
 <path fill-rule="evenodd" clip-rule="evenodd" d="M12.0004 15.7501C12.1993 15.7501 12.39 15.6711 12.5307 15.5304C12.6713 15.3897 12.7504 15.199 12.7504 15.0001V4.02707L14.4304 5.98807C14.5598 6.13924 14.744 6.23281 14.9424 6.24819C15.1408 6.26357 15.3372 6.19949 15.4884 6.07007C15.6395 5.94064 15.7331 5.75647 15.7485 5.55805C15.7639 5.35964 15.6998 5.16324 15.5704 5.01207L12.5704 1.51207C12.5 1.42973 12.4125 1.36363 12.3141 1.31831C12.2157 1.27298 12.1087 1.24951 12.0004 1.24951C11.892 1.24951 11.785 1.27298 11.6866 1.31831C11.5882 1.36363 11.5008 1.42973 11.4304 1.51207L8.43036 5.01207C8.36628 5.08692 8.31756 5.17367 8.287 5.26735C8.25644 5.36103 8.24463 5.45981 8.25224 5.55805C8.25986 5.6563 8.28675 5.75208 8.33138 5.83993C8.37601 5.92778 8.43751 6.00598 8.51236 6.07007C8.58722 6.13415 8.67396 6.18287 8.76764 6.21343C8.86132 6.24399 8.9601 6.2558 9.05835 6.24819C9.15659 6.24057 9.25237 6.21368 9.34022 6.16905C9.42808 6.12442 9.50628 6.06292 9.57036 5.98807L11.2504 4.02807V15.0001C11.2504 15.4141 11.5864 15.7501 12.0004 15.7501Z" fill="#1E1E1E"/>
@@ -2916,7 +2873,7 @@ async function downloadFolder(folderid, $thisButton) {
                     <div class="gropu_form">
                         <label for="fname">All Locations</label>
                           <div class="all_locations">
-                            <ul class="nav navbar-nav dropdown customulli">
+                            {{-- <ul class="nav navbar-nav dropdown customulli">
                                     <li class="dropdown">
                                         <a href="#" class="dropdown-toggle folder-link selected-folder" id="autohome" data-folder-path="">
                                         <div class="folder-card">
@@ -2958,17 +2915,19 @@ async function downloadFolder(folderid, $thisButton) {
                                         </li>
                                     @endforeach
 
-                                </ul>
+                                </ul> --}}
+                                <div class="nav-paths"></div>
+                                <div class="folder-cont" id="folderscont"></div>
                             </div>
                         </div>
 
-                        <div class="gropu_form mainpath">
+                        {{-- <div class="gropu_form mainpath">
                         <label for="fname"></label>
                         <div class="select_path_view">
                             <b>selected path:</b>
                             <div class="nav-path"></div>
                         </div>
-                        </div>
+                        </div> --}}
 
                         <div class="gropu_form">
                             <label for="fname">Folder Name</label>
@@ -3942,6 +3901,7 @@ $(document).on('click', '.toggle_icconn', function(e) {
         $this.removeClass('active'); // Remove 'active' class if it's already active
     } else {
         navigateToFolder1(folderPath);
+        navigateToFolders(folderPath);
         $this.addClass('active'); // Add 'active' class
     }
 });
@@ -4011,6 +3971,225 @@ function bindFolderClickEvents() {
         e.preventDefault();
         var folderPath = $(this).data('folder-path');
         navigateToFolder(folderPath);
+        navigateToFolders(folderPath);
+    });
+}
+
+
+$(document).on('click', '.fold-link', function (e) {
+    e.preventDefault();
+
+    // Get the folder path from the data attribute of the clicked link
+    const folderPath = $(this).data('folder-path');
+
+    // Update the URL without reloading the page using pushState
+    const newUrl = new URL(window.location);
+    newUrl.searchParams.set('folder', encodeURIComponent(folderPath)); // Add/update 'folder' query param in URL
+    window.history.pushState({ path: newUrl.href }, '', newUrl.href);
+
+    // Call the function to fetch the folder contents based on the new folder path in the URL
+    fetchfolderfold();
+});
+
+function fetchfolderfold() {
+    // Retrieve the folder path from the URL or use the default folder
+    function getQueryParam(param) {
+        const queryString = window.location.search.substring(1);
+        const params = queryString.split('&');
+        for (let i = 0; i < params.length; i++) {
+            const pair = params[i].split('=');
+            if (pair[0] === param) {
+                return pair[1] ? decodeURIComponent(pair[1]) : null;
+            }
+        }
+        return null;
+    }
+
+    // Default folder when no parent is defined
+    const defaultFolder = 'root';
+    const folderPaths = getQueryParam('folder');
+    const finalPathToUse = folderPaths ? decodeURIComponent(folderPaths) : defaultFolder;
+
+    // Show the loader with video (if applicable)
+    $('#video-loader').show();
+
+    $.ajax({
+        url: '/fetchfolderfold',
+        method: 'GET',
+        data: { folderName: finalPathToUse },
+        success: function (response) {
+            // Update the folder and file content
+            $('.folder-cont').html(response.folderHtml);
+            $('.file-cont').html(response.filesHtml || '<p>No files available</p>');
+
+            // Handle the back button if needed
+            if (response.showBackButton) {
+                // $('.nav-paths').prepend(`
+                //     <button class="backs-button" data-folder-path="root">
+                //         Back
+                //     </button>
+                // `);
+            }
+
+            // Hide the loader after the AJAX response
+            $('#video-loader').hide();
+        },
+        error: function (xhr) {
+            console.error('Error fetching folder contents:', xhr.responseText);
+
+            // Hide the loader on error
+            $('#video-loader').hide();
+        }
+    });
+}
+
+// Call the function immediately when the page loads to get the initial folder path from the URL
+$(document).ready(function () {
+    // fetchfolderfold();
+    //  // Attach click event to the upload_file button
+     $('#upload_file').on('click', function () {
+        fetchfolderfold();
+    });
+
+    $('#create_folder').on('click', function () {
+        fetchfolderfold();
+    });
+});
+
+
+$(document).on('click', '.fold-link', function (e) {
+    e.preventDefault();
+
+    // Get the folder path from the clicked element
+    const folderPath = $(this).data('folder-path');
+
+    // Update the breadcrumb navigation
+    updateBreadcrumbs(folderPath);
+
+    // Show a loading spinner or message (optional)
+    $('#folderscont').html('<p>Loading...</p>');  // This shows the loading text or spinner
+    let loaderTimeout = setTimeout(function () {
+        $('#folderscont').html('<p>Data is still loading...</p>');
+    }, 30000); // 30 seconds
+    // Send an AJAX request to fetch the folder contents
+    $.ajax({
+        url: '/fetchfolderfold', // Adjust this to match your route
+        method: 'POST',
+        data: {
+            folderName: folderPath,
+            _token: $('meta[name="csrf-token"]').attr('content') // CSRF token for security
+        },
+        beforeSend: function () {
+            // Optional: Show a loader spinner before the request is sent
+            $('#folderscont').html('<div class="loader" style="color: red; font-size: 40px;">Loading...</div>');  // Apply inline styles for color and font size
+        },
+        success: function (response) {
+            // Update the folder contents with the HTML response
+            clearTimeout(loaderTimeout);
+            $('#folderscont').html(response.folderHtml);  // Replace loader with the real content
+        },
+        error: function (xhr, status, error) {
+            clearTimeout(loaderTimeout);
+            // Handle errors
+            console.error(error);
+            $('#folderscont').html('<p>Failed to load folder contents. Please try again.</p>');
+        }
+    });
+});
+function updateBreadcrumbs(folderPath) {
+    // Split the folder path into parts
+    const folderParts = folderPath ? folderPath.split('/') : ['root'];
+
+    let breadcrumbHtmlz = '<div class="breadcrumbs-container">';
+
+    // Add "Back" button logic
+    if (folderParts.length > 1 || folderParts[0] !== 'root') {
+        const parentPath = folderParts.slice(0, -1).join('/') || 'root';
+        breadcrumbHtmlz += `
+            <button class="backs-button" data-folder-path="${parentPath}">
+                Back
+            </button>`;
+    }
+
+    breadcrumbHtmlz += '<nav><ul class="breadcrumbs">';
+
+    // Construct the breadcrumb links
+    let cumulativePath = '';
+    folderParts.forEach((part) => {
+        cumulativePath += part + '/';
+
+        // Remove any prefix (e.g., "2024-2025November0_") from folder names
+        const cleanName = part.includes('_') ? part.split('_')[1] : part;
+
+        breadcrumbHtmlz += `
+            <li>
+                <a href="#" class="breadcrumbs-link" data-folder-path="${cumulativePath.slice(0, -1)}">
+                    ${cleanName}
+                </a>
+            </li>`;
+    });
+
+    breadcrumbHtmlz += '</ul></nav></div>';
+
+    // Update the breadcrumb container
+    $('.nav-paths').html(breadcrumbHtmlz);
+
+    // Hide the "Back" button if the current folder is already root
+    if (folderPath === 'root') {
+        $('.backs-button').hide();
+    }
+}
+
+// Handle "Back" button clicks
+$(document).on('click', '.backs-button', function (e) {
+    e.preventDefault();
+
+    const folderPath = $(this).data('folder-path');
+
+    // Update breadcrumbs and fetch the parent folder's contents
+    if (folderPath !== 'root') {
+        navigateToFolders(folderPath);
+    } else {
+        // Hide the back button if it's already pointing to root
+        $(this).hide();
+    }
+});
+
+
+// Handle breadcrumb link clicks
+$(document).on('click', '.breadcrumbs-link', function (e) {
+    e.preventDefault();
+
+    const folderPath = $(this).data('folder-path');
+    navigateToFolders(folderPath);
+});
+
+// Handle "Back" button clicks
+$(document).on('click', '.backs-button', function (e) {
+    e.preventDefault();
+
+    const folderPath = $(this).data('folder-path');
+    navigateToFolders(folderPath);
+});
+
+// Function to navigate to a folder and update contents
+function navigateToFolders(folderPath) {
+    updateBreadcrumbs(folderPath);
+
+    // Fetch folder contents via AJAX
+    $.ajax({
+        url: '/fetchfolderfold',
+        method: 'POST',
+        data: {
+            folderName: folderPath,
+            _token: $('meta[name="csrf-token"]').attr('content')
+        },
+        success: function (response) {
+            $('#folderscont').html(response.folderHtml);
+        },
+        error: function (xhr) {
+            console.error('Error fetching folder contents:', xhr.responseText);
+        }
     });
 }
 
@@ -5511,47 +5690,100 @@ if(response.directorfolder){
                     },
                     success: function(response) {
                         if (response.success) {
-                            successCounter++; // Increment the success counter
-                            updateSuccessCount(); // Update the displayed success count
-                            $(`#progress_${currentFileIndex} .cancle_file`).hide();
-                            $(`#progress_${currentFileIndex} .done_tick`).show(); // Show success tick
+        successCounter++; // Increment the success counter
+        updateSuccessCount(); // Update the displayed success count
+        $(`#progress_${currentFileIndex} .cancle_file`).hide();
+        $(`#progress_${currentFileIndex} .done_tick`).show(); // Show success tick
 
-                            if (response.successMessages.length) {
-                                response.successMessages.forEach(function(msg) {
-                                    // toastr.success(msg);
-                                });
-                            }
-                            if (response.errorMessages.length) {
-                                response.errorMessages.forEach(function(msg) {
-                                    // toastr.warning(msg);
-                                toastr.error('An error occurred while uploading files');
-                                // Create the error SVG with red fill
-                                let errorSVG = '<svg width="24px" height="24px" viewBox="0 0 24 24" fill="red"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"></path></svg>';
+        if (response.successMessages.length) {
+            response.successMessages.forEach(function(msg) {
+                // toastr.success(msg);
+            });
+        }
+        if (response.errorMessages.length) {
+            response.errorMessages.forEach(function(msg) {
+                toastr.error('An error occurred while uploading files');
 
-                                // Replace the current done tick with the error SVG
-                                $(`#progress_${currentFileIndex} .progress_circle2`).html(errorSVG); // Insert the error SVG
+                // Create the error SVG with red fill
+                let errorSVG = '<svg width="24px" height="24px" viewBox="0 0 24 24" fill="red"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"></path></svg>';
+
+                // Replace the current done tick with the error SVG
+                $(`#progress_${currentFileIndex} .progress_circle2`).html(errorSVG); // Insert the error SVG
+            });
+        }
+
+        activeUploads[currentFileIndex] = false; // Mark this file as completed
+        checkAllUploadsComplete(); // Check if all uploads are done
+
+        fetchFolderContents($('#parent-folder').val());
+        resetFileInput($('input[name="file"]'));
+    } else if (response.exists) {
+    Swal.fire({
+        title: 'File Conflict',
+        text: `${response.fileName} already exists in the folder. What would you like to do?`,
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Replace',
+        cancelButtonText: 'Keep Both',
+    }).then((result) => {
+        if (result.isConfirmed) {
+                                    // Replace the file
+                                    var formData = new FormData();
+                                    formData.append('files[]', file); // Append the file again
+                                    formData.append('replace', true); // Add replace flag
+                                    $.ajax({
+                                        url: $('#upload-file-form').attr('action'),
+                                        type: 'POST',
+                                        data: formData,
+                                        processData: false,
+                                        contentType: false,
+                                        success: function(response) {
+                                            if (response.success) {
+                                                toastr.success(`File "${response.fileName}" replaced successfully.`);
+                                            } else {
+                                                toastr.error('Failed to replace the file.');
+                                            }
+                                        },
+                                        error: function(xhr) {
+                                            toastr.error('Error occurred while replacing the file.');
+                                        },
+                                    });
+                                } else {
+                                    // Keep both: Re-upload the file with a unique name
+                                    var formData = new FormData();
+                                    formData.append('files[]', file); // Append the file again
+                                    formData.append('keepBoth', true); // Add keepBoth flag
+                                    $.ajax({
+                                        url: $('#upload-file-form').attr('action'),
+                                        type: 'POST',
+                                        data: formData,
+                                        processData: false,
+                                        contentType: false,
+                                        success: function(response) {
+                                            if (response.success) {
+                                                toastr.success(`File "${response.fileName}" uploaded successfully with a new name.`);
+                                            } else {
+                                                toastr.error('Failed to upload the file.');
+                                            }
+                                        },
+                                        error: function(xhr) {
+                                            toastr.error('Error occurred while uploading the file.');
+                                        },
+                                    });
+                                }
+    });
 
 
-                                });
-                            }
+    } else {
+        toastr.error('Failed to upload file: ' + response.message);
 
-                            activeUploads[currentFileIndex] = false; // Mark this file as completed
-                            checkAllUploadsComplete(); // Check if all uploads are done
+        // Create the error SVG with red fill
+        let errorSVG = '<svg width="24px" height="24px" viewBox="0 0 24 24" fill="red"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"></path></svg>';
 
-                            fetchFolderContents($('#parent-folder').val());
-                            // console.log("i am looking ::");
-                            console.log($('#parent-folder').val());
-                            resetFileInput($('input[name="file"]'));
-                        } else {
-                            toastr.error('Failed to upload file: ' + response.message);
-                            // Create the error SVG with red fill
-                            let errorSVG = '<svg width="24px" height="24px" viewBox="0 0 24 24" fill="red"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"></path></svg>';
-
-                            // Replace the current done tick with the error SVG
-                            $(`#progress_${currentFileIndex} .progress_circle2`).html(errorSVG); // Insert the error SVG
-                            $('#upload_filee .close').click(); 
-
-                        }
+        // Replace the current done tick with the error SVG
+        $(`#progress_${currentFileIndex} .progress_circle2`).html(errorSVG); // Insert the error SVG
+        $('#upload_filee .close').click();
+    }
 
                         $('.button-spinner').remove();
                         $submitButton.prop('disabled', false); // Re-enable submit button
@@ -6211,53 +6443,10 @@ $(window).on('load', function() {
                           <div class="gropu_form">
                           <label for="fname">All Locations</label>
                           <div class="all_locations">
-                          <div class="select_path_view">
+                          
 <div class="nav-paths"></div>
-</div>
 
-                          {{-- <ul  class="nav navbar-nav dropdown customulli">
-<li class="dropdown">
-            <a href="#" class="dropdown-toggle folder-link selected-folder" id="autohome" data-folder-path="">
-            <div class="folder-card">
-                    <div class="folder-image">
-                        <div class="folder_in">
-                        <svg width="100" height="100" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
-<path d="M49.9259 2.10898C49.5062 2.12346 49.1017 2.26969 48.7697 2.52695L2.76969 38.4215C2.35115 38.7478 2.07939 39.2271 2.01419 39.7538C1.94899 40.2805 2.0957 40.8115 2.42204 41.2301C2.74838 41.6486 3.22762 41.9204 3.75433 41.9856C4.28105 42.0508 4.81209 41.9041 5.23063 41.5777L8.00016 39.4176V91.9996C8.00022 92.53 8.21095 93.0387 8.58601 93.4138C8.96107 93.7888 9.46975 93.9996 10.0002 93.9996H37.6642C37.8802 94.0353 38.1006 94.0353 38.3166 93.9996H61.6642C61.8802 94.0353 62.1006 94.0353 62.3166 93.9996H90.0002C90.5306 93.9996 91.0393 93.7888 91.4143 93.4138C91.7894 93.0387 92.0001 92.53 92.0002 91.9996V39.4176L94.7697 41.5777C94.9769 41.7393 95.214 41.8585 95.4673 41.9285C95.7206 41.9985 95.9852 42.018 96.246 41.9857C96.5068 41.9534 96.7587 41.8701 96.9874 41.7404C97.216 41.6108 97.4168 41.4374 97.5784 41.2302C97.74 41.0229 97.8592 40.7859 97.9292 40.5325C97.9991 40.2792 98.0185 40.0146 97.9862 39.7538C97.954 39.493 97.8706 39.2411 97.741 39.0125C97.6113 38.7839 97.4379 38.5831 97.2306 38.4215L82.0002 26.5387V11.9996H70.0002V17.1715L51.2306 2.52695C50.8585 2.23839 50.3965 2.09038 49.9259 2.10898ZM50.0002 6.64414L88.0002 36.2965V89.9996H64.0002V51.9996H36.0002V89.9996H12.0002V36.2965L50.0002 6.64414ZM74.0002 15.9996H78.0002V23.4176L74.0002 20.2926V15.9996ZM40.0002 55.9996H60.0002V89.9996H40.0002V55.9996Z" fill="#D1D5E1"/>
-</svg>
-
-
-                        <!-- <img src="../assets/images/solar_folder-bold.png"  id="folders" class="folder-icon" alt="Folder Icon"> -->
-                        </div>
-                        <div class="folder-title">
-                        <span>Home</span>
-                            </div>
-                    </div>
-                  
-                </div>
-                
-            </a>
-            
-        </li>
-        @foreach($folders->where('parent_name', null) as $parent)
-        <li class="dropdown">
-            <a href="#" class="dropdown-toggle folder-link" data-folder-path="{{ $parent->path }}">
-                <div class="folder-card">
-                    <div class="folder-image">
-                        <div class="folder_in">
-                            <svg class="d_fadee" width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                <path fill-rule="evenodd" clip-rule="evenodd" d="M5.635 3.5525L6.01912 3.9375H10.9375C11.2856 3.9375 11.6194 4.07578 11.8656 4.32192C12.1117 4.56806 12.25 4.9019 12.25 5.25V9.625C12.25 9.9731 12.1117 10.3069 11.8656 10.5531C11.6194 10.7992 11.2856 10.9375 10.9375 10.9375H3.0625C2.7144 10.9375 2.38056 10.7992 2.13442 10.5531C1.88828 10.3069 1.75 9.9731 1.75 9.625V3.9375C1.75 3.5894 1.88828 3.25556 2.13442 3.00942C2.38056 2.76328 2.7144 2.625 3.0625 2.625H4.16237C4.33483 2.62504 4.50558 2.65906 4.66487 2.72512C4.82417 2.79118 4.96888 2.88798 5.09075 3.01L5.635 3.5525ZM0.4375 3.9375C0.4375 3.24131 0.714062 2.57363 1.20634 2.08134C1.69863 1.58906 2.36631 1.3125 3.0625 1.3125H4.16237C4.50721 1.31246 4.84868 1.38036 5.16727 1.51233C5.48586 1.6443 5.77532 1.83775 6.01912 2.08162L6.5625 2.625H10.9375C11.6337 2.625 12.3014 2.90156 12.7937 3.39384C13.2859 3.88613 13.5625 4.55381 13.5625 5.25V9.625C13.5625 10.3212 13.2859 10.9889 12.7937 11.4812C12.3014 11.9734 11.6337 12.25 10.9375 12.25H3.0625C2.36631 12.25 1.69863 11.9734 1.20634 11.4812C0.714062 10.9889 0.4375 10.3212 0.4375 9.625V3.9375ZM4.15625 5.6875C3.9822 5.6875 3.81528 5.75664 3.69221 5.87971C3.56914 6.00278 3.5 6.1697 3.5 6.34375C3.5 6.5178 3.56914 6.68472 3.69221 6.80779C3.81528 6.93086 3.9822 7 4.15625 7H9.84375C10.0178 7 10.1847 6.93086 10.3078 6.80779C10.4309 6.68472 10.5 6.5178 10.5 6.34375C10.5 6.1697 10.4309 6.00278 10.3078 5.87971C10.1847 5.75664 10.0178 5.6875 9.84375 5.6875H4.15625Z" fill="#C5C5C5"/>
-                            </svg>
-                        </div>
-                        <div class="folder-title">
-                            <span>{{ $parent->name }}</span>
-                        </div>
-                    </div>
-                </div>
-            </a>
-            <ul class="dropdown-menu" id="subfolders-{{ urlencode(str_replace(['/', ' '], '_', $parent->path)) }}"></ul>
-        </li>
-    @endforeach
-</ul> --}}
+                         
 <div class="folder-cont" id="folderscont"></div>
 
 
@@ -8779,121 +8968,7 @@ $(document).ready(function() {
 
 
 </script>
-<script>
-$(document).on('click', '.fold-link', function (e) {
-    e.preventDefault();
 
-    // Get the folder path from the clicked element
-    const folderPath = $(this).data('folder-path');
-
-    // Update the breadcrumb navigation
-    updateBreadcrumbs(folderPath);
-
-    // Show a loading spinner or message (optional)
-    $('#folderscont').html('<p>Loading...</p>');
-
-    // Send an AJAX request to fetch the folder contents
-    $.ajax({
-        url: '/fetchfolderfold', // Adjust this to match your route
-        method: 'POST',
-        data: {
-            folderName: folderPath,
-            _token: $('meta[name="csrf-token"]').attr('content') // CSRF token for security
-        },
-        success: function (response) {
-            // Update the folder contents with the HTML response
-            $('#folderscont').html(response.folderHtml);
-        },
-        error: function (xhr, status, error) {
-            // Handle errors
-            console.error(error);
-            alert('Failed to load folder contents. Please try again.');
-        }
-    });
-});
-
-function updateBreadcrumbs(folderPath) {
-    // Split the folder path into individual parts
-    const folderParts = folderPath.split('/');
-    
-    // Generate the breadcrumb HTML
-    let breadcrumbHtmlz = '<div class="breadcrumbs-container">';
-    
-    // Add the "Back" button
-    if (folderParts.length > 1) {
-        // Construct the path for the parent folder
-        const parentPath = folderParts.slice(0, -1).join('/');
-        breadcrumbHtmlz += `
-            <button class="backs-button" data-folder-path="${parentPath}">
-                Back
-            </button>`;
-    }
-
-    breadcrumbHtmlz += '<nav><ul class="breadcrumbs">';
-    let cumulativePath = '';
-
-    folderParts.forEach((part) => {
-        cumulativePath += part + '/';
-
-        // Remove the prefix (e.g., "2024-2025November0_") from the folder name
-        const cleanName = part.includes('_') ? part.split('_')[1] : part;
-
-        // Append each folder as a breadcrumb link
-        breadcrumbHtmlz += `
-            <li>
-                <a href="#" class="breadcrumbs-link" data-folder-path="${cumulativePath.slice(0, -1)}">
-                    ${cleanName}
-                </a>
-            </li>`;
-    });
-
-    breadcrumbHtmlz += '</ul></nav></div>';
-
-    // Update the breadcrumb div
-    $('.nav-paths').html(breadcrumbHtmlz);
-}
-
-// Handle breadcrumb link clicks
-$(document).on('click', '.breadcrumbs-link', function (e) {
-    e.preventDefault();
-
-    const folderPath = $(this).data('folder-path');
-    navigateToFolders(folderPath);
-});
-
-// Handle "Back" button clicks
-$(document).on('click', '.backs-button', function (e) {
-    e.preventDefault();
-
-    const folderPath = $(this).data('folder-path');
-    navigateToFolders(folderPath);
-});
-
-// Function to navigate to a folder and update contents
-function navigateToFolders(folderPath) {
-    updateBreadcrumbs(folderPath);
-
-    // Fetch folder contents via AJAX
-    $.ajax({
-        url: '/fetchfolderfold',
-        method: 'POST',
-        data: {
-            folderName: folderPath,
-            _token: $('meta[name="csrf-token"]').attr('content')
-        },
-        success: function (response) {
-            $('#folderscont').html(response.folderHtml);
-        },
-        error: function (xhr) {
-            console.error('Error fetching folder contents:', xhr.responseText);
-        }
-    });
-}
-
-
-
-
-</script>
 
 <style>
     /*  model try oout css */
