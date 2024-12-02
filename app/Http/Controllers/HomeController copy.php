@@ -22867,95 +22867,133 @@ public function saveBreadcrumb(Request $request)
     
 
     public function uploadFile(Request $request)
-    {
-    // dd($request);
-    
-        // Validate the request
-        $request->validate([
-            'files.*' => 'required|file|max:102400|mimes:pdf,ppt,pot,pps,pptx,pptm,potx,ppam,ppsx,sldx,sldm,odp,ods,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,xlsx,docx,docm,xlam,txt,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv,xltx,xltm', // Allow specific file types up to 100MB
-            'tagList' => 'nullable', // Allow tagList to be nullable
-        ], [
-            'files.*.required' => 'Each file is required.',
-            'files.*.file' => 'The uploaded item must be a valid file.',
-            'files.*.max' => 'Each file may not be larger than 100MB.',
-            'files.*.mimes' => 'The file type must be one of the following: PDF, ODP, ODS, PPT, DOC, ODT, RTF, CSV, JSON, XML, HTML, ICO, SVG, WEBP, ZIP, XLS, DOCX, WAV, OGG, MP3, AVI, MOV, WMV, WEBM, TIFF, MP4, JPG, PNG, GIF, JPEG, 3GP, MKV, FLV.',
-        ]);
-    
-        // Check if folder path is provided
-        $folderPath = $request->input('parent_folder');
-        $folderPaths = preg_replace('/\s*\/\s*/', ' / ', $folderPath);
-        // if (!$folderPath) {
-        //     return response()->json(['success' => false, 'message' => 'Folder path is required.'], 400);
-        // }
-    
-        // Check if files are uploaded
-        if ($request->hasFile('files')) {
-            try {
-                $totalSize = 0;
-                $successMessages = [];
-                $errorMessages = [];
-                $tag_list = [];
-    
-    // Handle tagList whether it's an array, a comma-separated string, or empty
-    $userTags = $request->input('tagList', []);
-    
-    // Convert to array if it's a comma-separated string
-    if (is_string($userTags)) {
-        $userTags = explode(',', $userTags);
-    }
-    // Ensure $userTags is an array and remove any empty values
-    if (is_array($userTags)) {
-        $userTags = array_filter($userTags); // Remove empty values
-    } else {
-        $userTags = []; // Fallback to empty array if not an array
-    }
-    
-    // Merge with default tags
-    $tag_list = array_merge($tag_list, $userTags);
-    $tags = empty($tag_list) ? NULL : json_encode($tag_list);
-    
-                // Process each file
-                foreach ($request->file('files') as $file) {
-                    try {
-                        $filePath = $file->store($folderPath);
-    
-                        // Store file details in the database
-                        CommonTable::create([
-                            'file_type' => $file->getClientMimeType(),
-                            'file_name' => $file->getClientOriginalName(),
-                            'file_size' => $file->getSize(),
-                            'file_path' => $filePath,
-                            'user_name' => auth()->user()->name,
-                            'user_id' => auth()->user()->id,
-                            'file_status' => $request->input('file_status', 0),
-                            'fyear' => $request->input('fyear'),
-                            'month' => $request->input('Month'),
-                            'tags' => $tags, // Store tags as JSON
-                            'location' => $folderPaths,
-                            'descp' => $request->input('desc'),
+{
+
+    $request->validate([
+        'files.*' => 'required|file|max:102400|mimes:pdf,ppt,pptx,doc,docx,xlsx,xls,jpg,png,gif,jpeg,txt,zip',
+    ]);
+
+    $folderPath = $request->input('parent_folder', 'uploads'); 
+    $folderPaths = preg_replace('/\s*\/\s*/', ' / ', $folderPath);
+
+    if ($request->hasFile('files')) {
+        foreach ($request->file('files') as $file) {
+            $originalFileName = $file->getClientOriginalName();
+            $filePath = $folderPaths . '/' . $originalFileName;
+            
+
+            $tag_list = [];
+
+                        // Handle tags
+                        $userTags = $request->input('tagList', []);
+                        if (is_string($userTags)) {
+                            $userTags = explode(',', $userTags);
+                        }
+                        $tag_list = array_filter((array)$userTags);
+                        $tags = empty($tag_list) ? null : json_encode($tag_list);
+
+            $fileExists = CommonTable::where('file_name', $originalFileName)
+                ->where('location', $folderPaths)
+                ->exists();
+
+            if ($fileExists) {
+               
+                if ($request->input('replace')) {
+                    
+                    // Delete the existing file and replace it
+                    // Update the latest entry where conditions match
+                        CommonTable::where('file_name', $originalFileName)
+                        ->where('location', $folderPaths)
+                        ->where('is_delete', 0) // Optional: only if you want to update records where 'is_delete' is 0
+                        ->latest() // Order by the latest created or updated entry
+                        ->first() // Get the first (latest) record
+                        ->update([
+                            'is_replace' => 1
                         ]);
-    
-                        $totalSize += $file->getSize();
-                        $successMessages[] = "File {$file->getClientOriginalName()} uploaded successfully.";
-                    } catch (\Exception $e) {
-                        $errorMessages[] = "Failed to save file {$file->getClientOriginalName()} to the database.";
-                    }
+
+
+                    $file->storeAs($folderPath, $originalFileName);
+                    // CommonTable::create([
+                    //     'file_type' => $file->getClientMimeType(),
+                    //     'file_name' => $originalFileName,
+                    //     'file_size' => $file->getSize(),
+                    //     'file_path' => $filePath,
+                    //     'user_name' => auth()->user()->name,
+                    //     'user_id' => auth()->user()->id,
+                    //     'file_status' => $request->input('file_status', 0),
+                    //     'fyear' => $request->input('fyear'),
+                    //     'month' => $request->input('Month'),
+                    //     'tags' => $tags,
+                    //     'location' => $folderPaths,
+                    //     'descp' => $request->input('desc'),
+                    //     'is_replace' =>"1"
+                    // ]);
+
+                    return response()->json([
+                        'success' => true,
+                        'message' => "Replaced existing file: {$originalFileName}",
+                    ]);
+                } elseif ($request->input('keepBoth')) {
+                    // Generate a unique file name
+                    $uniqueSuffix = $request->input('uniqueSuffix');
+                    $newFileName = pathinfo($originalFileName, PATHINFO_FILENAME) . $uniqueSuffix . '.' . $file->getClientOriginalExtension();
+                    $newFilePath = $folderPaths . '/' . $newFileName;
+
+                    $file->storeAs($folderPath, $newFileName);
+                    CommonTable::create([
+                        'file_type' => $file->getClientMimeType(),
+                        'file_name' => $originalFileName,
+                        'file_size' => $file->getSize(),
+                        'file_path' => $filePath,
+                        'user_name' => auth()->user()->name,
+                        'user_id' => auth()->user()->id,
+                        'file_status' => $request->input('file_status', 0),
+                        'fyear' => $request->input('fyear'),
+                        'month' => $request->input('Month'),
+                        'tags' => $tags,
+                        'location' => $folderPaths,
+                        'descp' => $request->input('desc'),
+                        'is_keep_both' => "1"
+                    ]);
+
+                    return response()->json([
+                        'success' => true,
+                        'message' => "File saved as {$newFileName}.",
+                    ]);
                 }
-    
-                // Compile the response
+
                 return response()->json([
-                    'success' => empty($errorMessages),
-                    'successMessages' => $successMessages,
-                    'errorMessages' => $errorMessages,
+                    'success' => false,
+                    'exists' => true,
+                    'fileName' => $originalFileName,
+                    'folderPath' => $folderPaths,
+                    'message' => "File already exists in the same location. Replace or keep both?",
                 ]);
-            } catch (\Exception $e) {
-                return response()->json(['success' => false, 'message' => 'Failed to process file uploads.'], 500);
+            } else {
+                // Save the file if it doesn't exist
+                $file->storeAs($folderPath, $originalFileName);
+                CommonTable::create([
+                    'file_type' => $file->getClientMimeType(),
+                        'file_name' => $originalFileName,
+                        'file_size' => $file->getSize(),
+                        'file_path' => $filePath,
+                        'user_name' => auth()->user()->name,
+                        'user_id' => auth()->user()->id,
+                        'file_status' => $request->input('file_status', 0),
+                        'fyear' => $request->input('fyear'),
+                        'month' => $request->input('Month'),
+                        'tags' => $tags,
+                        'location' => $folderPaths,
+                        'descp' => $request->input('desc'),
+                ]);
             }
-        } else {
-            // No files were uploaded
-            return response()->json(['success' => false, 'message' => 'No files uploaded.'], 400);
         }
+
+        return response()->json(['success' => true, 'message' => 'File(s) uploaded successfully.']);
     }
+
+    return response()->json(['success' => false, 'message' => 'No files were uploaded.']);
+}
 
 
 
