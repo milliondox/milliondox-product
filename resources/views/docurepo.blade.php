@@ -4124,7 +4124,7 @@ function fetchfolderfold() {
     const finalPathToUse = folderPaths ? decodeURIComponent(folderPaths) : defaultFolder;
 
     // Show the loader with video (if applicable)
-    $('#video-loader').show();
+   
 
     $.ajax({
         url: '/fetchfolderfold',
@@ -4145,13 +4145,13 @@ function fetchfolderfold() {
             }
 
             // Hide the loader after the AJAX response
-            $('#video-loader').hide();
+           
         },
         error: function (xhr) {
             console.error('Error fetching folder contents:', xhr.responseText);
 
             // Hide the loader on error
-            $('#video-loader').hide();
+            
         }
     });
 }
@@ -4307,6 +4307,7 @@ function navigateToFolders(folderPath) {
 }
 
 
+
 function removeDynamicPrefix(path) {
     // Extract the first segment before the first underscore (_) as the dynamic prefix
     let dynamicPrefix = path.match(/^\d{4}-\d{4}[A-Za-z]+\d+_/);
@@ -4337,61 +4338,47 @@ function decodeAndFormatUrl(url) {
  function fetchFolderContents(folderPath) {
         // showLoader(); // Ensure the loader is shown when the request starts
        
-         function getQueryParam(param) {
-            const queryString = window.location.search.substring(1);
-            const params = queryString.split('&');
-            for (let i = 0; i < params.length; i++) {
-                const pair = params[i].split('=');
-                if (pair[0] === param) {
-                    return pair[1] ? decodeURIComponent(pair[1]) : null;
-                }
+        function getQueryParam(param) {
+        const queryString = window.location.search.substring(1);
+        const params = queryString.split('&');
+        for (let i = 0; i < params.length; i++) {
+            const pair = params[i].split('=');
+            if (pair[0] === param) {
+                return pair[1] ? decodeURIComponent(pair[1]) : null;
             }
-            return null;
         }
+        return null;
+    }
 
-        // Retrieve the folder path from the URL parameters
-        const folderPaths = getQueryParam('folder');
+    // Determine folder path from the URL
+    const folderPaths = getQueryParam('folder');
+    let pathToUse = null; // Default to null
 
-// Decode the folder path if it exists, otherwise use 'folderPath'
-const decodedFolderPath = folderPaths ? decodeURIComponent(folderPaths) : null;
-const pathToUse = decodedFolderPath ? decodedFolderPath : folderPath;
-// alert("inside fetch folder");
-// alert(pathToUse);
-// Make sure to use backticks (`) for the template literal
-let url = `${pathToUse}`;
+    // If URL path is /docurepo, set folderPath to null, otherwise use folder param
+    if (window.location.pathname === '/docurepo') {
+        pathToUse = null; // If URL is /docurepo, use null for folderPath
+    } else if (folderPaths) {
+        // If the 'folder' query parameter is present, use its decoded value
+        pathToUse = decodeURIComponent(folderPaths);
+    }
 
-// Format the decoded URL
-let result = decodeAndFormatUrl(url);
+    // If folder path is null, handle appropriately
+    if (!pathToUse) {
+        console.log("Folder path is null, handle this case");
+        // Handle the case when folderPath is null (e.g., show a default page or empty state)
+    }
 
-let fullPath = `${result}`;
+    // Format the URL
+    let result = decodeAndFormatUrl(pathToUse);
 
-// The base path you want to cut off
-let basePath = "Accounting & Taxation/Charter Documents/Director Details/";
+    let fullPath = `${result}`;
 
-// Extract the part after the base path
-let newPermitter = fullPath.replace(basePath, '').split('/')[0];
+    // Handle specific folder path transformations if needed
+    let basePath = "Accounting & Taxation/Charter Documents/Director Details/";
+    let newPermitter = fullPath.replace(basePath, '').split('/')[0];
 
-
-
-
-
-let newbase = "Human Resources/Employee Database/";
-
-let newPerm = fullPath.replace(newbase, '').split('/')[0];
-//  alert(result);
-        // let resultto = removeDynamicPrefix(pathToUse);
-
-     
-        
-        // // console.log("Path to use ::  "+pathToUse);
-        // if(pathToUse===undefined || pathToUse=== null){
-        //     // console.log("inside null undefined");
-        //     // setTimeout(() => {
-
-        //         hideLoader();
-        //     // }, 1000);
-        // }
-        // Directly use the folderPath as it's already decoded when passed from above
+    let newbase = "Human Resources/Employee Database/";
+    let newPerm = fullPath.replace(newbase, '').split('/')[0];
         $.ajax({
             url: '/fetch-folder-contents',
             method: 'GET',
@@ -5802,11 +5789,74 @@ if(response.directorfolder){
                         return xhr;
                     },
                     success: function(response) {
-                        if (response.success) {
+    if (response.exists) {
+        // File already exists, show confirmation dialog
+        Swal.fire({
+            title: 'File Already Exists',
+            text: `The file "${response.fileName}" already exists in the folder "${response.folderPath}". Would you like to replace it or keep both?`,
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Replace',
+            cancelButtonText: 'Keep Both',
+        }).then((result) => {
+            let formData = new FormData();
+            formData.append('files[]', file); // Append the file again
+
+            if (result.isConfirmed) {
+                // Replace the file
+                formData.append('replace', true); // Add replace flag
+            } else {
+                // Keep both: Re-upload the file with a unique name
+                formData.append('keepBoth', true); // Add keepBoth flag
+            }
+
+            $.ajax({
+                url: $('#upload-file-form').attr('action'),
+                type: 'POST',
+                data: formData,
+                processData: false,
+                contentType: false,
+                success: function(response) {
+                    if (response.success) {
+                        successCounter++; // Increment the success counter
+                        updateSuccessCount(); // Update the displayed success count
+                        $(`#progress_${currentFileIndex} .cancle_file`).hide();
+                        $(`#progress_${currentFileIndex} .done_tick`).show(); // Show success tick
+
+                        toastr.success(result.isConfirmed ?
+                            `File "${response.fileName}" replaced successfully.` :
+                            `File "${response.fileName}" uploaded successfully with a new name.`
+                        );
+                    } else {
+                        toastr.error('Failed to replace or upload the file.');
+                        let errorSVG = '<svg width="24px" height="24px" viewBox="0 0 24 24" fill="red"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"></path></svg>';
+                        $(`#progress_${currentFileIndex} .progress_circle2`).html(errorSVG);
+                    }
+
+                    activeUploads[currentFileIndex] = false; // Mark this file as completed
+                    checkAllUploadsComplete(); // Check if all uploads are done
+                    fetchFolderContents($('#parent-folder').val());
+                    resetFileInput($('input[name="file"]'));
+                },
+                error: function(xhr) {
+                    toastr.error('Error occurred while replacing or uploading the file.');
+                    let errorSVG = '<svg width="24px" height="24px" viewBox="0 0 24 24" fill="red"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"></path></svg>';
+                    $(`#progress_${currentFileIndex} .progress_circle2`).html(errorSVG);
+                }
+            });
+        });
+    } else if (response.success) {
+        // Normal success handling
         successCounter++; // Increment the success counter
         updateSuccessCount(); // Update the displayed success count
         $(`#progress_${currentFileIndex} .cancle_file`).hide();
         $(`#progress_${currentFileIndex} .done_tick`).show(); // Show success tick
+
+        // toastr.success('File uploaded successfully.');
+        activeUploads[currentFileIndex] = false; // Mark this file as completed
+        checkAllUploadsComplete(); // Check if all uploads are done
+        fetchFolderContents($('#parent-folder').val());
+        resetFileInput($('input[name="file"]'));
 
         if (response.successMessages.length) {
             response.successMessages.forEach(function(msg) {
@@ -5816,85 +5866,17 @@ if(response.directorfolder){
         if (response.errorMessages.length) {
             response.errorMessages.forEach(function(msg) {
                 toastr.error('An error occurred while uploading files');
-
-                // Create the error SVG with red fill
                 let errorSVG = '<svg width="24px" height="24px" viewBox="0 0 24 24" fill="red"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"></path></svg>';
-
-                // Replace the current done tick with the error SVG
-                $(`#progress_${currentFileIndex} .progress_circle2`).html(errorSVG); // Insert the error SVG
+                $(`#progress_${currentFileIndex} .progress_circle2`).html(errorSVG);
             });
         }
 
-        activeUploads[currentFileIndex] = false; // Mark this file as completed
-        checkAllUploadsComplete(); // Check if all uploads are done
-
-        fetchFolderContents($('#parent-folder').val());
-        resetFileInput($('input[name="file"]'));
-    } else if (response.exists) {
-    Swal.fire({
-        title: 'File Conflict',
-        text: `${response.fileName} already exists in the folder. What would you like to do?`,
-        icon: 'warning',
-        showCancelButton: true,
-        confirmButtonText: 'Replace',
-        cancelButtonText: 'Keep Both',
-    }).then((result) => {
-        if (result.isConfirmed) {
-                                    // Replace the file
-                                    var formData = new FormData();
-                                    formData.append('files[]', file); // Append the file again
-                                    formData.append('replace', true); // Add replace flag
-                                    $.ajax({
-                                        url: $('#upload-file-form').attr('action'),
-                                        type: 'POST',
-                                        data: formData,
-                                        processData: false,
-                                        contentType: false,
-                                        success: function(response) {
-                                            if (response.success) {
-                                                toastr.success(`File "${response.fileName}" replaced successfully.`);
-                                            } else {
-                                                toastr.error('Failed to replace the file.');
-                                            }
-                                        },
-                                        error: function(xhr) {
-                                            toastr.error('Error occurred while replacing the file.');
-                                        },
-                                    });
-                                } else {
-                                    // Keep both: Re-upload the file with a unique name
-                                    var formData = new FormData();
-                                    formData.append('files[]', file); // Append the file again
-                                    formData.append('keepBoth', true); // Add keepBoth flag
-                                    $.ajax({
-                                        url: $('#upload-file-form').attr('action'),
-                                        type: 'POST',
-                                        data: formData,
-                                        processData: false,
-                                        contentType: false,
-                                        success: function(response) {
-                                            if (response.success) {
-                                                toastr.success(`File "${response.fileName}" uploaded successfully with a new name.`);
-                                            } else {
-                                                toastr.error('Failed to upload the file.');
-                                            }
-                                        },
-                                        error: function(xhr) {
-                                            toastr.error('Error occurred while uploading the file.');
-                                        },
-                                    });
-                                }
-    });
-
-
+       
     } else {
+        // General error
         toastr.error('Failed to upload file: ' + response.message);
-
-        // Create the error SVG with red fill
         let errorSVG = '<svg width="24px" height="24px" viewBox="0 0 24 24" fill="red"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"></path></svg>';
-
-        // Replace the current done tick with the error SVG
-        $(`#progress_${currentFileIndex} .progress_circle2`).html(errorSVG); // Insert the error SVG
+        $(`#progress_${currentFileIndex} .progress_circle2`).html(errorSVG);
         $('#upload_filee .close').click();
     }
 
@@ -5939,6 +5921,7 @@ if(response.directorfolder){
             $('#upload_filee .close').click(); 
 
             window.xhrRequests = xhrRequests;
+
 
             // functions with postfix1 are now not in used for after optimising the code sandeep
 
