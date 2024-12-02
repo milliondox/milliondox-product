@@ -13679,7 +13679,7 @@ $(document).ready(function() {
                                         </svg>
                                         </a> --}}
                                         
-                                        <a class="dropdown-itemm download_nt" href="{{ url('/download-common-file/${file.id}') }}">
+                                        <a class="dropdown-itemm download_nt" id="view_down_doc" data-id="${file.id}" href="#">
                                         <svg width="13" height="12" viewBox="0 0 13 12" fill="none" xmlns="http://www.w3.org/2000/svg">
                                             <g clip-path="url(#clip0_380_4)">
                                                 <path d="M1.53125 11.1562C1.12514 11.1563 0.735658 10.9949 0.448493 10.7078C0.161328 10.4206 0 10.0311 0 9.625V7.4375C2.59352e-09 7.26345 0.0691404 7.09653 0.192211 6.97346C0.315282 6.85039 0.482202 6.78125 0.65625 6.78125C0.830298 6.78125 0.997218 6.85039 1.12029 6.97346C1.24336 7.09653 1.3125 7.26345 1.3125 7.4375V9.625C1.3125 9.74575 1.4105 9.84375 1.53125 9.84375H10.7188C10.7768 9.84375 10.8324 9.8207 10.8734 9.77968C10.9145 9.73866 10.9375 9.68302 10.9375 9.625V7.4375C10.9375 7.26345 11.0066 7.09653 11.1297 6.97346C11.2528 6.85039 11.4197 6.78125 11.5938 6.78125C11.7678 6.78125 11.9347 6.85039 12.0578 6.97346C12.1809 7.09653 12.25 7.26345 12.25 7.4375V9.625C12.25 10.0311 12.0887 10.4206 11.8015 10.7078C11.5143 10.9949 11.1249 11.1563 10.7188 11.1562H1.53125Z" fill="#8D8D8D"/>
@@ -13767,6 +13767,16 @@ $(document).ready(function() {
         });
     
     });
+
+    $(document).on('click', '#view_down_doc', function(e) {
+        e.preventDefault(); // Prevent default behavior of the anchor tag
+        
+        var fileId = $(this).data('id'); // Get the file ID from data-id attribute
+        
+        // Trigger file download by making an AJAX request or redirecting to the download URL
+        window.location.href = '/download-common-file/' + fileId;
+    });
+
 
 
 </script>
