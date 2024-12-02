@@ -21962,66 +21962,58 @@ public function shareFolder(Request $request)
 
     public function fetchfolderfold(Request $request)
     {
-        // Get the requested folder name or set a default value
         $folderPath = $request->get('folderName', null); // Default is null for root-level folders
     
-        // If no folder is specified, fetch folders where parent_name is NULL and common_folder is 1
-        if (is_null($folderPath) || $folderPath === 'root') {
-            $commonFoldersQuery = Folder::whereNull('parent_name')
-                ->where('common_folder', 1);
+        // Default root folder path name
+        $isRoot = is_null($folderPath) || $folderPath === 'root';
+    
+        $commonFoldersQuery = Folder::query();
+        if ($isRoot) {
+            $commonFoldersQuery->whereNull('parent_name')->where('common_folder', 1);
         } else {
-            // Fetch folders based on the requested folder path
-            $commonFoldersQuery = Folder::where('parent_name', $folderPath)
-                ->where('common_folder', 1);
+            $commonFoldersQuery->where('parent_name', $folderPath)->where('common_folder', 1);
         }
     
-        // Fetch user-specific folders
         $userFoldersQuery = Folder::where('parent_name', $folderPath)
             ->where('user_id', Auth::id())
             ->where('is_delete', 0);
     
-        // Sorting (default to A → Z)
         $sortOption = $request->get('sortOption', 'a-to-z');
-        switch ($sortOption) {
-            case 'z-to-a':
-                $commonFolders = $commonFoldersQuery->orderBy('name', 'desc')->get();
-                $userFolders = $userFoldersQuery->orderBy('name', 'desc')->get();
-                break;
+        $order = $sortOption === 'z-to-a' ? 'desc' : 'asc';
     
-            default: // 'a-to-z' and fallback
-                $commonFolders = $commonFoldersQuery->orderBy('name', 'asc')->get();
-                $userFolders = $userFoldersQuery->orderBy('name', 'asc')->get();
-                break;
-        }
+        $commonFolders = $commonFoldersQuery->orderBy('name', $order)->get();
+        $userFolders = $userFoldersQuery->orderBy('name', $order)->get();
     
-        // Merge folder results
         $folderContents = $commonFolders->merge($userFolders);
     
-        // Prepare folder HTML
         $folderHtml = '<ul class="customulli">';
         foreach ($folderContents as $folder) {
-            // Clean folder name if it contains underscores
-            if (strpos($folder->name, '_') !== false) {
-                $folder->name = substr($folder->name, strpos($folder->name, '_') + 1);
-            }
+            $folderName = strpos($folder->name, '_') !== false 
+                ? substr($folder->name, strpos($folder->name, '_') + 1) 
+                : $folder->name;
     
             $folderHtml .= 
                 '<li>
                     <a href="#" class="fold-link wedcolor" data-folder-path="' . $folder->path . '">
                         <div class="folder_wraap">
                             <img src="../assets/images/solar_folder-bold.png" id="folders" class="folder-icon" alt="Folder Icon">
-                            <span>' . htmlspecialchars($folder->name) . '</span>
+                            <span>' . htmlspecialchars($folderName) . '</span>
                         </div>
                     </a>
                 </li>';
         }
         $folderHtml .= '</ul>';
-
-        
     
-        // Return JSON response
-        return response()->json(['folderHtml' => $folderHtml]);
+        // Include back button logic at root
+        $showBackButton = !$isRoot;
+    
+        return response()->json([
+            'folderHtml' => $folderHtml,
+            'filesHtml' => $folderContents->isEmpty() ? '<p>No files available</p>' : '', // Default filesHtml
+            'showBackButton' => $showBackButton,
+        ]);
     }
+    
     
 
     // start **** sandeep added above route "fetchfixedFiles" for dynamic fetch fixed path files i.e real_file_name 26 November 2024 
@@ -23061,60 +23053,165 @@ public function saveBreadcrumb(Request $request)
     // }
     
     
-    public function uploadFile(Request $request)
+//     public function uploadFile(Request $request)
+// {
+//     // Validate the request
+//     $request->validate([
+//         'files.*' => 'required|file|max:102400|mimes:pdf,ppt,pot,pps,pptx,pptm,potx,ppam,ppsx,sldx,sldm,odp,ods,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,xlsx,docx,docm,xlam,txt,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv,xltx,xltm', // Allow specific file types up to 100MB
+//         'tagList' => 'nullable',
+//     ], [
+//         'files.*.required' => 'Each file is required.',
+//         'files.*.file' => 'The uploaded item must be a valid file.',
+//         'files.*.max' => 'Each file may not be larger than 100MB.',
+//         'files.*.mimes' => 'The file type must be valid.',
+//     ]);
+
+//     $folderPath = $request->input('parent_folder', 'uploads'); // Default folder path
+//     $folderPaths = preg_replace('/\s*\/\s*/', ' / ', $folderPath);
+
+//     if ($request->hasFile('files')) {
+//         try {
+//             $successMessages = [];
+//             $errorMessages = [];
+//             $tag_list = [];
+
+//             // Handle tags
+//             $userTags = $request->input('tagList', []);
+//             if (is_string($userTags)) {
+//                 $userTags = explode(',', $userTags);
+//             }
+//             $tag_list = array_filter((array)$userTags);
+//             $tags = empty($tag_list) ? null : json_encode($tag_list);
+
+//             foreach ($request->file('files') as $file) {
+//                 $originalFileName = $file->getClientOriginalName();
+//                 $fileExtension = $file->getClientOriginalExtension();
+//                 $baseFileName = pathinfo($originalFileName, PATHINFO_FILENAME); // File name without extension
+                
+//                 // Check if file exists in the same folder path
+//                 $fileExists = CommonTable::where('file_name', $originalFileName)
+//                     ->where('location', $folderPaths) // Check for same location
+//                     ->exists();
+
+//                 if ($fileExists) {
+//                     // File already exists, send response for SweetAlert prompt
+//                     return response()->json([
+//                         'success' => false,
+//                         'exists' => true,
+//                         'message' => 'File already exists in the same location. Replace or keep both?',
+//                         'fileName' => $originalFileName,
+//                         'folderPath' => $folderPaths,
+//                     ]);
+//                 } else {
+//                     // Save the file to storage
+//                     $filePath = $file->storeAs($folderPath, $originalFileName);
+
+//                     // Save file details to the database
+//                     CommonTable::create([
+//                         'file_type' => $file->getClientMimeType(),
+//                         'file_name' => $originalFileName,
+//                         'file_size' => $file->getSize(),
+//                         'file_path' => $filePath,
+//                         'user_name' => auth()->user()->name,
+//                         'user_id' => auth()->user()->id,
+//                         'file_status' => $request->input('file_status', 0),
+//                         'fyear' => $request->input('fyear'),
+//                         'month' => $request->input('Month'),
+//                         'tags' => $tags,
+//                         'location' => $folderPaths,
+//                         'descp' => $request->input('desc'),
+//                     ]);
+
+//                     $successMessages[] = "File {$originalFileName} uploaded successfully.";
+//                 }
+//             }
+
+//             return response()->json([
+//                 'success' => empty($errorMessages),
+//                 'successMessages' => $successMessages,
+//                 'errorMessages' => $errorMessages,
+//             ]);
+//         } catch (\Exception $e) {
+//             return response()->json(['success' => false, 'message' => 'An error occurred while processing the upload.'], 500);
+//         }
+//     } else {
+//         return response()->json(['success' => false, 'message' => 'No files were uploaded.'], 400);
+//     }
+// }
+public function uploadFile(Request $request)
 {
-    // Validate the request
+
     $request->validate([
-        'files.*' => 'required|file|max:102400|mimes:pdf,ppt,pot,pps,pptx,pptm,potx,ppam,ppsx,sldx,sldm,odp,ods,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,xlsx,docx,docm,xlam,txt,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv,xltx,xltm', // Allow specific file types up to 100MB
-        'tagList' => 'nullable',
-    ], [
-        'files.*.required' => 'Each file is required.',
-        'files.*.file' => 'The uploaded item must be a valid file.',
-        'files.*.max' => 'Each file may not be larger than 100MB.',
-        'files.*.mimes' => 'The file type must be valid.',
+        'files.*' => 'required|file|max:102400|mimes:pdf,ppt,pptx,doc,docx,xlsx,xls,jpg,png,gif,jpeg,txt,zip',
     ]);
 
-    $folderPath = $request->input('parent_folder', 'uploads'); // Default folder path
+    $folderPath = $request->input('parent_folder', 'uploads'); 
     $folderPaths = preg_replace('/\s*\/\s*/', ' / ', $folderPath);
 
     if ($request->hasFile('files')) {
-        try {
-            $successMessages = [];
-            $errorMessages = [];
+        foreach ($request->file('files') as $file) {
+            $originalFileName = $file->getClientOriginalName();
+            $filePath = $folderPaths . '/' . $originalFileName;
+            
+
             $tag_list = [];
 
-            // Handle tags
-            $userTags = $request->input('tagList', []);
-            if (is_string($userTags)) {
-                $userTags = explode(',', $userTags);
-            }
-            $tag_list = array_filter((array)$userTags);
-            $tags = empty($tag_list) ? null : json_encode($tag_list);
+                        // Handle tags
+                        $userTags = $request->input('tagList', []);
+                        if (is_string($userTags)) {
+                            $userTags = explode(',', $userTags);
+                        }
+                        $tag_list = array_filter((array)$userTags);
+                        $tags = empty($tag_list) ? null : json_encode($tag_list);
 
-            foreach ($request->file('files') as $file) {
-                $originalFileName = $file->getClientOriginalName();
-                $fileExtension = $file->getClientOriginalExtension();
-                $baseFileName = pathinfo($originalFileName, PATHINFO_FILENAME); // File name without extension
-                
-                // Check if file exists in the same folder path
-                $fileExists = CommonTable::where('file_name', $originalFileName)
-                    ->where('location', $folderPaths) // Check for same location
-                    ->exists();
+            $fileExists = CommonTable::where('file_name', $originalFileName)
+                ->where('location', $folderPaths)
+                ->exists();
 
-                if ($fileExists) {
-                    // File already exists, send response for SweetAlert prompt
+            if ($fileExists) {
+               
+                if ($request->input('replace')) {
+                    
+                    // Delete the existing file and replace it
+                    // Update the latest entry where conditions match
+                        CommonTable::where('file_name', $originalFileName)
+                        ->where('location', $folderPaths)
+                        ->where('is_delete', 0) // Optional: only if you want to update records where 'is_delete' is 0
+                        ->latest() // Order by the latest created or updated entry
+                        ->first() // Get the first (latest) record
+                        ->update([
+                            'is_replace' => 1
+                        ]);
+
+
+                    $file->storeAs($folderPath, $originalFileName);
+                    // CommonTable::create([
+                    //     'file_type' => $file->getClientMimeType(),
+                    //     'file_name' => $originalFileName,
+                    //     'file_size' => $file->getSize(),
+                    //     'file_path' => $filePath,
+                    //     'user_name' => auth()->user()->name,
+                    //     'user_id' => auth()->user()->id,
+                    //     'file_status' => $request->input('file_status', 0),
+                    //     'fyear' => $request->input('fyear'),
+                    //     'month' => $request->input('Month'),
+                    //     'tags' => $tags,
+                    //     'location' => $folderPaths,
+                    //     'descp' => $request->input('desc'),
+                    //     'is_replace' =>"1"
+                    // ]);
+
                     return response()->json([
-                        'success' => false,
-                        'exists' => true,
-                        'message' => 'File already exists in the same location. Replace or keep both?',
-                        'fileName' => $originalFileName,
-                        'folderPath' => $folderPaths,
+                        'success' => true,
+                        'message' => "Replaced existing file: {$originalFileName}",
                     ]);
-                } else {
-                    // Save the file to storage
-                    $filePath = $file->storeAs($folderPath, $originalFileName);
+                } elseif ($request->input('keepBoth')) {
+                    // Generate a unique file name
+                    $uniqueSuffix = $request->input('uniqueSuffix');
+                    $newFileName = pathinfo($originalFileName, PATHINFO_FILENAME) . $uniqueSuffix . '.' . $file->getClientOriginalExtension();
+                    $newFilePath = $folderPaths . '/' . $newFileName;
 
-                    // Save file details to the database
+                    $file->storeAs($folderPath, $newFileName);
                     CommonTable::create([
                         'file_type' => $file->getClientMimeType(),
                         'file_name' => $originalFileName,
@@ -23128,23 +23225,46 @@ public function saveBreadcrumb(Request $request)
                         'tags' => $tags,
                         'location' => $folderPaths,
                         'descp' => $request->input('desc'),
+                        'is_keep_both' => "1"
                     ]);
 
-                    $successMessages[] = "File {$originalFileName} uploaded successfully.";
+                    return response()->json([
+                        'success' => true,
+                        'message' => "File saved as {$newFileName}.",
+                    ]);
                 }
-            }
 
-            return response()->json([
-                'success' => empty($errorMessages),
-                'successMessages' => $successMessages,
-                'errorMessages' => $errorMessages,
-            ]);
-        } catch (\Exception $e) {
-            return response()->json(['success' => false, 'message' => 'An error occurred while processing the upload.'], 500);
+                return response()->json([
+                    'success' => false,
+                    'exists' => true,
+                    'fileName' => $originalFileName,
+                    'folderPath' => $folderPaths,
+                    'message' => "File already exists in the same location. Replace or keep both?",
+                ]);
+            } else {
+                // Save the file if it doesn't exist
+                $file->storeAs($folderPath, $originalFileName);
+                CommonTable::create([
+                    'file_type' => $file->getClientMimeType(),
+                        'file_name' => $originalFileName,
+                        'file_size' => $file->getSize(),
+                        'file_path' => $filePath,
+                        'user_name' => auth()->user()->name,
+                        'user_id' => auth()->user()->id,
+                        'file_status' => $request->input('file_status', 0),
+                        'fyear' => $request->input('fyear'),
+                        'month' => $request->input('Month'),
+                        'tags' => $tags,
+                        'location' => $folderPaths,
+                        'descp' => $request->input('desc'),
+                ]);
+            }
         }
-    } else {
-        return response()->json(['success' => false, 'message' => 'No files were uploaded.'], 400);
+
+        return response()->json(['success' => true, 'message' => 'File(s) uploaded successfully.']);
     }
+
+    return response()->json(['success' => false, 'message' => 'No files were uploaded.']);
 }
 
 
