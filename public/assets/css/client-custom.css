@@ -20593,6 +20593,9 @@ display: block;
     line-height: normal;
     margin: 0px 0px 0px 6px;
 }
+.dark-only .cpy_table table tr td .copy {
+    color: #ffffff;
+}
 /******admin company-profile css end******/
 
 /******admin company-profile new section css start******/

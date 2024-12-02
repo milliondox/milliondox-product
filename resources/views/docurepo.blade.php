@@ -30,18 +30,27 @@
 <script>
     // Function to detect if the user is on a mobile device
     function isMobileDevice() {
-        return /Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+        const userAgent = navigator.userAgent || navigator.vendor || window.opera;
+        console.log(navigator.userAgent);
+        console.log(userAgent);
+
+        // Check for mobile devices
+        let result = /android|iphone|ipad|ipod|blackberry|iemobile|opera mini/i.test(userAgent.toLowerCase());
+        console.log(result);
+        return result;
     }
 
     // Check the device
     if (isMobileDevice()) {
         alert("This website is best viewed on a desktop device. Redirecting...");
+        // Redirect to the desired page
         window.location.href = "https://milliondox.com";
     } else {
+        // Show the content if not on a mobile device
         document.body.style.display = "block";
     }
-
 </script>
+
 {{-- <meta name="csrf-token" content="{{ csrf_token() }}"> --}}
 
 
@@ -2085,76 +2094,180 @@ $(document).ready(function() {
 
             </script> --}}
             <script>
-  $(document).ready(function () {
-    $(document).on('click', '.downloadfolder', async function () {
-    var $thisButton = $(this); // Reference to the clicked button
-    var folderid = $thisButton.data('id');
-    
-    // Show a toastr message that the download is in progress
-    toastr.success('Your Download is in Progress');
+               $(document).ready(function () {
+                $(document).on('click', '.downloadfolder', async function () {
+                    var $thisButton = $(this);
+                    var folderid = $thisButton.data('id');
 
-    // Disable the button to prevent multiple clicks while the download is in progress
-    $thisButton.prop('disabled', true).text('Downloading...');
+                    $('.progree_cont_nt').css('display', 'block');
+                    $('#uploadSuccessCount').html("Preparing files...");
 
-    try {
-        // Call the downloadFolder function, which returns a promise
-        await downloadFolder(folderid, $thisButton);
-    } catch (error) {
-        // If there's an error during the download, log it and re-enable the button
-        console.error(error);
-        $thisButton.prop('disabled', false).text('Download');
-        toastr.error('An error occurred while downloading the folder. Please try again.', 'Download Error');
-    }
-});
+                    var progressId = `progress_${folderid}`;
+                    const progressHtmlZipp = `
+                        <div class="progress_repeat" id="${progressId}">
+                            <h2 class="file_name">Zipping Files</h2>
+                            <div class="progress_circle progress_circle2">
+                                <div id="wrapper_progreess" class="center">                  
+                                    <svg class="progresss" x="0px" y="0px" viewBox="0 0 80 80">
+                                        <path class="track" d="M5,40a35,35 0 1,0 70,0a35,35 0 1,0 -70,0" />
+                                        <path class="fill" id="progressFill_${folderid}" d="M5,40a35,35 0 1,0 70,0a35,35 0 1,0 -70,0"
+                                            style="stroke-dasharray: 220; stroke-dashoffset: 220;" />
+                                    </svg>
 
-// Function to handle the folder download
-async function downloadFolder(folderid, $thisButton) {
-    return new Promise((resolve, reject) => {
+                                    <span class="span_dott"></span>
+                                </div>
+                                <div class="cancle_file">
+                                    <button class="remove-btnn" data-id="${folderid}">X</button>
+                                </div>
+                                <div class="done_tick" style="display:none;">
+                                    <svg class="progress_done" width="24px" height="24px" viewBox="0 0 24 24" fill="#0F9D58">
+                                        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"></path>
+                                    </svg>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                    $('.progress_repeat_wrap').append(progressHtmlZipp);
+
+                    $thisButton.prop('disabled', true).text('Downloading...');
+
+                    const intervalId = simulateProgress(progressId); // Start simulated progress
+
+                    try {
+                        await downloadFolder(folderid, $thisButton, progressId);
+                        clearInterval(intervalId); // Stop simulated progress
+                        updateProgressBar(progressId, 100, "Download Completed!");
+                    } catch (error) {
+                        clearInterval(intervalId); // Stop simulated progress
+                        updateProgressBar(progressId, 0, "Failed!");
+                        toastr.error('An error occurred while downloading the folder. Please try again.', 'Download Error');
+                    }
+                });
+
+                async function downloadFolder(folderid, $thisButton, progressId) {
+                    return new Promise((resolve, reject) => {
+                        $.ajax({
+                            url: `/download-folder/${folderid}`,
+                            type: 'GET',
+                            xhrFields: { responseType: 'blob' },
+                            success: function (response, status, xhr) {
+                                const disposition = xhr.getResponseHeader('Content-Disposition');
+                                if (disposition && disposition.indexOf('attachment') !== -1) {
+                                    const filename = disposition.split('filename=')[1].replace(/"/g, '');
+                                    const blob = new Blob([response], { type: 'application/zip' });
+                                    const url = window.URL.createObjectURL(blob);
+                                    const a = document.createElement('a');
+                                    a.href = url;
+                                    a.download = filename;
+                                    document.body.appendChild(a);
+                                    a.click();
+                                    a.remove();
+                                    window.URL.revokeObjectURL(url);
+
+                                    resolve();
+                                } else {
+                                    reject('Download failed: No file attachment found');
+                                }
+                            },
+                            error: function (xhr, status, error) {
+                                console.error('Error details:', status, error, xhr.responseText);
+                                reject('Download failed: ' + error);
+                            },
+                            complete: function () {
+                                $thisButton.prop('disabled', false).text('Download');
+                            }
+                        });
+                    });
+                }
+
+                function updateProgressBar(progressId, progress, message) {
+                    const circle = $(`#${progressId} .fill`);
+                    const radius = 35;
+                    const circumference = 2 * Math.PI * radius;
+                    const offset = circumference - (progress / 100) * circumference;
+
+                    circle.css('stroke-dasharray', `${circumference} ${circumference}`);
+                    circle.css('stroke-dashoffset', offset);
+                    $(`#${progressId} .file_name`).text(message);
+
+                    if (progress === 100) {
+                        $(`#${progressId} .done_tick`).show();
+                        $(`#${progressId} .progress_circle2`).hide();
+                    $('#uploadSuccessCount').html("Download Complete");
+
+                    }
+                }
+
+                function simulateProgress(progressId) {
+                    let progress = 0;
+                    const interval = setInterval(() => {
+                        if (progress < 95) {
+                            progress += 5;
+                            updateProgressBar(progressId, progress, `Zipping files... ${progress}%`);
+                        } else {
+                            clearInterval(interval);
+                        }
+                    }, 500);
+                    return interval;
+                }
+            });
+
+            $(document).on('click', '#close_down_box2', function () {
+                    hideprogressdiv2();
+                });
+
+            function hideprogressdiv2() {
+                // If no active requests, hide the progress container without confirmation
+                $('.progree_cont_nt').hide();
+
+                // Clear the contents of .progress_repeat_wrap
+                $('.progress_repeat_wrap').empty();
+
+            }
+            // close_down_box
+
+
+
+            </script>
+
+
+    <script>
+        $(document).on('click', '.custdownload', function (e) {
+        e.preventDefault(); // Prevent default behavior of the link
+
+        let id = $(this).data('id'); // Get the file ID
+        let url = '/download-file/' + id; // Construct the URL for the AJAX call
+
+        // Run AJAX
         $.ajax({
-            url: '/download-folder/' + folderid,
+            url: url,
             type: 'GET',
             xhrFields: {
-                responseType: 'blob' // Set response type to blob for file downloads
+                responseType: 'blob' // Important for file downloads
             },
-            success: function (response, status, xhr) {
-                const disposition = xhr.getResponseHeader('Content-Disposition');
+            success: function (data, status, xhr) {
+                // Get the filename from the Content-Disposition header
+                let disposition = xhr.getResponseHeader('Content-Disposition');
+                let filename = "downloaded_file";
                 if (disposition && disposition.indexOf('attachment') !== -1) {
-                    const filename = disposition.split('filename=')[1].replace(/"/g, '');
-
-                    // Create a download link for the blob
-                    const blob = new Blob([response], { type: 'application/zip' });
-                    const url = window.URL.createObjectURL(blob);
-                    const a = document.createElement('a');
-                    a.href = url;
-                    a.download = filename;
-                    document.body.appendChild(a);
-                    a.click();
-                    a.remove();
-                    window.URL.revokeObjectURL(url);
-
-                    // Show success message
-                    toastr.success('Your folder has been downloaded successfully!', 'Download Complete');
-                    resolve(); // Resolve the promise after successful download
-                } else {
-                    reject('Download failed: No file attachment found');
+                    let matches = /filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/.exec(disposition);
+                    if (matches != null && matches[1]) filename = matches[1].replace(/['"]/g, '');
                 }
+
+                // Create a link element, set the blob data and click it to trigger the download
+                let link = document.createElement('a');
+                link.href = window.URL.createObjectURL(data);
+                link.download = filename;
+                link.click();
             },
             error: function (xhr, status, error) {
-                console.error('Error details:', status, error, xhr.responseText);
-                reject('Download failed: ' + error);
-            },
-            complete: function () {
-                // Re-enable the button after the request completes
-                $thisButton.prop('disabled', false).text('Download');
+                console.error('An error occurred:', error);
+                alert('Could not download the file.');
             }
         });
     });
-}
 
-
-});
-
-            </script>
+    </script>
             
             
             
@@ -6541,7 +6654,7 @@ $(window).on('load', function() {
 <path fill-rule="evenodd" clip-rule="evenodd" d="M8.60638 8.72891C8.31341 9.02151 7.91628 9.18587 7.50222 9.18587C7.08815 9.18587 6.69102 9.02151 6.39805 8.72891L0.504299 2.83724C0.211318 2.54412 0.0467774 2.14662 0.046875 1.73219C0.0469727 1.31775 0.2117 0.920328 0.504819 0.627346C0.797939 0.334365 1.19544 0.169824 1.60988 0.169922C2.02431 0.17002 2.42173 0.334747 2.71472 0.627867L7.50222 5.41537L12.2897 0.627867C12.5843 0.343103 12.9789 0.185423 13.3886 0.188789C13.7983 0.192154 14.1902 0.356296 14.4801 0.645861C14.7699 0.935425 14.9344 1.32724 14.9382 1.73693C14.9419 2.14661 14.7846 2.54138 14.5001 2.8362L8.60742 8.72995L8.60638 8.72891Z" fill="#1E1E1E"/>
 </svg>
             </button>
-            <button type="button" class="close_down_box" onclick="hideprogressdiv();">
+            <button type="button" id="close_down_box2" class="close_down_box" onclick="hideprogressdiv();">
             <svg width="50" height="50" viewBox="0 0 50 50" fill="none" xmlns="http://www.w3.org/2000/svg">
              <rect width="4.27093" height="66.172" transform="matrix(0.702074 -0.712104 0.709324 0.704883 0 3.31244)" fill="black"></rect>
               <rect width="4.27086" height="66.3713" transform="matrix(-0.704896 -0.70931 0.706518 -0.707695 3.10742 50)" fill="black"></rect>
@@ -8810,7 +8923,7 @@ checkFolderConditions();
                 
                 // console.log("Decoded Folder Path: ", decodedFolder); // For debugging
             } else {
-                console.log('No folder parameter found in the URL.');
+                // console.log('No folder parameter found in the URL.');
             }
         }
 
