@@ -1355,8 +1355,6 @@ ul.dropdown-menu .toggle_icconn {
 .all_locations {
     flex: 3;
     padding: 10px;
-    max-height: 25vh;
-    min-height: 4vh;
     border: 1px solid #646464;
     border-radius: 5px;
     overflow: hidden;
@@ -1448,7 +1446,7 @@ padding:0
 
 .all_locations .customulli {
     max-height: 20vh;
-    min-height: 4vh;
+    min-height: 20vh;
     overflow: auto;
     border-radius: 0px;
     padding: 0px 10px 0px 0px;
