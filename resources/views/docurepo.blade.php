@@ -4014,7 +4014,7 @@ $(document).on('click', '.toggle_icconn', function(e) {
         $this.removeClass('active'); // Remove 'active' class if it's already active
     } else {
         navigateToFolder1(folderPath);
-        navigateToFolders(folderPath);
+        // navigateToFolders(folderPath);
         $this.addClass('active'); // Add 'active' class
     }
 });
@@ -4084,7 +4084,7 @@ function bindFolderClickEvents() {
         e.preventDefault();
         var folderPath = $(this).data('folder-path');
         navigateToFolder(folderPath);
-        navigateToFolders(folderPath);
+        // navigateToFolders(folderPath);
     });
 }
 
@@ -4180,9 +4180,9 @@ $(document).on('click', '.fold-link', function (e) {
     updateBreadcrumbs(folderPath);
 
     // Show a loading spinner or message (optional)
-    $('#folderscont').html('<p>Loading...</p>');  // This shows the loading text or spinner
+    $('.folder-cont').html('<p>Loading...</p>');  // This shows the loading text or spinner
     let loaderTimeout = setTimeout(function () {
-        $('#folderscont').html('<p>Data is still loading...</p>');
+        $('.folder-cont').html('<p>Data is still loading...</p>');
     }, 30000); // 30 seconds
     // Send an AJAX request to fetch the folder contents
     $.ajax({
@@ -4194,18 +4194,18 @@ $(document).on('click', '.fold-link', function (e) {
         },
         beforeSend: function () {
             // Optional: Show a loader spinner before the request is sent
-            $('#folderscont').html('<div class="loader" style="color: red; font-size: 40px;">Loading...</div>');  // Apply inline styles for color and font size
+            $('.folder-cont').html('<div class="loader" style="color: #C5C5C5; font-size: 12px;">Loading...</div>');  // Apply inline styles for color and font size
         },
         success: function (response) {
             // Update the folder contents with the HTML response
             clearTimeout(loaderTimeout);
-            $('#folderscont').html(response.folderHtml);  // Replace loader with the real content
+            $('.folder-cont').html(response.folderHtml);  // Replace loader with the real content
         },
         error: function (xhr, status, error) {
             clearTimeout(loaderTimeout);
             // Handle errors
             console.error(error);
-            $('#folderscont').html('<p>Failed to load folder contents. Please try again.</p>');
+            $('.folder-cont').html('<p>Failed to load folder contents. Please try again.</p>');
         }
     });
 });
@@ -4213,28 +4213,28 @@ function updateBreadcrumbs(folderPath) {
     // Split the folder path into parts
     const folderParts = folderPath ? folderPath.split('/') : ['root'];
 
-    let breadcrumbHtmlz = '<div class="breadcrumbs-container">';
+    let breadcrumbHtml = '<div class="breadcrumbs-container">';
 
     // Add "Back" button logic
     if (folderParts.length > 1 || folderParts[0] !== 'root') {
         const parentPath = folderParts.slice(0, -1).join('/') || 'root';
-        breadcrumbHtmlz += `
+        breadcrumbHtml += `
             <button class="backs-button" data-folder-path="${parentPath}">
                 Back
             </button>`;
     }
 
-    breadcrumbHtmlz += '<nav><ul class="breadcrumbs">';
+    breadcrumbHtml += '<nav><ul class="breadcrumbs">';
 
     // Construct the breadcrumb links
     let cumulativePath = '';
     folderParts.forEach((part) => {
         cumulativePath += part + '/';
 
-        // Remove any prefix (e.g., "2024-2025November0_") from folder names
+        // Remove any prefix from folder names
         const cleanName = part.includes('_') ? part.split('_')[1] : part;
 
-        breadcrumbHtmlz += `
+        breadcrumbHtml += `
             <li>
                 <a href="#" class="breadcrumbs-link" data-folder-path="${cumulativePath.slice(0, -1)}">
                     ${cleanName}
@@ -4242,12 +4242,12 @@ function updateBreadcrumbs(folderPath) {
             </li>`;
     });
 
-    breadcrumbHtmlz += '</ul></nav></div>';
+    breadcrumbHtml += '</ul></nav></div>';
 
     // Update the breadcrumb container
-    $('.nav-paths').html(breadcrumbHtmlz);
+    $('.nav-paths').html(breadcrumbHtml);
 
-    // Hide the "Back" button if the current folder is already root
+    // Hide the "Back" button if the current folder is root
     if (folderPath === 'root') {
         $('.backs-button').hide();
     }
@@ -4256,37 +4256,20 @@ function updateBreadcrumbs(folderPath) {
 // Handle "Back" button clicks
 $(document).on('click', '.backs-button', function (e) {
     e.preventDefault();
-
-    const folderPath = $(this).data('folder-path');
-
-    // Update breadcrumbs and fetch the parent folder's contents
-    if (folderPath !== 'root') {
-        navigateToFolders(folderPath);
-    } else {
-        // Hide the back button if it's already pointing to root
-        $(this).hide();
-    }
-});
-
-
-// Handle breadcrumb link clicks
-$(document).on('click', '.breadcrumbs-link', function (e) {
-    e.preventDefault();
-
     const folderPath = $(this).data('folder-path');
     navigateToFolders(folderPath);
 });
 
-// Handle "Back" button clicks
-$(document).on('click', '.backs-button', function (e) {
+// Handle breadcrumb link clicks
+$(document).on('click', '.breadcrumbs-link', function (e) {
     e.preventDefault();
-
     const folderPath = $(this).data('folder-path');
     navigateToFolders(folderPath);
 });
 
 // Function to navigate to a folder and update contents
 function navigateToFolders(folderPath) {
+    // Update breadcrumbs
     updateBreadcrumbs(folderPath);
 
     // Fetch folder contents via AJAX
@@ -4297,14 +4280,19 @@ function navigateToFolders(folderPath) {
             folderName: folderPath,
             _token: $('meta[name="csrf-token"]').attr('content')
         },
+       
         success: function (response) {
-            $('#folderscont').html(response.folderHtml);
+            $('.folder-cont').html(response.folderHtml || '<p>No folders available.</p>');
         },
         error: function (xhr) {
             console.error('Error fetching folder contents:', xhr.responseText);
-        }
+        },
+        
     });
 }
+
+
+
 
 
 
@@ -4339,46 +4327,53 @@ function decodeAndFormatUrl(url) {
         // showLoader(); // Ensure the loader is shown when the request starts
        
         function getQueryParam(param) {
-        const queryString = window.location.search.substring(1);
-        const params = queryString.split('&');
-        for (let i = 0; i < params.length; i++) {
-            const pair = params[i].split('=');
-            if (pair[0] === param) {
-                return pair[1] ? decodeURIComponent(pair[1]) : null;
+            const queryString = window.location.search.substring(1);
+            const params = queryString.split('&');
+            for (let i = 0; i < params.length; i++) {
+                const pair = params[i].split('=');
+                if (pair[0] === param) {
+                    return pair[1] ? decodeURIComponent(pair[1]) : null;
+                }
             }
+            return null;
         }
-        return null;
-    }
 
-    // Determine folder path from the URL
-    const folderPaths = getQueryParam('folder');
-    let pathToUse = null; // Default to null
+        // Retrieve the folder path from the URL parameters
+        const folderPaths = getQueryParam('folder');
+    
+// alert("inside fetch folder");
 
-    // If URL path is /docurepo, set folderPath to null, otherwise use folder param
-    if (window.location.pathname === '/docurepo') {
-        pathToUse = null; // If URL is /docurepo, use null for folderPath
-    } else if (folderPaths) {
-        // If the 'folder' query parameter is present, use its decoded value
-        pathToUse = decodeURIComponent(folderPaths);
-    }
+    // Determine the folder path to use
+    const pathToUse = folderPaths ? decodeURIComponent(folderPaths) : null;
+    // alert(pathToUse);
+    // if (window.location.pathname === '/docurepo') {
+    //     pathToUse = null; // Default for '/docurepo'
+    // } else {
+    //     pathToUse = decodedFolderPath || folderPath; // Use decoded folderPath or the provided folderPath
+ 
+    // }
 
-    // If folder path is null, handle appropriately
-    if (!pathToUse) {
-        console.log("Folder path is null, handle this case");
-        // Handle the case when folderPath is null (e.g., show a default page or empty state)
-    }
+// Make sure to use backticks (`) for the template literal
+let url = `${pathToUse}`;
 
-    // Format the URL
-    let result = decodeAndFormatUrl(pathToUse);
+// Format the decoded URL
+let result = decodeAndFormatUrl(url);
 
-    let fullPath = `${result}`;
+let fullPath = `${result}`;
 
-    // Handle specific folder path transformations if needed
-    let basePath = "Accounting & Taxation/Charter Documents/Director Details/";
-    let newPermitter = fullPath.replace(basePath, '').split('/')[0];
+// The base path you want to cut off
+let basePath = "Accounting & Taxation/Charter Documents/Director Details/";
 
-    let newbase = "Human Resources/Employee Database/";
-    let newPerm = fullPath.replace(newbase, '').split('/')[0];
+// Extract the part after the base path
+let newPermitter = fullPath.replace(basePath, '').split('/')[0];
+
+
+
+
+
+let newbase = "Human Resources/Employee Database/";
+
+let newPerm = fullPath.replace(newbase, '').split('/')[0];
         $.ajax({
             url: '/fetch-folder-contents',
             method: 'GET',
@@ -5822,11 +5817,15 @@ if(response.directorfolder){
                         updateSuccessCount(); // Update the displayed success count
                         $(`#progress_${currentFileIndex} .cancle_file`).hide();
                         $(`#progress_${currentFileIndex} .done_tick`).show(); // Show success tick
+                        
 
                         toastr.success(result.isConfirmed ?
                             `File "${response.fileName}" replaced successfully.` :
                             `File "${response.fileName}" uploaded successfully with a new name.`
                         );
+                    //     setTimeout(function() {
+                    //     location.reload(); // Reload the page after 3 seconds
+                    // }, 3000); // 3000 milliseconds = 3 seconds
                     } else {
                         toastr.error('Failed to replace or upload the file.');
                         let errorSVG = '<svg width="24px" height="24px" viewBox="0 0 24 24" fill="red"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"></path></svg>';
@@ -6588,7 +6587,7 @@ $(window).on('load', function() {
 
 
                     <div class="upp_input">
-                    <button class="btn btn-primary" style="border-radius:5px;" type="submit">Upload</button>
+                    <button class="btn btn-primary closenav" style="border-radius:5px;" type="submit">Upload</button>
 </div>
                 </form>
             </div>
