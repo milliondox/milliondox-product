@@ -31,12 +31,12 @@
     // Function to detect if the user is on a mobile device
     function isMobileDevice() {
         const userAgent = navigator.userAgent || navigator.vendor || window.opera;
-        console.log(navigator.userAgent);
-        console.log(userAgent);
+        // console.log(navigator.userAgent);
+        // console.log(userAgent);
 
         // Check for mobile devices
         let result = /android|iphone|ipad|ipod|blackberry|iemobile|opera mini/i.test(userAgent.toLowerCase());
-        console.log(result);
+        // console.log(result);
         return result;
     }
 
