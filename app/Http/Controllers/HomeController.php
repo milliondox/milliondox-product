@@ -21587,8 +21587,9 @@ public function shareFolder(Request $request)
   public function fetchFolderContents(Request $request)
     {
           $folderPath = $request->get('folderName');
+          $folderPaths = $request->get('folderName');
        
-          $folderPaths = preg_replace('/\//', ' / ', $folderPath);
+        //   $folderPaths = preg_replace('/\//', ' / ', $folderPath);
         //   dd($folderPath);
     $sortOption = $request->get('sortOption');  // Get the selected sorting option
     
@@ -23230,7 +23231,7 @@ public function saveBreadcrumb(Request $request)
 //     }
 
 
-    public function uploadFile(Request $request)
+    public function uploadFile(Request $request) 
 {
     $request->validate([
         'files.*' => 'required|file|max:102400|mimes:pdf,ppt,pot,pps,pptx,pptm,potx,ppam,ppsx,sldx,sldm,odp,ods,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,xlsx,docx,docm,xlam,txt,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv,xltx,xltm',
@@ -23242,11 +23243,16 @@ public function saveBreadcrumb(Request $request)
         'files.*.mimes' => 'The file type must be valid.',
     ]);
 
+    // dd($request);
+
     // Store folderPath and folderPaths in the session
     $folderPath = session('folderPath', $request->input('parent_folder'));
     session(['folderPath' => $folderPath]);
 
-    $folderPaths = session('folderPaths', preg_replace('/\s*\/\s*/', ' / ', $folderPath));
+    // $folderPaths = session('folderPaths', preg_replace('/\s*\/\s*/', ' / ', $folderPath));
+    // session(['folderPaths' => $folderPaths]);
+
+    $folderPaths = session('folderPaths', $request->input('parent_folder'));
     session(['folderPaths' => $folderPaths]);
 
     if ($request->hasFile('files')) {
