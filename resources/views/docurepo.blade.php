@@ -49,6 +49,21 @@
         // Show the content if not on a mobile device
         document.body.style.display = "block";
     }
+
+    // $(document).on('click', '.down_cust_file', function(e) {
+    //     e.preventDefault(); // Prevent the default behavior
+    //     // const downloadUrl = $(this).attr('href');
+    //     const fileId = $(this).data('id');
+    //     const downloadUrl = `/downloadFilecustom/${fileId}`;
+
+
+    //     // Trigger the download by simulating a click
+    //     const link = document.createElement('a');
+    //     link.href = downloadUrl;
+    //     link.download = ''; // Optionally, set a default filename
+    //     link.click();
+    // });
+
 </script>
 
 {{-- <meta name="csrf-token" content="{{ csrf_token() }}"> --}}
@@ -2231,12 +2246,12 @@ $(document).ready(function() {
             </script>
 
 
-    <script>
-        $(document).on('click', '.custdownload', function (e) {
+    {{-- <script>
+        $(document).on('click', '.down_cust_file', function (e) {
         e.preventDefault(); // Prevent default behavior of the link
 
         let id = $(this).data('id'); // Get the file ID
-        let url = '/download-file/' + id; // Construct the URL for the AJAX call
+        let url = '/downloadFilecustom/' + id; // Construct the URL for the AJAX call
 
         // Run AJAX
         $.ajax({
@@ -2267,7 +2282,7 @@ $(document).ready(function() {
         });
     });
 
-    </script>
+    </script> --}}
             
             
             
