@@ -1865,21 +1865,46 @@ $userRoleRecord = UserRole::where('role', $userRole)->first();
     }
     
     
-    public function downloadCommonFile($id)
+//     public function downloadCommonFile($id)
+// {
+//     // $userId = Auth::id(); 
+//     // $file = CommonTable::findOrFail($id);
+//     $userId = Auth::id();
+//     $file = CommonTable::where('id', $id)
+//                    ->where('user_id', $userId)
+//                    ->firstOrFail();
+
+    
+//     // Assuming you store the file path in a 'file_path' column
+//     $filePath = $file->file_path;
+//     $fileName = basename($filePath);
+//     // $realfileName = $file->file_name;
+    
+//     if (Storage::exists($filePath)) {
+//         return Storage::download($filePath);
+//     } else {
+//         return redirect()->back()->with('error', 'File not found.');
+//     }
+    
+// }
+
+public function downloadCommonFile($id)
 {
-    $file = CommonTable::findOrFail($id);
-    
-    // Assuming you store the file path in a 'file_path' column
-    $filePath = $file->file_path;
-    $fileName = basename($filePath);
-    // $realfileName = $file->file_name;
-    
-    if (Storage::exists($filePath)) {
-        return Storage::download($filePath);
-    } else {
-        return redirect()->back()->with('error', 'File not found.');
+    // $file = CommonTable::findOrFail($id); // Replace with your model
+    // dd($file);
+    $userId = Auth::id();
+    $file = CommonTable::where('id', $id)
+                   ->where('user_id', $userId)
+                   ->firstOrFail();
+
+    $filePath = storage_path("app/{$file->file_path}");
+    // dd($filePath);
+
+    if (!file_exists($filePath)) {
+        abort(404, 'File not found');
+        return response()->json(['error' => 'File Not Found']);
     }
-    
+    return response()->download($filePath, $file->file_name);
 }
 
 public function softdeleteCommonFile($id)
@@ -21920,7 +21945,7 @@ public function shareFolder(Request $request)
                 $fileHtml .= '<tr>';
                 $fileHtml .= '<td>' . $file->file_name . '</td>';
                 $fileHtml .= '<td class="funtion_buttnss">                
-                <a href="' . route('downloadFilecustom', $file->id) . '">
+                <a class="down_cust_file" href=""# data-id="' . $file->id . '">
                                   <svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
                                       <path d="M2.40625 12.25C2.00014 12.25 1.61066 12.0887 1.32349 11.8015C1.03633 11.5143 0.875 11.1249 0.875 10.7188V8.53125C0.875 8.3572 0.94414 8.19028 1.06721 8.06721C1.19028 7.94414 1.3572 7.875 1.53125 7.875C1.7053 7.875 1.87222 7.94414 1.99529 8.06721C2.11836 8.19028 2.1875 8.3572 2.1875 8.53125V10.7188C2.1875 10.8395 2.2855 10.9375 2.40625 10.9375H11.5938C11.6518 10.9375 11.7074 10.9145 11.7484 10.8734C11.7895 10.8324 11.8125 10.7768 11.8125 10.7188V8.53125C11.8125 8.3572 11.8816 8.19028 12.0047 8.06721C12.1278 7.94414 12.2947 7.875 12.4688 7.875C12.6428 7.875 12.8097 7.94414 12.9328 8.06721C13.0559 8.19028 13.125 8.3572 13.125 8.53125V10.7188C13.125 11.1249 12.9637 11.5143 12.6765 11.8015C12.3893 12.0887 11.9999 12.25 11.5938 12.25H2.40625Z" fill="#CEFFA8" />
                                       <path d="M6.34334 6.72788V1.75C6.34334 1.57595 6.41248 1.40903 6.53555 1.28596C6.65862 1.16289 6.82554 1.09375 6.99959 1.09375C7.17364 1.09375 7.34056 1.16289 7.46363 1.28596C7.5867 1.40903 7.65584 1.57595 7.65584 1.75V6.72788L9.37959 5.005C9.44049 4.9441 9.51279 4.89579 9.59236 4.86283C9.67193 4.82987 9.75722 4.81291 9.84334 4.81291C9.92947 4.81291 10.0148 4.82987 10.0943 4.86283C10.1739 4.89579 10.2462 4.9441 10.3071 5.005C10.368 5.0659 10.4163 5.1382 10.4493 5.21777C10.4822 5.29734 10.4992 5.38262 10.4992 5.46875C10.4992 5.55488 10.4822 5.64016 10.4493 5.71973C10.4163 5.7993 10.368 5.8716 10.3071 5.9325L7.46334 8.77625C7.40247 8.83721 7.33018 8.88556 7.25061 8.91856C7.17103 8.95155 7.08574 8.96853 6.99959 8.96853C6.91345 8.96853 6.82815 8.95155 6.74857 8.91856C6.669 8.88556 6.59671 8.83721 6.53584 8.77625L3.69209 5.9325C3.63119 5.8716 3.58288 5.7993 3.54992 5.71973C3.51696 5.64016 3.5 5.55488 3.5 5.46875C3.5 5.38262 3.51696 5.29734 3.54992 5.21777C3.58288 5.1382 3.63119 5.0659 3.69209 5.005C3.75299 4.9441 3.82529 4.89579 3.90486 4.86283C3.98443 4.82987 4.06972 4.81291 4.15584 4.81291C4.24197 4.81291 4.32725 4.82987 4.40682 4.86283C4.48639 4.89579 4.55869 4.9441 4.61959 5.005L6.34334 6.72788Z" fill="#CEFFA8" />
@@ -22617,25 +22642,63 @@ public function renameFolder(Request $request)
 
     
     
-    public function downloadFilecustom($id)
+    // public function downloadFilecustom($id)
+    // {
+    //     // Find the file record in the database
+    //     $file = CommonTable::find($id);
+
+    //     if (!$file) {
+    //         return redirect()->back()->with('error', 'File not found.');
+    //     }
+
+    //     // Extract the file path from the database
+    //     $filePath = $file->file_path;
+
+    //     // Check if the file exists on the storage
+    //     if (!Storage::exists($filePath)) {
+    //         return redirect()->back()->with('error', 'File does not exist.');
+    //     }
+
+    //     // Download the file
+    //     return Storage::download($filePath, $file->file_name);
+    // }
+
+        public function downloadFilecustom($id)
     {
-        // Find the file record in the database
-        $file = CommonTable::find($id);
+        // $file = CommonTable::findOrFail($id); // Replace with your model
+        // dd($file);
+        $userId = Auth::id();
+        $file = CommonTable::where('id', $id)
+                    ->where('user_id', $userId)
+                    ->firstOrFail();
 
-        if (!$file) {
-            return redirect()->back()->with('error', 'File not found.');
+        $filePath = storage_path("app/{$file->file_path}");
+
+        $filePaths_spaces = $file->file_path;
+        // dd($filePath);
+        $filePaths_spaces_removed = preg_replace('/\s*\/\s*/', '/', $filePaths_spaces);
+
+        $filePath2 = storage_path("app/{$filePaths_spaces_removed}");
+
+
+
+        // "C:\xampp\htdocs\s-dev\milliondox-product\storage\app/2024-2025November301_Accounting & Taxation / 2024-2025November301_Charter Documents / 2024-2025November301_Incorporation/cPeaTCXDJw16rg1ynyNwF1rMxumpVZwAMyIYFr4Z.pdf";
+        // "C:\xampp\htdocs\s-dev\milliondox-product\storage\app/2024-2025November301_Accounting & Taxation/2024-2025November301_Charter Documents/2024-2025November301_Incorporation/GSRil80ewQW0M1e0emSydcIZekv0qSzIKWdexpHe.pdf";
+        // C:\xampp\htdocs\s-dev\milliondox-product\storage\app\2024-2025November301_Accounting & Taxation\2024-2025November301_Charter Documents\2024-2025November301_Incorporation
+
+
+                                                            // 2024-2025November301_Accounting & Taxation / 2024-2025November301_Charter Documents / 2024-2025November301_Incorporation/8HGA8xiDXjnB3CGUVpYEN4bAhepwPYck1zJ3FhNU (3).pdf
+        if (!file_exists($filePath)) {
+            if (!file_exists($filePath2)) {
+                abort(404, 'File not found');
+                return response()->json(['error' => 'File Not Found']);
+            }
+            $filePath = $filePath2;
+
+            // abort(404, 'File not found');
+            // return response()->json(['error' => 'File Not Found']);
         }
-
-        // Extract the file path from the database
-        $filePath = $file->file_path;
-
-        // Check if the file exists on the storage
-        if (!Storage::exists($filePath)) {
-            return redirect()->back()->with('error', 'File does not exist.');
-        }
-
-        // Download the file
-        return Storage::download($filePath, $file->file_name);
+        return response()->download($filePath, $file->file_name);
     }
    
 // public function saveBreadcrumb(Request $request) {
