@@ -2913,7 +2913,7 @@ $(document).ready(function() {
                             <div class="label_wrap">
                     <label>Path :</label>
 
-                    <script>
+                    {{-- <script>
                         $(document).ready(function() {
                             // Function to get query parameter by name
                             function getQueryParamd(param) {
@@ -2943,7 +2943,7 @@ $(document).ready(function() {
                             // Fetch the URL parameter every second
                             setInterval(updateFolderPathd, 100);
                         });
-                    </script>
+                    </script> --}}
 
                     <input type="text" id="parent-folderd" name="parent_folder" value="" readonly disable>
                      </div>
@@ -4109,15 +4109,32 @@ $(document).on('click', '.fold-link', function (e) {
 
     // Get the folder path from the data attribute of the clicked link
     const folderPath = $(this).data('folder-path');
+   
 
-    // Update the URL without reloading the page using pushState
-    const newUrl = new URL(window.location);
-    newUrl.searchParams.set('folder', encodeURIComponent(folderPath)); // Add/update 'folder' query param in URL
-    window.history.pushState({ path: newUrl.href }, '', newUrl.href);
+// Update the hidden input field with the folder path
+$('#parent-folderlll').val(folderPath);
+$('#parent-folderd').val(folderPath);
 
-    // Call the function to fetch the folder contents based on the new folder path in the URL
+
+    
     fetchfolderfold();
 });
+$(document).on('click', '.backs-button', function (e) {
+    e.preventDefault();
+
+    // Get the folder path from the data attribute of the clicked link
+    const folderPath = $(this).data('folder-path');
+   
+
+// Update the hidden input field with the folder path
+$('#parent-folderlll').val(folderPath);
+$('#parent-folderd').val(folderPath);
+
+
+    
+    fetchfolderfold();
+});
+
 
 function fetchfolderfold() {
     // Retrieve the folder path from the URL or use the default folder
@@ -6459,7 +6476,7 @@ $(window).on('load', function() {
         <div class="label_wrap">
                     <label>Path :</label>
                     
-<script>
+{{-- <script>
     $(document).ready(function() {
         // Function to get query parameter by name
         function getQueryParam(param) {
@@ -6489,7 +6506,7 @@ $(window).on('load', function() {
         // Fetch the URL parameter every second
         setInterval(updateFolderPath, 100);
     });
-</script>
+</script> --}}
                     
                     
                     <!--<input type="text" id="parent-folderlll" name="parent_folder"  value="" readonly >-->

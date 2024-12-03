@@ -1185,6 +1185,10 @@ Route::post('/create-folder', [App\Http\Controllers\HomeController::class,'creat
 Route::post('/upload-file', [App\Http\Controllers\HomeController::class,'uploadFile'])->name('upload.file');
 Route::get('/check-folder-contents', [App\Http\Controllers\HomeController::class, 'checkFolderContents'])->name('check.folder.contents');
 
+Route::post('/handle-file-conflict', [App\Http\Controllers\HomeController::class, 'handleFileConflict']);
+
+
+
 Route::post('/misupdateFileName', [App\Http\Controllers\UploadedFileController::class, 'misupdateFileName'])->name('misupdateFileName');
 Route::post('/misupdateFileName1', [App\Http\Controllers\UploadedFileController::class, 'misupdateFileName1'])->name('misupdateFileName1');
 Route::post('/misupdateFileName2', [App\Http\Controllers\UploadedFileController::class, 'misupdateFileName2'])->name('misupdateFileName2');
