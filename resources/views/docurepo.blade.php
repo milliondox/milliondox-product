@@ -3340,10 +3340,12 @@ function updateBreadcrumb(folderPath) {
         console.log("Redirecting to DocuRepo");
         redirectToDocuRepo(); // Function to redirect to /docurepo
     });
+    
 }
 
 function redirectToDocuRepo() {
     window.location.href = '/docurepo';
+   
 }
 
 function toggleLabelWrap() {
@@ -9151,7 +9153,33 @@ $(document).ready(function() {
 
 </script>
 
+<script>
+    setInterval(() => {
+      // Parse the current URL
+      const urlParams = new URLSearchParams(window.location.search);
+      const path = window.location.pathname;
 
+      // Check if the URL is "/docurepo" and contains "?folder="
+      if (path.includes('/docurepo') && urlParams.has('folder')) {
+        // Show the button
+        const homeButton = document.querySelector('.btn-docurepo');
+        if (homeButton) {
+          homeButton.style.display = 'block';
+        }
+      } else {
+        // Hide the button if conditions are not met
+        const homeButton = document.querySelector('.btn-docurepo');
+        if (homeButton) {
+          homeButton.style.display = 'none';
+        }
+      }
+    }, 10); // Check every second
+  </script>
+  <style>
+    .btn-docurepo {
+      display: none; /* Initially hide the button */
+    }
+  </style>
 <style>
     /*  model try oout css */
     .modal-backdrop.show {
