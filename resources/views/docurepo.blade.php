@@ -6606,7 +6606,7 @@ $(window).on('load', function() {
   </div>
   <div class="selected_file_count"></div>
 </div> 
-
+<!--  -->
 <script>
 let selectedFiles = []; // Store selected files
 

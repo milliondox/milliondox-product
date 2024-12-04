@@ -1470,6 +1470,7 @@ padding:0
 #create_folderr.drop_coman_file.have_title .modal-content .gropu_form input, #create_folderr.drop_coman_file.have_title .modal-content .gropu_form select, #create_folderr.drop_coman_file.have_title .modal-content .gropu_form textarea {
     flex: 3;
 }
+/*  */
 
 .all_locations .customulli {
     max-height: 14.5vh;
