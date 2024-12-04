@@ -41,8 +41,8 @@ class CommonTable extends Model
         'is_delete',
         'location',
         'descp',
-        'is_keep_both',
-        'is_replace',
+        'is_keep',
+        'is_replaced',
     ];
 
     /**
