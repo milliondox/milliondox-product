@@ -4124,11 +4124,36 @@ $(document).on('click', '.backs-button', function (e) {
 
     // Get the folder path from the data attribute of the clicked link
     const folderPath = $(this).data('folder-path');
-   
+  
 
 // Update the hidden input field with the folder path
 $('#parent-folderlll').val(folderPath);
 $('#parent-folderd').val(folderPath);
+
+
+    
+    fetchfolderfold();
+});
+function getQueryParam(param) {
+        const queryString = window.location.search.substring(1);
+        const params = queryString.split('&');
+        for (let i = 0; i < params.length; i++) {
+            const pair = params[i].split('=');
+            if (pair[0] === param) {
+                return pair[1] ? decodeURIComponent(pair[1]) : null;
+            }
+        }
+        return null;
+    }
+$(document).on('click', '.hvr-rotatee', function (e) {
+    e.preventDefault();
+
+  
+    const folderPaths = getQueryParam('folder');
+
+// Update the hidden input field with the folder path
+$('#parent-folderlll').val(folderPaths);
+$('#parent-folderd').val(folderPaths);
 
 
     
@@ -4284,6 +4309,36 @@ function updateBreadcrumbs(folderPath) {
         $('.backs-button').hide();
     }
 }
+
+// Get query parameter from URL
+function getQueryParam(param) {
+    const queryString = window.location.search.substring(1);
+    const params = queryString.split('&');
+    for (let i = 0; i < params.length; i++) {
+        const pair = params[i].split('=');
+        if (pair[0] === param) {
+            return pair[1] ? decodeURIComponent(pair[1]) : null;
+        }
+    }
+    return null;
+}
+
+// Fetch folder path from URL query params
+const folderPaths = getQueryParam('folder');
+
+// Check every second if there's no value in data-folder-path, then update it from URL param
+setInterval(() => {
+    $('.backs-button').each(function () {
+        const dataFolderPath = $(this).data('folder-path');
+        if (!dataFolderPath && folderPaths) {
+            $(this).data('folder-path', folderPaths);
+        }
+    });
+}, 1); // Check every second
+
+// Example to call updateBreadcrumbs
+updateBreadcrumbs(folderPaths || 'root');
+
 
 // Handle "Back" button clicks
 $(document).on('click', '.backs-button', function (e) {
