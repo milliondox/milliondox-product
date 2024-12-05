@@ -3343,10 +3343,12 @@ function updateBreadcrumb(folderPath) {
         console.log("Redirecting to DocuRepo");
         redirectToDocuRepo(); // Function to redirect to /docurepo
     });
+    
 }
 
 function redirectToDocuRepo() {
     window.location.href = '/docurepo';
+   
 }
 
 function toggleLabelWrap() {
@@ -4127,11 +4129,37 @@ $(document).on('click', '.backs-button', function (e) {
 
     // Get the folder path from the data attribute of the clicked link
     const folderPath = $(this).data('folder-path');
-   
+  
 
 // Update the hidden input field with the folder path
 $('#parent-folderlll').val(folderPath);
 $('#parent-folderd').val(folderPath);
+
+
+    
+    fetchfolderfold();
+});
+function getQueryParam(param) {
+        const queryString = window.location.search.substring(1);
+        const params = queryString.split('&');
+        for (let i = 0; i < params.length; i++) {
+            const pair = params[i].split('=');
+            if (pair[0] === param) {
+                return pair[1] ? decodeURIComponent(pair[1]) : null;
+            }
+        }
+        return null;
+    }
+$(document).on('click', '.hvr-rotatee', function (e) {
+    e.preventDefault();
+
+  
+    const folderPaths = getQueryParam('folder');
+    const finalPathToUse = decodeURIComponent(folderPaths);
+
+// Update the hidden input field with the folder path
+$('#parent-folderlll').val(finalPathToUse);
+$('#parent-folderd').val(finalPathToUse);
 
 
     
@@ -4287,6 +4315,36 @@ function updateBreadcrumbs(folderPath) {
         $('.backs-button').hide();
     }
 }
+
+// Get query parameter from URL
+function getQueryParam(param) {
+    const queryString = window.location.search.substring(1);
+    const params = queryString.split('&');
+    for (let i = 0; i < params.length; i++) {
+        const pair = params[i].split('=');
+        if (pair[0] === param) {
+            return pair[1] ? decodeURIComponent(pair[1]) : null;
+        }
+    }
+    return null;
+}
+
+// Fetch folder path from URL query params
+const folderPaths = getQueryParam('folder');
+
+// Check every second if there's no value in data-folder-path, then update it from URL param
+setInterval(() => {
+    $('.backs-button').each(function () {
+        const dataFolderPath = $(this).data('folder-path');
+        if (!dataFolderPath && folderPaths) {
+            $(this).data('folder-path', folderPaths);
+        }
+    });
+}, 1); // Check every second
+
+// Example to call updateBreadcrumbs
+updateBreadcrumbs(folderPaths || 'root');
+
 
 // Handle "Back" button clicks
 $(document).on('click', '.backs-button', function (e) {
@@ -9126,7 +9184,33 @@ $(document).ready(function() {
 
 </script>
 
+<script>
+    setInterval(() => {
+      // Parse the current URL
+      const urlParams = new URLSearchParams(window.location.search);
+      const path = window.location.pathname;
 
+      // Check if the URL is "/docurepo" and contains "?folder="
+      if (path.includes('/docurepo') && urlParams.has('folder')) {
+        // Show the button
+        const homeButton = document.querySelector('.btn-docurepo');
+        if (homeButton) {
+          homeButton.style.display = 'block';
+        }
+      } else {
+        // Hide the button if conditions are not met
+        const homeButton = document.querySelector('.btn-docurepo');
+        if (homeButton) {
+          homeButton.style.display = 'none';
+        }
+      }
+    }, 10); // Check every second
+  </script>
+  <style>
+    .btn-docurepo {
+      display: none; /* Initially hide the button */
+    }
+  </style>
 <style>
     /*  model try oout css */
     .modal-backdrop.show {
