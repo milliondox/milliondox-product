@@ -2872,6 +2872,9 @@ $(document).ready(function() {
                 
                 // Empty the content of the '.selected-file' div
                 $modal.find('.selected-file').empty();
+
+                // Empty the content of the '.selected_file_count' div
+                $modal.find('.selected_file_count').empty();
                 
                 // Remove the '.tag' div
                 $modal.find('.tag').remove();
@@ -4254,7 +4257,7 @@ $(document).on('click', '.fold-link', function (e) {
         },
         beforeSend: function () {
             // Optional: Show a loader spinner before the request is sent
-            $('.folder-cont').html('<div class="loader" style="color: #C5C5C5; font-size: 12px;">Loading...</div>');  // Apply inline styles for color and font size
+            $('.folder-cont').html('<div class="loader" style="color: #C5C5C5; font-size: 12px; position: relative; top: 50px;">Loading...</div>');  // Apply inline styles for color and font size
         },
         success: function (response) {
             // Update the folder contents with the HTML response
@@ -5883,6 +5886,9 @@ if(response.directorfolder){
             showCancelButton: true,
             confirmButtonText: 'Replace',
             cancelButtonText: 'Keep Both',
+            customClass: {
+        cancelButton: 'keep-both-btn',  // Custom class for the 'Keep Both' button
+    },
         }).then((result) => {
             let formData = new FormData();
             formData.append('files[]', file); // Append the file again
@@ -6656,8 +6662,32 @@ $(window).on('load', function() {
                           Upload
   </div>
   </div>
-  <div class="selected-file"></div>
+  <div class="selected_file_count"></div>
 </div> 
+<!--  -->
+<script>
+let selectedFiles = []; // Store selected files
+
+// Handle file selection
+document.getElementById('fileU').addEventListener('change', function () {
+  const currentFiles = Array.from(this.files); // Get the selected files
+  selectedFiles = selectedFiles.concat(currentFiles); // Add to the file list
+
+  // Update the file count display
+  const fileCountDiv = document.querySelector('.selected_file_count');
+  const fileCount = selectedFiles.length;
+  fileCountDiv.textContent = `${fileCount} file${fileCount > 1 ? 's' : ''} selected`;
+});
+
+// Handle modal close button click
+document.querySelector('#upload_filee .close').addEventListener('click', function () {
+  selectedFiles = []; // Reset the selected files array
+  document.getElementById('fileU').value = ''; // Clear the file input
+  document.querySelector('.selected_file_count').textContent = ''; // Clear the file count display
+});
+
+
+</script>
                           </div>
 
                           <div class="gropu_form test-area">

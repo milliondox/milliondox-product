@@ -1352,12 +1352,32 @@ ul.dropdown-menu .toggle_icconn {
     height: 19px;
 }
 
+.selected_file_count {
+    padding: 41px 0px 0px;
+    font-size: 12px;
+    color: #d0ffad;
+    position: absolute;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 200px;
+}
+.dark-only .selected_file_count{
+    color: #99DB66;
+}
+
+
 .all_locations {
     flex: 3;
     padding: 10px;
     border: 1px solid #646464;
     border-radius: 5px;
     overflow: hidden;
+    max-height: 19vh;
+    min-height: 19vh;
+}
+.all_locations .nav-paths {
+    min-height: 19px;
 }
 
 .dark-only .all_locations {
@@ -1444,9 +1464,17 @@ padding:0
     flex: 3;
 }
 
+#create_folderr .modal-dialog {
+    max-width: 700px;
+}
+#create_folderr.drop_coman_file.have_title .modal-content .gropu_form input, #create_folderr.drop_coman_file.have_title .modal-content .gropu_form select, #create_folderr.drop_coman_file.have_title .modal-content .gropu_form textarea {
+    flex: 3;
+}
+/*  */
+
 .all_locations .customulli {
-    max-height: 20vh;
-    min-height: 20vh;
+    max-height: 14.5vh;
+    min-height: 14.5vh;
     overflow: auto;
     border-radius: 0px;
     padding: 0px 10px 0px 0px;
@@ -4303,6 +4331,10 @@ td.file_dess {
 
 .swal2-container .swal2-popup.swal2-modal .swal2-actions button.swal2-confirm {
     color: #FA4A4A !IMPORTANT;
+}
+
+.swal2-container .swal2-popup.swal2-modal .swal2-actions button.keep-both-btn {
+    color: #dddddd;
 }
 
 .swal2-container .swal2-popup.swal2-modal .swal2-actions {
