@@ -4152,10 +4152,11 @@ $(document).on('click', '.hvr-rotatee', function (e) {
 
   
     const folderPaths = getQueryParam('folder');
+    const finalPathToUse = decodeURIComponent(folderPaths);
 
 // Update the hidden input field with the folder path
-$('#parent-folderlll').val(folderPaths);
-$('#parent-folderd').val(folderPaths);
+$('#parent-folderlll').val(finalPathToUse);
+$('#parent-folderd').val(finalPathToUse);
 
 
     
