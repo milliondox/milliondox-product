@@ -16,7 +16,7 @@
       <!-- Page Header Start-->
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
-@if (session('success'))
+<!-- @if (session('success'))
     <script>
         Swal.fire({
             icon: 'success',
@@ -34,7 +34,7 @@
             text: '{{ session('error') }}',
         });
     </script>
-@endif
+@endif -->
 
 <div class="page-header">
     <div class="header-wrapper row m-0">

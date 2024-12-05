@@ -1121,6 +1121,9 @@ Route::get('/user/MiscellaneousDocuments', [App\Http\Controllers\HomeController:
 Route::get('/user/Management', [App\Http\Controllers\HomeController::class, 'Management'])->name('user/Management');
     Route::get('/user/manageprofile', [App\Http\Controllers\HomeController::class, 'manageprofile'])->name('user/manageprofile');
 Route::get('/user/ContractManagement', [App\Http\Controllers\HomeController::class, 'ContractManagement'])->name('user/ContractManagement')->middleware('auth');
+Route::get('/user/contractmanage', [App\Http\Controllers\HomeController::class, 'contractmanage'])->name('user/contractmanage')->middleware('auth');
+Route::get('/user/contractmanagedetail', [App\Http\Controllers\HomeController::class, 'contractmanagedetail'])->name('user/contractmanagedetail')->middleware('auth');
+
 Route::get('/user/companyprofile', [App\Http\Controllers\HomeController::class, 'companyprofile'])->name('user/companyprofile');
 Route::get('/user/Sop', [App\Http\Controllers\HomeController::class, 'Sop'])->name('user/Sop');
 	Route::get('/user/Employeelifecycle', [App\Http\Controllers\HomeController::class, 'Employeelifecycle'])->name('user/Employeelifecycle');

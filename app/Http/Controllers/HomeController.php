@@ -18226,6 +18226,21 @@ public function tickting()
     $userRoleRecord = UserRole::where('role', $userRole)->first();
        return view('user.Contract-Management.Contract-Management',compact('cli_announcements','contract','user'));
     }
+
+    public function contractmanage()
+    {
+        $cli_announcements = Announcement::where('role', 'Client')->latest()->get();
+        $user = auth()->user();
+       return view('user.Contract-Management.contract-manage',compact('cli_announcements','user'));
+    }
+
+    public function contractmanagedetail()
+    {
+        $cli_announcements = Announcement::where('role', 'Client')->latest()->get();
+        $user = auth()->user();
+       return view('user.Contract-Management.contract-manage-detail',compact('cli_announcements','user'));
+    }
+
     public function Sop()
     {
         $cli_announcements = Announcement::where('role', 'Client')->latest()->get();
