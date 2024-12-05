@@ -23363,6 +23363,7 @@ public function saveBreadcrumb(Request $request)
         
             // Check if folder path is provided
             $folderPath = $request->input('parent_folder');
+            
             $folderPaths = preg_replace('/\s*\/\s*/', ' / ', $folderPath);
             // if (!$folderPath) {
             //     return response()->json(['success' => false, 'message' => 'Folder path is required.'], 400);
@@ -23407,7 +23408,7 @@ public function saveBreadcrumb(Request $request)
                             ->where('user_id', auth()->user()->id)
                             ->where('fyear', $request->input('fyear'))
                             ->where('month', $request->input('Month'))
-                            // ->where('location', $folderPaths)
+                            ->whereNull('is_replaced')
                             ->value('id'); // Use `value('id')` to get only the ID
 
                             // dd($fileId); // This will give you the ID if the file exists, or null if it doesn't.
@@ -23475,7 +23476,8 @@ public function saveBreadcrumb(Request $request)
             }
 
 
-        }else if($request->input('keep')){
+        }
+        if($request->input('keep')){
             // dd("in keep");
              // Validate the request
              $request->validate([
@@ -23609,7 +23611,8 @@ public function saveBreadcrumb(Request $request)
                 return response()->json(['success' => false, 'message' => 'No files uploaded.'], 400);
             }
 
-        }else{
+        }
+        if($request->input('upload')){
             // Validate the request
             $request->validate([
                 'files.*' => 'required|file|max:102400|mimes:pdf,ppt,pot,pps,pptx,pptm,potx,ppam,ppsx,sldx,sldm,odp,ods,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,xlsx,docx,docm,xlam,txt,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv,xltx,xltm', // Allow specific file types up to 100MB
@@ -23624,6 +23627,8 @@ public function saveBreadcrumb(Request $request)
             // Check if folder path is provided
             $folderPath = $request->input('parent_folder');
             $folderPaths = preg_replace('/\s*\/\s*/', ' / ', $folderPath);
+            // dd($folderPath);
+
             // if (!$folderPath) {
             //     return response()->json(['success' => false, 'message' => 'Folder path is required.'], 400);
             // }
