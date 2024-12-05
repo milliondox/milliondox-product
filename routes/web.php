@@ -257,6 +257,8 @@ Route::get('/getTask/{id}', [App\Http\Controllers\HomeController::class, 'getTas
 ->name('getTask');
 
 
+
+
 Route::get('/download-common-file/{id}', [App\Http\Controllers\HomeController::class, 'downloadCommonFile'])->name('download-common-file');
 Route::post('/softdeleteCommonFile/{id}', [App\Http\Controllers\HomeController::class, 'softdeleteCommonFile'])->name('softdeleteCommonFile');
 Route::post('/deleteCustomFile/{id}', [App\Http\Controllers\HomeController::class, 'deleteCustomFile'])->name('deleteCustomFile');
@@ -264,6 +266,9 @@ Route::post('/deleteCustomFile/{id}', [App\Http\Controllers\HomeController::clas
 ////////////////////////////////// sandeep added this route for predefined common files upload  4 october 2024 ////////////////////////////////////////////////////
 Route::post('/PredefinedCommonUploadFiles', [App\Http\Controllers\HomeController::class, 'PredefinedCommonUploadFiles'])->name('PredefinedCommonUploadFiles');
 Route::post('/PredefinedCommonUploadFilesBank', [App\Http\Controllers\HomeController::class, 'PredefinedCommonUploadFilesBank'])->name('PredefinedCommonUploadFilesBank');
+
+
+Route::post('/HandleCommonUploadFiles', [App\Http\Controllers\HomeController::class, 'HandleCommonUploadFiles'])->name('HandleCommonUploadFiles');
 
 Route::get('/fetchfixedFiles', [App\Http\Controllers\HomeController::class, 'fetchfixedFiles'])->name('fetchfixedFiles');
 // sandeep added above route "fetchfixedFiles" for dynamic fetch fixed path files i.e real_file_name 26 November 2024 

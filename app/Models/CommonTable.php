@@ -41,8 +41,8 @@ class CommonTable extends Model
         'is_delete',
         'location',
         'descp',
-        'is_keep_both',
-        'is_replace',
+        'is_keep',
+        'is_replaced',
     ];
 
     /**
@@ -53,7 +53,7 @@ class CommonTable extends Model
     protected $casts = [
         'file_size' => 'integer',
         'user_id' => 'integer',
-        'fyear' => 'integer',
+        'fyear' => 'string',
         'update_dates' => 'datetime',
         'is_delete' => 'boolean',
         'created_at' => 'datetime',
