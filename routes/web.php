@@ -256,7 +256,8 @@ Route::post('/updateEvents', [App\Http\Controllers\HomeController::class, 'updat
 Route::get('/getTask/{id}', [App\Http\Controllers\HomeController::class, 'getTask'])
 ->name('getTask');
 
-
+Route::post('/renamecustomfile', [App\Http\Controllers\HomeController::class, 'renamecustomfile'])
+->name('renamecustomfile');
 
 
 Route::get('/download-common-file/{id}', [App\Http\Controllers\HomeController::class, 'downloadCommonFile'])->name('download-common-file');
