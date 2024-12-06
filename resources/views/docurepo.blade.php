@@ -6386,9 +6386,15 @@ $(document).ready(function () {
                     contentType: false, // Important! Prevent jQuery from setting the Content-Type header
                     success: function (response) {
                         // Handle success
+                        var is_uploading1 = false;
+                        var is_uploading2 = false;
+                        var is_uploading3 = false;
+                        var is_uploading4 = false;
+
                         if (response.success) {
                             if(response.do_not_exists && response.do_not_exists.length > 0){
                                 // alert("Do not Exists : " + response.do_not_exists);
+                                is_uploading1 = true;
 
                                 $('.progree_cont_nt').css('display', 'block');
                                 $('#upload_filee').modal('hide');
@@ -6584,6 +6590,7 @@ $(document).ready(function () {
 
                             if (response.exists && response.exists.length > 0) {
                                 // Display confirmation dialog
+                                is_uploading2 = true;
                                 Swal.fire({
                                     title: "File Exists",
                                     text: response.exists.join(", "),
@@ -6594,6 +6601,7 @@ $(document).ready(function () {
                                     cancelButtonText: response.exists.length === 1 ? "Keep Both" : "Keep All",
                                 }).then((result) => {
                                     if (result.isConfirmed) {
+                                        is_uploading3 = true;
 
                                         $('.progree_cont_nt').css('display', 'block');
                                         $('#upload_filee').modal('hide');
@@ -6930,7 +6938,23 @@ $(document).ready(function () {
                                         // Logic for closing
                                         // alert("Cancelled");
                                     }
+                                    else{
+                                                                $('#upload_filee .close').click(); 
+
+                                    }
+                                                                $('#upload_filee .close').click(); 
+
                                 });
+
+                            }
+                            if(is_uploading1 && is_uploading2){
+                                // $('#upload_filee .close').click(); 
+                            }
+                            else if(is_uploading1){
+
+                                if((is_uploading2==false)){
+                                    $('#upload_filee .close').click(); 
+                                }
 
                             }
 

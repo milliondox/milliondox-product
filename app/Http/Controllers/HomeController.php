@@ -23434,8 +23434,9 @@ public function uploadFile(Request $request)
         // Compile the response
         return response()->json([
             'success' => true,
-            'exists' => $exists,
             'do_not_exists' => $do_not_exists,
+            'exists' => $exists,
+            
         ]);
        
     } else {
