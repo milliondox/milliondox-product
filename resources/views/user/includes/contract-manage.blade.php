@@ -116,11 +116,11 @@
 
   <script>
 document.querySelectorAll('.divi_ass_wrap span').forEach(span => {
-    // Generate random light shades
+    // Generate even lighter shades
     const randomColor = () => {
-        const r = Math.floor(Math.random() * 56) + 200; // Values between 200 and 255
-        const g = Math.floor(Math.random() * 56) + 200;
-        const b = Math.floor(Math.random() * 56) + 200;
+        const r = Math.floor(Math.random() * 30) + 225; // Values between 225 and 255
+        const g = Math.floor(Math.random() * 30) + 225;
+        const b = Math.floor(Math.random() * 30) + 225;
         return { r, g, b, rgb: `rgb(${r}, ${g}, ${b})` };
     };
 
@@ -129,7 +129,7 @@ document.querySelectorAll('.divi_ass_wrap span').forEach(span => {
 
     // Calculate brightness for contrast
     const brightness = (bgColor.r * 299 + bgColor.g * 587 + bgColor.b * 114) / 1000; // Perceived brightness formula
-    const textColor = brightness > 186 ? '#000' : '#FFF'; // Use black for light backgrounds, white for dark backgrounds
+    const textColor = brightness > 186 ? '#434343' : '#FFF'; // Use black for light backgrounds, white for dark backgrounds
 
     // Apply colors to the span
     span.style.borderColor = borderColor.rgb;
@@ -137,19 +137,26 @@ document.querySelectorAll('.divi_ass_wrap span').forEach(span => {
     span.style.color = textColor;
 });
 
+
   </script>
 
   <script>
-//     document.querySelectorAll('.partner_count').forEach(div => {
+
+// document.querySelectorAll('.partner_count').forEach(div => {
 //     const boldTags = Array.from(div.querySelectorAll('b:not(.count)'));
 //     const countTag = div.querySelector('.count');
 
 //     if (boldTags.length > 1) {
 //         // Show only the first <b>
 //         boldTags.slice(1).forEach(b => b.style.display = 'none');
-//         // Show and update the count <b>
+
+//         // Generate tooltip content with the remaining names
+//         const remainingNames = boldTags.slice(1).map(b => b.textContent.trim()).join(', ');
+        
+//         // Set the count <b> with tooltip
 //         countTag.style.display = 'inline';
 //         countTag.textContent = `+ ${boldTags.length - 1}`;
+//         countTag.setAttribute('title', remainingNames); // Add tooltip using title attribute
 //     } else {
 //         // Hide the count <b> if there's only one <b>
 //         countTag.style.display = 'none';
@@ -166,16 +173,42 @@ document.querySelectorAll('.partner_count').forEach(div => {
 
         // Generate tooltip content with the remaining names
         const remainingNames = boldTags.slice(1).map(b => b.textContent.trim()).join(', ');
-        
-        // Set the count <b> with tooltip
+
+        // Set the count <b>
         countTag.style.display = 'inline';
         countTag.textContent = `+ ${boldTags.length - 1}`;
-        countTag.setAttribute('title', remainingNames); // Add tooltip using title attribute
+
+        // Remove any existing tooltip
+        const existingTooltip = countTag.querySelector('.custom-tooltip');
+        if (existingTooltip) existingTooltip.remove();
+
+        // Create a custom tooltip
+        const tooltip = document.createElement('div');
+        tooltip.className = 'custom-tooltip';
+        tooltip.innerHTML = remainingNames;
+
+        // Append tooltip to the countTag
+        countTag.appendChild(tooltip);
+
+        // Show tooltip on hover
+        countTag.addEventListener('mouseenter', () => {
+            tooltip.style.opacity = '1';
+            tooltip.style.visibility = 'visible';
+        });
+
+        // Hide tooltip when not hovering
+        countTag.addEventListener('mouseleave', () => {
+            tooltip.style.opacity = '0';
+            tooltip.style.visibility = 'hidden';
+        });
     } else {
         // Hide the count <b> if there's only one <b>
         countTag.style.display = 'none';
     }
 });
+
+
+
 
 
   </script>
