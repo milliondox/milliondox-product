@@ -13642,6 +13642,8 @@ $(document).ready(function() {
                         // const fileSize = (file.file_size / 1024).toFixed(2) + ' KB';
                         const fileSizeInBytes = file.file_size;
                         let fileSize;
+                        const dataTags = JSON.parse(file.tags); // Parse JSON string into a JavaScript array
+                        const formattedTags = dataTags.join(', '); // Join the array elements with a comma and space
 
                         if (fileSizeInBytes < 1024) {
                             fileSize = fileSizeInBytes.toFixed(2) + ' Bytes';
@@ -13711,6 +13713,8 @@ $(document).ready(function() {
                                             Select Files </a>
                                             <a class="dropdown-itemm open_eye_pdf" href="{{ url('/showfile/${file.id}') }}" target="_blank">
                                             View </a>
+                                            <a class="dropdown-itemm rename_file edit" data-bs-toggle="modal"  data-bs-target="#edit_fileex" data-file_id="${file.id}" data-filename="${file.file_name}" data-desc="${file.descp}" data-fyear="${file.fyear}" data-month="${file.month}" data-tags="${formattedTags}"">
+                                            Edit </a>
                                         </div>
             
                                         </div>
