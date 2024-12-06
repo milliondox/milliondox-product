@@ -18226,6 +18226,21 @@ public function tickting()
     $userRoleRecord = UserRole::where('role', $userRole)->first();
        return view('user.Contract-Management.Contract-Management',compact('cli_announcements','contract','user'));
     }
+
+    public function contractmanage()
+    {
+        $cli_announcements = Announcement::where('role', 'Client')->latest()->get();
+        $user = auth()->user();
+       return view('user.Contract-Management.contract-manage',compact('cli_announcements','user'));
+    }
+
+    public function contractmanagedetail()
+    {
+        $cli_announcements = Announcement::where('role', 'Client')->latest()->get();
+        $user = auth()->user();
+       return view('user.Contract-Management.contract-manage-detail',compact('cli_announcements','user'));
+    }
+
     public function Sop()
     {
         $cli_announcements = Announcement::where('role', 'Client')->latest()->get();
@@ -21612,8 +21627,9 @@ public function shareFolder(Request $request)
   public function fetchFolderContents(Request $request)
     {
           $folderPath = $request->get('folderName');
+          $folderPaths = $request->get('folderName');
        
-          $folderPaths = preg_replace('/\//', ' / ', $folderPath);
+        //   $folderPaths = preg_replace('/\//', ' / ', $folderPath);
         //   dd($folderPath);
     $sortOption = $request->get('sortOption');  // Get the selected sorting option
     
@@ -21674,11 +21690,18 @@ public function shareFolder(Request $request)
     }
 
 
+<<<<<<< HEAD
         $fileContents = CommonTable::where('location', $folderPaths)->where('user_id', Auth::id())->where('is_delete', 0 )->whereNull('is_replaced')->get();
+=======
+        // $fileContents = CommonTable::where('location', $folderPaths)->where('user_id', Auth::id())->where('is_delete', 0 )->get();
+        $fileContents = CommonTable::where('location', $folderPaths)->where('user_id', Auth::id())->where('is_delete', 0 )->whereNull('is_replaced')->get();
+
+// dd($fileContents);
+>>>>>>> 7a1e8ef89bb499a42e1aa3c9e6c715ffa58cfb06
         // dd($fileContents);
         // Legal/Secretarial/Board Meetings
         // dd($folderPath);
-        $files = UploadedFile::all();
+        // $files = UploadedFile::all();
         // Generate the HTML for folders
           if (!$folderContents->isEmpty()) {
         $folderHtml = '<ul class="customulli">';
@@ -21734,7 +21757,7 @@ public function shareFolder(Request $request)
                                    
                                     <a class="dropdown-itemm rename_nt" data-bs-toggle="modal" data-bs-target="#renamefolder" data-director_id="' . $folder->director_id . '" data-employee_id="' . $folder->employee_id . '" data-folder_path="' . $folder->path . '" data-old_folder_name="' . $folder->name . '" data-folder_name="' . $folder->name . '" data-folder_id="' . $folder->id . '"><img src="../assets/images/rename_nt.png">Rename</a>
 
-                                     <a class="dropdown-itemm download_nt downloadfolder" data-folder-path="' . $folder->path . '" data-id="' . $folder->id . '"><svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                     <a class="dropdown-itemm download_nts downloadfolder" data-folder-path="' . $folder->path . '" data-id="' . $folder->id . '"><svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
                                       <path d="M2.40625 12.25C2.00014 12.25 1.61066 12.0887 1.32349 11.8015C1.03633 11.5143 0.875 11.1249 0.875 10.7188V8.53125C0.875 8.3572 0.94414 8.19028 1.06721 8.06721C1.19028 7.94414 1.3572 7.875 1.53125 7.875C1.7053 7.875 1.87222 7.94414 1.99529 8.06721C2.11836 8.19028 2.1875 8.3572 2.1875 8.53125V10.7188C2.1875 10.8395 2.2855 10.9375 2.40625 10.9375H11.5938C11.6518 10.9375 11.7074 10.9145 11.7484 10.8734C11.7895 10.8324 11.8125 10.7768 11.8125 10.7188V8.53125C11.8125 8.3572 11.8816 8.19028 12.0047 8.06721C12.1278 7.94414 12.2947 7.875 12.4688 7.875C12.6428 7.875 12.8097 7.94414 12.9328 8.06721C13.0559 8.19028 13.125 8.3572 13.125 8.53125V10.7188C13.125 11.1249 12.9637 11.5143 12.6765 11.8015C12.3893 12.0887 11.9999 12.25 11.5938 12.25H2.40625Z" fill="#CEFFA8"></path>
                                       <path d="M6.34334 6.72788V1.75C6.34334 1.57595 6.41248 1.40903 6.53555 1.28596C6.65862 1.16289 6.82554 1.09375 6.99959 1.09375C7.17364 1.09375 7.34056 1.16289 7.46363 1.28596C7.5867 1.40903 7.65584 1.57595 7.65584 1.75V6.72788L9.37959 5.005C9.44049 4.9441 9.51279 4.89579 9.59236 4.86283C9.67193 4.82987 9.75722 4.81291 9.84334 4.81291C9.92947 4.81291 10.0148 4.82987 10.0943 4.86283C10.1739 4.89579 10.2462 4.9441 10.3071 5.005C10.368 5.0659 10.4163 5.1382 10.4493 5.21777C10.4822 5.29734 10.4992 5.38262 10.4992 5.46875C10.4992 5.55488 10.4822 5.64016 10.4493 5.71973C10.4163 5.7993 10.368 5.8716 10.3071 5.9325L7.46334 8.77625C7.40247 8.83721 7.33018 8.88556 7.25061 8.91856C7.17103 8.95155 7.08574 8.96853 6.99959 8.96853C6.91345 8.96853 6.82815 8.95155 6.74857 8.91856C6.669 8.88556 6.59671 8.83721 6.53584 8.77625L3.69209 5.9325C3.63119 5.8716 3.58288 5.7993 3.54992 5.71973C3.51696 5.64016 3.5 5.55488 3.5 5.46875C3.5 5.38262 3.51696 5.29734 3.54992 5.21777C3.58288 5.1382 3.63119 5.0659 3.69209 5.005C3.75299 4.9441 3.82529 4.89579 3.90486 4.86283C3.98443 4.82987 4.06972 4.81291 4.15584 4.81291C4.24197 4.81291 4.32725 4.82987 4.40682 4.86283C4.48639 4.89579 4.55869 4.9441 4.61959 5.005L6.34334 6.72788Z" fill="#CEFFA8"></path>
                                   </svg>Download</a>
@@ -21835,7 +21858,7 @@ public function shareFolder(Request $request)
                                    
                                                    
 
-                                                    <a class="dropdown-itemm download_nt downloadfolder" data-folder-path="' . $folder->path . '" data-id="' . $folder->id . '"><svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                    <a class="dropdown-itemm download_nts downloadfolder" data-folder-path="' . $folder->path . '" data-id="' . $folder->id . '"><svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
                                       <path d="M2.40625 12.25C2.00014 12.25 1.61066 12.0887 1.32349 11.8015C1.03633 11.5143 0.875 11.1249 0.875 10.7188V8.53125C0.875 8.3572 0.94414 8.19028 1.06721 8.06721C1.19028 7.94414 1.3572 7.875 1.53125 7.875C1.7053 7.875 1.87222 7.94414 1.99529 8.06721C2.11836 8.19028 2.1875 8.3572 2.1875 8.53125V10.7188C2.1875 10.8395 2.2855 10.9375 2.40625 10.9375H11.5938C11.6518 10.9375 11.7074 10.9145 11.7484 10.8734C11.7895 10.8324 11.8125 10.7768 11.8125 10.7188V8.53125C11.8125 8.3572 11.8816 8.19028 12.0047 8.06721C12.1278 7.94414 12.2947 7.875 12.4688 7.875C12.6428 7.875 12.8097 7.94414 12.9328 8.06721C13.0559 8.19028 13.125 8.3572 13.125 8.53125V10.7188C13.125 11.1249 12.9637 11.5143 12.6765 11.8015C12.3893 12.0887 11.9999 12.25 11.5938 12.25H2.40625Z" fill="#CEFFA8"></path>
                                       <path d="M6.34334 6.72788V1.75C6.34334 1.57595 6.41248 1.40903 6.53555 1.28596C6.65862 1.16289 6.82554 1.09375 6.99959 1.09375C7.17364 1.09375 7.34056 1.16289 7.46363 1.28596C7.5867 1.40903 7.65584 1.57595 7.65584 1.75V6.72788L9.37959 5.005C9.44049 4.9441 9.51279 4.89579 9.59236 4.86283C9.67193 4.82987 9.75722 4.81291 9.84334 4.81291C9.92947 4.81291 10.0148 4.82987 10.0943 4.86283C10.1739 4.89579 10.2462 4.9441 10.3071 5.005C10.368 5.0659 10.4163 5.1382 10.4493 5.21777C10.4822 5.29734 10.4992 5.38262 10.4992 5.46875C10.4992 5.55488 10.4822 5.64016 10.4493 5.71973C10.4163 5.7993 10.368 5.8716 10.3071 5.9325L7.46334 8.77625C7.40247 8.83721 7.33018 8.88556 7.25061 8.91856C7.17103 8.95155 7.08574 8.96853 6.99959 8.96853C6.91345 8.96853 6.82815 8.95155 6.74857 8.91856C6.669 8.88556 6.59671 8.83721 6.53584 8.77625L3.69209 5.9325C3.63119 5.8716 3.58288 5.7993 3.54992 5.71973C3.51696 5.64016 3.5 5.55488 3.5 5.46875C3.5 5.38262 3.51696 5.29734 3.54992 5.21777C3.58288 5.1382 3.63119 5.0659 3.69209 5.005C3.75299 4.9441 3.82529 4.89579 3.90486 4.86283C3.98443 4.82987 4.06972 4.81291 4.15584 4.81291C4.24197 4.81291 4.32725 4.82987 4.40682 4.86283C4.48639 4.89579 4.55869 4.9441 4.61959 5.005L6.34334 6.72788Z" fill="#CEFFA8"></path>
                                   </svg>Download</a>
@@ -21936,12 +21959,16 @@ public function shareFolder(Request $request)
             $fileHtml .= '<thead>';
             $fileHtml .= '<tr>';
             $fileHtml .= '<th>File Name</th>';
+            
             $fileHtml .= '<th class="funtion_buttnss">Action</th>';
             $fileHtml .= '</tr>';
             $fileHtml .= '</thead>';
             $fileHtml .= '<tbody>';
             foreach ($fileContents as $file) {
-                
+                 $fyear =  $file->fyear;
+                 $dataTags = json_encode($file->tags);
+                 $tagsArray = json_decode($dataTags);
+                 
                 $fileHtml .= '<tr>';
                 $fileHtml .= '<td>' . $file->file_name . '</td>';
                 $fileHtml .= '<td class="funtion_buttnss">                
@@ -21968,7 +21995,10 @@ public function shareFolder(Request $request)
               <div id="myDropdown3" class="dropdown-content"> 
                 <a class="dropdown-itemm open_eye_pdf" href="' . route('showfile', $file->id) . '" target="_blank">
                   View </a>
+                  <a class="dropdown-itemm rename_file edit" data-bs-toggle="modal"  data-bs-target="#edit_fileex" data-file_id="' . $file->id . '" data-filename="' . $file->file_name . '" data-desc="' . $file->descp . '" data-fyear="' . $fyear . '" data-month="' . $file->month . '" data-tags=\'' . $tagsArray . '\'>
+                  Edit </a>
             </div>
+            
         </div>
                           </td>';
                 $fileHtml .= '</tr>';
@@ -23293,6 +23323,7 @@ public function saveBreadcrumb(Request $request)
 //     }
 
 
+<<<<<<< HEAD
     public function uploadFile(Request $request)
     {
      // dd($request);
@@ -23336,10 +23367,190 @@ public function saveBreadcrumb(Request $request)
                 'do_not_exists' => $do_not_exists,
             ]);
            
+=======
+public function uploadFile(Request $request)
+{
+ // dd($request);
+    // Validate the request
+    $request->validate([
+        'files.*' => 'required|file|max:102400|mimes:pdf,ppt,pot,pps,pptx,pptm,potx,ppam,ppsx,sldx,sldm,odp,ods,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,xlsx,docx,docm,xlam,txt,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv,xltx,xltm', // Allow specific file types up to 100MB
+        'tagList' => 'nullable', // Allow tagList to be nullable
+    ], [
+        'files.*.required' => 'Each file is required.',
+        'files.*.file' => 'The uploaded item must be a valid file.',
+        'files.*.max' => 'Each file may not be larger than 100MB.',
+        'files.*.mimes' => 'The file type must be one of the following: PDF, ODP, ODS, PPT, DOC, ODT, RTF, CSV, JSON, XML, HTML, ICO, SVG, WEBP, ZIP, XLS, DOCX, WAV, OGG, MP3, AVI, MOV, WMV, WEBM, TIFF, MP4, JPG, PNG, GIF, JPEG, 3GP, MKV, FLV.',
+    ]);
+
+    // Check if files are uploaded
+    if ($request->hasFile('files')) {
+        // Process each file
+        
+        $exists = [];
+        $do_not_exists = [];
+        foreach ($request->file('files') as $file) {
+
+            $fileExists = CommonTable::where('file_name', $file->getClientOriginalName())
+            ->where('user_id', auth()->user()->id)
+            ->where('file_type', $file->getClientMimeType())
+            ->where('fyear', $request->input('fyear'))
+            ->where('month', $request->input('Month'))
+            ->exists(); 
+
+            if ($fileExists) {
+                $exists[]=$file->getClientOriginalName();
+            } else {
+                $do_not_exists[]=$file->getClientOriginalName();
+            }
+        }
+
+        // Compile the response
+        return response()->json([
+            'success' => true,
+            'exists' => $exists,
+            'do_not_exists' => $do_not_exists,
+        ]);
+       
+    } else {
+        // No files were uploaded
+        return response()->json(['success' => false, 'message' => 'No files uploaded.'], 400);
+    }
+}
+
+
+public function HandleCommonUploadFiles(Request $request)
+{
+    //  dd($request);
+
+    // dd($request->input('replace'));
+    // dd("here");
+    if($request->input('replace')){ 
+        // Validate the request
+        $request->validate([
+            'files.*' => 'required|file|max:102400|mimes:pdf,ppt,pot,pps,pptx,pptm,potx,ppam,ppsx,sldx,sldm,odp,ods,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,xlsx,docx,docm,xlam,txt,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv,xltx,xltm', // Allow specific file types up to 100MB
+            'tagList' => 'nullable', // Allow tagList to be nullable
+        ], [
+            'files.*.required' => 'Each file is required.',
+            'files.*.file' => 'The uploaded item must be a valid file.',
+            'files.*.max' => 'Each file may not be larger than 100MB.',
+            'files.*.mimes' => 'The file type must be one of the following: PDF, ODP, ODS, PPT, DOC, ODT, RTF, CSV, JSON, XML, HTML, ICO, SVG, WEBP, ZIP, XLS, DOCX, WAV, OGG, MP3, AVI, MOV, WMV, WEBM, TIFF, MP4, JPG, PNG, GIF, JPEG, 3GP, MKV, FLV.',
+        ]);
+    
+        // Check if folder path is provided
+        $folderPath = $request->input('parent_folder');
+        $folderPaths = $request->input('parent_folder');
+        // $folderPaths = preg_replace('/\s*\/\s*/', ' / ', $folderPath);
+        // if (!$folderPath) {
+        //     return response()->json(['success' => false, 'message' => 'Folder path is required.'], 400);
+        // }
+    
+        // Check if files are uploaded
+        if ($request->hasFile('newfiles2')) {
+            try {
+                $totalSize = 0;
+                $successMessages = [];
+                $errorMessages = [];
+                $tag_list = [];
+    
+                // Handle tagList whether it's an array, a comma-separated string, or empty
+                $userTags = $request->input('tagList', []);
+                
+                // Convert to array if it's a comma-separated string
+                if (is_string($userTags)) {
+                    $userTags = explode(',', $userTags);
+                }
+                // Ensure $userTags is an array and remove any empty values
+                if (is_array($userTags)) {
+                    $userTags = array_filter($userTags); // Remove empty values
+                } else {
+                    $userTags = []; // Fallback to empty array if not an array
+                }
+                
+                // Merge with default tags
+                $tag_list = array_merge($tag_list, $userTags);
+                $tags = empty($tag_list) ? NULL : json_encode($tag_list);
+    
+                // Process each file
+                foreach ($request->file('newfiles2') as $file) {
+                    try {
+                        $filePath = $file->store($folderPath);
+
+                        // Retrieve the file's ID based on the given conditions
+                     
+                        $fileId = CommonTable::where('file_type', $file->getClientMimeType())
+                        ->where('file_name', $file->getClientOriginalName())
+                        // ->where('file_path', $filePath)  // Comment out if you don't need this condition
+                        ->where('user_id', auth()->user()->id)
+                        ->where('fyear', $request->input('fyear'))
+                        ->where('month', $request->input('Month'))
+                        ->whereNull('is_replaced')
+                        ->value('id'); // Use `value('id')` to get only the ID
+
+                        // dd($fileId); // This will give you the ID if the file exists, or null if it doesn't.
+                        // Check if the file exists
+                        if ($fileId) {
+                             // Retrieve the file record based on the ID
+                            $fileRecord = CommonTable::find($fileId); // Use `find()` to get the full record by ID
+
+                            // dd($fileRecord);
+                            if ($fileRecord) {
+                                // File record found, update the `is_replaced` field to 1
+                                $fileRecord->is_replaced = 1;
+                                if($fileRecord->save()){
+                                     // Store file details in the database
+                                    CommonTable::create([
+                                        'file_type' => $file->getClientMimeType(),
+                                        'file_name' => $file->getClientOriginalName(),
+                                        'file_size' => $file->getSize(),
+                                        'file_path' => $filePath,
+                                        'user_name' => auth()->user()->name,
+                                        'user_id' => auth()->user()->id,
+                                        'file_status' => $request->input('file_status', 0),
+                                        'fyear' => $request->input('fyear'),
+                                        'month' => $request->input('Month'),
+                                        'tags' => $tags, // Store tags as JSON
+                                        'location' => $folderPaths,
+                                        'descp' => $request->input('desc'),
+                                    ]);
+                                    // return response()->json(['message' => 'File replaced Successfully'], 404);
+                                    $successMessages[]='File replaced Successfully';
+
+                                }else{
+                                 $errorMessages[] = "Failed to update the existing the file.";
+                                }
+                             
+                            } else {
+                                // dd('File record not found!');
+                               $errorMessages[] = "Failed to find the old file.";
+
+                            }
+
+                        } else {
+                            // No file found, handle accordingly
+                            return response()->json(['message' => 'File not found'], 404);
+                        }
+                        $totalSize += $file->getSize();
+                        $successMessages[] = "File {$file->getClientOriginalName()} replaced successfully.";
+                    } catch (\Exception $e) {
+                        $errorMessages[] = "Failed to save file {$file->getClientOriginalName()} to the database.";
+                    }
+                }
+    
+                // Compile the response
+                return response()->json([
+                    'success' => empty($errorMessages),
+                    'successMessages' => $successMessages,
+                    'errorMessages' => $errorMessages,
+                ]);
+            } catch (\Exception $e) {
+                return response()->json(['success' => false, 'message' => 'Failed to process file uploads.'], 500);
+            }
+>>>>>>> 7a1e8ef89bb499a42e1aa3c9e6c715ffa58cfb06
         } else {
             // No files were uploaded
             return response()->json(['success' => false, 'message' => 'No files uploaded.'], 400);
         }
+<<<<<<< HEAD
     }
 
 
@@ -23840,6 +24051,239 @@ public function saveBreadcrumb(Request $request)
 
 //     return response()->json(['success' => false, 'message' => 'No files were uploaded.']);
 // }
+=======
+
+
+    }
+    if($request->input('keep')){
+        // dd("in keep");
+         // Validate the request
+         $request->validate([
+            'files.*' => 'required|file|max:102400|mimes:pdf,ppt,pot,pps,pptx,pptm,potx,ppam,ppsx,sldx,sldm,odp,ods,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,xlsx,docx,docm,xlam,txt,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv,xltx,xltm', // Allow specific file types up to 100MB
+            'tagList' => 'nullable', // Allow tagList to be nullable
+        ], [
+            'files.*.required' => 'Each file is required.',
+            'files.*.file' => 'The uploaded item must be a valid file.',
+            'files.*.max' => 'Each file may not be larger than 100MB.',
+            'files.*.mimes' => 'The file type must be one of the following: PDF, ODP, ODS, PPT, DOC, ODT, RTF, CSV, JSON, XML, HTML, ICO, SVG, WEBP, ZIP, XLS, DOCX, WAV, OGG, MP3, AVI, MOV, WMV, WEBM, TIFF, MP4, JPG, PNG, GIF, JPEG, 3GP, MKV, FLV.',
+        ]);
+    
+        // Check if folder path is provided
+        $folderPath = $request->input('parent_folder');
+        $folderPaths = $request->input('parent_folder');
+        // if (!$folderPath) {
+        //     return response()->json(['success' => false, 'message' => 'Folder path is required.'], 400);
+        // }
+    
+        // Check if files are uploaded
+        if ($request->hasFile('newfiles3')) {
+            try {
+                $totalSize = 0;
+                $successMessages = [];
+                $errorMessages = [];
+                $tag_list = [];
+    
+                // Handle tagList whether it's an array, a comma-separated string, or empty
+                $userTags = $request->input('tagList', []);
+                
+                // Convert to array if it's a comma-separated string
+                if (is_string($userTags)) {
+                    $userTags = explode(',', $userTags);
+                }
+                // Ensure $userTags is an array and remove any empty values
+                if (is_array($userTags)) {
+                    $userTags = array_filter($userTags); // Remove empty values
+                } else {
+                    $userTags = []; // Fallback to empty array if not an array
+                }
+                
+                // Merge with default tags
+                $tag_list = array_merge($tag_list, $userTags);
+                $tags = empty($tag_list) ? NULL : json_encode($tag_list);
+    
+                // Process each file
+                // foreach ($request->file('newfiles3') as $file) {
+                //     try {
+                //         $filePath = $file->store($folderPath);
+
+                //         // Store file details in the database
+                //         CommonTable::create([
+                //             'file_type' => $file->getClientMimeType(),
+                //             'file_name' => $file->getClientOriginalName(),
+                //             'file_size' => $file->getSize(),
+                //             'file_path' => $filePath,
+                //             'user_name' => auth()->user()->name,
+                //             'user_id' => auth()->user()->id,
+                //             'file_status' => $request->input('file_status', 0),
+                //             'fyear' => $request->input('fyear'),
+                //             'month' => $request->input('Month'),
+                //             'tags' => $tags, // Store tags as JSON
+                //             'location' => $folderPaths,
+                //             'descp' => $request->input('desc'),
+                //             'is_keep'=> 1,
+                //         ]);
+                //         // return response()->json(['message' => 'File replaced Successfully'], 404);
+                //         // $successMessages[]='File uploaded Successfully';
+ 
+                //         $totalSize += $file->getSize();
+                //         $successMessages[] = "File {$file->getClientOriginalName()} uploaded successfully.";
+                //     } catch (\Exception $e) {
+                //         $errorMessages[] = "Failed to save file {$file->getClientOriginalName()} to the database.";
+                //     }
+                // }
+
+
+
+                foreach ($request->file('newfiles3') as $file) {
+                    try {
+                        $originalFileName = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME); // Get the file name without extension
+                        $extension = $file->getClientOriginalExtension(); // Get the file extension
+                        $fileName = $originalFileName . '.' . $extension; // Start with the original file name
+                
+                        // Check if the file name exists in the database and append a counter if it does
+                        $counter = 1;
+                        while (CommonTable::where('file_name', $fileName)->where('location', $folderPaths)->exists()) {
+                            $fileName = $originalFileName . " ($counter)." . $extension;
+                            $counter++;
+                        }
+                
+                        // Save the file with the updated unique name
+                        $filePath = $file->storeAs($folderPath, $fileName);
+                
+                        // Store file details in the database
+                        CommonTable::create([
+                            'file_type' => $file->getClientMimeType(),
+                            'file_name' => $fileName, // Use the updated unique name
+                            'file_size' => $file->getSize(),
+                            'file_path' => $filePath,
+                            'user_name' => auth()->user()->name,
+                            'user_id' => auth()->user()->id,
+                            'file_status' => $request->input('file_status', 0),
+                            'fyear' => $request->input('fyear'),
+                            'month' => $request->input('Month'),
+                            'tags' => $tags, // Store tags as JSON
+                            'location' => $folderPaths,
+                            'descp' => $request->input('desc'),
+                            'is_keep' => 1,
+                        ]);
+                
+                        $totalSize += $file->getSize();
+                        $successMessages[] = "File {$fileName} uploaded successfully.";
+                    } catch (\Exception $e) {
+                        $errorMessages[] = "Failed to save file {$file->getClientOriginalName()} to the database.";
+                    }
+                }
+                
+    
+                // Compile the response
+                return response()->json([
+                    'success' => empty($errorMessages),
+                    'successMessages' => $successMessages,
+                    'errorMessages' => $errorMessages,
+                ]);
+            } catch (\Exception $e) {
+                return response()->json(['success' => false, 'message' => 'Failed to process file uploads.'], 500);
+            }
+        } else {
+            // No files were uploaded
+            return response()->json(['success' => false, 'message' => 'No files uploaded.'], 400);
+        }
+
+    }
+    if($request->input('upload')){
+        // Validate the request
+        $request->validate([
+            'files.*' => 'required|file|max:102400|mimes:pdf,ppt,pot,pps,pptx,pptm,potx,ppam,ppsx,sldx,sldm,odp,ods,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,xlsx,docx,docm,xlam,txt,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv,xltx,xltm', // Allow specific file types up to 100MB
+            'tagList' => 'nullable', // Allow tagList to be nullable
+        ],[
+            'files.*.required' => 'Each file is required.',
+            'files.*.file' => 'The uploaded item must be a valid file.',
+            'files.*.max' => 'Each file may not be larger than 100MB.',
+            'files.*.mimes' => 'The file type must be one of the following: PDF, ODP, ODS, PPT, DOC, ODT, RTF, CSV, JSON, XML, HTML, ICO, SVG, WEBP, ZIP, XLS, DOCX, WAV, OGG, MP3, AVI, MOV, WMV, WEBM, TIFF, MP4, JPG, PNG, GIF, JPEG, 3GP, MKV, FLV.',
+        ]);
+    
+        // Check if folder path is provided
+        $folderPath = $request->input('parent_folder');
+        $folderPaths = $request->input('parent_folder');
+        // dd($folderPath);
+
+        // if (!$folderPath) {
+        //     return response()->json(['success' => false, 'message' => 'Folder path is required.'], 400);
+        // }
+    
+        // Check if files are uploaded
+        if ($request->hasFile('newfiles')) {
+            try {
+                $totalSize = 0;
+                $successMessages = [];
+                $errorMessages = [];
+                $tag_list = [];
+    
+                // Handle tagList whether it's an array, a comma-separated string, or empty
+                $userTags = $request->input('tagList', []);
+                
+                // Convert to array if it's a comma-separated string
+                if (is_string($userTags)) {
+                    $userTags = explode(',', $userTags);
+                }
+                // Ensure $userTags is an array and remove any empty values
+                if (is_array($userTags)) {
+                    $userTags = array_filter($userTags); // Remove empty values
+                } else {
+                    $userTags = []; // Fallback to empty array if not an array
+                }
+                
+                // Merge with default tags
+                $tag_list = array_merge($tag_list, $userTags);
+                $tags = empty($tag_list) ? NULL : json_encode($tag_list);
+    
+                // Process each file
+                foreach ($request->file('newfiles') as $file) {
+                    try {
+                        $filePath = $file->store($folderPath);
+    
+                        // Store file details in the database
+                        CommonTable::create([
+                            'file_type' => $file->getClientMimeType(),
+                            'file_name' => $file->getClientOriginalName(),
+                            'file_size' => $file->getSize(),
+                            'file_path' => $filePath,
+                            'user_name' => auth()->user()->name,
+                            'user_id' => auth()->user()->id,
+                            'file_status' => $request->input('file_status', 0),
+                            'fyear' => $request->input('fyear'),
+                            'month' => $request->input('Month'),
+                            'tags' => $tags, // Store tags as JSON
+                            'location' => $folderPaths,
+                            'descp' => $request->input('desc'),
+                        ]);
+    
+                        $totalSize += $file->getSize();
+                        $successMessages[] = "File {$file->getClientOriginalName()} uploaded successfully.";
+                    } catch (\Exception $e) {
+                        $errorMessages[] = "Failed to save file {$file->getClientOriginalName()} to the database.";
+                    }
+                }
+    
+                // Compile the response
+                return response()->json([
+                    'success' => empty($errorMessages),
+                    'successMessages' => $successMessages,
+                    'errorMessages' => $errorMessages,
+                ]);
+            } catch (\Exception $e) {
+                return response()->json(['success' => false, 'message' => 'Failed to process file uploads.'], 500);
+            }
+        } else {
+            // No files were uploaded
+            return response()->json(['success' => false, 'message' => 'No files uploaded.'], 400);
+        }
+
+    }
+
+    
+}
+>>>>>>> 7a1e8ef89bb499a42e1aa3c9e6c715ffa58cfb06
 
 
 

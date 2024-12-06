@@ -2324,7 +2324,110 @@ $(document).ready(function() {
                     </div>
                 </div>
             </div>
+<!-- edit file model start -->
+<div class="modal fade drop_coman_file have_title" id="edit_fileex" tabindex="-1" role="dialog" aria-labelledby="edit_fileex" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" style="font-weight:700">Edit File Details</h5>
+                <button class="close" style="border-radius:5px;" type="button" data-bs-dismiss="modal">
+                    <span aria-hidden="true">
+                        <svg width="50" height="50" viewBox="0 0 50 50" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <rect width="4.27093" height="66.172" transform="matrix(0.702074 -0.712104 0.709324 0.704883 0 3.31244)" fill="black" />
+                            <rect width="4.27086" height="66.3713" transform="matrix(-0.704896 -0.70931 0.706518 -0.707695 3.10742 50)" fill="black" />
+                        </svg>
+                    </span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <h3>Edit File Details</h3>
+                <form  id="rename-file-form" action="" method="POST" enctype="multipart/form-data">
+@csrf
+<div class="gropu_form">
+        <label for="name">Name</label>
+        <input type="hidden" name="file_id" id="file_id"  value="">
+        <input type="hidden" name="file_with_ext" id="file_with_ext"  value="">
+        <input type="text" name="file_name" id="file_name" class="file_name" value="" placeholder="Enter Name">
+    </div>
+	
+<div class="gropu_form">
+        <label for="fyear">Financial Year</label>
+        <select id="fffyear" name="fyear" required="">
+            <option value="" disabled="" selected="">select</option>
+            <option value="2013-2014">2013-2014</option>
+              <option value="2014-2015">2014-2015</option>
+               <option value="2015-2016">2015-2016</option>
+                <option value="2016-2017">2016-2017</option>
+                 <option value="2017-2018">2017-2018</option>
+                  <option value="2018-2019">2018-2019</option>
+                   <option value="2019-2020">2019-2020</option>
+                  
+            <option value="2020-2021">2020-2021</option>
+            <option value="2021-2022">2021-2022</option>
+            <option value="2022-2023">2022-2023</option>
+            <option value="2023-2024">2023-2024</option>
+            <option value="2024-2025">2024-2025</option>
+            <option value="2025-2026">2025-2026</option>
+             <option value="2026-2027">2026-2027</option>
 
+              <option value="2027-2028">2027-2028</option>
+               <option value="2028-2029">2028-2029</option>
+                <option value="2029-2030">2029-2030</option>
+                 <option value="2030-2031">2030-2031</option>
+                  <option value="2031-2032">2031-2032</option>
+                   <option value="2032-2033">2032-2033</option>
+                    <option value="2033-2034">2033-2034</option>
+                     <option value="2034-2035">2034-2035</option>
+                      <option value="2035-2036">2035-2036</option>
+                       <option value="2036-2037">2036-2037</option>
+        </select>
+    </div>
+
+    <div class="gropu_form">
+        <label for="Month">Month</label>
+        <select id="Month" name="Month" required="">
+            <option value="" disabled="" selected="">select</option>
+            <option value="January">January</option>
+            <option value="February">February</option>
+            <option value="March">March</option>
+            <option value="April">April</option>
+            <option value="May">May</option>
+            <option value="June">June</option>
+            <option value="July">July</option>
+            <option value="August">August</option>
+            <option value="September">September</option>
+            <option value="October">October</option>
+            <option value="November">November</option>
+            <option value="December">December</option>
+        </select>
+    </div>
+
+
+                          <div class="gropu_form test-area">
+                          <label for="Tags">Tags (Optional)</label>
+                         <div class="tag-container">
+            <textarea name="Tags" class="tag-input" id="Tags" placeholder="Add a tag and press enter"  style="height: 68px;" value=""></textarea>
+            <input type="hidden" name="tagList" id="tagList" class="tagList" value="">
+        </div>
+                          </div>
+                          
+        <div class="gropu_form test-area">
+        <label for="desc">Description</label>
+         <div class="tag-container">
+            <textarea name="desc" id="desc" value="" placeholder="Description" style="height: 68px;"></textarea>
+        </div>
+    </div>
+
+
+                    <div class="upp_input">
+                    <button class="btn btn-primary closenav" style="border-radius:5px;" type="submit">Update</button>
+</div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- edit file model end -->
             <script>
                 $(document).ready(function () {
                     // Listen for click events on elements with the class .rename_nt, using event delegation on the document body
@@ -2349,6 +2452,120 @@ $(document).ready(function() {
                 });
 
             </script>
+    
+<script>
+$(document).ready(function () {
+    $(document).on('click', '.rename_file', function () {
+        let fid = $(this).data('file_id');
+        let fname = $(this).data('filename'); // Correct key
+        let fdesc = $(this).data('desc');
+        let ffyear = $(this).data('fyear');
+        let fmonth = $(this).data('month');
+        let ftags = $(this).data('tags'); // Correct key
+
+        let fnameWithoutExt = fname.substring(0, fname.lastIndexOf('.')) || fname;
+        console.log(fid, fname, fdesc, ffyear, fmonth, ftags);
+
+        // Set values in the form inputs
+        $('#rename-file-form #file_id').val(fid);
+        $('#rename-file-form #file_name').val(fnameWithoutExt);
+        $('#rename-file-form #file_with_ext').val(fname);
+        $('#rename-file-form #desc').val(fdesc);
+        $('#rename-file-form #fffyear').val(ffyear);
+        $('#rename-file-form #Month').val(fmonth); 
+        $('#rename-file-form #tagList').val(ftags); // Set the tags string to the input field
+        $('#rename-file-form #Tags').val(ftags); // Set the tags string to the input field
+
+        // Clear existing tags
+        const tagContainer = $('#rename-file-form .tag-container');
+        tagContainer.find('.tag').remove();
+
+        // Check if tagList (ftags) has a value
+        if (ftags && ftags.trim() !== '') {
+            // Initialize the tags from the comma-separated string
+            addTagsFromString(ftags);
+        }
+
+        // Function to add tags from a comma-separated string
+        function addTagsFromString(tagsString) {
+            // Ensure the tagsString is a valid string
+            if (typeof tagsString !== 'string') {
+                console.error('Expected a string for tags, but got:', tagsString);
+                return;
+            }
+
+            // Split the string into an array of tags
+            const tags = tagsString.split(',').map(tag => tag.trim());
+
+            const textarea = $('#rename-file-form .tag-input')[0];
+
+            // Add each tag to the container
+            tags.forEach(tagText => {
+                if (tagText !== '') {
+                    const tag = document.createElement('div');
+                    tag.className = 'tag';
+                    tag.textContent = tagText;
+
+                    const removeTag = document.createElement('span');
+                    removeTag.className = 'remove-tag';
+                    removeTag.textContent = '✖';
+                    removeTag.addEventListener('click', function () {
+                        tagContainer[0].removeChild(tag);
+                        updateTags(tagContainer[0]);
+                    });
+
+                    tag.appendChild(removeTag);
+                    tagContainer[0].insertBefore(tag, textarea);
+                }
+            });
+
+            // Update the tag list value
+            updateTags(tagContainer[0]);
+        }
+
+        // Keydown event for adding tags manually
+        $('body').on('keydown', '.tag-input', function (event) {
+            if (event.key === 'Enter') {
+                event.preventDefault();
+                const textarea = this;
+                const tagContainer = textarea.closest('.tag-container');
+                const tagText = textarea.value.trim();
+                if (tagText !== '') {
+                    const tag = document.createElement('div');
+                    tag.className = 'tag';
+                    tag.textContent = tagText;
+
+                    const removeTag = document.createElement('span');
+                    removeTag.className = 'remove-tag';
+                    removeTag.textContent = '✖';
+                    removeTag.addEventListener('click', function () {
+                        tagContainer.removeChild(tag);
+                        updateTags(tagContainer);
+                    });
+
+                    tag.appendChild(removeTag);
+                    tagContainer.insertBefore(tag, textarea);
+                    textarea.value = '';
+                    updateTags(tagContainer);
+                }
+            }
+        });
+
+        function updateTags(tagContainer) {
+            const tags = [...tagContainer.querySelectorAll('.tag')]
+                .map(tag => tag.textContent.replace('✖', '').trim());
+
+            // Update the hidden input field associated with this tag container
+            const hiddenInput = tagContainer.querySelector('.tagList');
+            if (hiddenInput) {
+                hiddenInput.value = tags.join(',');
+            }
+        }
+    });
+});
+
+
+</script>
 
             <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
 
@@ -2872,6 +3089,9 @@ $(document).ready(function() {
                 
                 // Empty the content of the '.selected-file' div
                 $modal.find('.selected-file').empty();
+
+                // Empty the content of the '.selected_file_count' div
+                $modal.find('.selected_file_count').empty();
                 
                 // Remove the '.tag' div
                 $modal.find('.tag').remove();
@@ -2913,7 +3133,7 @@ $(document).ready(function() {
                             <div class="label_wrap">
                     <label>Path :</label>
 
-                    <script>
+                    {{-- <script>
                         $(document).ready(function() {
                             // Function to get query parameter by name
                             function getQueryParamd(param) {
@@ -2943,7 +3163,7 @@ $(document).ready(function() {
                             // Fetch the URL parameter every second
                             setInterval(updateFolderPathd, 100);
                         });
-                    </script>
+                    </script> --}}
 
                     <input type="text" id="parent-folderd" name="parent_folder" value="" readonly disable>
                      </div>
@@ -3340,10 +3560,12 @@ function updateBreadcrumb(folderPath) {
         console.log("Redirecting to DocuRepo");
         redirectToDocuRepo(); // Function to redirect to /docurepo
     });
+    
 }
 
 function redirectToDocuRepo() {
     window.location.href = '/docurepo';
+   
 }
 
 function toggleLabelWrap() {
@@ -4109,15 +4331,58 @@ $(document).on('click', '.fold-link', function (e) {
 
     // Get the folder path from the data attribute of the clicked link
     const folderPath = $(this).data('folder-path');
+   
 
-    // Update the URL without reloading the page using pushState
-    const newUrl = new URL(window.location);
-    newUrl.searchParams.set('folder', encodeURIComponent(folderPath)); // Add/update 'folder' query param in URL
-    window.history.pushState({ path: newUrl.href }, '', newUrl.href);
+// Update the hidden input field with the folder path
+$('#parent-folderlll').val(folderPath);
+$('#parent-folderd').val(folderPath);
 
-    // Call the function to fetch the folder contents based on the new folder path in the URL
+
+    
     fetchfolderfold();
 });
+$(document).on('click', '.backs-button', function (e) {
+    e.preventDefault();
+
+    // Get the folder path from the data attribute of the clicked link
+    const folderPath = $(this).data('folder-path');
+  
+
+// Update the hidden input field with the folder path
+$('#parent-folderlll').val(folderPath);
+$('#parent-folderd').val(folderPath);
+
+
+    
+    fetchfolderfold();
+});
+function getQueryParam(param) {
+        const queryString = window.location.search.substring(1);
+        const params = queryString.split('&');
+        for (let i = 0; i < params.length; i++) {
+            const pair = params[i].split('=');
+            if (pair[0] === param) {
+                return pair[1] ? decodeURIComponent(pair[1]) : null;
+            }
+        }
+        return null;
+    }
+$(document).on('click', '.hvr-rotatee', function (e) {
+    e.preventDefault();
+
+  
+    const folderPaths = getQueryParam('folder');
+    const finalPathToUse = decodeURIComponent(folderPaths);
+
+// Update the hidden input field with the folder path
+$('#parent-folderlll').val(finalPathToUse);
+$('#parent-folderd').val(finalPathToUse);
+
+
+    
+    fetchfolderfold();
+});
+
 
 function fetchfolderfold() {
     // Retrieve the folder path from the URL or use the default folder
@@ -4209,7 +4474,7 @@ $(document).on('click', '.fold-link', function (e) {
         },
         beforeSend: function () {
             // Optional: Show a loader spinner before the request is sent
-            $('.folder-cont').html('<div class="loader" style="color: #C5C5C5; font-size: 12px;">Loading...</div>');  // Apply inline styles for color and font size
+            $('.folder-cont').html('<div class="loader" style="color: #C5C5C5; font-size: 12px; position: relative; top: 50px;">Loading...</div>');  // Apply inline styles for color and font size
         },
         success: function (response) {
             // Update the folder contents with the HTML response
@@ -4267,6 +4532,36 @@ function updateBreadcrumbs(folderPath) {
         $('.backs-button').hide();
     }
 }
+
+// Get query parameter from URL
+function getQueryParam(param) {
+    const queryString = window.location.search.substring(1);
+    const params = queryString.split('&');
+    for (let i = 0; i < params.length; i++) {
+        const pair = params[i].split('=');
+        if (pair[0] === param) {
+            return pair[1] ? decodeURIComponent(pair[1]) : null;
+        }
+    }
+    return null;
+}
+
+// Fetch folder path from URL query params
+const folderPaths = getQueryParam('folder');
+
+// Check every second if there's no value in data-folder-path, then update it from URL param
+setInterval(() => {
+    $('.backs-button').each(function () {
+        const dataFolderPath = $(this).data('folder-path');
+        if (!dataFolderPath && folderPaths) {
+            $(this).data('folder-path', folderPaths);
+        }
+    });
+}, 1); // Check every second
+
+// Example to call updateBreadcrumbs
+updateBreadcrumbs(folderPaths || 'root');
+
 
 // Handle "Back" button clicks
 $(document).on('click', '.backs-button', function (e) {
@@ -5729,10 +6024,326 @@ if(response.directorfolder){
             window.xhrRequests = xhrRequests;
         });
 
+        // $('#upload-file-form').on('submit', function(e) {
+        //     e.preventDefault();
 
-        // sandeep start working
+        //     // $('.close').click();
 
-        $(document).ready(function () {
+        //     $('.progree_cont_nt').css('display', 'block');
+        //     $('#upload_filee').modal('hide');
+        //     $('.side_panel_wraap').removeClass('active');
+        //     $('.side_panel_wraap_overlay').removeClass('active');
+        //     $('.side_panel_wraap_overlay').removeClass('active');
+        //     // $('#upload_filee .close').click(); 
+
+        //     var $submitButton = $(this).find('button[type="submit"]');
+        //     $submitButton.prop('disabled', true).append('<span class="button-spinner"></span>'); // Disable and append spinner
+
+        //     // Access the file input element and its files
+        //     var fileInput = $('#fileU')[0]; // Ensure this matches your file input field
+        //     var files = fileInput.files; // Get all the selected files
+            
+        //     // Check if files are selected
+        //     if (files.length === 0) {
+        //         toastr.error('No files selected for upload!');
+        //         $submitButton.prop('disabled', false);
+        //         $('.button-spinner').remove();
+        //         return;
+        //     }
+
+        //     // let xhrRequests = {}; // To store all the xhr requests for cancellation
+        //     isUploading = true; // Set flag to true when upload starts
+
+        //     // Get all other form input fields except the file input
+        //     var formInputs = $(this).serializeArray(); // Serialize other form 
+            
+        //     // $('#upload_filee .close').click(); 
+        //     // $('.modal-content').hide(); 
+
+        //     // Iterate over each selected file and process individually
+        //     $.each(files, function(index, file) {
+        //         let currentFileIndex = getSecureRandomString(16); // Generate unique index for the file
+        //         addProgressIndicator(file.name, currentFileIndex); // Add progress bar for each file
+
+        //         var formData = new FormData();
+
+        //         // Append all other form fields to FormData
+        //         $.each(formInputs, function(i, input) {
+        //             formData.append(input.name, input.value); // Append each field to the FormData
+        //         });
+
+        //         // Append the individual file to FormData as 'files[]'
+        //         formData.append('files[]', file);
+
+        //         let xhrUpload = $.ajax({
+        //             url: $('#upload-file-form').attr('action'), // URL from the form's action attribute
+        //             type: 'POST',
+        //             data: formData,
+        //             processData: false,
+        //             contentType: false,
+        //             xhr: function() {
+        //                 let xhr = new window.XMLHttpRequest();
+                        
+        //                 xhr.upload.addEventListener("progress", function(evt) {
+        //                     if (evt.lengthComputable) {
+        //                         let percentComplete = evt.loaded / evt.total;
+        //                         updateProgress(percentComplete, currentFileIndex); // Update individual progress bar
+        //                     }
+        //                 }, false);
+
+        //                 return xhr;
+        //             },
+        //             success: function(response) {
+        //                         if (response.exists) {
+        //                             // File already exists, show confirmation dialog
+        //                             Swal.fire({
+        //                                 title: 'File Already Exists',
+        //                                 text: `The file "${response.fileName}" already exists in the folder "${response.folderPath}". Would you like to replace it or keep both?`,
+        //                                 icon: 'warning',
+        //                                 showCancelButton: true,
+        //                                 confirmButtonText: 'Replace',
+        //                                 cancelButtonText: 'Keep Both',
+        //                                 customClass: {
+        //                             cancelButton: 'keep-both-btn',  // Custom class for the 'Keep Both' button
+        //                         },
+        //                             }).then((result) => {
+        //                                 let formData = new FormData();
+        //                                 formData.append('files[]', file); // Append the file again
+
+        //                                 if (result.isConfirmed) {
+        //                                     // Replace the file
+        //                                     formData.append('replace', true); // Add replace flag
+        //                                 } else {
+        //                                     // Keep both: Re-upload the file with a unique name
+        //                                     formData.append('keepBoth', true); // Add keepBoth flag
+        //                                 }
+
+        //                                 $.ajax({
+        //                                     url: $('#upload-file-form').attr('action'),
+        //                                     type: 'POST',
+        //                                     data: formData,
+        //                                     processData: false,
+        //                                     contentType: false,
+        //                                     success: function(response) {
+        //                                         if (response.success) {
+        //                                             successCounter++; // Increment the success counter
+        //                                             updateSuccessCount(); // Update the displayed success count
+        //                                             $(`#progress_${currentFileIndex} .cancle_file`).hide();
+        //                                             $(`#progress_${currentFileIndex} .done_tick`).show(); // Show success tick
+                                                    
+
+        //                                             toastr.success(result.isConfirmed ?
+        //                                                 `File "${response.fileName}" replaced successfully.` :
+        //                                                 `File "${response.fileName}" uploaded successfully with a new name.`
+        //                                             );
+        //                                         //     setTimeout(function() {
+        //                                         //     location.reload(); // Reload the page after 3 seconds
+        //                                         // }, 3000); // 3000 milliseconds = 3 seconds
+        //                                         } else {
+        //                                             toastr.error('Failed to replace or upload the file.');
+        //                                             let errorSVG = '<svg width="24px" height="24px" viewBox="0 0 24 24" fill="red"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"></path></svg>';
+        //                                             $(`#progress_${currentFileIndex} .progress_circle2`).html(errorSVG);
+        //                                         }
+
+        //                                         activeUploads[currentFileIndex] = false; // Mark this file as completed
+        //                                         checkAllUploadsComplete(); // Check if all uploads are done
+        //                                         fetchFolderContents($('#parent-folder').val());
+        //                                         resetFileInput($('input[name="file"]'));
+        //                                     },
+        //                                     error: function(xhr) {
+        //                                         toastr.error('Error occurred while replacing or uploading the file.');
+        //                                         let errorSVG = '<svg width="24px" height="24px" viewBox="0 0 24 24" fill="red"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"></path></svg>';
+        //                                         $(`#progress_${currentFileIndex} .progress_circle2`).html(errorSVG);
+        //                                     }
+        //                                 });
+        //                             });
+        //                         } else if (response.success) {
+        //                             // Normal success handling
+        //                             successCounter++; // Increment the success counter
+        //                             updateSuccessCount(); // Update the displayed success count
+        //                             $(`#progress_${currentFileIndex} .cancle_file`).hide();
+        //                             $(`#progress_${currentFileIndex} .done_tick`).show(); // Show success tick
+
+        //                             // toastr.success('File uploaded successfully.');
+        //                             activeUploads[currentFileIndex] = false; // Mark this file as completed
+        //                             checkAllUploadsComplete(); // Check if all uploads are done
+        //                             fetchFolderContents($('#parent-folder').val());
+        //                             resetFileInput($('input[name="file"]'));
+
+        //                             if (response.successMessages.length) {
+        //                                 response.successMessages.forEach(function(msg) {
+        //                                     // toastr.success(msg);
+        //                                 });
+        //                             }
+        //                             if (response.errorMessages.length) {
+        //                                 response.errorMessages.forEach(function(msg) {
+        //                                     toastr.error('An error occurred while uploading files');
+        //                                     let errorSVG = '<svg width="24px" height="24px" viewBox="0 0 24 24" fill="red"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"></path></svg>';
+        //                                     $(`#progress_${currentFileIndex} .progress_circle2`).html(errorSVG);
+        //                                 });
+        //                             }
+
+                                
+        //                         } else {
+        //                             // General error
+        //                             toastr.error('Failed to upload file: ' + response.message);
+        //                             let errorSVG = '<svg width="24px" height="24px" viewBox="0 0 24 24" fill="red"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"></path></svg>';
+        //                             $(`#progress_${currentFileIndex} .progress_circle2`).html(errorSVG);
+        //                             $('#upload_filee .close').click();
+        //                         }
+
+        //                 $('.button-spinner').remove();
+        //                 $submitButton.prop('disabled', false); // Re-enable submit button
+        //             },
+        //             error: function(xhr) {
+        //                 if (xhr.status === 400 || xhr.status === 500) {
+        //                     let response = JSON.parse(xhr.responseText);
+        //                     toastr.error('Error: ' + response.message);
+        //                     // Create the error SVG with red fill
+        //                     let errorSVG = '<svg width="24px" height="24px" viewBox="0 0 24 24" fill="red"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"></path></svg>';
+
+        //                     // Replace the current done tick with the error SVG
+        //                     $(`#progress_${currentFileIndex} .progress_circle2`).html(errorSVG); // Insert the error SVG
+        //                     $('#upload_filee .close').click(); 
+
+        //                 } else {
+        //                     // Create the error SVG with red fill
+        //                     let errorSVG = '<svg width="24px" height="24px" viewBox="0 0 24 24" fill="red"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"></path></svg>';
+
+        //                     // Replace the current done tick with the error SVG
+        //                     $(`#progress_${currentFileIndex} .progress_circle2`).html(errorSVG); // Insert the error SVG
+
+        //                 $('#upload_filee .close').click(); 
+
+
+        //                 }
+        //                 activeUploads[currentFileIndex] = false; // Mark this file as completed or failed
+        //                     checkAllUploadsComplete(); // Check if all uploads are done
+        //                 $submitButton.prop('disabled', false); // Re-enable submit button
+        //                 $('#upload_filee .close').click(); 
+        //                 $('.button-spinner').remove();
+
+
+        //             }
+        //         });
+
+        //         // Store the xhr request to allow cancellation later
+        //         xhrRequests[currentFileIndex] = xhrUpload;
+        //     });
+        //     $('#upload_filee .close').click(); 
+
+        //     window.xhrRequests = xhrRequests;
+
+
+        //     // functions with postfix1 are now not in used for after optimising the code sandeep
+
+        //                         // Function to add progress bar for each file
+        //                         function addProgressIndicator1(fileName, index) {
+        //                             const progressHtml = `
+        //                                 <div class="progress_repeat" id="progress_${index}">
+        //                                     <h2 class="file_name">${fileName}</h2>
+        //                                     <div class="progress_circle progress_circle2">
+        //                                         <div id="wrapper_progreess" class="center">                  
+        //                                             <svg class="progresss" x="0px" y="0px" viewBox="0 0 80 80">
+        //                                                 <path class="track" d="M5,40a35,35 0 1,0 70,0a35,35 0 1,0 -70,0" />
+        //                                                 <path class="fill" id="progressFill_${index}" d="M5,40a35,35 0 1,0 70,0a35,35 0 1,0 -70,0" />
+        //                                             </svg>
+        //                                             <span class="span_dott"></span>
+        //                                         </div>
+        //                                         <div class="cancle_file">
+        //                                             <button class="remove-btnn" onclick="cancelUpload1('${index}')">X</button>
+        //                                         </div>
+        //                                         <div class="done_tick" style="display:none;">
+        //                                         <svg class="progress_done" width="24px" height="24px" viewBox="0 0 24 24" fill="#0F9D58"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"></path></svg>
+        //                                         </div>
+        //                                     </div>
+        //                                 </div>
+        //                             `;
+        //                             $('.progress_repeat_wrap').append(progressHtml);
+        //                         }
+
+        //                         // Function to update the progress for each file
+        //                         function updateProgress1(percentComplete, index) {
+        //                             const progressFill = $(`#progressFill_${index}`);
+        //                             const circumference = 2 * Math.PI * 35; // Radius is 35
+        //                             const offset = circumference - (percentComplete * circumference);
+        //                             progressFill.css('stroke-dasharray', circumference);
+        //                             progressFill.css('stroke-dashoffset', offset);
+        //                         }
+        //                         // // Function to cancel upload for a specific file
+        //                         // window.cancelUpload1 = function(currentFileIndex) {
+        //                         //     if (xhrRequests[currentFileIndex]) {
+        //                         //         xhrRequests[currentFileIndex].abort(); // Abort the AJAX request
+
+        //                         //         $(`#progress_${currentFileIndex}`).fadeOut(500, function() {
+        //                         //             $(this).remove();
+        //                         //         });
+        //                         //         $('.button-spinner').remove();
+
+        //                         //         // toastr.info(`Upload cancelled for file: ${currentFileIndex}`);
+
+        //                         //         // Clean up xhr request memory
+        //                         //         delete xhrRequests[currentFileIndex];
+        //                         //     }
+        //                         // }
+        //                         // Function to cancel upload for a specific file
+        //                         window.cancelUpload1 = function(currentFileIndex) {
+        //                             // Show a confirmation dialog before canceling
+        //                             let isConfirmed = window.confirm("Are you sure you want to cancel the upload?");
+
+        //                             if (isConfirmed) {
+        //                                 // If the user confirmed, proceed with canceling the upload
+        //                                 if (xhrRequests[currentFileIndex]) {
+        //                                     xhrRequests[currentFileIndex].abort(); // Abort the AJAX request
+
+        //                                     // Fade out and remove the progress indicator
+        //                                     $(`#progress_${currentFileIndex}`).fadeOut(500, function() {
+        //                                         $(this).remove();
+        //                                     });
+                                            
+        //                                     // Remove any button spinner if present
+        //                                     $('.button-spinner').remove();
+
+        //                                     // Optionally, display a message that the upload was canceled
+        //                                     toastr.error(`Upload cancelled`);
+
+        //                                     // Clean up xhr request memory
+        //                                     delete xhrRequests[currentFileIndex];
+        //                                 }
+        //                             } else {
+        //                                 // If the user did not confirm, do nothing (upload will continue)
+        //                                 toastr.info("Upload is still in progress.");
+        //                             }
+        //                         }
+        //                         // Function to update the success count display
+        //                         function updateSuccessCount1() {
+        //                             $('#uploadSuccessCount').text(`${successCounter} upload(s) completed`); // Update the success count
+        //                         }
+        //                         // Function to check if all uploads are complete (either canceled or finished)
+        //                         function checkAllUploadsComplete1() {
+        //                             // Check if there are any active uploads (true means it's still uploading)
+        //                             isUploading = activeUploads.some(upload => upload === true);
+        //                         }
+        //                         // Function to generate secure random strings
+        //                         function getSecureRandomString1(length) {
+        //                             const array = new Uint8Array(length);
+        //                             window.crypto.getRandomValues(array);
+        //                             return Array.from(array, byte => byte.toString(36)).join('').substring(0, length);
+        //                         }
+        //                         // Warn the user if they attempt to leave the page during file upload
+        //                         window.addEventListener('beforeunload', function(e) {
+        //                             if (isUploading1) {
+        //                                 // Standard message across browsers
+        //                                 const message = "You have ongoing uploads. If you leave, your progress will be lost.";
+        //                                 e.returnValue = message; // This is the standard way to set the prompt
+        //                                 return message; // For older browsers
+        //                             }
+        //                         });
+        //     // functions with postfix1 are now not in used for after optimising the code sandeep
+        // });
+// sandeep start working
+
+$(document).ready(function () {
             $('#upload-file-form').on('submit', function (e) {
                 e.preventDefault(); // Prevent the default form submission
 
@@ -6341,321 +6952,7 @@ if(response.directorfolder){
 
 
         // sandeep end working
-
-        // $('#upload-file-form').on('submit', function(e) {
-        //     e.preventDefault();
-
-        //     // $('.close').click();
-
-        //     $('.progree_cont_nt').css('display', 'block');
-        //     $('#upload_filee').modal('hide');
-        //     $('.side_panel_wraap').removeClass('active');
-        //     $('.side_panel_wraap_overlay').removeClass('active');
-        //     $('.side_panel_wraap_overlay').removeClass('active');
-        //     // $('#upload_filee .close').click(); 
-
-        //     var $submitButton = $(this).find('button[type="submit"]');
-        //     $submitButton.prop('disabled', true).append('<span class="button-spinner"></span>'); // Disable and append spinner
-
-        //     // Access the file input element and its files
-        //     var fileInput = $('#fileU')[0]; // Ensure this matches your file input field
-        //     var files = fileInput.files; // Get all the selected files
-            
-        //     // Check if files are selected
-        //     if (files.length === 0) {
-        //         toastr.error('No files selected for upload!');
-        //         $submitButton.prop('disabled', false);
-        //         $('.button-spinner').remove();
-        //         return;
-        //     }
-
-        //     // let xhrRequests = {}; // To store all the xhr requests for cancellation
-        //     isUploading = true; // Set flag to true when upload starts
-
-        //     // Get all other form input fields except the file input
-        //     var formInputs = $(this).serializeArray(); // Serialize other form 
-            
-        //     // $('#upload_filee .close').click(); 
-        //     // $('.modal-content').hide(); 
-
-        //     // Iterate over each selected file and process individually
-        //     $.each(files, function(index, file) {
-        //         let currentFileIndex = getSecureRandomString(16); // Generate unique index for the file
-        //         addProgressIndicator(file.name, currentFileIndex); // Add progress bar for each file
-
-        //         var formData = new FormData();
-
-        //         // Append all other form fields to FormData
-        //         $.each(formInputs, function(i, input) {
-        //             formData.append(input.name, input.value); // Append each field to the FormData
-        //         });
-
-        //         // Append the individual file to FormData as 'files[]'
-        //         formData.append('files[]', file);
-
-        //         let xhrUpload = $.ajax({
-        //             url: $('#upload-file-form').attr('action'), // URL from the form's action attribute
-        //             type: 'POST',
-        //             data: formData,
-        //             processData: false,
-        //             contentType: false,
-        //             xhr: function() {
-        //                 let xhr = new window.XMLHttpRequest();
-                        
-        //                 xhr.upload.addEventListener("progress", function(evt) {
-        //                     if (evt.lengthComputable) {
-        //                         let percentComplete = evt.loaded / evt.total;
-        //                         updateProgress(percentComplete, currentFileIndex); // Update individual progress bar
-        //                     }
-        //                 }, false);
-
-        //                 return xhr;
-        //             },
-        //             success: function(response) {
-        //         if (response.exists) {
-        //             // File already exists, show confirmation dialog
-        //             Swal.fire({
-        //                 title: 'File Already Exists',
-        //                 text: `The file "${response.fileName}" already exists in the folder "${response.folderPath}". Would you like to replace it or keep both?`,
-        //                 icon: 'warning',
-        //                 showCancelButton: true,
-        //                 confirmButtonText: 'Replace',
-        //                 cancelButtonText: 'Keep Both',
-        //             }).then((result) => {
-        //                 let formData = new FormData();
-        //                 formData.append('files[]', file); // Append the file again
-
-        //                 if (result.isConfirmed) {
-        //                     // Replace the file
-        //                     formData.append('replace', true); // Add replace flag
-        //                 } else {
-        //                     // Keep both: Re-upload the file with a unique name
-        //                     formData.append('keepBoth', true); // Add keepBoth flag
-        //                 }
-
-        //                 $.ajax({
-        //                     url: $('#upload-file-form').attr('action'),
-        //                     type: 'POST',
-        //                     data: formData,
-        //                     processData: false,
-        //                     contentType: false,
-        //                     success: function(response) {
-        //                         if (response.success) {
-        //                             successCounter++; // Increment the success counter
-        //                             updateSuccessCount(); // Update the displayed success count
-        //                             $(`#progress_${currentFileIndex} .cancle_file`).hide();
-        //                             $(`#progress_${currentFileIndex} .done_tick`).show(); // Show success tick
-                                    
-
-        //                             toastr.success(result.isConfirmed ?
-        //                                 `File "${response.fileName}" replaced successfully.` :
-        //                                 `File "${response.fileName}" uploaded successfully with a new name.`
-        //                             );
-        //                         //     setTimeout(function() {
-        //                         //     location.reload(); // Reload the page after 3 seconds
-        //                         // }, 3000); // 3000 milliseconds = 3 seconds
-        //                         } else {
-        //                             toastr.error('Failed to replace or upload the file.');
-        //                             let errorSVG = '<svg width="24px" height="24px" viewBox="0 0 24 24" fill="red"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"></path></svg>';
-        //                             $(`#progress_${currentFileIndex} .progress_circle2`).html(errorSVG);
-        //                         }
-
-        //                         activeUploads[currentFileIndex] = false; // Mark this file as completed
-        //                         checkAllUploadsComplete(); // Check if all uploads are done
-        //                         fetchFolderContents($('#parent-folder').val());
-        //                         resetFileInput($('input[name="file"]'));
-        //                     },
-        //                     error: function(xhr) {
-        //                         toastr.error('Error occurred while replacing or uploading the file.');
-        //                         let errorSVG = '<svg width="24px" height="24px" viewBox="0 0 24 24" fill="red"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"></path></svg>';
-        //                         $(`#progress_${currentFileIndex} .progress_circle2`).html(errorSVG);
-        //                     }
-        //                 });
-        //             });
-        //         } else if (response.success) {
-        //             // Normal success handling
-        //             successCounter++; // Increment the success counter
-        //             updateSuccessCount(); // Update the displayed success count
-        //             $(`#progress_${currentFileIndex} .cancle_file`).hide();
-        //             $(`#progress_${currentFileIndex} .done_tick`).show(); // Show success tick
-
-        //             // toastr.success('File uploaded successfully.');
-        //             activeUploads[currentFileIndex] = false; // Mark this file as completed
-        //             checkAllUploadsComplete(); // Check if all uploads are done
-        //             fetchFolderContents($('#parent-folder').val());
-        //             resetFileInput($('input[name="file"]'));
-
-        //             if (response.successMessages.length) {
-        //                 response.successMessages.forEach(function(msg) {
-        //                     // toastr.success(msg);
-        //                 });
-        //             }
-        //             if (response.errorMessages.length) {
-        //                 response.errorMessages.forEach(function(msg) {
-        //                     toastr.error('An error occurred while uploading files');
-        //                     let errorSVG = '<svg width="24px" height="24px" viewBox="0 0 24 24" fill="red"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"></path></svg>';
-        //                     $(`#progress_${currentFileIndex} .progress_circle2`).html(errorSVG);
-        //                 });
-        //             }
-
-                
-        //         } else {
-        //             // General error
-        //             toastr.error('Failed to upload file: ' + response.message);
-        //             let errorSVG = '<svg width="24px" height="24px" viewBox="0 0 24 24" fill="red"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"></path></svg>';
-        //             $(`#progress_${currentFileIndex} .progress_circle2`).html(errorSVG);
-        //             $('#upload_filee .close').click();
-        //         }
-
-        //                 $('.button-spinner').remove();
-        //                 $submitButton.prop('disabled', false); // Re-enable submit button
-        //             },
-        //             error: function(xhr) {
-        //                 if (xhr.status === 400 || xhr.status === 500) {
-        //                     let response = JSON.parse(xhr.responseText);
-        //                     toastr.error('Error: ' + response.message);
-        //                     // Create the error SVG with red fill
-        //                     let errorSVG = '<svg width="24px" height="24px" viewBox="0 0 24 24" fill="red"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"></path></svg>';
-
-        //                     // Replace the current done tick with the error SVG
-        //                     $(`#progress_${currentFileIndex} .progress_circle2`).html(errorSVG); // Insert the error SVG
-        //                     $('#upload_filee .close').click(); 
-
-        //                 } else {
-        //                     // Create the error SVG with red fill
-        //                     let errorSVG = '<svg width="24px" height="24px" viewBox="0 0 24 24" fill="red"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"></path></svg>';
-
-        //                     // Replace the current done tick with the error SVG
-        //                     $(`#progress_${currentFileIndex} .progress_circle2`).html(errorSVG); // Insert the error SVG
-
-        //                 $('#upload_filee .close').click(); 
-
-
-        //                 }
-        //                 activeUploads[currentFileIndex] = false; // Mark this file as completed or failed
-        //                     checkAllUploadsComplete(); // Check if all uploads are done
-        //                 $submitButton.prop('disabled', false); // Re-enable submit button
-        //                 $('#upload_filee .close').click(); 
-        //                 $('.button-spinner').remove();
-
-
-        //             }
-        //         });
-
-        //         // Store the xhr request to allow cancellation later
-        //         xhrRequests[currentFileIndex] = xhrUpload;
-        //     });
-        //     $('#upload_filee .close').click(); 
-
-        //     window.xhrRequests = xhrRequests;
-
-
-        //     // functions with postfix1 are now not in used for after optimising the code sandeep
-
-        //                         // Function to add progress bar for each file
-        //                         function addProgressIndicator1(fileName, index) {
-        //                             const progressHtml = `
-        //                                 <div class="progress_repeat" id="progress_${index}">
-        //                                     <h2 class="file_name">${fileName}</h2>
-        //                                     <div class="progress_circle progress_circle2">
-        //                                         <div id="wrapper_progreess" class="center">                  
-        //                                             <svg class="progresss" x="0px" y="0px" viewBox="0 0 80 80">
-        //                                                 <path class="track" d="M5,40a35,35 0 1,0 70,0a35,35 0 1,0 -70,0" />
-        //                                                 <path class="fill" id="progressFill_${index}" d="M5,40a35,35 0 1,0 70,0a35,35 0 1,0 -70,0" />
-        //                                             </svg>
-        //                                             <span class="span_dott"></span>
-        //                                         </div>
-        //                                         <div class="cancle_file">
-        //                                             <button class="remove-btnn" onclick="cancelUpload1('${index}')">X</button>
-        //                                         </div>
-        //                                         <div class="done_tick" style="display:none;">
-        //                                         <svg class="progress_done" width="24px" height="24px" viewBox="0 0 24 24" fill="#0F9D58"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"></path></svg>
-        //                                         </div>
-        //                                     </div>
-        //                                 </div>
-        //                             `;
-        //                             $('.progress_repeat_wrap').append(progressHtml);
-        //                         }
-
-        //                         // Function to update the progress for each file
-        //                         function updateProgress1(percentComplete, index) {
-        //                             const progressFill = $(`#progressFill_${index}`);
-        //                             const circumference = 2 * Math.PI * 35; // Radius is 35
-        //                             const offset = circumference - (percentComplete * circumference);
-        //                             progressFill.css('stroke-dasharray', circumference);
-        //                             progressFill.css('stroke-dashoffset', offset);
-        //                         }
-        //                         // // Function to cancel upload for a specific file
-        //                         // window.cancelUpload1 = function(currentFileIndex) {
-        //                         //     if (xhrRequests[currentFileIndex]) {
-        //                         //         xhrRequests[currentFileIndex].abort(); // Abort the AJAX request
-
-        //                         //         $(`#progress_${currentFileIndex}`).fadeOut(500, function() {
-        //                         //             $(this).remove();
-        //                         //         });
-        //                         //         $('.button-spinner').remove();
-
-        //                         //         // toastr.info(`Upload cancelled for file: ${currentFileIndex}`);
-
-        //                         //         // Clean up xhr request memory
-        //                         //         delete xhrRequests[currentFileIndex];
-        //                         //     }
-        //                         // }
-        //                         // Function to cancel upload for a specific file
-        //                         window.cancelUpload1 = function(currentFileIndex) {
-        //                             // Show a confirmation dialog before canceling
-        //                             let isConfirmed = window.confirm("Are you sure you want to cancel the upload?");
-
-        //                             if (isConfirmed) {
-        //                                 // If the user confirmed, proceed with canceling the upload
-        //                                 if (xhrRequests[currentFileIndex]) {
-        //                                     xhrRequests[currentFileIndex].abort(); // Abort the AJAX request
-
-        //                                     // Fade out and remove the progress indicator
-        //                                     $(`#progress_${currentFileIndex}`).fadeOut(500, function() {
-        //                                         $(this).remove();
-        //                                     });
-                                            
-        //                                     // Remove any button spinner if present
-        //                                     $('.button-spinner').remove();
-
-        //                                     // Optionally, display a message that the upload was canceled
-        //                                     toastr.error(`Upload cancelled`);
-
-        //                                     // Clean up xhr request memory
-        //                                     delete xhrRequests[currentFileIndex];
-        //                                 }
-        //                             } else {
-        //                                 // If the user did not confirm, do nothing (upload will continue)
-        //                                 toastr.info("Upload is still in progress.");
-        //                             }
-        //                         }
-        //                         // Function to update the success count display
-        //                         function updateSuccessCount1() {
-        //                             $('#uploadSuccessCount').text(`${successCounter} upload(s) completed`); // Update the success count
-        //                         }
-        //                         // Function to check if all uploads are complete (either canceled or finished)
-        //                         function checkAllUploadsComplete1() {
-        //                             // Check if there are any active uploads (true means it's still uploading)
-        //                             isUploading = activeUploads.some(upload => upload === true);
-        //                         }
-        //                         // Function to generate secure random strings
-        //                         function getSecureRandomString1(length) {
-        //                             const array = new Uint8Array(length);
-        //                             window.crypto.getRandomValues(array);
-        //                             return Array.from(array, byte => byte.toString(36)).join('').substring(0, length);
-        //                         }
-        //                         // Warn the user if they attempt to leave the page during file upload
-        //                         window.addEventListener('beforeunload', function(e) {
-        //                             if (isUploading1) {
-        //                                 // Standard message across browsers
-        //                                 const message = "You have ongoing uploads. If you leave, your progress will be lost.";
-        //                                 e.returnValue = message; // This is the standard way to set the prompt
-        //                                 return message; // For older browsers
-        //                             }
-        //                         });
-        //     // functions with postfix1 are now not in used for after optimising the code sandeep
-        // });
+        
 
 //         $('#upload-file-form').on('submit', function (e) {
 //     e.preventDefault();
@@ -7072,7 +7369,7 @@ $(window).on('load', function() {
         <div class="label_wrap">
                     <label>Path :</label>
                     
-<script>
+{{-- <script>
     $(document).ready(function() {
         // Function to get query parameter by name
         function getQueryParam(param) {
@@ -7102,7 +7399,7 @@ $(window).on('load', function() {
         // Fetch the URL parameter every second
         setInterval(updateFolderPath, 100);
     });
-</script>
+</script> --}}
                     
                     
                     <!--<input type="text" id="parent-folderlll" name="parent_folder"  value="" readonly >-->
@@ -7194,8 +7491,32 @@ $(window).on('load', function() {
                           Upload
   </div>
   </div>
-  <div class="selected-file"></div>
+  <div class="selected_file_count"></div>
 </div> 
+<!--  -->
+<script>
+let selectedFiles = []; // Store selected files
+
+// Handle file selection
+document.getElementById('fileU').addEventListener('change', function () {
+  const currentFiles = Array.from(this.files); // Get the selected files
+  selectedFiles = selectedFiles.concat(currentFiles); // Add to the file list
+
+  // Update the file count display
+  const fileCountDiv = document.querySelector('.selected_file_count');
+  const fileCount = selectedFiles.length;
+  fileCountDiv.textContent = `${fileCount} file${fileCount > 1 ? 's' : ''} selected`;
+});
+
+// Handle modal close button click
+document.querySelector('#upload_filee .close').addEventListener('click', function () {
+  selectedFiles = []; // Reset the selected files array
+  document.getElementById('fileU').value = ''; // Clear the file input
+  document.querySelector('.selected_file_count').textContent = ''; // Clear the file count display
+});
+
+
+</script>
                           </div>
 
                           <div class="gropu_form test-area">
@@ -9692,7 +10013,33 @@ $(document).ready(function() {
 
 </script>
 
+<script>
+    setInterval(() => {
+      // Parse the current URL
+      const urlParams = new URLSearchParams(window.location.search);
+      const path = window.location.pathname;
 
+      // Check if the URL is "/docurepo" and contains "?folder="
+      if (path.includes('/docurepo') && urlParams.has('folder')) {
+        // Show the button
+        const homeButton = document.querySelector('.btn-docurepo');
+        if (homeButton) {
+          homeButton.style.display = 'block';
+        }
+      } else {
+        // Hide the button if conditions are not met
+        const homeButton = document.querySelector('.btn-docurepo');
+        if (homeButton) {
+          homeButton.style.display = 'none';
+        }
+      }
+    }, 10); // Check every second
+  </script>
+  <style>
+    .btn-docurepo {
+      display: none; /* Initially hide the button */
+    }
+  </style>
 <style>
     /*  model try oout css */
     .modal-backdrop.show {

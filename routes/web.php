@@ -257,6 +257,8 @@ Route::get('/getTask/{id}', [App\Http\Controllers\HomeController::class, 'getTas
 ->name('getTask');
 
 
+
+
 Route::get('/download-common-file/{id}', [App\Http\Controllers\HomeController::class, 'downloadCommonFile'])->name('download-common-file');
 Route::post('/softdeleteCommonFile/{id}', [App\Http\Controllers\HomeController::class, 'softdeleteCommonFile'])->name('softdeleteCommonFile');
 Route::post('/deleteCustomFile/{id}', [App\Http\Controllers\HomeController::class, 'deleteCustomFile'])->name('deleteCustomFile');
@@ -267,9 +269,6 @@ Route::post('/PredefinedCommonUploadFilesBank', [App\Http\Controllers\HomeContro
 
 
 Route::post('/HandleCommonUploadFiles', [App\Http\Controllers\HomeController::class, 'HandleCommonUploadFiles'])->name('HandleCommonUploadFiles');
-
-
-
 
 Route::get('/fetchfixedFiles', [App\Http\Controllers\HomeController::class, 'fetchfixedFiles'])->name('fetchfixedFiles');
 // sandeep added above route "fetchfixedFiles" for dynamic fetch fixed path files i.e real_file_name 26 November 2024 
@@ -1127,6 +1126,9 @@ Route::get('/user/MiscellaneousDocuments', [App\Http\Controllers\HomeController:
 Route::get('/user/Management', [App\Http\Controllers\HomeController::class, 'Management'])->name('user/Management');
     Route::get('/user/manageprofile', [App\Http\Controllers\HomeController::class, 'manageprofile'])->name('user/manageprofile');
 Route::get('/user/ContractManagement', [App\Http\Controllers\HomeController::class, 'ContractManagement'])->name('user/ContractManagement')->middleware('auth');
+Route::get('/user/contractmanage', [App\Http\Controllers\HomeController::class, 'contractmanage'])->name('user/contractmanage')->middleware('auth');
+Route::get('/user/contractmanagedetail', [App\Http\Controllers\HomeController::class, 'contractmanagedetail'])->name('user/contractmanagedetail')->middleware('auth');
+
 Route::get('/user/companyprofile', [App\Http\Controllers\HomeController::class, 'companyprofile'])->name('user/companyprofile');
 Route::get('/user/Sop', [App\Http\Controllers\HomeController::class, 'Sop'])->name('user/Sop');
 	Route::get('/user/Employeelifecycle', [App\Http\Controllers\HomeController::class, 'Employeelifecycle'])->name('user/Employeelifecycle');
@@ -1190,6 +1192,10 @@ Route::get('/user/docrepostry', [App\Http\Controllers\HomeController::class, 'do
 Route::post('/create-folder', [App\Http\Controllers\HomeController::class,'createFolder'])->name('create.folder');
 Route::post('/upload-file', [App\Http\Controllers\HomeController::class,'uploadFile'])->name('upload.file');
 Route::get('/check-folder-contents', [App\Http\Controllers\HomeController::class, 'checkFolderContents'])->name('check.folder.contents');
+
+Route::post('/handle-file-conflict', [App\Http\Controllers\HomeController::class, 'handleFileConflict']);
+
+
 
 Route::post('/misupdateFileName', [App\Http\Controllers\UploadedFileController::class, 'misupdateFileName'])->name('misupdateFileName');
 Route::post('/misupdateFileName1', [App\Http\Controllers\UploadedFileController::class, 'misupdateFileName1'])->name('misupdateFileName1');
