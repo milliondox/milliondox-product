@@ -21962,8 +21962,19 @@ public function shareFolder(Request $request)
             $fileHtml .= '<tbody>';
             foreach ($fileContents as $file) {
                  $fyear =  $file->fyear;
-                 $dataTags = json_encode($file->tags);
-                 $tagsArray = json_decode($dataTags);
+
+                 $dataTags = json_decode($file->tags, true); // Attempt to decode JSON string
+
+if (is_array($dataTags)) {
+    $tagsArray = implode(', ', $dataTags); // Join array elements
+} else {
+    $tagsArray = $file->tags; // Fallback to the original value
+}
+
+// dd($tagsArray) ;
+
+                //  $dataTags = json_encode($file->tags);
+                //  $tagsArray = json_decode($dataTags);
                  
                 $fileHtml .= '<tr>';
                 $fileHtml .= '<td>' . $file->file_name . '</td>';
@@ -22662,7 +22673,70 @@ public function renameFolder(Request $request)
     return redirect()->back()->with('success', 'Folder names, paths, and related records updated successfully!');
 }
 
-    
+public function renamecustomfile(Request $request)
+{
+    // Validate the request
+    $request->validate([
+        'file_id' => 'required|integer',
+        'file_with_ext' => 'required|string',
+        'file_name' => 'required|string',
+        'fyear' => 'nullable|string',
+        'Month' => 'nullable|string',
+        'tagList' => 'nullable|string',
+        'desc' => 'nullable|string',
+    ]);
+
+    $fileId = $request->file_id;
+    $fileWithExt = $request->file_with_ext;
+    $newFileName = $request->file_name;
+    $fyear = $request->fyear;
+    $month = $request->Month;
+    $tagList = $request->tagList;
+    $description = $request->desc;
+    $tag_list = [];
+    $userTags = $request->input('tagList', []);
+    if (is_string($userTags)) {
+     $userTags = explode(',', $userTags);
+    } 
+    $tag_list = array_filter((array)$userTags);
+    $tags = empty($tag_list) ? null : json_encode($tag_list);
+
+    // Extract the extension from the original file name
+    $extension = pathinfo($fileWithExt, PATHINFO_EXTENSION);
+
+    // Construct the new file name with the extension
+    $newFileNameWithExt = $newFileName . '.' . $extension;
+
+    // Fetch the file record from the database
+    $file = CommonTable::find($fileId); // Assuming you have a `File` model
+
+    if (!$file) {
+        return redirect()->back()->with('error', 'File not found!');
+    }
+
+    // Update database record
+    $oldFilePath = $file->file_path;
+    $newFilePath = str_replace(basename($oldFilePath), $newFileNameWithExt, $oldFilePath);
+
+    $file->update([
+        'file_name' => $newFileNameWithExt,
+        'file_path' => $newFilePath,
+        'fyear' => $fyear,
+        'month' => $month,
+        'tags' => $tags,
+        'descp' => $description,
+    ]);
+
+    // Rename the file in storage
+    if (\Storage::exists($oldFilePath)) {
+        \Storage::move($oldFilePath, $newFilePath);
+    } else {
+        return redirect()->back()->with('error', 'File not found in storage!');
+    }
+
+    return redirect()->back()->with('success', 'File details updated successfully!');
+}
+
     
     
 
@@ -23346,7 +23420,9 @@ public function uploadFile(Request $request)
             ->where('file_type', $file->getClientMimeType())
             ->where('fyear', $request->input('fyear'))
             ->where('month', $request->input('Month'))
-            ->exists(); 
+            ->where('location', $request->input('parent_folder'))
+            ->exists();
+            
 
             if ($fileExists) {
                 $exists[]=$file->getClientOriginalName();
@@ -23424,7 +23500,10 @@ public function HandleCommonUploadFiles(Request $request)
                 // Process each file
                 foreach ($request->file('newfiles2') as $file) {
                     try {
-                        $filePath = $file->store($folderPath);
+                        $originalFileName = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME); // Get the file name without extension
+                        $extension = $file->getClientOriginalExtension(); // Get the file extension
+                        $fileName = $originalFileName . '.' . $extension; // Start with the original file name
+                        $filePath = $file->storeAs($folderPath, $fileName);
 
                         // Retrieve the file's ID based on the given conditions
                      
@@ -23688,7 +23767,10 @@ public function HandleCommonUploadFiles(Request $request)
                 // Process each file
                 foreach ($request->file('newfiles') as $file) {
                     try {
-                        $filePath = $file->store($folderPath);
+                        $originalFileName = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME); // Get the file name without extension
+                        $extension = $file->getClientOriginalExtension(); // Get the file extension
+                        $fileName = $originalFileName . '.' . $extension; // Start with the original file name
+                        $filePath = $file->storeAs($folderPath, $fileName);
     
                         // Store file details in the database
                         CommonTable::create([

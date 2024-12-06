@@ -2325,7 +2325,7 @@ $(document).ready(function() {
                 </div>
             </div>
 <!-- edit file model start -->
-<div class="modal fade drop_coman_file have_title" id="edit_fileex" tabindex="-1" role="dialog" aria-labelledby="edit_fileex" aria-hidden="true">
+<div class="modal fade drop_coman_file have_title" id="edit_fileex" tabindex="-1" role="dialog" aria-labelledby="edit_fileex" aria-hidden="true" style="z-index: 1051;">
     <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
             <div class="modal-header">
@@ -2341,7 +2341,7 @@ $(document).ready(function() {
             </div>
             <div class="modal-body">
                 <h3>Edit File Details</h3>
-                <form  id="rename-file-form" action="" method="POST" enctype="multipart/form-data">
+                <form  id="rename-file-form" action="{{ route('renamecustomfile') }}" method="POST" enctype="multipart/form-data">
 @csrf
 <div class="gropu_form">
         <label for="name">Name</label>
@@ -2352,7 +2352,7 @@ $(document).ready(function() {
 	
 <div class="gropu_form">
         <label for="fyear">Financial Year</label>
-        <select id="fffyear" name="fyear" required="">
+        <select id="fffyear" name="fyear" >
             <option value="" disabled="" selected="">select</option>
             <option value="2013-2014">2013-2014</option>
               <option value="2014-2015">2014-2015</option>
@@ -2385,7 +2385,7 @@ $(document).ready(function() {
 
     <div class="gropu_form">
         <label for="Month">Month</label>
-        <select id="Month" name="Month" required="">
+        <select id="Month" name="Month">
             <option value="" disabled="" selected="">select</option>
             <option value="January">January</option>
             <option value="February">February</option>
@@ -2474,7 +2474,7 @@ $(document).ready(function () {
         $('#rename-file-form #fffyear').val(ffyear);
         $('#rename-file-form #Month').val(fmonth); 
         $('#rename-file-form #tagList').val(ftags); // Set the tags string to the input field
-        $('#rename-file-form #Tags').val(ftags); // Set the tags string to the input field
+        // $('#rename-file-form #Tags').val(ftags); // Set the tags string to the input field
 
         // Clear existing tags
         const tagContainer = $('#rename-file-form .tag-container');
@@ -6422,7 +6422,7 @@ $(document).ready(function () {
                                         // Reinitialize FormData for each iteration
                                         var formData = new FormData();
 
-                                        console.log("form Data 222      :::: " + formData);
+                                        // console.log("form Data 222      :::: " + formData);
 
                                          // Append all other form fields to FormData
                                         $.each(formInputs, function(i, input) {
@@ -6508,7 +6508,7 @@ $(document).ready(function () {
 
                                                                     // Replace the current done tick with the error SVG
                                                                     $(`#progress_${currentFileIndex} .progress_circle2`).html(errorSVG); // Insert the error SVG
-                                                                    $('#upload_filee .close').click(); 
+                                                                    // $('#upload_filee .close').click(); 
 
                                                                 }
 
@@ -6528,7 +6528,7 @@ $(document).ready(function () {
 
                                                                     // Replace the current done tick with the error SVG
                                                                     $(`#progress_${currentFileIndex} .progress_circle2`).html(errorSVG); // Insert the error SVG
-                                                                    $('#upload_filee .close').click(); 
+                                                                    // $('#upload_filee .close').click(); 
 
                                                                 } else {
                                                                     // Create the error SVG with red fill
@@ -6537,7 +6537,7 @@ $(document).ready(function () {
                                                                     // Replace the current done tick with the error SVG
                                                                     $(`#progress_${currentFileIndex} .progress_circle2`).html(errorSVG); // Insert the error SVG
 
-                                                                $('#upload_filee .close').click(); 
+                                                                // $('#upload_filee .close').click(); 
 
 
                                                                 }
@@ -6557,11 +6557,11 @@ $(document).ready(function () {
                                                         // Store the xhr request to allow cancellation later
                                                         xhrRequests[currentFileIndex] = xhrUpload;
                                                         
-                                                        $('#upload_filee .close').click(); 
+                                                        // $('#upload_filee .close').click(); 
                                                         window.xhrRequests = xhrRequests;
 
                                                     } else {
-                                                        alert("No files selected for upload!");
+                                                        toastr.error("No files selected for upload!");
                                                     }  
 
                                     }
@@ -6695,7 +6695,7 @@ $(document).ready(function () {
 
                                                                 fetchFolderContents($('#parent-folder').val());
                                                                 // console.log("i am looking ::");
-                                                                console.log($('#parent-folder').val());
+                                                                // console.log($('#parent-folder').val());
                                                                 resetFileInput($('input[name="file"]'));
                                                             } else {
                                                                 toastr.error('Failed to upload file: ' + response.message);
@@ -6704,7 +6704,7 @@ $(document).ready(function () {
 
                                                                 // Replace the current done tick with the error SVG
                                                                 $(`#progress_${currentFileIndex} .progress_circle2`).html(errorSVG); // Insert the error SVG
-                                                                $('#upload_filee .close').click(); 
+                                                                // $('#upload_filee .close').click(); 
 
                                                             }
 
@@ -6720,7 +6720,7 @@ $(document).ready(function () {
 
                                                                 // Replace the current done tick with the error SVG
                                                                 $(`#progress_${currentFileIndex} .progress_circle2`).html(errorSVG); // Insert the error SVG
-                                                                $('#upload_filee .close').click(); 
+                                                                // $('#upload_filee .close').click(); 
 
                                                             } else {
                                                                 // Create the error SVG with red fill
@@ -6729,14 +6729,14 @@ $(document).ready(function () {
                                                                 // Replace the current done tick with the error SVG
                                                                 $(`#progress_${currentFileIndex} .progress_circle2`).html(errorSVG); // Insert the error SVG
 
-                                                            $('#upload_filee .close').click(); 
+                                                            // $('#upload_filee .close').click(); 
 
 
                                                             }
                                                             activeUploads[currentFileIndex] = false; // Mark this file as completed or failed
                                                                 checkAllUploadsComplete(); // Check if all uploads are done
                                                             $submitButton.prop('disabled', false); // Re-enable submit button
-                                                            $('#upload_filee .close').click(); 
+                                                            // $('#upload_filee .close').click(); 
                                                             $('.button-spinner').remove();
 
 
@@ -6749,11 +6749,11 @@ $(document).ready(function () {
                                                     // Store the xhr request to allow cancellation later
                                                     xhrRequests[currentFileIndex] = xhr;
 
-                                                    $('#upload_filee .close').click(); 
+                                                    // $('#upload_filee .close').click(); 
                                                     window.xhrRequests = xhrRequests;
 
                                                 } else {
-                                                    alert("No files selected for upload!");
+                                                    toastr.error("No files selected for upload!");
                                                 }
                                             }
                                         }   
@@ -6869,7 +6869,7 @@ $(document).ready(function () {
 
                                                                 // Replace the current done tick with the error SVG
                                                                 $(`#progress_${currentFileIndex} .progress_circle2`).html(errorSVG); // Insert the error SVG
-                                                                $('#upload_filee .close').click(); 
+                                                                // $('#upload_filee .close').click(); 
 
                                                             }
 
@@ -6885,7 +6885,7 @@ $(document).ready(function () {
 
                                                                 // Replace the current done tick with the error SVG
                                                                 $(`#progress_${currentFileIndex} .progress_circle2`).html(errorSVG); // Insert the error SVG
-                                                                $('#upload_filee .close').click(); 
+                                                                // $('#upload_filee .close').click(); 
 
                                                             } else {
                                                                 // Create the error SVG with red fill
@@ -6894,14 +6894,14 @@ $(document).ready(function () {
                                                                 // Replace the current done tick with the error SVG
                                                                 $(`#progress_${currentFileIndex} .progress_circle2`).html(errorSVG); // Insert the error SVG
 
-                                                            $('#upload_filee .close').click(); 
+                                                            // $('#upload_filee .close').click(); 
 
 
                                                             }
                                                             activeUploads[currentFileIndex] = false; // Mark this file as completed or failed
                                                             checkAllUploadsComplete(); // Check if all uploads are done
                                                             $submitButton.prop('disabled', false); // Re-enable submit button
-                                                            $('#upload_filee .close').click(); 
+                                                            // $('#upload_filee .close').click(); 
                                                             $('.button-spinner').remove();
 
                                                         }
@@ -6912,11 +6912,11 @@ $(document).ready(function () {
                                                     // Store the xhr request to allow cancellation later
                                                     xhrRequests[currentFileIndex] = xhr;
 
-                                                    $('#upload_filee .close').click(); 
+                                                    // $('#upload_filee .close').click(); 
                                                     window.xhrRequests = xhrRequests;
 
                                                 } else {
-                                                    alert("No files selected for upload!");
+                                                    toastr.error("No files selected for upload!");
                                                 }
                                             }
                                         }       
@@ -6936,13 +6936,14 @@ $(document).ready(function () {
 
                            
                         } else {
-                            alert('Error: ' + response.message); // Display error message
+                            toastr.error('Error: ' + response.message); // Display error message
                         }
                         // $('#submit-btn').prop('disabled', false).text('Upload');
                     },
                     error: function (xhr) {
                         // Handle error
-                        alert('An error occurred while uploading the file.');
+                        toastr.error('An error occurred while uploading the file.');
+                        $('#upload_filee .close').click(); 
                         $('#submit-btn').prop('disabled', false).text('Upload');
                     }
                 });
@@ -9315,6 +9316,17 @@ input#parent-folders {
     flex: 1;
 }
 
+#edit_fileex:before {
+    content: "";
+    width: 100%;
+    height: 100%;
+    position: fixed;
+    left: 0;
+    top: 0;
+    background: rgb(99, 99, 99, 0.3);
+    backdrop-filter: blur(2px);
+    filter: blur(4px);
+}
 
 /**new css have to paste in css file start****/
 
