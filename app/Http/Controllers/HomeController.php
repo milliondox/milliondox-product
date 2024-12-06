@@ -21689,15 +21689,10 @@ public function shareFolder(Request $request)
         $folderContents = ($sortOption === 'a-to-z') ? $folderContents->sortBy('name') : $folderContents->sortByDesc('name');
     }
 
-
-<<<<<<< HEAD
-        $fileContents = CommonTable::where('location', $folderPaths)->where('user_id', Auth::id())->where('is_delete', 0 )->whereNull('is_replaced')->get();
-=======
         // $fileContents = CommonTable::where('location', $folderPaths)->where('user_id', Auth::id())->where('is_delete', 0 )->get();
         $fileContents = CommonTable::where('location', $folderPaths)->where('user_id', Auth::id())->where('is_delete', 0 )->whereNull('is_replaced')->get();
 
-// dd($fileContents);
->>>>>>> 7a1e8ef89bb499a42e1aa3c9e6c715ffa58cfb06
+
         // dd($fileContents);
         // Legal/Secretarial/Board Meetings
         // dd($folderPath);
@@ -23438,8 +23433,8 @@ public function uploadFile(Request $request)
         // Compile the response
         return response()->json([
             'success' => true,
-            'exists' => $exists,
             'do_not_exists' => $do_not_exists,
+            'exists' => $exists,
         ]);
        
     } else {

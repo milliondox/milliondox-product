@@ -6386,9 +6386,17 @@ $(document).ready(function () {
                     contentType: false, // Important! Prevent jQuery from setting the Content-Type header
                     success: function (response) {
                         // Handle success
+                        // $('#upload_filee .close').click(); 
+                        var is_uploading1 = false;
+                        var is_uploading2 = false;
+                        var is_uploading3 = false;
+                        var is_uploading4 = false;
+
+
                         if (response.success) {
                             if(response.do_not_exists && response.do_not_exists.length > 0){
                                 // alert("Do not Exists : " + response.do_not_exists);
+                                is_uploading1 = true;
 
                                 $('.progree_cont_nt').css('display', 'block');
                                 $('#upload_filee').modal('hide');
@@ -6544,7 +6552,7 @@ $(document).ready(function () {
                                                                 activeUploads[currentFileIndex] = false; // Mark this file as completed or failed
                                                                     checkAllUploadsComplete(); // Check if all uploads are done
                                                                 $submitButton.prop('disabled', false); // Re-enable submit button
-                                                                $('#upload_filee .close').click(); 
+                                                                // $('#upload_filee .close').click(); 
                                                                 $('.button-spinner').remove();
 
 
@@ -6584,6 +6592,8 @@ $(document).ready(function () {
 
                             if (response.exists && response.exists.length > 0) {
                                 // Display confirmation dialog
+                                is_uploading2 = true;
+
                                 Swal.fire({
                                     title: "File Exists",
                                     text: response.exists.join(", "),
@@ -6594,7 +6604,7 @@ $(document).ready(function () {
                                     cancelButtonText: response.exists.length === 1 ? "Keep Both" : "Keep All",
                                 }).then((result) => {
                                     if (result.isConfirmed) {
-
+                                        is_uploading3 = true;
                                         $('.progree_cont_nt').css('display', 'block');
                                         $('#upload_filee').modal('hide');
                                         $('.side_panel_wraap').removeClass('active');
@@ -6763,6 +6773,7 @@ $(document).ready(function () {
 
                                     }
                                      if (result.dismiss === Swal.DismissReason.cancel) {
+                                        is_uploading3 = true;
                                         // Logic for keeping files
                                         // alert("You chose to keep.");
                                         $('.progree_cont_nt').css('display', 'block');
@@ -6930,15 +6941,39 @@ $(document).ready(function () {
                                         // Logic for closing
                                         // alert("Cancelled");
                                     }
+                                    else{
+
+                                        $('#upload_filee .close').click(); 
+
+                                    }
+                                    $('#upload_filee .close').click(); 
+                                    alert("inside then block"); 
+
                                 });
+                                alert("after  than  block");
+                            }
+                            
+                            alert("is uploading 1"+is_uploading1);
+                            alert("is uploading 2 "+is_uploading2);
+
+                            if(is_uploading1 && is_uploading2){
+                                // $('#upload_filee .close').click(); 
+                            }
+                            else if(is_uploading1){
+
+                                if((is_uploading2==false)){
+                                    $('#upload_filee .close').click(); 
+                                }
 
                             }
+
 
                            
                         } else {
                             toastr.error('Error: ' + response.message); // Display error message
                         }
                         // $('#submit-btn').prop('disabled', false).text('Upload');
+                        
                     },
                     error: function (xhr) {
                         // Handle error
