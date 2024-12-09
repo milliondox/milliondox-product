@@ -207,12 +207,32 @@ document.querySelectorAll('.partner_count').forEach(div => {
     }
 });
 
-
-
-
-
   </script>
 
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const selectAllCheckbox = document.querySelector('.sleect_all'); // Select the "select all" checkbox
+    const individualCheckboxes = document.querySelectorAll('.sleect_individual'); // Select all "individual" checkboxes
+
+    // Add event listener to "select all" checkbox
+    selectAllCheckbox.addEventListener('change', function () {
+        const isChecked = this.checked; // Check the current state of the "select all" checkbox
+        individualCheckboxes.forEach(checkbox => {
+            checkbox.checked = isChecked; // Set the state of each individual checkbox to match the "select all" checkbox
+        });
+    });
+
+    // Add event listeners to individual checkboxes to update "select all" state
+    individualCheckboxes.forEach(checkbox => {
+        checkbox.addEventListener('change', function () {
+            const allChecked = Array.from(individualCheckboxes).every(cb => cb.checked); // Check if all individual checkboxes are checked
+            selectAllCheckbox.checked = allChecked; // Update the "select all" checkbox state
+        });
+    });
+});
+
+
+</script>
 
 </body>
 

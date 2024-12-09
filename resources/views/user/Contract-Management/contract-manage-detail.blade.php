@@ -53,7 +53,7 @@
             <div class="container-fluid">
                 <div class="main_contractt_detail">
                     <div class="row">
-                        <div class="col-sm-4">
+                        <div class="col-md-4">
                             <div class="contract_deatols">
 
                                 <div class="contract_detail_top">
@@ -213,9 +213,113 @@
                             </div>
                         </div>
 
-                        <div class="col-sm-8">
+                        <div class="col-md-8">
                             <div class="contract_uploadd">
-                                <h2>Contracts uploaded</h2>
+                                <div class="contract_up_head">
+                                    <div class="left_con_hhead">
+                                        <h2>Contracts uploaded</h2>
+                                    </div>
+                                    <div class="right_btn_contt">
+                                        <button type="button" class="download">Download</button>
+                                        <button type="button" class="opload">
+                                            <svg width="20" height="18" viewBox="0 0 20 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                <path d="M6.66406 12.3333L9.9974 9M9.9974 9L13.3307 12.3333M9.9974 9V16.5M16.6641 12.9524C17.682 12.1117 18.3307 10.8399 18.3307 9.41667C18.3307 6.88536 16.2787 4.83333 13.7474 4.83333C13.5653 4.83333 13.3949 4.73833 13.3025 4.58145C12.2158 2.73736 10.2094 1.5 7.91406 1.5C4.46228 1.5 1.66406 4.29822 1.66406 7.75C1.66406 9.47175 2.36027 11.0309 3.48652 12.1613" stroke="white" stroke-width="1.66667" stroke-linecap="round" stroke-linejoin="round" />
+                                            </svg>Upload</button>
+                                    </div>
+                                </div>
+                                <div class="cont_body entery_body table-responsive">
+                                    <table class="table table-striped">
+                                        <thead>
+                                            <tr>
+                                                <th><input class="sleect_all" type="checkbox" name="sleect_all" value=""></th>
+                                                <th>File name</th>
+                                                <th>Status</th>
+                                                <th>Last updated</th>
+                                                <th></th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td><input class="sleect_individual" type="checkbox" name="sleect_individual" value=""></td>
+                                                <td>
+                                                    <div class="file_name">
+                                                        <div class="file_iconn">
+                                                            <svg width="32" height="40" viewBox="0 0 32 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                                <path d="M0.75 4C0.75 2.20508 2.20508 0.75 4 0.75H20C20.1212 0.75 20.2375 0.798159 20.3232 0.883885L31.1161 11.6768C31.2018 11.7625 31.25 11.8788 31.25 12V36C31.25 37.7949 29.7949 39.25 28 39.25H4C2.20507 39.25 0.75 37.7949 0.75 36V4Z" fill="white" stroke="#D0D5DD" stroke-width="1.5" />
+                                                                <path d="M20 0.5V8C20 10.2091 21.7909 12 24 12H31.5" stroke="#D0D5DD" stroke-width="1.5" />
+                                                            </svg>
+                                                        </div>
+                                                        <div class="text_file">
+                                                            <h2>Proposal for Design.pdf</h2>
+                                                            <span>200 KB</span>
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    <div class="person_status">
+                                                        <span class="active">Active</span>
+                                                        <p>Expiring in 365d</p>
+                                                    </div>
+                                                </td>
+                                                <td>Jan 4, 2024</td>
+                                                <td>
+                                                    <div class="dropdown">
+                                                        <button onclick="toggleDropdown()" class="dropbtn show_pp">
+                                                            <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                                <path d="M10.3994 4.19166C10.3994 4.37562 10.3632 4.55779 10.2929 4.72778C10.2226 4.89776 10.1194 5.05222 9.98937 5.18234C9.85934 5.31246 9.70494 5.4157 9.535 5.48615C9.36507 5.55661 9.18292 5.5929 8.99896 5.59296C8.81499 5.59302 8.63282 5.55684 8.46284 5.4865C8.29286 5.41615 8.1384 5.31302 8.00827 5.18298C7.87815 5.05294 7.77492 4.89854 7.70446 4.72861C7.63401 4.55867 7.59772 4.37652 7.59766 4.19256C7.59754 3.82103 7.74501 3.46467 8.00764 3.20188C8.27026 2.93908 8.62653 2.79138 8.99806 2.79126C9.36958 2.79114 9.72594 2.93862 9.98874 3.20124C10.2515 3.46387 10.3992 3.82013 10.3994 4.19166Z" fill="#8D8D8D"></path>
+                                                                <path d="M8.99806 10.3999C9.77148 10.3999 10.3985 9.77294 10.3985 8.99952C10.3985 8.2261 9.77148 7.59912 8.99806 7.59912C8.22464 7.59912 7.59766 8.2261 7.59766 8.99952C7.59766 9.77294 8.22464 10.3999 8.99806 10.3999Z" fill="#8D8D8D"></path>
+                                                                <path d="M8.99806 15.2085C9.77148 15.2085 10.3985 14.5815 10.3985 13.8081C10.3985 13.0347 9.77148 12.4077 8.99806 12.4077C8.22464 12.4077 7.59766 13.0347 7.59766 13.8081C7.59766 14.5815 8.22464 15.2085 8.99806 15.2085Z" fill="#8D8D8D"></path>
+                                                            </svg>
+                                                        </button>
+                                                        <div id="myDropdown3" class="dropdown-content">
+
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                            </tr>
+
+                                            <tr>
+                                                <td><input class="sleect_individual" type="checkbox" name="sleect_individual" value=""></td>
+                                                <td>
+                                                    <div class="file_name">
+                                                        <div class="file_iconn">
+                                                            <svg width="32" height="40" viewBox="0 0 32 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                                <path d="M0.75 4C0.75 2.20508 2.20508 0.75 4 0.75H20C20.1212 0.75 20.2375 0.798159 20.3232 0.883885L31.1161 11.6768C31.2018 11.7625 31.25 11.8788 31.25 12V36C31.25 37.7949 29.7949 39.25 28 39.25H4C2.20507 39.25 0.75 37.7949 0.75 36V4Z" fill="white" stroke="#D0D5DD" stroke-width="1.5" />
+                                                                <path d="M20 0.5V8C20 10.2091 21.7909 12 24 12H31.5" stroke="#D0D5DD" stroke-width="1.5" />
+                                                            </svg>
+                                                        </div>
+                                                        <div class="text_file">
+                                                            <h2>Proposal for Design.pdf</h2>
+                                                            <span>200 KB</span>
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    <div class="person_status">
+                                                        <span class="active">Active</span>
+                                                        <p>Expiring in 365d</p>
+                                                    </div>
+                                                </td>
+                                                <td>Jan 4, 2024</td>
+                                                <td>
+                                                    <div class="dropdown">
+                                                        <button onclick="toggleDropdown()" class="dropbtn show_pp">
+                                                            <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                                <path d="M10.3994 4.19166C10.3994 4.37562 10.3632 4.55779 10.2929 4.72778C10.2226 4.89776 10.1194 5.05222 9.98937 5.18234C9.85934 5.31246 9.70494 5.4157 9.535 5.48615C9.36507 5.55661 9.18292 5.5929 8.99896 5.59296C8.81499 5.59302 8.63282 5.55684 8.46284 5.4865C8.29286 5.41615 8.1384 5.31302 8.00827 5.18298C7.87815 5.05294 7.77492 4.89854 7.70446 4.72861C7.63401 4.55867 7.59772 4.37652 7.59766 4.19256C7.59754 3.82103 7.74501 3.46467 8.00764 3.20188C8.27026 2.93908 8.62653 2.79138 8.99806 2.79126C9.36958 2.79114 9.72594 2.93862 9.98874 3.20124C10.2515 3.46387 10.3992 3.82013 10.3994 4.19166Z" fill="#8D8D8D"></path>
+                                                                <path d="M8.99806 10.3999C9.77148 10.3999 10.3985 9.77294 10.3985 8.99952C10.3985 8.2261 9.77148 7.59912 8.99806 7.59912C8.22464 7.59912 7.59766 8.2261 7.59766 8.99952C7.59766 9.77294 8.22464 10.3999 8.99806 10.3999Z" fill="#8D8D8D"></path>
+                                                                <path d="M8.99806 15.2085C9.77148 15.2085 10.3985 14.5815 10.3985 13.8081C10.3985 13.0347 9.77148 12.4077 8.99806 12.4077C8.22464 12.4077 7.59766 13.0347 7.59766 13.8081C7.59766 14.5815 8.22464 15.2085 8.99806 15.2085Z" fill="#8D8D8D"></path>
+                                                            </svg>
+                                                        </button>
+                                                        <div id="myDropdown3" class="dropdown-content">
+
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                            </tr>
+
+                                        </tbody>
+                                    </table>
+                                </div>
                             </div>
                         </div>
                     </div>
