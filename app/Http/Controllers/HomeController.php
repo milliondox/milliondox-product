@@ -22473,48 +22473,64 @@ private function addFolderToZip($zip, $folderPath, $zipFolderName)
     // Add the folder itself as an empty directory in the ZIP
     $zip->addEmptyDir($zipFolderName);
 
+    // Get all files and directories from the given folder path
     $files = scandir($folderPath);
+    
 
     foreach ($files as $file) {
         if ($file == '.' || $file == '..') {
-            continue;
+            continue; // Skip special directories
         }
+       
+        $basePath = storage_path('app') . '/';
 
+    // Clean the folder path by removing the base path
+    $cleanFolderPath = str_replace($basePath, '', $folderPath);
+    // dd($cleanFolderPath);
         $filePath = $folderPath . '/' . $file;
-
+// dd($file);
         // Fetch file information from the database
-        $fileRecord = CommonTable::where('temp_file_name', $file)->first();
-
-        // Use `file_name` for the file name in the ZIP if both `temp_file_name` and `real_file_name` are NULL
-        $fileNameInZip = $fileRecord && $fileRecord->file_name ? $fileRecord->file_name : $file;
-
-        // Determine subdirectory based on `real_file_name` or fall back to `file_name`
-        $subDirName = null;
-        if ($fileRecord) {
-            // If `real_file_name` exists, use it for subdirectory
-            if ($fileRecord->real_file_name) {
-                $subDirName = $fileRecord->real_file_name;
-            }
+        $fileRecord = CommonTable::where('file_name', $file)
+                    ->where('is_delete', 0)
+                    ->where('location', $cleanFolderPath)
+                    ->where('user_id', Auth::id())
+                    ->first();
+           
+        // Skip files not matching the database condition
+        if (!$fileRecord) {
+            continue; // Only include files that meet the database criteria
         }
+
+        // Determine the name of the file in the ZIP
+        $fileNameInZip = $fileRecord->file_name ?? $file;
+
+        // Determine subdirectory name based on `real_file_name`
+        $subDirName = $fileRecord->real_file_name ?? null;
 
         if (is_dir($filePath)) {
             // Recursively add subdirectories, using `real_file_name` as the directory name if available
             $this->addFolderToZip($zip, $filePath, $zipFolderName . '/' . ($subDirName ?? $fileNameInZip));
         } else {
-            // If `real_file_name` is null, place the file outside of any subdirectory and name it `file_name`
+            // If `real_file_name` exists, organize the file within the corresponding subdirectory
             if ($subDirName) {
-                // If a subdirectory is specified, ensure it exists and add the file within it
-                if (!$zip->locateName($zipFolderName . '/' . $subDirName)) {
-                    $zip->addEmptyDir($zipFolderName . '/' . $subDirName);
+                $subDirPath = $zipFolderName . '/' . $subDirName;
+
+                // Ensure the subdirectory exists in the ZIP
+                if (!$zip->locateName($subDirPath)) {
+                    $zip->addEmptyDir($subDirPath);
                 }
-                $zip->addFile($filePath, $zipFolderName . '/' . $subDirName . '/' . $fileNameInZip);
+
+                $zip->addFile($filePath, $subDirPath . '/' . $fileNameInZip);
             } else {
-                // If no subdirectory is needed, add the file directly under the main folder with `file_name`
+                // If no subdirectory is needed, add the file directly under the main folder
                 $zip->addFile($filePath, $zipFolderName . '/' . $fileNameInZip);
             }
         }
     }
 }
+
+
+
 
 
 
