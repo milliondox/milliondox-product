@@ -20,6 +20,10 @@
             document.head.appendChild(script);
         })();
     </script>
+    <script>
+        var successCounter = 0; // Initialize a counter for successful uploads
+
+    </script>
     
     <style>
         body {
@@ -5753,7 +5757,7 @@ if(response.directorfolder){
     // let isUploading1 = false; // Flag to track if file uploads are in progress
     // let activeUploads1 = []; // Array to track the status of each file upload (true = active)
 
-    var successCounter = 0; // Initialize a counter for successful uploads
+    // var successCounter = 0; // Initialize a counter for successful uploads
     // let globalFileIndex = 0; // Global index to ensure unique indices across sessions
     var isUploading = false; // Flag to track if file uploads are in progress
     var activeUploads = []; // Array to track the status of each file upload (true = active)
