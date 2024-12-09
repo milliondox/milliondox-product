@@ -23622,7 +23622,6 @@ span.clinet_name {
 .contract_detail_middle .divisions_associated .divi_ass_wrap span {
     background: #F9F5FF;
     border: 1px solid #E9D7FE;
-    color: #6941C6;
     border-radius: 16px;
     padding: 3px 7px;
     display: inline-block;
@@ -23712,7 +23711,43 @@ span.clinet_name {
     color: #181D27;
     text-decoration: underline;
     cursor: pointer;
+    position: relative;
 }
+
+.contract_deatols .custom-tooltip {
+    position: absolute;
+    bottom: 125%; /* Adjust to position above the count tag */
+    right: 0;
+    background-color: #707172;
+    color: #ffffff;
+    padding: 8px 12px;
+    border-radius: 4px;
+    font-size: 12px;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+    z-index: 1000;
+    width: 200px;
+}
+
+/* Add the arrow */
+.contract_deatols .custom-tooltip::after {
+    content: '';
+    position: absolute;
+    top: 100%; /* Adjust to point towards the count tag */
+    right: 8px;
+    border-width: 5px;
+    border-style: solid;
+    border-color: #707172 transparent transparent transparent;
+}
+
+/* Add animation for fade-in and fade-out */
+.contract_deatols .count:hover .custom-tooltip {
+    opacity: 1;
+    visibility: visible;
+}
+
 
 /*****New Contract Management detail css end******/
 

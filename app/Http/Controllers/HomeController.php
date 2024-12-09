@@ -23435,6 +23435,7 @@ public function uploadFile(Request $request)
             'success' => true,
             'do_not_exists' => $do_not_exists,
             'exists' => $exists,
+            
         ]);
        
     } else {
