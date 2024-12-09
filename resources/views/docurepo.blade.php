@@ -20,6 +20,10 @@
             document.head.appendChild(script);
         })();
     </script>
+    <script>
+        var successCounter = 0; // Initialize a counter for successful uploads
+
+    </script>
     
     <style>
         body {
@@ -5753,7 +5757,7 @@ if(response.directorfolder){
     // let isUploading1 = false; // Flag to track if file uploads are in progress
     // let activeUploads1 = []; // Array to track the status of each file upload (true = active)
 
-    var successCounter = 0; // Initialize a counter for successful uploads
+    // var successCounter = 0; // Initialize a counter for successful uploads
     // let globalFileIndex = 0; // Global index to ensure unique indices across sessions
     var isUploading = false; // Flag to track if file uploads are in progress
     var activeUploads = []; // Array to track the status of each file upload (true = active)
@@ -6550,7 +6554,7 @@ $(document).ready(function () {
                                                                 activeUploads[currentFileIndex] = false; // Mark this file as completed or failed
                                                                     checkAllUploadsComplete(); // Check if all uploads are done
                                                                 $submitButton.prop('disabled', false); // Re-enable submit button
-                                                                $('#upload_filee .close').click(); 
+                                                                // $('#upload_filee .close').click(); 
                                                                 $('.button-spinner').remove();
 
 
@@ -6771,6 +6775,7 @@ $(document).ready(function () {
 
                                     }
                                      if (result.dismiss === Swal.DismissReason.cancel) {
+                                        is_uploading3 = true;
                                         // Logic for keeping files
                                         // alert("You chose to keep.");
                                         $('.progree_cont_nt').css('display', 'block');
@@ -6963,6 +6968,7 @@ $(document).ready(function () {
                             toastr.error('Error: ' + response.message); // Display error message
                         }
                         // $('#submit-btn').prop('disabled', false).text('Upload');
+                        
                     },
                     error: function (xhr) {
                         // Handle error

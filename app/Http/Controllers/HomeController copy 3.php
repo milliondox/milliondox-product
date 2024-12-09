@@ -15136,18 +15136,16 @@ public function PredefinedCommonUploadFiles(Request $request)
                     foreach ($request->file('files') as $file) {
                         try {
                             // Store file inside the dynamically created folder
-                            //////
+                             //////
                             $originalFileName = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME); // Get the file name without extension
                             $extension = $file->getClientOriginalExtension(); // Get the file extension
                             $fileName = $originalFileName . '.' . $extension; // Start with the original file name
                             // $filePath = $file->storeAs($folderPath, $fileName);
                             // $storedFileName = basename($filePath);  
                             //////
-                        
-                            //  $filePath = $file->storeAs($location,$fileName);
+                           
+                            $filePath = $file->storeAs($location,$fileName);
                             // Create a new entry for each file
-                            $filePath = $file->store($location);
-
                             $storedFileName = basename($filePath);
 
                            
@@ -15297,20 +15295,19 @@ public function PredefinedCommonUploadFilesBank(Request $request)
                     foreach ($request->file('files') as $file) {
                         try {
                             // Store file inside the dynamically created folder
-                            //////
-                            $originalFileName = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME); // Get the file name without extension
-                            $extension = $file->getClientOriginalExtension(); // Get the file extension
-                            $fileName = $originalFileName . '.' . $extension; // Start with the original file name
-                            // $filePath = $file->storeAs($folderPath, $fileName);
-                            // $storedFileName = basename($filePath);  
-                            //////
-                        
-                            //  $filePath = $file->storeAs($location,$fileName);
-                            // Create a new entry for each file
-                            $filePath = $file->store($location);
-
-                            $storedFileName = basename($filePath);
+                             //////
+                             $originalFileName = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME); // Get the file name without extension
+                             $extension = $file->getClientOriginalExtension(); // Get the file extension
+                             $fileName = $originalFileName . '.' . $extension; // Start with the original file name
+                             // $filePath = $file->storeAs($folderPath, $fileName);
+                             // $storedFileName = basename($filePath);  
+                             //////
+                            
+                             $filePath = $file->storeAs($location,$fileName);
+                             // Create a new entry for each file
+                             $storedFileName = basename($filePath);
                            
+                            // $filePath = $file->store($location);
                             // Create a new entry for each file
                             CommonTable::create([
                                 'file_type' => $file->getClientMimeType(),
@@ -23542,7 +23539,7 @@ public function HandleCommonUploadFiles(Request $request)
                         $originalFileName = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME); // Get the file name without extension
                         $extension = $file->getClientOriginalExtension(); // Get the file extension
                         $fileName = $originalFileName . '.' . $extension; // Start with the original file name
-                        $filePath = $file->store($folderPath);
+                        $filePath = $file->storeAs($folderPath, $fileName);
                         $storedFileName = basename($filePath);  
 
 
@@ -23717,8 +23714,7 @@ public function HandleCommonUploadFiles(Request $request)
                         }
                 
                         // Save the file with the updated unique name
-                        // $filePath = $file->storeAs($folderPath, $fileName);
-                        $filePath = $file->storeAs($folderPath);
+                        $filePath = $file->storeAs($folderPath, $fileName);
                         $storedFileName = basename($filePath);
 
                 
@@ -23816,8 +23812,7 @@ public function HandleCommonUploadFiles(Request $request)
                         $originalFileName = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME); // Get the file name without extension
                         $extension = $file->getClientOriginalExtension(); // Get the file extension
                         $fileName = $originalFileName . '.' . $extension; // Start with the original file name
-                        // $filePath = $file->storeAs($folderPath, $fileName);
-                        $filePath = $file->storeAs($folderPath);
+                        $filePath = $file->storeAs($folderPath, $fileName);
                         $storedFileName = basename($filePath);
 
     
