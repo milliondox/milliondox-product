@@ -22570,55 +22570,214 @@ public function downloadFolder($folderid)
 
     // Function to remove empty directories from a ZIP file, checking against the database
     // Function to remove empty directories from a ZIP file, checking against the database
+    // function removeEmptyDirsFromZip($zipFilePath, $userId)
+    // {
+    //     $zip = new ZipArchive();
+    //     if ($zip->open($zipFilePath) === TRUE) {
+    //         // Store files and directories in the ZIP
+    //         $files = [];
+    //         for ($i = 0; $i < $zip->numFiles; $i++) {
+    //             $fileName = $zip->getNameIndex($i);
+    //             $files[] = $fileName;
+    //         }
+
+    //         // Check for empty directories at all levels
+    //         $directoriesToRemove = [];
+
+    //         foreach ($files as $file) {
+    //             if (substr($file, -1) === '/') { // It's a directory
+    //                 $empty = true;
+
+    //                 // Check if any files exist in this directory (subdirectories or files)
+    //                 foreach ($files as $innerFile) {
+    //                     if (strpos($innerFile, $file) === 0 && $innerFile !== $file) {
+    //                         $empty = false;
+    //                         break;
+    //                     }
+    //                 }
+
+    //                 // If the directory is empty, add it to the list for removal
+    //                 if ($empty) {
+    //                     $directoriesToRemove[] = $file;
+    //                 }
+    //             }
+    //         }
+    //         // dd($directoriesToRemove);
+
+    //         // Now check the database for each empty directory and remove if necessary
+    //         foreach ($directoriesToRemove as $dir) {
+    //             // Query the database to check if this directory exists for the user
+    //             $directoryName = basename($dir); // Get the directory name without the path
+    //             // dd($directoryName);
+    //             $existsInDatabase = DB::table('folders')
+    //                 ->where('user_id', $userId)
+    //                 ->where('name', $directoryName)
+    //                 ->exists();
+
+    //             // If directory doesn't exist in the database, remove it
+    //             if (!$existsInDatabase) {
+    //                 $zip->deleteName($dir);
+    //             }
+    //         }
+
+    //         $zip->close();
+    //     }
+    // }
+
+    // // Remove empty directories before downloading, checking against the database
+    // removeEmptyDirsFromZip($zipFilePath, $userId);
+    // removeEmptyDirsFromZip($zipFilePath, $userId);
+    // removeEmptyDirsFromZip($zipFilePath, $userId);
+
+
+
+    // return response()->download($zipFilePath)->deleteFileAfterSend(true);
+
+    // Function to remove empty directories from a ZIP file, checking against the database
+    // function removeEmptyDirsFromZip($zipFilePath, $userId)
+    // {
+    //     $zip = new ZipArchive();
+    //     if ($zip->open($zipFilePath) === TRUE) {
+    //         // Store files and directories in the ZIP
+    //         $files = [];
+    //         for ($i = 0; $i < $zip->numFiles; $i++) {
+    //             $fileName = $zip->getNameIndex($i);
+    //             $files[] = $fileName;
+    //         }
+
+    //         // Check for empty directories at all levels
+    //         $directoriesToRemove = [];
+
+    //         foreach ($files as $file) {
+    //             if (substr($file, -1) === '/') { // It's a directory
+    //                 $empty = true;
+
+    //                 // Check if any files exist in this directory (subdirectories or files)
+    //                 foreach ($files as $innerFile) {
+    //                     if (strpos($innerFile, $file) === 0 && $innerFile !== $file) {
+    //                         $empty = false;
+    //                         break;
+    //                     }
+    //                 }
+
+    //                 // If the directory is empty, add it to the list for removal
+    //                 if ($empty) {
+    //                     $directoriesToRemove[] = $file;
+    //                 }
+    //             }
+    //         }
+
+    //         // Now delete directories and their empty parents if necessary
+    //         foreach ($directoriesToRemove as $dir) {
+    //             // Query the database to check if this directory exists for the user
+    //             $directoryName = basename($dir); // Get the directory name without the path
+    //             $existsInDatabase = DB::table('folders')
+    //                 ->where('user_id', $userId)
+    //                 ->where('name', $directoryName)
+    //                 ->exists();
+
+    //             // If directory doesn't exist in the database, remove it
+    //             if (!$existsInDatabase) {
+    //                 $zip->deleteName($dir);
+
+    //                 // Check and delete parent directories if they are empty after removal
+    //                 $parentDir = dirname($dir) . '/';
+    //                 while ($parentDir !== '/' && !in_array($parentDir, $directoriesToRemove)) {
+    //                     // Check if the parent directory is now empty
+    //                     $parentEmpty = true;
+    //                     foreach ($files as $innerFile) {
+    //                         if (strpos($innerFile, $parentDir) === 0 && $innerFile !== $parentDir) {
+    //                             $parentEmpty = false;
+    //                             break;
+    //                         }
+    //                     }
+
+    //                     // If the parent directory is empty and doesn't exist in the database, delete it
+    //                     if ($parentEmpty) {
+    //                         $parentDirName = basename($parentDir);
+    //                         $parentExistsInDatabase = DB::table('folders')
+    //                             ->where('user_id', $userId)
+    //                             ->where('name', $parentDirName)
+    //                             ->exists();
+
+    //                         if (!$parentExistsInDatabase) {
+    //                             $zip->deleteName($parentDir);
+    //                             $directoriesToRemove[] = $parentDir; // Mark the parent as removed
+    //                         }
+    //                     }
+
+    //                     // Move to the next parent directory
+    //                     $parentDir = dirname($parentDir) . '/';
+    //                 }
+    //             }
+    //         }
+
+    //         $zip->close();
+    //     }
+    // }
+
+    // // Remove empty directories before downloading, checking against the database
+    // removeEmptyDirsFromZip($zipFilePath, $userId);
+    // removeEmptyDirsFromZip($zipFilePath, $userId);
+    // removeEmptyDirsFromZip($zipFilePath, $userId);
+    // removeEmptyDirsFromZip($zipFilePath, $userId);
+
+
+
+    // return response()->download($zipFilePath)->deleteFileAfterSend(true);
+
+
+    // Function to remove empty directories from a ZIP file, checking against the database
     function removeEmptyDirsFromZip($zipFilePath, $userId)
     {
         $zip = new ZipArchive();
+
         if ($zip->open($zipFilePath) === TRUE) {
-            // Store files and directories in the ZIP
-            $files = [];
-            for ($i = 0; $i < $zip->numFiles; $i++) {
-                $fileName = $zip->getNameIndex($i);
-                $files[] = $fileName;
-            }
+            do {
+                $files = [];
+                $emptyDirectories = [];
+                
+                // List all files and directories
+                for ($i = 0; $i < $zip->numFiles; $i++) {
+                    $fileName = $zip->getNameIndex($i);
+                    $files[] = $fileName;
+                }
 
-            // Check for empty directories at all levels
-            $directoriesToRemove = [];
+                // Identify empty directories
+                foreach ($files as $file) {
+                    if (substr($file, -1) === '/') { // It's a directory
+                        $empty = true;
 
-            foreach ($files as $file) {
-                if (substr($file, -1) === '/') { // It's a directory
-                    $empty = true;
+                        // Check if this directory contains any files or subdirectories
+                        foreach ($files as $innerFile) {
+                            if (strpos($innerFile, $file) === 0 && $innerFile !== $file) {
+                                $empty = false;
+                                break;
+                            }
+                        }
 
-                    // Check if any files exist in this directory (subdirectories or files)
-                    foreach ($files as $innerFile) {
-                        if (strpos($innerFile, $file) === 0 && $innerFile !== $file) {
-                            $empty = false;
-                            break;
+                        if ($empty) {
+                            $emptyDirectories[] = $file;
                         }
                     }
+                }
 
-                    // If the directory is empty, add it to the list for removal
-                    if ($empty) {
-                        $directoriesToRemove[] = $file;
+                // Delete empty directories not present in the database
+                foreach ($emptyDirectories as $dir) {
+                    $directoryName = basename($dir); // Get the directory name without the path
+                    $existsInDatabase = DB::table('folders')
+                        ->where('user_id', $userId)
+                        ->where('name', $directoryName)
+                        ->exists();
+
+                    // If directory doesn't exist in the database, delete it
+                    if (!$existsInDatabase) {
+                        $zip->deleteName($dir);
                     }
                 }
-            }
-            // dd($directoriesToRemove);
 
-            // Now check the database for each empty directory and remove if necessary
-            foreach ($directoriesToRemove as $dir) {
-                // Query the database to check if this directory exists for the user
-                $directoryName = basename($dir); // Get the directory name without the path
-                // dd($directoryName);
-                $existsInDatabase = DB::table('folders')
-                    ->where('user_id', $userId)
-                    ->where('name', $directoryName)
-                    ->exists();
-
-                // If directory doesn't exist in the database, remove it
-                if (!$existsInDatabase) {
-                    $zip->deleteName($dir);
-                }
-            }
+                // Refresh the file list after deletions
+            } while (!empty($emptyDirectories)); // Repeat until no empty directories are found
 
             $zip->close();
         }
@@ -22626,10 +22785,6 @@ public function downloadFolder($folderid)
 
     // Remove empty directories before downloading, checking against the database
     removeEmptyDirsFromZip($zipFilePath, $userId);
-    removeEmptyDirsFromZip($zipFilePath, $userId);
-    removeEmptyDirsFromZip($zipFilePath, $userId);
-
-
 
     return response()->download($zipFilePath)->deleteFileAfterSend(true);
 }
