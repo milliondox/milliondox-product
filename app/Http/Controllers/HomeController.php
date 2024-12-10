@@ -22792,7 +22792,7 @@ public function downloadFolder($folderid)
     // Check if the ZIP file still exists after removing empty directories
     if (!file_exists($zipFilePath)) {
         // \Log::error("ZIP file does not exist after processing: " . $zipFilePath);
-        return response()->json(['success' => false, 'message' => 'No data found in Directories.'],200);
+        return response()->json(['success' => true, 'error' => 'No data found in Directories.'],200);
     }
 
     // Proceed with further processing if the ZIP file exists

@@ -2159,10 +2159,10 @@ $(document).ready(function() {
                     } catch (error) {
                         clearInterval(intervalId); // Stop simulated progress
                         updateProgressBar(progressId, 0, "Failed!");
-                        
-                        toastr.error('All directories are empty');
-
+                        toastr.error('No data found in directories');
+                         // If no active requests, hide the progress container without confirmation
                         $('.progree_cont_nt').hide();
+
                         // Clear the contents of .progress_repeat_wrap
                         $('.progress_repeat_wrap').empty();
 
