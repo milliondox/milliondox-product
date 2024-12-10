@@ -22452,8 +22452,11 @@ if (is_array($dataTags)) {
 public function downloadFolder($folderid)
 {
     $folder = Folder::find($folderid);
-
+    // Check if the user is authenticated
     $userId = Auth::id();
+    if (!$userId) {
+        abort(403, 'User not authenticated.');
+    }
 
 
     if (!$folder) {
@@ -22785,8 +22788,17 @@ public function downloadFolder($folderid)
 
     // Remove empty directories before downloading, checking against the database
     removeEmptyDirsFromZip($zipFilePath, $userId);
+    // dd($zipFilePath);
+    // Check if the ZIP file still exists after removing empty directories
+    if (!file_exists($zipFilePath)) {
+        // \Log::error("ZIP file does not exist after processing: " . $zipFilePath);
+        return response()->json(['success' => false, 'message' => 'No data found in Directories.'],200);
+    }
 
+    // Proceed with further processing if the ZIP file exists
     return response()->download($zipFilePath)->deleteFileAfterSend(true);
+
+    // return response()->download($zipFilePath)->deleteFileAfterSend(true);
 }
 
 

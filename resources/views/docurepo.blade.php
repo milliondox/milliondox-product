@@ -2159,7 +2159,15 @@ $(document).ready(function() {
                     } catch (error) {
                         clearInterval(intervalId); // Stop simulated progress
                         updateProgressBar(progressId, 0, "Failed!");
-                        toastr.error('An error occurred while downloading the folder. Please try again.', 'Download Error');
+
+                        toastr.error('All directories are empty');
+                         // If no active requests, hide the progress container without confirmation
+                        $('.progree_cont_nt').hide();
+
+                        // Clear the contents of .progress_repeat_wrap
+                        $('.progress_repeat_wrap').empty();
+
+                        // toastr.error('An error occurred while downloading the folder. Please try again.', 'Download Error');
                     }
                 });
 
