@@ -272,6 +272,9 @@ Route::post('/PredefinedCommonUploadFilesBank', [App\Http\Controllers\HomeContro
 Route::post('/HandleCommonUploadFiles', [App\Http\Controllers\HomeController::class, 'HandleCommonUploadFiles'])->name('HandleCommonUploadFiles');
 
 Route::get('/fetchfixedFiles', [App\Http\Controllers\HomeController::class, 'fetchfixedFiles'])->name('fetchfixedFiles');
+
+Route::get('/updateTempfilesName', [App\Http\Controllers\HomeController::class, 'updateTempfilesName'])->name('updateTempfilesName');
+
 // sandeep added above route "fetchfixedFiles" for dynamic fetch fixed path files i.e real_file_name 26 November 2024 
 
 
