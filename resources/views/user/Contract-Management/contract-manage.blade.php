@@ -74,7 +74,7 @@
                           </button>
                         </div>
                         <div class="add_custoer">
-                          <button type="button">
+                          <button type="button" data-bs-toggle="modal" data-bs-target="#addacustomer">
                             <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
                               <path d="M1 6H11M6 11V1" stroke="#5790FF" stroke-width="1.66" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round" />
                             </svg>
@@ -83,7 +83,209 @@
                         </div>
                       </div>
                     </div>
-
+                   
+                    <div class="modal fade drop_coman_file have_title" id="addacustomer" tabindex="-1" role="dialog" aria-labelledby="addacustomer" aria-hidden="true">
+                      <div class="modal-dialog modal-dialog-centered" role="document">
+                        <div class="modal-content">
+                          <div class="modal-header">
+                            <h5 class="modal-title" style="font-weight:700">Add Customer</h5>
+                            <button class="close" style="border-radius:5px;" type="button" data-bs-dismiss="modal">
+                              <span aria-hidden="true">
+                                <svg width="50" height="50" viewBox="0 0 50 50" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                  <rect width="4.27093" height="66.172" transform="matrix(0.702074 -0.712104 0.709324 0.704883 0 3.31244)" fill="black" />
+                                  <rect width="4.27086" height="66.3713" transform="matrix(-0.704896 -0.70931 0.706518 -0.707695 3.10742 50)" fill="black" />
+                                </svg>
+                              </span>
+                            </button>
+                          </div>
+                          <div class="modal-body">
+                            
+                            <form id="memberForm" action="" method="POST" enctype="multipart/form-data" class="upload-form">
+                              @csrf
+                              <!-- Profile Picture Upload -->
+                              <div class="gropu_form ivoice-upload">
+                                <label for="profile_picture">Profile Picture</label>
+                                <div class="file-area" id="round_uplad_image">
+                                  <div class="inner_file_edit">
+                                    <input type="file" id="emppicd" class="emppicd" name="profile_picture">
+                                    <div class="dont_show">
+                                      <img id="previewd" class="previewd" src="" alt="Profile Picture">
+                                      <div class="EAyyHe">
+                                        <div class="EzQmEf"></div>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            
+                              <!-- Legal Entity Name -->
+                              <div class="gropu_form">
+                                <label for="lename">Legal Entity Name</label>
+                                <input placeholder="Legal Entity Name" type="text" id="lename" name="lename" value="">
+                              </div>
+                            
+                              <!-- Director Name with Add/Remove Buttons -->
+                              <div class="gropu_form" id="directors-container">
+                                <label for="dname">Director Name</label>
+                                <div class="director-field">
+                                  <input placeholder="Director Name" type="text" id="dname" name="dname[]" value="">
+                                  <button type="button" class="add-director">+</button>
+                                </div>
+                              </div>
+                            
+                              <!-- Registered Office Address -->
+                              <div class="gropu_form">
+                                <label for="roa">Registered Office Address</label>
+                                <textarea placeholder="Registered Office Address" id="roa" name="roa"></textarea>
+                              </div>
+                            
+                              <!-- State Dropdown -->
+                              <div class="gropu_form">
+                                <label for="state">State</label>
+                                <input placeholder="State" type="text" id="state" name="state" value="" >
+                              </div>
+                            
+                              <!-- City with Auto-fill State and Pin Code -->
+                              <div class="gropu_form">
+                                <label for="city">City</label>
+                                <input placeholder="City" type="text" id="city" name="city" value="">
+                              </div>
+                            
+                              <!-- Pin Code with Auto-fill State and City -->
+                              <div class="gropu_form">
+                                <label for="pincode">Pin Code</label>
+                                <input placeholder="Pin Code" type="text" id="pincode" name="pincode" value="" maxlength="6">
+                              </div>
+                            
+                              <!-- CIN No with File Upload -->
+                              <div class="gropu_form">
+                                <label for="CinNo">CIN No</label>
+                                <input placeholder="CIN No" type="text" id="CinNo" name="CinNo" value="">
+                                <div id="cin-file-upload" style="display: none;">
+                                  <label for="cin_file">Attach CIN File</label>
+                                  <input type="file" id="cin_file" name="cin_file">
+                                </div>
+                              </div>
+                            
+                              <!-- GSTIN No with File Upload -->
+                              <div class="gropu_form">
+                                <label for="GSTINNo">GSTIN No</label>
+                                <input placeholder="GSTIN No" type="text" id="GSTINNo" name="GSTINNo" value="">
+                                <div id="gstin-file-upload" style="display: none;">
+                                  <label for="gstin_file">Attach GSTIN File</label>
+                                  <input type="file" id="gstin_file" name="gstin_file">
+                                </div>
+                              </div>
+                            
+                              <!-- Type of Entity -->
+                              <div class="gropu_form">
+                                <label for="type_of_entity">Type Of Entity</label>
+                                <select id="type_of_entity" name="type_of_entity" required>
+                                  <option value="" disabled selected>Legal Entity Type</option>
+                                  <option value="aop">AOP/ BOI</option>
+                                  <option value="Individuals">Individuals</option>
+                                  <option value="lc">Limited Company</option>
+                                  <option value="LLP">LLP</option>
+                                  <option value="opc">One-Person Company</option>
+                                  <option value="pf">Partnership Firm</option>
+                                  <option value="Proprietor">Proprietor</option>
+                                  <option value="Trusts">Trusts</option>
+                                  <option value="plc">Private Limited Company</option>
+                                  <option value="Others">Others</option>
+                                </select>
+                              </div>
+                            
+                              <!-- Submit Button -->
+                              <div class="root_btn">
+                                <button class="btn btn-primary" style="border-radius:5px;" type="submit">Update</button>
+                              </div>
+                            </form>
+                            
+                            <script>
+                              // Add/Remove Director Fields
+                              document.querySelector('.add-director').addEventListener('click', function () {
+                                const container = document.getElementById('directors-container');
+                                const newField = document.createElement('div');
+                                newField.className = 'director-field';
+                                newField.innerHTML = `<input placeholder="Director Name" type="text" name="dname[]">
+                                                      <button type="button" class="remove-director">-</button>`;
+                                container.appendChild(newField);
+                                newField.querySelector('.remove-director').addEventListener('click', function () {
+                                  container.removeChild(newField);
+                                });
+                              });
+                            
+                              // Show/Hide CIN and GSTIN File Upload
+                              document.getElementById('CinNo').addEventListener('input', function () {
+                                const cinFileUpload = document.getElementById('cin-file-upload');
+                                cinFileUpload.style.display = this.value ? 'block' : 'none';
+                              });
+                            
+                              document.getElementById('GSTINNo').addEventListener('input', function () {
+                                const gstinFileUpload = document.getElementById('gstin-file-upload');
+                                gstinFileUpload.style.display = this.value ? 'block' : 'none';
+                              });
+                            
+                              
+                            </script>
+                           <script>
+                            // Fetch State and City based on Pin Code
+                            document.getElementById('pincode').addEventListener('input', function () {
+                              const pincode = this.value.trim();
+                          
+                              if (pincode.length === 6) {
+                                fetch(`https://api.postalpincode.in/pincode/${pincode}`)
+                                  .then(response => response.json())
+                                  .then(data => {
+                                    if (data[0].Status === "Success") {
+                                      const postOffice = data[0].PostOffice[0];
+                                      document.getElementById('state').value = postOffice.State;
+                                      document.getElementById('city').value = postOffice.District;
+                                    } else {
+                                      alert("Invalid Pincode. Please try again.");
+                                      document.getElementById('state').value = "";
+                                      document.getElementById('city').value = "";
+                                    }
+                                  })
+                                  .catch(error => {
+                                    console.error("Error fetching pincode details:", error);
+                                    alert("Unable to fetch details. Please try again later.");
+                                  });
+                              } else {
+                                document.getElementById('state').value = "";
+                                document.getElementById('city').value = "";
+                              }
+                            });
+                          
+                            // Fetch Pin Code and State based on City Name
+                            document.getElementById('city').addEventListener('input', function () {
+                              const city = this.value.trim();
+                          
+                              if (city.length > 2) { // Start searching after at least 3 characters
+                                fetch(`https://api.postalpincode.in/postoffice/${city}`)
+                                  .then(response => response.json())
+                                  .then(data => {
+                                    if (data[0].Status === "Success") {
+                                      const postOffice = data[0].PostOffice[0];
+                                      document.getElementById('state').value = postOffice.State;
+                                      document.getElementById('pincode').value = postOffice.Pincode;
+                                    } else {
+                                      alert("City not found. Please try again.");
+                                      document.getElementById('state').value = "";
+                                      document.getElementById('pincode').value = "";
+                                    }
+                                  })
+                                  .catch(error => {
+                                    console.error("Error fetching city details:", error);
+                                    alert("Unable to fetch details. Please try again later.");
+                                  });
+                              }
+                            });
+                          </script>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
                     <div class="entery_body table-responsive">
                       <table id="contarct_table" class="table table-striped">
                         <thead>
