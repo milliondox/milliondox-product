@@ -83,7 +83,7 @@
                         </div>
                       </div>
                     </div>
-                   
+
                     <div class="modal fade drop_coman_file have_title" id="addacustomer" tabindex="-1" role="dialog" aria-labelledby="addacustomer" aria-hidden="true">
                       <div class="modal-dialog modal-dialog-centered" role="document">
                         <div class="modal-content">
@@ -99,7 +99,7 @@
                             </button>
                           </div>
                           <div class="modal-body">
-                            
+
                             <form id="memberForm" action="" method="POST" enctype="multipart/form-data" class="upload-form">
                               @csrf
                               <!-- Profile Picture Upload -->
@@ -117,66 +117,76 @@
                                   </div>
                                 </div>
                               </div>
-                            
+
                               <!-- Legal Entity Name -->
                               <div class="gropu_form">
                                 <label for="lename">Legal Entity Name</label>
                                 <input placeholder="Legal Entity Name" type="text" id="lename" name="lename" value="">
                               </div>
-                            
+
                               <!-- Director Name with Add/Remove Buttons -->
                               <div class="gropu_form" id="directors-container">
                                 <label for="dname">Director Name</label>
-                                <div class="director-field">
-                                  <input placeholder="Director Name" type="text" id="dname" name="dname[]" value="">
-                                  <button type="button" class="add-director">+</button>
+                                <div class="director_field_wrap">
+                                  <div class="director-field">
+                                    <input placeholder="Director Name" type="text" id="dname" name="dname[]" value="">
+                                    <button type="button" class="add-director">
+                                      <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M1 6H11M6 11V1" stroke="#5790FF" stroke-width="1.66" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"></path>
+                                      </svg>
+                                    </button>
+                                  </div>
                                 </div>
                               </div>
-                            
+
                               <!-- Registered Office Address -->
                               <div class="gropu_form">
                                 <label for="roa">Registered Office Address</label>
                                 <textarea placeholder="Registered Office Address" id="roa" name="roa"></textarea>
                               </div>
-                            
+
                               <!-- State Dropdown -->
                               <div class="gropu_form">
                                 <label for="state">State</label>
-                                <input placeholder="State" type="text" id="state" name="state" value="" >
+                                <input placeholder="State" type="text" id="state" name="state" value="">
                               </div>
-                            
+
                               <!-- City with Auto-fill State and Pin Code -->
                               <div class="gropu_form">
                                 <label for="city">City</label>
                                 <input placeholder="City" type="text" id="city" name="city" value="">
                               </div>
-                            
+
                               <!-- Pin Code with Auto-fill State and City -->
                               <div class="gropu_form">
                                 <label for="pincode">Pin Code</label>
                                 <input placeholder="Pin Code" type="text" id="pincode" name="pincode" value="" maxlength="6">
                               </div>
-                            
+
                               <!-- CIN No with File Upload -->
                               <div class="gropu_form">
                                 <label for="CinNo">CIN No</label>
+                                <div class="file_coman_wrap">
                                 <input placeholder="CIN No" type="text" id="CinNo" name="CinNo" value="">
-                                <div id="cin-file-upload" style="display: none;">
+                                <div class="coman_file_uplaodd" id="cin-file-upload" style="display: none;">
                                   <label for="cin_file">Attach CIN File</label>
                                   <input type="file" id="cin_file" name="cin_file">
                                 </div>
+                                </div>
                               </div>
-                            
+
                               <!-- GSTIN No with File Upload -->
                               <div class="gropu_form">
                                 <label for="GSTINNo">GSTIN No</label>
+                                <div class="file_coman_wrap">
                                 <input placeholder="GSTIN No" type="text" id="GSTINNo" name="GSTINNo" value="">
-                                <div id="gstin-file-upload" style="display: none;">
+                                <div class="coman_file_uplaodd" id="gstin-file-upload" style="display: none;">
                                   <label for="gstin_file">Attach GSTIN File</label>
                                   <input type="file" id="gstin_file" name="gstin_file">
                                 </div>
+                                </div>
                               </div>
-                            
+
                               <!-- Type of Entity -->
                               <div class="gropu_form">
                                 <label for="type_of_entity">Type Of Entity</label>
@@ -194,94 +204,123 @@
                                   <option value="Others">Others</option>
                                 </select>
                               </div>
-                            
+
                               <!-- Submit Button -->
                               <div class="root_btn">
                                 <button class="btn btn-primary" style="border-radius:5px;" type="submit">Update</button>
                               </div>
                             </form>
-                            
+
                             <script>
-                              // Add/Remove Director Fields
-                              document.querySelector('.add-director').addEventListener('click', function () {
-                                const container = document.getElementById('directors-container');
-                                const newField = document.createElement('div');
-                                newField.className = 'director-field';
-                                newField.innerHTML = `<input placeholder="Director Name" type="text" name="dname[]">
-                                                      <button type="button" class="remove-director">-</button>`;
-                                container.appendChild(newField);
-                                newField.querySelector('.remove-director').addEventListener('click', function () {
-                                  container.removeChild(newField);
-                                });
-                              });
-                            
+                              // // Add/Remove Director Fields
+                              // document.querySelector('.add-director').addEventListener('click', function () {
+                              //   const container = document.getElementById('directors-container');
+                              //   const newField = document.createElement('div');
+                              //   newField.className = 'director-field';
+                              //   newField.innerHTML = `<input placeholder="Director Name" type="text" name="dname[]">
+                              //                         <button type="button" class="remove-director">-</button>`;
+                              //   container.appendChild(newField);
+                              //   newField.querySelector('.remove-director').addEventListener('click', function () {
+                              //     container.removeChild(newField);
+                              //   });
+                              // });
+
                               // Show/Hide CIN and GSTIN File Upload
                               document.getElementById('CinNo').addEventListener('input', function () {
                                 const cinFileUpload = document.getElementById('cin-file-upload');
                                 cinFileUpload.style.display = this.value ? 'block' : 'none';
                               });
-                            
+
                               document.getElementById('GSTINNo').addEventListener('input', function () {
                                 const gstinFileUpload = document.getElementById('gstin-file-upload');
                                 gstinFileUpload.style.display = this.value ? 'block' : 'none';
                               });
-                            
-                              
+
+
+                              document.querySelector('body').addEventListener('click', function(event) {
+                                if (event.target.closest('.add-director')) {
+                                  // Locate the parent .director_field_wrap
+                                  const container = document.querySelector('.director_field_wrap');
+
+                                  // Create the new director-field element
+                                  const newField = document.createElement('div');
+                                  newField.className = 'director-field';
+                                  newField.innerHTML = `
+      <input placeholder="Director Name" type="text" name="dname[]" value="">
+      <button type="button" class="remove-director">
+<svg width="12" height="2" viewBox="0 0 12 2" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M1 1H11H10.873" stroke="#5790FF" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>
+      </button>
+    `;
+
+                                  // Append the newField inside the existing .director_field_wrap
+                                  container.appendChild(newField);
+                                }
+
+                                if (event.target.closest('.remove-director')) {
+                                  // Remove the specific .director-field
+                                  const field = event.target.closest('.director-field');
+                                  field.parentNode.removeChild(field);
+                                }
+                              });
                             </script>
-                           <script>
-                            // Fetch State and City based on Pin Code
-                            document.getElementById('pincode').addEventListener('input', function () {
-                              const pincode = this.value.trim();
-                          
-                              if (pincode.length === 6) {
-                                fetch(`https://api.postalpincode.in/pincode/${pincode}`)
-                                  .then(response => response.json())
-                                  .then(data => {
-                                    if (data[0].Status === "Success") {
-                                      const postOffice = data[0].PostOffice[0];
-                                      document.getElementById('state').value = postOffice.State;
-                                      document.getElementById('city').value = postOffice.District;
-                                    } else {
-                                      alert("Invalid Pincode. Please try again.");
-                                      document.getElementById('state').value = "";
-                                      document.getElementById('city').value = "";
-                                    }
-                                  })
-                                  .catch(error => {
-                                    console.error("Error fetching pincode details:", error);
-                                    alert("Unable to fetch details. Please try again later.");
-                                  });
-                              } else {
-                                document.getElementById('state').value = "";
-                                document.getElementById('city').value = "";
-                              }
-                            });
-                          
-                            // Fetch Pin Code and State based on City Name
-                            document.getElementById('city').addEventListener('input', function () {
-                              const city = this.value.trim();
-                          
-                              if (city.length > 2) { // Start searching after at least 3 characters
-                                fetch(`https://api.postalpincode.in/postoffice/${city}`)
-                                  .then(response => response.json())
-                                  .then(data => {
-                                    if (data[0].Status === "Success") {
-                                      const postOffice = data[0].PostOffice[0];
-                                      document.getElementById('state').value = postOffice.State;
-                                      document.getElementById('pincode').value = postOffice.Pincode;
-                                    } else {
-                                      alert("City not found. Please try again.");
-                                      document.getElementById('state').value = "";
-                                      document.getElementById('pincode').value = "";
-                                    }
-                                  })
-                                  .catch(error => {
-                                    console.error("Error fetching city details:", error);
-                                    alert("Unable to fetch details. Please try again later.");
-                                  });
-                              }
-                            });
-                          </script>
+
+
+                            <script>
+                              // Fetch State and City based on Pin Code
+                              document.getElementById('pincode').addEventListener('input', function() {
+                                const pincode = this.value.trim();
+
+                                if (pincode.length === 6) {
+                                  fetch(`https://api.postalpincode.in/pincode/${pincode}`)
+                                    .then(response => response.json())
+                                    .then(data => {
+                                      if (data[0].Status === "Success") {
+                                        const postOffice = data[0].PostOffice[0];
+                                        document.getElementById('state').value = postOffice.State;
+                                        document.getElementById('city').value = postOffice.District;
+                                      } else {
+                                        alert("Invalid Pincode. Please try again.");
+                                        document.getElementById('state').value = "";
+                                        document.getElementById('city').value = "";
+                                      }
+                                    })
+                                    .catch(error => {
+                                      console.error("Error fetching pincode details:", error);
+                                      alert("Unable to fetch details. Please try again later.");
+                                    });
+                                } else {
+                                  document.getElementById('state').value = "";
+                                  document.getElementById('city').value = "";
+                                }
+                              });
+
+                              // Fetch Pin Code and State based on City Name
+                              document.getElementById('city').addEventListener('input', function() {
+                                const city = this.value.trim();
+
+                                if (city.length > 2) { // Start searching after at least 3 characters
+                                  fetch(`https://api.postalpincode.in/postoffice/${city}`)
+                                    .then(response => response.json())
+                                    .then(data => {
+                                      if (data[0].Status === "Success") {
+                                        const postOffice = data[0].PostOffice[0];
+                                        document.getElementById('state').value = postOffice.State;
+                                        document.getElementById('pincode').value = postOffice.Pincode;
+                                      } else {
+                                        alert("City not found. Please try again.");
+                                        document.getElementById('state').value = "";
+                                        document.getElementById('pincode').value = "";
+                                      }
+                                    })
+                                    .catch(error => {
+                                      console.error("Error fetching city details:", error);
+                                      alert("Unable to fetch details. Please try again later.");
+                                    });
+                                }
+                              });
+                            </script>
                           </div>
                         </div>
                       </div>
