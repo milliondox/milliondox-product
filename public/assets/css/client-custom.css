@@ -23900,7 +23900,7 @@ span.clinet_name {
 
 
 .drop_coman_file.have_title .modal-content .gropu_form .director_field_wrap {
-    flex: 2;
+    flex: 2.06;
     max-height: 80px;
     overflow: auto;
     padding: 0px 2px 0px 0px;
@@ -23973,7 +23973,7 @@ span.clinet_name {
 }
 
 .drop_coman_file.have_title .modal-content .gropu_form .file_coman_wrap {
-    flex: 2;
+    flex: 2.1;
 }
 
 .drop_coman_file.have_title .modal-content .gropu_form .file_coman_wrap input {
