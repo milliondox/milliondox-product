@@ -1895,6 +1895,7 @@ public function downloadCommonFile($id)
     $userId = Auth::id();
     $file = CommonTable::where('id', $id)
                    ->where('user_id', $userId)
+                   ->where('is_delete', 0)
                    ->firstOrFail();
 
     $filePath = storage_path("app/{$file->file_path}");
@@ -24947,6 +24948,7 @@ public function renamecustomfile(Request $request)
         $userId = Auth::id();
         $file = CommonTable::where('id', $id)
                     ->where('user_id', $userId)
+                    ->where('is_delete',0)
                     ->firstOrFail();
 
         $filePath = storage_path("app/{$file->file_path}");
@@ -24975,6 +24977,7 @@ public function renamecustomfile(Request $request)
             // abort(404, 'File not found');
             // return response()->json(['error' => 'File Not Found']);
         }
+        // dd("i am here");
         return response()->download($filePath, $file->file_name);
     }
    
