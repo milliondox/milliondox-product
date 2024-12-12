@@ -22950,18 +22950,43 @@ span.clinet_name {
     background: #ff0000;
 }
 
-.contract_manage_new .entery_body tbody .signing_ath {
-    display: flex;
-    flex-wrap: wrap;
-    flex-direction: column;
-    gap: 10px 0px;
-}
 
 .contract_manage_new .entery_body tbody .signing_ath .signing_ath_rpt {
-    display: flex;
-    align-items: center;
-    gap: 0px 5px;
+    display: inline-block;
+    position: relative;
 }
+
+.signing_ath_rpt .custom-tooltip {
+    position: absolute;
+    bottom: 125%;
+    right: 0;
+    background-color: #707172;
+    color: #ffffff;
+    padding: 8px 12px;
+    border-radius: 4px;
+    font-size: 12px;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+    z-index: 1000;
+    width: 200px;
+}
+
+.signing_ath_rpt .custom-tooltip::after {
+    content: "";
+    position: absolute;
+    top: 100%;
+    right: 8px;
+    border-width: 5px;
+    border-style: solid;
+    border-color: #707172 transparent transparent transparent;
+}
+.signing_ath_rpt .count:hover .custom-tooltip {
+    opacity: 1;
+    visibility: visible;
+}
+
 
 .contract_manage_new .entery_body tbody .signing_ath .signing_ath_rpt .image_table {
     position: relative;
@@ -22984,6 +23009,18 @@ span.clinet_name {
     font-size: 14px;
     font-weight: 400;
     color: #535862;
+    text-transform: capitalize;
+}
+
+.contract_manage_new .entery_body tbody .signing_ath .signing_ath_rpt span .count {
+    color: #181d27;
+    text-decoration: underline;
+    margin: 0px 0px 0px 2px;
+    position: relative;
+}
+
+.dark-only .contract_manage_new .entery_body tbody .signing_ath .signing_ath_rpt span .count {
+    color: #c5c5c5;
 }
 
 .contract_manage_new .entery_body tbody td:first-child {
@@ -23231,6 +23268,24 @@ span.clinet_name {
     overflow: hidden;
 }
 
+.main_contractt_detail .contract_deatols .contract_detail_top .con_image_wrap .inner_tp_img .mini_iage_wrap h2 {
+    margin: 0;
+    font-size: 18px;
+    display: flex;
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    font-weight: 500;
+    border: 2px solid #5790ff;
+    box-shadow: none;
+    background: #5790ff57;
+    line-height: normal;
+    color: #FFF;
+}
+
 .main_contractt_detail .contract_deatols .contract_detail_top .con_image_wrap .inner_tp_img .mini_iage_wrap img {
     position: absolute;
     width: 100%;
@@ -23335,7 +23390,7 @@ span.clinet_name {
 .contract_detail_middle .authrized_signatory ul li {
     display: flex;
     align-items: center;
-    margin-bottom: 15px;
+    margin-bottom: 10px;
     gap: 0px 10px;
 }
 
@@ -23361,25 +23416,33 @@ span.clinet_name {
     margin: 0;
 }
 
-.contract_detail_middle .authrized_signatory ul:before {
-    content: "";
-    height: 70%;
-    border-left: 1px dashed #ced5e2;
-    width: 2px;
-    position: absolute;
-    top: 50%;
-    transform: translateY(-50%);
-    left: 15px;
-}
-
 .contract_detail_middle .authrized_signatory ul li h2 {
-    font-size: 16px;
+    font-size: 15px;
     font-weight: 500;
     text-decoration-line: underline;
     text-decoration-style: solid;
     color: #181d27;
     margin: 0;
 }
+
+.contract_manage_new .entery_body tbody .image_naess .image_table h2 {
+    margin: 0;
+    font-size: 18px;
+    display: flex;
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    font-weight: 500;
+    border: 2px solid #5790ff;
+    box-shadow: none;
+    background: #5790ff57;
+    line-height: normal;
+    color: #FFF;
+}
+
 
 .contract_detail_middle .authrized_signatory ul li .tool_tip {
     position: relative;
@@ -23483,6 +23546,12 @@ span.clinet_name {
     font-size: 12px;
     font-weight: 500;
     color: #414651;
+}
+
+.contract_detail_bottom .registration_documents .registration_documents_wrap span a {
+    font-size: inherit;
+    color: inherit;
+    font-weight: inherit;
 }
 
 .contract_deatols .contract_detail_bottom .registration_documents {
