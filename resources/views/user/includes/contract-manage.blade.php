@@ -115,53 +115,53 @@
   </script>
 
   <script>
-document.querySelectorAll('.divi_ass_wrap span').forEach(span => {
-    // Generate even lighter shades
-    const randomColor = () => {
-        const r = Math.floor(Math.random() * 30) + 225; // Values between 225 and 255
-        const g = Math.floor(Math.random() * 30) + 225;
-        const b = Math.floor(Math.random() * 30) + 225;
-        return { r, g, b, rgb: `rgb(${r}, ${g}, ${b})` };
-    };
+function applyColors() {
+    document.querySelectorAll('.divi_ass_wrap span').forEach(span => {
+        const randomColor = (isDarkMode) => {
+            if (isDarkMode) {
+                // Generate darker shades for dark mode
+                const r = Math.floor(Math.random() * 50) + 50; // Values between 50 and 100
+                const g = Math.floor(Math.random() * 50) + 50;
+                const b = Math.floor(Math.random() * 50) + 50;
+                return { r, g, b, rgb: `rgb(${r}, ${g}, ${b})` };
+            } else {
+                // Generate lighter shades for light mode
+                const r = Math.floor(Math.random() * 30) + 225; // Values between 225 and 255
+                const g = Math.floor(Math.random() * 30) + 225;
+                const b = Math.floor(Math.random() * 30) + 225;
+                return { r, g, b, rgb: `rgb(${r}, ${g}, ${b})` };
+            }
+        };
 
-    const bgColor = randomColor();
-    const borderColor = randomColor();
+        const isDarkMode = document.body.classList.contains('dark-only');
+        const bgColor = randomColor(isDarkMode);
+        const borderColor = randomColor(isDarkMode);
 
-    // Calculate brightness for contrast
-    const brightness = (bgColor.r * 299 + bgColor.g * 587 + bgColor.b * 114) / 1000; // Perceived brightness formula
-    const textColor = brightness > 186 ? '#434343' : '#FFF'; // Use black for light backgrounds, white for dark backgrounds
+        // Calculate brightness for contrast
+        const brightness = (bgColor.r * 299 + bgColor.g * 587 + bgColor.b * 114) / 1000; // Perceived brightness formula
+        const textColor = brightness > 186 ? '#434343' : '#FFF'; // Use black for light backgrounds, white for dark backgrounds
 
-    // Apply colors to the span
-    span.style.borderColor = borderColor.rgb;
-    span.style.backgroundColor = bgColor.rgb;
-    span.style.color = textColor;
+        // Apply colors to the span
+        span.style.borderColor = borderColor.rgb;
+        span.style.backgroundColor = bgColor.rgb;
+        span.style.color = textColor;
+    });
+}
+
+// Initial call to apply colors
+applyColors();
+
+// Monitor changes to the body class
+const observer = new MutationObserver(() => {
+    applyColors(); // Reapply colors when the class changes
 });
 
+// Observe changes to the `class` attribute of the body
+observer.observe(document.body, { attributes: true, attributeFilter: ['class'] });
 
   </script>
 
   <script>
-
-// document.querySelectorAll('.partner_count').forEach(div => {
-//     const boldTags = Array.from(div.querySelectorAll('b:not(.count)'));
-//     const countTag = div.querySelector('.count');
-
-//     if (boldTags.length > 1) {
-//         // Show only the first <b>
-//         boldTags.slice(1).forEach(b => b.style.display = 'none');
-
-//         // Generate tooltip content with the remaining names
-//         const remainingNames = boldTags.slice(1).map(b => b.textContent.trim()).join(', ');
-        
-//         // Set the count <b> with tooltip
-//         countTag.style.display = 'inline';
-//         countTag.textContent = `+ ${boldTags.length - 1}`;
-//         countTag.setAttribute('title', remainingNames); // Add tooltip using title attribute
-//     } else {
-//         // Hide the count <b> if there's only one <b>
-//         countTag.style.display = 'none';
-//     }
-// });
 
 document.querySelectorAll('.partner_count').forEach(div => {
     const boldTags = Array.from(div.querySelectorAll('b:not(.count)'));

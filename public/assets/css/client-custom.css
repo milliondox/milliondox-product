@@ -23791,8 +23791,9 @@ span.clinet_name {
 }
 
 .dark-only .main_contractt_detail .contract_deatols .contract_detail_top .top_cont_btn a {
-    border: 1px solid #c5c5c5;
-    color: #c5c5c5;
+    border: 1px solid #4F5762;
+    background: transparent;
+    color: #CECECE;
 }
 
 .dark-only .main_contractt_detail .contract_deatols .contract_detail_top .top_cont_btn a svg {
@@ -23828,7 +23829,9 @@ span.clinet_name {
 }
 
 .dark-only .contract_detail_bottom .registration_documents .registration_documents_wrap span {
-    color: #c5c5c5;
+    border: 1px solid #4F5762;
+    background: transparent;
+    color: #CECECE;
 }
 
 .dark-only .contract_detail_bottom .registration_documents .registration_documents_wrap span svg {
@@ -23886,7 +23889,9 @@ span.clinet_name {
 }
 
 .dark-only .main_contractt_detail .contract_deatols .contract_detail_top .con_image_wrap .con_tp_icon button {
-    border: 1px solid #c5c5c5;
+    border: 1px solid #4F5762;
+    background: transparent;
+    color: #CECECE;
 }
 
 .dark-only .main_contractt_detail .contract_deatols .contract_detail_top .con_image_wrap .con_tp_icon button.ediit svg {
