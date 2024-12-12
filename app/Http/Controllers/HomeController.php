@@ -36,7 +36,7 @@ use App\Models\EmployeeStatus;
 use App\Models\TemplateFile;
 use App\Models\ChartedDocument;
 use App\Models\Folder;
-
+use App\Models\Customer;
 use App\Models\Files;
 use App\Models\UserOtp;
 use App\Models\UploadedFile;
@@ -18252,16 +18252,24 @@ public function tickting()
 
     public function contractmanage()
     {
+        $customer = Customer::where('customer_created_by', auth()->id())->get();
+        $customercount = Customer::where('customer_created_by', auth()->id())->count();
+        // dd($customer);
         $cli_announcements = Announcement::where('role', 'Client')->latest()->get();
         $user = auth()->user();
-       return view('user.Contract-Management.contract-manage',compact('cli_announcements','user'));
+       return view('user.Contract-Management.contract-manage',compact('cli_announcements','user','customer','customercount'));
     }
 
-    public function contractmanagedetail()
+    public function contractmanagedetail($id)
     {
         $cli_announcements = Announcement::where('role', 'Client')->latest()->get();
         $user = auth()->user();
-       return view('user.Contract-Management.contract-manage-detail',compact('cli_announcements','user'));
+        $customerrecord = Customer::find($id);
+
+        // dd($customerrecord);
+
+       
+       return view('user.Contract-Management.contract-manage-detail',compact('cli_announcements','user','customerrecord'));
     }
 
     public function Sop()
@@ -26785,4 +26793,67 @@ dd($e->getMessage());
 dd($e->getMessage());
 }
     }
+
+
+    // customer creation code start from here 
+
+    public function customerstore(Request $request)
+{
+    // Validate incoming data
+    $validated = $request->validate([
+        'profile_picture' => 'nullable|image|max:2048',
+        'lename' => 'required|string|max:255',
+        'dname' => 'required|array',
+        'dname.*' => 'required|string|max:255',
+        'roa' => 'required|string',
+        'state' => 'required|string|max:255',
+        'city' => 'required|string|max:255',
+        'pincode' => 'required|string|max:6',
+        'CinNo' => 'required|string|max:21', // CIN length is fixed at 21 characters
+        'cin_file' => 'required|file|max:2048',
+        'GSTINNo' => 'required|string|max:15|min:15', // GSTIN length is exactly 15 characters
+        'gstin_file' => 'required|file|max:2048',
+        'type_of_entity' => 'required|string|max:255',
+        'brandname' => 'nullable|string|max:255',
+    ]);
+
+    // Check if CIN number already exists
+    if (Customer::where('CinNo', $validated['CinNo'])->exists()) {
+        return response()->json([
+            'message' => 'The provided CIN number already exists.',
+        ], 422);
+    }
+
+    // Check if GSTIN number already exists
+    if (Customer::where('GSTINNo', $validated['GSTINNo'])->exists()) {
+        return response()->json([
+            'message' => 'The provided GSTIN number already exists.',
+        ], 422);
+    }
+
+    // Handle file uploads
+    $validated['profile_picture'] = $request->file('profile_picture') 
+        ? $request->file('profile_picture')->store('profile_pictures', 'public') 
+        : null;
+
+    $validated['cin_file'] = $request->file('cin_file') 
+        ? $request->file('cin_file')->store('cin_files', 'public') 
+        : null;
+
+    $validated['gstin_file'] = $request->file('gstin_file') 
+        ? $request->file('gstin_file')->store('gstin_files', 'public') 
+        : null;
+
+    // Include the authenticated user ID
+    $validated['customer_created_by'] = auth()->id();
+
+    // Save customer data
+    Customer::create($validated);
+
+    return response()->json(['message' => 'Customer details saved successfully!']);
+}
+
+    
+
+    // customer creation code end here from here 
 }

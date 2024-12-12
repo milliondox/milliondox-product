@@ -62,7 +62,7 @@
                     <div class="contact_header">
                       <div class="table_title">
                         <h2>Customer List</h2>
-                        <span>86 Customers</span>
+                        <span>{{$customercount}} Customers</span>
                       </div>
 
                       <div class="header_filterrs">
@@ -100,7 +100,7 @@
                           </div>
                           <div class="modal-body">
 
-                            <form id="memberForm" action="" method="POST" enctype="multipart/form-data" class="upload-form">
+                            <form id="customerForm" action="{{ route('customerstore') }}" method="POST" enctype="multipart/form-data" class="upload-form">
                               @csrf
                               <!-- Profile Picture Upload -->
                               <div class="gropu_form ivoice-upload">
@@ -121,7 +121,12 @@
                               <!-- Legal Entity Name -->
                               <div class="gropu_form">
                                 <label for="lename">Legal Entity Name</label>
-                                <input placeholder="Legal Entity Name" type="text" id="lename" name="lename" value="">
+                                <input placeholder="Legal Entity Name" type="text" id="lename" name="lename" value="" required>
+                              </div>
+
+                              <div class="gropu_form">
+                                <label for="lename">Brand Name</label>
+                                <input placeholder="Brand Name" type="text" id="brandname" name="brandname" value="">
                               </div>
 
                               <!-- Director Name with Add/Remove Buttons -->
@@ -129,7 +134,7 @@
                                 <label for="dname">Director Name</label>
                                 <div class="director_field_wrap">
                                   <div class="director-field">
-                                    <input placeholder="Director Name" type="text" id="dname" name="dname[]" value="">
+                                    <input placeholder="Director Name" type="text" id="dname" name="dname[]" value="" required>
                                     <button type="button" class="add-director">
                                       <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
                                         <path d="M1 6H11M6 11V1" stroke="#5790FF" stroke-width="1.66" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"></path>
@@ -142,35 +147,38 @@
                               <!-- Registered Office Address -->
                               <div class="gropu_form">
                                 <label for="roa">Registered Office Address</label>
-                                <textarea placeholder="Registered Office Address" id="roa" name="roa"></textarea>
+                                <textarea placeholder="Registered Office Address" id="roa" name="roa" required></textarea>
                               </div>
+                              <!-- Pin Code with Auto-fill State and City -->
+                              <div class="gropu_form">
+                                <label for="pincode">Pin Code</label>
+                                <input placeholder="Pin Code" type="text" id="pincode" name="pincode" value="" maxlength="6" required>
+                              </div>
+                               <!-- City with Auto-fill State and Pin Code -->
+                               <div class="gropu_form">
+                                <label for="city">City</label>
+                                <input placeholder="City" type="text" id="city" name="city" value="" required>
+                              </div>
+
+                              
 
                               <!-- State Dropdown -->
                               <div class="gropu_form">
                                 <label for="state">State</label>
-                                <input placeholder="State" type="text" id="state" name="state" value="">
+                                <input placeholder="State" type="text" id="state" name="state" value="" required>
+                                <div id="state-suggestions" class="autocomplete-suggestions"></div>
                               </div>
-
-                              <!-- City with Auto-fill State and Pin Code -->
-                              <div class="gropu_form">
-                                <label for="city">City</label>
-                                <input placeholder="City" type="text" id="city" name="city" value="">
-                              </div>
-
-                              <!-- Pin Code with Auto-fill State and City -->
-                              <div class="gropu_form">
-                                <label for="pincode">Pin Code</label>
-                                <input placeholder="Pin Code" type="text" id="pincode" name="pincode" value="" maxlength="6">
-                              </div>
+                             
+                             
 
                               <!-- CIN No with File Upload -->
                               <div class="gropu_form">
                                 <label for="CinNo">CIN No</label>
                                 <div class="file_coman_wrap">
-                                <input placeholder="CIN No" type="text" id="CinNo" name="CinNo" value="">
+                                <input placeholder="CIN No" type="text" id="CinNo" name="CinNo" value=""   required>
                                 <div class="coman_file_uplaodd" id="cin-file-upload" style="display: none;">
                                   <label for="cin_file">Attach CIN File</label>
-                                  <input type="file" id="cin_file" name="cin_file">
+                                  <input type="file" id="cin_file" name="cin_file" required>
                                 </div>
                                 </div>
                               </div>
@@ -179,10 +187,10 @@
                               <div class="gropu_form">
                                 <label for="GSTINNo">GSTIN No</label>
                                 <div class="file_coman_wrap">
-                                <input placeholder="GSTIN No" type="text" id="GSTINNo" name="GSTINNo" value="">
+                                <input placeholder="GSTIN No" type="text" id="GSTINNo" name="GSTINNo" value=""   required>
                                 <div class="coman_file_uplaodd" id="gstin-file-upload" style="display: none;">
                                   <label for="gstin_file">Attach GSTIN File</label>
-                                  <input type="file" id="gstin_file" name="gstin_file">
+                                  <input type="file" id="gstin_file" name="gstin_file" required>
                                 </div>
                                 </div>
                               </div>
@@ -192,15 +200,15 @@
                                 <label for="type_of_entity">Type Of Entity</label>
                                 <select id="type_of_entity" name="type_of_entity" required>
                                   <option value="" disabled selected>Legal Entity Type</option>
-                                  <option value="aop">AOP/ BOI</option>
+                                  <option value="AOP/ BOI">AOP/ BOI</option>
                                   <option value="Individuals">Individuals</option>
-                                  <option value="lc">Limited Company</option>
+                                  <option value="Limited Company">Limited Company</option>
                                   <option value="LLP">LLP</option>
-                                  <option value="opc">One-Person Company</option>
-                                  <option value="pf">Partnership Firm</option>
+                                  <option value="One-Person Company">One-Person Company</option>
+                                  <option value="Partnership Firm">Partnership Firm</option>
                                   <option value="Proprietor">Proprietor</option>
                                   <option value="Trusts">Trusts</option>
-                                  <option value="plc">Private Limited Company</option>
+                                  <option value="Private Limited Company">Private Limited Company</option>
                                   <option value="Others">Others</option>
                                 </select>
                               </div>
@@ -210,7 +218,34 @@
                                 <button class="btn btn-primary" style="border-radius:5px;" type="submit">Update</button>
                               </div>
                             </form>
+                            <link rel="stylesheet" href="https://code.jquery.com/ui/1.13.2/themes/smoothness/jquery-ui.css">
+                            <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+                            <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.min.js"></script>
 
+                            <script>
+                              const states = [
+                                "Andhra Pradesh", "Arunachal Pradesh", "Assam", "Bihar", 
+                                "Chhattisgarh", "Goa", "Gujarat", "Haryana", 
+                                "Himachal Pradesh", "Jharkhand", "Karnataka", "Kerala", 
+                                "Madhya Pradesh", "Maharashtra", "Manipur", "Meghalaya", 
+                                "Mizoram", "Nagaland", "Odisha", "Punjab", 
+                                "Rajasthan", "Sikkim", "Tamil Nadu", "Telangana", 
+                                "Tripura", "Uttar Pradesh", "Uttarakhand", "West Bengal", 
+                                "Andaman and Nicobar Islands", "Chandigarh", "Dadra and Nagar Haveli and Daman and Diu", 
+                                "Delhi", "Jammu and Kashmir", "Ladakh", "Lakshadweep", "Puducherry"
+                              ];
+                            
+                              $(document).ready(function () {
+                                $("#state").autocomplete({
+                                  source: states,
+                                  minLength: 1,
+                                  autoFocus: true,
+                                  appendTo: "#state-suggestions", // Ensures suggestions are shown inside the defined div
+                                });
+                              });
+                            </script>
+                            
+                            
                             <script>
                               // // Add/Remove Director Fields
                               // document.querySelector('.add-director').addEventListener('click', function () {
@@ -267,60 +302,142 @@
                             </script>
 
 
-                            <script>
-                              // Fetch State and City based on Pin Code
-                              document.getElementById('pincode').addEventListener('input', function() {
-                                const pincode = this.value.trim();
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+ // Clear related fields when one is cleared
+document.getElementById('state').addEventListener('input', function () {
+  if (this.value.trim() === "") {
+    document.getElementById('city').value = "";
+    document.getElementById('pincode').value = "";
+  }
+});
 
-                                if (pincode.length === 6) {
-                                  fetch(`https://api.postalpincode.in/pincode/${pincode}`)
-                                    .then(response => response.json())
-                                    .then(data => {
-                                      if (data[0].Status === "Success") {
-                                        const postOffice = data[0].PostOffice[0];
-                                        document.getElementById('state').value = postOffice.State;
-                                        document.getElementById('city').value = postOffice.District;
-                                      } else {
-                                        alert("Invalid Pincode. Please try again.");
-                                        document.getElementById('state').value = "";
-                                        document.getElementById('city').value = "";
-                                      }
-                                    })
-                                    .catch(error => {
-                                      console.error("Error fetching pincode details:", error);
-                                      alert("Unable to fetch details. Please try again later.");
-                                    });
-                                } else {
-                                  document.getElementById('state').value = "";
-                                  document.getElementById('city').value = "";
-                                }
-                              });
+document.getElementById('city').addEventListener('input', function () {
+  if (this.value.trim() === "") {
+    document.getElementById('state').value = "";
+    document.getElementById('pincode').value = "";
+  }
+});
 
-                              // Fetch Pin Code and State based on City Name
-                              document.getElementById('city').addEventListener('input', function() {
-                                const city = this.value.trim();
+document.getElementById('pincode').addEventListener('input', function () {
+  if (this.value.trim() === "") {
+    document.getElementById('state').value = "";
+    document.getElementById('city').value = "";
+  }
+});
 
-                                if (city.length > 2) { // Start searching after at least 3 characters
-                                  fetch(`https://api.postalpincode.in/postoffice/${city}`)
-                                    .then(response => response.json())
-                                    .then(data => {
-                                      if (data[0].Status === "Success") {
-                                        const postOffice = data[0].PostOffice[0];
-                                        document.getElementById('state').value = postOffice.State;
-                                        document.getElementById('pincode').value = postOffice.Pincode;
-                                      } else {
-                                        alert("City not found. Please try again.");
-                                        document.getElementById('state').value = "";
-                                        document.getElementById('pincode').value = "";
-                                      }
-                                    })
-                                    .catch(error => {
-                                      console.error("Error fetching city details:", error);
-                                      alert("Unable to fetch details. Please try again later.");
-                                    });
-                                }
-                              });
-                            </script>
+// Fetch State and City based on Pin Code
+document.getElementById('pincode').addEventListener('input', function () {
+  const pincode = this.value.trim();
+
+  if (pincode.length === 6) {
+    fetch(`https://api.postalpincode.in/pincode/${pincode}`)
+      .then(response => response.json())
+      .then(data => {
+        if (data[0].Status === "Success") {
+          const postOffice = data[0].PostOffice[0];
+          document.getElementById('state').value = postOffice.State;
+          document.getElementById('city').value = postOffice.District;
+        } else {
+          Swal.fire({
+            icon: 'error',
+            title: 'Invalid Pincode',
+            text: 'Please try again with a valid pincode.',
+          });
+          document.getElementById('state').value = "";
+          document.getElementById('city').value = "";
+        }
+      })
+      .catch(error => {
+        console.error("Error fetching pincode details:", error);
+        Swal.fire({
+          icon: 'error',
+          title: 'Error',
+          text: 'Unable to fetch details. Please try again later.',
+        });
+      });
+  } else {
+    document.getElementById('state').value = "";
+    document.getElementById('city').value = "";
+  }
+});
+
+// Fetch Pin Code and State based on City Name
+document.getElementById('city').addEventListener('input', function () {
+  const city = this.value.trim();
+
+  if (city.length > 2) { // Start searching after at least 3 characters
+    fetch(`https://api.postalpincode.in/postoffice/${city}`)
+      .then(response => response.json())
+      .then(data => {
+        if (data[0].Status === "Success") {
+          const postOffice = data[0].PostOffice[0];
+          document.getElementById('state').value = postOffice.State;
+          document.getElementById('pincode').value = postOffice.Pincode;
+        } else {
+          Swal.fire({
+            icon: 'error',
+            title: 'City Not Found',
+            text: 'Please try again with a valid city name.',
+          });
+          document.getElementById('state').value = "";
+          document.getElementById('pincode').value = "";
+        }
+      })
+      .catch(error => {
+        console.error("Error fetching city details:", error);
+        Swal.fire({
+          icon: 'error',
+          title: 'Error',
+          text: 'Unable to fetch details. Please try again later.',
+        });
+      });
+  }
+});
+
+</script>
+<script>
+  $(document).on('submit', '#customerForm', function (e) {
+      e.preventDefault();
+      let formData = new FormData(this);
+
+      $.ajax({
+          url: "{{ route('customerstore') }}",
+          type: "POST",
+          data: formData,
+          contentType: false,
+          processData: false,
+          success: function (response) {
+              Swal.fire({
+                  title: 'Success!',
+                  text: response.message,
+                  icon: 'success',
+              }).then(() => {
+                  // Redirect to 'user/contractmanage' after the SweetAlert confirmation
+                  window.location.href = "/user/contractmanage";
+              });
+          },
+          error: function (xhr) {
+              let errorMessage = 'An error occurred while saving the data.';
+              
+              // Extract error message from server response if available
+              if (xhr.responseJSON && xhr.responseJSON.message) {
+                  errorMessage = xhr.responseJSON.message;
+              }
+              
+              Swal.fire({
+                  title: 'Error!',
+                  text: errorMessage,
+                  icon: 'error',
+              });
+          }
+      });
+  });
+</script>
+
+
+  
+
                           </div>
                         </div>
                       </div>
@@ -333,7 +450,7 @@
                             <th>Status</th>
                             <th>
                               <div class="sign_athh">
-                                Signing Authority
+                                Director Name
                                 <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
                                   <path d="M6.0626 5.99967C6.21934 5.55412 6.52871 5.17841 6.93591 4.9391C7.34311 4.69978 7.82187 4.6123 8.28739 4.69215C8.75291 4.772 9.17515 5.01402 9.47932 5.37536C9.7835 5.7367 9.94997 6.19402 9.94927 6.66634C9.94927 7.99967 7.94927 8.66634 7.94927 8.66634M8.0026 11.333H8.00927M14.6693 7.99967C14.6693 11.6816 11.6845 14.6663 8.0026 14.6663C4.32071 14.6663 1.33594 11.6816 1.33594 7.99967C1.33594 4.31778 4.32071 1.33301 8.0026 1.33301C11.6845 1.33301 14.6693 4.31778 14.6693 7.99967Z" stroke="#A4A7AE" stroke-width="1.33333" stroke-linecap="round" stroke-linejoin="round" />
                                 </svg>
@@ -344,15 +461,32 @@
                           </tr>
                         </thead>
                         <tbody>
-
+                        @foreach($customer as $cust)
                           <tr>
                             <td>
                               <div class="image_naess">
-                                <a href="{{url('/user/contractmanagedetail')}}">
+                                <a href="{{ url('/user/contractmanagedetail/' . $cust->id) }}">
                                   <div class="image_table">
-                                    <img src="../assets/images/jay_malhotra.png" alt="img">
+
+                                    <?php 
+                                        // Extract initials
+                                        $nameParts = explode(' ', $cust->lename);
+                                        $firstLetter = strtoupper(substr($nameParts[0], 0, 1)); // First letter of first name
+                                        $secondLetter = isset($nameParts[1]) ? strtoupper(substr($nameParts[1], 0, 1)) : ''; // First letter of last name (if exists)
+                                
+                                        // Path to the profile picture
+                                        $profilePicturePath = public_path($cust->profile_picture);
+                                
+                                        // Check if the profile picture exists
+                                        if ($cust->profile_picture === NULL || !file_exists($profilePicturePath)) {
+                                            echo '<h2>' . $firstLetter . $secondLetter . '</h2>';
+                                        } else {
+                                            echo '<img id="profile-image" src="' . asset('/' . $cust->profile_picture) . '" class="mtt" alt="Profile Image">';
+                                        }
+                                    ?>
+                                    
                                   </div>
-                                  <span>Orange XT LLP</span>
+                                  <span>{{$cust->lename}}</span>
                                 </a>
                               </div>
                             </td>
@@ -364,17 +498,45 @@
                             <td>
                               <div class="signing_ath">
                                 <div class="signing_ath_rpt">
-                                  <div class="image_table">
-                                    <img src="../assets/images/jay_malhotra.png" alt="img">
-                                  </div>
-                                  <span>Anurag Srivastava</span>
+                                  
+                                  <span>
+                                    {{ $cust->dname[0] ?? '' }}
+                                    @if(count($cust->dname) > 1)
+                                        <b class="count" style="cursor: pointer;">
+                                            +{{ count($cust->dname) - 1 }}
+                                        </b>
+                                        <div class="custom-tooltip">
+                                            {{ implode(', ', array_slice($cust->dname, 1)) }}
+                                        </div>
+                                    @endif
+                                </span>
+                                
+                                
+                                <script>
+document.addEventListener('DOMContentLoaded', function () {
+    document.querySelectorAll('.signing_ath_rpt .count').forEach(countElement => {
+        // Select the tooltip element that is next to the count element
+        const tooltip = countElement.nextElementSibling;
+
+        if (tooltip && tooltip.classList.contains('custom-tooltip')) {
+            // Show the tooltip on hover
+            countElement.addEventListener('mouseenter', () => {
+                tooltip.style.opacity = '1';
+                tooltip.style.visibility = 'visible';
+            });
+
+            // Hide the tooltip when not hovering
+            countElement.addEventListener('mouseleave', () => {
+                tooltip.style.opacity = '0';
+                tooltip.style.visibility = 'hidden';
+            });
+        }
+    });
+});
+
+                              </script>
                                 </div>
-                                <div class="signing_ath_rpt">
-                                  <div class="image_table">
-                                    <img src="../assets/images/jay_malhotra.png" alt="img">
-                                  </div>
-                                  <span>Devanshu Kumar</span>
-                                </div>
+                               
                               </div>
                             </td>
                             <td>
@@ -411,63 +573,7 @@
                             </td>
                           </tr>
 
-                          <tr>
-                            <td>
-                              <div class="image_naess">
-                                <a href="#">
-                                  <div class="image_table">
-                                    <img src="../assets/images/jay_malhotra.png" alt="img">
-                                  </div>
-                                  <span>Orange XT LLP</span>
-                                </a>
-                              </div>
-                            </td>
-                            <td>
-                              <div class="user_status">
-                                <span class="active">Active</span>
-                              </div>
-                            </td>
-                            <td>
-                              <div class="signing_ath">
-                                <div class="signing_ath_rpt">
-                                  <div class="image_table">
-                                    <img src="../assets/images/jay_malhotra.png" alt="img">
-                                  </div>
-                                  <span>Anurag Srivastava</span>
-                                </div>
-                                <div class="signing_ath_rpt">
-                                  <div class="image_table">
-                                    <img src="../assets/images/jay_malhotra.png" alt="img">
-                                  </div>
-                                  <span>Devanshu Kumar</span>
-                                </div>
-                              </div>
-                            </td>
-                            <td>
-                              <div class="divisn_only">
-                                <span>Tech</span>
-                                <span>Legal</span>
-                                <span>Marketing</span>
-                                <span>Finance</span>
-                                <span>HR</span>
-                                <span class="count_divison"></span>
-                              </div>
-                            </td>
-                            <td>
-                              <div class="edit_options">
-                                <button class="delet_opton" type="button">
-                                  <svg width="18" height="20" viewBox="0 0 18 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                    <path d="M12.3333 5.00033V4.33366C12.3333 3.40024 12.3333 2.93353 12.1517 2.57701C11.9919 2.2634 11.7369 2.00844 11.4233 1.84865C11.0668 1.66699 10.6001 1.66699 9.66667 1.66699H8.33333C7.39991 1.66699 6.9332 1.66699 6.57668 1.84865C6.26308 2.00844 6.00811 2.2634 5.84832 2.57701C5.66667 2.93353 5.66667 3.40024 5.66667 4.33366V5.00033M7.33333 9.58366V13.7503M10.6667 9.58366V13.7503M1.5 5.00033H16.5M14.8333 5.00033V14.3337C14.8333 15.7338 14.8333 16.4339 14.5608 16.9686C14.3212 17.439 13.9387 17.8215 13.4683 18.0612C12.9335 18.3337 12.2335 18.3337 10.8333 18.3337H7.16667C5.76654 18.3337 5.06647 18.3337 4.53169 18.0612C4.06129 17.8215 3.67883 17.439 3.43915 16.9686C3.16667 16.4339 3.16667 15.7338 3.16667 14.3337V5.00033" stroke="#535862" stroke-width="1.66667" stroke-linecap="round" stroke-linejoin="round" />
-                                  </svg>
-                                </button>
-                                <button class="edit_opton" type="button">
-                                  <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                    <path d="M2.3993 15.0963C2.43759 14.7517 2.45673 14.5794 2.50887 14.4184C2.55512 14.2755 2.62046 14.1396 2.70314 14.0142C2.79632 13.8729 2.91889 13.7503 3.16404 13.5052L14.1693 2.49992C15.0898 1.57945 16.5822 1.57945 17.5026 2.49993C18.4231 3.4204 18.4231 4.91279 17.5026 5.83326L6.49738 16.8385C6.25222 17.0836 6.12965 17.2062 5.98834 17.2994C5.86298 17.3821 5.72701 17.4474 5.58414 17.4937C5.42311 17.5458 5.25082 17.5649 4.90624 17.6032L2.08594 17.9166L2.3993 15.0963Z" stroke="#535862" stroke-width="1.66667" stroke-linecap="round" stroke-linejoin="round" />
-                                  </svg>
-                                </button>
-                              </div>
-                            </td>
-                          </tr>
+                         @endforeach
 
                         </tbody>
                       </table>
