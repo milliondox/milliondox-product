@@ -273,6 +273,7 @@ Route::post('/HandleCommonUploadFiles', [App\Http\Controllers\HomeController::cl
 Route::post('/PreHandleCommonUploadFiles', [App\Http\Controllers\HomeController::class, 'PreHandleCommonUploadFiles'])->name('PreHandleCommonUploadFiles');
 Route::post('/PreBankHandleCommonUploadFiles', [App\Http\Controllers\HomeController::class, 'PreBankHandleCommonUploadFiles'])->name('PreBankHandleCommonUploadFiles');
 
+
 Route::get('/fetchfixedFiles', [App\Http\Controllers\HomeController::class, 'fetchfixedFiles'])->name('fetchfixedFiles');
 
 Route::get('/updateTempfilesName', [App\Http\Controllers\HomeController::class, 'updateTempfilesName'])->name('updateTempfilesName');
