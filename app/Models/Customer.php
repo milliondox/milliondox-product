@@ -27,4 +27,8 @@ class Customer extends Model
     protected $casts = [
         'dname' => 'array',
     ];
+    public function customerContracts()
+{
+    return $this->hasMany(CustomerContract::class, 'customer_id');
+}
 }
