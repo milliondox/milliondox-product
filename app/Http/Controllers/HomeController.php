@@ -19713,19 +19713,52 @@ public function tickting()
     }
 
     public function contractmanage()
-    {
-        $customercount = Customer::where('customer_created_by', auth()->id())->count();
-        $customer = Customer::where('customer_created_by', auth()->id())->get();
-        
-        $divisions = Customer::where('customer_created_by', auth()->id())
-    ->join('customercontracttb', 'customertb.id', '=', 'customercontracttb.customer_id')
-    ->distinct()
-    ->pluck('customercontracttb.division');
-        // dd($divisions);
-        $cli_announcements = Announcement::where('role', 'Client')->latest()->get();
-        $user = auth()->user();
-       return view('user.Contract-Management.contract-manage',compact('cli_announcements','user','customer','customercount','divisions'));
+{
+    $customercount = Customer::where('customer_created_by', auth()->id())->count();
+    $customer = Customer::where('customer_created_by', auth()->id())->get();
+
+    // Get the customer contracts related to the authenticated user and group them by customer_id
+    $contracts = Customer::where('customer_created_by', auth()->id())
+        ->join('customercontracttb', 'customertb.id', '=', 'customercontracttb.customer_id')
+        ->distinct()
+        ->get(['customertb.id as customer_id', 'customercontracttb.startend'])
+        ->groupBy('customer_id'); // Group by customer_id to get all contracts for each customer
+
+    // Iterate through each customer and check their contract status
+    foreach ($customer as $cust) {
+        $status = 'Inactive'; // Default status is Inactive
+
+        // Check if the customer has a matching contract
+        if ($contracts->has($cust->id)) {
+            $status = 'Inactive'; // Reset to Inactive by default
+
+            // Get all startend dates for the customer (an array of contract startend dates)
+            $customerContracts = $contracts[$cust->id]; // Get all contract end dates for this customer
+
+            // Compare contract dates
+            foreach ($customerContracts as $contract) {
+                $contractEndDate = Carbon::parse($contract->startend); // Parse the startend date
+                $today = Carbon::today(); // Today's date
+
+                // If any contract's end date is greater than or equal to today, set the status to Active
+                if ($contractEndDate->greaterThanOrEqualTo($today)) {
+                    $status = 'Active';
+                    break; // Exit the loop if at least one contract is active
+                }
+            }
+        }
+
+        // Set the status for the current customer
+        $cust->status = $status;
     }
+
+    $cli_announcements = Announcement::where('role', 'Client')->latest()->get();
+    $user = auth()->user();
+
+    return view('user.Contract-Management.contract-manage', compact('cli_announcements', 'user', 'customer', 'customercount', 'contracts', 'status'));
+}
+
+    
 
     public function contractmanagedetail($id)
     {
@@ -19735,12 +19768,26 @@ public function tickting()
 
         $customercontract = CustomerContract::where('customer_id', $id)->get();
         $divisions = $customerrecord->customerContracts->pluck('division')->unique();
-        // dd($customercontract);
 
-        // dd($divisions);
+        $today = \Carbon\Carbon::today();
+    $hasActive = false;
+
+    foreach ($customercontract as $contract) {
+        $contractEndDate = \Carbon\Carbon::parse($contract->startend);
+        $contract->status = $contractEndDate->greaterThanOrEqualTo($today) ? 'Active' : 'Expire';
+
+        // Check if at least one contract is active
+        if ($contract->status === 'Active') {
+            $hasActive = true;
+            break; // No need to check further if one is active
+        }
+    }
+
+    // Determine overall status
+    $overallStatus = $hasActive ? 'Active' : 'Expire';
 
        
-       return view('user.Contract-Management.contract-manage-detail',compact('cli_announcements','user','customerrecord','customercontract','divisions'));
+       return view('user.Contract-Management.contract-manage-detail',compact('cli_announcements','user','customerrecord','customercontract','divisions','overallStatus'));
     }
 
     public function Sop()

@@ -170,7 +170,9 @@
                                     </div>
                                     <div class="customer_status cmn_authh">
                                         <h2>Customer Status</h2>
-                                        <span class="active">Active</span>
+                                      
+                                        <span class="{{ strtolower($overallStatus) }}">{{ $overallStatus }}</span>
+                                       
                                     </div>
                                     <div class="divisions_associated cmn_authh">
                                         <h2>Divisions Associated</h2>
