@@ -492,7 +492,11 @@ document.getElementById('city').addEventListener('input', function () {
                             </td>
                             <td>
                               <div class="user_status">
-                                <span class="active">Active</span>
+                                @if($cust->status == 'Active')
+          <span class="active">Active</span>
+        @else
+          <span class="inactive">Inactive</span>
+        @endif
                               </div>
                             </td>
                             <td>
