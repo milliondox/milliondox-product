@@ -540,20 +540,20 @@ document.addEventListener('DOMContentLoaded', function () {
                               </div>
                             </td>
                             <td>
+                              @if($cust->customerContracts->isEmpty())
+                              <span class="no-contract-message">
+                                <svg width="15" height="15" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                  <path d="M7.0277 8.93L6.9077 4H8.0477L7.9277 8.93H7.0277ZM7.5077 11.06C7.30103 11.06 7.13103 10.9967 6.9977 10.87C6.87103 10.7367 6.8077 10.58 6.8077 10.4C6.8077 10.2133 6.87103 10.0567 6.9977 9.93C7.13103 9.79667 7.30103 9.73 7.5077 9.73C7.70103 9.73 7.86103 9.79667 7.9877 9.93C8.12103 10.0567 8.1877 10.2133 8.1877 10.4C8.1877 10.58 8.12103 10.7367 7.9877 10.87C7.86103 10.9967 7.70103 11.06 7.5077 11.06Z" fill="#9d9d9d"></path>
+                                  <circle cx="7.5" cy="7.5" r="7" stroke="#9d9d9d"></circle>
+                                </svg>  No contract created yet
+                              </span>
+                            @else
                               <div class="divisn_only">
-                                <span>Tech</span>
-                                <span>Legal</span>
-                                <span>Marketing</span>
-                                <span>Finance</span>
-                                <span>HR</span>
-                                <span>Finance</span>
-                                <span>HR</span>
-                                <span>Finance</span>
-                                <span>HR</span>
-                                <span>Finance</span>
-                                <span>HR</span>
-                                <span>Finance</span>
-                                <span>HR</span>
+                               
+                                @foreach($cust->customerContracts as $contract)
+                                  <span>{{ $contract->division }}</span>
+                                @endforeach
+                              @endif
                                 <span class="count_divison"></span>
                               </div>
                             </td>

@@ -168,6 +168,8 @@ Route::get('/fetch-hrempoff4-file-data', [App\Http\Controllers\HomeController::c
 
 Route::post('/customerstore', [App\Http\Controllers\HomeController::class, 'customerstore'])->name('customerstore');
 
+Route::post('/storecustomercontract', [App\Http\Controllers\HomeController::class, 'storecustomercontract'])->name('storecustomercontract');
+
 // Save folder ID and URL to the session
 Route::post('/save-breadcrumb', [App\Http\Controllers\HomeController::class, 'saveBreadcrumb'])->name('save.breadcrumb');
 
