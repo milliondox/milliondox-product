@@ -22895,6 +22895,19 @@ span.clinet_name {
     gap: 0px 15px;
 }
 
+.contract_manage_new .no-contract-message {
+    display: flex;
+    align-items: center;
+    gap: 0px 5px;
+    color: #9d9d9d;
+}
+
+.contract_manage_new .no-contract-message svg {
+    width: 14px;
+    height: 14px;
+}
+
+
 .contract_manage_new .entery_body tbody .image_naess .image_table {
     position: relative;
     width: 40px;
@@ -22996,6 +23009,13 @@ span.clinet_name {
     overflow: hidden;
 }
 
+.contract_manage_new .entery_body tbody .signing_ath .signing_ath_rpt .count {
+    font-weight: 500;
+    text-shadow: 0 0 black;
+    text-decoration: underline;
+    margin: 0px 0px 0px 1px;
+}
+
 .contract_manage_new .entery_body tbody .signing_ath .signing_ath_rpt .image_table img {
     position: absolute;
     width: 100%;
@@ -23037,9 +23057,10 @@ span.clinet_name {
 }
 
 .contract_manage_new .entery_body tbody .divisn_only {
-    display: flex;
+    display: inline-flex;
     align-items: center;
     gap: 0px 5px;
+    position: relative;
 }
 
 .contract_manage_new .entery_body tbody .divisn_only span {
@@ -23070,6 +23091,34 @@ span.clinet_name {
     align-items: center;
 }
 
+
+.divisn_only .custom-tooltip {
+    position: absolute;
+    bottom: 125%;
+    right: 0;
+    background-color: #707172;
+    color: #ffffff;
+    padding: 8px 12px;
+    border-radius: 4px;
+    font-size: 12px;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+    z-index: 1000;
+    width: 200px;
+}
+
+.divisn_only .custom-tooltip::after {
+    content: "";
+    position: absolute;
+    top: 100%;
+    right: 8px;
+    border-width: 5px;
+    border-style: solid;
+    border-color: #707172 transparent transparent transparent;
+}
+
 .contract_manage_new .entery_body tbody .edit_options button.delet_opton svg {
     width: 22px;
     height: 22px;
@@ -23090,6 +23139,7 @@ span.clinet_name {
     background: #fafafa;
     border: 1px solid #e9eaeb;
     color: #414651;
+    cursor: pointer;
 }
 
 .contract_manage_new div.dataTables_wrapper div.dataTables_paginate {
@@ -23133,7 +23183,29 @@ span.clinet_name {
     border: 0 !important;
 }
 
+.contract_manage_new .entery_body tbody tr {
+    transition: all .25s ease-out;
+}
+.contract_manage_new .entery_body tbody tr:hover {
+    background: aliceblue;
+}
+
+.contract_uploadd .entery_body tbody tr {
+    transition: all .25s ease-out;
+}
+.contract_uploadd .entery_body tbody tr:hover {
+    background: aliceblue;
+}
+
 /*dark mode css start*/
+.dark-only .contract_manage_new .entery_body tbody tr:hover {
+    background: #312f2f;
+}
+.dark-only .contract_uploadd .entery_body tbody tr:hover {
+    background: #312f2f;
+}
+
+
 .dark-only .contract_manage_new .entery_body thead th {
     background: #333942;
 }

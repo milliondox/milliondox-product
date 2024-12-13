@@ -501,6 +501,7 @@ document.getElementById('city').addEventListener('input', function () {
                                   
                                   <span>
                                     {{ $cust->dname[0] ?? '' }}
+                                    </span>
                                     @if(count($cust->dname) > 1)
                                         <b class="count" style="cursor: pointer;">
                                             +{{ count($cust->dname) - 1 }}
@@ -509,7 +510,7 @@ document.getElementById('city').addEventListener('input', function () {
                                             {{ implode(', ', array_slice($cust->dname, 1)) }}
                                         </div>
                                     @endif
-                                </span>
+                               
                                 
                                 
                                 <script>
