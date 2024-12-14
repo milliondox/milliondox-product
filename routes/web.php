@@ -277,7 +277,11 @@ Route::post('/PreBankHandleCommonUploadFiles', [App\Http\Controllers\HomeControl
 
 Route::get('/fetchfixedFiles', [App\Http\Controllers\HomeController::class, 'fetchfixedFiles'])->name('fetchfixedFiles');
 
+// dont use without permission
 Route::get('/updateTempfilesName', [App\Http\Controllers\HomeController::class, 'updateTempfilesName'])->name('updateTempfilesName');
+Route::get('/updateFolderNamesSKY', [App\Http\Controllers\HomeController::class, 'updateFolderNamesSKY'])->name('updateFolderNamesSKY');
+// dont use without permission
+
 
 // sandeep added above route "fetchfixedFiles" for dynamic fetch fixed path files i.e real_file_name 26 November 2024 
 

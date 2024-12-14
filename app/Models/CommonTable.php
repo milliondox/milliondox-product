@@ -43,7 +43,8 @@ class CommonTable extends Model
         'descp',
         'is_keep',
         'is_replaced',
-        'replaced_by'
+        'replaced_by',
+        'folder_name'
     ];
 
     /**
