@@ -25910,6 +25910,12 @@ public function uploadFile(Request $request)
         
         $exists = [];
         $do_not_exists = [];
+        $folderPaths = $request->input('parent_folder');
+
+        // If 'parent_folder' is null, check for 'decodedFolder' in the request
+        if ($folderPaths === null) {
+            $folderPaths = $request->input('decodedFolder');
+        }
         foreach ($request->file('files') as $file) {
 
             $fileExists = CommonTable::where('file_name', $file->getClientOriginalName())
@@ -25918,7 +25924,7 @@ public function uploadFile(Request $request)
             ->where('fyear', $request->input('fyear'))
             ->where('month', $request->input('Month'))
             ->whereNull('real_file_name')
-            ->where('location', $request->input('parent_folder'))
+            ->where('location', $folderPaths)
             ->exists();
             
 
@@ -25965,6 +25971,12 @@ public function HandleCommonUploadFiles(Request $request)
         // Check if folder path is provided
         $folderPath = $request->input('parent_folder');
         $folderPaths = $request->input('parent_folder');
+
+        // If 'parent_folder' is null, check for 'decodedFolder' in the request
+        if ($folderPaths === null) {
+            $folderPaths = $request->input('decodedFolder');
+        }
+
 
         $folderPaths2 = $folderPaths;
         $folderName = substr($folderPaths2, strrpos($folderPaths2, '/') + 1);
@@ -26036,7 +26048,7 @@ public function HandleCommonUploadFiles(Request $request)
                                     $originalFileName = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME); // Get the file name without extension
                                     $extension = $file->getClientOriginalExtension(); // Get the file extension
                                     $fileName = $originalFileName . '.' . $extension; // Start with the original file name
-                                    $filePath = $file->store($folderPath);
+                                    $filePath = $file->store($folderPaths);
                                     $storedFileName = basename($filePath);  
 
                                     $newEntry = CommonTable::create([
@@ -26117,6 +26129,11 @@ public function HandleCommonUploadFiles(Request $request)
         // Check if folder path is provided
         $folderPath = $request->input('parent_folder');
         $folderPaths = $request->input('parent_folder');
+
+        // If 'parent_folder' is null, check for 'decodedFolder' in the request
+        if ($folderPaths === null) {
+            $folderPaths = $request->input('decodedFolder');
+        }
 
         $folderPaths2 = $folderPaths;
         $folderName = substr($folderPaths2, strrpos($folderPaths2, '/') + 1);
@@ -26200,7 +26217,7 @@ public function HandleCommonUploadFiles(Request $request)
                         // $originalFileName = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME); // Get the file name without extension
                         // $extension = $file->getClientOriginalExtension(); // Get the file extension
                         // $fileName = $originalFileName . '.' . $extension; // Start with the original file name
-                        $filePath = $file->store($folderPath);
+                        $filePath = $file->store($folderPaths);
                         $storedFileName = basename($filePath);  
                 
                         // Save the file with the updated unique name
@@ -26267,6 +26284,12 @@ public function HandleCommonUploadFiles(Request $request)
         $folderPath = $request->input('parent_folder');
         $folderPaths = $request->input('parent_folder');
         // dd($folderPath);
+        // If 'parent_folder' is null, check for 'decodedFolder' in the request
+        if ($folderPaths === null) {
+            $folderPaths = $request->input('decodedFolder');
+        }
+
+
         $folderPaths2 = $folderPaths;
         $folderName = substr($folderPaths2, strrpos($folderPaths2, '/') + 1);
         $folderName = trim($folderName);
@@ -26300,6 +26323,8 @@ public function HandleCommonUploadFiles(Request $request)
                 // Merge with default tags
                 $tag_list = array_merge($tag_list, $userTags);
                 $tags = empty($tag_list) ? NULL : json_encode($tag_list);
+
+                
     
                 // Process each file
                 foreach ($request->file('newfiles') as $file) {
@@ -26313,7 +26338,7 @@ public function HandleCommonUploadFiles(Request $request)
                         $originalFileName = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME); // Get the file name without extension
                         $extension = $file->getClientOriginalExtension(); // Get the file extension
                         $fileName = $originalFileName . '.' . $extension; // Start with the original file name
-                        $filePath = $file->store($folderPath);
+                        $filePath = $file->store($folderPaths);
                         $storedFileName = basename($filePath);  
 
     

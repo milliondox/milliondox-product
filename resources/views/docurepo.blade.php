@@ -7629,8 +7629,36 @@
 
                                                                             isUploading = true; // Set flag to true when upload starts
 
+                                                                            console.log("I am working here for location start");
+                                                                            let parentFolderValue = $('#parent-folder').val();
+                                                                            console.log(parentFolderValue);
+
+                                                                            if (parentFolderValue === undefined || parentFolderValue === null || parentFolderValue === "") {
+                                                                                // Fetch the URL query parameters
+                                                                                const urlParams = new URLSearchParams(window.location.search);
+
+                                                                                // Get the 'folder' parameter
+                                                                                let folderQuery = urlParams.get('folder');
+
+                                                                                if (folderQuery) {
+                                                                                    // Decode the folder query parameter twice
+                                                                                    var decodedFolder = decodeURIComponent(decodeURIComponent(folderQuery));
+                                                                                    console.log("Fetched and decoded folder from URL:", decodedFolder);
+
+                                                                                    // Do something with the decoded folder value (e.g., set it in a hidden input field)
+                                                                                    $('#parent-folder').val(decodedFolder);
+                                                                                } else {
+                                                                                    console.log("No folder query parameter found in the URL.");
+                                                                                }
+
+                                                                                // formData.append('decodedFolder', decodedFolder);
+
+                                                                            }
+
                                                                             // Create a FormData object
                                                                             var formData = new FormData(this);
+                                                                            formData.append('decodedFolder', decodedFolder);
+
                                                                             var formInputs = $(this).serializeArray();
 
                                                                             // Optional: Add a loader or disable the submit button while uploading
@@ -7694,8 +7722,37 @@
                                                                                                         formData.append(input.name, input.value); // Append each field to the FormData
                                                                                                     });
 
+                                                                                                    console.log("I am working here for location start");
+                                                                                                    let parentFolderValue = $('#parent-folder').val();
+                                                                                                    console.log(parentFolderValue);
+
+                                                                                                    if (parentFolderValue === undefined || parentFolderValue === null || parentFolderValue === "") {
+                                                                                                        // Fetch the URL query parameters
+                                                                                                        const urlParams = new URLSearchParams(window.location.search);
+
+                                                                                                        // Get the 'folder' parameter
+                                                                                                        let folderQuery = urlParams.get('folder');
+
+                                                                                                        if (folderQuery) {
+                                                                                                            // Decode the folder query parameter twice
+                                                                                                            var decodedFolder = decodeURIComponent(decodeURIComponent(folderQuery));
+                                                                                                            console.log("Fetched and decoded folder from URL:", decodedFolder);
+
+                                                                                                            // Do something with the decoded folder value (e.g., set it in a hidden input field)
+                                                                                                            $('#parent-folder').val(decodedFolder);
+                                                                                                        } else {
+                                                                                                            console.log("No folder query parameter found in the URL.");
+                                                                                                        }
+
+                                                                                                        // formData.append('decodedFolder', decodedFolder);
+
+                                                                                                    }
+
                                                                                                     formData.append('newfiles[]', file); // Append only files that do not exist
                                                                                                     formData.append('upload', true);
+                                                                                                    formData.append('decodedFolder', decodedFolder);
+
+
 
 
                                                                                                     let currentFileIndex = getSecureRandomString(16); // Generate unique index for the file
@@ -7893,9 +7950,36 @@
                                                                                                                 formData.append(input.name, input.value); // Append each field to the FormData
                                                                                                             });
 
+                                                                                                            console.log("I am working here for location start");
+                                                                                                            let parentFolderValue = $('#parent-folder').val();
+                                                                                                            console.log(parentFolderValue);
+
+                                                                                                            if (parentFolderValue === undefined || parentFolderValue === null || parentFolderValue === "") {
+                                                                                                                // Fetch the URL query parameters
+                                                                                                                const urlParams = new URLSearchParams(window.location.search);
+
+                                                                                                                // Get the 'folder' parameter
+                                                                                                                let folderQuery = urlParams.get('folder');
+
+                                                                                                                if (folderQuery) {
+                                                                                                                    // Decode the folder query parameter twice
+                                                                                                                    var decodedFolder = decodeURIComponent(decodeURIComponent(folderQuery));
+                                                                                                                    console.log("Fetched and decoded folder from URL:", decodedFolder);
+
+                                                                                                                    // Do something with the decoded folder value (e.g., set it in a hidden input field)
+                                                                                                                    $('#parent-folder').val(decodedFolder);
+                                                                                                                } else {
+                                                                                                                    console.log("No folder query parameter found in the URL.");
+                                                                                                                }
+                                                                                                                
+
+                                                                                                            }
+
                                                                                                             formData.append("newfiles2[]", file); // Append only files that do not exist
 
                                                                                                             formData.append('replace', true);
+                                                                                                            formData.append('decodedFolder', decodedFolder);
+
 
                                                                                                             isUploading = true; // Set flag to true when upload starts
 
@@ -8062,10 +8146,37 @@
                                                                                                                 formData.append(input.name, input.value); // Append each field to the FormData
                                                                                                             });
 
+                                                                                                            console.log("I am working here for location start");
+                                                                                                            let parentFolderValue = $('#parent-folder').val();
+                                                                                                            console.log(parentFolderValue);
+
+                                                                                                            if (parentFolderValue === undefined || parentFolderValue === null || parentFolderValue === "") {
+                                                                                                                // Fetch the URL query parameters
+                                                                                                                const urlParams = new URLSearchParams(window.location.search);
+
+                                                                                                                // Get the 'folder' parameter
+                                                                                                                let folderQuery = urlParams.get('folder');
+
+                                                                                                                if (folderQuery) {
+                                                                                                                    // Decode the folder query parameter twice
+                                                                                                                    var decodedFolder = decodeURIComponent(decodeURIComponent(folderQuery));
+                                                                                                                    console.log("Fetched and decoded folder from URL:", decodedFolder);
+
+                                                                                                                    // Do something with the decoded folder value (e.g., set it in a hidden input field)
+                                                                                                                    $('#parent-folder').val(decodedFolder);
+                                                                                                                } else {
+                                                                                                                    console.log("No folder query parameter found in the URL.");
+                                                                                                                }
+                                                                                                                
+
+                                                                                                            }
+
 
                                                                                                             formData.append('newfiles3[]', file); // Append only files that do not exist
                                                                                                             // Add a custom variable to indicate replacement
                                                                                                             formData.append('keep', true);
+                                                                                                            formData.append('decodedFolder', decodedFolder);
+
 
 
                                                                                                             isUploading = true; // Set flag to true when upload starts
