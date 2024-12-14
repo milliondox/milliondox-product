@@ -19785,7 +19785,7 @@ public function tickting()
     $cli_announcements = Announcement::where('role', 'Client')->latest()->get();
     $user = auth()->user();
 
-    return view('user.Contract-Management.contract-manage', compact('cli_announcements', 'user', 'customer', 'customercount', 'contracts', 'status'));
+    return view('user.Contract-Management.contract-manage', compact('cli_announcements', 'user', 'customer', 'customercount', 'contracts'));
 }
 
     
@@ -28896,55 +28896,93 @@ dd($e->getMessage());
 
 public function storecustomercontract(Request $request)
 {
-    $request->validate([
-        'file' => 'required|mimes:pdf,doc,docx|max:20048',
-        'contract_name' => 'required|string',
-        'contracttype' => 'required|string',
-        'contract_type' => 'required|string',
-        'divison' => 'required|string',
-        'vendor_name' => 'required|string',
-        'legal_entity_status' => 'required|string',
-        'startdate' => 'required|date',
-        'startend' => 'required|date',
-        'contract_value' => 'required|numeric',
-        'signing_status' => 'required|string',
-        'renewal_terms' => 'required|string',
-        'payment_terms' => 'required|string',
-        'fee_escalation_clause' => 'required|string',
-        'customer_id' => 'required|exists:customertb,id',
-    ]);
+    // Validate the request data
+    if ($request->is_drafted != 1) { // Skip validation if saving as draft
+        $request->validate([
+            'file' => 'required|mimes:pdf,doc,docx|max:20048',
+            'contract_name' => 'required|string',
+            'contracttype' => 'required|string',
+            'contract_type' => 'required|string',
+            'divison' => 'required|string',
+            'vendor_name' => 'required|string',
+            'legal_entity_status' => 'required|string',
+            'startdate' => 'required|date',
+            'startend' => 'required|date',
+            'contract_value' => 'required|numeric',
+            'signing_status' => 'required|string',
+            'renewal_terms' => 'required|string',
+            'payment_terms' => 'required|string',
+            'fee_escalation_clause' => 'required|string',
+            'customer_id' => 'required|exists:customertb,id',
+        ]);
+    }
 
-    // Handle file upload
-    $file = $request->file('file');
-    $filePath = $file->store('contracts', 'public');
-    $fileName = $file->getClientOriginalName();
-    $fileSize = round($file->getSize() / 1024, 2); // Size in KB
+    // Handle file upload (if provided)
+    $filePath = null;
+    $fileName = null;
+    $fileSize = null;
 
-    // Save data to the database
-    CustomerContract::create([
-        'file_name' => $fileName,
-        'file_path' => $filePath,
-        'file_size' => $fileSize, // Size in KB or MB
-        'contract_name' => $request->contract_name,
-        'contracttype' => $request->contracttype,
-        'contract_type' => $request->contract_type,
-        'division' => $request->divison,
-        'vendor_name' => $request->vendor_name,
-        'legal_entity_status' => $request->legal_entity_status,
-        'startdate' => $request->startdate,
-        'startend' => $request->startend,
-        'contract_value' => $request->contract_value,
-        'signing_status' => $request->signing_status,
-        'renewal_terms' => $request->renewal_terms,
-        'payment_terms' => $request->payment_terms,
-        'fee_escalation_clause' => $request->fee_escalation_clause,
-        'customer_id' => $request->customer_id,
-    ]);
+    if ($request->hasFile('file')) {
+        $file = $request->file('file');
+        $filePath = $file->store('contracts', 'public');
+        $fileName = $file->getClientOriginalName();
+        $fileSize = round($file->getSize() / 1024, 2); // Size in KB
+    }
+
+    // Save or update the customer contract
+    CustomerContract::updateOrCreate(
+        ['id' => $request->id], // Update if the record exists
+        [
+            'file_name' => $fileName,
+            'file_path' => $filePath,
+            'file_size' => $fileSize,
+            'contract_name' => $request->contract_name,
+            'contracttype' => $request->contracttype,
+            'contract_type' => $request->contract_type,
+            'division' => $request->divison,
+            'vendor_name' => $request->vendor_name,
+            'legal_entity_status' => $request->legal_entity_status,
+            'startdate' => $request->startdate,
+            'startend' => $request->startend,
+            'contract_value' => $request->contract_value,
+            'signing_status' => $request->signing_status,
+            'renewal_terms' => $request->renewal_terms,
+            'payment_terms' => $request->payment_terms,
+            'fee_escalation_clause' => $request->fee_escalation_clause,
+            'customer_id' => $request->customer_id,
+            'is_drafted' => $request->is_drafted ?? 0, // Set draft status
+        ]
+    );
 
     // Redirect back with a success message
-    return redirect()->back()->with('success', 'Customer contract saved successfully!');
+    $message = $request->is_drafted == 1
+        ? 'Customer contract saved as draft!'
+        : 'Customer contract submitted successfully!';
+    return redirect()->back()->with('success', $message);
 }
 
+
+public function downloadContracts(Request $request)
+{
+    $ids = $request->input('ids');
+    $contracts = CustomerContract::whereIn('id', $ids)->get();
+
+    // Generate a ZIP file or handle the download logic
+    $zip = new \ZipArchive();
+    $zipFileName = 'contracts.zip';
+    $zip->open(public_path($zipFileName), \ZipArchive::CREATE);
+
+    foreach ($contracts as $contract) {
+        $filePath = storage_path('app/contracts/' . $contract->file_name);
+        if (file_exists($filePath)) {
+            $zip->addFile($filePath, $contract->file_name);
+        }
+    }
+
+    $zip->close();
+
+    return response()->download(public_path($zipFileName))->deleteFileAfterSend(true);
+}
 
  
 

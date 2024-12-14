@@ -29,5 +29,6 @@ class CustomerContract extends Model
         'payment_terms',
         'fee_escalation_clause',
         'customer_id',
+        'is_drafted',
     ];
 }

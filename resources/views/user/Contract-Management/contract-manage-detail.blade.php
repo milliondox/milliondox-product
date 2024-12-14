@@ -261,7 +261,43 @@
                             </div>
                             
                         </div>
-
+                        <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+                        <script>
+                            $(document).ready(function () {
+                                // Function to check if any checkbox is checked
+                                function toggleDownloadButton() {
+                                    if ($('.sleect_all:checked, .sleect_individual:checked').length > 0) {
+                                        $('.download').show(); // Show the download button
+                                    } else {
+                                        $('.download').hide(); // Hide the download button
+                                    }
+                                }
+                            
+                                // Function to append "checked" to the value of selected inputs
+                                function updateCheckedValues() {
+                                    $('.sleect_all, .sleect_individual').each(function () {
+                                        if ($(this).is(':checked')) {
+                                            $(this).val($(this).val().replace(' checked', '') + ' checked'); // Append "checked"
+                                        } else {
+                                            $(this).val($(this).val().replace(' checked', '')); // Remove "checked"
+                                        }
+                                    });
+                                }
+                            
+                                // Event listener for changes in checkboxes
+                                $(document).on('change', '.sleect_all, .sleect_individual', function () {
+                                    toggleDownloadButton();
+                                    updateCheckedValues();
+                                });
+                            
+                                // Optional: Select all functionality for .sleect_all
+                                $('.sleect_all').on('change', function () {
+                                    $('.sleect_individual').prop('checked', $(this).prop('checked'));
+                                    toggleDownloadButton();
+                                    updateCheckedValues();
+                                });
+                            });
+                            </script>
                         <div class="col-md-8">
                             <div class="contract_uploadd">
                                 <div class="contract_up_head">
@@ -269,7 +305,7 @@
                                         <h2>Contracts uploaded</h2>
                                     </div>
                                     <div class="right_btn_contt">
-                                        <button type="button" class="download">Download</button>
+                                        <button type="button" id="downloadBtn" class="download" style="display: none;">Download</button>
                                         <button type="button" class="opload" data-bs-toggle="modal" data-bs-target="#add_contract1">
                                             <svg width="20" height="18" viewBox="0 0 20 18" fill="none" xmlns="http://www.w3.org/2000/svg">
                                                 <path d="M6.66406 12.3333L9.9974 9M9.9974 9L13.3307 12.3333M9.9974 9V16.5M16.6641 12.9524C17.682 12.1117 18.3307 10.8399 18.3307 9.41667C18.3307 6.88536 16.2787 4.83333 13.7474 4.83333C13.5653 4.83333 13.3949 4.73833 13.3025 4.58145C12.2158 2.73736 10.2094 1.5 7.91406 1.5C4.46228 1.5 1.66406 4.29822 1.66406 7.75C1.66406 9.47175 2.36027 11.0309 3.48652 12.1613" stroke="white" stroke-width="1.66667" stroke-linecap="round" stroke-linejoin="round" />
@@ -297,12 +333,12 @@
                                         <h3>upload contract</h3>
 
 
-                                        <form id="customercontractForm" action="{{ route('storecustomercontract') }}" method="POST" enctype="multipart/form-data" class="upload-form rers_pages_hide"> 
+                                        <form id="customerContractForm" action="{{ route('storecustomercontract') }}" method="POST" enctype="multipart/form-data" class="upload-form rers_pages_hide"> 
                                             @csrf
                                             
                                             <div class="rers_pages">
                                             <div class="page page1">
-                                                                                
+                                                <input type="hidden" name="is_drafted" id="is_drafted" value="0">                              
                                         <div class="file-area">      
                                         <input type="file" class="dragfile" id="contractfile" name="file" accept=".pdf,.doc,.docx" required>    
 
@@ -353,7 +389,7 @@
                                         </div>
 
                                         <div class="gropu_form">
-                                        <label for="Division">Division</label>
+                                        <label for="Division">Division<span class="red_star">*</span></label>
                                         <select id="divison" name="divison" required>
                                         <option value="" disabled Selected>select</option>
                                         <option value="Human Resources">Human Resources</option>
@@ -462,13 +498,47 @@
                                         <div class="wrpa_bbtn">
                                         
 
-                                        <div class="root_btn">                        
+                                        <div class="root_btn"> 
+                                            <button type="button" id="draftButton">Save as Draft</button>                       
                                         <button class="btn btn-primary" id="submitButton" style="border-radius:5px;" type="submit">Upload</button>
                                         </div>
                                         </div>
 
                                                 </form>
-                                         
+                                                
+                                         <script>
+                                           document.addEventListener('DOMContentLoaded', function () {
+    const form = document.getElementById('customerContractForm');
+
+    if (form) {
+        // Remove the 'required' attribute from all input and select elements for draft
+        document.getElementById('draftButton').addEventListener('click', function () {
+            const isDrafted = document.getElementById('is_drafted');
+            if (isDrafted) {
+                isDrafted.value = '1'; // Mark as draft
+            }
+            Array.from(form.elements).forEach(element => {
+                if (element.hasAttribute('required')) {
+                    element.removeAttribute('required');
+                }
+            });
+            form.submit(); // Submit the form
+        });
+
+        // Handle final submission
+        document.getElementById('submitButton').addEventListener('click', function () {
+            const isDrafted = document.getElementById('is_drafted');
+            if (isDrafted) {
+                isDrafted.value = '0'; // Mark as final submission
+            }
+        });
+    } else {
+        console.error('Form with ID "customerContractForm" not found.');
+    }
+});
+
+
+                                         </script>
                                                 
                                                 
                                                 <script>
@@ -522,7 +592,7 @@
                                         <tbody>
                                             @foreach($customercontract as $contract)
                                             <tr>
-                                                <td><input class="sleect_individual" type="checkbox" name="sleect_individual" value=""></td>
+                                                <td><input class="sleect_individual" type="checkbox" name="sleect_individual" value="{{ $contract->id }}"></td>
                                                 <td>
                                                     <div class="file_name">
                                                         <div class="file_iconn">
@@ -538,7 +608,10 @@
                                                     </div>
                                                 </td>
                                                 <td>
-                                                    <div class="person_status">
+
+
+
+                                                 {{--   <div class="person_status">
                                                         @php
                                                             $startDate = \Carbon\Carbon::parse($contract->startdate);
                                                             $endDate = \Carbon\Carbon::parse($contract->startend);
@@ -546,7 +619,7 @@
                                                             $remainingDays = $currentDate->diffInDays($endDate, false); // Negative if the end date is in the past
                                                         @endphp
                                                     
-                                                        {{-- {{ $startDate->format('F d, Y') }} - {{ $endDate->format('F d, Y') }} --}}
+                                                     
                                                     
                                                         @if($remainingDays > 0)
                                                             <span class="active">Active</span>
@@ -555,7 +628,31 @@
                                                             <span class="expire">Expired</span>
                                                             <p>Expired {{ abs($remainingDays) }}d ago</p>
                                                         @endif
+                                                    </div> --}}
+
+                                                    
+                                                    <div class="person_status">
+                                                        @php
+                                                            $startDate = $contract->startdate ? \Carbon\Carbon::parse($contract->startdate) : null;
+                                                            $endDate = $contract->startend ? \Carbon\Carbon::parse($contract->startend) : null;
+                                                            $currentDate = \Carbon\Carbon::now();
+                                                            $remainingDays = $endDate ? $currentDate->diffInDays($endDate, false) : null; // Calculate only if endDate exists
+                                                        @endphp
+                                                    
+                                                        @if(is_null($startDate) || is_null($endDate))
+                                                            <span class="draft">Draft</span>
+                                                            <p>In Draft</p>
+                                                        @else
+                                                            @if($remainingDays > 0)
+                                                                <span class="active">Active</span>
+                                                                <p>Expiring in {{ $remainingDays }}d</p>
+                                                            @else
+                                                                <span class="expire">Expired</span>
+                                                                <p>Expired {{ abs($remainingDays) }}d ago</p>
+                                                            @endif
+                                                        @endif
                                                     </div>
+                                                    
                                                     
                                                     
                                                 </td>
@@ -581,6 +678,58 @@
 
                                         </tbody>
                                     </table>
+                                    <script>
+                                        $(document).ready(function() {
+    // Handle "Select All" checkbox click
+    $('.select_all').on('click', function() {
+        $('.select_individual').prop('checked', this.checked);
+    });
+
+    // Handle individual checkbox click
+    $('.select_individual').on('change', function() {
+        var allChecked = $('.select_individual').length === $('.select_individual:checked').length;
+        $('.select_all').prop('checked', allChecked);
+    });
+
+    // Trigger download based on selected checkboxes
+    $('#downloadBtn').on('click', function() {
+        var selectedIds = [];
+        $('.select_individual:checked').each(function() {
+            selectedIds.push($(this).val());
+        });
+
+        // If "Select All" is checked, download all contracts
+        if ($('.select_all').prop('checked')) {
+            selectedIds = $('.select_individual').map(function() {
+                return $(this).val();
+            }).get();
+        }
+
+        if (selectedIds.length > 0) {
+            // Trigger AJAX request to download data
+            $.ajax({
+                url: '/download-contracts', // Endpoint to download contracts
+                method: 'POST',
+                data: {
+                    ids: selectedIds,
+                    _token: '{{ csrf_token() }}',
+                },
+                success: function(response) {
+                    // Handle the file download
+                    if (response.success) {
+                        window.location.href = response.download_url;
+                    } else {
+                        alert('Error downloading files');
+                    }
+                }
+            });
+        } else {
+            alert('Please select at least one contract to download.');
+        }
+    });
+});
+
+                                    </script>
                                 </div>
                             </div>
                         </div>
@@ -592,5 +741,20 @@
         </div>
     </div>
 </div>
-
+<style>
+    .contract_uploadd .person_status span.draft:before {
+    background: #edc80a;
+}
+.drop_coman_file.have_title .modal-content .root_btn button {
+    background: #5790ff !important;
+    color: #fff;
+    border-radius: 10px !important;
+    padding: 10px 30px;
+    margin: auto;
+}
+button#draftButton {
+    border: none;
+    background: grey !important;
+}
+</style>
 @endsection
