@@ -25075,7 +25075,8 @@ public function downloadFolder($folder_id)
         $zip->close();
         // Make the ZIP file publicly accessible
         $publicZipPath = 'storage/app/public/' . $zipFileName;
-        return response()->download($zipFilePath)->deleteFileAfterSend(true);
+        return response()->download($zipFilePath);
+        // return response()->download($zipFilePath)->deleteFileAfterSend(true);
         // return response()->json(['path' => $publicZipPath, 'message' => 'ZIP file created successfully.']);
     } else {
         return response()->json(['error' => 'Unable to create ZIP file.'], 500);
