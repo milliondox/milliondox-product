@@ -713,13 +713,13 @@
 
 
                             <script>
-                                $(document).ready(function() {
+                                $(document).ready(function () {
                                     // Attach event listener to elements with the mainhomedata class
-                                    $('body').on('click', '.mainhomedata', function(event) {
-                                        event.preventDefault(); // Prevent the default action
-
-                                        // Redirect to the specified URL
-                                        window.location.href = '{{url(' / docurepo ')}}';
+                                    $('body').on('click', '.mainhomedata', function (event) {
+                                        event.preventDefault(); // Prevent the default action of the anchor tag
+                            
+                                        // Redirect to the desired URL
+                                        window.location.href = "{{ url('/docurepo') }}";
                                     });
                                 });
                             </script>
@@ -727,7 +727,7 @@
                             <ul id="fresponsive" class="nav navbar-nav dropdown">
                                 <li class="dropdown main_dropdown">
                                     <b class="toggle_icconn "></b>
-                                    <a href="" class="dropdown-toggle mainhomedata">
+                                    <a href="javascript:void(0);" class="dropdown-toggle mainhomedata">
                                         <div class="folder-card">
                                             <div class="folder-image">
                                                 <div class="folder_in">
