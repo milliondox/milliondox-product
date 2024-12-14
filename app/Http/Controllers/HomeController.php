@@ -25003,12 +25003,12 @@ public function downloadFolder($folder_id)
 
                         // Check if the file was added successfully
                         if ($addedToZip) {
-                            echo "File added to the ZIP at location: " . $relativeZipPath . "<br>";
+                            // echo "File added to the ZIP at location: " . $relativeZipPath . "<br>";
                         } else {
-                            echo "Failed to add the file to the ZIP.<br>";
+                            // echo "Failed to add the file to the ZIP.<br>";
                         }
                     } else {
-                        echo "File not found at: " . $storedFilePath . "<br>";
+                        // echo "File not found at: " . $storedFilePath . "<br>";
                     }
 
                 }
