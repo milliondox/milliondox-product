@@ -21,7 +21,9 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@200..800&display=swap" rel="stylesheet">
   <!-- website font end -->
-
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+  
   <link rel="stylesheet" type="text/css" href="{{ asset('assets/css/vendors/font-awesome.css') }}">
   <!-- ico-font-->
   <link rel="stylesheet" type="text/css" href="{{ asset('assets/css/vendors/icofont.css') }}">
@@ -97,21 +99,59 @@
   </script>
 
   <script>
-    document.querySelectorAll('.divisn_only').forEach(div => {
-      const spans = Array.from(div.querySelectorAll('span:not(.count_divison)'));
-      const countDiv = div.querySelector('.count_divison');
+    // document.querySelectorAll('.divisn_only').forEach(div => {
+    //   const spans = Array.from(div.querySelectorAll('span:not(.count_divison)'));
+    //   const countDiv = div.querySelector('.count_divison');
 
-      if (spans.length > 3) {
-        // Show only the first three spans
-        spans.slice(3).forEach(span => span.style.display = 'none');
-        // Show and update the count_divison span
-        countDiv.style.display = 'inline';
-        countDiv.textContent = `+${spans.length - 3}`;
-      } else {
-        // Hide the count_divison span if the number of spans is <= 3
-        countDiv.style.display = 'none';
-      }
+    //   if (spans.length > 3) {
+    //     // Show only the first three spans
+    //     spans.slice(3).forEach(span => span.style.display = 'none');
+    //     // Show and update the count_divison span
+    //     countDiv.style.display = 'inline';
+    //     countDiv.textContent = `+${spans.length - 3}`;
+    //   } else {
+    //     // Hide the count_divison span if the number of spans is <= 3
+    //     countDiv.style.display = 'none';
+    //   }
+    // });
+
+    document.querySelectorAll('.divisn_only').forEach(div => {
+  const spans = Array.from(div.querySelectorAll('span:not(.count_divison)'));
+  const countDiv = div.querySelector('.count_divison');
+  
+  // Create the tooltip
+  const tooltip = document.createElement('div');
+  tooltip.className = 'custom-tooltip';
+  div.appendChild(tooltip);
+
+  if (spans.length > 3) {
+    // Show only the first three spans
+    spans.slice(3).forEach(span => span.style.display = 'none');
+
+    // Show and update the count_divison span
+    countDiv.style.display = 'inline';
+    countDiv.textContent = `+${spans.length - 3}`;
+
+    // Update tooltip content
+    tooltip.textContent = spans.slice(3).map(span => span.textContent).join(', ');
+
+    // Show tooltip on hover
+    countDiv.addEventListener('mouseenter', () => {
+      tooltip.style.opacity = '1';
+      tooltip.style.visibility = 'visible';
     });
+
+    // Hide tooltip when not hovering
+    countDiv.addEventListener('mouseleave', () => {
+      tooltip.style.opacity = '0';
+      tooltip.style.visibility = 'hidden';
+    });
+  } else {
+    // Hide the count_divison span if the number of spans is <= 3
+    countDiv.style.display = 'none';
+  }
+});
+
   </script>
 
   <script>

@@ -194,6 +194,7 @@ use App\Models\StoreGST;
 use App\Models\StoreCompanyEmployee;
 use App\Models\TaskEvents;
 use App\Models\Feedback;
+use App\Models\CustomerContract;
 
 use ZipArchive;
 
@@ -19742,14 +19743,52 @@ public function tickting()
     }
 
     public function contractmanage()
-    {
-        $customer = Customer::where('customer_created_by', auth()->id())->get();
-        $customercount = Customer::where('customer_created_by', auth()->id())->count();
-        // dd($customer);
-        $cli_announcements = Announcement::where('role', 'Client')->latest()->get();
-        $user = auth()->user();
-       return view('user.Contract-Management.contract-manage',compact('cli_announcements','user','customer','customercount'));
+{
+    $customercount = Customer::where('customer_created_by', auth()->id())->count();
+    $customer = Customer::where('customer_created_by', auth()->id())->get();
+
+    // Get the customer contracts related to the authenticated user and group them by customer_id
+    $contracts = Customer::where('customer_created_by', auth()->id())
+        ->join('customercontracttb', 'customertb.id', '=', 'customercontracttb.customer_id')
+        ->distinct()
+        ->get(['customertb.id as customer_id', 'customercontracttb.startend'])
+        ->groupBy('customer_id'); // Group by customer_id to get all contracts for each customer
+
+    // Iterate through each customer and check their contract status
+    foreach ($customer as $cust) {
+        $status = 'Inactive'; // Default status is Inactive
+
+        // Check if the customer has a matching contract
+        if ($contracts->has($cust->id)) {
+            $status = 'Inactive'; // Reset to Inactive by default
+
+            // Get all startend dates for the customer (an array of contract startend dates)
+            $customerContracts = $contracts[$cust->id]; // Get all contract end dates for this customer
+
+            // Compare contract dates
+            foreach ($customerContracts as $contract) {
+                $contractEndDate = Carbon::parse($contract->startend); // Parse the startend date
+                $today = Carbon::today(); // Today's date
+
+                // If any contract's end date is greater than or equal to today, set the status to Active
+                if ($contractEndDate->greaterThanOrEqualTo($today)) {
+                    $status = 'Active';
+                    break; // Exit the loop if at least one contract is active
+                }
+            }
+        }
+
+        // Set the status for the current customer
+        $cust->status = $status;
     }
+
+    $cli_announcements = Announcement::where('role', 'Client')->latest()->get();
+    $user = auth()->user();
+
+    return view('user.Contract-Management.contract-manage', compact('cli_announcements', 'user', 'customer', 'customercount', 'contracts'));
+}
+
+    
 
     public function contractmanagedetail($id)
     {
@@ -19757,10 +19796,28 @@ public function tickting()
         $user = auth()->user();
         $customerrecord = Customer::find($id);
 
-        // dd($customerrecord);
+        $customercontract = CustomerContract::where('customer_id', $id)->get();
+        $divisions = $customerrecord->customerContracts->pluck('division')->unique();
+
+        $today = \Carbon\Carbon::today();
+    $hasActive = false;
+
+    foreach ($customercontract as $contract) {
+        $contractEndDate = \Carbon\Carbon::parse($contract->startend);
+        $contract->status = $contractEndDate->greaterThanOrEqualTo($today) ? 'Active' : 'Expire';
+
+        // Check if at least one contract is active
+        if ($contract->status === 'Active') {
+            $hasActive = true;
+            break; // No need to check further if one is active
+        }
+    }
+
+    // Determine overall status
+    $overallStatus = $hasActive ? 'Active' : 'Expire';
 
        
-       return view('user.Contract-Management.contract-manage-detail',compact('cli_announcements','user','customerrecord'));
+       return view('user.Contract-Management.contract-manage-detail',compact('cli_announcements','user','customerrecord','customercontract','divisions','overallStatus'));
     }
 
     public function Sop()
@@ -28785,7 +28842,7 @@ dd($e->getMessage());
 {
     // Validate incoming data
     $validated = $request->validate([
-        'profile_picture' => 'nullable|image|max:2048',
+        'profile_picture' => 'nullable|image|max:20048',
         'lename' => 'required|string|max:255',
         'dname' => 'required|array',
         'dname.*' => 'required|string|max:255',
@@ -28794,9 +28851,9 @@ dd($e->getMessage());
         'city' => 'required|string|max:255',
         'pincode' => 'required|string|max:6',
         'CinNo' => 'required|string|max:21', // CIN length is fixed at 21 characters
-        'cin_file' => 'required|file|max:2048',
+        'cin_file' => 'required|file|max:20048',
         'GSTINNo' => 'required|string|max:15|min:15', // GSTIN length is exactly 15 characters
-        'gstin_file' => 'required|file|max:2048',
+        'gstin_file' => 'required|file|max:20048',
         'type_of_entity' => 'required|string|max:255',
         'brandname' => 'nullable|string|max:255',
     ]);
@@ -28836,6 +28893,98 @@ dd($e->getMessage());
 
     return response()->json(['message' => 'Customer details saved successfully!']);
 }
+
+public function storecustomercontract(Request $request)
+{
+    // Validate the request data
+    if ($request->is_drafted != 1) { // Skip validation if saving as draft
+        $request->validate([
+            'file' => 'required|mimes:pdf,doc,docx|max:20048',
+            'contract_name' => 'required|string',
+            'contracttype' => 'required|string',
+            'contract_type' => 'required|string',
+            'divison' => 'required|string',
+            'vendor_name' => 'required|string',
+            'legal_entity_status' => 'required|string',
+            'startdate' => 'required|date',
+            'startend' => 'required|date',
+            'contract_value' => 'required|numeric',
+            'signing_status' => 'required|string',
+            'renewal_terms' => 'required|string',
+            'payment_terms' => 'required|string',
+            'fee_escalation_clause' => 'required|string',
+            'customer_id' => 'required|exists:customertb,id',
+        ]);
+    }
+
+    // Handle file upload (if provided)
+    $filePath = null;
+    $fileName = null;
+    $fileSize = null;
+
+    if ($request->hasFile('file')) {
+        $file = $request->file('file');
+        $filePath = $file->store('contracts', 'public');
+        $fileName = $file->getClientOriginalName();
+        $fileSize = round($file->getSize() / 1024, 2); // Size in KB
+    }
+
+    // Save or update the customer contract
+    CustomerContract::updateOrCreate(
+        ['id' => $request->id], // Update if the record exists
+        [
+            'file_name' => $fileName,
+            'file_path' => $filePath,
+            'file_size' => $fileSize,
+            'contract_name' => $request->contract_name,
+            'contracttype' => $request->contracttype,
+            'contract_type' => $request->contract_type,
+            'division' => $request->divison,
+            'vendor_name' => $request->vendor_name,
+            'legal_entity_status' => $request->legal_entity_status,
+            'startdate' => $request->startdate,
+            'startend' => $request->startend,
+            'contract_value' => $request->contract_value,
+            'signing_status' => $request->signing_status,
+            'renewal_terms' => $request->renewal_terms,
+            'payment_terms' => $request->payment_terms,
+            'fee_escalation_clause' => $request->fee_escalation_clause,
+            'customer_id' => $request->customer_id,
+            'is_drafted' => $request->is_drafted ?? 0, // Set draft status
+        ]
+    );
+
+    // Redirect back with a success message
+    $message = $request->is_drafted == 1
+        ? 'Customer contract saved as draft!'
+        : 'Customer contract submitted successfully!';
+    return redirect()->back()->with('success', $message);
+}
+
+
+public function downloadContracts(Request $request)
+{
+    $ids = $request->input('ids');
+    $contracts = CustomerContract::whereIn('id', $ids)->get();
+
+    // Generate a ZIP file or handle the download logic
+    $zip = new \ZipArchive();
+    $zipFileName = 'contracts.zip';
+    $zip->open(public_path($zipFileName), \ZipArchive::CREATE);
+
+    foreach ($contracts as $contract) {
+        $filePath = storage_path('app/contracts/' . $contract->file_name);
+        if (file_exists($filePath)) {
+            $zip->addFile($filePath, $contract->file_name);
+        }
+    }
+
+    $zip->close();
+
+    return response()->download(public_path($zipFileName))->deleteFileAfterSend(true);
+}
+
+ 
 
     
 
