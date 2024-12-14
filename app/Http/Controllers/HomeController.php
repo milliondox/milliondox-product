@@ -15425,6 +15425,10 @@ public function PreHandleCommonUploadFiles(Request $request)
 
                                     $folderPath = preg_replace('/\s*\/\s*/', '/', trim($request->input('location')));
 
+                                    $folderPaths2 = $folderPath;
+                                    $folderName = substr($folderPaths2, strrpos($folderPaths2, '/') + 1);
+                                    $folderName = trim($folderName);
+
                                     // Store file details in the database
                                     $originalFileName = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME); // Get the file name without extension
                                     $extension = $file->getClientOriginalExtension(); // Get the file extension
@@ -15464,6 +15468,7 @@ public function PreHandleCommonUploadFiles(Request $request)
                                         'real_file_name' => $request->input('real_file_name'),
                                         'tags' => $tags, // Store tags as JSON
                                         'location' => $folderPath,
+                                        'folder_name'=>$folderName,
                                         'descp' => $request->input('desc'),
                                     ]);
 
@@ -15664,6 +15669,10 @@ public function PreHandleCommonUploadFiles(Request $request)
                     try {
                         $folderPath = preg_replace('/\s*\/\s*/', '/', trim($request->input('location')));
 
+                        $folderPaths2 = $folderPath;
+                        $folderName = substr($folderPaths2, strrpos($folderPaths2, '/') + 1);
+                        $folderName = trim($folderName);
+
                         $originalFileName = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME); // Get the file name without extension
                         $extension = $file->getClientOriginalExtension(); // Get the file extension
                         $fileName = $originalFileName . '.' . $extension; // Start with the original file name
@@ -15722,6 +15731,7 @@ public function PreHandleCommonUploadFiles(Request $request)
                             'tags' => $tags, // Store tags as JSON
                             'location' => $folderPath,
                             'descp' => $request->input('desc'),
+                            'folder_name'=>$folderName,
                             'is_keep' => 1,
                         ]);
                 
@@ -15876,6 +15886,10 @@ public function PreHandleCommonUploadFiles(Request $request)
                         // $storedFileName = basename($filePath);
                         $folderPath = preg_replace('/\s*\/\s*/', '/', trim($request->input('location')));
 
+                        $folderPaths2 = $folderPath;
+                        $folderName = substr($folderPaths2, strrpos($folderPaths2, '/') + 1);
+                        $folderName = trim($folderName);
+
                         $originalFileName = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME); // Get the file name without extension
                         $extension = $file->getClientOriginalExtension(); // Get the file extension
                         $fileName = $originalFileName . '.' . $extension; // Start with the original file name
@@ -15898,6 +15912,7 @@ public function PreHandleCommonUploadFiles(Request $request)
                             'real_file_name' => $request->input('real_file_name'),
                             'tags' => $tags, // Store tags as JSON
                             'location' => $folderPath,
+                            'folder_name'=>$folderName,
                             'descp' => $request->input('desc'),
                         ]);
     
@@ -16146,6 +16161,10 @@ public function PreBankHandleCommonUploadFiles(Request $request)
 
                                     $folderPath = preg_replace('/\s*\/\s*/', '/', trim($request->input('location')));
 
+                                    $folderPaths2 = $folderPath;
+                                    $folderName = substr($folderPaths2, strrpos($folderPaths2, '/') + 1);
+                                    $folderName = trim($folderName);
+
                                     // Store file details in the database
                                     $originalFileName = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME); // Get the file name without extension
                                     $extension = $file->getClientOriginalExtension(); // Get the file extension
@@ -16186,6 +16205,7 @@ public function PreBankHandleCommonUploadFiles(Request $request)
                                         'tags' => $tags, // Store tags as JSON
                                         'bank_name'=>$request->input('bank_name'),
                                         'location' => $folderPath,
+                                        'folder_name'=>$folderName,
                                         'descp' => $request->input('desc'),
                                     ]);
 
@@ -16387,6 +16407,10 @@ public function PreBankHandleCommonUploadFiles(Request $request)
                     try {
                         $folderPath = preg_replace('/\s*\/\s*/', '/', trim($request->input('location')));
 
+                        $folderPaths2 = $folderPath;
+                        $folderName = substr($folderPaths2, strrpos($folderPaths2, '/') + 1);
+                        $folderName = trim($folderName);
+
                         $originalFileName = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME); // Get the file name without extension
                         $extension = $file->getClientOriginalExtension(); // Get the file extension
                         $fileName = $originalFileName . '.' . $extension; // Start with the original file name
@@ -16445,6 +16469,7 @@ public function PreBankHandleCommonUploadFiles(Request $request)
                             'bank_name'=>$request->input('bank_name'),
                             'tags' => $tags, // Store tags as JSON
                             'location' => $folderPath,
+                            'folder_name'=>$folderName,
                             'descp' => $request->input('desc'),
                             'is_keep' => 1,
                         ]);
@@ -16601,6 +16626,10 @@ public function PreBankHandleCommonUploadFiles(Request $request)
                         // $storedFileName = basename($filePath);
                         $folderPath = preg_replace('/\s*\/\s*/', '/', trim($request->input('location')));
 
+                        $folderPaths2 = $folderPath;
+                        $folderName = substr($folderPaths2, strrpos($folderPaths2, '/') + 1);
+                        $folderName = trim($folderName);
+
                         $originalFileName = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME); // Get the file name without extension
                         $extension = $file->getClientOriginalExtension(); // Get the file extension
                         $fileName = $originalFileName . '.' . $extension; // Start with the original file name
@@ -16624,6 +16653,7 @@ public function PreBankHandleCommonUploadFiles(Request $request)
                             'bank_name'=>$request->input('bank_name'),
                             'tags' => $tags, // Store tags as JSON
                             'location' => $folderPath,
+                            'folder_name'=>$folderName,
                             'descp' => $request->input('desc'),
                         ]);
     
@@ -23728,7 +23758,7 @@ if (is_array($dataTags)) {
     public function fetchfixedFiles(Request $request)
     {
         $user_id = Auth::id();
-        if($user_id == 269){
+        if($user_id === 269){
              // Fetch folder path from the request query
             $path = $request->query('path');
             // Ensure the folder path is provided
@@ -23857,6 +23887,55 @@ if (is_array($dataTags)) {
     
         return response()->json(['success' => false, 'message' => 'Folder not found or name mismatch.']);
     }
+
+    // 
+
+    public function updateFolderNamesSKY()
+    {
+        $userId = auth()->user()->id;
+        // dd($userId);
+
+        if (269 === $userId) {
+            // Fetch all entries from CommonTable
+            $folderNames = [];
+            $entries = CommonTable::all();
+
+            foreach ($entries as $entry) {
+                // Get the location field
+                $location = $entry->location;
+
+                if ($location) {
+                    // Extract the folder name after the last '/'
+                    $folderName = substr($location, strrpos($location, '/') + 1);
+                    $folderName = trim($folderName);
+
+                    // Store the folder name with the entry ID for debugging
+                    $folderNames[] = [
+                        'entry_id' => $entry->id,
+                        'location' => $location,
+                        'folder_name' => $folderName,
+                    ];
+
+                    $entry->folder_name = $folderName;
+                    $entry->save(); // Save changes to the database (commented for debugging)
+                }
+            }
+
+            // Debug the extracted folder names
+            // dd($folderNames);
+            return response()->json(['message' => 'Successfully updated']);
+
+        }
+        else{
+            return response()->json(['message' => 'Unauthorized']);
+
+
+        }
+
+    }
+
+
+    // 
     
 
 //     public function downloadFolders(Request $request)
@@ -24072,357 +24151,357 @@ if (is_array($dataTags)) {
 
 
 // ////////////////////////////////////////////////////new code here start //////////////////////////////////
-public function downloadFolder($folderid)
-{
-    $folder = Folder::find($folderid);
-    // Check if the user is authenticated
-    $userId = Auth::id();
-    if (!$userId) {
-        abort(403, 'User not authenticated.');
-    }
+// public function downloadFolder($folderid)
+// {
+//     $folder = Folder::find($folderid);
+//     // Check if the user is authenticated
+//     $userId = Auth::id();
+//     if (!$userId) {
+//         abort(403, 'User not authenticated.');
+//     }
 
 
-    if (!$folder) {
-        \Log::error("Folder not found for ID: " . $folderid);
-        return response()->json(['success' => false, 'message' => 'Folder not found.']);
-    }
+//     if (!$folder) {
+//         \Log::error("Folder not found for ID: " . $folderid);
+//         return response()->json(['success' => false, 'message' => 'Folder not found.']);
+//     }
 
-    $zipFileName = $folder->name . $folder->id . '.zip';
-    $zipFilePath = storage_path('app/public/' . $zipFileName);
+//     $zipFileName = $folder->name . $folder->id . '.zip';
+//     $zipFilePath = storage_path('app/public/' . $zipFileName);
 
-    $zip = new ZipArchive();
-    if ($zip->open($zipFilePath, ZipArchive::CREATE) !== TRUE) {
-        \Log::error("Could not create ZIP file at: " . $zipFilePath);
-        return response()->json(['success' => false, 'message' => 'Could not create ZIP file.']);
-    }
+//     $zip = new ZipArchive();
+//     if ($zip->open($zipFilePath, ZipArchive::CREATE) !== TRUE) {
+//         \Log::error("Could not create ZIP file at: " . $zipFilePath);
+//         return response()->json(['success' => false, 'message' => 'Could not create ZIP file.']);
+//     }
 
-    $folderFullPath = storage_path('app/' . $folder->path);
-    if (is_dir($folderFullPath)) {
-        $this->addFolderToZip($zip, $folderFullPath, $folder->name);
-    } else {
-        \Log::error("Folder does not exist: " . $folderFullPath);
-        return response()->json(['success' => false, 'message' => 'Folder does not exist.']);
-    }
+//     $folderFullPath = storage_path('app/' . $folder->path);
+//     if (is_dir($folderFullPath)) {
+//         $this->addFolderToZip($zip, $folderFullPath, $folder->name);
+//     } else {
+//         \Log::error("Folder does not exist: " . $folderFullPath);
+//         return response()->json(['success' => false, 'message' => 'Folder does not exist.']);
+//     }
 
-    $zip->close();
+//     $zip->close();
 
-    if (!file_exists($zipFilePath)) {
-        return response()->json(['success' => false, 'message' => 'ZIP file could not be created.']);
-    }
-    // Function to remove empty directories from a ZIP file
-    // function removeEmptyDirsFromZip($zipFilePath)
-    // {
-    //     $zip = new ZipArchive();
-    //     if ($zip->open($zipFilePath) === TRUE) {
-    //         // Iterate over the files in the zip
-    //         $files = [];
-    //         for ($i = 0; $i < $zip->numFiles; $i++) {
-    //             $fileName = $zip->getNameIndex($i);
-    //             $files[] = $fileName;
-    //         }
+//     if (!file_exists($zipFilePath)) {
+//         return response()->json(['success' => false, 'message' => 'ZIP file could not be created.']);
+//     }
+//     // Function to remove empty directories from a ZIP file
+//     // function removeEmptyDirsFromZip($zipFilePath)
+//     // {
+//     //     $zip = new ZipArchive();
+//     //     if ($zip->open($zipFilePath) === TRUE) {
+//     //         // Iterate over the files in the zip
+//     //         $files = [];
+//     //         for ($i = 0; $i < $zip->numFiles; $i++) {
+//     //             $fileName = $zip->getNameIndex($i);
+//     //             $files[] = $fileName;
+//     //         }
 
-    //         // Check for empty directories and remove them
-    //         foreach ($files as $file) {
-    //             if (substr($file, -1) === '/') { // It's a directory
-    //                 $empty = true;
-    //                 foreach ($files as $innerFile) {
-    //                     if (strpos($innerFile, $file) === 0 && $innerFile !== $file) {
-    //                         $empty = false;
-    //                         break;
-    //                     }
-    //                 }
-    //                 if ($empty) {
-    //                     // Remove empty directory
-    //                     $zip->deleteName($file);
-    //                 }
-    //             }
-    //         }
+//     //         // Check for empty directories and remove them
+//     //         foreach ($files as $file) {
+//     //             if (substr($file, -1) === '/') { // It's a directory
+//     //                 $empty = true;
+//     //                 foreach ($files as $innerFile) {
+//     //                     if (strpos($innerFile, $file) === 0 && $innerFile !== $file) {
+//     //                         $empty = false;
+//     //                         break;
+//     //                     }
+//     //                 }
+//     //                 if ($empty) {
+//     //                     // Remove empty directory
+//     //                     $zip->deleteName($file);
+//     //                 }
+//     //             }
+//     //         }
 
-    //         $zip->close();
-    //     }
-    // }
+//     //         $zip->close();
+//     //     }
+//     // }
 
-    // Remove empty directories before downloading
-    // removeEmptyDirsFromZip($zipFilePath);
+//     // Remove empty directories before downloading
+//     // removeEmptyDirsFromZip($zipFilePath);
 
-    // above working well sandeep/////////////
-    // Function to remove empty directories from a ZIP file, checking against the database
-    // function removeEmptyDirsFromZip($zipFilePath, $userId)
-    // {
-    //     $zip = new ZipArchive();
-    //     if ($zip->open($zipFilePath) === TRUE) {
-    //         // Iterate over the files in the zip
-    //         $files = [];
-    //         for ($i = 0; $i < $zip->numFiles; $i++) {
-    //             $fileName = $zip->getNameIndex($i);
-    //             $files[] = $fileName;
-    //         }
+//     // above working well sandeep/////////////
+//     // Function to remove empty directories from a ZIP file, checking against the database
+//     // function removeEmptyDirsFromZip($zipFilePath, $userId)
+//     // {
+//     //     $zip = new ZipArchive();
+//     //     if ($zip->open($zipFilePath) === TRUE) {
+//     //         // Iterate over the files in the zip
+//     //         $files = [];
+//     //         for ($i = 0; $i < $zip->numFiles; $i++) {
+//     //             $fileName = $zip->getNameIndex($i);
+//     //             $files[] = $fileName;
+//     //         }
 
-    //         // Check for empty directories and remove them based on database check
-    //         foreach ($files as $file) {
-    //             if (substr($file, -1) === '/') { // It's a directory
-    //                 $empty = true;
-    //                 foreach ($files as $innerFile) {
-    //                     if (strpos($innerFile, $file) === 0 && $innerFile !== $file) {
-    //                         $empty = false;
-    //                         break;
-    //                     }
-    //                 }
+//     //         // Check for empty directories and remove them based on database check
+//     //         foreach ($files as $file) {
+//     //             if (substr($file, -1) === '/') { // It's a directory
+//     //                 $empty = true;
+//     //                 foreach ($files as $innerFile) {
+//     //                     if (strpos($innerFile, $file) === 0 && $innerFile !== $file) {
+//     //                         $empty = false;
+//     //                         break;
+//     //                     }
+//     //                 }
 
-    //                 // Check if the directory is empty
-    //                 if ($empty) {
-    //                     // Query the database to check if this directory exists for the user
-    //                     $directoryName = basename($file); // Get the directory name without the path
-    //                     $existsInDatabase = DB::table('folders')
-    //                         ->where('user_id', $userId)
-    //                         ->where('name', $directoryName)
-    //                         ->exists();
+//     //                 // Check if the directory is empty
+//     //                 if ($empty) {
+//     //                     // Query the database to check if this directory exists for the user
+//     //                     $directoryName = basename($file); // Get the directory name without the path
+//     //                     $existsInDatabase = DB::table('folders')
+//     //                         ->where('user_id', $userId)
+//     //                         ->where('name', $directoryName)
+//     //                         ->exists();
 
-    //                     // If directory doesn't exist in the database, remove it
-    //                     if (!$existsInDatabase) {
-    //                         $zip->deleteName($file);
-    //                     }
-    //                 }
-    //             }
-    //         }
+//     //                     // If directory doesn't exist in the database, remove it
+//     //                     if (!$existsInDatabase) {
+//     //                         $zip->deleteName($file);
+//     //                     }
+//     //                 }
+//     //             }
+//     //         }
 
-    //         $zip->close();
-    //     }
-    // }
-    // // Remove empty directories before downloading, checking against the database
-    // removeEmptyDirsFromZip($zipFilePath, $userId);
+//     //         $zip->close();
+//     //     }
+//     // }
+//     // // Remove empty directories before downloading, checking against the database
+//     // removeEmptyDirsFromZip($zipFilePath, $userId);
 
-    // return response()->download($zipFilePath)->deleteFileAfterSend(true);
+//     // return response()->download($zipFilePath)->deleteFileAfterSend(true);
 
-    // Function to remove empty directories from a ZIP file, checking against the database
-    // Function to remove empty directories from a ZIP file, checking against the database
-    // function removeEmptyDirsFromZip($zipFilePath, $userId)
-    // {
-    //     $zip = new ZipArchive();
-    //     if ($zip->open($zipFilePath) === TRUE) {
-    //         // Store files and directories in the ZIP
-    //         $files = [];
-    //         for ($i = 0; $i < $zip->numFiles; $i++) {
-    //             $fileName = $zip->getNameIndex($i);
-    //             $files[] = $fileName;
-    //         }
+//     // Function to remove empty directories from a ZIP file, checking against the database
+//     // Function to remove empty directories from a ZIP file, checking against the database
+//     // function removeEmptyDirsFromZip($zipFilePath, $userId)
+//     // {
+//     //     $zip = new ZipArchive();
+//     //     if ($zip->open($zipFilePath) === TRUE) {
+//     //         // Store files and directories in the ZIP
+//     //         $files = [];
+//     //         for ($i = 0; $i < $zip->numFiles; $i++) {
+//     //             $fileName = $zip->getNameIndex($i);
+//     //             $files[] = $fileName;
+//     //         }
 
-    //         // Check for empty directories at all levels
-    //         $directoriesToRemove = [];
+//     //         // Check for empty directories at all levels
+//     //         $directoriesToRemove = [];
 
-    //         foreach ($files as $file) {
-    //             if (substr($file, -1) === '/') { // It's a directory
-    //                 $empty = true;
+//     //         foreach ($files as $file) {
+//     //             if (substr($file, -1) === '/') { // It's a directory
+//     //                 $empty = true;
 
-    //                 // Check if any files exist in this directory (subdirectories or files)
-    //                 foreach ($files as $innerFile) {
-    //                     if (strpos($innerFile, $file) === 0 && $innerFile !== $file) {
-    //                         $empty = false;
-    //                         break;
-    //                     }
-    //                 }
+//     //                 // Check if any files exist in this directory (subdirectories or files)
+//     //                 foreach ($files as $innerFile) {
+//     //                     if (strpos($innerFile, $file) === 0 && $innerFile !== $file) {
+//     //                         $empty = false;
+//     //                         break;
+//     //                     }
+//     //                 }
 
-    //                 // If the directory is empty, add it to the list for removal
-    //                 if ($empty) {
-    //                     $directoriesToRemove[] = $file;
-    //                 }
-    //             }
-    //         }
-    //         // dd($directoriesToRemove);
+//     //                 // If the directory is empty, add it to the list for removal
+//     //                 if ($empty) {
+//     //                     $directoriesToRemove[] = $file;
+//     //                 }
+//     //             }
+//     //         }
+//     //         // dd($directoriesToRemove);
 
-    //         // Now check the database for each empty directory and remove if necessary
-    //         foreach ($directoriesToRemove as $dir) {
-    //             // Query the database to check if this directory exists for the user
-    //             $directoryName = basename($dir); // Get the directory name without the path
-    //             // dd($directoryName);
-    //             $existsInDatabase = DB::table('folders')
-    //                 ->where('user_id', $userId)
-    //                 ->where('name', $directoryName)
-    //                 ->exists();
+//     //         // Now check the database for each empty directory and remove if necessary
+//     //         foreach ($directoriesToRemove as $dir) {
+//     //             // Query the database to check if this directory exists for the user
+//     //             $directoryName = basename($dir); // Get the directory name without the path
+//     //             // dd($directoryName);
+//     //             $existsInDatabase = DB::table('folders')
+//     //                 ->where('user_id', $userId)
+//     //                 ->where('name', $directoryName)
+//     //                 ->exists();
 
-    //             // If directory doesn't exist in the database, remove it
-    //             if (!$existsInDatabase) {
-    //                 $zip->deleteName($dir);
-    //             }
-    //         }
+//     //             // If directory doesn't exist in the database, remove it
+//     //             if (!$existsInDatabase) {
+//     //                 $zip->deleteName($dir);
+//     //             }
+//     //         }
 
-    //         $zip->close();
-    //     }
-    // }
+//     //         $zip->close();
+//     //     }
+//     // }
 
-    // // Remove empty directories before downloading, checking against the database
-    // removeEmptyDirsFromZip($zipFilePath, $userId);
-    // removeEmptyDirsFromZip($zipFilePath, $userId);
-    // removeEmptyDirsFromZip($zipFilePath, $userId);
-
-
-
-    // return response()->download($zipFilePath)->deleteFileAfterSend(true);
-
-    // Function to remove empty directories from a ZIP file, checking against the database
-    // function removeEmptyDirsFromZip($zipFilePath, $userId)
-    // {
-    //     $zip = new ZipArchive();
-    //     if ($zip->open($zipFilePath) === TRUE) {
-    //         // Store files and directories in the ZIP
-    //         $files = [];
-    //         for ($i = 0; $i < $zip->numFiles; $i++) {
-    //             $fileName = $zip->getNameIndex($i);
-    //             $files[] = $fileName;
-    //         }
-
-    //         // Check for empty directories at all levels
-    //         $directoriesToRemove = [];
-
-    //         foreach ($files as $file) {
-    //             if (substr($file, -1) === '/') { // It's a directory
-    //                 $empty = true;
-
-    //                 // Check if any files exist in this directory (subdirectories or files)
-    //                 foreach ($files as $innerFile) {
-    //                     if (strpos($innerFile, $file) === 0 && $innerFile !== $file) {
-    //                         $empty = false;
-    //                         break;
-    //                     }
-    //                 }
-
-    //                 // If the directory is empty, add it to the list for removal
-    //                 if ($empty) {
-    //                     $directoriesToRemove[] = $file;
-    //                 }
-    //             }
-    //         }
-
-    //         // Now delete directories and their empty parents if necessary
-    //         foreach ($directoriesToRemove as $dir) {
-    //             // Query the database to check if this directory exists for the user
-    //             $directoryName = basename($dir); // Get the directory name without the path
-    //             $existsInDatabase = DB::table('folders')
-    //                 ->where('user_id', $userId)
-    //                 ->where('name', $directoryName)
-    //                 ->exists();
-
-    //             // If directory doesn't exist in the database, remove it
-    //             if (!$existsInDatabase) {
-    //                 $zip->deleteName($dir);
-
-    //                 // Check and delete parent directories if they are empty after removal
-    //                 $parentDir = dirname($dir) . '/';
-    //                 while ($parentDir !== '/' && !in_array($parentDir, $directoriesToRemove)) {
-    //                     // Check if the parent directory is now empty
-    //                     $parentEmpty = true;
-    //                     foreach ($files as $innerFile) {
-    //                         if (strpos($innerFile, $parentDir) === 0 && $innerFile !== $parentDir) {
-    //                             $parentEmpty = false;
-    //                             break;
-    //                         }
-    //                     }
-
-    //                     // If the parent directory is empty and doesn't exist in the database, delete it
-    //                     if ($parentEmpty) {
-    //                         $parentDirName = basename($parentDir);
-    //                         $parentExistsInDatabase = DB::table('folders')
-    //                             ->where('user_id', $userId)
-    //                             ->where('name', $parentDirName)
-    //                             ->exists();
-
-    //                         if (!$parentExistsInDatabase) {
-    //                             $zip->deleteName($parentDir);
-    //                             $directoriesToRemove[] = $parentDir; // Mark the parent as removed
-    //                         }
-    //                     }
-
-    //                     // Move to the next parent directory
-    //                     $parentDir = dirname($parentDir) . '/';
-    //                 }
-    //             }
-    //         }
-
-    //         $zip->close();
-    //     }
-    // }
-
-    // // Remove empty directories before downloading, checking against the database
-    // removeEmptyDirsFromZip($zipFilePath, $userId);
-    // removeEmptyDirsFromZip($zipFilePath, $userId);
-    // removeEmptyDirsFromZip($zipFilePath, $userId);
-    // removeEmptyDirsFromZip($zipFilePath, $userId);
+//     // // Remove empty directories before downloading, checking against the database
+//     // removeEmptyDirsFromZip($zipFilePath, $userId);
+//     // removeEmptyDirsFromZip($zipFilePath, $userId);
+//     // removeEmptyDirsFromZip($zipFilePath, $userId);
 
 
 
-    // return response()->download($zipFilePath)->deleteFileAfterSend(true);
+//     // return response()->download($zipFilePath)->deleteFileAfterSend(true);
+
+//     // Function to remove empty directories from a ZIP file, checking against the database
+//     // function removeEmptyDirsFromZip($zipFilePath, $userId)
+//     // {
+//     //     $zip = new ZipArchive();
+//     //     if ($zip->open($zipFilePath) === TRUE) {
+//     //         // Store files and directories in the ZIP
+//     //         $files = [];
+//     //         for ($i = 0; $i < $zip->numFiles; $i++) {
+//     //             $fileName = $zip->getNameIndex($i);
+//     //             $files[] = $fileName;
+//     //         }
+
+//     //         // Check for empty directories at all levels
+//     //         $directoriesToRemove = [];
+
+//     //         foreach ($files as $file) {
+//     //             if (substr($file, -1) === '/') { // It's a directory
+//     //                 $empty = true;
+
+//     //                 // Check if any files exist in this directory (subdirectories or files)
+//     //                 foreach ($files as $innerFile) {
+//     //                     if (strpos($innerFile, $file) === 0 && $innerFile !== $file) {
+//     //                         $empty = false;
+//     //                         break;
+//     //                     }
+//     //                 }
+
+//     //                 // If the directory is empty, add it to the list for removal
+//     //                 if ($empty) {
+//     //                     $directoriesToRemove[] = $file;
+//     //                 }
+//     //             }
+//     //         }
+
+//     //         // Now delete directories and their empty parents if necessary
+//     //         foreach ($directoriesToRemove as $dir) {
+//     //             // Query the database to check if this directory exists for the user
+//     //             $directoryName = basename($dir); // Get the directory name without the path
+//     //             $existsInDatabase = DB::table('folders')
+//     //                 ->where('user_id', $userId)
+//     //                 ->where('name', $directoryName)
+//     //                 ->exists();
+
+//     //             // If directory doesn't exist in the database, remove it
+//     //             if (!$existsInDatabase) {
+//     //                 $zip->deleteName($dir);
+
+//     //                 // Check and delete parent directories if they are empty after removal
+//     //                 $parentDir = dirname($dir) . '/';
+//     //                 while ($parentDir !== '/' && !in_array($parentDir, $directoriesToRemove)) {
+//     //                     // Check if the parent directory is now empty
+//     //                     $parentEmpty = true;
+//     //                     foreach ($files as $innerFile) {
+//     //                         if (strpos($innerFile, $parentDir) === 0 && $innerFile !== $parentDir) {
+//     //                             $parentEmpty = false;
+//     //                             break;
+//     //                         }
+//     //                     }
+
+//     //                     // If the parent directory is empty and doesn't exist in the database, delete it
+//     //                     if ($parentEmpty) {
+//     //                         $parentDirName = basename($parentDir);
+//     //                         $parentExistsInDatabase = DB::table('folders')
+//     //                             ->where('user_id', $userId)
+//     //                             ->where('name', $parentDirName)
+//     //                             ->exists();
+
+//     //                         if (!$parentExistsInDatabase) {
+//     //                             $zip->deleteName($parentDir);
+//     //                             $directoriesToRemove[] = $parentDir; // Mark the parent as removed
+//     //                         }
+//     //                     }
+
+//     //                     // Move to the next parent directory
+//     //                     $parentDir = dirname($parentDir) . '/';
+//     //                 }
+//     //             }
+//     //         }
+
+//     //         $zip->close();
+//     //     }
+//     // }
+
+//     // // Remove empty directories before downloading, checking against the database
+//     // removeEmptyDirsFromZip($zipFilePath, $userId);
+//     // removeEmptyDirsFromZip($zipFilePath, $userId);
+//     // removeEmptyDirsFromZip($zipFilePath, $userId);
+//     // removeEmptyDirsFromZip($zipFilePath, $userId);
 
 
-    // Function to remove empty directories from a ZIP file, checking against the database
-    function removeEmptyDirsFromZip($zipFilePath, $userId)
-    {
-        $zip = new ZipArchive();
 
-        if ($zip->open($zipFilePath) === TRUE) {
-            do {
-                $files = [];
-                $emptyDirectories = [];
+//     // return response()->download($zipFilePath)->deleteFileAfterSend(true);
+
+
+//     // Function to remove empty directories from a ZIP file, checking against the database
+//     function removeEmptyDirsFromZip($zipFilePath, $userId)
+//     {
+//         $zip = new ZipArchive();
+
+//         if ($zip->open($zipFilePath) === TRUE) {
+//             do {
+//                 $files = [];
+//                 $emptyDirectories = [];
                 
-                // List all files and directories
-                for ($i = 0; $i < $zip->numFiles; $i++) {
-                    $fileName = $zip->getNameIndex($i);
-                    $files[] = $fileName;
-                }
+//                 // List all files and directories
+//                 for ($i = 0; $i < $zip->numFiles; $i++) {
+//                     $fileName = $zip->getNameIndex($i);
+//                     $files[] = $fileName;
+//                 }
 
-                // Identify empty directories
-                foreach ($files as $file) {
-                    if (substr($file, -1) === '/') { // It's a directory
-                        $empty = true;
+//                 // Identify empty directories
+//                 foreach ($files as $file) {
+//                     if (substr($file, -1) === '/') { // It's a directory
+//                         $empty = true;
 
-                        // Check if this directory contains any files or subdirectories
-                        foreach ($files as $innerFile) {
-                            if (strpos($innerFile, $file) === 0 && $innerFile !== $file) {
-                                $empty = false;
-                                break;
-                            }
-                        }
+//                         // Check if this directory contains any files or subdirectories
+//                         foreach ($files as $innerFile) {
+//                             if (strpos($innerFile, $file) === 0 && $innerFile !== $file) {
+//                                 $empty = false;
+//                                 break;
+//                             }
+//                         }
 
-                        if ($empty) {
-                            $emptyDirectories[] = $file;
-                        }
-                    }
-                }
+//                         if ($empty) {
+//                             $emptyDirectories[] = $file;
+//                         }
+//                     }
+//                 }
 
-                // Delete empty directories not present in the database
-                foreach ($emptyDirectories as $dir) {
-                    $directoryName = basename($dir); // Get the directory name without the path
-                    $existsInDatabase = DB::table('folders')
-                        ->where('user_id', $userId)
-                        ->where('name', $directoryName)
-                        ->exists();
+//                 // Delete empty directories not present in the database
+//                 foreach ($emptyDirectories as $dir) {
+//                     $directoryName = basename($dir); // Get the directory name without the path
+//                     $existsInDatabase = DB::table('folders')
+//                         ->where('user_id', $userId)
+//                         ->where('name', $directoryName)
+//                         ->exists();
 
-                    // If directory doesn't exist in the database, delete it
-                    if (!$existsInDatabase) {
-                        $zip->deleteName($dir);
-                    }
-                }
+//                     // If directory doesn't exist in the database, delete it
+//                     if (!$existsInDatabase) {
+//                         $zip->deleteName($dir);
+//                     }
+//                 }
 
-                // Refresh the file list after deletions
-            } while (!empty($emptyDirectories)); // Repeat until no empty directories are found
+//                 // Refresh the file list after deletions
+//             } while (!empty($emptyDirectories)); // Repeat until no empty directories are found
 
-            $zip->close();
-        }
-    }
+//             $zip->close();
+//         }
+//     }
 
-    // Remove empty directories before downloading, checking against the database
-    removeEmptyDirsFromZip($zipFilePath, $userId);
-    // dd($zipFilePath);
-    // Check if the ZIP file still exists after removing empty directories
-    if (!file_exists($zipFilePath)) {
-        // \Log::error("ZIP file does not exist after processing: " . $zipFilePath);
-        return response()->json(['success' => true, 'error' => 'No data found in Directories.'],200);
-    }
+//     // Remove empty directories before downloading, checking against the database
+//     // removeEmptyDirsFromZip($zipFilePath, $userId);
+//     // dd($zipFilePath);
+//     // Check if the ZIP file still exists after removing empty directories
+//     if (!file_exists($zipFilePath)) {
+//         // \Log::error("ZIP file does not exist after processing: " . $zipFilePath);
+//         return response()->json(['success' => true, 'error' => 'No data found in Directories.'],200);
+//     }
 
-    // Proceed with further processing if the ZIP file exists
-    return response()->download($zipFilePath)->deleteFileAfterSend(true);
+//     // Proceed with further processing if the ZIP file exists
+//     return response()->download($zipFilePath)->deleteFileAfterSend(true);
 
-    // return response()->download($zipFilePath)->deleteFileAfterSend(true);
-}
+//     // return response()->download($zipFilePath)->deleteFileAfterSend(true);
+// }
 
 
 
@@ -24481,105 +24560,107 @@ public function downloadFolder($folderid)
 // }
 
 
-private function addFolderToZip($zip, $folderPath, $zipFolderName)
-{
-    $userId = Auth::id();
+// private function addFolderToZip($zip, $folderPath, $zipFolderName)
+// {
+//     $userId = Auth::id();
 
-    // Add the folder itself as an empty directory in the ZIP
-    $zip->addEmptyDir($zipFolderName);
+//     // Add the folder itself as an empty directory in the ZIP
+//     $zip->addEmptyDir($zipFolderName);
 
-    $files = scandir($folderPath);
+//     $files = scandir($folderPath);
 
-    foreach ($files as $file) {
-        if ($file == '.' || $file == '..') {
-            continue;
-        }
+//     foreach ($files as $file) {
+//         if ($file == '.' || $file == '..') {
+//             continue;
+//         }
 
-        $filePath = $folderPath . '/' . $file;
+//         $filePath = $folderPath . '/' . $file;
 
-        // Fetch file information from the database
-        $fileRecord = CommonTable::where('user_id', $userId)
-            ->where(function ($query) use ($file) {
-                $query->where('temp_file_name', $file)
-                      ->orWhere('file_name', $file);
-            })
-            ->where('is_delete', 0)
-            ->whereNull('is_replaced')
-            ->first();
+//         // Fetch file information from the database
+//         $fileRecord = CommonTable::where('user_id', $userId)
+//             ->where(function ($query) use ($file) {
+//                 $query->where('temp_file_name', $file)
+//                       ->orWhere('file_name', $file);
+//             })
+//             ->where('is_delete', 0)
+//             ->whereNull('is_replaced')
+//             ->first();
 
-        // if (!$fileRecord) {
-        //     // Skip files not found in the database or marked as deleted
-        //     continue;
-        // }
+//         // if (!$fileRecord) {
+//         //     // Skip files not found in the database or marked as deleted
+//         //     continue;
+//         // }
 
-        // Determine the name to use inside the ZIP
-        $fileNameInZip = $fileRecord->file_name ?? $file;
+//         // Determine the name to use inside the ZIP
+//         $fileNameInZip = $fileRecord->file_name ?? $file;
 
-        // Determine subdirectory based on `real_file_name` or fall back to `file_name`
-        $subDirName = null;
-        if ($fileRecord) {
-            // If `real_file_name` exists, use it for subdirectory
-            if ($fileRecord->real_file_name) {
-                $subDirName = $fileRecord->real_file_name;
-            }
-        }
+//         // Determine subdirectory based on `real_file_name` or fall back to `file_name`
+//         $subDirName = null;
+//         if ($fileRecord) {
+//             // If `real_file_name` exists, use it for subdirectory
+//             if ($fileRecord->real_file_name) {
+//                 $subDirName = $fileRecord->real_file_name;
+//             }
+//         }
 
-        if (is_dir($filePath)) {
-            // Recursively add subdirectories
-            // $this->addFolderToZip($zip, $filePath, $zipFolderName . '/' . $fileNameInZip);
-            $this->addFolderToZip($zip, $filePath, $zipFolderName . '/' . ($subDirName ?? $fileNameInZip));
+//         if (is_dir($filePath)) {
+//             // Recursively add subdirectories
+//             // $this->addFolderToZip($zip, $filePath, $zipFolderName . '/' . $fileNameInZip);
+//             $this->addFolderToZip($zip, $filePath, $zipFolderName . '/' . ($subDirName ?? $fileNameInZip));
 
-        } else {
-            // Add the file with the correct name from the database
-            // $zip->addFile($filePath, $zipFolderName . '/' . $fileNameInZip);
-             // If `real_file_name` is null, place the file outside of any subdirectory and name it `file_name`
-             if ($subDirName) {
+//         } else {
+//             // Add the file with the correct name from the database
+//             // $zip->addFile($filePath, $zipFolderName . '/' . $fileNameInZip);
+//              // If `real_file_name` is null, place the file outside of any subdirectory and name it `file_name`
+//              if ($subDirName) {
 
                
-                // If a subdirectory is specified, ensure it exists and add the file within it
-                if (!$zip->locateName($zipFolderName . '/' . $subDirName)) {
+//                 // If a subdirectory is specified, ensure it exists and add the file within it
+//                 if (!$zip->locateName($zipFolderName . '/' . $subDirName)) {
 
-                    $zip->addEmptyDir($zipFolderName . '/' . $subDirName);
-                }
+//                     $zip->addEmptyDir($zipFolderName . '/' . $subDirName);
+//                 }
 
-                // Fetch file information from the database
-                $fileRecord2 = CommonTable::where('user_id', $userId)
-                ->where(function ($query) use ($file) {
-                    $query->where('temp_file_name', $file)
-                        ->orWhere('file_name', $file);
-                })
-                ->where('is_delete', 0)
-                ->whereNull('is_replaced')
-                ->first();
+//                 // Fetch file information from the database
+//                 $fileRecord2 = CommonTable::where('user_id', $userId)
+//                 ->where(function ($query) use ($file) {
+//                     $query->where('temp_file_name', $file)
+//                         ->orWhere('file_name', $file);
+//                 })
+//                 ->where('is_delete', 0)
+//                 ->whereNull('is_replaced')
+//                 ->first();
 
-                if (!$fileRecord2) {
-                    // Skip files not found in the database or marked as deleted
-                    continue;
-                }
+//                 if ($fileRecord2) {
+//                     // Skip files not found in the database or marked as deleted
+//                     // continue;
+//                     $zip->addFile($filePath, $zipFolderName . '/' . $subDirName . '/' . $fileNameInZip);
 
-                $zip->addFile($filePath, $zipFolderName . '/' . $subDirName . '/' . $fileNameInZip);
-            } else {
+//                 }
 
-                // Fetch file information from the database
-                $fileRecord3 = CommonTable::where('user_id', $userId)
-                ->where(function ($query) use ($file) {
-                    $query->where('temp_file_name', $file)
-                        ->orWhere('file_name', $file);
-                })
-                ->where('is_delete', 0)
-                ->whereNull('is_replaced')
-                ->first();
+//             } else {
 
-                if (!$fileRecord3) {
-                    // Skip files not found in the database or marked as deleted
-                    continue;
-                }
-                // If no subdirectory is needed, add the file directly under the main folder with `file_name`
-                $zip->addFile($filePath, $zipFolderName . '/' . $fileNameInZip);
-            }
-        }
-    }
-}
+//                 // Fetch file information from the database
+//                 $fileRecord3 = CommonTable::where('user_id', $userId)
+//                 ->where(function ($query) use ($file) {
+//                     $query->where('temp_file_name', $file)
+//                         ->orWhere('file_name', $file);
+//                 })
+//                 ->where('is_delete', 0)
+//                 ->whereNull('is_replaced')
+//                 ->first();
+
+//                 if ($fileRecord3) {
+//                     // Skip files not found in the database or marked as deleted
+//                     // continue;
+//                     $zip->addFile($filePath, $zipFolderName . '/' . $fileNameInZip);
+
+//                 }
+//                 // If no subdirectory is needed, add the file directly under the main folder with `file_name`
+//             }
+//         }
+//     }
+// }
 
 
 
@@ -24710,7 +24791,243 @@ private function addFolderToZip($zip, $folderPath, $zipFolderName)
 
 ///////////////////////////////////////////////////////////////////////////////////////////////
 
+// 13 December 2024 for download Folder start
+// public function downloadFolder($folder_id)
+// {
+//     // Fetch the folder details
+//     $folder = Folder::findOrFail($folder_id);
+//     $folderName = $folder->name;
 
+//     // Find related directories
+//     $relatedDirectories = Folder::where('name', 'like', '%' . $folderName . '%')->get();
+//     dd($relatedDirectories);
+
+//     // Fetch files from the CommonTable
+//     $files = CommonTable::whereIn('folder_id', $relatedDirectories->pluck('id'))->get();
+
+//     // Create a temporary ZIP file
+//     $zipFileName = $folderName . '.zip';
+//     $tempFile = storage_path('app/' . $zipFileName);
+
+//     $zip = new ZipArchive;
+//     if ($zip->open($tempFile, ZipArchive::CREATE | ZipArchive::OVERWRITE) === TRUE) {
+//         foreach ($relatedDirectories as $directory) {
+//             $dirName = $directory->name;
+
+//             // Add a directory to the ZIP
+//             $zip->addEmptyDir($dirName);
+
+//             // Add files to the directory
+//             foreach ($files as $file) {
+//                 if ($file->folder_id == $directory->id) {
+//                     $realFilePath = storage_path('app/uploads/' . $file->real_file_name);
+//                     if (file_exists($realFilePath)) {
+//                         $zip->addFile($realFilePath, $dirName . '/' . $file->file_name);
+//                     }
+//                 }
+//             }
+//         }
+
+//         $zip->close();
+
+//         // Return the ZIP file as a download response
+//         return response()->download($tempFile)->deleteFileAfterSend(true);
+//     } else {
+//         return response()->json(['error' => 'Unable to create ZIP file.'], 500);
+//     }
+// }
+public function downloadFolder($folder_id)
+{
+    // Fetch the folder details
+    $folder = Folder::findOrFail($folder_id);
+    $folderName = $folder->name;
+    // dd($folderName);
+    // Find related directories
+    // $relatedDirectories = Folder::where('path', 'like', '%' . $folderName . '%')->where('user_id',$userId)->get();
+    $relatedDirectories = Folder::where('path', 'like', '%' . $folderName . '%')
+    ->where(function ($query) {
+        $query->where('user_id', Auth::id())
+              ->orWhere('user_id', 301);
+    })
+    ->get();
+
+    // dd($relatedDirectories);
+
+    // Fetch files from the CommonTable
+    // $files = CommonTable::whereIn('folder_id', $relatedDirectories->pluck('id'))->get();
+    // $files = CommonTable::where('location', $relatedDirectories->parent_name)->get();
+
+    // Fetch files from the CommonTable based on the location
+    $locations = $relatedDirectories->pluck('path'); // Assuming 'name' corresponds to part of the location
+    // dd($locations);
+    // $files = CommonTable::whereIn('location', $locations)->get();
+    $files = CommonTable::whereIn('location', $locations)
+    ->where('user_id', Auth::id())
+    ->where('is_delete',0)
+    ->whereNull('is_replaced')
+    ->get();
+    $fileNames = $files->pluck('file_name'); // Assuming 'name' corresponds to part of the location
+    $fileTempNames = $files->pluck('temp_file_name'); // Assuming 'name' corresponds to part of the location
+
+    // dd($fileNames);
+    // dd($fileTempNames);
+
+    // Create a temporary ZIP file path in app/public
+    $zipFileName = $folderName . '.zip';    
+    // $zipFileName = $folderName;
+
+    // $zipFilePath = storage_path('app/public/' . $zipFileName);
+    // $dateSuffix = date('d-F-Y'); // 'd-F-Y' format gives day, month name, and year, e.g., '13-December-2024'
+    // $zipFileName .= '-' . $dateSuffix . '.zip'; // Append date, month name, year, and '.zip' extension
+    $zipFilePath = storage_path('app/public/' . $zipFileName);
+    // dd($zipFilePath);
+
+    $zip = new ZipArchive;
+    if ($zip->open($zipFilePath, ZipArchive::CREATE | ZipArchive::OVERWRITE) === TRUE) {
+        $dir_names=[];
+        foreach ($relatedDirectories as $directory) {
+            $dirName = $directory->name;
+            $dir_names[] = $dirName;
+
+            // Add a directory to the ZIP
+            $zip->addEmptyDir($dirName);
+            // Add files to the directory
+            // foreach ($files as $file) {
+            //     if ($file->folder_id == $directory->id) {
+            //         $realFilePath = storage_path('app/uploads/' . $file->real_file_name);
+            //         if (file_exists($realFilePath)) {
+            //             $zip->addFile($realFilePath, $dirName . '/' . $file->file_name);
+            //         }
+            //     }
+            // }
+
+            // foreach ($files as $file) {
+            //     $storedFilePathZip = storage_path('app/public/' . $directory->path . '/' . $file->temp_file_name);
+            //     echo "Checking file: " . $storedFilePathZip . "\n";
+            //     if (file_exists($storedFilePathZip)) {
+            //         echo "File exists.\n";
+            //     } else {
+            //         echo "File does not exist.\n";
+            //     }
+            // }
+
+            // dd("after foreach");
+            foreach ($files as $file) {
+                // dd($file->location); 
+                // dd($directory->path);
+                // "2024-2025November301_Accounting & Taxation/2024-2025November301_Indirect Tax/2024-2025November301_Indirect/2024-2025November301_GST/2024-2025November301_Litigations"
+                // "2024-2025November301_Accounting & Taxation/2024-2025November301_Indirect Tax/2024-2025November301_Indirect/2024-2025November301_GST"
+
+                if ($file->location == $directory->path) {
+                    // dd("matched ".$file->location);
+                    // dd($file);
+                    // $storedFilePath = storage_path('app/'.$directory->path .'/'. $file->temp_file_name);
+                    // // $storedFilePathZip = storage_path('app/public/'.$directory->name.'/'.$file->file_name);
+                    // $storedFilePathZip = storage_path('app/public/'.$directory->name.'/'.$file->temp_file_name);
+
+                    // // $storedFilePathZiploc = storage_path('app/public/'.$directory->path.'/'.$file->file_name);
+                    // // dd($storedFilePathZip);
+                    // // Debugging paths
+                    // // dd([
+                    // //     'Stored File Path' => $storedFilePath,
+                    // //     'ZIP File Path' => $storedFilePathZip,
+                    // // ]);
+
+                    // // Check if the file exists at the given path
+                    // if (file_exists($storedFilePath)) {
+                    //     // Add the file to the ZIP archive
+                    //     $asf = $zip->addFile($storedFilePath,$storedFilePathZip);
+                    //     dd($asf);
+                    //     echo "File added to the ZIP at location: " . $storedFilePathZip;
+                    // } else {
+                    //     echo "File not found at: " . $storedFilePath;
+                    // }
+
+                    // $storedFilePath = storage_path('app/' . $directory->path . '/' . $file->temp_file_name);
+                    // $storedFilePathZip = storage_path('app/public/' . $directory->name . '/' . $file->temp_file_name);
+
+                    // //////// working smooth  start
+                    // $storedFilePath = storage_path('app/' . $directory->path . '/' . $file->temp_file_name);
+
+                    // // Correct the relative path for the ZIP
+                    // $relativeZipPath = $directory->name . '/' . $file->file_name; // Exclude "public/" from the path
+                    
+                    // // Debugging paths
+                    // // dd([
+                    // //     'Stored File Path' => $storedFilePath,
+                    // //     'Relative ZIP Path' => $relativeZipPath,
+                    // // ]);
+                    
+                    // // Check if the file exists at the given path
+                    // if (file_exists($storedFilePath)) {
+                    //     // Add the file to the ZIP archive with the correct relative path
+                    //     $addedToZip = $zip->addFile($storedFilePath, $relativeZipPath);
+                    
+                    //     // Check if the file was added successfully
+                    //     if ($addedToZip) {
+                    //         echo "File added to the ZIP at location: " . $relativeZipPath . "<br>";
+                    //     } else {
+                    //         echo "Failed to add the file to the ZIP.<br>";
+                    //     }
+                    // } else {
+                    //     echo "File not found at: " . $storedFilePath . "<br>";
+                    // }
+                    // //////// working smooth end ///////////////
+
+
+                    $storedFilePath = storage_path('app/' . $directory->path . '/' . $file->temp_file_name);
+
+                    // Determine the relative ZIP path based on `real_file_name`
+                    if (!empty($file->real_file_name)) {
+                        $relativeZipPath = $directory->name . '/' . $file->real_file_name . '/' . $file->file_name;
+                    } else {
+                        $relativeZipPath = $directory->name . '/' . $file->file_name;
+                    }
+
+                    // Debugging paths
+                    // dd([
+                    //     'Stored File Path' => $storedFilePath,
+                    //     'Relative ZIP Path' => $relativeZipPath,
+                    // ]);
+
+                    // Check if the file exists at the given path
+                    if (file_exists($storedFilePath)) {
+                        // Create the directory structure in the ZIP if it doesn't exist
+                        $zipDirectory = dirname($relativeZipPath);
+                        if (!empty($zipDirectory) && !$zip->locateName($zipDirectory . '/')) {
+                            $zip->addEmptyDir($zipDirectory); // Ensure the directory exists in the ZIP
+                        }
+
+                        // Add the file to the ZIP archive with the correct relative path
+                        $addedToZip = $zip->addFile($storedFilePath, $relativeZipPath);
+
+                        // Check if the file was added successfully
+                        if ($addedToZip) {
+                            echo "File added to the ZIP at location: " . $relativeZipPath . "<br>";
+                        } else {
+                            echo "Failed to add the file to the ZIP.<br>";
+                        }
+                    } else {
+                        echo "File not found at: " . $storedFilePath . "<br>";
+                    }
+
+                }
+            }
+        }
+        // dd($dir_names);
+        $zip->close();
+        // Make the ZIP file publicly accessible
+        $publicZipPath = 'storage/app/public/' . $zipFileName;
+        return response()->download($zipFilePath)->deleteFileAfterSend(true);
+        // return response()->json(['path' => $publicZipPath, 'message' => 'ZIP file created successfully.']);
+    } else {
+        return response()->json(['error' => 'Unable to create ZIP file.'], 500);
+    }
+}
+
+
+
+// 13 December 2024 for download Folder end
 
 
     
@@ -25648,6 +25965,10 @@ public function HandleCommonUploadFiles(Request $request)
         // Check if folder path is provided
         $folderPath = $request->input('parent_folder');
         $folderPaths = $request->input('parent_folder');
+
+        $folderPaths2 = $folderPaths;
+        $folderName = substr($folderPaths2, strrpos($folderPaths2, '/') + 1);
+        $folderName = trim($folderName);
         // $folderPaths = preg_replace('/\s*\/\s*/', ' / ', $folderPath);
         // if (!$folderPath) {
         //     return response()->json(['success' => false, 'message' => 'Folder path is required.'], 400);
@@ -25731,6 +26052,7 @@ public function HandleCommonUploadFiles(Request $request)
                                         'month' => $request->input('Month'),
                                         'tags' => $tags, // Store tags as JSON
                                         'location' => $folderPaths,
+                                        'folder_name'=>$folderName,
                                         'descp' => $request->input('desc'),
                                     ]);
 
@@ -25795,6 +26117,10 @@ public function HandleCommonUploadFiles(Request $request)
         // Check if folder path is provided
         $folderPath = $request->input('parent_folder');
         $folderPaths = $request->input('parent_folder');
+
+        $folderPaths2 = $folderPaths;
+        $folderName = substr($folderPaths2, strrpos($folderPaths2, '/') + 1);
+        $folderName = trim($folderName);
         // if (!$folderPath) {
         //     return response()->json(['success' => false, 'message' => 'Folder path is required.'], 400);
         // }
@@ -25897,6 +26223,7 @@ public function HandleCommonUploadFiles(Request $request)
                             'month' => $request->input('Month'),
                             'tags' => $tags, // Store tags as JSON
                             'location' => $folderPaths,
+                            'folder_name'=>$folderName,
                             'descp' => $request->input('desc'),
                             'is_keep' => 1,
                         ]);
@@ -25940,6 +26267,9 @@ public function HandleCommonUploadFiles(Request $request)
         $folderPath = $request->input('parent_folder');
         $folderPaths = $request->input('parent_folder');
         // dd($folderPath);
+        $folderPaths2 = $folderPaths;
+        $folderName = substr($folderPaths2, strrpos($folderPaths2, '/') + 1);
+        $folderName = trim($folderName);
 
         // if (!$folderPath) {
         //     return response()->json(['success' => false, 'message' => 'Folder path is required.'], 400);
@@ -26001,6 +26331,7 @@ public function HandleCommonUploadFiles(Request $request)
                             'month' => $request->input('Month'),
                             'tags' => $tags, // Store tags as JSON
                             'location' => $folderPaths,
+                            'folder_name'=>$folderName,
                             'descp' => $request->input('desc'),
                         ]);
     
@@ -26035,7 +26366,7 @@ public function updateTempfilesName(){
     // dd("You are not authorised");
 
     // dd($userId);
-    if(269 == $userId){
+    if(269 === $userId){
         $entries = \App\Models\CommonTable::whereNull('temp_file_name')->get();
 
         $fileNames = [];

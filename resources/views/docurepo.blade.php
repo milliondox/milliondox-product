@@ -2158,7 +2158,8 @@
                                                                     } catch (error) {
                                                                         clearInterval(intervalId); // Stop simulated progress
                                                                         updateProgressBar(progressId, 0, "Failed!");
-                                                                        toastr.error('No data found in directories');
+                                                                        toastr.error('An error occurred while downloading the folder. Please try again.', 'Download Error');
+                                            
                                                                         // If no active requests, hide the progress container without confirmation
                                                                         $('.progree_cont_nt').hide();
 
