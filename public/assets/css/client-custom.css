@@ -5627,11 +5627,11 @@ span.red_star {
         color: #fff !important;
     }
 
-  
+
     .dark-only .drop_coman_file.have_title .modal-content .gropu_form input::placeholder {
         color: #dbdbdb;
     }
-    
+
 
 
 
@@ -22963,6 +22963,10 @@ span.clinet_name {
     background: #ff0000;
 }
 
+.contract_manage_new .entery_body tbody .user_status span.inactive:before {
+    background: #f4f424;
+}
+
 
 .contract_manage_new .entery_body tbody .signing_ath .signing_ath_rpt {
     display: inline-block;
@@ -22995,6 +22999,7 @@ span.clinet_name {
     border-style: solid;
     border-color: #707172 transparent transparent transparent;
 }
+
 .signing_ath_rpt .count:hover .custom-tooltip {
     opacity: 1;
     visibility: visible;
@@ -23186,6 +23191,7 @@ span.clinet_name {
 .contract_manage_new .entery_body tbody tr {
     transition: all .25s ease-out;
 }
+
 .contract_manage_new .entery_body tbody tr:hover {
     background: aliceblue;
 }
@@ -23193,6 +23199,7 @@ span.clinet_name {
 .contract_uploadd .entery_body tbody tr {
     transition: all .25s ease-out;
 }
+
 .contract_uploadd .entery_body tbody tr:hover {
     background: aliceblue;
 }
@@ -23201,6 +23208,7 @@ span.clinet_name {
 .dark-only .contract_manage_new .entery_body tbody tr:hover {
     background: #312f2f;
 }
+
 .dark-only .contract_uploadd .entery_body tbody tr:hover {
     background: #312f2f;
 }
@@ -23752,14 +23760,14 @@ span.clinet_name {
     background: transparent;
 }
 
-.contract_uploadd .contract_up_head .right_btn_contt button.download {
-    border: 1px solid #d5d7da;
+.contract_uploadd .contract_up_head .right_btn_contt button.download.opload {
+    border: 1px solid #bdbfc1;
     box-shadow: 0px 1px 2px 0px #0a0d120d;
     border-radius: 8px;
     font-size: 14px;
     font-weight: 600;
-    color: #414651;
-    padding: 10px 15px;
+    color: #bdbfc1;
+    background: transparent;
 }
 
 .contract_uploadd .contract_up_head .right_btn_contt button.opload {
@@ -23768,9 +23776,38 @@ span.clinet_name {
     font-size: 14px;
     font-weight: 600;
     color: #fff;
-    padding: 10px 15px;
+    padding: 0px 5px;
     background: #5790ff;
     gap: 0px 5px;
+    width: 40px;
+    height: 40px;
+    justify-content: center;
+    position: relative;
+    transition: width 0.7s;
+    overflow: hidden;
+}
+.contract_uploadd .contract_up_head .right_btn_contt button.opload svg {
+    opacity: 1;
+    transition: opacity 0.5s;
+}
+.contract_uploadd .contract_up_head .right_btn_contt button.opload .button-text {
+    opacity: 0;
+    transition: opacity .5s;
+    position: absolute;
+    width: 100%;
+    left: 0;
+}
+.contract_uploadd .contract_up_head .right_btn_contt button.opload:hover {
+    width: 110px;
+    transition: width 0.7s;
+}
+.contract_uploadd .contract_up_head .right_btn_contt button.opload:hover svg {
+    opacity: 0;
+    transition: opacity 0.5s;
+}
+.contract_uploadd .contract_up_head .right_btn_contt button.opload:hover .button-text {
+    opacity: 1;
+    transition: opacity 0.5s;
 }
 
 
@@ -23878,6 +23915,10 @@ span.clinet_name {
 
 .contract_uploadd .person_status span.expire:before {
     background: #ff0000;
+}
+
+.contract_uploadd .person_status span.inactive:before {
+    background: #f4f424;
 }
 
 .contract_uploadd .person_status p {
