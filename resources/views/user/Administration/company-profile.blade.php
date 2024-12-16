@@ -70,14 +70,31 @@
     <div class="inner_file_edit">	      
      <div class="dont_show">
      
-@if($user->profile_picture == NULL)
+{{-- @if($user->profile_picture == NULL)
       
      <img id="profile-image" src="../assets/images/logo_wingdart.png" alt="Add Image">
    @else
 
     <img id="profile-image" src="{{asset('/' . $user->profile_picture)}}" alt="Profile Image">
- @endif    
+ @endif     --}}
 
+
+ <?php 
+ // Extract initials
+ $nameParts = explode(' ', $user->name);
+ $firstLetter = strtoupper(substr($nameParts[0], 0, 1)); // First letter of first name
+ $secondLetter = isset($nameParts[1]) ? strtoupper(substr($nameParts[1], 0, 1)) : ''; // First letter of last name (if exists)
+
+ // Path to the profile picture
+ $profilePicturePath = public_path($user->profile_picture);
+
+ // Check if the profile picture exists
+ if ($user->profile_picture === NULL || !file_exists($profilePicturePath)) {
+     echo '<h2>' . $firstLetter . $secondLetter . '</h2>';
+ } else {
+     echo '<img src="' . asset('/' . $user->profile_picture) . '" class="mtt" alt="Profile Image">';
+ }
+?>
     <div class="EAyyHe"><div class="EzQmEf"></div></div>
   </div>
   </div>
