@@ -153,11 +153,13 @@
                               <div class="gropu_form">
                                 <label for="pincode">Pin Code</label>
                                 <input placeholder="Pin Code" type="text" id="pincode" name="pincode" value="" maxlength="6" required>
+                                <ul id="pincode-suggestions" class="suggestions-list"></ul>
                               </div>
                                <!-- City with Auto-fill State and Pin Code -->
                                <div class="gropu_form">
                                 <label for="city">City</label>
                                 <input placeholder="City" type="text" id="city" name="city" value="" required>
+                                <ul id="city-suggestions" class="suggestions-list"></ul>
                               </div>
 
                               
@@ -303,99 +305,116 @@
 
 
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<style>
+  .suggestions-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    /* border: 1px solid #ccc; */
+    max-height: 150px;
+    overflow-y: auto;
+    position: absolute;
+    background-color: #fff;
+    z-index: 1000;
+    width: calc(100% - 20px);
+  }
+
+  .suggestions-list li {
+    padding: 8px 10px;
+    cursor: pointer;
+  }
+
+  .suggestions-list li:hover {
+    background-color: #f0f0f0;
+  }
+</style>
+
 <script>
- // Clear related fields when one is cleared
-document.getElementById('state').addEventListener('input', function () {
-  if (this.value.trim() === "") {
-    document.getElementById('city').value = "";
-    document.getElementById('pincode').value = "";
+  // Clear related fields when one is cleared
+  document.getElementById('state').addEventListener('input', clearFields);
+  document.getElementById('city').addEventListener('input', clearFields);
+  document.getElementById('pincode').addEventListener('input', clearFields);
+  
+  function clearFields() {
+    if (this.value.trim() === "") {
+      document.getElementById('state').value = "";
+      document.getElementById('city').value = "";
+      document.getElementById('pincode').value = "";
+    }
   }
-});
-
-document.getElementById('city').addEventListener('input', function () {
-  if (this.value.trim() === "") {
-    document.getElementById('state').value = "";
-    document.getElementById('pincode').value = "";
-  }
-});
-
-document.getElementById('pincode').addEventListener('input', function () {
-  if (this.value.trim() === "") {
-    document.getElementById('state').value = "";
-    document.getElementById('city').value = "";
-  }
-});
-
-// Fetch State and City based on Pin Code
+  
+  // Fetch State and City based on Pin Code
 document.getElementById('pincode').addEventListener('input', function () {
   const pincode = this.value.trim();
+  const suggestionList = document.getElementById('pincode-suggestions');
 
   if (pincode.length === 6) {
     fetch(`https://api.postalpincode.in/pincode/${pincode}`)
       .then(response => response.json())
       .then(data => {
         if (data[0].Status === "Success") {
-          const postOffice = data[0].PostOffice[0];
-          document.getElementById('state').value = postOffice.State;
-          document.getElementById('city').value = postOffice.District;
-        } else {
-          Swal.fire({
-            icon: 'error',
-            title: 'Invalid Pincode',
-            text: 'Please try again with a valid pincode.',
+          suggestionList.innerHTML = ""; // Clear previous suggestions
+          const postOffices = data[0].PostOffice;
+
+          postOffices.forEach(office => {
+            const li = document.createElement('li');
+            li.textContent = `${office.Name}, ${office.District}, ${office.State}`;
+            li.addEventListener('click', function () {
+              // Auto-fill inputs
+              document.getElementById('pincode').value = pincode;
+              document.getElementById('city').value = office.District;
+              document.getElementById('state').value = office.State;
+              suggestionList.innerHTML = ""; // Clear suggestions after selection
+            });
+            suggestionList.appendChild(li);
           });
-          document.getElementById('state').value = "";
-          document.getElementById('city').value = "";
+        } else {
+          suggestionList.innerHTML = "<li>No suggestions available</li>";
         }
       })
-      .catch(error => {
-        console.error("Error fetching pincode details:", error);
-        Swal.fire({
-          icon: 'error',
-          title: 'Error',
-          text: 'Unable to fetch details. Please try again later.',
-        });
-      });
+      .catch(error => console.error("Error fetching pincode details:", error));
   } else {
-    document.getElementById('state').value = "";
-    document.getElementById('city').value = "";
+    suggestionList.innerHTML = ""; // Clear suggestions if input is invalid
   }
 });
 
 // Fetch Pin Code and State based on City Name
 document.getElementById('city').addEventListener('input', function () {
   const city = this.value.trim();
+  const suggestionList = document.getElementById('city-suggestions');
 
-  if (city.length > 2) { // Start searching after at least 3 characters
+  if (city.length > 1) {
     fetch(`https://api.postalpincode.in/postoffice/${city}`)
       .then(response => response.json())
       .then(data => {
         if (data[0].Status === "Success") {
-          const postOffice = data[0].PostOffice[0];
-          document.getElementById('state').value = postOffice.State;
-          document.getElementById('pincode').value = postOffice.Pincode;
-        } else {
-          Swal.fire({
-            icon: 'error',
-            title: 'City Not Found',
-            text: 'Please try again with a valid city name.',
+          suggestionList.innerHTML = ""; // Clear previous suggestions
+          const postOffices = data[0].PostOffice;
+
+          postOffices.forEach(office => {
+            const li = document.createElement('li');
+            li.textContent = `${office.Name}, ${office.State} - ${office.Pincode}`;
+            li.addEventListener('click', function () {
+              // Auto-fill inputs
+              document.getElementById('city').value = city;
+              document.getElementById('state').value = office.State;
+              document.getElementById('pincode').value = office.Pincode;
+              suggestionList.innerHTML = ""; // Clear suggestions after selection
+            });
+            suggestionList.appendChild(li);
           });
-          document.getElementById('state').value = "";
-          document.getElementById('pincode').value = "";
+        } else {
+          suggestionList.innerHTML = "<li>No suggestions available</li>";
         }
       })
-      .catch(error => {
-        console.error("Error fetching city details:", error);
-        Swal.fire({
-          icon: 'error',
-          title: 'Error',
-          text: 'Unable to fetch details. Please try again later.',
-        });
-      });
+      .catch(error => console.error("Error fetching city details:", error));
+  } else {
+    suggestionList.innerHTML = ""; // Clear suggestions if input is invalid
   }
 });
 
-</script>
+  </script>
+  
 <script>
   $(document).on('submit', '#customerForm', function (e) {
       e.preventDefault();

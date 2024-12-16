@@ -23294,7 +23294,7 @@ if ($subfolders->isNotEmpty()) {
 
         // Build folder HTML
         $folderHtml .= '<li>
-                            <a href="#" class="folder-link wedcolor" data-folder-path="' . $folder->path . '">
+                            <a href="#" class="folder-link wedcolor sortafter" data-folder-path="' . $folder->path . '">
                                 <div class="folder_wraap foldreload">
                                     <img src="../assets/images/solar_folder-bold.png" id="folders" class="folder-icon" alt="Folder Icon">
                                     <span>' . $folder->name . '</span>

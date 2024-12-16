@@ -3645,6 +3645,47 @@
                                                                     navigateToFolder(folderPath);
                                                                 });
 
+                                                                $(document).on('click', '.sortafter', function(e) {
+                                                                    e.preventDefault(); // Prevent the default behavior
+
+                                                                    const folderPath = $(this).data('folder-path');
+                                                                    console.log("Navigating to folder: " + folderPath);
+
+                                                                    // Clear the selected sort option and set to 'a-to-z' as default
+                                                                    $('#sortOptions').val('a-to-z'); // Set the sort dropdown to 'a-to-z'
+
+                                                                    // Trigger the sorting function with 'a-to-z' as the selected sort option
+                                                                    const encodedString = getQueryParamf('folder');
+                                                                    const decodedString = decodeURIComponent(encodedString);
+
+                                                                    $.ajax({
+                                                                        url: '/fetch-subfolders2', // Adjust the URL to your route
+                                                                        method: 'GET',
+                                                                        data: {
+                                                                            folderName: decodedString,
+                                                                            sortOption: 'a-to-z' // Default sort option
+                                                                        },
+                                                                        beforeSend: function() {
+                                                                            $('.loader').show(); // Show loader before sending request
+                                                                            $('.folder-contents').html(''); // Clear previous contents
+                                                                        },
+                                                                        success: function(response) {
+                                                                            console.log(response.html);
+                                                                            $('.folder-contents').html(response.html); // Update folder contents
+                                                                        },
+                                                                        error: function() {
+                                                                            $('.folder-contents').html('<p>Something went wrong. Please try again.</p>');
+                                                                        },
+                                                                        complete: function() {
+                                                                            $('.loader').hide(); // Hide loader after request completes
+                                                                        }
+                                                                    });
+
+                                                                    // Optionally, navigate to the folder (if needed)
+                                                                    navigateToFolder(folderPath);
+                                                                });
+
+
 
 
 
@@ -4269,7 +4310,7 @@
                                                                     var $this = $(this);
                                                                     var folderPath = $this.data('folder-path');
 
-
+                                                                 
 
                                                                     // Remove 'active' class from all other toggle icons
                                                                     $('.toggle_icconn').removeClass('active');
@@ -4278,6 +4319,7 @@
                                                                     if ($this.hasClass('active')) {
                                                                         $this.removeClass('active'); // Remove 'active' class if it's already active
                                                                     } else {
+                                                                      
                                                                         navigateToFolder1(folderPath);
                                                                         // navigateToFolders(folderPath);
                                                                         $this.addClass('active'); // Add 'active' class
@@ -4286,9 +4328,9 @@
 
 
                                                                 function navigateToFolder1(folderPath) {
-
+                                                                  
                                                                     openNewFolder(folderPath);
-
+                                                                  
                                                                     $('li a').removeClass('active');
                                                                     $(`[data-folder-path="${folderPath}"]`).addClass('active');
                                                                     $('#parent-folder, #parent-folders').val(folderPath);
@@ -4535,7 +4577,16 @@
                                                                         const parentPath = folderParts.slice(0, -1).join('/') || 'root';
                                                                         breadcrumbHtml += `
             <button class="backs-button" data-folder-path="${parentPath}">
-                Back
+               <svg width="16" height="12" viewBox="0 0 16 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <g clip-path="url(#clip0_642_662)">
+                    <path d="M14.6641 6H1.33073M1.33073 6L6.33073 11M1.33073 6L6.33073 1" stroke="#1E1E1E" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+                </g>
+                <defs>
+                    <clipPath id="clip0_642_662">
+                        <rect width="16" height="12" fill="white"></rect>
+                    </clipPath>
+                </defs>
+            </svg>
             </button>`;
                                                                     }
 
@@ -4671,7 +4722,7 @@
 
                                                                 function fetchFolderContents(folderPath) {
                                                                     // showLoader(); // Ensure the loader is shown when the request starts
-
+                                                                    showLoader();
                                                                     function getQueryParam(param) {
                                                                         const queryString = window.location.search.substring(1);
                                                                         const params = queryString.split('&');
@@ -4902,7 +4953,7 @@
                                                                 //     });
 
                                                                 function fetchFolderContents2(folderPath) {
-                                                                    showLoader(); // Ensure the loader is shown when the request starts
+                                                                    // showLoader(); // Ensure the loader is shown when the request starts
 
                                                                     function getQueryParam(param) {
                                                                         const queryString = window.location.search.substring(1);
