@@ -1389,30 +1389,35 @@ ul.dropdown-menu .toggle_icconn {
 }
 
 .all_locations .backs-button {
+    width: 24px;
+    height: 24px;
+    border: 1px solid #CEFFA8;
+    border-radius: 50%;
     display: flex;
+    align-items: center;
+    justify-content: center;
     background: transparent;
     box-shadow: none;
-    border: 0;
-    position: relative;
-    margin-bottom: 1px;
-    top: -5px;
-    color: #d0ffad;
-    padding: 0px 0px 0px 10px;
-    font-size: 12px;
+    margin-bottom: 8px;
 }
 
-.all_locations .backs-button:before {
-    content: "<";
-    font-size: 15px;
-    position: absolute;
-    top: 50%;
-    transform: translateY(-50%);
-    left: 0;
+.all_locations .backs-button svg {
+    width: 18px;
+    height: 13px;
+}
+
+.all_locations .backs-button svg path {
+    stroke: #CEFFA8;
 }
 
 .dark-only .all_locations .backs-button {
-    color: #9fdb7e;
+    border: 1px solid #9fdb7e;
 }
+
+.dark-only .all_locations .backs-button svg path {
+    stroke: #9fdb7e;
+}
+
 
 .back-button-container button {
     display: flex;
@@ -1463,7 +1468,7 @@ padding:0
     flex: 3;
 }
 
-#upload_filee.drop_coman_file.have_title .modal-content .gropu_form.ivoice-upload .file-area {
+#upload_filee.drop_coman_file.have_title .modal-content .gropu_form.ivoice-upload .file-area_cover {
     flex: 3 !important;
 }
 

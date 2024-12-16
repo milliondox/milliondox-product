@@ -248,221 +248,321 @@
 
 
 <script>
-    $(document).ready(function() {
-        // Object to store selected files for each input by their unique IDs
-        let fileData = {};
+    // script for inner upload model
+//    $(document).ready(function () {
+//     var fileData = {};
+//     alert('inside ready');
+//     let currentModalId = null;
 
-        // Variable to track the currently open modal ID
-        let currentModalId = null;
+//     // Handle file input change
+//     $('body').on('change', '.dragfile', function () {
+//         const fileInput = this;
+//         const fileList = $(fileInput).closest('.file-area').next('.file-list');
+//         const inputId = $(fileInput).attr('id');
 
-        // Handle file input change
-        $('body').on('change', '.dragfile', function() {
-            const fileInput = this;
-            const fileList = $(fileInput).closest('.file-area').next('.file-list');
-            const inputId = $(fileInput).attr('id');
+//         if (!fileData[inputId]) fileData[inputId] = [];
 
-            // Initialize fileData for the input if not already present
-            if (!fileData[inputId]) fileData[inputId] = [];
+//         // Append new files to fileData
+//         const newFiles = Array.from(fileInput.files);
+//         fileData[inputId] = [...fileData[inputId], ...newFiles];
 
-            handleFiles(fileInput, fileList, inputId);
-        });
+//         refreshFileList(fileList, inputId);
+//         updateFileInput(fileInput, inputId);
+//     });
 
-        // Handle drag and drop events
-        $('.file-area').on('dragover', function(event) {
-            event.preventDefault();
-            $(this).addClass('green-outline');
-        }).on('dragleave drop', function(event) {
-            event.preventDefault();
-            $(this).removeClass('green-outline');
-        }).on('drop', function(event) {
-            event.preventDefault();
-            const fileInput = $(this).find('.dragfile')[0];
-            const fileList = $(this).next('.file-list');
-            fileInput.files = event.originalEvent.dataTransfer.files;
-            const inputId = $(fileInput).attr('id');
+//     // Handle drag and drop events
+//     $('.file-area').on('dragover', function (event) {
+//         event.preventDefault();
+//         $(this).addClass('green-outline');
+//     }).on('dragleave', function () {
+//         $(this).removeClass('green-outline');
+//     }).on('drop', function (event) {
+//         event.preventDefault();
+//         $(this).removeClass('green-outline');
 
-            // Initialize fileData for the input if not already present
-            if (!fileData[inputId]) fileData[inputId] = [];
+//         const fileInput = $(this).find('.dragfile')[0];
+//         const fileList = $(this).next('.file-list');
+//         const inputId = $(fileInput).attr('id');
 
-            handleFiles(fileInput, fileList, inputId);
-        });
+//         if (!fileData[inputId]) fileData[inputId] = [];
 
-        // Function to handle files and update the UI
-        function handleFiles(fileInput, fileList, inputId) {
-            const newFiles = Array.from(fileInput.files);
-            fileData[inputId] = [...fileData[inputId], ...newFiles];
-            fileList.empty();
+//         const droppedFiles = Array.from(event.originalEvent.dataTransfer.files);
 
-            // Append each file to the file list
-            fileData[inputId].forEach((file, index) => {
-                const fileItem = $('<div>', {
-                    class: 'file-item'
-                }).append(
-                    $('<span>').text(file.name),
-                    $('<button>', {
-                        class: 'remove-btn',
-                        'data-file-index': index
-                    }).text('X').on('click', function() {
-                        removeFile(fileInput, index, fileList, inputId);
-                    })
-                );
-                fileList.append(fileItem);
-            });
+//         // Append dropped files to the fileData array
+//         fileData[inputId] = [...fileData[inputId], ...droppedFiles];
 
-            updateFileInput(fileInput, inputId);
-        }
+//         // Update the file input before refreshing the list
+//         updateFileInput(fileInput, inputId);
+//         refreshFileList(fileList, inputId);
+//     });
 
-        // Function to remove a file from the input
-        function removeFile(fileInput, index, fileList, inputId) {
-            fileData[inputId].splice(index, 1);
-            updateFileInput(fileInput, inputId);
-            refreshFileList(fileList, fileInput, inputId);
-        }
+//     // Function to refresh the file list in the UI
+//     function refreshFileList(fileList, inputId) {
+//         fileList.empty();
 
-        // Function to refresh the file list in the UI
-        function refreshFileList(fileList, fileInput, inputId) {
-            fileList.empty();
-            fileData[inputId].forEach((file, i) => {
-                const fileItem = $('<div>', {
-                    class: 'file-item'
-                }).append(
-                    $('<span>').text(file.name),
-                    $('<button>', {
-                        class: 'remove-btn',
-                        'data-file-index': i
-                    }).text('X').on('click', function() {
-                        removeFile(fileInput, i, fileList, inputId);
-                    })
-                );
-                fileList.append(fileItem);
-            });
-        }
+//         fileData[inputId].forEach((file, index) => {
+//             const fileItem = $('<div>', {
+//                 class: 'file-item'
+//             }).append(
+//                 $('<span>').text(file.name),
+//                 $('<button>', {
+//                     class: 'remove-btn',
+//                     'data-file-index': index
+//                 }).text('X').on('click', function () {
+//                     removeFile(index, fileList, inputId);
+//                 })
+//             );
+//             fileList.append(fileItem);
+//         });
+//     }
 
-        // Function to update the file input's file list
-        function updateFileInput(fileInput, inputId) {
-            const dataTransfer = new DataTransfer();
-            fileData[inputId].forEach(file => dataTransfer.items.add(file));
-            fileInput.files = dataTransfer.files;
-        }
+//     // Function to remove a file from the input
+//     function removeFile(index, fileList, inputId) {
+//         fileData[inputId].splice(index, 1);
+//         refreshFileList(fileList, inputId);
+//         updateFileInput($(`#${inputId}`)[0], inputId);
+//     }
 
-        // Clear file data and reset inputs when a modal is opened, unless reopening the same modal
-        $('body').on('shown.bs.modal', '.modal', function() {
-            const newModalId = $(this).attr('id');
+//     // Function to update the file input's file list
+//     function updateFileInput(fileInput, inputId) {
+//         const dataTransfer = new DataTransfer();
+//         fileData[inputId].forEach(file => dataTransfer.items.add(file));
+//         fileInput.files = dataTransfer.files;
+//     }
 
-            // If reopening the same modal, don't clear the file data
-            if (currentModalId === newModalId) return;
+//     // Initialize file data for all file inputs
+//     $('.dragfile').each(function () {
+//         const inputId = $(this).attr('id');
+//         fileData[inputId] = [];
+//     });
 
-            currentModalId = newModalId; // Update current modal ID
+//     // Clear file data and reset inputs when a modal is opened
+//     $('body').on('shown.bs.modal', '.modal', function () {
+//         const newModalId = $(this).attr('id');
 
-            $(this).find('.dragfile').each(function() {
-                const fileInput = this;
-                const fileList = $(fileInput).closest('.file-area').next('.file-list');
-                const inputId = $(fileInput).attr('id');
+//         if (currentModalId === newModalId) return;
 
-                // Only clear if fileData exists for the input
-                if (fileData[inputId] && fileData[inputId].length > 0) {
-                    fileData[inputId] = [];
-                    updateFileInput(fileInput, inputId);
-                    fileList.empty();
-                }
-            });
-        });
+//         currentModalId = newModalId;
 
-        // Clear file data and reset input when closing the modal
-        $('body').on('click', '.close', function() {
-            const currentModal = $(this).closest('.modal');
-            currentModal.find('.dragfile').each(function() {
-                const fileInput = this;
-                const fileList = $(fileInput).closest('.file-area').next('.file-list');
-                const inputId = $(fileInput).attr('id');
+//         $(this).find('.dragfile').each(function () {
+//             const fileInput = this;
+//             const fileList = $(fileInput).closest('.file-area').next('.file-list');
+//             const inputId = $(fileInput).attr('id');
 
-                fileData[inputId] = [];
-                updateFileInput(fileInput, inputId);
-                fileList.empty();
-            });
-        });
-    });
+//             fileData[inputId] = [];
+//             updateFileInput(fileInput, inputId);
+//             fileList.empty();
+//         });
+//     });
+
+//     // Clear file data and reset input when closing the modal
+//     $('body').on('click', '.close', function () {
+//         const currentModal = $(this).closest('.modal');
+//         currentModal.find('.dragfile').each(function () {
+//             const fileInput = this;
+//             const fileList = $(fileInput).closest('.file-area').next('.file-list');
+//             const inputId = $(fileInput).attr('id');
+
+//             fileData[inputId] = [];
+//             updateFileInput(fileInput, inputId);
+//             fileList.empty();
+//         });
+//     });
+// });
+
 </script>
 
 
 
 
 <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        const dropArea = document.querySelector('.left_side_wraap');
-        let dragCounter = 0;
+document.addEventListener('DOMContentLoaded', function () {
+    var fileData = {}; // Store file data for each input
+    let currentModalId = null;
 
-        // Function to check if any modal is currently open
-        function isModalOpen() {
-            return $('.modal:visible').length > 0;
-        }
+    // Handle drag and drop functionality for the left_side_wraap
+    const dropArea = document.querySelector('.left_side_wraap');
+    let dragCounter = 0;
 
-        // Add class when file is dragged over the div
-        dropArea.addEventListener('dragenter', function(event) {
-            event.preventDefault();
-            if (isModalOpen()) return; // Stop script if another modal is open
+    // Function to check if any modal is currently open
+    function isModalOpen() {
+        return $('.modal:visible').length > 0;
+    }
 
-            dragCounter++;
-            dropArea.classList.add('left_side_wraap_active');
-        });
+    // Add class when file is dragged over the div
+    dropArea.addEventListener('dragenter', function (event) {
+        event.preventDefault();
+        if (isModalOpen()) return;
 
-        // Prevent default behavior to allow drop
-        dropArea.addEventListener('dragover', function(event) {
-            event.preventDefault();
-        });
+        dragCounter++;
+        dropArea.classList.add('left_side_wraap_active');
+    });
 
-        // Remove class when the file is dragged out of the div
-        dropArea.addEventListener('dragleave', function(event) {
-            event.preventDefault();
-            if (isModalOpen()) return; // Stop script if another modal is open
+    // Prevent default behavior to allow drop
+    dropArea.addEventListener('dragover', function (event) {
+        event.preventDefault();
+    });
 
-            dragCounter--;
-            if (dragCounter === 0) {
-                dropArea.classList.remove('left_side_wraap_active');
-            }
-        });
+    // Remove class when the file is dragged out of the div
+    dropArea.addEventListener('dragleave', function (event) {
+        event.preventDefault();
+        if (isModalOpen()) return;
 
-        // Handle file drop
-        dropArea.addEventListener('drop', function(event) {
-            event.preventDefault();
-            if (isModalOpen()) return; // Stop script if another modal is open
-
-            dragCounter = 0;
+        dragCounter--;
+        if (dragCounter === 0) {
             dropArea.classList.remove('left_side_wraap_active');
+        }
+    });
 
-            const files = event.dataTransfer.files;
-            if (files.length > 0) {
-                const file = files[0];
+    // Handle file drop
+    dropArea.addEventListener('drop', function (event) {
+        event.preventDefault();
+        if (isModalOpen()) return;
+        dragCounter = 0;
+        dropArea.classList.remove('left_side_wraap_active');
 
-                // Automatically select the file in the input field
-                autoSelectFile(file);
+        const files = event.dataTransfer.files;
+        if (files.length > 0) {
+            const fileInput = document.querySelector('#upload_filee #fileU');
+            const fileList = $('.file-list');
+            const inputId = $(fileInput).attr('id');
 
-                // Open the modal
-                $('#upload_filee').modal('show');
-            }
+            // Initialize fileData for the input if not already present
+            if (!fileData[inputId]) fileData[inputId] = [];
+
+            handleFiles(fileInput, fileList, inputId, Array.from(files));
+
+            // Open the modal
+            $('#upload_filee').modal('show');
+        }
+    });
+
+    // Function to handle files and update the UI
+    function handleFiles(fileInput, fileList, inputId, newFiles = []) {
+        // Get existing files in the list
+        const existingFiles = fileData[inputId] || [];
+
+        // Filter out any files that are already in the list to avoid duplication
+        const newFilesToAdd = newFiles.filter(file => {
+            return !existingFiles.some(existingFile => existingFile.name === file.name && existingFile.size === file.size);
         });
 
-        function autoSelectFile(file) {
-            const fileInput = document.querySelector('#upload_filee #fileU');
-            if (fileInput) {
-                const dataTransfer = new DataTransfer();
-                dataTransfer.items.add(file);
-                fileInput.files = dataTransfer.files;
+        // If no new files to add, exit
+        if (newFilesToAdd.length === 0) return;
 
-                // Trigger the change event on the file input
-                fileInput.dispatchEvent(new Event('change'));
-            }
-        }
+        // Append each new file to the fileData
+        fileData[inputId] = [...existingFiles, ...newFilesToAdd];
 
-        // Handle the file selection UI update
-        $('#fileU').on('change', function() {
-            if (this.files.length > 0) {
-                $('.file-dummy .success').show(); // Show success message
-                $('.file-dummy .default').hide(); // Hide the default message
-            }
+        // Append each new file to the file list UI
+        newFilesToAdd.forEach((file, index) => {
+            const fileItem = $('<div>', {
+                class: 'file-item'
+            }).append(
+                $('<span>').text(file.name),
+                $('<button>', {
+                    class: 'remove-btn',
+                    'data-file-index': index
+                }).text('X').on('click', function () {
+                    removeFile(fileInput, index, fileList, inputId);
+                })
+            );
+            fileList.append(fileItem);
+        });
+
+        // Update the input's file list with the new files
+        updateFileInput(fileInput, inputId);
+    }
+
+    // Function to update the file input's file list
+    function updateFileInput(fileInput, inputId) {
+        const dataTransfer = new DataTransfer();
+
+        // Add all files from fileData to the DataTransfer object (including new ones)
+        fileData[inputId].forEach(file => dataTransfer.items.add(file));
+
+        // Update the input's files with the new files in the DataTransfer object
+        fileInput.files = dataTransfer.files;
+    }
+
+    // Function to remove a file from the input
+    function removeFile(fileInput, index, fileList, inputId) {
+        fileData[inputId].splice(index, 1);
+        updateFileInput(fileInput, inputId);
+        refreshFileList(fileList, fileInput, inputId);
+    }
+
+    // Function to refresh the file list in the UI
+    function refreshFileList(fileList, fileInput, inputId) {
+        fileList.empty();
+        fileData[inputId].forEach((file, i) => {
+            const fileItem = $('<div>', {
+                class: 'file-item'
+            }).append(
+                $('<span>').text(file.name),
+                $('<button>', {
+                    class: 'remove-btn',
+                    'data-file-index': i
+                }).text('X').on('click', function () {
+                    removeFile(fileInput, i, fileList, inputId);
+                })
+            );
+            fileList.append(fileItem);
+        });
+    }
+
+    // Handle file input change
+    $('body').on('change', '.dragfile', function () {
+        const fileInput = this;
+        const fileList = $(fileInput).closest('.file-area').next('.file-list');
+        const inputId = $(fileInput).attr('id');
+
+        // Initialize fileData for the input if not already present
+        if (!fileData[inputId]) fileData[inputId] = [];
+
+        handleFiles(fileInput, fileList, inputId, Array.from(fileInput.files));
+    });
+
+    // Handle drag and drop events for file-area
+    $('.file-area').on('dragover', function (event) {
+        event.preventDefault();
+        $(this).addClass('green-outline');
+    }).on('dragleave drop', function (event) {
+        event.preventDefault();
+        $(this).removeClass('green-outline');
+    }).on('drop', function (event) {
+        event.preventDefault();
+        const fileInput = $(this).find('.dragfile')[0];
+        const fileList = $(this).next('.file-list');
+        const inputId = $(fileInput).attr('id');
+
+        fileInput.files = event.originalEvent.dataTransfer.files;
+
+        // Initialize fileData for the input if not already present
+        if (!fileData[inputId]) fileData[inputId] = [];
+
+        handleFiles(fileInput, fileList, inputId, Array.from(fileInput.files));
+    });
+
+    // Clear file data and reset input when closing the modal
+    $('body').on('click', '.close', function () {
+        const currentModal = $(this).closest('.modal');
+        currentModal.find('.dragfile').each(function () {
+            const fileInput = this;
+            const fileList = $(fileInput).closest('.file-area').next('.file-list');
+            const inputId = $(fileInput).attr('id');
+
+            fileData[inputId] = [];
+            updateFileInput(fileInput, inputId);
+            fileList.empty();
         });
     });
+
+    
+});
+
+
 </script>
+
 
 
 
@@ -713,11 +813,11 @@
 
 
                             <script>
-                                $(document).ready(function () {
+                                $(document).ready(function() {
                                     // Attach event listener to elements with the mainhomedata class
-                                    $('body').on('click', '.mainhomedata', function (event) {
+                                    $('body').on('click', '.mainhomedata', function(event) {
                                         event.preventDefault(); // Prevent the default action of the anchor tag
-                            
+
                                         // Redirect to the desired URL
                                         window.location.href = "{{ url('/docurepo') }}";
                                     });
@@ -2159,7 +2259,7 @@
                                                                         clearInterval(intervalId); // Stop simulated progress
                                                                         updateProgressBar(progressId, 0, "Failed!");
                                                                         toastr.error('An error occurred while downloading the folder. Please try again.', 'Download Error');
-                                            
+
                                                                         // If no active requests, hide the progress container without confirmation
                                                                         $('.progree_cont_nt').hide();
 
@@ -4310,7 +4410,7 @@
                                                                     var $this = $(this);
                                                                     var folderPath = $this.data('folder-path');
 
-                                                                 
+
 
                                                                     // Remove 'active' class from all other toggle icons
                                                                     $('.toggle_icconn').removeClass('active');
@@ -4319,7 +4419,7 @@
                                                                     if ($this.hasClass('active')) {
                                                                         $this.removeClass('active'); // Remove 'active' class if it's already active
                                                                     } else {
-                                                                      
+
                                                                         navigateToFolder1(folderPath);
                                                                         // navigateToFolders(folderPath);
                                                                         $this.addClass('active'); // Add 'active' class
@@ -4328,9 +4428,9 @@
 
 
                                                                 function navigateToFolder1(folderPath) {
-                                                                  
+
                                                                     openNewFolder(folderPath);
-                                                                  
+
                                                                     $('li a').removeClass('active');
                                                                     $(`[data-folder-path="${folderPath}"]`).addClass('active');
                                                                     $('#parent-folder, #parent-folders').val(folderPath);
@@ -4723,6 +4823,7 @@
                                                                 function fetchFolderContents(folderPath) {
                                                                     // showLoader(); // Ensure the loader is shown when the request starts
                                                                     showLoader();
+
                                                                     function getQueryParam(param) {
                                                                         const queryString = window.location.search.substring(1);
                                                                         const params = queryString.split('&');
@@ -6014,16 +6115,16 @@
                                                                     //     window.xhrRequests = xhrRequests;
                                                                     // });
 
-                                                                    $('#common_file_upload_form').on('submit', function (e) {
+                                                                    $('#common_file_upload_form').on('submit', function(e) {
                                                                         e.preventDefault(); // Prevent the default form submission
-                                                
+
                                                                         var $submitButton = $(this).find('button[type="submit"]');
                                                                         $submitButton.prop('disabled', true).append('<span class="button-spinner"></span>'); // Disable and append spinner
 
                                                                         // Access the file input element and its files
                                                                         var fileInputRRPre = $('#fileCommon')[0]; // Ensure this matches your file input field
                                                                         var filesRRPre = fileInputRRPre.files; // Get all the selected files
-                                                                        
+
                                                                         // Check if files are selected
                                                                         if (filesRRPre.length === 0) {
                                                                             toastr.error('No files selected for upload!');
@@ -6048,7 +6149,7 @@
                                                                             data: formData,
                                                                             processData: false, // Important! Prevent jQuery from processing the data
                                                                             contentType: false, // Important! Prevent jQuery from setting the Content-Type header
-                                                                            success: function (response) {
+                                                                            success: function(response) {
                                                                                 // Handle success
                                                                                 var is_uploading11 = false;
                                                                                 var is_uploading12 = false;
@@ -6056,7 +6157,7 @@
                                                                                 var is_uploading14 = false;
 
                                                                                 if (response.success) {
-                                                                                    if(response.Pre_do_not_exists && response.Pre_do_not_exists.length > 0){
+                                                                                    if (response.Pre_do_not_exists && response.Pre_do_not_exists.length > 0) {
                                                                                         // alert("Do not Exists : " + response.do_not_exists);
                                                                                         is_uploading11 = true;
 
@@ -6104,164 +6205,164 @@
 
 
                                                                                                 let currentFileIndex = getSecureRandomString(16); // Generate unique index for the file
-                                                                                                            addProgressIndicator(filePre.name, currentFileIndex); // Add progress bar for each file
+                                                                                                addProgressIndicator(filePre.name, currentFileIndex); // Add progress bar for each file
 
 
-                                                                                                            // Ensure there are files to upload
-                                                                                                            if (formData.has('pre_newfiles[]')) {
-                                                                                                                // Perform AJAX request to upload the files
-                                                                                                                var xhrUpload = $.ajax({
-                                                                                                                    url: '/PreHandleCommonUploadFiles', // Update with your actual route
-                                                                                                                    type: 'POST',
-                                                                                                                    data: formData,
-                                                                                                                    processData: false,
-                                                                                                                    contentType: false,
-                                                                                                                    xhr: function() {
-                                                                                                                        var xhr = new window.XMLHttpRequest();
-                                                                                                                        
-                                                                                                                        xhr.upload.addEventListener("progress", function(evt) {
-                                                                                                                            if (evt.lengthComputable) {
-                                                                                                                                let percentComplete = evt.loaded / evt.total;
-                                                                                                                                updateProgress(percentComplete, currentFileIndex); // Update individual progress bar
-                                                                                                                            }
-                                                                                                                        }, false);
+                                                                                                // Ensure there are files to upload
+                                                                                                if (formData.has('pre_newfiles[]')) {
+                                                                                                    // Perform AJAX request to upload the files
+                                                                                                    var xhrUpload = $.ajax({
+                                                                                                        url: '/PreHandleCommonUploadFiles', // Update with your actual route
+                                                                                                        type: 'POST',
+                                                                                                        data: formData,
+                                                                                                        processData: false,
+                                                                                                        contentType: false,
+                                                                                                        xhr: function() {
+                                                                                                            var xhr = new window.XMLHttpRequest();
 
-                                                                                                                        return xhr;
-                                                                                                                    },
-                                                                                                                    beforeSend: function () {
-                                                                                                                        $('#submit-btn').prop('disabled', true).text('Uploading...');
-                                                                                                                    },
-                                                                                                                    success: function (response) {
-                                                                                                                        // if (uploadResponse.success) {
-                                                                                                                        //     alert("Files uploaded successfully!");
-                                                                                                                        //     console.log(uploadResponse);
-                                                                                                                        // } else {
-                                                                                                                        //     alert("Error uploading files: " + uploadResponse.message);
-                                                                                                                        // }
-                                                                                                                        // $('#submit-btn').prop('disabled', false).text('Upload');
-                                                                                                                        if (response.success) {
-                                                                                                                            successCounter++; // Increment the success counter
-                                                                                                                            updateSuccessCount(); // Update the displayed success count
-                                                                                                                            $(`#progress_${currentFileIndex} .cancle_file`).hide();
-                                                                                                                            $(`#progress_${currentFileIndex} .done_tick`).show(); // Show success tick
+                                                                                                            xhr.upload.addEventListener("progress", function(evt) {
+                                                                                                                if (evt.lengthComputable) {
+                                                                                                                    let percentComplete = evt.loaded / evt.total;
+                                                                                                                    updateProgress(percentComplete, currentFileIndex); // Update individual progress bar
+                                                                                                                }
+                                                                                                            }, false);
 
-                                                                                                                            if (response.successMessages.length) {
-                                                                                                                                response.successMessages.forEach(function(msg) {
-                                                                                                                                    // toastr.success(msg);
-                                                                                                                                });
-                                                                                                                            }
-                                                                                                                            if (response.errorMessages.length) {
-                                                                                                                                response.errorMessages.forEach(function(msg) {
-                                                                                                                                    // toastr.warning(msg);
-                                                                                                                                toastr.error('An error occurred while uploading files');
-                                                                                                                                // Create the error SVG with red fill
-                                                                                                                                let errorSVG = '<svg width="24px" height="24px" viewBox="0 0 24 24" fill="red"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"></path></svg>';
+                                                                                                            return xhr;
+                                                                                                        },
+                                                                                                        beforeSend: function() {
+                                                                                                            $('#submit-btn').prop('disabled', true).text('Uploading...');
+                                                                                                        },
+                                                                                                        success: function(response) {
+                                                                                                            // if (uploadResponse.success) {
+                                                                                                            //     alert("Files uploaded successfully!");
+                                                                                                            //     console.log(uploadResponse);
+                                                                                                            // } else {
+                                                                                                            //     alert("Error uploading files: " + uploadResponse.message);
+                                                                                                            // }
+                                                                                                            // $('#submit-btn').prop('disabled', false).text('Upload');
+                                                                                                            if (response.success) {
+                                                                                                                successCounter++; // Increment the success counter
+                                                                                                                updateSuccessCount(); // Update the displayed success count
+                                                                                                                $(`#progress_${currentFileIndex} .cancle_file`).hide();
+                                                                                                                $(`#progress_${currentFileIndex} .done_tick`).show(); // Show success tick
 
-                                                                                                                                // Replace the current done tick with the error SVG
-                                                                                                                                $(`#progress_${currentFileIndex} .progress_circle2`).html(errorSVG); // Insert the error SVG
+                                                                                                                if (response.successMessages.length) {
+                                                                                                                    response.successMessages.forEach(function(msg) {
+                                                                                                                        // toastr.success(msg);
+                                                                                                                    });
+                                                                                                                }
+                                                                                                                if (response.errorMessages.length) {
+                                                                                                                    response.errorMessages.forEach(function(msg) {
+                                                                                                                        // toastr.warning(msg);
+                                                                                                                        toastr.error('An error occurred while uploading files');
+                                                                                                                        // Create the error SVG with red fill
+                                                                                                                        let errorSVG = '<svg width="24px" height="24px" viewBox="0 0 24 24" fill="red"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"></path></svg>';
 
-
-                                                                                                                                });
-                                                                                                                            }
-
-                                                                                                                            // for dynamic update the counter after upload start
-                                                                                                                            // Find the <td> with "Offer Letter" text
-                                                                                                                            let $offerLetterRow = $('td').filter(function() {
-                                                                                                                                return $(this).text().trim() === response.real_file_name; // response.real_file_name should match "Offer Letter"
-                                                                                                                            }).closest('tr'); // Get the closest row (tr) that contains the td
-
-                                                                                                                            // Update the .comm_count and .comm_size in the same row
-                                                                                                                            $offerLetterRow.find('.comm_count').text(response.count);
-                                                                                                                            // $offerLetterRow.find('.comm_size').text(response.totalSize + ' KB');
-                                                                                                                            $offerLetterRow.find('.comm_size').text(response.totalSize);
-                                                                                                                            
-                                                                                                                            // for dynamic update the counter after upload start
-
-                                                                                                                            activeUploads[currentFileIndex] = false; // Mark this file as completed
-                                                                                                                            checkAllUploadsComplete(); // Check if all uploads are done
-
-                                                                                                                            // fetchFolderContents($('#parent-folder').val());
-                                                                                                                            // console.log("i am looking ::");
-                                                                                                                            // console.log($('#parent-folder').val());
-                                                                                                                            // resetFileInput($('input[name="file"]'));
-                                                                                                                        } else {
-                                                                                                                            toastr.error('Failed to upload file: ' + response.message);
-                                                                                                                            // Create the error SVG with red fill
-                                                                                                                            let errorSVG = '<svg width="24px" height="24px" viewBox="0 0 24 24" fill="red"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"></path></svg>';
-
-                                                                                                                            // Replace the current done tick with the error SVG
-                                                                                                                            $(`#progress_${currentFileIndex} .progress_circle2`).html(errorSVG); // Insert the error SVG
-                                                                                                                            // $('#upload_filee .close').click(); 
-
-                                                                                                                        }
-
-                                                                                                                        $('.button-spinner').remove();
-                                                                                                                        $submitButton.prop('disabled', false); // Re-enable submit button
-                                                                                                                    },
-                                                                                                                    // error: function (xhr, status, error) {
-                                                                                                                    //     alert("An error occurred while uploading files: " + (xhr.responseText || error));
-                                                                                                                    //     $('#submit-btn').prop('disabled', false).text('Upload');
-                                                                                                                    // }
-                                                                                                                    error: function(xhr) {
-                                                                                                                        if (xhr.status === 400 || xhr.status === 500) {
-                                                                                                                            let response = JSON.parse(xhr.responseText);
-                                                                                                                            toastr.error('Error: ' + response.message);
-                                                                                                                            // Create the error SVG with red fill
-                                                                                                                            let errorSVG = '<svg width="24px" height="24px" viewBox="0 0 24 24" fill="red"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"></path></svg>';
-
-                                                                                                                            // Replace the current done tick with the error SVG
-                                                                                                                            $(`#progress_${currentFileIndex} .progress_circle2`).html(errorSVG); // Insert the error SVG
-                                                                                                                            // $('#upload_filee .close').click(); 
-
-                                                                                                                        } else {
-                                                                                                                            // Create the error SVG with red fill
-                                                                                                                            let errorSVG = '<svg width="24px" height="24px" viewBox="0 0 24 24" fill="red"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"></path></svg>';
-
-                                                                                                                            // Replace the current done tick with the error SVG
-                                                                                                                            $(`#progress_${currentFileIndex} .progress_circle2`).html(errorSVG); // Insert the error SVG
-
-                                                                                                                        // $('#upload_filee .close').click(); 
+                                                                                                                        // Replace the current done tick with the error SVG
+                                                                                                                        $(`#progress_${currentFileIndex} .progress_circle2`).html(errorSVG); // Insert the error SVG
 
 
-                                                                                                                        }
-                                                                                                                        activeUploads[currentFileIndex] = false; // Mark this file as completed or failed
-                                                                                                                            checkAllUploadsComplete(); // Check if all uploads are done
-                                                                                                                        $submitButton.prop('disabled', false); // Re-enable submit button
-                                                                                                                        // $('#upload_filee .close').click(); 
-                                                                                                                        $('.button-spinner').remove();
+                                                                                                                    });
+                                                                                                                }
 
+                                                                                                                // for dynamic update the counter after upload start
+                                                                                                                // Find the <td> with "Offer Letter" text
+                                                                                                                let $offerLetterRow = $('td').filter(function() {
+                                                                                                                    return $(this).text().trim() === response.real_file_name; // response.real_file_name should match "Offer Letter"
+                                                                                                                }).closest('tr'); // Get the closest row (tr) that contains the td
 
-                                                                                                                    }
-                                                                                                                });
+                                                                                                                // Update the .comm_count and .comm_size in the same row
+                                                                                                                $offerLetterRow.find('.comm_count').text(response.count);
+                                                                                                                // $offerLetterRow.find('.comm_size').text(response.totalSize + ' KB');
+                                                                                                                $offerLetterRow.find('.comm_size').text(response.totalSize);
 
-                                                                                                                pre_newfiles = []; // Resets the array
+                                                                                                                // for dynamic update the counter after upload start
 
+                                                                                                                activeUploads[currentFileIndex] = false; // Mark this file as completed
+                                                                                                                checkAllUploadsComplete(); // Check if all uploads are done
 
-                                                                                                                // Store the xhr request to allow cancellation later
-                                                                                                                xhrRequests[currentFileIndex] = xhrUpload;
-                                                                                                                
+                                                                                                                // fetchFolderContents($('#parent-folder').val());
+                                                                                                                // console.log("i am looking ::");
+                                                                                                                // console.log($('#parent-folder').val());
+                                                                                                                // resetFileInput($('input[name="file"]'));
+                                                                                                            } else {
+                                                                                                                toastr.error('Failed to upload file: ' + response.message);
+                                                                                                                // Create the error SVG with red fill
+                                                                                                                let errorSVG = '<svg width="24px" height="24px" viewBox="0 0 24 24" fill="red"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"></path></svg>';
+
+                                                                                                                // Replace the current done tick with the error SVG
+                                                                                                                $(`#progress_${currentFileIndex} .progress_circle2`).html(errorSVG); // Insert the error SVG
                                                                                                                 // $('#upload_filee .close').click(); 
-                                                                                                                window.xhrRequests = xhrRequests;
+
+                                                                                                            }
+
+                                                                                                            $('.button-spinner').remove();
+                                                                                                            $submitButton.prop('disabled', false); // Re-enable submit button
+                                                                                                        },
+                                                                                                        // error: function (xhr, status, error) {
+                                                                                                        //     alert("An error occurred while uploading files: " + (xhr.responseText || error));
+                                                                                                        //     $('#submit-btn').prop('disabled', false).text('Upload');
+                                                                                                        // }
+                                                                                                        error: function(xhr) {
+                                                                                                            if (xhr.status === 400 || xhr.status === 500) {
+                                                                                                                let response = JSON.parse(xhr.responseText);
+                                                                                                                toastr.error('Error: ' + response.message);
+                                                                                                                // Create the error SVG with red fill
+                                                                                                                let errorSVG = '<svg width="24px" height="24px" viewBox="0 0 24 24" fill="red"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"></path></svg>';
+
+                                                                                                                // Replace the current done tick with the error SVG
+                                                                                                                $(`#progress_${currentFileIndex} .progress_circle2`).html(errorSVG); // Insert the error SVG
+                                                                                                                // $('#upload_filee .close').click(); 
 
                                                                                                             } else {
-                                                                                                                toastr.error("No files selected for upload!");
-                                                                                                            }  
+                                                                                                                // Create the error SVG with red fill
+                                                                                                                let errorSVG = '<svg width="24px" height="24px" viewBox="0 0 24 24" fill="red"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"></path></svg>';
+
+                                                                                                                // Replace the current done tick with the error SVG
+                                                                                                                $(`#progress_${currentFileIndex} .progress_circle2`).html(errorSVG); // Insert the error SVG
+
+                                                                                                                // $('#upload_filee .close').click(); 
+
+
+                                                                                                            }
+                                                                                                            activeUploads[currentFileIndex] = false; // Mark this file as completed or failed
+                                                                                                            checkAllUploadsComplete(); // Check if all uploads are done
+                                                                                                            $submitButton.prop('disabled', false); // Re-enable submit button
+                                                                                                            // $('#upload_filee .close').click(); 
+                                                                                                            $('.button-spinner').remove();
+
+
+                                                                                                        }
+                                                                                                    });
+
+                                                                                                    pre_newfiles = []; // Resets the array
+
+
+                                                                                                    // Store the xhr request to allow cancellation later
+                                                                                                    xhrRequests[currentFileIndex] = xhrUpload;
+
+                                                                                                    // $('#upload_filee .close').click(); 
+                                                                                                    window.xhrRequests = xhrRequests;
+
+                                                                                                } else {
+                                                                                                    toastr.error("No files selected for upload!");
+                                                                                                }
 
                                                                                             }
                                                                                         }
 
-                                                                                                    //    $.each(filesDNE, function(index, file) {
-
-                                                                                                    
-
-                                                                                                    //    });
+                                                                                        //    $.each(filesDNE, function(index, file) {
 
 
-                                                                                                            /////////// 1234
 
-                                                                                                            
+                                                                                        //    });
 
-                                                                                                            ////////// 1234
+
+                                                                                        /////////// 1234
+
+
+
+                                                                                        ////////// 1234
 
                                                                                     }
 
@@ -6307,7 +6408,7 @@
                                                                                                         var formData = new FormData();
 
                                                                                                         // Append all other form fields to FormData
-                                                                                                        $.each(formInputs, function (i, input) {
+                                                                                                        $.each(formInputs, function(i, input) {
                                                                                                             formData.append(input.name, input.value); // Append each field to the FormData
                                                                                                         });
 
@@ -6326,7 +6427,7 @@
                                                                                                         // Ensure there are files to upload
                                                                                                         if (formData.has('pre_newfiles2[]')) {
                                                                                                             // Perform AJAX request to upload the files
-                                                                                                        
+
 
                                                                                                             var xhr = $.ajax({
                                                                                                                 url: '/PreHandleCommonUploadFiles', // Update with your actual route
@@ -6336,7 +6437,7 @@
                                                                                                                 contentType: false,
                                                                                                                 xhr: function() {
                                                                                                                     var xhr = new window.XMLHttpRequest();
-                                                                                                                    
+
                                                                                                                     xhr.upload.addEventListener("progress", function(evt) {
                                                                                                                         if (evt.lengthComputable) {
                                                                                                                             let percentComplete = evt.loaded / evt.total;
@@ -6346,7 +6447,7 @@
 
                                                                                                                     return xhr;
                                                                                                                 },
-                                                                                                                beforeSend: function () {
+                                                                                                                beforeSend: function() {
                                                                                                                     $('#submit-btn').prop('disabled', true).text('Uploading...');
                                                                                                                 },
                                                                                                                 success: function(response) {
@@ -6364,12 +6465,12 @@
                                                                                                                         if (response.errorMessages.length) {
                                                                                                                             response.errorMessages.forEach(function(msg) {
                                                                                                                                 // toastr.warning(msg);
-                                                                                                                            toastr.error('An error occurred while uploading files');
-                                                                                                                            // Create the error SVG with red fill
-                                                                                                                            let errorSVG = '<svg width="24px" height="24px" viewBox="0 0 24 24" fill="red"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"></path></svg>';
+                                                                                                                                toastr.error('An error occurred while uploading files');
+                                                                                                                                // Create the error SVG with red fill
+                                                                                                                                let errorSVG = '<svg width="24px" height="24px" viewBox="0 0 24 24" fill="red"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"></path></svg>';
 
-                                                                                                                            // Replace the current done tick with the error SVG
-                                                                                                                            $(`#progress_${currentFileIndex} .progress_circle2`).html(errorSVG); // Insert the error SVG
+                                                                                                                                // Replace the current done tick with the error SVG
+                                                                                                                                $(`#progress_${currentFileIndex} .progress_circle2`).html(errorSVG); // Insert the error SVG
 
 
                                                                                                                             });
@@ -6377,7 +6478,7 @@
 
                                                                                                                         // for dynamic update the counter after upload start
                                                                                                                         // Find the <td> with "Offer Letter" text
-                                                                                                                            let $offerLetterRow = $('td').filter(function() {
+                                                                                                                        let $offerLetterRow = $('td').filter(function() {
                                                                                                                             return $(this).text().trim() === response.real_file_name; // response.real_file_name should match "Offer Letter"
                                                                                                                         }).closest('tr'); // Get the closest row (tr) that contains the td
 
@@ -6385,7 +6486,7 @@
                                                                                                                         $offerLetterRow.find('.comm_count').text(response.count);
                                                                                                                         // $offerLetterRow.find('.comm_size').text(response.totalSize + ' KB');
                                                                                                                         $offerLetterRow.find('.comm_size').text(response.totalSize);
-                                                                                                                        
+
                                                                                                                         // for dynamic update the counter after upload start
 
                                                                                                                         activeUploads[currentFileIndex] = false; // Mark this file as completed
@@ -6427,12 +6528,12 @@
                                                                                                                         // Replace the current done tick with the error SVG
                                                                                                                         $(`#progress_${currentFileIndex} .progress_circle2`).html(errorSVG); // Insert the error SVG
 
-                                                                                                                    // $('#upload_filee .close').click(); 
+                                                                                                                        // $('#upload_filee .close').click(); 
 
 
                                                                                                                     }
                                                                                                                     activeUploads[currentFileIndex] = false; // Mark this file as completed or failed
-                                                                                                                        checkAllUploadsComplete(); // Check if all uploads are done
+                                                                                                                    checkAllUploadsComplete(); // Check if all uploads are done
                                                                                                                     $submitButton.prop('disabled', false); // Re-enable submit button
                                                                                                                     // $('#upload_filee .close').click(); 
                                                                                                                     $('.button-spinner').remove();
@@ -6454,7 +6555,7 @@
                                                                                                             toastr.error("No files selected for upload!");
                                                                                                         }
                                                                                                     }
-                                                                                                }   
+                                                                                                }
 
 
                                                                                                 // //////////////////////////////
@@ -6479,7 +6580,7 @@
 
                                                                                                 // Create a new FormData for files that "Do Not Exist"
                                                                                                 // var newFormData = new FormData();
-                                                                    
+
                                                                                                 // Loop through the selected files and append only the ones that do not exist
                                                                                                 for (var i = 0; i < filesKeep.length; i++) {
                                                                                                     var file = filesKeep[i];
@@ -6489,7 +6590,7 @@
                                                                                                         var formData = new FormData();
 
                                                                                                         // Append all other form fields to FormData
-                                                                                                        $.each(formInputs, function (i, input) {
+                                                                                                        $.each(formInputs, function(i, input) {
                                                                                                             formData.append(input.name, input.value); // Append each field to the FormData
                                                                                                         });
 
@@ -6504,7 +6605,7 @@
                                                                                                         let currentFileIndex = getSecureRandomString(16); // Generate unique index for the file
                                                                                                         addProgressIndicator(file.name, currentFileIndex); // Add progress bar for each file
                                                                                                         activeUploads[currentFileIndex] = true; // Mark this file upload as active
-                                                                                                        
+
                                                                                                         // Ensure there are files to upload
                                                                                                         if (formData.has('pre_newfiles3[]')) {
                                                                                                             // Perform AJAX request to upload the files
@@ -6518,7 +6619,7 @@
                                                                                                                 contentType: false,
                                                                                                                 xhr: function() {
                                                                                                                     var xhr = new window.XMLHttpRequest();
-                                                                                                                    
+
                                                                                                                     xhr.upload.addEventListener("progress", function(evt) {
                                                                                                                         if (evt.lengthComputable) {
                                                                                                                             let percentComplete = evt.loaded / evt.total;
@@ -6543,12 +6644,12 @@
                                                                                                                         if (response.errorMessages.length) {
                                                                                                                             response.errorMessages.forEach(function(msg) {
                                                                                                                                 // toastr.warning(msg);
-                                                                                                                            toastr.error('An error occurred while uploading files');
-                                                                                                                            // Create the error SVG with red fill
-                                                                                                                            let errorSVG = '<svg width="24px" height="24px" viewBox="0 0 24 24" fill="red"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"></path></svg>';
+                                                                                                                                toastr.error('An error occurred while uploading files');
+                                                                                                                                // Create the error SVG with red fill
+                                                                                                                                let errorSVG = '<svg width="24px" height="24px" viewBox="0 0 24 24" fill="red"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"></path></svg>';
 
-                                                                                                                            // Replace the current done tick with the error SVG
-                                                                                                                            $(`#progress_${currentFileIndex} .progress_circle2`).html(errorSVG); // Insert the error SVG
+                                                                                                                                // Replace the current done tick with the error SVG
+                                                                                                                                $(`#progress_${currentFileIndex} .progress_circle2`).html(errorSVG); // Insert the error SVG
 
 
                                                                                                                             });
@@ -6607,7 +6708,7 @@
                                                                                                                         // Replace the current done tick with the error SVG
                                                                                                                         $(`#progress_${currentFileIndex} .progress_circle2`).html(errorSVG); // Insert the error SVG
 
-                                                                                                                    // $('#upload_filee .close').click(); 
+                                                                                                                        // $('#upload_filee .close').click(); 
 
 
                                                                                                                     }
@@ -6632,63 +6733,62 @@
                                                                                                             toastr.error("No files selected for upload!");
                                                                                                         }
                                                                                                     }
-                                                                                                }       
+                                                                                                }
 
-                                                                                            
+
 
                                                                                                 // //////////////////////////////
 
 
-                                                                                            } if(result.dismiss === Swal.DismissReason.close) {
+                                                                                            }
+                                                                                            if (result.dismiss === Swal.DismissReason.close) {
                                                                                                 // Logic for closing
                                                                                                 // alert("Cancelled");
-                                                                                            }
-                                                                                            else{
-                                                                                                $('#common_file_upload_pop .close').click(); 
+                                                                                            } else {
+                                                                                                $('#common_file_upload_pop .close').click();
 
                                                                                             }
-                                                                                            $('#common_file_upload_pop .close').click(); 
+                                                                                            $('#common_file_upload_pop .close').click();
 
                                                                                         });
 
                                                                                     }
-                                                                                    if(is_uploading11 && is_uploading12){
+                                                                                    if (is_uploading11 && is_uploading12) {
                                                                                         // $('#upload_filee .close').click(); 
-                                                                                    }
-                                                                                    else if(is_uploading11){
+                                                                                    } else if (is_uploading11) {
 
-                                                                                        if((is_uploading12==false)){
-                                                                                            $('#common_file_upload_pop .close').click(); 
+                                                                                        if ((is_uploading12 == false)) {
+                                                                                            $('#common_file_upload_pop .close').click();
                                                                                         }
 
                                                                                     }
 
-                                                                                
+
                                                                                 } else {
                                                                                     toastr.error('Error: ' + response.message); // Display error message
                                                                                 }
                                                                                 // $('#submit-btn').prop('disabled', false).text('Upload');
-                                                                                
+
                                                                             },
-                                                                            error: function (xhr) {
+                                                                            error: function(xhr) {
                                                                                 // Handle error
                                                                                 toastr.error('An error occurred while uploading the file.');
-                                                                                $('#common_file_upload_pop .close').click(); 
+                                                                                $('#common_file_upload_pop .close').click();
                                                                                 $('#submit-btn').prop('disabled', false).text('Upload');
                                                                             }
                                                                         });
                                                                     });
                                                                     // new bank script start
-                                                                    $('#common_file_upload_form_bank').on('submit', function (e) {
+                                                                    $('#common_file_upload_form_bank').on('submit', function(e) {
                                                                         e.preventDefault(); // Prevent the default form submission
-                                                
+
                                                                         var $submitButton = $(this).find('button[type="submit"]');
                                                                         $submitButton.prop('disabled', true).append('<span class="button-spinner"></span>'); // Disable and append spinner
 
                                                                         // Access the file input element and its files
                                                                         var fileInputRRPreB = $('#fileCommonB')[0]; // Ensure this matches your file input field
                                                                         var filesRRPreB = fileInputRRPreB.files; // Get all the selected files
-                                                                        
+
                                                                         // Check if files are selected
                                                                         if (filesRRPreB.length === 0) {
                                                                             toastr.error('No files selected for upload!');
@@ -6713,7 +6813,7 @@
                                                                             data: formData,
                                                                             processData: false, // Important! Prevent jQuery from processing the data
                                                                             contentType: false, // Important! Prevent jQuery from setting the Content-Type header
-                                                                            success: function (response) {
+                                                                            success: function(response) {
                                                                                 // Handle success
                                                                                 var is_uploading21 = false;
                                                                                 var is_uploading22 = false;
@@ -6721,7 +6821,7 @@
                                                                                 var is_uploading24 = false;
 
                                                                                 if (response.success) {
-                                                                                    if(response.PreBank_do_not_exists && response.PreBank_do_not_exists.length > 0){
+                                                                                    if (response.PreBank_do_not_exists && response.PreBank_do_not_exists.length > 0) {
                                                                                         // alert("Do not Exists : " + response.do_not_exists);
                                                                                         is_uploading21 = true;
 
@@ -6769,153 +6869,153 @@
 
 
                                                                                                 let currentFileIndex = getSecureRandomString(16); // Generate unique index for the file
-                                                                                                            addProgressIndicator(filePreB.name, currentFileIndex); // Add progress bar for each file
+                                                                                                addProgressIndicator(filePreB.name, currentFileIndex); // Add progress bar for each file
 
 
-                                                                                                            // Ensure there are files to upload
-                                                                                                            if (formData.has('pre_bank_newfiles[]')) {
-                                                                                                                // Perform AJAX request to upload the files
-                                                                                                                var xhrUpload = $.ajax({
-                                                                                                                    url: '/PreBankHandleCommonUploadFiles', // Update with your actual route
-                                                                                                                    type: 'POST',
-                                                                                                                    data: formData,
-                                                                                                                    processData: false,
-                                                                                                                    contentType: false,
-                                                                                                                    xhr: function() {
-                                                                                                                        var xhr = new window.XMLHttpRequest();
-                                                                                                                        
-                                                                                                                        xhr.upload.addEventListener("progress", function(evt) {
-                                                                                                                            if (evt.lengthComputable) {
-                                                                                                                                let percentComplete = evt.loaded / evt.total;
-                                                                                                                                updateProgress(percentComplete, currentFileIndex); // Update individual progress bar
-                                                                                                                            }
-                                                                                                                        }, false);
+                                                                                                // Ensure there are files to upload
+                                                                                                if (formData.has('pre_bank_newfiles[]')) {
+                                                                                                    // Perform AJAX request to upload the files
+                                                                                                    var xhrUpload = $.ajax({
+                                                                                                        url: '/PreBankHandleCommonUploadFiles', // Update with your actual route
+                                                                                                        type: 'POST',
+                                                                                                        data: formData,
+                                                                                                        processData: false,
+                                                                                                        contentType: false,
+                                                                                                        xhr: function() {
+                                                                                                            var xhr = new window.XMLHttpRequest();
 
-                                                                                                                        return xhr;
-                                                                                                                    },
-                                                                                                                    beforeSend: function () {
-                                                                                                                        $('#submit-btn').prop('disabled', true).text('Uploading...');
-                                                                                                                    },
-                                                                                                                    success: function (response) {
-                                                                                                                        // if (uploadResponse.success) {
-                                                                                                                        //     alert("Files uploaded successfully!");
-                                                                                                                        //     console.log(uploadResponse);
-                                                                                                                        // } else {
-                                                                                                                        //     alert("Error uploading files: " + uploadResponse.message);
-                                                                                                                        // }
-                                                                                                                        // $('#submit-btn').prop('disabled', false).text('Upload');
-                                                                                                                        if (response.success) {
-                                                                                                                            successCounter++; // Increment the success counter
-                                                                                                                            updateSuccessCount(); // Update the displayed success count
-                                                                                                                            $(`#progress_${currentFileIndex} .cancle_file`).hide();
-                                                                                                                            $(`#progress_${currentFileIndex} .done_tick`).show(); // Show success tick
+                                                                                                            xhr.upload.addEventListener("progress", function(evt) {
+                                                                                                                if (evt.lengthComputable) {
+                                                                                                                    let percentComplete = evt.loaded / evt.total;
+                                                                                                                    updateProgress(percentComplete, currentFileIndex); // Update individual progress bar
+                                                                                                                }
+                                                                                                            }, false);
 
-                                                                                                                            if (response.successMessages.length) {
-                                                                                                                                response.successMessages.forEach(function(msg) {
-                                                                                                                                    // toastr.success(msg);
-                                                                                                                                });
-                                                                                                                            }
-                                                                                                                            if (response.errorMessages.length) {
-                                                                                                                                response.errorMessages.forEach(function(msg) {
-                                                                                                                                    // toastr.warning(msg);
-                                                                                                                                toastr.error('An error occurred while uploading files');
-                                                                                                                                // Create the error SVG with red fill
-                                                                                                                                let errorSVG = '<svg width="24px" height="24px" viewBox="0 0 24 24" fill="red"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"></path></svg>';
+                                                                                                            return xhr;
+                                                                                                        },
+                                                                                                        beforeSend: function() {
+                                                                                                            $('#submit-btn').prop('disabled', true).text('Uploading...');
+                                                                                                        },
+                                                                                                        success: function(response) {
+                                                                                                            // if (uploadResponse.success) {
+                                                                                                            //     alert("Files uploaded successfully!");
+                                                                                                            //     console.log(uploadResponse);
+                                                                                                            // } else {
+                                                                                                            //     alert("Error uploading files: " + uploadResponse.message);
+                                                                                                            // }
+                                                                                                            // $('#submit-btn').prop('disabled', false).text('Upload');
+                                                                                                            if (response.success) {
+                                                                                                                successCounter++; // Increment the success counter
+                                                                                                                updateSuccessCount(); // Update the displayed success count
+                                                                                                                $(`#progress_${currentFileIndex} .cancle_file`).hide();
+                                                                                                                $(`#progress_${currentFileIndex} .done_tick`).show(); // Show success tick
 
-                                                                                                                                // Replace the current done tick with the error SVG
-                                                                                                                                $(`#progress_${currentFileIndex} .progress_circle2`).html(errorSVG); // Insert the error SVG
+                                                                                                                if (response.successMessages.length) {
+                                                                                                                    response.successMessages.forEach(function(msg) {
+                                                                                                                        // toastr.success(msg);
+                                                                                                                    });
+                                                                                                                }
+                                                                                                                if (response.errorMessages.length) {
+                                                                                                                    response.errorMessages.forEach(function(msg) {
+                                                                                                                        // toastr.warning(msg);
+                                                                                                                        toastr.error('An error occurred while uploading files');
+                                                                                                                        // Create the error SVG with red fill
+                                                                                                                        let errorSVG = '<svg width="24px" height="24px" viewBox="0 0 24 24" fill="red"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"></path></svg>';
 
-
-                                                                                                                                });
-                                                                                                                            }
-
-                                                                                                                            // for dynamic update the counter after upload start
-                                                                                                                            // Find the <td> with "Offer Letter" text
-                                                                                                                            let $offerLetterRow = $('td').filter(function() {
-                                                                                                                                return $(this).text().trim() === response.real_file_name; // response.real_file_name should match "Offer Letter"
-                                                                                                                            }).closest('tr'); // Get the closest row (tr) that contains the td
-
-                                                                                                                            // Update the .comm_count and .comm_size in the same row
-                                                                                                                            $offerLetterRow.find('.comm_count').text(response.count);
-                                                                                                                            // $offerLetterRow.find('.comm_size').text(response.totalSize + ' KB');
-                                                                                                                            $offerLetterRow.find('.comm_size').text(response.totalSize);
-                                                                                                                            
-                                                                                                                            // for dynamic update the counter after upload start
-
-                                                                                                                            activeUploads[currentFileIndex] = false; // Mark this file as completed
-                                                                                                                            checkAllUploadsComplete(); // Check if all uploads are done
-
-                                                                                                                            // fetchFolderContents($('#parent-folder').val());
-                                                                                                                            // console.log("i am looking ::");
-                                                                                                                            // console.log($('#parent-folder').val());
-                                                                                                                            // resetFileInput($('input[name="file"]'));
-                                                                                                                        } else {
-                                                                                                                            toastr.error('Failed to upload file: ' + response.message);
-                                                                                                                            // Create the error SVG with red fill
-                                                                                                                            let errorSVG = '<svg width="24px" height="24px" viewBox="0 0 24 24" fill="red"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"></path></svg>';
-
-                                                                                                                            // Replace the current done tick with the error SVG
-                                                                                                                            $(`#progress_${currentFileIndex} .progress_circle2`).html(errorSVG); // Insert the error SVG
-                                                                                                                            // $('#upload_filee .close').click(); 
-
-                                                                                                                        }
-
-                                                                                                                        $('.button-spinner').remove();
-                                                                                                                        $submitButton.prop('disabled', false); // Re-enable submit button
-                                                                                                                    },
-                                                                                                                    // error: function (xhr, status, error) {
-                                                                                                                    //     alert("An error occurred while uploading files: " + (xhr.responseText || error));
-                                                                                                                    //     $('#submit-btn').prop('disabled', false).text('Upload');
-                                                                                                                    // }
-                                                                                                                    error: function(xhr) {
-                                                                                                                        if (xhr.status === 400 || xhr.status === 500) {
-                                                                                                                            let response = JSON.parse(xhr.responseText);
-                                                                                                                            toastr.error('Error: ' + response.message);
-                                                                                                                            // Create the error SVG with red fill
-                                                                                                                            let errorSVG = '<svg width="24px" height="24px" viewBox="0 0 24 24" fill="red"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"></path></svg>';
-
-                                                                                                                            // Replace the current done tick with the error SVG
-                                                                                                                            $(`#progress_${currentFileIndex} .progress_circle2`).html(errorSVG); // Insert the error SVG
-                                                                                                                            // $('#upload_filee .close').click(); 
-
-                                                                                                                        } else {
-                                                                                                                            // Create the error SVG with red fill
-                                                                                                                            let errorSVG = '<svg width="24px" height="24px" viewBox="0 0 24 24" fill="red"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"></path></svg>';
-
-                                                                                                                            // Replace the current done tick with the error SVG
-                                                                                                                            $(`#progress_${currentFileIndex} .progress_circle2`).html(errorSVG); // Insert the error SVG
-
-                                                                                                                        // $('#upload_filee .close').click(); 
+                                                                                                                        // Replace the current done tick with the error SVG
+                                                                                                                        $(`#progress_${currentFileIndex} .progress_circle2`).html(errorSVG); // Insert the error SVG
 
 
-                                                                                                                        }
-                                                                                                                        activeUploads[currentFileIndex] = false; // Mark this file as completed or failed
-                                                                                                                            checkAllUploadsComplete(); // Check if all uploads are done
-                                                                                                                        $submitButton.prop('disabled', false); // Re-enable submit button
-                                                                                                                        // $('#upload_filee .close').click(); 
-                                                                                                                        $('.button-spinner').remove();
+                                                                                                                    });
+                                                                                                                }
 
+                                                                                                                // for dynamic update the counter after upload start
+                                                                                                                // Find the <td> with "Offer Letter" text
+                                                                                                                let $offerLetterRow = $('td').filter(function() {
+                                                                                                                    return $(this).text().trim() === response.real_file_name; // response.real_file_name should match "Offer Letter"
+                                                                                                                }).closest('tr'); // Get the closest row (tr) that contains the td
 
-                                                                                                                    }
-                                                                                                                });
+                                                                                                                // Update the .comm_count and .comm_size in the same row
+                                                                                                                $offerLetterRow.find('.comm_count').text(response.count);
+                                                                                                                // $offerLetterRow.find('.comm_size').text(response.totalSize + ' KB');
+                                                                                                                $offerLetterRow.find('.comm_size').text(response.totalSize);
 
-                                                                                                                pre_bank_newfiles = []; // Resets the array
+                                                                                                                // for dynamic update the counter after upload start
 
+                                                                                                                activeUploads[currentFileIndex] = false; // Mark this file as completed
+                                                                                                                checkAllUploadsComplete(); // Check if all uploads are done
 
-                                                                                                                // Store the xhr request to allow cancellation later
-                                                                                                                xhrRequests[currentFileIndex] = xhrUpload;
-                                                                                                                
+                                                                                                                // fetchFolderContents($('#parent-folder').val());
+                                                                                                                // console.log("i am looking ::");
+                                                                                                                // console.log($('#parent-folder').val());
+                                                                                                                // resetFileInput($('input[name="file"]'));
+                                                                                                            } else {
+                                                                                                                toastr.error('Failed to upload file: ' + response.message);
+                                                                                                                // Create the error SVG with red fill
+                                                                                                                let errorSVG = '<svg width="24px" height="24px" viewBox="0 0 24 24" fill="red"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"></path></svg>';
+
+                                                                                                                // Replace the current done tick with the error SVG
+                                                                                                                $(`#progress_${currentFileIndex} .progress_circle2`).html(errorSVG); // Insert the error SVG
                                                                                                                 // $('#upload_filee .close').click(); 
-                                                                                                                window.xhrRequests = xhrRequests;
+
+                                                                                                            }
+
+                                                                                                            $('.button-spinner').remove();
+                                                                                                            $submitButton.prop('disabled', false); // Re-enable submit button
+                                                                                                        },
+                                                                                                        // error: function (xhr, status, error) {
+                                                                                                        //     alert("An error occurred while uploading files: " + (xhr.responseText || error));
+                                                                                                        //     $('#submit-btn').prop('disabled', false).text('Upload');
+                                                                                                        // }
+                                                                                                        error: function(xhr) {
+                                                                                                            if (xhr.status === 400 || xhr.status === 500) {
+                                                                                                                let response = JSON.parse(xhr.responseText);
+                                                                                                                toastr.error('Error: ' + response.message);
+                                                                                                                // Create the error SVG with red fill
+                                                                                                                let errorSVG = '<svg width="24px" height="24px" viewBox="0 0 24 24" fill="red"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"></path></svg>';
+
+                                                                                                                // Replace the current done tick with the error SVG
+                                                                                                                $(`#progress_${currentFileIndex} .progress_circle2`).html(errorSVG); // Insert the error SVG
+                                                                                                                // $('#upload_filee .close').click(); 
 
                                                                                                             } else {
-                                                                                                                toastr.error("No files selected for upload!");
-                                                                                                            }  
+                                                                                                                // Create the error SVG with red fill
+                                                                                                                let errorSVG = '<svg width="24px" height="24px" viewBox="0 0 24 24" fill="red"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"></path></svg>';
+
+                                                                                                                // Replace the current done tick with the error SVG
+                                                                                                                $(`#progress_${currentFileIndex} .progress_circle2`).html(errorSVG); // Insert the error SVG
+
+                                                                                                                // $('#upload_filee .close').click(); 
+
+
+                                                                                                            }
+                                                                                                            activeUploads[currentFileIndex] = false; // Mark this file as completed or failed
+                                                                                                            checkAllUploadsComplete(); // Check if all uploads are done
+                                                                                                            $submitButton.prop('disabled', false); // Re-enable submit button
+                                                                                                            // $('#upload_filee .close').click(); 
+                                                                                                            $('.button-spinner').remove();
+
+
+                                                                                                        }
+                                                                                                    });
+
+                                                                                                    pre_bank_newfiles = []; // Resets the array
+
+
+                                                                                                    // Store the xhr request to allow cancellation later
+                                                                                                    xhrRequests[currentFileIndex] = xhrUpload;
+
+                                                                                                    // $('#upload_filee .close').click(); 
+                                                                                                    window.xhrRequests = xhrRequests;
+
+                                                                                                } else {
+                                                                                                    toastr.error("No files selected for upload!");
+                                                                                                }
 
                                                                                             }
                                                                                         }
 
-                                                                                        
+
                                                                                         ////////// 1234
 
                                                                                     }
@@ -6962,7 +7062,7 @@
                                                                                                         var formData = new FormData();
 
                                                                                                         // Append all other form fields to FormData
-                                                                                                        $.each(formInputs, function (i, input) {
+                                                                                                        $.each(formInputs, function(i, input) {
                                                                                                             formData.append(input.name, input.value); // Append each field to the FormData
                                                                                                         });
 
@@ -6981,7 +7081,7 @@
                                                                                                         // Ensure there are files to upload
                                                                                                         if (formData.has('pre_bank_newfiles2[]')) {
                                                                                                             // Perform AJAX request to upload the files
-                                                                                                        
+
 
                                                                                                             var xhr = $.ajax({
                                                                                                                 url: '/PreBankHandleCommonUploadFiles', // Update with your actual route
@@ -6991,7 +7091,7 @@
                                                                                                                 contentType: false,
                                                                                                                 xhr: function() {
                                                                                                                     var xhr = new window.XMLHttpRequest();
-                                                                                                                    
+
                                                                                                                     xhr.upload.addEventListener("progress", function(evt) {
                                                                                                                         if (evt.lengthComputable) {
                                                                                                                             let percentComplete = evt.loaded / evt.total;
@@ -7001,7 +7101,7 @@
 
                                                                                                                     return xhr;
                                                                                                                 },
-                                                                                                                beforeSend: function () {
+                                                                                                                beforeSend: function() {
                                                                                                                     $('#submit-btn').prop('disabled', true).text('Uploading...');
                                                                                                                 },
                                                                                                                 success: function(response) {
@@ -7019,12 +7119,12 @@
                                                                                                                         if (response.errorMessages.length) {
                                                                                                                             response.errorMessages.forEach(function(msg) {
                                                                                                                                 // toastr.warning(msg);
-                                                                                                                            toastr.error('An error occurred while uploading files');
-                                                                                                                            // Create the error SVG with red fill
-                                                                                                                            let errorSVG = '<svg width="24px" height="24px" viewBox="0 0 24 24" fill="red"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"></path></svg>';
+                                                                                                                                toastr.error('An error occurred while uploading files');
+                                                                                                                                // Create the error SVG with red fill
+                                                                                                                                let errorSVG = '<svg width="24px" height="24px" viewBox="0 0 24 24" fill="red"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"></path></svg>';
 
-                                                                                                                            // Replace the current done tick with the error SVG
-                                                                                                                            $(`#progress_${currentFileIndex} .progress_circle2`).html(errorSVG); // Insert the error SVG
+                                                                                                                                // Replace the current done tick with the error SVG
+                                                                                                                                $(`#progress_${currentFileIndex} .progress_circle2`).html(errorSVG); // Insert the error SVG
 
 
                                                                                                                             });
@@ -7032,7 +7132,7 @@
 
                                                                                                                         // for dynamic update the counter after upload start
                                                                                                                         // Find the <td> with "Offer Letter" text
-                                                                                                                            let $offerLetterRow = $('td').filter(function() {
+                                                                                                                        let $offerLetterRow = $('td').filter(function() {
                                                                                                                             return $(this).text().trim() === response.real_file_name; // response.real_file_name should match "Offer Letter"
                                                                                                                         }).closest('tr'); // Get the closest row (tr) that contains the td
 
@@ -7040,7 +7140,7 @@
                                                                                                                         $offerLetterRow.find('.comm_count').text(response.count);
                                                                                                                         // $offerLetterRow.find('.comm_size').text(response.totalSize + ' KB');
                                                                                                                         $offerLetterRow.find('.comm_size').text(response.totalSize);
-                                                                                                                        
+
                                                                                                                         // for dynamic update the counter after upload start
 
                                                                                                                         activeUploads[currentFileIndex] = false; // Mark this file as completed
@@ -7082,12 +7182,12 @@
                                                                                                                         // Replace the current done tick with the error SVG
                                                                                                                         $(`#progress_${currentFileIndex} .progress_circle2`).html(errorSVG); // Insert the error SVG
 
-                                                                                                                    // $('#upload_filee .close').click(); 
+                                                                                                                        // $('#upload_filee .close').click(); 
 
 
                                                                                                                     }
                                                                                                                     activeUploads[currentFileIndex] = false; // Mark this file as completed or failed
-                                                                                                                        checkAllUploadsComplete(); // Check if all uploads are done
+                                                                                                                    checkAllUploadsComplete(); // Check if all uploads are done
                                                                                                                     $submitButton.prop('disabled', false); // Re-enable submit button
                                                                                                                     // $('#upload_filee .close').click(); 
                                                                                                                     $('.button-spinner').remove();
@@ -7109,7 +7209,7 @@
                                                                                                             toastr.error("No files selected for upload!");
                                                                                                         }
                                                                                                     }
-                                                                                                }   
+                                                                                                }
 
 
                                                                                                 // //////////////////////////////
@@ -7134,7 +7234,7 @@
 
                                                                                                 // Create a new FormData for files that "Do Not Exist"
                                                                                                 // var newFormData = new FormData();
-                                                                    
+
                                                                                                 // Loop through the selected files and append only the ones that do not exist
                                                                                                 for (var i = 0; i < filesKeepB.length; i++) {
                                                                                                     var file = filesKeepB[i];
@@ -7144,7 +7244,7 @@
                                                                                                         var formData = new FormData();
 
                                                                                                         // Append all other form fields to FormData
-                                                                                                        $.each(formInputs, function (i, input) {
+                                                                                                        $.each(formInputs, function(i, input) {
                                                                                                             formData.append(input.name, input.value); // Append each field to the FormData
                                                                                                         });
 
@@ -7159,7 +7259,7 @@
                                                                                                         let currentFileIndex = getSecureRandomString(16); // Generate unique index for the file
                                                                                                         addProgressIndicator(file.name, currentFileIndex); // Add progress bar for each file
                                                                                                         activeUploads[currentFileIndex] = true; // Mark this file upload as active
-                                                                                                        
+
                                                                                                         // Ensure there are files to upload
                                                                                                         if (formData.has('pre_bank_newfiles3[]')) {
                                                                                                             // Perform AJAX request to upload the files
@@ -7173,7 +7273,7 @@
                                                                                                                 contentType: false,
                                                                                                                 xhr: function() {
                                                                                                                     var xhr = new window.XMLHttpRequest();
-                                                                                                                    
+
                                                                                                                     xhr.upload.addEventListener("progress", function(evt) {
                                                                                                                         if (evt.lengthComputable) {
                                                                                                                             let percentComplete = evt.loaded / evt.total;
@@ -7198,12 +7298,12 @@
                                                                                                                         if (response.errorMessages.length) {
                                                                                                                             response.errorMessages.forEach(function(msg) {
                                                                                                                                 // toastr.warning(msg);
-                                                                                                                            toastr.error('An error occurred while uploading files');
-                                                                                                                            // Create the error SVG with red fill
-                                                                                                                            let errorSVG = '<svg width="24px" height="24px" viewBox="0 0 24 24" fill="red"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"></path></svg>';
+                                                                                                                                toastr.error('An error occurred while uploading files');
+                                                                                                                                // Create the error SVG with red fill
+                                                                                                                                let errorSVG = '<svg width="24px" height="24px" viewBox="0 0 24 24" fill="red"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"></path></svg>';
 
-                                                                                                                            // Replace the current done tick with the error SVG
-                                                                                                                            $(`#progress_${currentFileIndex} .progress_circle2`).html(errorSVG); // Insert the error SVG
+                                                                                                                                // Replace the current done tick with the error SVG
+                                                                                                                                $(`#progress_${currentFileIndex} .progress_circle2`).html(errorSVG); // Insert the error SVG
 
 
                                                                                                                             });
@@ -7262,7 +7362,7 @@
                                                                                                                         // Replace the current done tick with the error SVG
                                                                                                                         $(`#progress_${currentFileIndex} .progress_circle2`).html(errorSVG); // Insert the error SVG
 
-                                                                                                                    // $('#upload_filee .close').click(); 
+                                                                                                                        // $('#upload_filee .close').click(); 
 
 
                                                                                                                     }
@@ -7287,48 +7387,47 @@
                                                                                                             toastr.error("No files selected for upload!");
                                                                                                         }
                                                                                                     }
-                                                                                                }       
+                                                                                                }
 
-                                                                                            
+
 
                                                                                                 // //////////////////////////////
 
 
-                                                                                            } if(result.dismiss === Swal.DismissReason.close) {
+                                                                                            }
+                                                                                            if (result.dismiss === Swal.DismissReason.close) {
                                                                                                 // Logic for closing
                                                                                                 // alert("Cancelled");
-                                                                                            }
-                                                                                            else{
-                                                                                                $('#common_file_upload_pop_bank .close').click(); 
+                                                                                            } else {
+                                                                                                $('#common_file_upload_pop_bank .close').click();
 
                                                                                             }
-                                                                                            $('#common_file_upload_pop_bank .close').click(); 
+                                                                                            $('#common_file_upload_pop_bank .close').click();
 
                                                                                         });
 
                                                                                     }
-                                                                                    if(is_uploading21 && is_uploading22){
+                                                                                    if (is_uploading21 && is_uploading22) {
                                                                                         // $('#upload_filee .close').click(); 
-                                                                                    }
-                                                                                    else if(is_uploading21){
+                                                                                    } else if (is_uploading21) {
 
-                                                                                        if((is_uploading22==false)){
-                                                                                            $('#common_file_upload_pop_bank .close').click(); 
+                                                                                        if ((is_uploading22 == false)) {
+                                                                                            $('#common_file_upload_pop_bank .close').click();
                                                                                         }
 
                                                                                     }
 
-                                                                                
+
                                                                                 } else {
                                                                                     toastr.error('Error: ' + response.message); // Display error message
                                                                                 }
                                                                                 // $('#submit-btn').prop('disabled', false).text('Upload');
-                                                                                
+
                                                                             },
-                                                                            error: function (xhr) {
+                                                                            error: function(xhr) {
                                                                                 // Handle error
                                                                                 toastr.error('An error occurred while uploading the file.');
-                                                                                $('#common_file_upload_pop_bank .close').click(); 
+                                                                                $('#common_file_upload_pop_bank .close').click();
                                                                                 $('#submit-btn').prop('disabled', false).text('Upload');
                                                                             }
                                                                         });
@@ -8022,7 +8121,7 @@
                                                                                                                 } else {
                                                                                                                     console.log("No folder query parameter found in the URL.");
                                                                                                                 }
-                                                                                                                
+
 
                                                                                                             }
 
@@ -8218,7 +8317,7 @@
                                                                                                                 } else {
                                                                                                                     console.log("No folder query parameter found in the URL.");
                                                                                                                 }
-                                                                                                                
+
 
                                                                                                             }
 
@@ -8925,46 +9024,27 @@
                                                             <div class="gropu_form ivoice-upload">
                                                                 <label for="fname">Upload File</label>
 
-                                                                <div class="file-area">
-                                                                    <input type="file" class="dragfile" id="fileU" name="files[]" multiple required>
+                                                                <div class="file-area_cover">
+                                                                    <div class="file-area">
+                                                                        <input type="file" class="dragfile" id="fileU" name="files[]" multiple required>
 
-                                                                    <div class="file-dummy">
-                                                                        <div class="success">Great, your files are selected. Keep on.</div>
-                                                                        <div class="default">
-                                                                            <span class="upload_icon">
+                                                                        <div class="file-dummy">
+                                                                            <div class="success">Great, your files are selected. Keep on.</div>
+                                                                            <div class="default">
+                                                                                <span class="upload_icon">
 
-                                                                                <svg id="Layer_1" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 99.09 122.88">
-                                                                                    <title>file-upload</title>
-                                                                                    <path d="M64.64,13,86.77,36.21H64.64V13ZM42.58,71.67a3.25,3.25,0,0,1-4.92-4.25l9.42-10.91a3.26,3.26,0,0,1,4.59-.33,5.14,5.14,0,0,1,.4.41l9.3,10.28a3.24,3.24,0,0,1-4.81,4.35L52.8,67.07V82.52a3.26,3.26,0,1,1-6.52,0V67.38l-3.7,4.29ZM24.22,85.42a3.26,3.26,0,1,1,6.52,0v7.46H68.36V85.42a3.26,3.26,0,1,1,6.51,0V96.14a3.26,3.26,0,0,1-3.26,3.26H27.48a3.26,3.26,0,0,1-3.26-3.26V85.42ZM99.08,39.19c.15-.57-1.18-2.07-2.68-3.56L63.8,1.36A3.63,3.63,0,0,0,61,0H6.62A6.62,6.62,0,0,0,0,6.62V116.26a6.62,6.62,0,0,0,6.62,6.62H92.46a6.62,6.62,0,0,0,6.62-6.62V39.19Zm-7.4,4.42v71.87H7.4V7.37H57.25V39.9A3.71,3.71,0,0,0,61,43.61Z"></path>
-                                                                                </svg>
-                                                                            </span>
-                                                                            Upload
+                                                                                    <svg id="Layer_1" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 99.09 122.88">
+                                                                                        <title>file-upload</title>
+                                                                                        <path d="M64.64,13,86.77,36.21H64.64V13ZM42.58,71.67a3.25,3.25,0,0,1-4.92-4.25l9.42-10.91a3.26,3.26,0,0,1,4.59-.33,5.14,5.14,0,0,1,.4.41l9.3,10.28a3.24,3.24,0,0,1-4.81,4.35L52.8,67.07V82.52a3.26,3.26,0,1,1-6.52,0V67.38l-3.7,4.29ZM24.22,85.42a3.26,3.26,0,1,1,6.52,0v7.46H68.36V85.42a3.26,3.26,0,1,1,6.51,0V96.14a3.26,3.26,0,0,1-3.26,3.26H27.48a3.26,3.26,0,0,1-3.26-3.26V85.42ZM99.08,39.19c.15-.57-1.18-2.07-2.68-3.56L63.8,1.36A3.63,3.63,0,0,0,61,0H6.62A6.62,6.62,0,0,0,0,6.62V116.26a6.62,6.62,0,0,0,6.62,6.62H92.46a6.62,6.62,0,0,0,6.62-6.62V39.19Zm-7.4,4.42v71.87H7.4V7.37H57.25V39.9A3.71,3.71,0,0,0,61,43.61Z"></path>
+                                                                                    </svg>
+                                                                                </span>
+                                                                                Upload File
+                                                                            </div>
                                                                         </div>
                                                                     </div>
-                                                                    <div class="selected_file_count"></div>
+                                                                    <div class="file-list"></div>
                                                                 </div>
-                                                                <!--  -->
-                                                                <script>
-                                                                    let selectedFiles = []; // Store selected files
 
-                                                                    // Handle file selection
-                                                                    document.getElementById('fileU').addEventListener('change', function() {
-                                                                        const currentFiles = Array.from(this.files); // Get the selected files
-                                                                        selectedFiles = selectedFiles.concat(currentFiles); // Add to the file list
-
-                                                                        // Update the file count display
-                                                                        const fileCountDiv = document.querySelector('.selected_file_count');
-                                                                        const fileCount = selectedFiles.length;
-                                                                        fileCountDiv.textContent = `${fileCount} file${fileCount > 1 ? 's' : ''} selected`;
-                                                                    });
-
-                                                                    // Handle modal close button click
-                                                                    document.querySelector('#upload_filee .close').addEventListener('click', function() {
-                                                                        selectedFiles = []; // Reset the selected files array
-                                                                        document.getElementById('fileU').value = ''; // Clear the file input
-                                                                        document.querySelector('.selected_file_count').textContent = ''; // Clear the file count display
-                                                                    });
-                                                                </script>
                                                             </div>
 
                                                             <div class="gropu_form test-area">
