@@ -24903,509 +24903,203 @@ if (is_array($dataTags)) {
 //         return response()->json(['error' => 'Unable to create ZIP file.'], 500);
 //     }
 // }
-// public function downloadFolder($folder_id)
-// {
-//     // Fetch the folder details
-//     // $folder = Folder::findOrFail($folder_id);
-//     $folder = Folder::where('id', $folder_id)
-//                 ->where('is_delete', 0)
-//                 ->firstOrFail();
-//     $folderName = $folder->name;
-//     // dd($folderName);
-//     // Find related directories
-//     // $relatedDirectories = Folder::where('path', 'like', '%' . $folderName . '%')->where('user_id',$userId)->get();
-//     $relatedDirectories = Folder::where('path', 'like', '%' . $folderName . '%')
-//     ->where('is_delete', 0)
-//     ->where(function ($query) {
-//         $query->where('user_id', Auth::id())
-//               ->orWhere('user_id', 301);
-//     })
-//     ->get();
-
-//     // dd($relatedDirectories);
-
-//     // Fetch files from the CommonTable
-//     // $files = CommonTable::whereIn('folder_id', $relatedDirectories->pluck('id'))->get();
-//     // $files = CommonTable::where('location', $relatedDirectories->parent_name)->get();
-
-//     // Fetch files from the CommonTable based on the location
-//     $locations = $relatedDirectories->pluck('path'); // Assuming 'name' corresponds to part of the location
-//     // dd($locations);
-//     // $files = CommonTable::whereIn('location', $locations)->get();
-//     $files = CommonTable::whereIn('location', $locations)
-//     ->where('user_id', Auth::id())
-//     ->where('is_delete',0)
-//     ->whereNull('is_replaced')
-//     ->get();
-//     $fileNames = $files->pluck('file_name'); // Assuming 'name' corresponds to part of the location
-//     $fileTempNames = $files->pluck('temp_file_name'); // Assuming 'name' corresponds to part of the location
-
-//     // dd($fileNames);
-//     // dd($fileTempNames);
-
-//     // Create a temporary ZIP file path in app/public
-//     $zipFileName = $folderName . '.zip';    
-//     // $zipFileName = $folderName;
-
-//     // $zipFilePath = storage_path('app/public/' . $zipFileName);
-//     // $dateSuffix = date('d-F-Y'); // 'd-F-Y' format gives day, month name, and year, e.g., '13-December-2024'
-//     // $zipFileName .= '-' . $dateSuffix . '.zip'; // Append date, month name, year, and '.zip' extension
-//     $zipFilePath = storage_path('app/public/' . $zipFileName);
-//     // dd($zipFilePath);
-
-//     $zip = new ZipArchive;
-//     if ($zip->open($zipFilePath, ZipArchive::CREATE | ZipArchive::OVERWRITE) === TRUE) {
-//         $dir_names=[];
-//         foreach ($relatedDirectories as $directory) {
-//             $dirName = $directory->name;
-//             $dir_names[] = $dirName;
-
-//             // Add a directory to the ZIP
-//             $zip->addEmptyDir($dirName);
-//             // Add files to the directory
-//             // foreach ($files as $file) {
-//             //     if ($file->folder_id == $directory->id) {
-//             //         $realFilePath = storage_path('app/uploads/' . $file->real_file_name);
-//             //         if (file_exists($realFilePath)) {
-//             //             $zip->addFile($realFilePath, $dirName . '/' . $file->file_name);
-//             //         }
-//             //     }
-//             // }
-
-//             // foreach ($files as $file) {
-//             //     $storedFilePathZip = storage_path('app/public/' . $directory->path . '/' . $file->temp_file_name);
-//             //     echo "Checking file: " . $storedFilePathZip . "\n";
-//             //     if (file_exists($storedFilePathZip)) {
-//             //         echo "File exists.\n";
-//             //     } else {
-//             //         echo "File does not exist.\n";
-//             //     }
-//             // }
-
-//             // dd("after foreach");
-//             foreach ($files as $file) {
-//                 // dd($file->location); 
-//                 // dd($directory->path);
-//                 // "2024-2025November301_Accounting & Taxation/2024-2025November301_Indirect Tax/2024-2025November301_Indirect/2024-2025November301_GST/2024-2025November301_Litigations"
-//                 // "2024-2025November301_Accounting & Taxation/2024-2025November301_Indirect Tax/2024-2025November301_Indirect/2024-2025November301_GST"
-
-//                 if ($file->location == $directory->path) {
-//                     // dd("matched ".$file->location);
-//                     // dd($file);
-//                     // $storedFilePath = storage_path('app/'.$directory->path .'/'. $file->temp_file_name);
-//                     // // $storedFilePathZip = storage_path('app/public/'.$directory->name.'/'.$file->file_name);
-//                     // $storedFilePathZip = storage_path('app/public/'.$directory->name.'/'.$file->temp_file_name);
-
-//                     // // $storedFilePathZiploc = storage_path('app/public/'.$directory->path.'/'.$file->file_name);
-//                     // // dd($storedFilePathZip);
-//                     // // Debugging paths
-//                     // // dd([
-//                     // //     'Stored File Path' => $storedFilePath,
-//                     // //     'ZIP File Path' => $storedFilePathZip,
-//                     // // ]);
-
-//                     // // Check if the file exists at the given path
-//                     // if (file_exists($storedFilePath)) {
-//                     //     // Add the file to the ZIP archive
-//                     //     $asf = $zip->addFile($storedFilePath,$storedFilePathZip);
-//                     //     dd($asf);
-//                     //     echo "File added to the ZIP at location: " . $storedFilePathZip;
-//                     // } else {
-//                     //     echo "File not found at: " . $storedFilePath;
-//                     // }
-
-//                     // $storedFilePath = storage_path('app/' . $directory->path . '/' . $file->temp_file_name);
-//                     // $storedFilePathZip = storage_path('app/public/' . $directory->name . '/' . $file->temp_file_name);
-
-//                     // //////// working smooth  start
-//                     // $storedFilePath = storage_path('app/' . $directory->path . '/' . $file->temp_file_name);
-
-//                     // // Correct the relative path for the ZIP
-//                     // $relativeZipPath = $directory->name . '/' . $file->file_name; // Exclude "public/" from the path
-                    
-//                     // // Debugging paths
-//                     // // dd([
-//                     // //     'Stored File Path' => $storedFilePath,
-//                     // //     'Relative ZIP Path' => $relativeZipPath,
-//                     // // ]);
-                    
-//                     // // Check if the file exists at the given path
-//                     // if (file_exists($storedFilePath)) {
-//                     //     // Add the file to the ZIP archive with the correct relative path
-//                     //     $addedToZip = $zip->addFile($storedFilePath, $relativeZipPath);
-                    
-//                     //     // Check if the file was added successfully
-//                     //     if ($addedToZip) {
-//                     //         echo "File added to the ZIP at location: " . $relativeZipPath . "<br>";
-//                     //     } else {
-//                     //         echo "Failed to add the file to the ZIP.<br>";
-//                     //     }
-//                     // } else {
-//                     //     echo "File not found at: " . $storedFilePath . "<br>";
-//                     // }
-//                     // //////// working smooth end ///////////////
-
-
-//                     $storedFilePath = storage_path('app/' . $directory->path . '/' . $file->temp_file_name);
-
-//                     // Determine the relative ZIP path based on `real_file_name`
-//                     if (!empty($file->real_file_name)) {
-//                         $relativeZipPath = $directory->name . '/' . $file->real_file_name . '/' . $file->file_name;
-//                     } else {
-//                         $relativeZipPath = $directory->name . '/' . $file->file_name;
-//                     }
-
-//                     // Debugging paths
-//                     // dd([
-//                     //     'Stored File Path' => $storedFilePath,
-//                     //     'Relative ZIP Path' => $relativeZipPath,
-//                     // ]);
-
-//                     // Check if the file exists at the given path
-//                     if (file_exists($storedFilePath)) {
-//                         // Create the directory structure in the ZIP if it doesn't exist
-//                         $zipDirectory = dirname($relativeZipPath);
-//                         if (!empty($zipDirectory) && !$zip->locateName($zipDirectory . '/')) {
-//                             $zip->addEmptyDir($zipDirectory); // Ensure the directory exists in the ZIP
-//                         }
-
-//                         // Add the file to the ZIP archive with the correct relative path
-//                         $addedToZip = $zip->addFile($storedFilePath, $relativeZipPath);
-
-//                         // Check if the file was added successfully
-//                         if ($addedToZip) {
-//                             // echo "File added to the ZIP at location: " . $relativeZipPath . "<br>";
-//                         } else {
-//                             // echo "Failed to add the file to the ZIP.<br>";
-//                         }
-//                     } else {
-//                         // echo "File not found at: " . $storedFilePath . "<br>";
-//                     }
-
-//                 }
-//             }
-//         }
-//         // dd($dir_names);
-//         $zip->close();
-//         // Make the ZIP file publicly accessible
-//         $publicZipPath = 'storage/app/public/' . $zipFileName;
-//         return response()->download($zipFilePath);
-//         // return response()->download($zipFilePath)->deleteFileAfterSend(true);
-//         // return response()->json(['path' => $publicZipPath, 'message' => 'ZIP file created successfully.']);
-//     } else {
-//         return response()->json(['error' => 'Unable to create ZIP file.'], 500);
-//     }
-// }
-
-
-
-// 13 December 2024 for download Folder end
-
-// 16 december start 
-// public function downloadFolder($folder_id)
-// {
-//     // Fetch the folder details
-//     $folder = Folder::where('id', $folder_id)
-//         ->where('is_delete', 0)
-//         ->firstOrFail();
-//     $folderName = $folder->name;
-
-//     // Get related directories
-//     $relatedDirectories = Folder::where('path', 'like', '%' . $folderName . '%')
-//         ->where('is_delete', 0)
-//         ->where(function ($query) {
-//             $query->where('user_id', Auth::id())
-//                 ->orWhere('user_id', 301);
-//         })
-//         ->get();
-
-//     // Fetch files from the CommonTable based on locations
-//     $locations = $relatedDirectories->pluck('path');
-//     $files = CommonTable::whereIn('location', $locations)
-//         ->where('user_id', Auth::id())
-//         ->where('is_delete', 0)
-//         ->whereNull('is_replaced')
-//         ->get();
-
-//     // Create a temporary ZIP file
-//     $zipFileName = $folderName . '.zip';
-//     $zipFilePath = storage_path('app/public/' . $zipFileName);
-//     $zip = new ZipArchive;
-
-//     if ($zip->open($zipFilePath, ZipArchive::CREATE | ZipArchive::OVERWRITE) === TRUE) {
-//         foreach ($relatedDirectories as $directory) {
-//             foreach ($files as $file) {
-//                 if ($file->location == $directory->path) {
-//                     // Build the relative path hierarchy
-//                     $relativeZipPath = $this->buildZipPath($relatedDirectories, $directory, $file);
-
-//                     // Get the file's storage path
-//                     $storedFilePath = storage_path('app/' . $directory->path . '/' . $file->temp_file_name);
-
-//                     // Check if the file exists
-//                     if (file_exists($storedFilePath)) {
-//                         // Add the file to the ZIP with its hierarchical path
-//                         $zip->addFile($storedFilePath, $relativeZipPath);
-//                     }
-//                 }
-//             }
-//         }
-//         $zip->close();
-
-//         // Return the ZIP file as a response
-//         return response()->download($zipFilePath)->deleteFileAfterSend(true);
-//     } else {
-//         return response()->json(['error' => 'Unable to create ZIP file.'], 500);
-//     }
-// }
-
-// /**
-//  * Build the relative ZIP path for a file based on its parent folder hierarchy.
-//  *
-//  * @param Collection $relatedDirectories
-//  * @param Folder $directory
-//  * @param CommonTable $file
-//  * @return string
-//  */
-// private function buildZipPath($relatedDirectories, $directory, $file)
-// {
-//     // Build the full directory path hierarchy
-//     $relativePath = [];
-//     $currentPath = $directory->path;
-
-//     while ($currentPath) {
-//         $currentDirectory = $relatedDirectories->firstWhere('path', $currentPath);
-//         if ($currentDirectory) {
-//             array_unshift($relativePath, $currentDirectory->name);
-//             $currentPath = dirname($currentPath); // Move to the parent directory
-//         } else {
-//             break;
-//         }
-//     }
-
-//     // Add the file name to the path
-//     $relativePath[] = $file->file_name;
-
-//     // Join the path components with a slash
-//     return implode('/', $relativePath);
-// }
-
-
-// part 2 test without overwite files
-// public function downloadFolder($folder_id)
-// {
-//     // Fetch the folder details
-//     $folder = Folder::where('id', $folder_id)
-//         ->where('is_delete', 0)
-//         ->firstOrFail();
-//     $folderName = $folder->name;
-
-//     // Get related directories
-//     $relatedDirectories = Folder::where('path', 'like', '%' . $folderName . '%')
-//         ->where('is_delete', 0)
-//         ->where(function ($query) {
-//             $query->where('user_id', Auth::id())
-//                 ->orWhere('user_id', 301);
-//         })
-//         ->get();
-
-//     // Fetch files from the CommonTable based on locations
-//     $locations = $relatedDirectories->pluck('path');
-//     $files = CommonTable::whereIn('location', $locations)
-//         ->where('user_id', Auth::id())
-//         ->where('is_delete', 0)
-//         ->whereNull('is_replaced')
-//         ->get();
-
-//     // Create a temporary ZIP file
-//     $zipFileName = $folderName . '.zip';
-//     $zipFilePath = storage_path('app/public/' . $zipFileName);
-//     $zip = new ZipArchive;
-
-//     if ($zip->open($zipFilePath, ZipArchive::CREATE | ZipArchive::OVERWRITE) === TRUE) {
-//         $addedFiles = []; // To track already added files and prevent overwriting
-
-//         foreach ($relatedDirectories as $directory) {
-//             foreach ($files as $file) {
-//                 if ($file->location == $directory->path) {
-//                     // Build the relative ZIP path
-//                     $relativeZipPath = $this->buildZipPath($relatedDirectories, $directory, $file);
-
-//                     // Get the file's storage path
-//                     $storedFilePath = storage_path('app/' . $directory->path . '/' . $file->temp_file_name);
-
-//                     // Check if the file exists
-//                     if (file_exists($storedFilePath)) {
-//                         // Ensure unique file names in the ZIP
-//                         $uniqueZipPath = $this->ensureUniqueZipPath($relativeZipPath, $addedFiles);
-
-//                         // Add the file to the ZIP with its unique path
-//                         $zip->addFile($storedFilePath, $uniqueZipPath);
-
-//                         // Track the added file
-//                         $addedFiles[] = $uniqueZipPath;
-//                     }
-//                 }
-//             }
-//         }
-//         $zip->close();
-
-//         // Return the ZIP file as a response
-//         return response()->download($zipFilePath)->deleteFileAfterSend(true);
-//     } else {
-//         return response()->json(['error' => 'Unable to create ZIP file.'], 500);
-//     }
-// }
-
-// /**
-//  * Build the relative ZIP path for a file based on its parent folder hierarchy.
-//  */
-// private function buildZipPath($relatedDirectories, $directory, $file)
-// {
-//     $relativePath = [];
-//     $currentPath = $directory->path;
-
-//     while ($currentPath) {
-//         $currentDirectory = $relatedDirectories->firstWhere('path', $currentPath);
-//         if ($currentDirectory) {
-//             array_unshift($relativePath, $currentDirectory->name);
-//             $currentPath = dirname($currentPath);
-//         } else {
-//             break;
-//         }
-//     }
-//     $relativePath[] = $file->file_name;
-//     return implode('/', $relativePath);
-// }
-
-// /**
-//  * Ensure a unique file path in the ZIP by appending a counter if a file with the same name exists.
-//  */
-// private function ensureUniqueZipPath($relativeZipPath, $addedFiles)
-// {
-//     $originalPath = $relativeZipPath;
-//     $counter = 1;
-
-//     while (in_array($relativeZipPath, $addedFiles)) {
-//         $pathInfo = pathinfo($originalPath);
-//         $relativeZipPath = $pathInfo['dirname'] . '/' . $pathInfo['filename'] . ' (' . $counter . ').' . $pathInfo['extension'];
-//         $counter++;
-//     }
-
-//     return $relativeZipPath;
-// }
-
-
-
-/////////part 3 with real_file_name sub directories
 public function downloadFolder($folder_id)
 {
     // Fetch the folder details
+    // $folder = Folder::findOrFail($folder_id);
     $folder = Folder::where('id', $folder_id)
-        ->where('is_delete', 0)
-        ->firstOrFail();
+                ->where('is_delete', 0)
+                ->firstOrFail();
     $folderName = $folder->name;
-
-    // Get related directories
+    // dd($folderName);
+    // Find related directories
+    // $relatedDirectories = Folder::where('path', 'like', '%' . $folderName . '%')->where('user_id',$userId)->get();
     $relatedDirectories = Folder::where('path', 'like', '%' . $folderName . '%')
-        ->where('is_delete', 0)
-        ->where(function ($query) {
-            $query->where('user_id', Auth::id())
-                ->orWhere('user_id', 301);
-        })
-        ->get();
+    ->where('is_delete', 0)
+    ->where(function ($query) {
+        $query->where('user_id', Auth::id())
+              ->orWhere('user_id', 301);
+    })
+    ->get();
 
-    // Fetch files from the CommonTable based on locations
-    $locations = $relatedDirectories->pluck('path');
+    // dd($relatedDirectories);
+
+    // Fetch files from the CommonTable
+    // $files = CommonTable::whereIn('folder_id', $relatedDirectories->pluck('id'))->get();
+    // $files = CommonTable::where('location', $relatedDirectories->parent_name)->get();
+
+    // Fetch files from the CommonTable based on the location
+    $locations = $relatedDirectories->pluck('path'); // Assuming 'name' corresponds to part of the location
+    // dd($locations);
+    // $files = CommonTable::whereIn('location', $locations)->get();
     $files = CommonTable::whereIn('location', $locations)
-        ->where('user_id', Auth::id())
-        ->where('is_delete', 0)
-        ->whereNull('is_replaced')
-        ->get();
+    ->where('user_id', Auth::id())
+    ->where('is_delete',0)
+    ->whereNull('is_replaced')
+    ->get();
+    $fileNames = $files->pluck('file_name'); // Assuming 'name' corresponds to part of the location
+    $fileTempNames = $files->pluck('temp_file_name'); // Assuming 'name' corresponds to part of the location
 
-    // Create a temporary ZIP file
-    $zipFileName = $folderName . '.zip';
+    // dd($fileNames);
+    // dd($fileTempNames);
+
+    // Create a temporary ZIP file path in app/public
+    $zipFileName = $folderName . '.zip';    
+    // $zipFileName = $folderName;
+
+    // $zipFilePath = storage_path('app/public/' . $zipFileName);
+    // $dateSuffix = date('d-F-Y'); // 'd-F-Y' format gives day, month name, and year, e.g., '13-December-2024'
+    // $zipFileName .= '-' . $dateSuffix . '.zip'; // Append date, month name, year, and '.zip' extension
     $zipFilePath = storage_path('app/public/' . $zipFileName);
+    // dd($zipFilePath);
+
     $zip = new ZipArchive;
-
     if ($zip->open($zipFilePath, ZipArchive::CREATE | ZipArchive::OVERWRITE) === TRUE) {
-        $addedFiles = []; // To track already added files and prevent overwriting
-
+        $dir_names=[];
         foreach ($relatedDirectories as $directory) {
-            // Include all parent directories in the ZIP
-            $this->addParentDirectories($zip, $directory->path);
+            $dirName = $directory->name;
+            $dir_names[] = $dirName;
 
+            // Add a directory to the ZIP
+            $zip->addEmptyDir($dirName);
+            // Add files to the directory
+            // foreach ($files as $file) {
+            //     if ($file->folder_id == $directory->id) {
+            //         $realFilePath = storage_path('app/uploads/' . $file->real_file_name);
+            //         if (file_exists($realFilePath)) {
+            //             $zip->addFile($realFilePath, $dirName . '/' . $file->file_name);
+            //         }
+            //     }
+            // }
+
+            // foreach ($files as $file) {
+            //     $storedFilePathZip = storage_path('app/public/' . $directory->path . '/' . $file->temp_file_name);
+            //     echo "Checking file: " . $storedFilePathZip . "\n";
+            //     if (file_exists($storedFilePathZip)) {
+            //         echo "File exists.\n";
+            //     } else {
+            //         echo "File does not exist.\n";
+            //     }
+            // }
+
+            // dd("after foreach");
             foreach ($files as $file) {
-                if ($file->location == $directory->path) {
-                    // Determine if real_file_name is present
-                    $relativeZipPath = !empty($file->real_file_name)
-                        ? $directory->path . '/' . $file->real_file_name . '/' . $file->file_name
-                        : $directory->path . '/' . $file->file_name;
+                // dd($file->location); 
+                // dd($directory->path);
+                // "2024-2025November301_Accounting & Taxation/2024-2025November301_Indirect Tax/2024-2025November301_Indirect/2024-2025November301_GST/2024-2025November301_Litigations"
+                // "2024-2025November301_Accounting & Taxation/2024-2025November301_Indirect Tax/2024-2025November301_Indirect/2024-2025November301_GST"
 
-                    // Get the file's storage path
+                if ($file->location == $directory->path) {
+                    // dd("matched ".$file->location);
+                    // dd($file);
+                    // $storedFilePath = storage_path('app/'.$directory->path .'/'. $file->temp_file_name);
+                    // // $storedFilePathZip = storage_path('app/public/'.$directory->name.'/'.$file->file_name);
+                    // $storedFilePathZip = storage_path('app/public/'.$directory->name.'/'.$file->temp_file_name);
+
+                    // // $storedFilePathZiploc = storage_path('app/public/'.$directory->path.'/'.$file->file_name);
+                    // // dd($storedFilePathZip);
+                    // // Debugging paths
+                    // // dd([
+                    // //     'Stored File Path' => $storedFilePath,
+                    // //     'ZIP File Path' => $storedFilePathZip,
+                    // // ]);
+
+                    // // Check if the file exists at the given path
+                    // if (file_exists($storedFilePath)) {
+                    //     // Add the file to the ZIP archive
+                    //     $asf = $zip->addFile($storedFilePath,$storedFilePathZip);
+                    //     dd($asf);
+                    //     echo "File added to the ZIP at location: " . $storedFilePathZip;
+                    // } else {
+                    //     echo "File not found at: " . $storedFilePath;
+                    // }
+
+                    // $storedFilePath = storage_path('app/' . $directory->path . '/' . $file->temp_file_name);
+                    // $storedFilePathZip = storage_path('app/public/' . $directory->name . '/' . $file->temp_file_name);
+
+                    // //////// working smooth  start
+                    // $storedFilePath = storage_path('app/' . $directory->path . '/' . $file->temp_file_name);
+
+                    // // Correct the relative path for the ZIP
+                    // $relativeZipPath = $directory->name . '/' . $file->file_name; // Exclude "public/" from the path
+                    
+                    // // Debugging paths
+                    // // dd([
+                    // //     'Stored File Path' => $storedFilePath,
+                    // //     'Relative ZIP Path' => $relativeZipPath,
+                    // // ]);
+                    
+                    // // Check if the file exists at the given path
+                    // if (file_exists($storedFilePath)) {
+                    //     // Add the file to the ZIP archive with the correct relative path
+                    //     $addedToZip = $zip->addFile($storedFilePath, $relativeZipPath);
+                    
+                    //     // Check if the file was added successfully
+                    //     if ($addedToZip) {
+                    //         echo "File added to the ZIP at location: " . $relativeZipPath . "<br>";
+                    //     } else {
+                    //         echo "Failed to add the file to the ZIP.<br>";
+                    //     }
+                    // } else {
+                    //     echo "File not found at: " . $storedFilePath . "<br>";
+                    // }
+                    // //////// working smooth end ///////////////
+
+
                     $storedFilePath = storage_path('app/' . $directory->path . '/' . $file->temp_file_name);
 
-                    // Check if the file exists
-                    if (file_exists($storedFilePath)) {
-                        // Ensure unique file names in the ZIP
-                        $uniqueZipPath = $this->ensureUniqueZipPath($relativeZipPath, $addedFiles);
-
-                        // Add the file to the ZIP with its unique path
-                        $zip->addFile($storedFilePath, $uniqueZipPath);
-
-                        // Track the added file
-                        $addedFiles[] = $uniqueZipPath;
+                    // Determine the relative ZIP path based on `real_file_name`
+                    if (!empty($file->real_file_name)) {
+                        $relativeZipPath = $directory->name . '/' . $file->real_file_name . '/' . $file->file_name;
+                    } else {
+                        $relativeZipPath = $directory->name . '/' . $file->file_name;
                     }
+
+                    // Debugging paths
+                    // dd([
+                    //     'Stored File Path' => $storedFilePath,
+                    //     'Relative ZIP Path' => $relativeZipPath,
+                    // ]);
+
+                    // Check if the file exists at the given path
+                    if (file_exists($storedFilePath)) {
+                        // Create the directory structure in the ZIP if it doesn't exist
+                        $zipDirectory = dirname($relativeZipPath);
+                        if (!empty($zipDirectory) && !$zip->locateName($zipDirectory . '/')) {
+                            $zip->addEmptyDir($zipDirectory); // Ensure the directory exists in the ZIP
+                        }
+
+                        // Add the file to the ZIP archive with the correct relative path
+                        $addedToZip = $zip->addFile($storedFilePath, $relativeZipPath);
+
+                        // Check if the file was added successfully
+                        if ($addedToZip) {
+                            // echo "File added to the ZIP at location: " . $relativeZipPath . "<br>";
+                        } else {
+                            // echo "Failed to add the file to the ZIP.<br>";
+                        }
+                    } else {
+                        // echo "File not found at: " . $storedFilePath . "<br>";
+                    }
+
                 }
             }
         }
+        // dd($dir_names);
         $zip->close();
-
-        // Return the ZIP file as a response
-        return response()->download($zipFilePath)->deleteFileAfterSend(true);
+        // Make the ZIP file publicly accessible
+        $publicZipPath = 'storage/app/public/' . $zipFileName;
+        return response()->download($zipFilePath);
+        // return response()->download($zipFilePath)->deleteFileAfterSend(true);
+        // return response()->json(['path' => $publicZipPath, 'message' => 'ZIP file created successfully.']);
     } else {
         return response()->json(['error' => 'Unable to create ZIP file.'], 500);
     }
 }
 
-/**
- * Add all parent directories for a given path to the ZIP.
- */
-private function addParentDirectories($zip, $path)
-{
-    $pathSegments = explode('/', $path);
-    $currentPath = '';
-
-    foreach ($pathSegments as $segment) {
-        $currentPath .= $segment . '/';
-        if (!$zip->locateName($currentPath)) {
-            $zip->addEmptyDir($currentPath);
-        }
-    }
-}
-
-/**
- * Ensure unique file paths within the ZIP archive.
- */
-private function ensureUniqueZipPath($relativeZipPath, &$addedFiles)
-{
-    $uniqueZipPath = $relativeZipPath;
-    $counter = 1;
-
-    while (in_array($uniqueZipPath, $addedFiles)) {
-        $pathInfo = pathinfo($relativeZipPath);
-        $uniqueZipPath = $pathInfo['dirname'] . '/' . $pathInfo['filename'] . " ({$counter})." . $pathInfo['extension'];
-        $counter++;
-    }
-
-    return $uniqueZipPath;
-}
 
 
-
-
-
-// 16 december end
+// 13 December 2024 for download Folder end
 
 
     
