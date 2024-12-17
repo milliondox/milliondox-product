@@ -20651,12 +20651,14 @@ $commonColumns = [
 
 $files4 = CommonTable::where('user_id', $user->id)
     ->where('is_delete', 1)
+    ->orderBy('updated_at', 'desc')
     ->get();
 
 
     $deleteFolder = Folder::with('user')
     ->where('user_id', $user->id)
     ->where('is_delete', 1)
+    ->orderBy('updated_at', 'desc')
     ->get();
 
 
