@@ -1025,8 +1025,23 @@ document.addEventListener('DOMContentLoaded', function () {
                                                 </clipPath>
                                             </defs>
                                         </svg>
+                                        
                                     </div>
-
+                                    <div id="selected-file-name" style="margin-top: 10px; font-family: Arial, sans-serif; font-size: 12px; color: #ff0000;"></div>
+                                    <script>
+                                        // Get references to the file input and display container
+                                        const fileInput = document.getElementById('aoa-file');
+                                        const fileNameDisplay = document.getElementById('selected-file-name');
+                                    
+                                        // Add an event listener to update the display on file selection
+                                        fileInput.addEventListener('change', function () {
+                                            if (fileInput.files.length > 0) {
+                                                fileNameDisplay.textContent = `Selected file: ${fileInput.files[0].name}`;
+                                            } else {
+                                                fileNameDisplay.textContent = ''; // Clear the display if no file is selected
+                                            }
+                                        });
+                                    </script>
                                     <button class="btn" style="border-radius:5px;" type="submit">
                                         <svg width="14" height="12" viewBox="0 0 14 12" fill="none" xmlns="http://www.w3.org/2000/svg">
                                             <path d="M1.26927 11.5999L12.9026 6.61327C13.0229 6.56204 13.1254 6.47658 13.1975 6.36754C13.2696 6.25849 13.308 6.13065 13.308 5.99994C13.308 5.86922 13.2696 5.74139 13.1975 5.63234C13.1254 5.52329 13.0229 5.43783 12.9026 5.3866L1.26927 0.399935C1.16854 0.355998 1.05845 0.337831 0.948943 0.347071C0.839435 0.356311 0.733949 0.392668 0.642003 0.452863C0.550057 0.513058 0.474543 0.595197 0.422274 0.691869C0.370005 0.788541 0.342625 0.896705 0.342604 1.0066L0.335938 4.07994C0.335938 4.41327 0.582604 4.69994 0.915937 4.73994L10.3359 5.99994L0.915937 7.25327C0.582604 7.29994 0.335938 7.5866 0.335938 7.91994L0.342604 10.9933C0.342604 11.4666 0.829271 11.7933 1.26927 11.5999Z" fill="white" />
