@@ -274,6 +274,82 @@ document.addEventListener('DOMContentLoaded', function () {
 
 </script>
 
+<script>
+    $(document).ready(function() {
+        // Toggle the dropdown-content when button is clicked
+        $('body').on('click', '.dropbtn', function(e) {
+            // Prevent body click from immediately closing the dropdown
+            e.stopPropagation();
+
+            // Get the dropdown content of the clicked button
+            var dropdownContent = $(this).siblings('.dropdown-content');
+
+            // Close any currently open dropdowns by removing the active class from all dropdown-content
+            $('.dropdown-content').not(dropdownContent).removeClass('active');
+
+            // Toggle the active class on the clicked dropdown-content
+            dropdownContent.toggleClass('active');
+        });
+
+        // Close dropdown-content if clicking outside
+        $('body').on('click', function() {
+            $('.dropdown-content').removeClass('active');
+        });
+    });
+</script>
+
+<script>
+$(document).ready(function() {
+    $('#addacustomer').on('click', function() {
+      $('.addcustomer_fix').addClass('active');
+      $('.addcustomer_overlay_fix').addClass('active');
+    });
+
+    $('.addcustomer_overlay_fix').on('click', function() {
+      $('.addcustomer_fix').removeClass('active');
+      $('.addcustomer_overlay_fix').removeClass('active');
+    });
+
+  });
+
+  $(document).on('click', function (event) {
+  // Check if the click is outside of .opload and .opload_wrap_opt
+  if (!$(event.target).closest('.opload, .opload_wrap_opt').length) {
+    $('.opload_wrap_opt').removeClass('active');
+  }
+});
+
+$('.opload').on('click', function (event) {
+  // Prevent the click from propagating to the document
+  event.stopPropagation();
+  $('.opload_wrap_opt').toggleClass('active');
+});
+
+
+  </script>
+
+<script>
+// Select all input elements with the class 'emppicd'
+document.querySelectorAll('.emppicd').forEach(function(input) {
+    input.addEventListener('change', function(event) {
+        const file = event.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                // Find the closest .dont_show div and update the .previewd image inside it
+                const previewImg = event.target.closest('.inner_file_edit').querySelector('.previewd');
+                if (previewImg) {
+                    previewImg.src = e.target.result;
+                }
+            };
+            reader.readAsDataURL(file);
+        }
+    });
+});
+
+</script>
+
+
 </body>
 
 </html>
