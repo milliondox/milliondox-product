@@ -8646,6 +8646,7 @@ span.red_star {
         border-radius: 50px;
         border: 1px solid #ddd;
     }
+
     .dark-only #round_uplad_image.file-area .inner_file_edit {
         border-color: #3e4d70;
     }
@@ -23250,9 +23251,10 @@ span.clinet_name {
     border: 1px solid #d9d9d9;
     border-radius: 5px;
     border-top: 0;
-    flex: 2;;
-    width:100%;
-    text-align:left;
+    flex: 2;
+    ;
+    width: 100%;
+    text-align: left;
     display: none;
 }
 
@@ -23270,14 +23272,17 @@ span.clinet_name {
     margin: 0;
     padding: 0;
 }
+
 .suggestions-list::-webkit-scrollbar {
     width: 3px;
     border-radius: 50px;
 }
+
 .suggestions-list::-webkit-scrollbar-thumb {
     background: #8e8e8e;
     border-radius: 50px;
 }
+
 .suggestions-list::-webkit-scrollbar-track {
     background: #c4c4c4;
     border-radius: 50px;
@@ -23314,7 +23319,7 @@ span.clinet_name {
     color: #646464;
     font-size: 14px;
     list-style: none;
-    background-color:transparent !important;
+    background-color: transparent !important;
     outline: none;
 }
 
@@ -23323,14 +23328,17 @@ span.clinet_name {
     margin: 0;
     padding: 0;
 }
+
 .autocomplete-suggestions .ui-menu::-webkit-scrollbar {
     width: 3px;
     border-radius: 50px;
 }
+
 .autocomplete-suggestions .ui-menu::-webkit-scrollbar-thumb {
     background: #8e8e8e;
     border-radius: 50px;
 }
+
 .autocomplete-suggestions .ui-menu::-webkit-scrollbar-track {
     background: #c4c4c4;
     border-radius: 50px;
@@ -23359,7 +23367,7 @@ span.clinet_name {
     border: 1px solid #CCD4E5;
     border-radius: 10px;
     padding: 10px;
-    top:100%;
+    top: 100%;
 }
 
 .dropdown .dropdown-content.active {
@@ -23381,11 +23389,12 @@ span.clinet_name {
     width: 16px;
     height: 16px;
 }
-div.dataTables_wrapper{
+
+div.dataTables_wrapper {
     font-family: "Manrope", sans-serif;
 }
 
-/*contract sidebar start*/ 
+/*contract sidebar start*/
 .addcustomer_fix {
     position: fixed;
     top: 0;
@@ -23409,9 +23418,11 @@ div.dataTables_wrapper{
     border: 1px solid #dbdbdb;
     overflow: auto;
 }
+
 .addcustomer_fix.active {
     transform: translate(0px);
 }
+
 .addcustomer_overlay_fix {
     position: fixed;
     width: 100%;
@@ -23422,6 +23433,7 @@ div.dataTables_wrapper{
     top: 0;
     left: 0;
 }
+
 .addcustomer_overlay_fix.active {
     background: #0000004d;
     left: 0;
@@ -23456,7 +23468,9 @@ div.dataTables_wrapper{
     margin: 0px 0px 6px;
 }
 
-.addcustomer_fix .customer_wrap .gropu_form input, .addcustomer_fix .customer_wrap .gropu_form select, .addcustomer_fix .customer_wrap .gropu_form textarea {
+.addcustomer_fix .customer_wrap .gropu_form input,
+.addcustomer_fix .customer_wrap .gropu_form select,
+.addcustomer_fix .customer_wrap .gropu_form textarea {
     border: 1px solid #E7E8E9;
     color: #a7a7a7;
     width: 100%;
@@ -23553,7 +23567,7 @@ div.dataTables_wrapper{
     cursor: pointer;
 }
 
-.addcustomer_fix .customer_wrap  .root_btn {
+.addcustomer_fix .customer_wrap .root_btn {
     display: block;
     margin: 30px 0px 0px;
 }
@@ -23581,7 +23595,7 @@ div.dataTables_wrapper{
     z-index: 1;
 }
 
-.addcustomer_fix .customer_wrap  .gropu_form.ivoice-upload {
+.addcustomer_fix .customer_wrap .gropu_form.ivoice-upload {
     flex-wrap: nowrap;
     align-items: center;
     gap: 0px 10px;
@@ -23593,12 +23607,12 @@ div.dataTables_wrapper{
     font-weight: 500;
 }
 
-.addcustomer_fix .customer_wrap  .file_coman_wrap .coman_file_uplaodd {
+.addcustomer_fix .customer_wrap .file_coman_wrap .coman_file_uplaodd {
     padding: 5px 0px 0px;
     text-align: left;
 }
 
-.addcustomer_fix .customer_wrap  .file_coman_wrap .coman_file_uplaodd label {
+.addcustomer_fix .customer_wrap .file_coman_wrap .coman_file_uplaodd label {
     font-size: 12px;
     margin-bottom: 3px;
 }
@@ -23671,7 +23685,7 @@ div.dataTables_wrapper{
 }
 
 
-.customer_wrap .file-area {
+.customer_wrap.customer_details .file-area {
     display: flex;
     align-items: center;
     position: relative;
@@ -23706,7 +23720,7 @@ div.dataTables_wrapper{
     justify-content: space-between;
 }
 
-.customer_wrap .file-area  .file-dummy {
+.customer_wrap .file-area .file-dummy {
     display: block;
     width: 100%;
 }
@@ -23763,21 +23777,204 @@ div.dataTables_wrapper{
     color: #DBDBDB;
 }
 
-.dark-only .addcustomer_fix .customer_wrap .gropu_form input, .dark-only .addcustomer_fix .customer_wrap .gropu_form select, .dark-only .addcustomer_fix .customer_wrap .gropu_form textarea {
+.dark-only .addcustomer_fix .customer_wrap .gropu_form input,
+.dark-only .addcustomer_fix .customer_wrap .gropu_form select,
+.dark-only .addcustomer_fix .customer_wrap .gropu_form textarea {
     background-color: #262b33;
     color-scheme: dark;
     color: #dbdbdb;
     border-color: #3e4d70;
 }
 
-.dark-only .addcustomer_fix .customer_wrap .gropu_form input::placeholder, .dark-only .addcustomer_fix .customer_wrap .gropu_form textarea::placeholder {
+.dark-only .addcustomer_fix .customer_wrap .gropu_form input::placeholder,
+.dark-only .addcustomer_fix .customer_wrap .gropu_form textarea::placeholder {
     color: #a6a6a6;
 }
 
-.dark-only  .addcustomer_fix .addcustomer_title {
+.dark-only .addcustomer_fix .addcustomer_title {
     border-color: #3e4d70;
 }
 
+/*addend side bar css start*/
+.addendcustomer_fix {
+    position: fixed;
+    top: 0;
+    right: 0;
+    z-index: 99;
+    height: 100%;
+    line-height: inherit;
+    -webkit-transition: 0.3s;
+    transition: 0.3s;
+    box-shadow: 0 0 21px 0 rgba(89, 102, 122, 0.1);
+    min-height: unset;
+    max-height: unset;
+    margin: 0 !important;
+    width: 400px;
+    transform: translate(400px);
+    padding: 30px;
+    border-radius: 10px;
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+    background: #ffffff;
+    border: 1px solid #dbdbdb;
+    overflow: auto;
+}
+
+.addendcustomer_fix.active {
+    transform: translate(0px);
+}
+
+.addend_overlay_fix {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+    opacity: 0;
+    visibility: hidden;
+    top: 0;
+    left: 0;
+}
+
+.addend_overlay_fix.active {
+    background: #0000004d;
+    left: 0;
+    top: 0;
+    z-index: 9;
+    opacity: 1;
+    visibility: visible;
+}
+
+.addendcustomer_fix .addcustomer_title {
+    font-size: 20px;
+    font-weight: 600;
+    border-bottom: 1px solid #E7E8E9;
+    margin: 0px 0px 15px;
+    padding: 0px 0px 15px;
+}
+
+.addendcustomer_fix .customer_wrap .gropu_form {
+    display: flex;
+    margin-bottom: 20px;
+    position: relative;
+    flex-wrap: wrap;
+}
+
+.addendcustomer_fix .customer_wrap .gropu_form label {
+    display: block;
+    width: 100%;
+    font-size: 14px;
+    font-weight: 500;
+    letter-spacing: 0;
+    color: #4D4D4D;
+    margin: 0px 0px 6px;
+}
+
+.addendcustomer_fix .customer_wrap .gropu_form input,
+.addendcustomer_fix .customer_wrap .gropu_form select,
+.addendcustomer_fix .customer_wrap .gropu_form textarea {
+    border: 1px solid #E7E8E9;
+    color: #a7a7a7;
+    width: 100%;
+    padding: 8px 10px;
+    border-radius: 10px;
+    outline: none;
+}
+
+.addendcustomer_fix .customer_wrap .root_btn {
+    display: block;
+    margin: 30px 0px 0px;
+}
+
+.addendcustomer_fix .customer_wrap .root_btn button {
+    background: #5790FF;
+    width: 100%;
+    border-radius: 10px;
+    font-size: 14px;
+    font-weight: 700;
+    text-align: center;
+    color: #FFF;
+}
+
+.dark-only .addendcustomer_fix {
+    background: #262b33;
+    border: 1px solid #242c41;
+}
+
+.dark-only .addendcustomer_fix .addcustomer_title {
+    border-color: #3e4d70;
+}
+
+.dark-only .addendcustomer_fix .customer_wrap .gropu_form label {
+    color: #DBDBDB;
+}
+
+.dark-only .addendcustomer_fix .customer_wrap .gropu_form input,
+.dark-only .addendcustomer_fix .customer_wrap .gropu_form select,
+.dark-only .addendcustomer_fix .customer_wrap .gropu_form textarea {
+    background-color: #262b33;
+    color-scheme: dark;
+    color: #dbdbdb;
+    border-color: #3e4d70;
+}
+
+.dark-only .main_contractt_detail .dropdown .dropdown-content a.dropdown-itemm.Renew svg path {
+    fill: #A3AED0;
+}
+
+.dark-only .main_contractt_detail .dropdown .dropdown-content a.dropdown-itemm.Addend svg path {
+    stroke: #A3AED0;
+}
+
+.addendcustomer_fix textarea {
+    background: #F6F6F6;
+}
+
+.addendcustomer_fix .customer_wrap .gropu_form .renui_term {
+    background: #F6F6F6;
+    border: 1px solid #E7E8E9;
+    color: #a7a7a7;
+    width: 100%;
+    padding: 8px 10px;
+    border-radius: 10px;
+    outline: none;
+}
+
+.dark-only .addendcustomer_fix .customer_wrap .gropu_form textarea {
+    background: #2c323c;
+}
+
+.dark-only .addendcustomer_fix .customer_wrap .gropu_form .renui_term {
+    background: #2c323c;
+    color: #dbdbdb;
+    border-color: #3e4d70;
+}
+
+
+.addendcustomer_fix .customer_wrap .name_svg_top {
+    flex-wrap: nowrap;
+    align-items: center;
+    gap: 0px 6px;
+    margin-top: 20px;
+}
+
+.addendcustomer_fix .customer_wrap .name_svg_top h2 {
+    flex: 1;
+    font-size: 19px;
+    font-weight: 500;
+    color: #4D4D4D;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin: 0;
+}
+
+.dark-only .addendcustomer_fix .customer_wrap .name_svg_top svg {
+    filter: invert(1);
+}
+
+.dark-only .addendcustomer_fix .customer_wrap .name_svg_top h2 {
+    color: #b2b2b2;
+}
 
 /*contract sidebar end*/
 
@@ -23787,11 +23984,13 @@ div.dataTables_wrapper{
     background-color: #282d3b;
     border-color: #A3AED0;
 }
+
 .dark-only .dropdown .dropdown-content a.dropdown-itemm {
     color: #A3AED0;
 }
 
-.dark-only #notify_customer.drop_coman_file .gropu_form_set select, .dark-only #notify_customer.drop_coman_file .gropu_form_set textarea {
+.dark-only #notify_customer.drop_coman_file .gropu_form_set select,
+.dark-only #notify_customer.drop_coman_file .gropu_form_set textarea {
     color: #dbdbdb;
     background: transparent;
     border-color: #3e4d70;
@@ -23826,6 +24025,7 @@ div.dataTables_wrapper{
 .dark-only .suggestions-list::-webkit-scrollbar-thumb {
     background: #151515;
 }
+
 .dark-only .suggestions-list::-webkit-scrollbar-track {
     background: #565b61;
 }
@@ -23834,13 +24034,14 @@ div.dataTables_wrapper{
     background: #262b33;
 }
 
-.dark-only .autocomplete-suggestions .ui-menu li .ui-menu-item-wrapper{
+.dark-only .autocomplete-suggestions .ui-menu li .ui-menu-item-wrapper {
     color: #dbdbdb;
 }
 
 .dark-only .autocomplete-suggestions .ui-menu::-webkit-scrollbar-thumb {
     background: #151515;
 }
+
 .dark-only .autocomplete-suggestions .ui-menu::-webkit-scrollbar-track {
     background: #565b61;
 }
@@ -23924,6 +24125,7 @@ div.dataTables_wrapper{
 .dark-only .contract_uploadd .cont_body tbody .dropdown button {
     background: #363a41;
 }
+
 .dark-only .filtr_tabble table .show_pp {
     background: #363a41;
 }
@@ -23961,7 +24163,6 @@ div.dataTables_wrapper{
 
 /*****New Contract Management detail css start******/
 .main_contractt_detail {
-    min-height: 70vh;
     background: #ffffff;
     border-radius: 10px;
     padding: 20px 20px;
@@ -24099,9 +24300,8 @@ div.dataTables_wrapper{
 
 .contract_detail_middle {
     display: block;
-    padding: 0px 0px 35px;
-    margin: 0px 0px 35px;
-    border-bottom: 1px solid #e9ecf0;
+    padding: 0px 0px 15px;
+    margin: 0px 0px 15px;
 }
 
 .contract_detail_middle .cmn_authh h2 {
@@ -24254,8 +24454,51 @@ div.dataTables_wrapper{
     font-weight: 500;
 }
 
+.cpllape_btn {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0px 8px;
+    margin: 0px 0px 20px;
+}
+
+.cpllape_btn h2 {
+    font-size: 15px;
+    font-weight: 400;
+    color: #ABB4C1;
+    margin: 0;
+    padding: 0;
+}
+
+.cpllape_btn .show_content {
+    padding: 0;
+    border: 0;
+    background: transparent;
+    box-shadow: none;
+    outline: none;
+    display: flex;
+    width: 27px;
+    height: 27px;
+    transition: all .25s ease-out;
+}
+
+.cpllape_btn .show_content.active {
+    transform: rotateX(180deg);
+}
+
+.cpllape_btn .show_content svg {
+    width: 100%;
+    height: 100%;
+}
+
+.cpllape_btn .line {
+    display: flex;
+    flex: 1;
+    border: 1px solid #E9ECF0;
+}
+
 .contract_deatols .contract_detail_bottom {
-    display: block;
+    display: none;
 }
 
 .contract_detail_bottom .registration_documents h2 {
@@ -24443,12 +24686,14 @@ div.dataTables_wrapper{
     transition: width 0.7s;
     overflow: hidden;
 }
+
 .contract_uploadd .contract_up_head .right_btn_contt button.opload svg {
     opacity: 1;
     transition: opacity 0.5s;
     width: 19px;
     height: 19px;
 }
+
 .dark-only .contract_uploadd .contract_up_head .right_btn_contt button.download svg {
     width: 18px;
     height: 18px;
@@ -24461,14 +24706,17 @@ div.dataTables_wrapper{
     width: 100%;
     left: 0;
 }
+
 .contract_uploadd .contract_up_head .right_btn_contt button.opload:hover {
     width: 110px;
     transition: width 0.7s;
 }
+
 .contract_uploadd .contract_up_head .right_btn_contt button.opload:hover svg {
     opacity: 0;
     transition: opacity 0.5s;
 }
+
 .contract_uploadd .contract_up_head .right_btn_contt button.opload:hover .button-text {
     opacity: 1;
     transition: opacity 0.5s;
@@ -24507,6 +24755,15 @@ div.dataTables_wrapper{
     border: 0;
     margin: 0;
     padding: 0;
+    min-height: 72vh;
+}
+
+.dark-only .cpllape_btn .line {
+    border-color: #3e4d70;
+}
+
+.dark-only .cpllape_btn .show_content svg path {
+    stroke: #8d8d8d;
 }
 
 .contract_uploadd .cont_body.entery_body input[type="checkbox"] {
@@ -24782,6 +25039,7 @@ div.dataTables_wrapper{
 .dark-only .drop_coman_file.have_title .modal-content .gropu_form textarea::placeholder {
     color: #dbdbdb !important;
 }
+
 #notify_customer .modal-dialog {
     max-width: 400px;
     margin: 0 auto;
@@ -24829,7 +25087,8 @@ div.dataTables_wrapper{
     margin: 15px 0px 15px;
 }
 
-#notify_customer.drop_coman_file .gropu_form_set select, #notify_customer.drop_coman_file .gropu_form_set textarea {
+#notify_customer.drop_coman_file .gropu_form_set select,
+#notify_customer.drop_coman_file .gropu_form_set textarea {
     border: 1px solid #DDDDDD;
     width: 100%;
     border-radius: 10px;
@@ -24847,9 +25106,10 @@ div.dataTables_wrapper{
     min-height: 100px;
     line-height: 22px;
 }
+
 #notify_customer.drop_coman_file .gropu_form_set textarea::-webkit-scrollbar {
     display: none;
-  }
+}
 
 #notify_customer.drop_coman_file .root_btn {
     padding: 20px 0px 0px;
