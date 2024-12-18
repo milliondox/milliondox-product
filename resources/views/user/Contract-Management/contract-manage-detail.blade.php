@@ -725,7 +725,9 @@
                                         </button>
                                         <div id="myDropdown3" class="dropdown-content">
 
-                                            <a class="dropdown-itemm notify" data-bs-toggle="modal" data-id="{{ $contract->id }}" data-bs-toggle="modal" data-bs-target="#notify_customer" data-file-name="{{ $contract->file_name }}" data-startend="{{ $contract->startend }}" data-cname="{{$customerrecord->lename}}" data-vname="{{$contract->vendor_name}}">
+                                          
+                                            <a class="dropdown-itemm notify" data-bs-toggle="modal" data-id="{{ $contract->id }}" data-amount="{{ $contract->contract_value }}"  data-bs-toggle="modal" data-bs-target="#notify_customer" data-file-name="{{ $contract->file_name }}" data-startend="{{ $contract->startend }}" data-cname="{{$customerrecord->lename}}" data-vname="{{$contract->vendor_name}}">
+
                                                 <svg width="12" height="10" viewBox="0 0 12 10" fill="none" xmlns="http://www.w3.org/2000/svg">
                                                     <path d="M0.980729 9.90006L11.1599 5.53673C11.2651 5.49191 11.3548 5.41713 11.4179 5.32172C11.481 5.2263 11.5146 5.11444 11.5146 5.00007C11.5146 4.88569 11.481 4.77383 11.4179 4.67842C11.3548 4.583 11.2651 4.50823 11.1599 4.4634L0.980729 0.100066C0.892588 0.0616207 0.796263 0.0457239 0.700443 0.0538091C0.604623 0.0618942 0.512323 0.093707 0.43187 0.146378C0.351417 0.199048 0.285342 0.270919 0.239607 0.355507C0.193871 0.440095 0.169914 0.534739 0.169896 0.630899L0.164062 3.32007C0.164062 3.61173 0.379896 3.86257 0.671562 3.89757L8.91406 5.00007L0.671562 6.09673C0.379896 6.13757 0.164062 6.3884 0.164062 6.68007L0.169896 9.36923C0.169896 9.7834 0.595729 10.0692 0.980729 9.90006Z" fill="#414651" />
                                                 </svg>
@@ -759,6 +761,302 @@
                                 </tbody>
                                 </table>
 
+
+
+                                                                 <!-- notify model start -->
+
+                                                                 <div class="modal fade drop_coman_file have_title" id="notify_customer" tabindex="-1" role="dialog" aria-labelledby="notify_customer" aria-hidden="true">
+                                                                    <div class="modal-dialog modal-dialog-centered" role="document">
+                                                                      <div class="modal-content">
+                                                                        <div class="modal-header">
+                                                                          <h5 class="modal-title" style="font-weight:700">Notify Customer</h5>
+                                                                          <button class="close" style="border-radius:5px;" type="button" data-bs-dismiss="modal">
+                                                                            <span aria-hidden="true">
+                                                                              <svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                                                <path d="M1 1L13 13M13 1L1 13" stroke="#535862" stroke-linecap="round" />
+                                                                              </svg>
+                                                                            </span>
+                                                                          </button>
+                                                                        </div>
+                                                                        <div class="modal-body">
+                                                                          <form id="" action="{{ route('customernotification') }}" method="POST" enctype="multipart/form-data">
+                                                                           
+                                                                            <div class="gropu_form_set defaultoption">
+                                                                                @csrf
+                                                                              <label for="read_onlyy">Selected Contract</label>
+                                                                              <h2 class="read_onlyy" id="filename"></h2>           
+                                                                            </div>
+                                                                            <div class="gropu_form_set defaultoption">
+                                                                              <label for="expiring_opm">Select an option</label>
+                                                                              <select id="expiring_opm" name="expiring_opm" required="">
+                                                                                <option value="" disabled="" selected="">select</option>
+                                                                                <option value="Upcoming Expiry Alert">Upcoming Expiry Alert</option>
+                                                                                <option value="Upcoming Renewal Alert">Upcoming Renewal Alert</option>
+                                                                                <option value="Missing Documentation">Missing Documentation</option>
+                                                                                <option value="Payment Due Alert">Payment Due Alert</option>
+                                                                                <option value="Other">Other</option>
+                                                                              </select>
+                                                                              <input type="hidden" name="email" value="{{$customerrecord->email}}">
+                                                                            </div>
+
+                                                                            <div class="gropu_form_set option0">
+                                                                                <label for="Message">Message</label>
+                                                                                
+                                                                              </div>
+                                                                            
+                                                                              <div class="gropu_form_set option1">
+                                                                                <label for="Message">Message</label>
+                                                                                <div class="read_onlyy result editable" id="message1">Your contract <span id="filenames" class="bolddata"></span>/<span id="custname" class="bolddata"></span> with <span id="venname" class="bolddata"></span> is set to expire on <span id="enddate" class="bolddata"></span>. Please take the necessary action to renew or terminate the contract before the expiry date.</div>
+                                                                            </div>
+                                                                        
+                                                                            <div class="gropu_form_set option2">
+                                                                                <label for="Message">Message</label>
+                                                                                <div class="read_onlyy result editable" id="message2">Your contract <span id="fileName1" class="bolddata"></span>/<span id="custname1" class="bolddata"></span> with <span id="venname1" class="bolddata"></span> is due for renewal on <span id="renewDate" class="bolddata"></span>. Kindly review the terms and confirm the renewal process to avoid any disruptions.</div>
+                                                                            </div>
+                                                                        
+                                                                            <div class="gropu_form_set option3">
+                                                                                <label for="Message">Message</label>
+                                                                                <div class="read_onlyy result editable" id="message3">Some required documents for [Contract ID/Name] are missing or incomplete. Please upload the following documents to ensure compliance: [Document Name 1], [Document Name 2], [Document Name 3]</div>
+                                                                            </div>
+                                                                        
+                                                                            <div class="gropu_form_set option4">
+                                                                                <label for="Message">Message</label>
+                                                                                <div class="read_onlyy result editable" id="message4">A payment of ₹<span id="amount" class="bolddata"></span> for contract <span id="fileName2" class="bolddata"></span>/<span id="custname2" class="bolddata"></span> with <span id="venname2" class="bolddata"></span> is due on <span id="renewDate1" class="bolddata"></span>. Kindly process the payment to avoid penalties or disruptions in services.</div>
+                                                                            </div>
+                                                                            <input type="hidden" id="selectedMessage" name="message">
+                                                                            <input type="hidden" id="contractFilename" name="contractFilename">
+                                                                            <div class="root_btn">
+                                                                              <button class="btn btn-primary" style="border-radius:5px;" type="submit">Send
+                                                                                <svg width="12" height="10" viewBox="0 0 12 10" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                                                  <path d="M0.980729 9.90006L11.1599 5.53673C11.2651 5.49191 11.3548 5.41713 11.4179 5.32172C11.481 5.2263 11.5146 5.11444 11.5146 5.00007C11.5146 4.88569 11.481 4.77383 11.4179 4.67842C11.3548 4.583 11.2651 4.50823 11.1599 4.4634L0.980729 0.100066C0.892588 0.0616207 0.796263 0.0457239 0.700443 0.0538091C0.604623 0.0618942 0.512323 0.093707 0.43187 0.146378C0.351417 0.199048 0.285342 0.270919 0.239607 0.355507C0.193871 0.440095 0.169914 0.534739 0.169896 0.630899L0.164062 3.32007C0.164062 3.61173 0.379896 3.86257 0.671562 3.89757L8.91406 5.00007L0.671562 6.09673C0.379896 6.13757 0.164062 6.3884 0.164062 6.68007L0.169896 9.36923C0.169896 9.7834 0.595729 10.0692 0.980729 9.90006Z" fill="white" />
+                                                                                </svg>
+                                                                              </button>
+                                                                            </div>
+                                                                          </form>
+                                                                        </div>
+                                                                      </div>
+                                                                    </div>
+                                                                  </div>
+                                                                  <!-- notify model end -->
+
+                                                                  <script>
+                                                                    $(document).ready(function () {
+                                                                        // On click, make the div editable
+                                                                        $('.editable').on('click', function () {
+                                                                            const $this = $(this);
+                                                                
+                                                                            // If it's already editable, return
+                                                                            if ($this.attr('contenteditable') === 'true') return;
+                                                                
+                                                                            // Make the div editable
+                                                                            $this.attr('contenteditable', 'true').focus();
+                                                                        });
+                                                                
+                                                                        // Save changes when the user clicks outside or presses Enter
+                                                                        $('.editable').on('blur keydown', function (e) {
+                                                                            const $this = $(this);
+                                                                
+                                                                            // If Enter key is pressed or blur occurs
+                                                                            if (e.type === 'blur' || (e.type === 'keydown' && e.key === 'Enter')) {
+                                                                                // Remove the editable attribute
+                                                                                $this.removeAttr('contenteditable');
+                                                                
+                                                                                // Log the updated content
+                                                                                console.log('Updated content:', $this.html());
+                                                                            }
+                                                                        });
+                                                                
+                                                                        // Update the message field dynamically on #expiring_opm change
+                                                                        $('#expiring_opm').on('change', function () {
+                                                                            const selectedOption = $(this).val();
+                                                                            let selectedMessage = '';
+                                                                
+                                                                            // Select the corresponding message based on the selected option
+                                                                            switch (selectedOption) {
+                                                                                case 'Upcoming Expiry Alert':
+                                                                                    selectedMessage = $('#message1').html();
+                                                                                    break;
+                                                                                case 'Upcoming Renewal Alert':
+                                                                                    selectedMessage = $('#message2').html();
+                                                                                    break;
+                                                                                case 'Missing Documentation':
+                                                                                    selectedMessage = $('#message3').html();
+                                                                                    break;
+                                                                                case 'Payment Due Alert':
+                                                                                    selectedMessage = $('#message4').html();
+                                                                                    break;
+                                                                                case 'Other':
+                                                                                    selectedMessage = 'Custom message'; // Replace with the custom message logic if needed
+                                                                                    break;
+                                                                            }
+                                                                
+                                                                            // Clean the message to remove <span> tags and ensure no unwanted markup
+                                                                            selectedMessage = selectedMessage.replace(/<span[^>]*>([^<]*)<\/span>/g, '$1');
+                                                                
+                                                                            // Set the cleaned message in the hidden field
+                                                                            $('#selectedMessage').val(selectedMessage);
+                                                                            const filename = $('#filename').text();
+                                                                            $('#contractFilename').val(filename);
+                                                                            // Log the updated message for debugging
+                                                                            console.log('Selected Message:', selectedMessage);
+                                                                        });
+                                                                
+                                                                        // Update form data dynamically before submission
+                                                                        $('form').on('submit', function () {
+                                                                            const selectedOption = $('#expiring_opm').val();
+                                                                            let selectedMessage = '';
+                                                                
+                                                                            // Dynamically fetch the current editable content
+                                                                            switch (selectedOption) {
+                                                                                case 'Upcoming Expiry Alert':
+                                                                                    selectedMessage = $('#message1').html();
+                                                                                    break;
+                                                                                case 'Upcoming Renewal Alert':
+                                                                                    selectedMessage = $('#message2').html();
+                                                                                    break;
+                                                                                case 'Missing Documentation':
+                                                                                    selectedMessage = $('#message3').html();
+                                                                                    break;
+                                                                                case 'Payment Due Alert':
+                                                                                    selectedMessage = $('#message4').html();
+                                                                                    break;
+                                                                                case 'Other':
+                                                                                    selectedMessage = 'Custom message'; // Replace with the custom message logic if needed
+                                                                                    break;
+                                                                            }
+                                                                
+                                                                            // Clean the message to remove <span> tags
+                                                                            selectedMessage = selectedMessage.replace(/<span[^>]*>([^<]*)<\/span>/g, '$1');
+                                                                
+                                                                            // Update the hidden field with the latest message
+                                                                            $('#selectedMessage').val(selectedMessage);
+                                                                            const filename = $('#filename').text();
+                                                                             $('#contractFilename').val(filename);
+                                                                            // Log the form submission data
+                                                                            console.log('Form Submitted with Message:', selectedMessage);
+                                                                        });
+                                                                    });
+                                                                </script>
+                                                                
+                                                                
+                                                                  <script>
+                                                                    $(document).ready(function() {
+                                                                        // Initially hide all option divs except the defaultoption
+                                                                        $('.gropu_form_set').not('.defaultoption').hide();
+                                                                
+                                                                        // On change event for the dropdown
+                                                                        $('#expiring_opm').on('change', function() {
+                                                                            // Get the selected option value
+                                                                            const selectedValue = $(this).val();
+                                                                
+                                                                            // Hide all non-default option divs
+                                                                            $('.gropu_form_set').not('.defaultoption').hide();
+                                                                
+                                                                            // Show the corresponding div based on the selected value
+                                                                            if (selectedValue === "Upcoming Expiry Alert") {
+                                                                                $('.option1').show();
+                                                                            } else if (selectedValue === "Upcoming Renewal Alert") {
+                                                                                $('.option2').show();
+                                                                            } else if (selectedValue === "Missing Documentation") {
+                                                                                $('.option3').show();
+                                                                            } else if (selectedValue === "Payment Due Alert") {
+                                                                                $('.option4').show();
+                                                                            } else {
+                                                                                // Show option0 for unselected or disabled state
+                                                                                $('.option0').show();
+                                                                            }
+                                                                        });
+                                                                
+                                                                        // Trigger change event on page load to show option0 by default
+                                                                        $('#expiring_opm').trigger('change');
+                                                                    });
+                                                                </script>
+                                                                
+<script>
+$(document).on('click', '.notify', function() {
+    // Get the file name from the data attribute
+    const fileName = $(this).data('file-name');
+    const contractid = $(this).data('id');
+    const enddate = $(this).data('startend');
+    const custname = $(this).data('cname');
+    const venname = $(this).data('vname');
+    const fileNames = $(this).data('file-name');
+    const venname1 = $(this).data('vname');
+
+    const fileName1 = $(this).data('file-name');
+    const custname1 = $(this).data('cname');
+
+
+    const venname2 = $(this).data('vname');
+
+    const fileName2 = $(this).data('file-name');
+    const custname2 = $(this).data('cname');
+    const amount = $(this).data('amount');
+
+    const startendDate = $(this).data('startend'); // Assuming this is in 'YYYY-MM-DD' format
+
+// Parse it into a Date object
+const date = new Date(startendDate);
+
+// Add one day to the date
+date.setDate(date.getDate() + 1);
+
+// Format the updated date back to 'YYYY-MM-DD'
+const renewDate = date.toISOString().split('T')[0];
+
+if (renewDate) {
+        const [year, month, day] = renewDate.split('-'); // Split the date
+        const formattedDates = `${day}-${month}-${year}`;   // Reformat to dd-mm-yyyy
+        $('#renewDate').text(formattedDates);          // Set the formatted date
+    } 
+
+    
+    if (enddate) {
+        const [year, month, day] = enddate.split('-'); // Split the date
+        const formattedDate = `${day}-${month}-${year}`;   // Reformat to dd-mm-yyyy
+        $('#enddate').text(formattedDate);          // Set the formatted date
+    } 
+
+
+    const startendDate1 = $(this).data('startend'); // Assuming this is in 'YYYY-MM-DD' format
+
+// Parse it into a Date object
+const date1 = new Date(startendDate1);
+
+// Add one day to the date
+date1.setDate(date1.getDate() + 1);
+
+// Format the updated date back to 'YYYY-MM-DD'
+const renewDate1 = date1.toISOString().split('T')[0];
+
+if (renewDate1) {
+        const [year, month, day] = renewDate1.split('-'); // Split the date
+        const formattedDates1 = `${day}-${month}-${year}`;   // Reformat to dd-mm-yyyy
+        $('#renewDate1').text(formattedDates1);          // Set the formatted date
+    } 
+    
+    
+    $('#filename').text(fileName);
+    $('#filenames').text(fileNames);
+
+    $('#contractid').text(contractid);
+    $('#custname').text(custname);
+    $('#venname').text(venname);
+
+    $('#fileName1').text(fileName1);
+    $('#custname1').text(custname1);
+    $('#venname1').text(venname1);
+
+
+    $('#fileName2').text(fileName2);
+    $('#custname2').text(custname2);
+    $('#venname2').text(venname2);
+   
+
+    $('#amount').text(amount);
+    
+});
+</script>
 
                                 <!-- notify model start -->
 
@@ -909,6 +1207,7 @@
                                 </script>
 
 
+
                                 <!-- Addend sidebar start -->
                                 <div class="addend_overlay_fix"></div>
                                 <div class="addendcustomer_fix">
@@ -1039,9 +1338,19 @@
     }
 
     .bolddata {
-        font-weight: 900;
-        text-transform: capitalize;
-        margin: 5px;
-    }
+
+    font-weight: 900;
+    text-transform: capitalize;
+    margin: 5px;
+}
+[contenteditable="true"] {
+    border: 1px dashed #ccc;
+    padding: 5px;
+    outline: none;
+    background-color: #f9f9f9;
+}
+
+
+
 </style>
 @endsection
