@@ -19765,32 +19765,67 @@ public function tickting()
         ->groupBy('customer_id'); // Group by customer_id to get all contracts for each customer
 
     // Iterate through each customer and check their contract status
-    foreach ($customer as $cust) {
-        $status = 'Inactive'; // Default status is Inactive
+    // foreach ($customer as $cust) {
+    //     $status = 'Inactive'; // Default status is Inactive
 
-        // Check if the customer has a matching contract
-        if ($contracts->has($cust->id)) {
-            $status = 'Inactive'; // Reset to Inactive by default
+    //     // Check if the customer has a matching contract
+    //     if ($contracts->has($cust->id)) {
+    //         $status = 'Inactive'; // Reset to Inactive by default
 
-            // Get all startend dates for the customer (an array of contract startend dates)
-            $customerContracts = $contracts[$cust->id]; // Get all contract end dates for this customer
+    //         // Get all startend dates for the customer (an array of contract startend dates)
+    //         $customerContracts = $contracts[$cust->id]; // Get all contract end dates for this customer
 
-            // Compare contract dates
-            foreach ($customerContracts as $contract) {
-                $contractEndDate = Carbon::parse($contract->startend); // Parse the startend date
-                $today = Carbon::today(); // Today's date
+    //         // Compare contract dates
+    //         foreach ($customerContracts as $contract) {
+    //             $contractEndDate = Carbon::parse($contract->startend); // Parse the startend date
+    //             $today = Carbon::today(); // Today's date
 
-                // If any contract's end date is greater than or equal to today, set the status to Active
-                if ($contractEndDate->greaterThanOrEqualTo($today)) {
-                    $status = 'Active';
-                    break; // Exit the loop if at least one contract is active
-                }
+    //             // If any contract's end date is greater than or equal to today, set the status to Active
+    //             if ($contractEndDate->greaterThanOrEqualTo($today)) {
+    //                 $status = 'Active';
+    //                 break; // Exit the loop if at least one contract is active
+    //             }
+    //         }
+    //     }
+
+    //     // Set the status for the current customer
+    //     $cust->status = $status;
+    // }
+
+    // Iterate through each customer and check their contract status
+foreach ($customer as $cust) {
+    $status = 'Inactive'; // Default status is Inactive
+
+    // Check if the customer has a matching contract
+    if ($contracts->has($cust->id)) {
+        $status = 'Inactive'; // Reset to Inactive by default
+
+        // Get all contracts for the customer
+        $customerContracts = $contracts[$cust->id]; // Get all contract records for this customer
+
+        // Compare contract dates
+        foreach ($customerContracts as $contract) {
+            // Check if startend is null
+            if (is_null($contract->startend)) {
+                $status = 'Inactive';
+                continue; // Skip to the next contract
+            }
+
+            // Parse the startend date
+            $contractEndDate = Carbon::parse($contract->startend);
+            $today = Carbon::today();
+
+            // If any contract's end date is greater than or equal to today, set the status to Active
+            if ($contractEndDate->greaterThanOrEqualTo($today)) {
+                $status = 'Active';
+                break; // Exit the loop if at least one contract is active
             }
         }
-
-        // Set the status for the current customer
-        $cust->status = $status;
     }
+
+    // Set the status for the current customer
+    $cust->status = $status;
+}
 
     $cli_announcements = Announcement::where('role', 'Client')->latest()->get();
     $user = auth()->user();
@@ -19808,23 +19843,29 @@ public function tickting()
 
         $customercontract = CustomerContract::where('customer_id', $id)->get();
         $divisions = $customerrecord->customerContracts->pluck('division')->unique();
+       
+        // dd($customerrecord);
 
         $today = \Carbon\Carbon::today();
     $hasActive = false;
 
     foreach ($customercontract as $contract) {
-        $contractEndDate = \Carbon\Carbon::parse($contract->startend);
-        $contract->status = $contractEndDate->greaterThanOrEqualTo($today) ? 'Active' : 'Expire';
-
+        if (is_null($contract->startend)) {
+            $contract->status = 'Inactive';
+        } else {
+            $contractEndDate = \Carbon\Carbon::parse($contract->startend);
+            $contract->status = $contractEndDate->greaterThanOrEqualTo($today) ? 'Active' : 'Inactive';
+        }
+    
         // Check if at least one contract is active
         if ($contract->status === 'Active') {
             $hasActive = true;
             break; // No need to check further if one is active
         }
     }
-
+    
     // Determine overall status
-    $overallStatus = $hasActive ? 'Active' : 'Expire';
+    $overallStatus = $hasActive ? 'Active' : 'Inactive';
 
        
        return view('user.Contract-Management.contract-manage-detail',compact('cli_announcements','user','customerrecord','customercontract','divisions','overallStatus'));
@@ -29181,6 +29222,8 @@ dd($e->getMessage());
         'gstin_file' => 'required|file|max:20048',
         'type_of_entity' => 'required|string|max:255',
         'brandname' => 'nullable|string|max:255',
+        'phone' => 'required|string|max:255|unique:customertb,phone',
+        'email' => 'required|string|email|max:255|unique:customertb,email',
     ]);
 
     // Check if CIN number already exists
@@ -29310,7 +29353,10 @@ public function downloadContracts(Request $request)
 }
 
  
-
+public function customernotification(Request $request)
+{
+   dd($request);
+}
     
 
     // customer creation code end here from here 
