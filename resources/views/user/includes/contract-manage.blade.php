@@ -249,6 +249,57 @@ document.querySelectorAll('.partner_count').forEach(div => {
 
   </script>
 
+
+<!-- signature tooltip -->
+<script>
+
+document.querySelectorAll('.Authrized_Signatory').forEach(div => {
+    const boldTags = Array.from(div.querySelectorAll('b:not(.count)'));
+    const countTag = div.querySelector('.count');
+
+    if (boldTags.length > 0) {
+        // Hide all <b> tags
+        boldTags.forEach(b => b.style.display = 'none');
+
+        // Generate tooltip content with all names
+        const allNames = boldTags.map(b => b.textContent.trim()).join(', ');
+
+        // Set the count <b> to display "+n" with a tooltip
+        countTag.style.display = 'inline';
+        countTag.textContent = `+ ${boldTags.length}`;
+
+        // Remove any existing tooltip
+        const existingTooltip = countTag.querySelector('.custom-tooltip');
+        if (existingTooltip) existingTooltip.remove();
+
+        // Create a custom tooltip
+        const tooltip = document.createElement('div');
+        tooltip.className = 'custom-tooltip';
+        tooltip.innerHTML = allNames;
+
+        // Append tooltip to the countTag
+        countTag.appendChild(tooltip);
+
+        // Show tooltip on hover
+        countTag.addEventListener('mouseenter', () => {
+            tooltip.style.opacity = '1';
+            tooltip.style.visibility = 'visible';
+        });
+
+        // Hide tooltip when not hovering
+        countTag.addEventListener('mouseleave', () => {
+            tooltip.style.opacity = '0';
+            tooltip.style.visibility = 'hidden';
+        });
+    } else {
+        // Hide the count <b> if there are no <b> tags
+        countTag.style.display = 'none';
+    }
+});
+
+
+  </script>
+
 <script>
 document.addEventListener('DOMContentLoaded', function () {
     const selectAllCheckbox = document.querySelector('.sleect_all'); // Select the "select all" checkbox

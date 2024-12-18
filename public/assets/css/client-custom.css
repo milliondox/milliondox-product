@@ -23468,6 +23468,28 @@ div.dataTables_wrapper {
     margin: 0px 0px 6px;
 }
 
+.addcustomer_fix  .phone_country {
+    width: 100%;
+}
+
+.addcustomer_fix .phone_country .iti {
+    width: 100%;
+}
+
+.addcustomer_fix .phone_country .iti input {
+    padding-left: 90px !important;
+}
+
+.addcustomer_fix .phone_country .iti__country-list {
+    white-space: unset;
+    width: 320px;
+}
+
+.dark-only .addcustomer_fix .phone_country .iti__country-list {
+    background-color: #262B32;
+    border-color: #444445;
+}
+
 .addcustomer_fix .customer_wrap .gropu_form input,
 .addcustomer_fix .customer_wrap .gropu_form select,
 .addcustomer_fix .customer_wrap .gropu_form textarea {
@@ -23976,7 +23998,48 @@ div.dataTables_wrapper {
     color: #b2b2b2;
 }
 
+
 /*contract sidebar end*/
+
+/*contact edit or del model css start*/
+.request_nerrow .gropu_form_request h2 {
+    color: #707070;
+    font-size: 16px;
+    font-weight: 400;
+    margin: 0;
+    line-height: normal;
+}
+
+.request_nerrow .modal-dialog {
+    max-width: 400px;
+}
+
+.request_nerrow .root_btn button {
+    width: 100%;
+    justify-content: center;
+}
+
+
+.request_nerrow .gropu_form_request.red_alret {
+    margin: 20px 0px 0px;
+}
+
+.request_nerrow .gropu_form_request.red_alret h2 {
+    color: #FA4A4A;
+}
+
+.drop_coman_file.have_title .modal-content .root_btn.root_btn_alert button {
+    background: #FA4A4A !important;
+}
+
+.dark-only .request_nerrow .gropu_form_request h2 {
+    color: #DBDBDB;
+}
+.dark-only .request_nerrow .gropu_form_request.red_alret h2 {
+    color: #FA4A4A;
+}
+
+/*contact edit or del model css end*/
 
 /*dark mode css start*/
 
@@ -24325,11 +24388,21 @@ div.dataTables_wrapper {
     display: block;
 }
 
+.contract_detail_middle .authrized_signatory ul:before {
+    border-left: 1px dashed #CED5E2;
+    content: "";
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    left: 15px;
+    height: 80%;
+}
+
 .contract_detail_middle .authrized_signatory ul li {
     display: flex;
     align-items: center;
-    margin-bottom: 10px;
-    gap: 0px 10px;
+    margin-bottom: 20px;
+    gap: 0px 7px;
 }
 
 .contract_detail_middle .authrized_signatory ul li .auth_image {
@@ -24361,6 +24434,13 @@ div.dataTables_wrapper {
     text-decoration-style: solid;
     color: #181d27;
     margin: 0;
+}
+
+.contract_detail_middle .authrized_signatory ul li .Authrized_Signatory {
+    display: flex;
+    position: relative;
+    cursor: pointer;
+    text-decoration: underline;
 }
 
 .contract_manage_new .entery_body tbody .image_naess .image_table h2 {
@@ -24431,6 +24511,9 @@ div.dataTables_wrapper {
 
 .contract_detail_middle .customer_status span.expire {
     background: #d92d20;
+}
+.contract_detail_middle .customer_status span.inactive {
+    background: #ffa500;
 }
 
 .contract_detail_middle .divisions_associated {
