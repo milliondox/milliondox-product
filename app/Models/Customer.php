@@ -23,6 +23,9 @@ class Customer extends Model
         'type_of_entity',
         'customer_created_by',
         'brandname',
+        'phone',
+        'email',
+        
     ];
     protected $casts = [
         'dname' => 'array',

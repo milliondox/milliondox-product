@@ -117,6 +117,19 @@
                             <input placeholder="Brand Name" type="text" id="brandname" name="brandname" value="">
                           </div>
 
+                          <div class="gropu_form">
+                            <label for="lename">Email</label>
+                            <input placeholder="Email" type="email" id="email" name="email" value="" pattern="[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}" 
+                            title="Please enter a valid email address (e.g., example@domain.com)" required>
+                          </div>
+
+                          <div class="gropu_form">
+                            <label for="lename">Phone</label>
+                            <input type="tel" placeholder="Phone " name="phone" required 
+                            inputmode="numeric"  oninput="this.value = this.value.replace(/[^0-9]/g, '');"
+                               title="Please enter a valid phone number, e.g., +1-123-456-7890">
+                          </div>
+
                           <!-- Director Name with Add/Remove Buttons -->
                           <div class="gropu_form" id="directors-container">
                             <label for="dname">Director Name</label>
@@ -559,11 +572,7 @@
                                   </svg>
                                 </button>
                                 <div id="myDropdown3" class="dropdown-content">
-                                  <a class="dropdown-itemm notify" data-bs-toggle="modal" data-bs-target="#notify_customer">
-                                    <svg width="12" height="10" viewBox="0 0 12 10" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                      <path d="M0.980729 9.90006L11.1599 5.53673C11.2651 5.49191 11.3548 5.41713 11.4179 5.32172C11.481 5.2263 11.5146 5.11444 11.5146 5.00007C11.5146 4.88569 11.481 4.77383 11.4179 4.67842C11.3548 4.583 11.2651 4.50823 11.1599 4.4634L0.980729 0.100066C0.892588 0.0616207 0.796263 0.0457239 0.700443 0.0538091C0.604623 0.0618942 0.512323 0.093707 0.43187 0.146378C0.351417 0.199048 0.285342 0.270919 0.239607 0.355507C0.193871 0.440095 0.169914 0.534739 0.169896 0.630899L0.164062 3.32007C0.164062 3.61173 0.379896 3.86257 0.671562 3.89757L8.91406 5.00007L0.671562 6.09673C0.379896 6.13757 0.164062 6.3884 0.164062 6.68007L0.169896 9.36923C0.169896 9.7834 0.595729 10.0692 0.980729 9.90006Z" fill="#414651" />
-                                    </svg>
-                                    Notify </a>
+
 
                                   <a class="dropdown-itemm ediit">
                                     <svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -584,60 +593,7 @@
                         </tbody>
                       </table>
 
-                      <!-- notify model start -->
-
-                      <div class="modal fade drop_coman_file have_title" id="notify_customer" tabindex="-1" role="dialog" aria-labelledby="notify_customer" aria-hidden="true">
-                        <div class="modal-dialog modal-dialog-centered" role="document">
-                          <div class="modal-content">
-                            <div class="modal-header">
-                              <h5 class="modal-title" style="font-weight:700">Notify Customer</h5>
-                              <button class="close" style="border-radius:5px;" type="button" data-bs-dismiss="modal">
-                                <span aria-hidden="true">
-                                  <svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                    <path d="M1 1L13 13M13 1L1 13" stroke="#535862" stroke-linecap="round" />
-                                  </svg>
-                                </span>
-                              </button>
-                            </div>
-                            <div class="modal-body">
-                              <form id="" action="" method="POST" enctype="multipart/form-data">
-
-                                <div class="gropu_form_set">
-                                  <label for="read_onlyy">Selected Contract</label>
-                                  <h2 class="read_onlyy">OrangeXT Contract 245</h2>
-
-                                </div>
-                                <div class="gropu_form_set">
-                                  <label for="expiring_opm">Select an option</label>
-                                  <select id="expiring_opm" name="expiring_opm" required="">
-                                    <option value="" disabled="" selected="">select</option>
-                                    <option value="Upcoming Expiry Alert">Upcoming Expiry Alert</option>
-                                    <option value="Upcoming Renewal Alert">Upcoming Renewal Alert</option>
-                                    <option value="Missing Documentation">Missing Documentation</option>
-                                    <option value="Payment Due Alert">Payment Due Alert</option>
-                                    <option value="Other">Other</option>
-                                  </select>
-                                </div>
-                                <div class="gropu_form_set">
-                                  <label for="Message">Message</label>
-                                  <textarea placeholder="Your contract [Contract ID/Name] with [Vendor/Client Name] is set to expire on [Expiry Date]. Please take the necessary action to renew or terminate the contract before the expiry date." id="" name="" readonly></textarea>
-                                </div>
-
-
-                                <div class="root_btn">
-                                  <button class="btn btn-primary" style="border-radius:5px;" type="submit">Send
-                                    <svg width="12" height="10" viewBox="0 0 12 10" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                      <path d="M0.980729 9.90006L11.1599 5.53673C11.2651 5.49191 11.3548 5.41713 11.4179 5.32172C11.481 5.2263 11.5146 5.11444 11.5146 5.00007C11.5146 4.88569 11.481 4.77383 11.4179 4.67842C11.3548 4.583 11.2651 4.50823 11.1599 4.4634L0.980729 0.100066C0.892588 0.0616207 0.796263 0.0457239 0.700443 0.0538091C0.604623 0.0618942 0.512323 0.093707 0.43187 0.146378C0.351417 0.199048 0.285342 0.270919 0.239607 0.355507C0.193871 0.440095 0.169914 0.534739 0.169896 0.630899L0.164062 3.32007C0.164062 3.61173 0.379896 3.86257 0.671562 3.89757L8.91406 5.00007L0.671562 6.09673C0.379896 6.13757 0.164062 6.3884 0.164062 6.68007L0.169896 9.36923C0.169896 9.7834 0.595729 10.0692 0.980729 9.90006Z" fill="white" />
-                                    </svg>
-                                  </button>
-                                </div>
-                              </form>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                      <!-- notify model end -->
-
+                     
 
                     </div>
                   </div>

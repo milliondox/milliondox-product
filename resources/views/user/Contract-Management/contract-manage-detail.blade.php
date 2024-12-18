@@ -689,6 +689,13 @@
                                             </svg>
                                         </button>
                                         <div id="myDropdown3" class="dropdown-content">
+                                          
+                                            <a class="dropdown-itemm notify" data-bs-toggle="modal" data-id="{{ $contract->id }}"  data-bs-toggle="modal" data-bs-target="#notify_customer" data-file-name="{{ $contract->file_name }}" data-startend="{{ $contract->startend }}" data-cname="{{$customerrecord->lename}}" data-vname="{{$contract->vendor_name}}">
+                                                <svg width="12" height="10" viewBox="0 0 12 10" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                  <path d="M0.980729 9.90006L11.1599 5.53673C11.2651 5.49191 11.3548 5.41713 11.4179 5.32172C11.481 5.2263 11.5146 5.11444 11.5146 5.00007C11.5146 4.88569 11.481 4.77383 11.4179 4.67842C11.3548 4.583 11.2651 4.50823 11.1599 4.4634L0.980729 0.100066C0.892588 0.0616207 0.796263 0.0457239 0.700443 0.0538091C0.604623 0.0618942 0.512323 0.093707 0.43187 0.146378C0.351417 0.199048 0.285342 0.270919 0.239607 0.355507C0.193871 0.440095 0.169914 0.534739 0.169896 0.630899L0.164062 3.32007C0.164062 3.61173 0.379896 3.86257 0.671562 3.89757L8.91406 5.00007L0.671562 6.09673C0.379896 6.13757 0.164062 6.3884 0.164062 6.68007L0.169896 9.36923C0.169896 9.7834 0.595729 10.0692 0.980729 9.90006Z" fill="#414651" />
+                                                </svg>
+                                                Notify </a>
+
                                             <a class="dropdown-itemm Renew">
                                                 <svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
                                                     <path fill-rule="evenodd" clip-rule="evenodd" d="M0.500004 7.00043C0.500111 5.75106 0.860275 4.5282 1.53738 3.47823C2.21449 2.42826 3.17984 1.59568 4.31788 1.08015C5.45592 0.564621 6.71843 0.387992 7.95425 0.571407C9.19008 0.754823 10.3469 1.29051 11.2861 2.11434C12.2254 2.93818 12.9073 4.01524 13.2503 5.21661C13.5933 6.41797 13.5827 7.69273 13.22 8.88827C12.8572 10.0838 12.1576 11.1495 11.2049 11.9577C10.2522 12.7659 9.08669 13.2824 7.848 13.4454C7.74922 13.4606 7.6484 13.456 7.55145 13.4316C7.45451 13.4073 7.3634 13.3639 7.28348 13.3039C7.20356 13.2439 7.13645 13.1685 7.08608 13.0821C7.03571 12.9958 7.0031 12.9003 6.99017 12.8012C6.97724 12.7021 6.98425 12.6014 7.01078 12.505C7.03732 12.4087 7.08285 12.3186 7.14469 12.2401C7.20654 12.1616 7.28345 12.0962 7.37091 12.0478C7.45838 11.9995 7.55463 11.9691 7.654 11.9584C8.77538 11.8109 9.81364 11.2877 10.5993 10.4741C11.385 9.66048 11.8717 8.60457 11.9799 7.47873C12.0881 6.3529 11.8116 5.22361 11.1953 4.27522C10.579 3.32683 9.65947 2.61535 8.58674 2.25691C7.51401 1.89847 6.35145 1.91425 5.28884 2.30167C4.22623 2.68908 3.32633 3.42526 2.73602 4.39002C2.14572 5.35479 1.89988 6.49116 2.03863 7.61365C2.17739 8.73614 2.69254 9.77844 3.5 10.5704V9.25043C3.5 9.05151 3.57902 8.86075 3.71967 8.7201C3.86033 8.57944 4.05109 8.50043 4.25 8.50043C4.44892 8.50043 4.63968 8.57944 4.78033 8.7201C4.92099 8.86075 5 9.05151 5 9.25043V12.2504C5 12.4493 4.92099 12.6401 4.78033 12.7808C4.63968 12.9214 4.44892 13.0004 4.25 13.0004H1.25C1.05109 13.0004 0.860327 12.9214 0.719674 12.7808C0.579022 12.6401 0.500004 12.4493 0.500004 12.2504C0.500004 12.0515 0.579022 11.8608 0.719674 11.7201C0.860327 11.5794 1.05109 11.5004 1.25 11.5004H2.31C1.14687 10.2913 0.498033 8.67818 0.500004 7.00043ZM7 3.25043C7.19892 3.25043 7.38968 3.32944 7.53033 3.4701C7.67099 3.61075 7.75 3.80151 7.75 4.00043V6.62543L8.783 7.40043C8.8618 7.45952 8.92818 7.53356 8.97836 7.61831C9.02854 7.70306 9.06154 7.79686 9.07547 7.89436C9.0894 7.99186 9.08398 8.09115 9.05954 8.18656C9.0351 8.28197 8.9921 8.37163 8.933 8.45043C8.87391 8.52922 8.79987 8.5956 8.71513 8.64578C8.63038 8.69596 8.53657 8.72896 8.43907 8.74289C8.34157 8.75682 8.24228 8.75141 8.14687 8.72696C8.05146 8.70252 7.9618 8.65952 7.883 8.60043L6.55 7.60043C6.45686 7.53057 6.38125 7.43998 6.32918 7.33584C6.27711 7.2317 6.25 7.11686 6.25 7.00043V4.00043C6.25 3.90194 6.2694 3.80441 6.30709 3.71341C6.34479 3.62242 6.40003 3.53974 6.46967 3.4701C6.53932 3.40045 6.622 3.34521 6.71299 3.30752C6.80399 3.26983 6.90151 3.25043 7 3.25043Z" fill="#414651" />
@@ -709,11 +716,163 @@
                                     </div>
                                 </td>
                                 </tr>
+                            
 
                                 @endforeach
 
+
                                 </tbody>
                                 </table>
+
+
+                                                                 <!-- notify model start -->
+
+                                                                 <div class="modal fade drop_coman_file have_title" id="notify_customer" tabindex="-1" role="dialog" aria-labelledby="notify_customer" aria-hidden="true">
+                                                                    <div class="modal-dialog modal-dialog-centered" role="document">
+                                                                      <div class="modal-content">
+                                                                        <div class="modal-header">
+                                                                          <h5 class="modal-title" style="font-weight:700">Notify Customer</h5>
+                                                                          <button class="close" style="border-radius:5px;" type="button" data-bs-dismiss="modal">
+                                                                            <span aria-hidden="true">
+                                                                              <svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                                                <path d="M1 1L13 13M13 1L1 13" stroke="#535862" stroke-linecap="round" />
+                                                                              </svg>
+                                                                            </span>
+                                                                          </button>
+                                                                        </div>
+                                                                        <div class="modal-body">
+                                                                          <form id="" action="{{ route('customernotification') }}" method="POST" enctype="multipart/form-data">
+                                                                           
+                                                                            <div class="gropu_form_set defaultoption">
+                                                                                @csrf
+                                                                              <label for="read_onlyy">Selected Contract</label>
+                                                                              <h2 class="read_onlyy" id="filename"></h2>           
+                                                                            </div>
+                                                                            <div class="gropu_form_set defaultoption">
+                                                                              <label for="expiring_opm">Select an option</label>
+                                                                              <select id="expiring_opm" name="expiring_opm" required="">
+                                                                                <option value="" disabled="" selected="">select</option>
+                                                                                <option value="Upcoming Expiry Alert">Upcoming Expiry Alert</option>
+                                                                                <option value="Upcoming Renewal Alert">Upcoming Renewal Alert</option>
+                                                                                <option value="Missing Documentation">Missing Documentation</option>
+                                                                                <option value="Payment Due Alert">Payment Due Alert</option>
+                                                                                <option value="Other">Other</option>
+                                                                              </select>
+                                                                              <input type="hidden" name="email" value="{{$customerrecord->email}}"
+                                                                            </div>
+
+                                                                            <div class="gropu_form_set option0">
+                                                                                <label for="Message">Message</label>
+                                                                                
+                                                                              </div>
+                                                                            
+                                                                            <div class="gropu_form_set option1">
+                                                                              <label for="Message">Message</label>
+                                                                              {{-- <textarea placeholder="Your contract [Contract ID/Name] with [Vendor/Client Name] is set to expire on [Expiry Date]. Please take the necessary action to renew or terminate the contract before the expiry date." id="" name="" readonly></textarea> --}}
+
+                                                                              <div class="read_onlyy">Your contract <span id="filenames" class="bolddata"></span>/<span id="custname" class="bolddata"></span> with <span id="venname" class="bolddata"></span> is set to expire on <span id="enddate" class="bolddata"></span>. Please take the necessary action to renew or terminate the contract before the expiry date.</div>
+                                                                            </div>
+
+                                                                            <div class="gropu_form_set option2">
+                                                                                <label for="Message">Message</label>
+                                                                                {{-- <textarea placeholder="Your contract [Contract ID/Name] with [Vendor/Client Name] is set to expire on [Expiry Date]. Please take the necessary action to renew or terminate the contract before the expiry date." id="" name="" readonly></textarea> --}}
+  
+                                                                                <div class="read_onlyy">Your contract [Contract ID/Name] with [Vendor/Client Name] is due for renewal on [Renewal Date]. Kindly review the terms and confirm the renewal process to avoid any disruptions.</div>
+                                                                              </div>
+
+                                                                              <div class="gropu_form_set option3">
+                                                                                <label for="Message">Message</label>
+                                                                                {{-- <textarea placeholder="Your contract [Contract ID/Name] with [Vendor/Client Name] is set to expire on [Expiry Date]. Please take the necessary action to renew or terminate the contract before the expiry date." id="" name="" readonly></textarea> --}}
+  
+                                                                                <div class="read_onlyy">Some required documents for [Contract ID/Name] are missing or incomplete. Please upload the following documents to ensure compliance:
+
+                                                                                    [Document Name 1]
+                                                                                    [Document Name 2]
+                                                                                    [Document Name 3]</div>
+                                                                              </div>
+
+                                                                              <div class="gropu_form_set option4">
+                                                                                <label for="Message">Message</label>
+                                                                                {{-- <textarea placeholder="Your contract [Contract ID/Name] with [Vendor/Client Name] is set to expire on [Expiry Date]. Please take the necessary action to renew or terminate the contract before the expiry date." id="" name="" readonly></textarea> --}}
+  
+                                                                                <div class="read_onlyy">A payment of ₹[Amount] for contract [Contract ID/Name] with [Vendor/Client Name] is due on [Due Date]. Kindly process the payment to avoid penalties or disruptions in services.</div>
+                                                                              </div>
+                                                        
+                                                                            <div class="root_btn">
+                                                                              <button class="btn btn-primary" style="border-radius:5px;" type="submit">Send
+                                                                                <svg width="12" height="10" viewBox="0 0 12 10" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                                                  <path d="M0.980729 9.90006L11.1599 5.53673C11.2651 5.49191 11.3548 5.41713 11.4179 5.32172C11.481 5.2263 11.5146 5.11444 11.5146 5.00007C11.5146 4.88569 11.481 4.77383 11.4179 4.67842C11.3548 4.583 11.2651 4.50823 11.1599 4.4634L0.980729 0.100066C0.892588 0.0616207 0.796263 0.0457239 0.700443 0.0538091C0.604623 0.0618942 0.512323 0.093707 0.43187 0.146378C0.351417 0.199048 0.285342 0.270919 0.239607 0.355507C0.193871 0.440095 0.169914 0.534739 0.169896 0.630899L0.164062 3.32007C0.164062 3.61173 0.379896 3.86257 0.671562 3.89757L8.91406 5.00007L0.671562 6.09673C0.379896 6.13757 0.164062 6.3884 0.164062 6.68007L0.169896 9.36923C0.169896 9.7834 0.595729 10.0692 0.980729 9.90006Z" fill="white" />
+                                                                                </svg>
+                                                                              </button>
+                                                                            </div>
+                                                                          </form>
+                                                                        </div>
+                                                                      </div>
+                                                                    </div>
+                                                                  </div>
+                                                                  <!-- notify model end -->
+
+                                                                  <script>
+                                                                    $(document).ready(function() {
+                                                                        // Initially hide all option divs except the defaultoption
+                                                                        $('.gropu_form_set').not('.defaultoption').hide();
+                                                                
+                                                                        // On change event for the dropdown
+                                                                        $('#expiring_opm').on('change', function() {
+                                                                            // Get the selected option value
+                                                                            const selectedValue = $(this).val();
+                                                                
+                                                                            // Hide all non-default option divs
+                                                                            $('.gropu_form_set').not('.defaultoption').hide();
+                                                                
+                                                                            // Show the corresponding div based on the selected value
+                                                                            if (selectedValue === "Upcoming Expiry Alert") {
+                                                                                $('.option1').show();
+                                                                            } else if (selectedValue === "Upcoming Renewal Alert") {
+                                                                                $('.option2').show();
+                                                                            } else if (selectedValue === "Missing Documentation") {
+                                                                                $('.option3').show();
+                                                                            } else if (selectedValue === "Payment Due Alert") {
+                                                                                $('.option4').show();
+                                                                            } else {
+                                                                                // Show option0 for unselected or disabled state
+                                                                                $('.option0').show();
+                                                                            }
+                                                                        });
+                                                                
+                                                                        // Trigger change event on page load to show option0 by default
+                                                                        $('#expiring_opm').trigger('change');
+                                                                    });
+                                                                </script>
+                                                                
+<script>
+$(document).on('click', '.notify', function() {
+    // Get the file name from the data attribute
+    const fileName = $(this).data('file-name');
+    const contractid = $(this).data('id');
+    const enddate = $(this).data('startend');
+    const custname = $(this).data('cname');
+    const venname = $(this).data('vname');
+    const fileNames = $(this).data('file-name');
+
+    
+    if (enddate) {
+        const [year, month, day] = enddate.split('-'); // Split the date
+        const formattedDate = `${day}-${month}-${year}`;   // Reformat to dd-mm-yyyy
+        $('#enddate').text(formattedDate);          // Set the formatted date
+    } 
+    
+    
+    $('#filename').text(fileName);
+    $('#filenames').text(fileNames);
+
+    $('#contractid').text(contractid);
+    $('#custname').text(custname);
+    $('#venname').text(venname);
+    
+});
+</script>
+
 
                                 <!-- Addend sidebar start -->
                                 <div class="addend_overlay_fix"></div>
@@ -767,6 +926,7 @@
                                 </div>
 
                                 <!-- Addend sidebar end -->
+
 
                                 <script>
                                     $(document).ready(function() {
@@ -842,5 +1002,12 @@
         padding: 10px 30px;
         margin: auto;
     }
+
+    .bolddata {
+    font-weight: 900;
+    text-transform: capitalize;
+    margin: 5px;
+}
+
 </style>
 @endsection
