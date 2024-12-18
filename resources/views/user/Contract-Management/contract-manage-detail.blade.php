@@ -135,9 +135,44 @@
 
                                 <div class="contract_detail_middle">
                                     <div class="authrized_signatory cmn_authh">
-                                        <h2>Director List</h2>
+                                        <h2>Authrized Signatory</h2>
 
                                         <ul>
+
+                                            <li>
+                                                <div class="auth_image">
+                                                    <img src="http://127.0.0.1:8000/profile_pictures/V21JjJbUitpBjn45II8C6qqCtvj1ljfRyaOO2nfo.webp" alt="img">
+                                                </div>
+                                                <h2>Anurag Srivastava</h2>
+                                                                                      
+                                        <div class="Authrized_Signatory">
+                                            <b>Anurag 1</b>
+                                            <b>Anurag 2</b>
+                                            <b>Anurag 3</b>
+                                            <b>Anurag 4</b>
+                                            <b>Anurag 5</b>
+                                            <b class="count"></b>
+                                        </div>
+
+                                            </li>
+
+                                            <li>
+                                                <div class="auth_image">
+                                                    <img src="http://127.0.0.1:8000/profile_pictures/V21JjJbUitpBjn45II8C6qqCtvj1ljfRyaOO2nfo.webp" alt="img">
+                                                </div>
+                                                <h2>Devanshu Kumar</h2>
+
+                                                <div class="Authrized_Signatory">
+                                            <b>Devanshu 1</b>
+                                            <b>Devanshu 2</b>                                           
+                                            <b class="count"></b>
+                                        </div>
+
+                                            </li>
+
+                                        </ul>
+
+                                        <!-- <ul>
                                             @if(is_array($customerrecord->dname))
                                             @foreach($customerrecord->dname as $name)
                                             <li>
@@ -165,7 +200,7 @@
                                             </li>
                                             @endforeach
                                             @endif
-                                        </ul>
+                                        </ul> -->
 
                                     </div>
                                     <div class="customer_status cmn_authh">
@@ -689,10 +724,10 @@
                                             </svg>
                                         </button>
                                         <div id="myDropdown3" class="dropdown-content">
-                                          
-                                            <a class="dropdown-itemm notify" data-bs-toggle="modal" data-id="{{ $contract->id }}"  data-bs-toggle="modal" data-bs-target="#notify_customer" data-file-name="{{ $contract->file_name }}" data-startend="{{ $contract->startend }}" data-cname="{{$customerrecord->lename}}" data-vname="{{$contract->vendor_name}}">
+
+                                            <a class="dropdown-itemm notify" data-bs-toggle="modal" data-id="{{ $contract->id }}" data-bs-toggle="modal" data-bs-target="#notify_customer" data-file-name="{{ $contract->file_name }}" data-startend="{{ $contract->startend }}" data-cname="{{$customerrecord->lename}}" data-vname="{{$contract->vendor_name}}">
                                                 <svg width="12" height="10" viewBox="0 0 12 10" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                                  <path d="M0.980729 9.90006L11.1599 5.53673C11.2651 5.49191 11.3548 5.41713 11.4179 5.32172C11.481 5.2263 11.5146 5.11444 11.5146 5.00007C11.5146 4.88569 11.481 4.77383 11.4179 4.67842C11.3548 4.583 11.2651 4.50823 11.1599 4.4634L0.980729 0.100066C0.892588 0.0616207 0.796263 0.0457239 0.700443 0.0538091C0.604623 0.0618942 0.512323 0.093707 0.43187 0.146378C0.351417 0.199048 0.285342 0.270919 0.239607 0.355507C0.193871 0.440095 0.169914 0.534739 0.169896 0.630899L0.164062 3.32007C0.164062 3.61173 0.379896 3.86257 0.671562 3.89757L8.91406 5.00007L0.671562 6.09673C0.379896 6.13757 0.164062 6.3884 0.164062 6.68007L0.169896 9.36923C0.169896 9.7834 0.595729 10.0692 0.980729 9.90006Z" fill="#414651" />
+                                                    <path d="M0.980729 9.90006L11.1599 5.53673C11.2651 5.49191 11.3548 5.41713 11.4179 5.32172C11.481 5.2263 11.5146 5.11444 11.5146 5.00007C11.5146 4.88569 11.481 4.77383 11.4179 4.67842C11.3548 4.583 11.2651 4.50823 11.1599 4.4634L0.980729 0.100066C0.892588 0.0616207 0.796263 0.0457239 0.700443 0.0538091C0.604623 0.0618942 0.512323 0.093707 0.43187 0.146378C0.351417 0.199048 0.285342 0.270919 0.239607 0.355507C0.193871 0.440095 0.169914 0.534739 0.169896 0.630899L0.164062 3.32007C0.164062 3.61173 0.379896 3.86257 0.671562 3.89757L8.91406 5.00007L0.671562 6.09673C0.379896 6.13757 0.164062 6.3884 0.164062 6.68007L0.169896 9.36923C0.169896 9.7834 0.595729 10.0692 0.980729 9.90006Z" fill="#414651" />
                                                 </svg>
                                                 Notify </a>
 
@@ -716,7 +751,7 @@
                                     </div>
                                 </td>
                                 </tr>
-                            
+
 
                                 @endforeach
 
@@ -725,153 +760,153 @@
                                 </table>
 
 
-                                                                 <!-- notify model start -->
+                                <!-- notify model start -->
 
-                                                                 <div class="modal fade drop_coman_file have_title" id="notify_customer" tabindex="-1" role="dialog" aria-labelledby="notify_customer" aria-hidden="true">
-                                                                    <div class="modal-dialog modal-dialog-centered" role="document">
-                                                                      <div class="modal-content">
-                                                                        <div class="modal-header">
-                                                                          <h5 class="modal-title" style="font-weight:700">Notify Customer</h5>
-                                                                          <button class="close" style="border-radius:5px;" type="button" data-bs-dismiss="modal">
-                                                                            <span aria-hidden="true">
-                                                                              <svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                                                                <path d="M1 1L13 13M13 1L1 13" stroke="#535862" stroke-linecap="round" />
-                                                                              </svg>
-                                                                            </span>
-                                                                          </button>
-                                                                        </div>
-                                                                        <div class="modal-body">
-                                                                          <form id="" action="{{ route('customernotification') }}" method="POST" enctype="multipart/form-data">
-                                                                           
-                                                                            <div class="gropu_form_set defaultoption">
-                                                                                @csrf
-                                                                              <label for="read_onlyy">Selected Contract</label>
-                                                                              <h2 class="read_onlyy" id="filename"></h2>           
-                                                                            </div>
-                                                                            <div class="gropu_form_set defaultoption">
-                                                                              <label for="expiring_opm">Select an option</label>
-                                                                              <select id="expiring_opm" name="expiring_opm" required="">
-                                                                                <option value="" disabled="" selected="">select</option>
-                                                                                <option value="Upcoming Expiry Alert">Upcoming Expiry Alert</option>
-                                                                                <option value="Upcoming Renewal Alert">Upcoming Renewal Alert</option>
-                                                                                <option value="Missing Documentation">Missing Documentation</option>
-                                                                                <option value="Payment Due Alert">Payment Due Alert</option>
-                                                                                <option value="Other">Other</option>
-                                                                              </select>
-                                                                              <input type="hidden" name="email" value="{{$customerrecord->email}}"
-                                                                            </div>
+                                <div class="modal fade drop_coman_file have_title" id="notify_customer" tabindex="-1" role="dialog" aria-labelledby="notify_customer" aria-hidden="true">
+                                    <div class="modal-dialog modal-dialog-centered" role="document">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title" style="font-weight:700">Notify Customer</h5>
+                                                <button class="close" style="border-radius:5px;" type="button" data-bs-dismiss="modal">
+                                                    <span aria-hidden="true">
+                                                        <svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                            <path d="M1 1L13 13M13 1L1 13" stroke="#535862" stroke-linecap="round" />
+                                                        </svg>
+                                                    </span>
+                                                </button>
+                                            </div>
+                                            <div class="modal-body">
+                                                <form id="" action="{{ route('customernotification') }}" method="POST" enctype="multipart/form-data">
 
-                                                                            <div class="gropu_form_set option0">
-                                                                                <label for="Message">Message</label>
-                                                                                
-                                                                              </div>
-                                                                            
-                                                                            <div class="gropu_form_set option1">
-                                                                              <label for="Message">Message</label>
-                                                                              {{-- <textarea placeholder="Your contract [Contract ID/Name] with [Vendor/Client Name] is set to expire on [Expiry Date]. Please take the necessary action to renew or terminate the contract before the expiry date." id="" name="" readonly></textarea> --}}
+                                                    <div class="gropu_form_set defaultoption">
+                                                        @csrf
+                                                        <label for="read_onlyy">Selected Contract</label>
+                                                        <h2 class="read_onlyy" id="filename"></h2>
+                                                    </div>
+                                                    <div class="gropu_form_set defaultoption">
+                                                        <label for="expiring_opm">Select an option</label>
+                                                        <select id="expiring_opm" name="expiring_opm" required="">
+                                                            <option value="" disabled="" selected="">select</option>
+                                                            <option value="Upcoming Expiry Alert">Upcoming Expiry Alert</option>
+                                                            <option value="Upcoming Renewal Alert">Upcoming Renewal Alert</option>
+                                                            <option value="Missing Documentation">Missing Documentation</option>
+                                                            <option value="Payment Due Alert">Payment Due Alert</option>
+                                                            <option value="Other">Other</option>
+                                                        </select>
+                                                        <input type="hidden" name="email" value="{{$customerrecord->email}}">
+                                                    </div>
+                                                    <div class="gropu_form_set option0">
+                                                        <label for="Message">Message</label>
+                                                        <div class="read_onlyy">Select the option from options.</div>
+                                                    </div>
 
-                                                                              <div class="read_onlyy">Your contract <span id="filenames" class="bolddata"></span>/<span id="custname" class="bolddata"></span> with <span id="venname" class="bolddata"></span> is set to expire on <span id="enddate" class="bolddata"></span>. Please take the necessary action to renew or terminate the contract before the expiry date.</div>
-                                                                            </div>
+                                                    <div class="gropu_form_set option1">
+                                                        <label for="Message">Message</label>
+                                                        {{-- <textarea placeholder="Your contract [Contract ID/Name] with [Vendor/Client Name] is set to expire on [Expiry Date]. Please take the necessary action to renew or terminate the contract before the expiry date." id="" name="" readonly></textarea> --}}
 
-                                                                            <div class="gropu_form_set option2">
-                                                                                <label for="Message">Message</label>
-                                                                                {{-- <textarea placeholder="Your contract [Contract ID/Name] with [Vendor/Client Name] is set to expire on [Expiry Date]. Please take the necessary action to renew or terminate the contract before the expiry date." id="" name="" readonly></textarea> --}}
-  
-                                                                                <div class="read_onlyy">Your contract [Contract ID/Name] with [Vendor/Client Name] is due for renewal on [Renewal Date]. Kindly review the terms and confirm the renewal process to avoid any disruptions.</div>
-                                                                              </div>
+                                                        <div class="read_onlyy">Your contract <span id="filenames" class="bolddata"></span>/<span id="custname" class="bolddata"></span> with <span id="venname" class="bolddata"></span> is set to expire on <span id="enddate" class="bolddata"></span>. Please take the necessary action to renew or terminate the contract before the expiry date.</div>
+                                                    </div>
 
-                                                                              <div class="gropu_form_set option3">
-                                                                                <label for="Message">Message</label>
-                                                                                {{-- <textarea placeholder="Your contract [Contract ID/Name] with [Vendor/Client Name] is set to expire on [Expiry Date]. Please take the necessary action to renew or terminate the contract before the expiry date." id="" name="" readonly></textarea> --}}
-  
-                                                                                <div class="read_onlyy">Some required documents for [Contract ID/Name] are missing or incomplete. Please upload the following documents to ensure compliance:
+                                                    <div class="gropu_form_set option2">
+                                                        <label for="Message">Message</label>
+                                                        {{-- <textarea placeholder="Your contract [Contract ID/Name] with [Vendor/Client Name] is set to expire on [Expiry Date]. Please take the necessary action to renew or terminate the contract before the expiry date." id="" name="" readonly></textarea> --}}
 
-                                                                                    [Document Name 1]
-                                                                                    [Document Name 2]
-                                                                                    [Document Name 3]</div>
-                                                                              </div>
+                                                        <div class="read_onlyy">Your contract [Contract ID/Name] with [Vendor/Client Name] is due for renewal on [Renewal Date]. Kindly review the terms and confirm the renewal process to avoid any disruptions.</div>
+                                                    </div>
 
-                                                                              <div class="gropu_form_set option4">
-                                                                                <label for="Message">Message</label>
-                                                                                {{-- <textarea placeholder="Your contract [Contract ID/Name] with [Vendor/Client Name] is set to expire on [Expiry Date]. Please take the necessary action to renew or terminate the contract before the expiry date." id="" name="" readonly></textarea> --}}
-  
-                                                                                <div class="read_onlyy">A payment of ₹[Amount] for contract [Contract ID/Name] with [Vendor/Client Name] is due on [Due Date]. Kindly process the payment to avoid penalties or disruptions in services.</div>
-                                                                              </div>
-                                                        
-                                                                            <div class="root_btn">
-                                                                              <button class="btn btn-primary" style="border-radius:5px;" type="submit">Send
-                                                                                <svg width="12" height="10" viewBox="0 0 12 10" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                                                                  <path d="M0.980729 9.90006L11.1599 5.53673C11.2651 5.49191 11.3548 5.41713 11.4179 5.32172C11.481 5.2263 11.5146 5.11444 11.5146 5.00007C11.5146 4.88569 11.481 4.77383 11.4179 4.67842C11.3548 4.583 11.2651 4.50823 11.1599 4.4634L0.980729 0.100066C0.892588 0.0616207 0.796263 0.0457239 0.700443 0.0538091C0.604623 0.0618942 0.512323 0.093707 0.43187 0.146378C0.351417 0.199048 0.285342 0.270919 0.239607 0.355507C0.193871 0.440095 0.169914 0.534739 0.169896 0.630899L0.164062 3.32007C0.164062 3.61173 0.379896 3.86257 0.671562 3.89757L8.91406 5.00007L0.671562 6.09673C0.379896 6.13757 0.164062 6.3884 0.164062 6.68007L0.169896 9.36923C0.169896 9.7834 0.595729 10.0692 0.980729 9.90006Z" fill="white" />
-                                                                                </svg>
-                                                                              </button>
-                                                                            </div>
-                                                                          </form>
-                                                                        </div>
-                                                                      </div>
-                                                                    </div>
-                                                                  </div>
-                                                                  <!-- notify model end -->
+                                                    <div class="gropu_form_set option3">
+                                                        <label for="Message">Message</label>
+                                                        {{-- <textarea placeholder="Your contract [Contract ID/Name] with [Vendor/Client Name] is set to expire on [Expiry Date]. Please take the necessary action to renew or terminate the contract before the expiry date." id="" name="" readonly></textarea> --}}
 
-                                                                  <script>
-                                                                    $(document).ready(function() {
-                                                                        // Initially hide all option divs except the defaultoption
-                                                                        $('.gropu_form_set').not('.defaultoption').hide();
-                                                                
-                                                                        // On change event for the dropdown
-                                                                        $('#expiring_opm').on('change', function() {
-                                                                            // Get the selected option value
-                                                                            const selectedValue = $(this).val();
-                                                                
-                                                                            // Hide all non-default option divs
-                                                                            $('.gropu_form_set').not('.defaultoption').hide();
-                                                                
-                                                                            // Show the corresponding div based on the selected value
-                                                                            if (selectedValue === "Upcoming Expiry Alert") {
-                                                                                $('.option1').show();
-                                                                            } else if (selectedValue === "Upcoming Renewal Alert") {
-                                                                                $('.option2').show();
-                                                                            } else if (selectedValue === "Missing Documentation") {
-                                                                                $('.option3').show();
-                                                                            } else if (selectedValue === "Payment Due Alert") {
-                                                                                $('.option4').show();
-                                                                            } else {
-                                                                                // Show option0 for unselected or disabled state
-                                                                                $('.option0').show();
-                                                                            }
-                                                                        });
-                                                                
-                                                                        // Trigger change event on page load to show option0 by default
-                                                                        $('#expiring_opm').trigger('change');
-                                                                    });
-                                                                </script>
-                                                                
-<script>
-$(document).on('click', '.notify', function() {
-    // Get the file name from the data attribute
-    const fileName = $(this).data('file-name');
-    const contractid = $(this).data('id');
-    const enddate = $(this).data('startend');
-    const custname = $(this).data('cname');
-    const venname = $(this).data('vname');
-    const fileNames = $(this).data('file-name');
+                                                        <div class="read_onlyy">Some required documents for [Contract ID/Name] are missing or incomplete. Please upload the following documents to ensure compliance:
 
-    
-    if (enddate) {
-        const [year, month, day] = enddate.split('-'); // Split the date
-        const formattedDate = `${day}-${month}-${year}`;   // Reformat to dd-mm-yyyy
-        $('#enddate').text(formattedDate);          // Set the formatted date
-    } 
-    
-    
-    $('#filename').text(fileName);
-    $('#filenames').text(fileNames);
+                                                            [Document Name 1]
+                                                            [Document Name 2]
+                                                            [Document Name 3]</div>
+                                                    </div>
 
-    $('#contractid').text(contractid);
-    $('#custname').text(custname);
-    $('#venname').text(venname);
-    
-});
-</script>
+                                                    <div class="gropu_form_set option4">
+                                                        <label for="Message">Message</label>
+                                                        {{-- <textarea placeholder="Your contract [Contract ID/Name] with [Vendor/Client Name] is set to expire on [Expiry Date]. Please take the necessary action to renew or terminate the contract before the expiry date." id="" name="" readonly></textarea> --}}
+
+                                                        <div class="read_onlyy">A payment of ₹[Amount] for contract [Contract ID/Name] with [Vendor/Client Name] is due on [Due Date]. Kindly process the payment to avoid penalties or disruptions in services.</div>
+                                                    </div>
+
+
+                                                    <div class="root_btn">
+                                                        <button class="btn btn-primary" style="border-radius:5px;" type="submit">Send
+                                                            <svg width="12" height="10" viewBox="0 0 12 10" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                                <path d="M0.980729 9.90006L11.1599 5.53673C11.2651 5.49191 11.3548 5.41713 11.4179 5.32172C11.481 5.2263 11.5146 5.11444 11.5146 5.00007C11.5146 4.88569 11.481 4.77383 11.4179 4.67842C11.3548 4.583 11.2651 4.50823 11.1599 4.4634L0.980729 0.100066C0.892588 0.0616207 0.796263 0.0457239 0.700443 0.0538091C0.604623 0.0618942 0.512323 0.093707 0.43187 0.146378C0.351417 0.199048 0.285342 0.270919 0.239607 0.355507C0.193871 0.440095 0.169914 0.534739 0.169896 0.630899L0.164062 3.32007C0.164062 3.61173 0.379896 3.86257 0.671562 3.89757L8.91406 5.00007L0.671562 6.09673C0.379896 6.13757 0.164062 6.3884 0.164062 6.68007L0.169896 9.36923C0.169896 9.7834 0.595729 10.0692 0.980729 9.90006Z" fill="white" />
+                                                            </svg>
+                                                        </button>
+                                                    </div>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- notify model end -->
+
+                                <script>
+                                    $(document).ready(function() {
+                                        // Initially hide all option divs except the defaultoption
+                                        $('.gropu_form_set').not('.defaultoption').hide();
+
+                                        // On change event for the dropdown
+                                        $('#expiring_opm').on('change', function() {
+                                            // Get the selected option value
+                                            const selectedValue = $(this).val();
+
+                                            // Hide all non-default option divs
+                                            $('.gropu_form_set').not('.defaultoption').hide();
+
+                                            // Show the corresponding div based on the selected value
+                                            if (selectedValue === "Upcoming Expiry Alert") {
+                                                $('.option1').show();
+                                            } else if (selectedValue === "Upcoming Renewal Alert") {
+                                                $('.option2').show();
+                                            } else if (selectedValue === "Missing Documentation") {
+                                                $('.option3').show();
+                                            } else if (selectedValue === "Payment Due Alert") {
+                                                $('.option4').show();
+                                            } else {
+                                                // Show option0 for unselected or disabled state
+                                                $('.option0').show();
+                                            }
+                                        });
+
+                                        // Trigger change event on page load to show option0 by default
+                                        $('#expiring_opm').trigger('change');
+                                    });
+                                </script>
+
+                                <script>
+                                    $(document).on('click', '.notify', function() {
+                                        // Get the file name from the data attribute
+                                        const fileName = $(this).data('file-name');
+                                        const contractid = $(this).data('id');
+                                        const enddate = $(this).data('startend');
+                                        const custname = $(this).data('cname');
+                                        const venname = $(this).data('vname');
+                                        const fileNames = $(this).data('file-name');
+
+
+                                        if (enddate) {
+                                            const [year, month, day] = enddate.split('-'); // Split the date
+                                            const formattedDate = `${day}-${month}-${year}`; // Reformat to dd-mm-yyyy
+                                            $('#enddate').text(formattedDate); // Set the formatted date
+                                        }
+
+
+                                        $('#filename').text(fileName);
+                                        $('#filenames').text(fileNames);
+
+                                        $('#contractid').text(contractid);
+                                        $('#custname').text(custname);
+                                        $('#venname').text(venname);
+
+                                    });
+                                </script>
 
 
                                 <!-- Addend sidebar start -->
@@ -1004,10 +1039,9 @@ $(document).on('click', '.notify', function() {
     }
 
     .bolddata {
-    font-weight: 900;
-    text-transform: capitalize;
-    margin: 5px;
-}
-
+        font-weight: 900;
+        text-transform: capitalize;
+        margin: 5px;
+    }
 </style>
 @endsection
