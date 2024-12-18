@@ -25364,9 +25364,78 @@ public function downloadFolder($folder_id)
         $zip->close();
 
         // Return the ZIP file as a response
-        return response()->download($zipFilePath)->deleteFileAfterSend(true);
+        // return response()->json([
+        //     'success' => "Zip file created Successfully",
+        //     'zipFilePath' => $zipFilePath
+        // ]);
+        // $zipFilePath = asset('storage/' . str_replace('storage/app/public/', '', $zipFilePath)); // Generate a public URL
+        // // return response()->json([
+        // //     'success' => "Zip file created Successfully",
+        // //     'zipFilePath' => $zipFilePath,
+        // // ]);
+
+
+        // // $zipFileUrl = asset('storage/' . basename($zipFilePath)); // `basename()` will extract the file name
+
+        // return response()->json([
+        //     'success' => "Zip file created Successfully",
+        //     'zipFilePath' => $zipFilePath,
+        // ]);
+
+
+        // Generate the public URL
+        // $zipFileUrl = asset('storage/app/public/'.$zipFilePath); // Using basename to extract file name
+
+        // return response()->json([
+        //     'success' => "Zip file created Successfully",
+        //     'zipFilePath' => $zipFilePath,
+        // ]);
+
+
+        // Ensure the file exists in the public storage folder
+        // dd($zipFilePath);
+        // "C:\xampp\htdocs\s-dev\milliondox-product\storage\app/public/2024-2025November301_Accounting & Taxation.zip" // app\Http\Controllers\HomeController.php:25396
+        // dd($zipFileName);
+        // "2024-2025November301_Accounting & Taxation.zip" // app\Http\Controllers\HomeController.php:25398
+        // if (Storage::exists('storage/app/public/'.$zipFileName)) {
+            // dd("ai aha hdkj");
+            // Return the public URL of the zip file
+            $zipFileUrl = asset('storage/app/public/' . $zipFileName);  // Generates a public URL
+
+            return response()->json([
+                'success' => 'Zip file created Successfully',
+                'zipFilePath' => $zipFileName,
+            ]);
+        // } else {
+        //     return response()->json([
+        //         'success' => false,
+        //         'message' => 'File not found',
+        //     ]);
+        // }
+
+        // return response()->download($zipFilePath)->deleteFileAfterSend(true);
     } else {
         return response()->json(['error' => 'Unable to create ZIP file.'], 500);
+    }
+}
+
+
+public function downloadZipSKY($zipFileName)
+{
+    // Define the file path on the server
+    $filePath = storage_path('app/public/' . $zipFileName); // Assuming the file is in the public storage folder
+    // dd($filePath);
+    // sleep(10000);
+
+    // Check if the file exists
+    if (file_exists($filePath)) {
+        // Return the file for download
+        return response()->download($filePath); // The download function sends the file to the browser
+    } else {
+        // If the file doesn't exist, return an error response
+        return response()->json([
+            'error' => 'File not found'
+        ], 404);
     }
 }
 

@@ -2237,41 +2237,43 @@ document.addEventListener('DOMContentLoaded', function () {
 
                                                                     var progressId = `progress_${folderid}`;
                                                                     const progressHtmlZipp = `
-                        <div class="progress_repeat" id="${progressId}">
-                            <h2 class="file_name">Zipping Files</h2>
-                            <div class="progress_circle progress_circle2">
-                                <div id="wrapper_progreess" class="center">                  
-                                    <svg class="progresss" x="0px" y="0px" viewBox="0 0 80 80">
-                                        <path class="track" d="M5,40a35,35 0 1,0 70,0a35,35 0 1,0 -70,0" />
-                                        <path class="fill" id="progressFill_${folderid}" d="M5,40a35,35 0 1,0 70,0a35,35 0 1,0 -70,0"
-                                            style="stroke-dasharray: 220; stroke-dashoffset: 220;" />
-                                    </svg>
+                                                                        <div class="progress_repeat" id="${progressId}">
+                                                                            <h2 class="file_name">Zipping Files</h2>
+                                                                            <div class="progress_circle progress_circle2">
+                                                                                <div id="wrapper_progreess" class="center">                  
+                                                                                    <svg class="progresss" x="0px" y="0px" viewBox="0 0 80 80">
+                                                                                        <path class="track" d="M5,40a35,35 0 1,0 70,0a35,35 0 1,0 -70,0" />
+                                                                                        <path class="fill" id="progressFill_${folderid}" d="M5,40a35,35 0 1,0 70,0a35,35 0 1,0 -70,0"
+                                                                                            style="stroke-dasharray: 220; stroke-dashoffset: 220;" />
+                                                                                    </svg>
 
-                                    <span class="span_dott"></span>
-                                </div>
-                                <div class="cancle_file">
-                                    <button class="remove-btnn" data-id="${folderid}">X</button>
-                                </div>
-                                <div class="done_tick" style="display:none;">
-                                    <svg class="progress_done" width="24px" height="24px" viewBox="0 0 24 24" fill="#0F9D58">
-                                        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"></path>
-                                    </svg>
-                                </div>
-                            </div>
-                        </div>
-                    `;
+                                                                                    <span class="span_dott"></span>
+                                                                                </div>
+                                                                                <div class="cancle_file">
+                                                                                    <button class="remove-btnn" data-id="${folderid}">X</button>
+                                                                                </div>
+                                                                                <div class="done_tick" style="display:none;">
+                                                                                    <svg class="progress_done" width="24px" height="24px" viewBox="0 0 24 24" fill="#0F9D58">
+                                                                                        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"></path>
+                                                                                    </svg>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    `;
                                                                     $('.progress_repeat_wrap').append(progressHtmlZipp);
+                                                                    $(`#${progressId} .progress_circle2`).hide();
+
 
                                                                     $thisButton.prop('disabled', true).text('Downloading...');
 
-                                                                    const intervalId = simulateProgress(progressId); // Start simulated progress
+                                                                    // const intervalId = simulateProgress(progressId); // Start simulated progress
 
                                                                     try {
                                                                         await downloadFolder(folderid, $thisButton, progressId);
-                                                                        clearInterval(intervalId); // Stop simulated progress
-                                                                        updateProgressBar(progressId, 100, "Download Completed!");
+                                                                        // clearInterval(intervalId); // Stop simulated progress
+                                                                        updateProgressBar(progressId, 100, "Zipping Completed!");
                                                                     } catch (error) {
-                                                                        clearInterval(intervalId); // Stop simulated progress
+                                                                        // clearInterval(intervalId); // Stop simulated progress
                                                                         updateProgressBar(progressId, 0, "Failed!");
                                                                         toastr.error('An error occurred while downloading the folder. Please try again.', 'Download Error');
 
@@ -2285,38 +2287,421 @@ document.addEventListener('DOMContentLoaded', function () {
                                                                     }
                                                                 });
 
+                                                                // async function downloadFolder(folderid, $thisButton, progressId) {
+                                                                //     return new Promise((resolve, reject) => {
+                                                                //         $.ajax({
+                                                                //             url: `/download-folder/${folderid}`,
+                                                                //             type: 'GET',
+                                                                //             xhrFields: {
+                                                                //                 responseType: 'blob'
+                                                                //             },
+                                                                //             success: function(response, status, xhr) {
+                                                                //                 const disposition = xhr.getResponseHeader('Content-Disposition');
+                                                                //                 if (disposition && disposition.indexOf('attachment') !== -1) {
+                                                                //                     const filename = disposition.split('filename=')[1].replace(/"/g, '');
+                                                                //                     const blob = new Blob([response], {
+                                                                //                         type: 'application/zip'
+                                                                //                     });
+                                                                //                     const url = window.URL.createObjectURL(blob);
+                                                                //                     const a = document.createElement('a');
+                                                                //                     a.href = url;
+                                                                //                     a.download = filename;
+                                                                //                     document.body.appendChild(a);
+                                                                //                     a.click();
+                                                                //                     a.remove();
+                                                                //                     window.URL.revokeObjectURL(url);
+
+                                                                //                     resolve();
+                                                                //                 } else {
+                                                                //                     reject('Download failed: No file attachment found');
+                                                                //                 }
+                                                                //             },
+                                                                //             error: function(xhr, status, error) {
+                                                                //                 console.error('Error details:', status, error, xhr.responseText);
+                                                                //                 reject('Download failed: ' + error);
+                                                                //             },
+                                                                //             complete: function() {
+                                                                //                 $thisButton.prop('disabled', false).text('Download');
+                                                                //             }
+                                                                //         });
+                                                                //     });
+                                                                // }
+
+                                                                // async function downloadFolder(folderid, $thisButton, progressId) {
+                                                                //     return new Promise((resolve, reject) => {
+                                                                //         $.ajax({
+                                                                //             url: `/download-folder/${folderid}`,
+                                                                //             type: 'GET',
+                                                                //             dataType: 'json',
+                                                                //             success: function(response) {
+                                                                //                 if (response.success && response.zipFilePath) {
+                                                                //                     window.location.href = response.zipFilePath; // Trigger direct file download
+                                                                //                 } else {
+                                                                //                     reject('Download failed: Missing zip file path in response');
+                                                                //                 }
+                                                                //             },
+
+                                                                //             error: function(xhr, status, error) {
+                                                                //                 console.error('Error details:', status, error, xhr.responseText);
+                                                                //                 reject('Download failed: ' + error);
+                                                                //             },
+                                                                //             complete: function() {
+                                                                //                 $thisButton.prop('disabled', false).text('Download');
+                                                                //             }
+                                                                //         });
+                                                                //     });
+                                                                // }
+
+                                                                // async function downloadFolder(folderid, $thisButton, progressId) {
+                                                                //     return new Promise((resolve, reject) => {
+                                                                //         // Change AJAX to trigger the file download directly
+                                                                //         window.location.href = `/download-folder/${folderid}`;
+                                                                //         resolve();
+                                                                //     });
+                                                                // }
+
+
+
+
+                                                                // async function downloadFolder(folderid, $thisButton, progressId) {
+                                                                //     return new Promise((resolve, reject) => {
+                                                                //         $.ajax({
+                                                                //             url: `/download-folder/${folderid}`,
+                                                                //             type: 'GET',
+                                                                //             dataType: 'json', // Expecting a JSON response
+                                                                //             success: function(response) {
+                                                                //                 if (response.success && response.zipFilePath) {
+                                                                //                     const zipFilePath = response.zipFilePath;
+
+                                                                //                     // Create a temporary anchor for downloading the file
+                                                                //                     const a = document.createElement('a');
+                                                                //                     a.href = zipFilePath; // Use the generated file URL
+                                                                //                     a.download = zipFilePath.split('/').pop(); // Extract the file name from the URL
+                                                                //                     document.body.appendChild(a);
+                                                                //                     a.click();
+                                                                //                     a.remove();
+
+                                                                //                     resolve(); // Resolve the promise on successful download
+                                                                //                 } else {
+                                                                //                     reject('Download failed: Missing zip file path in response');
+                                                                //                 }
+                                                                //             },
+                                                                //             error: function(xhr, status, error) {
+                                                                //                 console.error('Error details:', status, error, xhr.responseText);
+                                                                //                 reject('Download failed: ' + error);
+                                                                //             },
+                                                                //             complete: function() {
+                                                                //                 $thisButton.prop('disabled', false).text('Download');
+                                                                //             }
+                                                                //         });
+                                                                //     });
+                                                                // }
+
+
+                                                                // async function downloadFolder(folderid, $thisButton, progressId) {
+                                                                //     return new Promise((resolve, reject) => {
+                                                                //         $.ajax({
+                                                                //             url: `/download-folder/${folderid}`,
+                                                                //             type: 'GET',
+                                                                //             dataType: 'json', // Expecting a JSON response
+                                                                //             success: function(response) {
+                                                                //                 if (response.success && response.zipFilePath) {
+                                                                //                     const zipFilePath = response.zipFilePath;
+
+                                                                //                     // Create a temporary anchor for downloading the file
+                                                                //                     const a = document.createElement('a');
+                                                                //                     a.href = zipFilePath; // Use the correct file URL from the response
+                                                                //                     a.download = zipFilePath.split('/').pop(); // Extract the file name from the URL
+                                                                //                     document.body.appendChild(a);
+                                                                //                     a.click();
+                                                                //                     a.remove();
+
+                                                                //                     resolve(); // Resolve the promise on successful download
+                                                                //                 } else {
+                                                                //                     reject('Download failed: Missing zip file path in response');
+                                                                //                 }
+                                                                //             },
+                                                                //             error: function(xhr, status, error) {
+                                                                //                 console.error('Error details:', status, error, xhr.responseText);
+                                                                //                 reject('Download failed: ' + error);
+                                                                //             },
+                                                                //             complete: function() {
+                                                                //                 $thisButton.prop('disabled', false).text('Download');
+                                                                //             }
+                                                                //         });
+                                                                //     });
+                                                                // }
+
+
+                                                                // async function downloadFolder(folderid, $thisButton, progressId) {
+                                                                //     return new Promise((resolve, reject) => {
+                                                                //         $.ajax({
+                                                                //             url: `/download-folder/${folderid}`,
+                                                                //             type: 'GET',
+                                                                //             dataType: 'json', // Expecting a JSON response
+                                                                //             // success: function(response) {
+                                                                //             //     console.log(response); // Debugging: log the response
+                                                                //             //     if (response.success && response.zipFilePath) {
+                                                                //             //         const zipFilePath = response.zipFilePath;
+
+                                                                //             //         // Create a temporary anchor for downloading the file
+                                                                //             //         const a = document.createElement('a');
+                                                                //             //         a.href = zipFilePath; // Use the correct file URL from the response
+                                                                //             //         a.download = zipFilePath.split('/').pop(); // Extract the file name from the URL
+                                                                //             //         document.body.appendChild(a);
+                                                                //             //         a.click(); // Trigger the download
+                                                                //             //         a.remove(); // Clean up
+
+                                                                //             //         resolve(); // Resolve the promise on successful download
+                                                                //             //     } else {
+                                                                //             //         reject('Download failed: Missing zip file path in response');
+                                                                //             //     }
+                                                                //             // },
+                                                                //             success: function(response) {
+                                                                //                 if (response.success && response.zipFilePath) {
+                                                                //                     const zipFilePath = response.zipFilePath;
+
+                                                                //                     // Try using window.location to trigger the download
+                                                                //                     window.location.href = zipFilePath;
+
+                                                                //                     resolve(); // Resolve the promise on successful download
+                                                                //                 } else {
+                                                                //                     reject('Download failed: Missing zip file path in response');
+                                                                //                 }
+                                                                //             },
+                                                                //             error: function(xhr, status, error) {
+                                                                //                 console.error('Error details:', status, error, xhr.responseText);
+                                                                //                 reject('Download failed: ' + error);
+                                                                //             },
+                                                                //             complete: function() {
+                                                                //                 $thisButton.prop('disabled', false).text('Download');
+                                                                //             }
+                                                                //         });
+                                                                //     });
+                                                                // }
+
+
+                                                                // async function downloadFolder(folderid, $thisButton, progressId) {
+                                                                //     return new Promise((resolve, reject) => {
+                                                                //         $.ajax({
+                                                                //             url: `/download-folder/${folderid}`,
+                                                                //             type: 'GET',
+                                                                //             dataType: 'json', // Expecting a JSON response
+                                                                //             success: function(response) {
+                                                                //                 if (response.success && response.zipFilePath) {
+                                                                //                     const zipFilePath = response.zipFilePath;
+
+                                                                //                     // Create a temporary anchor for downloading the file
+                                                                //                     const a = document.createElement('a');
+                                                                //                     a.href = zipFilePath; // Use the correct file URL from the response
+                                                                //                     a.download = zipFilePath.split('/').pop(); // Extract the file name from the URL
+                                                                //                     document.body.appendChild(a);
+                                                                //                     a.click(); // Trigger the download
+                                                                //                     a.remove(); // Clean up
+
+                                                                //                     resolve(); // Resolve the promise on successful download
+                                                                //                 } else {
+                                                                //                     reject('Download failed: Missing zip file path in response');
+                                                                //                 }
+                                                                //             },
+                                                                //             error: function(xhr, status, error) {
+                                                                //                 console.error('Error details:', status, error, xhr.responseText);
+                                                                //                 reject('Download failed: ' + error);
+                                                                //             },
+                                                                //             complete: function() {
+                                                                //                 $thisButton.prop('disabled', false).text('Download');
+                                                                //             }
+                                                                //         });
+                                                                //     });
+                                                                // }
+
+                                                                // async function downloadFolder(folderid, $thisButton, progressId) {
+                                                                //     return new Promise((resolve, reject) => {
+                                                                //         $.ajax({
+                                                                //             url: `/download-folder/${folderid}`,
+                                                                //             type: 'GET',
+                                                                //             dataType: 'json', // Expecting a JSON response
+                                                                //             success: function(response) {
+                                                                //                 if (response.success && response.zipFilePath) {
+                                                                //                     const zipFilePath = response.zipFilePath;
+                                                                //                     console.log(zipFilePath);
+
+                                                                //                     // Create a temporary anchor for downloading the file
+                                                                //                     const a = document.createElement('a');
+                                                                //                     a.href = zipFilePath; // Use the correct file URL from the response
+                                                                //                     a.download = zipFilePath.split('/').pop(); // Extract the file name from the URL
+                                                                //                     document.body.appendChild(a);
+                                                                //                     a.click(); // Trigger the download
+                                                                //                     a.remove(); // Clean up
+
+                                                                //                     resolve(); // Resolve the promise on successful download
+                                                                //                 } else {
+                                                                //                     reject('Download failed: Missing zip file path in response');
+                                                                //                 }
+                                                                //             },
+                                                                //             error: function(xhr, status, error) {
+                                                                //                 console.error('Error details:', status, error, xhr.responseText);
+                                                                //                 reject('Download failed: ' + error);
+                                                                //             },
+                                                                //             complete: function() {
+                                                                //                 $thisButton.prop('disabled', false).text('Download');
+                                                                //             }
+                                                                //         });
+                                                                //     });
+                                                                // }
+
+
+                                                                // async function downloadFolder(folderid, $thisButton, progressId) {
+                                                                //     return new Promise((resolve, reject) => {
+                                                                //         $.ajax({
+                                                                //             url: `/download-folder/${folderid}`,
+                                                                //             type: 'GET',
+                                                                //             dataType: 'json',
+                                                                //             success: function(response) {
+                                                                //                 if (response.success && response.zipFilePath) {
+                                                                //                     const zipFilePath = response.zipFilePath;
+                                                                //                     console.log(zipFilePath);
+
+                                                                //                     // Ensure URL is properly encoded
+                                                                //                     const encodedUrl = decodeURIComponent(zipFilePath); // Decoding in case URL was encoded
+                                                                //                     console.log(encodedUrl);
+
+
+                                                                //                     // Create a temporary anchor to download the file
+                                                                //                     const aa = document.createElement('a');
+                                                                //                     aa.href = encodedUrl;
+                                                                //                     aa.download = zipFilePath.split('/').pop(); // Extract the filename
+                                                                //                     document.body.appendChild(aa);
+                                                                //                     aa.click(); // Trigger the download
+                                                                //                     aa.remove(); // Clean up
+
+                                                                //                     resolve(); // Resolve the promise on successful download
+                                                                //                 } else {
+                                                                //                     reject('Download failed: Missing zip file path in response');
+                                                                //                 }
+                                                                //             },
+                                                                //             error: function(xhr, status, error) {
+                                                                //                 console.error('Error details:', status, error, xhr.responseText);
+                                                                //                 reject('Download failed: ' + error);
+                                                                //             },
+                                                                //             complete: function() {
+                                                                //                 $thisButton.prop('disabled', false).text('Download');
+                                                                //             }
+                                                                //         });
+                                                                //     });
+                                                                // }
+
+
+
+                                                                // async function downloadFolder(folderid, $thisButton, progressId) {
+                                                                //     return new Promise((resolve, reject) => {
+                                                                //         $.ajax({
+                                                                //             url: `/download-folder/${folderid}`,
+                                                                //             type: 'GET',
+                                                                //             dataType: 'json',
+                                                                //             success: function(response) {
+                                                                //                 if (response.success && response.zipFilePath) {
+                                                                //                     const zipFilePath = response.zipFilePath;
+                                                                //                     console.log(zipFilePath);
+
+                                                                //                     // // Create a temporary <a> tag to trigger the download
+                                                                //                     // const link = document.createElement('a');
+                                                                //                     // link.href = zipFilePath;  // URL of the ZIP file
+                                                                //                     // link.download = zipFilePath.split('/').pop();  // Extract file name for download
+                                                                //                     // link.click();  // Programmatically click the link to start the download
+                                                                //                 } else {
+                                                                //                     reject('Download failed: Missing zip file path in response');
+                                                                //                 }
+                                                                //             },
+                                                                //             // success: function(response) {
+                                                                //             //     if (response.success && response.zipFilePath) {
+                                                                //             //         const zipFilePath = response.zipFilePath;
+
+                                                                //             //         // Create a temporary <a> tag to trigger the download
+                                                                //             //         const link = document.createElement('a');
+                                                                //             //         link.href = zipFilePath;  // URL of the ZIP file
+                                                                //             //         link.download = zipFilePath.split('/').pop();  // Extract file name for download
+                                                                //             //         link.click();  // Programmatically click the link to start the download
+                                                                //             //     }
+                                                                //             // },
+                                                                //             error: function(xhr, status, error) {
+                                                                //                 console.error('Error details:', status, error, xhr.responseText);
+                                                                //                 reject('Download failed: ' + error);
+                                                                //             },
+                                                                //             complete: function() {
+                                                                //                 $thisButton.prop('disabled', false).text('Download');
+                                                                //             }
+                                                                //         });
+                                                                //     });
+                                                                // }
+
+
                                                                 async function downloadFolder(folderid, $thisButton, progressId) {
                                                                     return new Promise((resolve, reject) => {
+                                                                        // First AJAX Request: Get the zip file path
                                                                         $.ajax({
                                                                             url: `/download-folder/${folderid}`,
                                                                             type: 'GET',
-                                                                            xhrFields: {
-                                                                                responseType: 'blob'
-                                                                            },
-                                                                            success: function(response, status, xhr) {
-                                                                                const disposition = xhr.getResponseHeader('Content-Disposition');
-                                                                                if (disposition && disposition.indexOf('attachment') !== -1) {
-                                                                                    const filename = disposition.split('filename=')[1].replace(/"/g, '');
-                                                                                    const blob = new Blob([response], {
-                                                                                        type: 'application/zip'
-                                                                                    });
-                                                                                    const url = window.URL.createObjectURL(blob);
-                                                                                    const a = document.createElement('a');
-                                                                                    a.href = url;
-                                                                                    a.download = filename;
-                                                                                    document.body.appendChild(a);
-                                                                                    a.click();
-                                                                                    a.remove();
-                                                                                    window.URL.revokeObjectURL(url);
+                                                                            dataType: 'json', // Expecting JSON response
+                                                                            success: function(response) {
+                                                                                if (response.success && response.zipFilePath) {
+                                                                                    const zipFilePath = response.zipFilePath;
+                                                                                    console.log('Zip file path received:', zipFilePath);
+                                                                                    console.log(progressId);
+                                                                                    console.log("profess id aboce");
+                                                                                    // clearInterval(intervalId); // Stop simulated progress
+                                                                                    // updateProgressBar(progressId, 100, "Zipping Completed");
+                                                                                    $('#uploadSuccessCount').html("Download status");
+                                                                                    $(`#${progressId} .file_name`).text("Zipping Completed");
 
-                                                                                    resolve();
+
+                                                                                    $(`#${progressId} .done_tick`).show();
+                                                                                    $(`#${progressId} .progress_circle2`).hide();
+                                                                                    // $(`#${progressId} .file_name`).text("Zipping Completed");
+
+                                                                                    
+                                                                                    $.ajax({
+                                                                                        url: '/downloadZipSKY/' + zipFilePath,  // Call the controller with the zipFileName
+                                                                                        type: 'GET',
+                                                                                        xhrFields: {
+                                                                                            responseType: 'blob'  // Ensure the response is a Blob (binary data)
+                                                                                        },
+                                                                                        success: function(fileResponse) {
+                                                                                            // Create a temporary <a> element to trigger the download
+                                                                                            $(`#${progressId} .file_name`).text("Downloading Zip...");
+
+                                                                                            const a = document.createElement('a');
+                                                                                            const blob = new Blob([fileResponse], { type: 'application/zip' });
+                                                                                            const url = window.URL.createObjectURL(blob);
+
+                                                                                            // Set the download link
+                                                                                            a.href = url;
+                                                                                            a.download = zipFilePath;  // Use the zipFileName to set the file name
+
+                                                                                            // Append the anchor to the body and trigger the click
+                                                                                            document.body.appendChild(a);
+                                                                                            a.click();
+                                                                                            a.remove();
+
+                                                                                            // Clean up the object URL
+                                                                                            window.URL.revokeObjectURL(url);
+                                                                                            $(`#${progressId} .file_name`).text("Downloading Complete");
+
+
+                                                                                            console.log("Download started for the zip file.");
+                                                                                        },
+                                                                                        error: function(xhr, status, error) {
+                                                                                            console.error('Error during file download:', status, error, xhr.responseText);
+                                                                                        }
+                                                                                    });
+
                                                                                 } else {
-                                                                                    reject('Download failed: No file attachment found');
+                                                                                    reject('Download failed: Missing zip file path in response');
                                                                                 }
                                                                             },
                                                                             error: function(xhr, status, error) {
-                                                                                console.error('Error details:', status, error, xhr.responseText);
-                                                                                reject('Download failed: ' + error);
+                                                                                console.error('Error details during zip file path retrieval:', status, error, xhr.responseText);
+                                                                                reject('Error retrieving zip file path: ' + error);
                                                                             },
                                                                             complete: function() {
                                                                                 $thisButton.prop('disabled', false).text('Download');
@@ -2324,6 +2709,16 @@ document.addEventListener('DOMContentLoaded', function () {
                                                                         });
                                                                     });
                                                                 }
+
+
+
+
+
+
+
+
+
+
 
                                                                 function updateProgressBar(progressId, progress, message) {
                                                                     const circle = $(`#${progressId} .fill`);
