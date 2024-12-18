@@ -185,8 +185,26 @@
                                     </div>
 
                                 </div>
+                                <div class="cpllape_btn">
+                                    <h2>More information</h2>
+                                    <span class="line"></span>
+                                    <a class="show_content">
+                                        <svg width="22" height="22" viewBox="0 0 22 22" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                            <g clip-path="url(#clip0_676_11)">
+                                                <path d="M11 21C5.477 21 1 16.523 1 11C1 5.477 5.477 1 11 1C16.523 1 21 5.477 21 11C21 16.523 16.523 21 11 21Z" stroke="#D5D7DA" stroke-linejoin="round" />
+                                                <path d="M6.5 9.5L11 14L15.5 9.5" stroke="#D5D7DA" stroke-linecap="round" stroke-linejoin="round" />
+                                            </g>
+                                            <defs>
+                                                <clipPath id="clip0_676_11">
+                                                    <rect width="22" height="22" fill="white" transform="matrix(1 0 0 -1 0 22)" />
+                                                </clipPath>
+                                            </defs>
+                                        </svg>
+                                    </a>
 
-                                <div class="contract_detail_bottom">
+                                </div>
+
+                                <div class="contract_detail_bottom" id="contract_detail_bottom">
                                     <div class="registration_documents">
                                         <h2>Registration Documents</h2>
                                         <div class="registration_documents_wrap">
@@ -355,161 +373,161 @@
                                 <div class="addcustomer_overlay_fix"></div>
                                 <div class="addcustomer_fix">
                                     <h2 class="addcustomer_title">Upload Contract</h2>
-                                    <div class="customer_wrap">
+                                    <div class="customer_wrap customer_details">
                                         <form id="customerContractForm" action="{{ route('storecustomercontract') }}" method="POST" enctype="multipart/form-data" class="upload-form">
-                                            @csrf                                         
-                                              
-                                                    <input type="hidden" name="is_drafted" id="is_drafted" value="0">
-                                                    <div class="file-area">
-                                                        <input type="file" class="dragfile" id="contractfile" name="file" accept=".pdf,.doc,.docx" required >
+                                            @csrf
 
-                                                        <div class="file-dummy">                                                          
-                                                            <div class="default">
-                                                                <span class="upload_icon">
-                                                                    <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                                                        <path fill-rule="evenodd" clip-rule="evenodd" d="M8.9974 0.041504C9.08764 0.0414466 9.17682 0.0609324 9.25882 0.0986218C9.34082 0.136311 9.41368 0.19131 9.47239 0.259837L11.9724 3.1765C12.0802 3.30248 12.1336 3.46615 12.1208 3.63149C12.108 3.79683 12.03 3.95032 11.9041 4.05817C11.7781 4.16603 11.6144 4.21942 11.4491 4.2066C11.2837 4.19379 11.1303 4.11581 11.0224 3.98984L9.6224 2.3565V11.4998C9.6224 11.6656 9.55655 11.8246 9.43934 11.9418C9.32213 12.059 9.16316 12.1248 8.9974 12.1248C8.83164 12.1248 8.67266 12.059 8.55545 11.9418C8.43824 11.8246 8.3724 11.6656 8.3724 11.4998V2.35567L6.9724 3.98984C6.91899 4.05222 6.85382 4.10346 6.78061 4.14066C6.7074 4.17785 6.62758 4.20026 6.54571 4.2066C6.46384 4.21295 6.38153 4.20311 6.30346 4.17764C6.22539 4.15217 6.15311 4.11157 6.09073 4.05817C6.02835 4.00477 5.9771 3.9396 5.93991 3.86639C5.90272 3.79318 5.88031 3.71336 5.87396 3.63149C5.86762 3.54962 5.87746 3.4673 5.90293 3.38923C5.9284 3.31117 5.96899 3.23888 6.0224 3.1765L8.5224 0.259837C8.58111 0.19131 8.65398 0.136311 8.73597 0.0986218C8.81797 0.0609324 8.90715 0.0414466 8.9974 0.041504ZM4.8274 5.8765C4.99316 5.87562 5.15248 5.94062 5.27031 6.05721C5.38815 6.17379 5.45484 6.33241 5.45573 6.49817C5.45661 6.66393 5.39161 6.82325 5.27503 6.94109C5.15844 7.05892 4.99982 7.12562 4.83406 7.1265C3.92323 7.1315 3.2774 7.15484 2.78656 7.24484C2.3149 7.33234 2.04073 7.4715 1.83823 7.674C1.6074 7.90484 1.4574 8.229 1.3749 8.84067C1.29073 9.46984 1.28906 10.304 1.28906 11.4998V12.3332C1.28906 13.5298 1.29073 14.364 1.3749 14.9932C1.4574 15.6048 1.60823 15.9282 1.83823 16.1598C2.06906 16.3898 2.3924 16.5398 3.0049 16.6223C3.63323 16.7073 4.46823 16.7082 5.66406 16.7082H12.3307C13.5266 16.7082 14.3607 16.7073 14.9907 16.6223C15.6024 16.5398 15.9257 16.3898 16.1566 16.159C16.3874 15.9282 16.5374 15.6048 16.6199 14.9932C16.7041 14.364 16.7057 13.5298 16.7057 12.3332V11.4998C16.7057 10.304 16.7041 9.46984 16.6199 8.83984C16.5374 8.229 16.3866 7.90484 16.1566 7.674C15.9532 7.4715 15.6799 7.33234 15.2082 7.24484C14.7174 7.15484 14.0716 7.1315 13.1607 7.1265C13.0787 7.12607 12.9975 7.10947 12.9218 7.07765C12.8461 7.04584 12.7775 6.99943 12.7198 6.94109C12.662 6.88274 12.6164 6.8136 12.5854 6.7376C12.5544 6.66161 12.5386 6.58025 12.5391 6.49817C12.5395 6.41609 12.5561 6.33491 12.5879 6.25925C12.6197 6.18359 12.6661 6.11493 12.7245 6.05721C12.7828 5.99948 12.852 5.95381 12.928 5.9228C13.004 5.8918 13.0853 5.87607 13.1674 5.8765C14.0691 5.8815 14.8199 5.90317 15.4341 6.01567C16.0657 6.13234 16.6032 6.35317 17.0407 6.79067C17.5424 7.2915 17.7574 7.924 17.8591 8.674C17.9557 9.39567 17.9557 10.3148 17.9557 11.454V12.379C17.9557 13.519 17.9557 14.4373 17.8591 15.1598C17.7574 15.9098 17.5424 16.5415 17.0407 17.0432C16.5391 17.5448 15.9074 17.7598 15.1574 17.8615C14.4349 17.9582 13.5157 17.9582 12.3766 17.9582H5.61823C4.47906 17.9582 3.5599 17.9582 2.8374 17.8615C2.0874 17.7607 1.45573 17.5448 0.954063 17.0432C0.452396 16.5415 0.237396 15.9098 0.136562 15.1598C0.0390625 14.4373 0.0390625 13.5182 0.0390625 12.379V11.454C0.0390625 10.3148 0.0390625 9.39567 0.136562 8.67317C0.236562 7.92317 0.453229 7.2915 0.954063 6.78984C1.39156 6.35317 1.92906 6.1315 2.56073 6.01567C3.1749 5.90317 3.92573 5.8815 4.8274 5.8765Z" fill="#ABABAB" />
-                                                                    </svg>
-                                                                    Upload a file
-                                                                </span>
-                                                                <span class="fille">Choose File</span>
-                                                            </div>
-                                                        </div>                                                        
+                                            <input type="hidden" name="is_drafted" id="is_drafted" value="0">
+                                            <div class="file-area">
+                                                <input type="file" class="dragfile" id="contractfile" name="file" accept=".pdf,.doc,.docx" required>
+
+                                                <div class="file-dummy">
+                                                    <div class="default">
+                                                        <span class="upload_icon">
+                                                            <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                                <path fill-rule="evenodd" clip-rule="evenodd" d="M8.9974 0.041504C9.08764 0.0414466 9.17682 0.0609324 9.25882 0.0986218C9.34082 0.136311 9.41368 0.19131 9.47239 0.259837L11.9724 3.1765C12.0802 3.30248 12.1336 3.46615 12.1208 3.63149C12.108 3.79683 12.03 3.95032 11.9041 4.05817C11.7781 4.16603 11.6144 4.21942 11.4491 4.2066C11.2837 4.19379 11.1303 4.11581 11.0224 3.98984L9.6224 2.3565V11.4998C9.6224 11.6656 9.55655 11.8246 9.43934 11.9418C9.32213 12.059 9.16316 12.1248 8.9974 12.1248C8.83164 12.1248 8.67266 12.059 8.55545 11.9418C8.43824 11.8246 8.3724 11.6656 8.3724 11.4998V2.35567L6.9724 3.98984C6.91899 4.05222 6.85382 4.10346 6.78061 4.14066C6.7074 4.17785 6.62758 4.20026 6.54571 4.2066C6.46384 4.21295 6.38153 4.20311 6.30346 4.17764C6.22539 4.15217 6.15311 4.11157 6.09073 4.05817C6.02835 4.00477 5.9771 3.9396 5.93991 3.86639C5.90272 3.79318 5.88031 3.71336 5.87396 3.63149C5.86762 3.54962 5.87746 3.4673 5.90293 3.38923C5.9284 3.31117 5.96899 3.23888 6.0224 3.1765L8.5224 0.259837C8.58111 0.19131 8.65398 0.136311 8.73597 0.0986218C8.81797 0.0609324 8.90715 0.0414466 8.9974 0.041504ZM4.8274 5.8765C4.99316 5.87562 5.15248 5.94062 5.27031 6.05721C5.38815 6.17379 5.45484 6.33241 5.45573 6.49817C5.45661 6.66393 5.39161 6.82325 5.27503 6.94109C5.15844 7.05892 4.99982 7.12562 4.83406 7.1265C3.92323 7.1315 3.2774 7.15484 2.78656 7.24484C2.3149 7.33234 2.04073 7.4715 1.83823 7.674C1.6074 7.90484 1.4574 8.229 1.3749 8.84067C1.29073 9.46984 1.28906 10.304 1.28906 11.4998V12.3332C1.28906 13.5298 1.29073 14.364 1.3749 14.9932C1.4574 15.6048 1.60823 15.9282 1.83823 16.1598C2.06906 16.3898 2.3924 16.5398 3.0049 16.6223C3.63323 16.7073 4.46823 16.7082 5.66406 16.7082H12.3307C13.5266 16.7082 14.3607 16.7073 14.9907 16.6223C15.6024 16.5398 15.9257 16.3898 16.1566 16.159C16.3874 15.9282 16.5374 15.6048 16.6199 14.9932C16.7041 14.364 16.7057 13.5298 16.7057 12.3332V11.4998C16.7057 10.304 16.7041 9.46984 16.6199 8.83984C16.5374 8.229 16.3866 7.90484 16.1566 7.674C15.9532 7.4715 15.6799 7.33234 15.2082 7.24484C14.7174 7.15484 14.0716 7.1315 13.1607 7.1265C13.0787 7.12607 12.9975 7.10947 12.9218 7.07765C12.8461 7.04584 12.7775 6.99943 12.7198 6.94109C12.662 6.88274 12.6164 6.8136 12.5854 6.7376C12.5544 6.66161 12.5386 6.58025 12.5391 6.49817C12.5395 6.41609 12.5561 6.33491 12.5879 6.25925C12.6197 6.18359 12.6661 6.11493 12.7245 6.05721C12.7828 5.99948 12.852 5.95381 12.928 5.9228C13.004 5.8918 13.0853 5.87607 13.1674 5.8765C14.0691 5.8815 14.8199 5.90317 15.4341 6.01567C16.0657 6.13234 16.6032 6.35317 17.0407 6.79067C17.5424 7.2915 17.7574 7.924 17.8591 8.674C17.9557 9.39567 17.9557 10.3148 17.9557 11.454V12.379C17.9557 13.519 17.9557 14.4373 17.8591 15.1598C17.7574 15.9098 17.5424 16.5415 17.0407 17.0432C16.5391 17.5448 15.9074 17.7598 15.1574 17.8615C14.4349 17.9582 13.5157 17.9582 12.3766 17.9582H5.61823C4.47906 17.9582 3.5599 17.9582 2.8374 17.8615C2.0874 17.7607 1.45573 17.5448 0.954063 17.0432C0.452396 16.5415 0.237396 15.9098 0.136562 15.1598C0.0390625 14.4373 0.0390625 13.5182 0.0390625 12.379V11.454C0.0390625 10.3148 0.0390625 9.39567 0.136562 8.67317C0.236562 7.92317 0.453229 7.2915 0.954063 6.78984C1.39156 6.35317 1.92906 6.1315 2.56073 6.01567C3.1749 5.90317 3.92573 5.8815 4.8274 5.8765Z" fill="#ABABAB" />
+                                                            </svg>
+                                                            Upload a file
+                                                        </span>
+                                                        <span class="fille">Choose File</span>
                                                     </div>
-                                        
-                                                    <div class="gropu_form">
-                                                        <label for="fname">Contract name <span class="red_star">*</span></label>
-                                                        <input placeholder="Type" required type="text" id="contract_name" name="contract_name" pattern="^[A-Za-z\s]+$"
-                                                            title="Only alphabets and spaces are allowed">
-                                                        <input required type="hidden" id="contracttype" name="contracttype" value="customer contract">
-                                                        <input required type="hidden" id="customer_id" name="customer_id" value="{{$customerrecord->id}}">
-                                                    </div>
-
-                                                    <div class="gropu_form">
-                                                        <label for="con_type">Contract type <span class="red_star">*</span></label>
-                                                        <select id="contract_type" name="contract_type" required>
-                                                            <option value="" disabled Selected>select</option>
-                                                            <option value="Non-disclosure Agreement (NDA)">Non-disclosure Agreement (NDA)</option>
-                                                            <option value="Service Agreement">Service Agreement</option>
-                                                            <option value="Employment Contract">Employment Contract</option>
-                                                            <option value="Partnership Agreement">Partnership Agreement</option>
-                                                            <option value="Vendor Agreement">Vendor Agreement</option>
-                                                            <option value="Purchase Agreement">Purchase Agreement</option>
-                                                            <option value="Lease Agreement">Lease Agreement</option>
-                                                            <option value="Licensing Agreement">Licensing Agreement</option>
-                                                            <option value="Consultancy Agreement">Consultancy Agreement</option>
-                                                            <option value="Master Service Agreement (MSA)">Master Service Agreement (MSA)</option>
-                                                            <option value="Sales Agreement">Sales Agreement</option>
-                                                            <option value="Joint Venture Agreement">Joint Venture Agreement</option>
-                                                            <option value="Distribution Agreement">Distribution Agreement</option>
-                                                            <option value="Subcontractor Agreement">Subcontractor Agreement</option>
-                                                            <option value="Termination Agreement">Termination Agreement</option>
-                                                            <option value="Software License Agreement">Software License Agreement</option>
-                                                            <option value="Supply Agreement">Supply Agreement</option>
-                                                        </select>
-                                                    </div>
-
-                                                    <div class="gropu_form">
-                                                        <label for="Division">Division<span class="red_star">*</span></label>
-                                                        <select id="divison" name="divison" required>
-                                                            <option value="" disabled Selected>select</option>
-                                                            <option value="Human Resources">Human Resources</option>
-                                                            <option value="Finance">Finance</option>
-                                                            <option value="Legal">Legal</option>
-                                                            <option value="Operations">Operations</option>
-                                                            <option value="IT/Technology">IT/Technology</option>
-                                                            <option value="Sales & Marketing">Sales & Marketing</option>
-                                                            <option value="Procurement">Procurement</option>
-                                                            <option value="Administration">Administration</option>
-                                                            <option value="Research & Development">Research & Development</option>
-                                                            <option value="Customer Support">Customer Support</option>
-                                                            <option value="Compliance">Compliance</option>
-                                                            <option value="Risk Management">Risk Management</option>
-                                                            <option value="Logistics">Logistics</option>
-                                                            <option value="Corporate Affairs">Corporate Affairs</option>
-                                                            <option value="Public Relations">Public Relations</option>
-                                                        </select>
-                                                    </div>
-
-                                                    <div class="gropu_form">
-                                                        <label for="fname">Vendor name <span class="red_star">*</span></label>
-                                                        <input placeholder="Type" type="text" required id="vendor_name" name="vendor_name" pattern="^[A-Za-z\s]+$"
-                                                            title="Only alphabets and spaces are allowed">
-                                                    </div>
-
-
-                                                    <div class="gropu_form">
-                                                        <label for="les">Legal entity status <span class="red_star">*</span></label>
-                                                        <select id="legal_entity_status" name="legal_entity_status" required>
-                                                            <option value="" disabled Selected>select</option>
-                                                            <option value="Sole Proprietorship">Sole Proprietorship</option>
-                                                            <option value="Partnership">Partnership</option>
-                                                            <option value="Limited Liability Company (LLC)">Limited Liability Company (LLC)</option>
-                                                            <option value="Private Limited Company (Pvt Ltd)">Private Limited Company (Pvt Ltd)</option>
-                                                            <option value="Public Limited Company (Ltd)">Public Limited Company (Ltd)</option>
-                                                            <option value="Corporation">Corporation</option>
-                                                            <option value="Non-Profit Organization (NGO)">Non-Profit Organization (NGO)</option>
-                                                            <option value="Trust">Trust</option>
-                                                            <option value="Government Entity">Government Entity</option>
-                                                            <option value="Joint Venture">Joint Venture</option>
-                                                            <option value="Association">Association</option>
-                                                            <option value="Cooperative Society">Cooperative Society</option>
-                                                        </select>
-                                                    </div>
-
-                                                    <div class="gropu_form">
-                                                        <label for="start">Date of commencement <span class="red_star">*</span></label>
-                                                        <input type="date" id="start" name="startdate" required />
-                                                    </div>
-
-
-                                                    <div class="gropu_form">
-                                                        <label for="start">Date of expiry <span class="red_star">*</span></label>
-                                                        <input type="date" id="start" name="startend" required />
-                                                    </div>
-
-                                                    <div class="gropu_form">
-                                                        <label for="fname">Contract Value <span class="red_star">*</span></label>
-                                                        <input placeholder="Type" required type="text" id="contract_value" pattern="^\d+(\.\d+)?$" title="Please enter a valid value" name="contract_value">
-                                                    </div>
-
-                                                    <div class="gropu_form">
-                                                        <label for="ss">Signing Status <span class="red_star">*</span></label>
-                                                        <select id="signing_status" name="signing_status" required>
-                                                            <option value="" disabled Selected>select</option>
-                                                            <option value="Draft">Draft</option>
-                                                            <option value="Pending Signature">Pending Signature</option>
-                                                            <option value="Signed">Signed</option>
-                                                            <option value="Signed with Amendments">Signed with Amendments</option>
-                                                            <option value="Partially Signed">Partially Signed</option>
-                                                            <option value="Awaiting Counterparty Signature">Awaiting Counterparty Signature</option>
-                                                            <option value="Rejected">Rejected</option>
-                                                            <option value="Expired">Expired</option>
-                                                            <option value="Revoked">Revoked</option>
-                                                            <option value="In Review">In Review</option>
-                                                            <option value="Terminated">Terminated</option>
-                                                        </select>
-                                                    </div>
-
-                                                    <div class="gropu_form">
-                                                        <label for="renewal_terms">Renewal Terms <span class="red_star">*</span></label>
-                                                        <textarea name="renewal_terms" style="height: 58px;" required></textarea>
-                                                    </div>
-
-                                                    <div class="gropu_form">
-                                                        <label for="payment_terms">Payment Terms <span class="red_star">*</span></label>
-                                                        <textarea name="payment_terms" style="height: 58px;" required></textarea>
-                                                    </div>
-
-                                                    <div class="gropu_form">
-                                                        <label for="fee_escalation_clause">Fee Escalation Clause <span class="red_star">*</span></label>
-                                                        <textarea name="fee_escalation_clause" style="height: 58px;" required></textarea>
-                                                    </div>
-
-
-                                                <div class="root_btn btn_draft">
-                                                    <button type="button" id="draftButton">Save as Draft</button>
-                                                    <button class="btn" id="submitButton" type="submit">Upload</button>
                                                 </div>
+                                            </div>
+
+                                            <div class="gropu_form">
+                                                <label for="fname">Contract name <span class="red_star">*</span></label>
+                                                <input placeholder="Type" required type="text" id="contract_name" name="contract_name" pattern="^[A-Za-z\s]+$"
+                                                    title="Only alphabets and spaces are allowed">
+                                                <input required type="hidden" id="contracttype" name="contracttype" value="customer contract">
+                                                <input required type="hidden" id="customer_id" name="customer_id" value="{{$customerrecord->id}}">
+                                            </div>
+
+                                            <div class="gropu_form">
+                                                <label for="con_type">Contract type <span class="red_star">*</span></label>
+                                                <select id="contract_type" name="contract_type" required>
+                                                    <option value="" disabled Selected>select</option>
+                                                    <option value="Non-disclosure Agreement (NDA)">Non-disclosure Agreement (NDA)</option>
+                                                    <option value="Service Agreement">Service Agreement</option>
+                                                    <option value="Employment Contract">Employment Contract</option>
+                                                    <option value="Partnership Agreement">Partnership Agreement</option>
+                                                    <option value="Vendor Agreement">Vendor Agreement</option>
+                                                    <option value="Purchase Agreement">Purchase Agreement</option>
+                                                    <option value="Lease Agreement">Lease Agreement</option>
+                                                    <option value="Licensing Agreement">Licensing Agreement</option>
+                                                    <option value="Consultancy Agreement">Consultancy Agreement</option>
+                                                    <option value="Master Service Agreement (MSA)">Master Service Agreement (MSA)</option>
+                                                    <option value="Sales Agreement">Sales Agreement</option>
+                                                    <option value="Joint Venture Agreement">Joint Venture Agreement</option>
+                                                    <option value="Distribution Agreement">Distribution Agreement</option>
+                                                    <option value="Subcontractor Agreement">Subcontractor Agreement</option>
+                                                    <option value="Termination Agreement">Termination Agreement</option>
+                                                    <option value="Software License Agreement">Software License Agreement</option>
+                                                    <option value="Supply Agreement">Supply Agreement</option>
+                                                </select>
+                                            </div>
+
+                                            <div class="gropu_form">
+                                                <label for="Division">Division<span class="red_star">*</span></label>
+                                                <select id="divison" name="divison" required>
+                                                    <option value="" disabled Selected>select</option>
+                                                    <option value="Human Resources">Human Resources</option>
+                                                    <option value="Finance">Finance</option>
+                                                    <option value="Legal">Legal</option>
+                                                    <option value="Operations">Operations</option>
+                                                    <option value="IT/Technology">IT/Technology</option>
+                                                    <option value="Sales & Marketing">Sales & Marketing</option>
+                                                    <option value="Procurement">Procurement</option>
+                                                    <option value="Administration">Administration</option>
+                                                    <option value="Research & Development">Research & Development</option>
+                                                    <option value="Customer Support">Customer Support</option>
+                                                    <option value="Compliance">Compliance</option>
+                                                    <option value="Risk Management">Risk Management</option>
+                                                    <option value="Logistics">Logistics</option>
+                                                    <option value="Corporate Affairs">Corporate Affairs</option>
+                                                    <option value="Public Relations">Public Relations</option>
+                                                </select>
+                                            </div>
+
+                                            <div class="gropu_form">
+                                                <label for="fname">Vendor name <span class="red_star">*</span></label>
+                                                <input placeholder="Type" type="text" required id="vendor_name" name="vendor_name" pattern="^[A-Za-z\s]+$"
+                                                    title="Only alphabets and spaces are allowed">
+                                            </div>
+
+
+                                            <div class="gropu_form">
+                                                <label for="les">Legal entity status <span class="red_star">*</span></label>
+                                                <select id="legal_entity_status" name="legal_entity_status" required>
+                                                    <option value="" disabled Selected>select</option>
+                                                    <option value="Sole Proprietorship">Sole Proprietorship</option>
+                                                    <option value="Partnership">Partnership</option>
+                                                    <option value="Limited Liability Company (LLC)">Limited Liability Company (LLC)</option>
+                                                    <option value="Private Limited Company (Pvt Ltd)">Private Limited Company (Pvt Ltd)</option>
+                                                    <option value="Public Limited Company (Ltd)">Public Limited Company (Ltd)</option>
+                                                    <option value="Corporation">Corporation</option>
+                                                    <option value="Non-Profit Organization (NGO)">Non-Profit Organization (NGO)</option>
+                                                    <option value="Trust">Trust</option>
+                                                    <option value="Government Entity">Government Entity</option>
+                                                    <option value="Joint Venture">Joint Venture</option>
+                                                    <option value="Association">Association</option>
+                                                    <option value="Cooperative Society">Cooperative Society</option>
+                                                </select>
+                                            </div>
+
+                                            <div class="gropu_form">
+                                                <label for="start">Date of commencement <span class="red_star">*</span></label>
+                                                <input type="date" id="start" name="startdate" required />
+                                            </div>
+
+
+                                            <div class="gropu_form">
+                                                <label for="start">Date of expiry <span class="red_star">*</span></label>
+                                                <input type="date" id="start" name="startend" required />
+                                            </div>
+
+                                            <div class="gropu_form">
+                                                <label for="fname">Contract Value <span class="red_star">*</span></label>
+                                                <input placeholder="Type" required type="text" id="contract_value" pattern="^\d+(\.\d+)?$" title="Please enter a valid value" name="contract_value">
+                                            </div>
+
+                                            <div class="gropu_form">
+                                                <label for="ss">Signing Status <span class="red_star">*</span></label>
+                                                <select id="signing_status" name="signing_status" required>
+                                                    <option value="" disabled Selected>select</option>
+                                                    <option value="Draft">Draft</option>
+                                                    <option value="Pending Signature">Pending Signature</option>
+                                                    <option value="Signed">Signed</option>
+                                                    <option value="Signed with Amendments">Signed with Amendments</option>
+                                                    <option value="Partially Signed">Partially Signed</option>
+                                                    <option value="Awaiting Counterparty Signature">Awaiting Counterparty Signature</option>
+                                                    <option value="Rejected">Rejected</option>
+                                                    <option value="Expired">Expired</option>
+                                                    <option value="Revoked">Revoked</option>
+                                                    <option value="In Review">In Review</option>
+                                                    <option value="Terminated">Terminated</option>
+                                                </select>
+                                            </div>
+
+                                            <div class="gropu_form">
+                                                <label for="renewal_terms">Renewal Terms <span class="red_star">*</span></label>
+                                                <textarea name="renewal_terms" style="height: 58px;" required></textarea>
+                                            </div>
+
+                                            <div class="gropu_form">
+                                                <label for="payment_terms">Payment Terms <span class="red_star">*</span></label>
+                                                <textarea name="payment_terms" style="height: 58px;" required></textarea>
+                                            </div>
+
+                                            <div class="gropu_form">
+                                                <label for="fee_escalation_clause">Fee Escalation Clause <span class="red_star">*</span></label>
+                                                <textarea name="fee_escalation_clause" style="height: 58px;" required></textarea>
+                                            </div>
+
+
+                                            <div class="root_btn btn_draft">
+                                                <button type="button" id="draftButton">Save as Draft</button>
+                                                <button class="btn" id="submitButton" type="submit">Upload</button>
+                                            </div>
 
 
                                         </form>
@@ -685,7 +703,7 @@
 
                                                 Renew </a>
 
-                                            <a class="dropdown-itemm Addend">
+                                            <a class="dropdown-itemm Addend" id="Addend">
                                                 <svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
                                                     <path d="M1.68029 10.5673C1.70709 10.3261 1.7205 10.2055 1.75699 10.0928C1.78936 9.99277 1.83511 9.89759 1.89298 9.80983C1.9582 9.71092 2.04401 9.62512 2.21561 9.45351L9.91929 1.74985C10.5636 1.10552 11.6083 1.10552 12.2526 1.74985C12.897 2.39418 12.897 3.43885 12.2526 4.08319L4.54894 11.7868C4.37734 11.9585 4.29154 12.0443 4.19262 12.1095C4.10487 12.1673 4.00969 12.2131 3.90968 12.2455C3.79696 12.282 3.67635 12.2954 3.43515 12.3222L1.46094 12.5415L1.68029 10.5673Z" stroke="#414651" stroke-width="1.66667" stroke-linecap="round" stroke-linejoin="round" />
                                                 </svg> Addend </a>
@@ -705,6 +723,7 @@
 
                                 </tbody>
                                 </table>
+
 
                                                                  <!-- notify model start -->
 
@@ -855,6 +874,60 @@ $(document).on('click', '.notify', function() {
 </script>
 
 
+                                <!-- Addend sidebar start -->
+                                <div class="addend_overlay_fix"></div>
+                                <div class="addendcustomer_fix">
+                                    <h2 class="addcustomer_title">Addend</h2>
+                                    <div class="customer_wrap">
+
+                                        <form id="" action="" method="POST" enctype="multipart/form-data" class="upload-form">
+                                            <div class="gropu_form name_svg_top">
+                                                <svg width="18" height="22" viewBox="0 0 18 22" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                    <path d="M8.41927 17.4167H9.58594V13.9167H13.0859V12.75H9.58594V9.25H8.41927V12.75H4.91927V13.9167H8.41927V17.4167ZM2.72127 21.5C2.18383 21.5 1.73544 21.3203 1.3761 20.961C1.01677 20.6017 0.836715 20.1533 0.835938 19.6158V2.38417C0.835938 1.8475 1.01599 1.3995 1.3761 1.04017C1.73622 0.680833 2.1846 0.500778 2.72127 0.5H11.9193L17.1693 5.75V19.6158C17.1693 20.1525 16.9896 20.6009 16.6303 20.961C16.2709 21.3211 15.8222 21.5008 15.2839 21.5H2.72127ZM11.3359 6.33333H16.0026L11.3359 1.66667V6.33333Z" fill="#4D4D4D" />
+                                                </svg>
+                                                <h2>OrangeXT Design Contract - January</h2>
+                                            </div>
+
+
+                                            <div class="gropu_form">
+                                                <label for="con_type">Area of Addendum </label>
+                                                <select id="Addendum_type" name="Addendum_type" required>
+                                                    <option value="" disabled Selected>select</option>
+                                                    <option value="Payment Terms Addendum">Payment Terms Addendum</option>
+                                                    <option value="Renewal Terms Addendum">Renewal Terms Addendum</option>
+                                                    <option value="Fee Exclusion Matrix Addendum">Fee Exclusion Matrix Addendum</option>
+                                                </select>
+                                            </div>
+
+                                            <div class="gropu_form">
+                                                <label for="con_term">Current Renewal Terms </label>
+                                                <div class="renui_term">
+                                                    <p>
+                                                        Lorem ipsum dolor sit amet
+                                                        consectetur adipiscing elit, sed do eiusmod tempor
+                                                        incididunt ut labore et dolore magna aliqua. Ut enim ad minim
+                                                        veniam, quis nostrud exercitation
+                                                        Lorem ipsum dolor sit amet
+                                                        consectetur adipiscing elit, sed do eiusmod
+                                                        Lorem ipsum dolor sit amet
+                                                    </p>
+                                                </div>
+                                            </div>
+
+                                            <div class="gropu_form">
+                                                <label for="con_add_term">Add to Renewal Terms </label>
+                                                <textarea name="con_add_term" style="height: 150px;"></textarea>
+                                            </div>
+                                            <div class="root_btn btn_draft">
+                                                <button class="btn" id="addcontarctt" type="submit">Add to Exisitng Contract</button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+
+                                <!-- Addend sidebar end -->
+
+
                                 <script>
                                     $(document).ready(function() {
                                         // Handle "Select All" checkbox click
@@ -929,10 +1002,12 @@ $(document).on('click', '.notify', function() {
         padding: 10px 30px;
         margin: auto;
     }
+
     .bolddata {
     font-weight: 900;
     text-transform: capitalize;
     margin: 5px;
 }
+
 </style>
 @endsection

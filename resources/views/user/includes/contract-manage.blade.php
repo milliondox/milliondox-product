@@ -310,7 +310,18 @@ $(document).ready(function() {
       $('.addcustomer_overlay_fix').removeClass('active');
     });
 
+    $('#Addend').on('click', function() {
+      $('.addendcustomer_fix').addClass('active');
+      $('.addend_overlay_fix').addClass('active');
+    });
+
+    $('.addend_overlay_fix').on('click', function() {
+      $('.addendcustomer_fix').removeClass('active');
+      $('.addend_overlay_fix').removeClass('active');
+    });
+
   });
+  
 
   $(document).on('click', function (event) {
   // Check if the click is outside of .opload and .opload_wrap_opt
@@ -344,6 +355,21 @@ document.querySelectorAll('.emppicd').forEach(function(input) {
             };
             reader.readAsDataURL(file);
         }
+    });
+});
+
+</script>
+
+<script>
+  $(document).ready(function() {
+
+    // Toggle behavior on button click
+    $(".show_content").click(function() {
+        // Slide up or down the div       
+        $("#contract_detail_bottom").slideToggle();
+
+        // Toggle the active class on the button
+        $(this).toggleClass("active");
     });
 });
 
