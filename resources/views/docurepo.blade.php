@@ -2692,11 +2692,15 @@ document.addEventListener('DOMContentLoaded', function () {
                                                                                         },
                                                                                         error: function(xhr, status, error) {
                                                                                             console.error('Error during file download:', status, error, xhr.responseText);
+                                                                                            $(`#${progressId} .file_name`).text("Error : Downloading Failed");
+
                                                                                         }
                                                                                     });
 
                                                                                 } else {
                                                                                     reject('Download failed: Missing zip file path in response');
+                                                                                    $(`#${progressId} .file_name`).text("Error : Downloading Failed");
+
                                                                                 }
                                                                             },
                                                                             error: function(xhr, status, error) {

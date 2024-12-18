@@ -197,6 +197,8 @@ use App\Models\Feedback;
 use App\Models\CustomerContract;
 
 use ZipArchive;
+use RecursiveIteratorIterator;
+use RecursiveDirectoryIterator;
 
 
 
@@ -25326,7 +25328,12 @@ public function downloadFolder($folder_id)
         ->get();
 
     // Create a temporary ZIP file
-    $zipFileName = $folderName . '.zip';
+    // $zipFileName = $folderName . '.zip';
+    $userId = Auth::id();
+    $currentDate = now()->format('d-M-Y'); // e.g., '18-Dec-2024'
+    $zipFileName = $folderName . "_User{$userId}_{$currentDate}.zip";
+
+
     $zipFilePath = storage_path('app/public/' . $zipFileName);
     $zip = new ZipArchive;
 
@@ -25363,55 +25370,15 @@ public function downloadFolder($folder_id)
         }
         $zip->close();
 
-        // Return the ZIP file as a response
-        // return response()->json([
-        //     'success' => "Zip file created Successfully",
-        //     'zipFilePath' => $zipFilePath
-        // ]);
-        // $zipFilePath = asset('storage/' . str_replace('storage/app/public/', '', $zipFilePath)); // Generate a public URL
-        // // return response()->json([
-        // //     'success' => "Zip file created Successfully",
-        // //     'zipFilePath' => $zipFilePath,
-        // // ]);
-
-
-        // // $zipFileUrl = asset('storage/' . basename($zipFilePath)); // `basename()` will extract the file name
-
-        // return response()->json([
-        //     'success' => "Zip file created Successfully",
-        //     'zipFilePath' => $zipFilePath,
-        // ]);
-
-
-        // Generate the public URL
-        // $zipFileUrl = asset('storage/app/public/'.$zipFilePath); // Using basename to extract file name
-
-        // return response()->json([
-        //     'success' => "Zip file created Successfully",
-        //     'zipFilePath' => $zipFilePath,
-        // ]);
-
-
-        // Ensure the file exists in the public storage folder
-        // dd($zipFilePath);
-        // "C:\xampp\htdocs\s-dev\milliondox-product\storage\app/public/2024-2025November301_Accounting & Taxation.zip" // app\Http\Controllers\HomeController.php:25396
-        // dd($zipFileName);
-        // "2024-2025November301_Accounting & Taxation.zip" // app\Http\Controllers\HomeController.php:25398
-        // if (Storage::exists('storage/app/public/'.$zipFileName)) {
-            // dd("ai aha hdkj");
+        
             // Return the public URL of the zip file
-            $zipFileUrl = asset('storage/app/public/' . $zipFileName);  // Generates a public URL
+            // $zipFileUrl = asset('storage/app/public/' . $zipFileName);  // Generates a public URL
 
             return response()->json([
                 'success' => 'Zip file created Successfully',
                 'zipFilePath' => $zipFileName,
             ]);
-        // } else {
-        //     return response()->json([
-        //         'success' => false,
-        //         'message' => 'File not found',
-        //     ]);
-        // }
+      
 
         // return response()->download($zipFilePath)->deleteFileAfterSend(true);
     } else {
@@ -25424,13 +25391,75 @@ public function downloadZipSKY($zipFileName)
 {
     // Define the file path on the server
     $filePath = storage_path('app/public/' . $zipFileName); // Assuming the file is in the public storage folder
+    $filePathTemp = storage_path('app/public/temp/' . $zipFileName); // Assuming the file is in the public storage folder
+
     // dd($filePath);
-    // sleep(10000);
 
     // Check if the file exists
-    if (file_exists($filePath)) {
+    // if (file_exists($filePath)) {
+    //     // Return the file for download
+    //     return response()->download($filePath); // The download function sends the file to the browser
+    // } else {
+    //     // If the file doesn't exist, return an error response
+    //     return response()->json([
+    //         'error' => 'File not found'
+    //     ], 404);
+    // }
+
+    // Step 1: Extract the original zip file to a temporary location
+    $zip = new ZipArchive();
+    if ($zip->open($filePath) === TRUE) {
+        $zip->extractTo($filePathTemp);  // Extract to temp folder
+        $zip->close();
+    }
+
+    // Step 2: Rename directories and subdirectories
+    $iterator = new RecursiveIteratorIterator(
+        new RecursiveDirectoryIterator($filePathTemp, RecursiveDirectoryIterator::SKIP_DOTS),
+        RecursiveIteratorIterator::CHILD_FIRST
+    );
+
+    foreach ($iterator as $file) {
+        if ($file->isDir()) {
+            $dirPath = $file->getPathname();
+            echo "Attempting to rename: " . $dirPath . "\n";  // Debugging
+            $dirName = basename($dirPath);
+            
+            // Get the last substring after the last "_"
+            $newDirName = substr(strrchr($dirName, '_'), 1);
+            $newDirPath = dirname($dirPath) . DIRECTORY_SEPARATOR . $newDirName;
+            
+            echo "Renaming to: " . $newDirPath . "\n";  // Debugging
+            
+            if (!rename($dirPath, $newDirPath)) {
+                echo "Failed to rename: " . $dirPath . "\n";  // Debugging failure
+            }
+        }
+    }
+
+    // Step 3: Create a new zip file with the renamed directories
+    $newZipFilePath = storage_path('app/public/temp/renamed_' . $zipFileName);
+    $zip = new ZipArchive();
+    if ($zip->open($newZipFilePath, ZipArchive::CREATE) === TRUE) {
+        $files = new RecursiveIteratorIterator(
+            new RecursiveDirectoryIterator($filePathTemp),
+            RecursiveIteratorIterator::LEAVES_ONLY
+        );
+        
+        foreach ($files as $file) {
+            if ($file->isFile()) {
+                $filePathInZip = $file->getPathname();
+                // Get the relative path from the extraction directory
+                $relativePath = substr($filePathInZip, strlen($filePathTemp) + 1);
+                $zip->addFile($filePathInZip, $relativePath);
+            }
+        }
+        $zip->close();
+    }
+
+    if (file_exists($newZipFilePath)) {
         // Return the file for download
-        return response()->download($filePath); // The download function sends the file to the browser
+        return response()->download($newZipFilePath); // The download function sends the file to the browser
     } else {
         // If the file doesn't exist, return an error response
         return response()->json([
