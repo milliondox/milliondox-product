@@ -29208,6 +29208,7 @@ dd($e->getMessage());
 
     public function customerstore(Request $request)
 {
+    // dd($request);
     // Validate incoming data
     $validated = $request->validate([
         'profile_picture' => 'nullable|image|max:20048',

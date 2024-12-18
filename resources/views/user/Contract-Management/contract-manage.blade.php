@@ -128,34 +128,16 @@
 
                             <div class="phone_country">
                               <div class="flag_cnty">
+                                
                                 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/css/intlTelInput.css" />
                                 <script src="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/js/intlTelInput.min.js"></script>
-                                <form id="customerphone-form" class="phoneflag" method="POST" action="">
-                                  @csrf
                                   <!-- Updated input field -->
                                   <input id="phoneNumber" type="tel" name="phone" required inputmode="numeric"
                                     placeholder="Phone" oninput="this.value = this.value.replace(/[^0-9]/g, '');"
                                     title="Please enter a valid phone number, e.g., +1-123-456-7890" />
-                                </form>
+                                    {{-- <input type="hidden" id="fullPhoneNumber" name="full_phone" /> --}}
 
-                                <script>
-                                  const phoneInputField = document.querySelector("#phoneNumber");
-                                  const phoneInput = window.intlTelInput(phoneInputField, {
-                                    utilsScript: "https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/js/utils.js",
-                                    initialCountry: "in", // Set initial country to India
-                                    formatOnDisplay: true, // Format the number when displayed
-                                    separateDialCode: true // Show the dial code separately
-                                  });
-
-                                  // Optional: Ensure that only valid phone numbers are submitted
-                                  document.querySelector("#customerphone-form").addEventListener("submit", function(e) {
-                                    const isValid = phoneInput.isValidNumber();
-                                    if (!isValid) {
-                                      e.preventDefault();
-                                      alert("Please enter a valid phone number.");
-                                    }
-                                  });
-                                </script>
+                                    
                               </div>
                             </div>
 
@@ -253,6 +235,26 @@
                             <button class="btn" type="submit">Add Customer</button>
                           </div>
                         </form>
+                        <script>
+                          const phoneInputField = document.querySelector("#phoneNumber");
+                          const phoneInput = window.intlTelInput(phoneInputField, {
+                            utilsScript:
+                              "https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/js/utils.js",
+                            initialCountry: "in", // Default country (India)
+                            separateDialCode: true, // Show the country code separately
+                          });
+                        
+                          // Ensure the full phone number is stored in the input field before form submission
+                          document.querySelector("#customerForm").addEventListener("submit", (e) => {
+                            if (!phoneInput.isValidNumber()) {
+                              e.preventDefault();
+                              alert("Please enter a valid phone number.");
+                            } else {
+                              // Update the input field with the full phone number
+                              phoneInputField.value = phoneInput.getNumber();
+                            }
+                          });
+                        </script>
                         <link rel="stylesheet" href="https://code.jquery.com/ui/1.13.2/themes/smoothness/jquery-ui.css">
                         <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
                         <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.min.js"></script>
