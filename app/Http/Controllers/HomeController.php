@@ -61,6 +61,8 @@ use App\Models\OrganizationChart;
 
 use App\Models\StoreBankDoc;
 
+use App\Models\CustomerNotification;
+
 use App\Models\CustomDoc;
 use App\Models\RegistrationDoc;
 use App\Models\MiscellaneousDoc;
@@ -29355,8 +29357,87 @@ public function downloadContracts(Request $request)
  
 public function customernotification(Request $request)
 {
-   dd($request);
+    // dd($request);
+    // Validate the incoming request (optional but recommended)
+    $validatedData = $request->validate([
+        'expiring_opm' => 'required|string',
+        'email' => 'required|email',
+        'message' => 'required|string',
+        'contractFilename' => 'required|string',
+    ]);
+
+    // Create a new CustomerNotification instance
+    $customerNotification = new CustomerNotification();
+
+    // Store the request data in the model
+    $customerNotification->customer_email = $request->email;
+    $customerNotification->message = $request->message;
+    $customerNotification->contract_name = $request->contractFilename;
+    $customerNotification->notification_type = $request->expiring_opm;  // Assuming this is the notification type (e.g., "Upcoming Expiry Alert")
+
+    // Save the model data to the database
+    $customerNotification->save();
+
+    // Initialize MailerSend
+    $mailersend = new MailerSend(['api_key' => 'mlsn.3cf1d191812b63e38d5edf34dd0146657c403d79af8c2cf2609e26f5b09c0a64']);
+
+    // Prepare the recipient
+    $recipients = [
+        new Recipient($request->email, 'Customer'),  // Assuming 'Customer' as a default name
+    ];
+
+    // Prepare the email subject
+    $subject = $request->expiring_opm;  // Dynamically set the subject from the request
+
+    // Prepare the email content with dynamic message
+    $emailParams = (new EmailParams())
+        ->setFrom('admin@milliondox.in')
+        ->setFromName('Admin')
+        ->setRecipients($recipients)
+        ->setSubject($subject)
+        ->setHtml("
+            <html>
+                <head>
+                    <title>{$request->expiring_opm}</title>
+                </head>
+                <body style='font-family: Arial, sans-serif; margin: 0; padding: 0; background-color: #f5f5f5;'>
+                    <table width='100%' cellpadding='0' cellspacing='0' border='0'>
+                        <tr>
+                            <td>
+                                <table class='email-container' cellpadding='0' cellspacing='0' border='0' style='width: 100%; max-width: 600px; margin: 0 auto; background-color: #ffffff; border-radius: 8px; overflow: hidden; border: 1px solid #dddddd;'>
+                                    <!-- Banner -->
+                                   
+                                    <!-- Content -->
+                                    <tr>
+                                        <td style='padding: 20px;'>
+                                            <p>{$request->message}</p>
+                                        </td>
+                                    </tr>
+                                    <!-- Footer -->
+                                    <tr>
+                                        <td class='footer' style='background-color: #f98b93; color: #ffffff; text-align: center; padding: 20px;'>
+                                            <p class='thanks' style='font-weight: bold;'>Thank you for choosing Milliondox!</p>
+                                            <p class='important' style='color: #fdbcbc; font-weight: 800;'>Important Notice:</p>
+                                            <p>Please do not share your password with anyone. If you suspect that your account may be compromised, please contact us immediately.</p>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </td>
+                        </tr>
+                    </table>
+                </body>
+            </html>
+        ");
+
+    // Send the email using MailerSend
+    $mailersend->email->send($emailParams);
+
+    // Redirect back with a success message
+    return redirect()->back()->with('success', 'Notification stored and email sent successfully!');
 }
+
+
+
     
 
     // customer creation code end here from here 
