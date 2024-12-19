@@ -61,6 +61,8 @@ use App\Models\OrganizationChart;
 
 use App\Models\StoreBankDoc;
 
+use App\Models\CustomerNotification;
+
 use App\Models\CustomDoc;
 use App\Models\RegistrationDoc;
 use App\Models\MiscellaneousDoc;
@@ -19767,32 +19769,67 @@ public function tickting()
         ->groupBy('customer_id'); // Group by customer_id to get all contracts for each customer
 
     // Iterate through each customer and check their contract status
-    foreach ($customer as $cust) {
-        $status = 'Inactive'; // Default status is Inactive
+    // foreach ($customer as $cust) {
+    //     $status = 'Inactive'; // Default status is Inactive
 
-        // Check if the customer has a matching contract
-        if ($contracts->has($cust->id)) {
-            $status = 'Inactive'; // Reset to Inactive by default
+    //     // Check if the customer has a matching contract
+    //     if ($contracts->has($cust->id)) {
+    //         $status = 'Inactive'; // Reset to Inactive by default
 
-            // Get all startend dates for the customer (an array of contract startend dates)
-            $customerContracts = $contracts[$cust->id]; // Get all contract end dates for this customer
+    //         // Get all startend dates for the customer (an array of contract startend dates)
+    //         $customerContracts = $contracts[$cust->id]; // Get all contract end dates for this customer
 
-            // Compare contract dates
-            foreach ($customerContracts as $contract) {
-                $contractEndDate = Carbon::parse($contract->startend); // Parse the startend date
-                $today = Carbon::today(); // Today's date
+    //         // Compare contract dates
+    //         foreach ($customerContracts as $contract) {
+    //             $contractEndDate = Carbon::parse($contract->startend); // Parse the startend date
+    //             $today = Carbon::today(); // Today's date
 
-                // If any contract's end date is greater than or equal to today, set the status to Active
-                if ($contractEndDate->greaterThanOrEqualTo($today)) {
-                    $status = 'Active';
-                    break; // Exit the loop if at least one contract is active
-                }
+    //             // If any contract's end date is greater than or equal to today, set the status to Active
+    //             if ($contractEndDate->greaterThanOrEqualTo($today)) {
+    //                 $status = 'Active';
+    //                 break; // Exit the loop if at least one contract is active
+    //             }
+    //         }
+    //     }
+
+    //     // Set the status for the current customer
+    //     $cust->status = $status;
+    // }
+
+    // Iterate through each customer and check their contract status
+foreach ($customer as $cust) {
+    $status = 'Inactive'; // Default status is Inactive
+
+    // Check if the customer has a matching contract
+    if ($contracts->has($cust->id)) {
+        $status = 'Inactive'; // Reset to Inactive by default
+
+        // Get all contracts for the customer
+        $customerContracts = $contracts[$cust->id]; // Get all contract records for this customer
+
+        // Compare contract dates
+        foreach ($customerContracts as $contract) {
+            // Check if startend is null
+            if (is_null($contract->startend)) {
+                $status = 'Inactive';
+                continue; // Skip to the next contract
+            }
+
+            // Parse the startend date
+            $contractEndDate = Carbon::parse($contract->startend);
+            $today = Carbon::today();
+
+            // If any contract's end date is greater than or equal to today, set the status to Active
+            if ($contractEndDate->greaterThanOrEqualTo($today)) {
+                $status = 'Active';
+                break; // Exit the loop if at least one contract is active
             }
         }
-
-        // Set the status for the current customer
-        $cust->status = $status;
     }
+
+    // Set the status for the current customer
+    $cust->status = $status;
+}
 
     $cli_announcements = Announcement::where('role', 'Client')->latest()->get();
     $user = auth()->user();
@@ -19810,23 +19847,29 @@ public function tickting()
 
         $customercontract = CustomerContract::where('customer_id', $id)->get();
         $divisions = $customerrecord->customerContracts->pluck('division')->unique();
+       
+        // dd($customerrecord);
 
         $today = \Carbon\Carbon::today();
     $hasActive = false;
 
     foreach ($customercontract as $contract) {
-        $contractEndDate = \Carbon\Carbon::parse($contract->startend);
-        $contract->status = $contractEndDate->greaterThanOrEqualTo($today) ? 'Active' : 'Expire';
-
+        if (is_null($contract->startend)) {
+            $contract->status = 'Inactive';
+        } else {
+            $contractEndDate = \Carbon\Carbon::parse($contract->startend);
+            $contract->status = $contractEndDate->greaterThanOrEqualTo($today) ? 'Active' : 'Inactive';
+        }
+    
         // Check if at least one contract is active
         if ($contract->status === 'Active') {
             $hasActive = true;
             break; // No need to check further if one is active
         }
     }
-
+    
     // Determine overall status
-    $overallStatus = $hasActive ? 'Active' : 'Expire';
+    $overallStatus = $hasActive ? 'Active' : 'Inactive';
 
        
        return view('user.Contract-Management.contract-manage-detail',compact('cli_announcements','user','customerrecord','customercontract','divisions','overallStatus'));
@@ -29336,6 +29379,7 @@ dd($e->getMessage());
 
     public function customerstore(Request $request)
 {
+    // dd($request);
     // Validate incoming data
     $validated = $request->validate([
         'profile_picture' => 'nullable|image|max:20048',
@@ -29352,6 +29396,8 @@ dd($e->getMessage());
         'gstin_file' => 'required|file|max:20048',
         'type_of_entity' => 'required|string|max:255',
         'brandname' => 'nullable|string|max:255',
+        'phone' => 'required|string|max:255|unique:customertb,phone',
+        'email' => 'required|string|email|max:255|unique:customertb,email',
     ]);
 
     // Check if CIN number already exists
@@ -29481,6 +29527,90 @@ public function downloadContracts(Request $request)
 }
 
  
+public function customernotification(Request $request)
+{
+    // dd($request);
+    // Validate the incoming request (optional but recommended)
+    $validatedData = $request->validate([
+        'expiring_opm' => 'required|string',
+        'email' => 'required|email',
+        'message' => 'required|string',
+        'contractFilename' => 'required|string',
+    ]);
+
+    // Create a new CustomerNotification instance
+    $customerNotification = new CustomerNotification();
+
+    // Store the request data in the model
+    $customerNotification->customer_email = $request->email;
+    $customerNotification->message = $request->message;
+    $customerNotification->contract_name = $request->contractFilename;
+    $customerNotification->notification_type = $request->expiring_opm;  // Assuming this is the notification type (e.g., "Upcoming Expiry Alert")
+
+    // Save the model data to the database
+    $customerNotification->save();
+
+    // Initialize MailerSend
+    $mailersend = new MailerSend(['api_key' => 'mlsn.3cf1d191812b63e38d5edf34dd0146657c403d79af8c2cf2609e26f5b09c0a64']);
+
+    // Prepare the recipient
+    $recipients = [
+        new Recipient($request->email, 'Customer'),  // Assuming 'Customer' as a default name
+    ];
+
+    // Prepare the email subject
+    $subject = $request->expiring_opm;  // Dynamically set the subject from the request
+
+    // Prepare the email content with dynamic message
+    $emailParams = (new EmailParams())
+        ->setFrom('admin@milliondox.in')
+        ->setFromName('Admin')
+        ->setRecipients($recipients)
+        ->setSubject($subject)
+        ->setHtml("
+            <html>
+                <head>
+                    <title>{$request->expiring_opm}</title>
+                </head>
+                <body style='font-family: Arial, sans-serif; margin: 0; padding: 0; background-color: #f5f5f5;'>
+                    <table width='100%' cellpadding='0' cellspacing='0' border='0'>
+                        <tr>
+                            <td>
+                                <table class='email-container' cellpadding='0' cellspacing='0' border='0' style='width: 100%; max-width: 600px; margin: 0 auto; background-color: #ffffff; border-radius: 8px; overflow: hidden; border: 1px solid #dddddd;'>
+                                    <!-- Banner -->
+                                   
+                                    <!-- Content -->
+                                    <tr>
+                                        <td style='padding: 20px;'>
+                                            <p>{$request->message}</p>
+                                        </td>
+                                    </tr>
+                                    <!-- Footer -->
+                                    <tr>
+                                        <td class='footer' style='background-color: #f98b93; color: #ffffff; text-align: center; padding: 20px;'>
+                                            <p class='thanks' style='font-weight: bold;'>Thank you for choosing Milliondox!</p>
+                                            <p class='important' style='color: #fdbcbc; font-weight: 800;'>Important Notice:</p>
+                                            <p>Please do not share your password with anyone. If you suspect that your account may be compromised, please contact us immediately.</p>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </td>
+                        </tr>
+                    </table>
+                </body>
+            </html>
+        ");
+
+    // Send the email using MailerSend
+    $mailersend->email->send($emailParams);
+
+    // Redirect back with a success message
+    return redirect()->back()->with('success', 'Notification stored and email sent successfully!');
+}
+
+public function customeraddend(Request $request){
+    dd($request);
+}
 
     
 

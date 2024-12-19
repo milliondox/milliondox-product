@@ -1144,6 +1144,11 @@ Route::get('/user/ContractManagement', [App\Http\Controllers\HomeController::cla
 Route::get('/user/contractmanage', [App\Http\Controllers\HomeController::class, 'contractmanage'])->name('user/contractmanage')->middleware('auth');
 Route::get('/user/contractmanagedetail/{id}', [App\Http\Controllers\HomeController::class, 'contractmanagedetail'])->name('user/contractmanagedetail')->middleware('auth');
 Route::post('/download-contracts', [App\Http\Controllers\HomeController::class, 'downloadContracts'])->name('download.contracts');
+
+Route::post('/customernotification', [App\Http\Controllers\HomeController::class, 'customernotification'])->name('customernotification');
+
+Route::post('/customeraddend', [App\Http\Controllers\HomeController::class, 'customeraddend'])->name('customeraddend');
+
 Route::get('/user/companyprofile', [App\Http\Controllers\HomeController::class, 'companyprofile'])->name('user/companyprofile');
 Route::get('/user/Sop', [App\Http\Controllers\HomeController::class, 'Sop'])->name('user/Sop');
 	Route::get('/user/Employeelifecycle', [App\Http\Controllers\HomeController::class, 'Employeelifecycle'])->name('user/Employeelifecycle');

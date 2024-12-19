@@ -91,7 +91,7 @@
                         <form id="customerForm" action="{{ route('customerstore') }}" method="POST" enctype="multipart/form-data" class="upload-form">
                           @csrf
                           <!-- Profile Picture Upload -->
-                          <div class="gropu_form ivoice-upload">                            
+                          <div class="gropu_form ivoice-upload">
                             <div class="file-area" id="round_uplad_image">
                               <div class="inner_file_edit">
                                 <input type="file" id="emppicd" class="emppicd" name="profile_picture">
@@ -115,6 +115,30 @@
                           <div class="gropu_form">
                             <label for="lename">Brand Name</label>
                             <input placeholder="Brand Name" type="text" id="brandname" name="brandname" value="">
+                          </div>
+
+                          <div class="gropu_form">
+                            <label for="lename">Email</label>
+                            <input placeholder="Email" type="email" id="email" name="email" value="" pattern="[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}"
+                              title="Please enter a valid email address (e.g., example@domain.com)" required>
+                          </div>
+
+                          <div class="gropu_form">
+                            <label for="lename">Phone</label>
+
+                            <div class="phone_country">
+                              <div class="flag_cnty">
+                                
+                                <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/css/intlTelInput.css" />
+                                <script src="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/js/intlTelInput.min.js"></script>
+                                  <!-- Updated input field -->
+                                  <input id="phoneNumber" type="tel" name="phone" required inputmode="numeric"
+                                    placeholder="Phone" oninput="this.value = this.value.replace(/[^0-9]/g, '');"
+                                    title="Please enter a valid phone number, e.g., +1-123-456-7890" />
+                                    
+                              </div>
+                            </div>
+
                           </div>
 
                           <!-- Director Name with Add/Remove Buttons -->
@@ -203,11 +227,32 @@
                             </select>
                           </div>
 
+
                           <!-- Submit Button -->
                           <div class="root_btn">
                             <button class="btn" type="submit">Add Customer</button>
                           </div>
                         </form>
+                        <script>
+                          const phoneInputField = document.querySelector("#phoneNumber");
+                          const phoneInput = window.intlTelInput(phoneInputField, {
+                            utilsScript:
+                              "https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/js/utils.js",
+                            initialCountry: "in", // Default country (India)
+                            separateDialCode: true, // Show the country code separately
+                          });
+                        
+                          // Ensure the full phone number is stored in the input field before form submission
+                          document.querySelector("#customerForm").addEventListener("submit", (e) => {
+                            if (!phoneInput.isValidNumber()) {
+                              e.preventDefault();
+                              alert("Please enter a valid phone number.");
+                            } else {
+                              // Update the input field with the full phone number
+                              phoneInputField.value = phoneInput.getNumber();
+                            }
+                          });
+                        </script>
                         <link rel="stylesheet" href="https://code.jquery.com/ui/1.13.2/themes/smoothness/jquery-ui.css">
                         <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
                         <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.min.js"></script>
@@ -558,18 +603,13 @@
                                   </svg>
                                 </button>
                                 <div id="myDropdown3" class="dropdown-content">
-                                  <a class="dropdown-itemm notify" data-bs-toggle="modal" data-bs-target="#notify_customer">
-                                    <svg width="12" height="10" viewBox="0 0 12 10" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                      <path d="M0.980729 9.90006L11.1599 5.53673C11.2651 5.49191 11.3548 5.41713 11.4179 5.32172C11.481 5.2263 11.5146 5.11444 11.5146 5.00007C11.5146 4.88569 11.481 4.77383 11.4179 4.67842C11.3548 4.583 11.2651 4.50823 11.1599 4.4634L0.980729 0.100066C0.892588 0.0616207 0.796263 0.0457239 0.700443 0.0538091C0.604623 0.0618942 0.512323 0.093707 0.43187 0.146378C0.351417 0.199048 0.285342 0.270919 0.239607 0.355507C0.193871 0.440095 0.169914 0.534739 0.169896 0.630899L0.164062 3.32007C0.164062 3.61173 0.379896 3.86257 0.671562 3.89757L8.91406 5.00007L0.671562 6.09673C0.379896 6.13757 0.164062 6.3884 0.164062 6.68007L0.169896 9.36923C0.169896 9.7834 0.595729 10.0692 0.980729 9.90006Z" fill="#414651" />
-                                    </svg>
-                                    Notify </a>
 
-                                  <a class="dropdown-itemm ediit">
+                                  <a class="dropdown-itemm ediit" data-bs-toggle="modal" data-bs-target="#add_contarct_edit">
                                     <svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
                                       <path d="M1.68029 10.5673C1.70709 10.3261 1.7205 10.2055 1.75699 10.0928C1.78936 9.99277 1.83511 9.89759 1.89298 9.80983C1.9582 9.71092 2.04401 9.62512 2.21561 9.45351L9.91929 1.74985C10.5636 1.10552 11.6083 1.10552 12.2526 1.74985C12.897 2.39418 12.897 3.43885 12.2526 4.08319L4.54894 11.7868C4.37734 11.9585 4.29154 12.0443 4.19262 12.1095C4.10487 12.1673 4.00969 12.2131 3.90968 12.2455C3.79696 12.282 3.67635 12.2954 3.43515 12.3222L1.46094 12.5415L1.68029 10.5673Z" stroke="#414651" stroke-width="1.66667" stroke-linecap="round" stroke-linejoin="round" />
                                     </svg> Edit Details </a>
 
-                                  <a class="dropdown-itemm delle">
+                                  <a class="dropdown-itemm delle" data-bs-toggle="modal" data-bs-target="#add_contarct_dele">
                                     <svg width="12" height="14" viewBox="0 0 12 14" fill="none" xmlns="http://www.w3.org/2000/svg">
                                       <path d="M8.33333 3.50033V3.03366C8.33333 2.38026 8.33333 2.05357 8.20617 1.804C8.09432 1.58448 7.91584 1.406 7.69632 1.29415C7.44676 1.16699 7.12006 1.16699 6.46667 1.16699H5.53333C4.87994 1.16699 4.55324 1.16699 4.30368 1.29415C4.08416 1.406 3.90568 1.58448 3.79383 1.804C3.66667 2.05357 3.66667 2.38026 3.66667 3.03366V3.50033M4.83333 6.70866V9.62533M7.16667 6.70866V9.62533M0.75 3.50033H11.25M10.0833 3.50033V10.0337C10.0833 11.0138 10.0833 11.5038 9.89259 11.8781C9.72482 12.2074 9.4571 12.4751 9.12782 12.6429C8.75347 12.8337 8.26342 12.8337 7.28333 12.8337H4.71667C3.73657 12.8337 3.24653 12.8337 2.87218 12.6429C2.5429 12.4751 2.27518 12.2074 2.10741 11.8781C1.91667 11.5038 1.91667 11.0138 1.91667 10.0337V3.50033" stroke="#FA4A4A" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
                                     </svg> Delete </a>
@@ -583,13 +623,14 @@
                         </tbody>
                       </table>
 
-                      <!-- notify model start -->
 
-                      <div class="modal fade drop_coman_file have_title" id="notify_customer" tabindex="-1" role="dialog" aria-labelledby="notify_customer" aria-hidden="true">
+                      <!--  customer edit  model start -->
+
+                      <div class="modal fade drop_coman_file have_title request_nerrow" id="add_contarct_edit" tabindex="-1" role="dialog" aria-labelledby="add_contarct_edit" aria-hidden="true">
                         <div class="modal-dialog modal-dialog-centered" role="document">
                           <div class="modal-content">
                             <div class="modal-header">
-                              <h5 class="modal-title" style="font-weight:700">Notify Customer</h5>
+                              <h5 class="modal-title" style="font-weight:700">Request Edit Access</h5>
                               <button class="close" style="border-radius:5px;" type="button" data-bs-dismiss="modal">
                                 <span aria-hidden="true">
                                   <svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -601,33 +642,49 @@
                             <div class="modal-body">
                               <form id="" action="" method="POST" enctype="multipart/form-data">
 
-                                <div class="gropu_form_set">
-                                  <label for="read_onlyy">Selected Contract</label>
-                                  <h2 class="read_onlyy">OrangeXT Contract 245</h2>
-
+                                <div class="gropu_form_request">
+                                  <h2>Request Access from your Organization’s Signing Authority</h2>
                                 </div>
-                                <div class="gropu_form_set">
-                                  <label for="expiring_opm">Select an option</label>
-                                  <select id="expiring_opm" name="expiring_opm" required="">
-                                    <option value="" disabled="" selected="">select</option>
-                                    <option value="Upcoming Expiry Alert">Upcoming Expiry Alert</option>
-                                    <option value="Upcoming Renewal Alert">Upcoming Renewal Alert</option>
-                                    <option value="Missing Documentation">Missing Documentation</option>
-                                    <option value="Payment Due Alert">Payment Due Alert</option>
-                                    <option value="Other">Other</option>
-                                  </select>
-                                </div>
-                                <div class="gropu_form_set">
-                                  <label for="Message">Message</label>
-                                  <textarea placeholder="Your contract [Contract ID/Name] with [Vendor/Client Name] is set to expire on [Expiry Date]. Please take the necessary action to renew or terminate the contract before the expiry date." id="" name="" readonly></textarea>
-                                </div>
-
 
                                 <div class="root_btn">
-                                  <button class="btn btn-primary" style="border-radius:5px;" type="submit">Send
-                                    <svg width="12" height="10" viewBox="0 0 12 10" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                      <path d="M0.980729 9.90006L11.1599 5.53673C11.2651 5.49191 11.3548 5.41713 11.4179 5.32172C11.481 5.2263 11.5146 5.11444 11.5146 5.00007C11.5146 4.88569 11.481 4.77383 11.4179 4.67842C11.3548 4.583 11.2651 4.50823 11.1599 4.4634L0.980729 0.100066C0.892588 0.0616207 0.796263 0.0457239 0.700443 0.0538091C0.604623 0.0618942 0.512323 0.093707 0.43187 0.146378C0.351417 0.199048 0.285342 0.270919 0.239607 0.355507C0.193871 0.440095 0.169914 0.534739 0.169896 0.630899L0.164062 3.32007C0.164062 3.61173 0.379896 3.86257 0.671562 3.89757L8.91406 5.00007L0.671562 6.09673C0.379896 6.13757 0.164062 6.3884 0.164062 6.68007L0.169896 9.36923C0.169896 9.7834 0.595729 10.0692 0.980729 9.90006Z" fill="white" />
-                                    </svg>
+                                  <button class="btn btn-primary" style="border-radius:5px;" type="submit">Request </button>
+                                </div>
+                              </form>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <!--  customer edit  model end -->
+
+
+                      <!-- customer delete model start -->
+
+                      <div class="modal fade drop_coman_file have_title request_nerrow" id="add_contarct_dele" tabindex="-1" role="dialog" aria-labelledby="add_contarct_dele" aria-hidden="true">
+                        <div class="modal-dialog modal-dialog-centered" role="document">
+                          <div class="modal-content">
+                            <div class="modal-header">
+                              <h5 class="modal-title" style="font-weight:700">Request Customer Deletion</h5>
+                              <button class="close" style="border-radius:5px;" type="button" data-bs-dismiss="modal">
+                                <span aria-hidden="true">
+                                  <svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M1 1L13 13M13 1L1 13" stroke="#535862" stroke-linecap="round" />
+                                  </svg>
+                                </span>
+                              </button>
+                            </div>
+                            <div class="modal-body">
+                              <form id="" action="" method="POST" enctype="multipart/form-data">
+
+                                <div class="gropu_form_request">
+                                  <h2>Request Access from your Organization’s Signing Authority</h2>
+                                </div>
+
+                                <div class="gropu_form_request red_alret">
+                                  <h2>Note: On successful approval, all the contracts of this customer will be erased.</h2>
+                                </div>
+
+                                <div class="root_btn root_btn_alert">
+                                  <button class="btn btn-primary" style="border-radius:5px;" type="submit">Request
                                   </button>
                                 </div>
                               </form>
@@ -635,8 +692,7 @@
                           </div>
                         </div>
                       </div>
-                      <!-- notify model end -->
-
+                      <!--  customer delete  model end -->
 
                     </div>
                   </div>
