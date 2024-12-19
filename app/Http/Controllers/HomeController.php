@@ -25391,7 +25391,7 @@ public function downloadFolder($folder_id)
         foreach ($relatedDirectories as $directory) {
             // Include all parent directories in the ZIP
             // dd($directory->parent_name);
-            $this->addParentDirectories($zip, $directory->parent_name);
+            $this->addParentDirectories($zip, $directory->path);
 
             foreach ($files as $file) {
                 // if ($file->location == $directory->path) {
