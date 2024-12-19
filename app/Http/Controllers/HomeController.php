@@ -29267,6 +29267,7 @@ dd($e->getMessage());
 
 public function storecustomercontract(Request $request)
 {
+    // dd($request);
     // Validate the request data
     if ($request->is_drafted != 1) { // Skip validation if saving as draft
         $request->validate([
@@ -29281,9 +29282,9 @@ public function storecustomercontract(Request $request)
             'startend' => 'required|date',
             'contract_value' => 'required|numeric',
             'signing_status' => 'required|string',
-            'renewal_terms' => 'required|string',
-            'payment_terms' => 'required|string',
-            'fee_escalation_clause' => 'required|string',
+            'renewal_terms' => 'required|array', // Ensure it's an array
+            'payment_terms' => 'required|array', // Ensure it's an array
+            'fee_escalation_clause' => 'required|array', // Ensure it's an array
             'customer_id' => 'required|exists:customertb,id',
         ]);
     }
@@ -29317,9 +29318,9 @@ public function storecustomercontract(Request $request)
             'startend' => $request->startend,
             'contract_value' => $request->contract_value,
             'signing_status' => $request->signing_status,
-            'renewal_terms' => $request->renewal_terms,
-            'payment_terms' => $request->payment_terms,
-            'fee_escalation_clause' => $request->fee_escalation_clause,
+            'renewal_terms' => json_encode($request->renewal_terms), // Convert to JSON
+            'payment_terms' => json_encode($request->payment_terms), // Convert to JSON
+            'fee_escalation_clause' => json_encode($request->fee_escalation_clause), // Convert to JSON
             'customer_id' => $request->customer_id,
             'is_drafted' => $request->is_drafted ?? 0, // Set draft status
         ]
@@ -29438,7 +29439,41 @@ public function customernotification(Request $request)
 }
 
 public function customeraddend(Request $request){
-    dd($request);
+    
+    
+    $contract = CustomerContract::find($request->contractid);
+
+    if ($contract) {
+        // Get the existing data or initialize an empty array
+        $paymentTerms = $contract->payment_terms ? json_decode($contract->payment_terms, true) : [];
+        $renewalTerms = $contract->renewal_terms ? json_decode($contract->renewal_terms, true) : [];
+        $feeExclusionMatrix = $contract->fee_escalation_clause ? json_decode($contract->fee_escalation_clause, true) : [];
+
+        // Check the selected addendum type and update corresponding fields
+        switch ($request->Addendum_type) {
+            case 'Payment Terms Addendum':
+                // Append new payment terms to the existing array
+                $paymentTerms[] = $request->con_add_payment_term;
+                $contract->payment_terms = json_encode($paymentTerms);
+                break;
+
+            case 'Renewal Terms Addendum':
+                // Append new renewal terms to the existing array
+                $renewalTerms[] = $request->con_add_renew_term;
+                $contract->renewal_terms = json_encode($renewalTerms);
+                break;
+
+            case 'Fee Exclusion Matrix Addendum':
+                // Append new fee exclusion terms to the existing array
+                $feeExclusionMatrix[] = $request->con_add_fee_term;
+                $contract->fee_escalation_clause = json_encode($feeExclusionMatrix);
+                break;
+        }
+
+        // Save the updated contract
+        $contract->save();
+    }
+        return redirect()->back()->with('success', 'Contract Updated successfully!');
 }
 
     
