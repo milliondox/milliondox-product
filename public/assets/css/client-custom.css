@@ -23091,6 +23091,10 @@ span.clinet_name {
     text-align: right;
 }
 
+.contract_manage_new .entery_body tbody .dataTables_empty {
+    text-align: center !IMPORTANT;
+}
+
 .contract_manage_new .entery_body tbody td {
     vertical-align: middle;
 }
@@ -24053,7 +24057,8 @@ div.dataTables_wrapper {
 }
 
 .dark-only #notify_customer.drop_coman_file .gropu_form_set select,
-.dark-only #notify_customer.drop_coman_file .gropu_form_set textarea {
+.dark-only #notify_customer.drop_coman_file .gropu_form_set textarea,
+.dark-only #notify_customer.drop_coman_file .gropu_form_set .read_onlyy {
     color: #dbdbdb;
     background: transparent;
     border-color: #3e4d70;
@@ -25171,7 +25176,8 @@ div.dataTables_wrapper {
 }
 
 #notify_customer.drop_coman_file .gropu_form_set select,
-#notify_customer.drop_coman_file .gropu_form_set textarea {
+#notify_customer.drop_coman_file .gropu_form_set textarea,
+#notify_customer.drop_coman_file .gropu_form_set .read_onlyy  {
     border: 1px solid #DDDDDD;
     width: 100%;
     border-radius: 10px;
