@@ -141,7 +141,7 @@
 
                                             <li>
                                                 <div class="auth_image">
-                                                    <img src="http://127.0.0.1:8000/profile_pictures/V21JjJbUitpBjn45II8C6qqCtvj1ljfRyaOO2nfo.webp" alt="img">
+                                                    <img src="https://f-dev.milliondox.in/profile_pictures/V21JjJbUitpBjn45II8C6qqCtvj1ljfRyaOO2nfo.webp" alt="img">
                                                 </div>
                                                 <h2>Anurag Srivastava</h2>
                                                                                       
@@ -158,7 +158,7 @@
 
                                             <li>
                                                 <div class="auth_image">
-                                                    <img src="http://127.0.0.1:8000/profile_pictures/V21JjJbUitpBjn45II8C6qqCtvj1ljfRyaOO2nfo.webp" alt="img">
+                                                    <img src="https://f-dev.milliondox.in/profile_pictures/V21JjJbUitpBjn45II8C6qqCtvj1ljfRyaOO2nfo.webp" alt="img">
                                                 </div>
                                                 <h2>Devanshu Kumar</h2>
 
