@@ -1099,22 +1099,19 @@ if (renewDate1) {
                                                     </div>
 
                                                     <div class="gropu_form_set option1">
-                                                        <label for="Message">Message</label>
-                                                        {{-- <textarea placeholder="Your contract [Contract ID/Name] with [Vendor/Client Name] is set to expire on [Expiry Date]. Please take the necessary action to renew or terminate the contract before the expiry date." id="" name="" readonly></textarea> --}}
+                                                        <label for="Message">Message</label>                                                    
 
                                                         <div class="read_onlyy">Your contract <span id="filenames" class="bolddata"></span>/<span id="custname" class="bolddata"></span> with <span id="venname" class="bolddata"></span> is set to expire on <span id="enddate" class="bolddata"></span>. Please take the necessary action to renew or terminate the contract before the expiry date.</div>
                                                     </div>
 
                                                     <div class="gropu_form_set option2">
-                                                        <label for="Message">Message</label>
-                                                        {{-- <textarea placeholder="Your contract [Contract ID/Name] with [Vendor/Client Name] is set to expire on [Expiry Date]. Please take the necessary action to renew or terminate the contract before the expiry date." id="" name="" readonly></textarea> --}}
+                                                        <label for="Message">Message</label>                                                    
 
                                                         <div class="read_onlyy">Your contract [Contract ID/Name] with [Vendor/Client Name] is due for renewal on [Renewal Date]. Kindly review the terms and confirm the renewal process to avoid any disruptions.</div>
                                                     </div>
 
                                                     <div class="gropu_form_set option3">
-                                                        <label for="Message">Message</label>
-                                                        {{-- <textarea placeholder="Your contract [Contract ID/Name] with [Vendor/Client Name] is set to expire on [Expiry Date]. Please take the necessary action to renew or terminate the contract before the expiry date." id="" name="" readonly></textarea> --}}
+                                                        <label for="Message">Message</label>                                                       
 
                                                         <div class="read_onlyy">Some required documents for [Contract ID/Name] are missing or incomplete. Please upload the following documents to ensure compliance:
 
@@ -1124,8 +1121,7 @@ if (renewDate1) {
                                                     </div>
 
                                                     <div class="gropu_form_set option4">
-                                                        <label for="Message">Message</label>
-                                                        {{-- <textarea placeholder="Your contract [Contract ID/Name] with [Vendor/Client Name] is set to expire on [Expiry Date]. Please take the necessary action to renew or terminate the contract before the expiry date." id="" name="" readonly></textarea> --}}
+                                                        <label for="Message">Message</label>                                                        
 
                                                         <div class="read_onlyy">A payment of ₹[Amount] for contract [Contract ID/Name] with [Vendor/Client Name] is due on [Due Date]. Kindly process the payment to avoid penalties or disruptions in services.</div>
                                                     </div>
