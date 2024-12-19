@@ -545,17 +545,17 @@
 
                                             <div class="gropu_form">
                                                 <label for="renewal_terms">Renewal Terms <span class="red_star">*</span></label>
-                                                <textarea name="renewal_terms" style="height: 58px;" required></textarea>
+                                                <textarea name="renewal_terms[]" style="height: 58px;" required></textarea>
                                             </div>
 
                                             <div class="gropu_form">
                                                 <label for="payment_terms">Payment Terms <span class="red_star">*</span></label>
-                                                <textarea name="payment_terms" style="height: 58px;" required></textarea>
+                                                <textarea name="payment_terms[]" style="height: 58px;" required></textarea>
                                             </div>
 
                                             <div class="gropu_form">
                                                 <label for="fee_escalation_clause">Fee Escalation Clause <span class="red_star">*</span></label>
-                                                <textarea name="fee_escalation_clause" style="height: 58px;" required></textarea>
+                                                <textarea name="fee_escalation_clause[]" style="height: 58px;" required></textarea>
                                             </div>
 
 
@@ -725,7 +725,15 @@
                                         </button>
                                         <div id="myDropdown3" class="dropdown-content">
 
-                                          
+                                            @php
+                                            $renewalTermsArray = json_decode($contract->renewal_terms, true);
+                                            $feeEscalationArray = json_decode($contract->fee_escalation_clause, true);
+                                            $paymentTermsArray = json_decode($contract->payment_terms, true);
+                                        
+                                            $lastRenewalTerm = end($renewalTermsArray);
+                                            $lastFeeEscalation = end($feeEscalationArray);
+                                            $lastPaymentTerm = end($paymentTermsArray);
+                                        @endphp
                                             <a class="dropdown-itemm notify" data-bs-toggle="modal" data-id="{{ $contract->id }}" data-amount="{{ $contract->contract_value }}"  data-bs-toggle="modal" data-bs-target="#notify_customer" data-file-name="{{ $contract->file_name }}" data-startend="{{ $contract->startend }}" data-cname="{{$customerrecord->lename}}" data-vname="{{$contract->vendor_name}}">
 
                                                 <svg width="12" height="10" viewBox="0 0 12 10" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -740,7 +748,7 @@
 
                                                 Renew </a>
 
-                                            <a class="dropdown-itemm Addend" id="Addend{{ $contract->id }}" data-id="{{ $contract->id }}"    data-file-name="{{ $contract->file_name }}"   data-renewal="{{$contract->renewal_terms}}"  data-fee="{{$contract->fee_escalation_clause}}"  data-payment="{{$contract->payment_terms}}" data-custid="{{$contract->customer_id}}">
+                                            <a class="dropdown-itemm Addend" id="Addend{{ $contract->id }}" data-id="{{ $contract->id }}"    data-file-name="{{ $contract->file_name }}"   data-renewal="{{ $lastRenewalTerm }}" data-fee="{{ $lastFeeEscalation }}" data-payment="{{ $lastPaymentTerm }}" data-custid="{{$contract->customer_id}}">
                                                 <svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
                                                     <path d="M1.68029 10.5673C1.70709 10.3261 1.7205 10.2055 1.75699 10.0928C1.78936 9.99277 1.83511 9.89759 1.89298 9.80983C1.9582 9.71092 2.04401 9.62512 2.21561 9.45351L9.91929 1.74985C10.5636 1.10552 11.6083 1.10552 12.2526 1.74985C12.897 2.39418 12.897 3.43885 12.2526 4.08319L4.54894 11.7868C4.37734 11.9585 4.29154 12.0443 4.19262 12.1095C4.10487 12.1673 4.00969 12.2131 3.90968 12.2455C3.79696 12.282 3.67635 12.2954 3.43515 12.3222L1.46094 12.5415L1.68029 10.5673Z" stroke="#414651" stroke-width="1.66667" stroke-linecap="round" stroke-linejoin="round" />
                                                 </svg> Addend </a>
