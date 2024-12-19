@@ -360,17 +360,6 @@ $(document).ready(function() {
       $('.addcustomer_fix').removeClass('active');
       $('.addcustomer_overlay_fix').removeClass('active');
     });
-
-    $('#Addend').on('click', function() {
-      $('.addendcustomer_fix').addClass('active');
-      $('.addend_overlay_fix').addClass('active');
-    });
-
-    $('.addend_overlay_fix').on('click', function() {
-      $('.addendcustomer_fix').removeClass('active');
-      $('.addend_overlay_fix').removeClass('active');
-    });
-
   });
   
 

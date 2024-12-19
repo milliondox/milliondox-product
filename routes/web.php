@@ -1144,6 +1144,8 @@ Route::post('/download-contracts', [App\Http\Controllers\HomeController::class, 
 
 Route::post('/customernotification', [App\Http\Controllers\HomeController::class, 'customernotification'])->name('customernotification');
 
+Route::post('/customeraddend', [App\Http\Controllers\HomeController::class, 'customeraddend'])->name('customeraddend');
+
 Route::get('/user/companyprofile', [App\Http\Controllers\HomeController::class, 'companyprofile'])->name('user/companyprofile');
 Route::get('/user/Sop', [App\Http\Controllers\HomeController::class, 'Sop'])->name('user/Sop');
 	Route::get('/user/Employeelifecycle', [App\Http\Controllers\HomeController::class, 'Employeelifecycle'])->name('user/Employeelifecycle');
