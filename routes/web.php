@@ -282,6 +282,9 @@ Route::get('/updateTempfilesName', [App\Http\Controllers\HomeController::class, 
 Route::get('/updateFolderNamesSKY', [App\Http\Controllers\HomeController::class, 'updateFolderNamesSKY'])->name('updateFolderNamesSKY');
 // dont use without permission
 
+Route::get('/downloadZipSKY/{zipFileName}', [App\Http\Controllers\HomeController::class, 'downloadZipSKY'])->name('downloadZipSKY');
+
+
 
 // sandeep added above route "fetchfixedFiles" for dynamic fetch fixed path files i.e real_file_name 26 November 2024 
 
