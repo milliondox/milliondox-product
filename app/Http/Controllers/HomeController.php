@@ -25331,6 +25331,9 @@ public function downloadFolder($folder_id)
     // $zipFileName = $folderName . '.zip';
     $userId = Auth::id();
     $currentDate = now()->format('d-M-Y'); // e.g., '18-Dec-2024'
+    $folderName = preg_replace('/[^_]*_/', '', $folderName);
+    // dd($folderName);
+
     $zipFileName = $folderName . "_User{$userId}_{$currentDate}.zip";
 
 
@@ -25345,27 +25348,42 @@ public function downloadFolder($folder_id)
             $this->addParentDirectories($zip, $directory->path);
 
             foreach ($files as $file) {
+                // if ($file->location == $directory->path) {
+                //     // Determine if real_file_name is present
+                //     $relativeZipPath = !empty($file->real_file_name)
+                //         ? $directory->path . '/' . $file->real_file_name . '/' . $file->file_name
+                //         : $directory->path . '/' . $file->file_name;
+
+                //     // Get the file's storage path
+                //     $storedFilePath = storage_path('app/' . $directory->path . '/' . $file->temp_file_name);
+
+                //     // Check if the file exists
+                //     if (file_exists($storedFilePath)) {
+                //         // Ensure unique file names in the ZIP
+                //         $uniqueZipPath = $this->ensureUniqueZipPath($relativeZipPath, $addedFiles);
+
+                //         // Add the file to the ZIP with its unique path
+                //         $zip->addFile($storedFilePath, $uniqueZipPath);
+
+                //         // Track the added file
+                //         $addedFiles[] = $uniqueZipPath;
+                //     }
+                // }
                 if ($file->location == $directory->path) {
-                    // Determine if real_file_name is present
+                    $formattedPath = $this->formatDirectoryName($directory->path);
                     $relativeZipPath = !empty($file->real_file_name)
-                        ? $directory->path . '/' . $file->real_file_name . '/' . $file->file_name
-                        : $directory->path . '/' . $file->file_name;
-
-                    // Get the file's storage path
+                        ? $formattedPath . '/' . $file->real_file_name . '/' . $file->file_name
+                        : $formattedPath . '/' . $file->file_name;
+                
                     $storedFilePath = storage_path('app/' . $directory->path . '/' . $file->temp_file_name);
-
-                    // Check if the file exists
+                
                     if (file_exists($storedFilePath)) {
-                        // Ensure unique file names in the ZIP
                         $uniqueZipPath = $this->ensureUniqueZipPath($relativeZipPath, $addedFiles);
-
-                        // Add the file to the ZIP with its unique path
                         $zip->addFile($storedFilePath, $uniqueZipPath);
-
-                        // Track the added file
                         $addedFiles[] = $uniqueZipPath;
                     }
                 }
+                
             }
         }
         $zip->close();
@@ -25387,102 +25405,157 @@ public function downloadFolder($folder_id)
 }
 
 
+
+
 public function downloadZipSKY($zipFileName)
 {
     // Define the file path on the server
     $filePath = storage_path('app/public/' . $zipFileName); // Assuming the file is in the public storage folder
-    $filePathTemp = storage_path('app/public/temp/' . $zipFileName); // Assuming the file is in the public storage folder
+    // $filePathTemp = storage_path('app/public/temp/' . $zipFileName); // Assuming the file is in the public storage folder
 
     // dd($filePath);
 
     // Check if the file exists
-    // if (file_exists($filePath)) {
-    //     // Return the file for download
-    //     return response()->download($filePath); // The download function sends the file to the browser
-    // } else {
-    //     // If the file doesn't exist, return an error response
-    //     return response()->json([
-    //         'error' => 'File not found'
-    //     ], 404);
-    // }
-
-    // Step 1: Extract the original zip file to a temporary location
-    $zip = new ZipArchive();
-    if ($zip->open($filePath) === TRUE) {
-        $zip->extractTo($filePathTemp);  // Extract to temp folder
-        $zip->close();
-    }
-
-    // Step 2: Rename directories and subdirectories
-    $iterator = new RecursiveIteratorIterator(
-        new RecursiveDirectoryIterator($filePathTemp, RecursiveDirectoryIterator::SKIP_DOTS),
-        RecursiveIteratorIterator::CHILD_FIRST
-    );
-
-    foreach ($iterator as $file) {
-        if ($file->isDir()) {
-            $dirPath = $file->getPathname();
-            echo "Attempting to rename: " . $dirPath . "\n";  // Debugging
-            $dirName = basename($dirPath);
-            
-            // Get the last substring after the last "_"
-            $newDirName = substr(strrchr($dirName, '_'), 1);
-            $newDirPath = dirname($dirPath) . DIRECTORY_SEPARATOR . $newDirName;
-            
-            echo "Renaming to: " . $newDirPath . "\n";  // Debugging
-            
-            if (!rename($dirPath, $newDirPath)) {
-                echo "Failed to rename: " . $dirPath . "\n";  // Debugging failure
-            }
-        }
-    }
-
-    // Step 3: Create a new zip file with the renamed directories
-    $newZipFilePath = storage_path('app/public/temp/renamed_' . $zipFileName);
-    $zip = new ZipArchive();
-    if ($zip->open($newZipFilePath, ZipArchive::CREATE) === TRUE) {
-        $files = new RecursiveIteratorIterator(
-            new RecursiveDirectoryIterator($filePathTemp),
-            RecursiveIteratorIterator::LEAVES_ONLY
-        );
-        
-        foreach ($files as $file) {
-            if ($file->isFile()) {
-                $filePathInZip = $file->getPathname();
-                // Get the relative path from the extraction directory
-                $relativePath = substr($filePathInZip, strlen($filePathTemp) + 1);
-                $zip->addFile($filePathInZip, $relativePath);
-            }
-        }
-        $zip->close();
-    }
-
-    if (file_exists($newZipFilePath)) {
+    if (file_exists($filePath)) {
         // Return the file for download
-        return response()->download($newZipFilePath); // The download function sends the file to the browser
+        // return response()->download($filePath); // The download function sends the file to the browser
+        return response()->download($filePath)->deleteFileAfterSend(true);
     } else {
         // If the file doesn't exist, return an error response
         return response()->json([
             'error' => 'File not found'
         ], 404);
     }
+
+    // // Step 1: Extract the original zip file to a temporary location
+    // $zip = new ZipArchive();
+    // if ($zip->open($filePath) === TRUE) {
+    //     $zip->extractTo($filePathTemp);  // Extract to temp folder
+    //     $zip->close();
+    // }
+
+    // // Step 2: Rename directories and subdirectories
+    // $iterator = new RecursiveIteratorIterator(
+    //     new RecursiveDirectoryIterator($filePathTemp, RecursiveDirectoryIterator::SKIP_DOTS),
+    //     RecursiveIteratorIterator::CHILD_FIRST
+    // );
+
+    // foreach ($iterator as $file) {
+    //     if ($file->isDir()) {
+    //         $dirPath = $file->getPathname();
+    //         echo "Attempting to rename: " . $dirPath . "\n";  // Debugging
+    //         $dirName = basename($dirPath);
+            
+    //         // Get the last substring after the last "_"
+    //         $newDirName = substr(strrchr($dirName, '_'), 1);
+    //         $newDirPath = dirname($dirPath) . DIRECTORY_SEPARATOR . $newDirName;
+            
+    //         echo "Renaming to: " . $newDirPath . "\n";  // Debugging
+            
+    //         if (!rename($dirPath, $newDirPath)) {
+    //             echo "Failed to rename: " . $dirPath . "\n";  // Debugging failure
+    //         }
+    //     }
+    // }
+
+    // // Step 3: Create a new zip file with the renamed directories
+    // $newZipFilePath = storage_path('app/public/temp/renamed_' . $zipFileName);
+    // $zip = new ZipArchive();
+    // if ($zip->open($newZipFilePath, ZipArchive::CREATE) === TRUE) {
+    //     $files = new RecursiveIteratorIterator(
+    //         new RecursiveDirectoryIterator($filePathTemp),
+    //         RecursiveIteratorIterator::LEAVES_ONLY
+    //     );
+        
+    //     foreach ($files as $file) {
+    //         if ($file->isFile()) {
+    //             $filePathInZip = $file->getPathname();
+    //             // Get the relative path from the extraction directory
+    //             $relativePath = substr($filePathInZip, strlen($filePathTemp) + 1);
+    //             $zip->addFile($filePathInZip, $relativePath);
+    //         }
+    //     }
+    //     $zip->close();
+    // }
+
+    // if (file_exists($newZipFilePath)) {
+    //     // Return the file for download
+    //     return response()->download($newZipFilePath); // The download function sends the file to the browser
+    // } else {
+    //     // If the file doesn't exist, return an error response
+    //     return response()->json([
+    //         'error' => 'File not found'
+    //     ], 404);
+    // }
 }
 
 /**
  * Add all parent directories for a given path to the ZIP.
  */
+// private function addParentDirectories($zip, $path)
+// {
+//     $pathSegments = explode('/', $path);
+//     $currentPath = '';
+
+//     foreach ($pathSegments as $segment) {
+//         $currentPath .= $segment . '/';
+//         if (!$zip->locateName($currentPath)) {
+//             $zip->addEmptyDir($currentPath);
+//         }
+//     }
+// }
+
+// working fine
 private function addParentDirectories($zip, $path)
 {
     $pathSegments = explode('/', $path);
     $currentPath = '';
+    // $currentDate = now()->format('Y-m-d'); // Adjust this format if needed
 
     foreach ($pathSegments as $segment) {
-        $currentPath .= $segment . '/';
+        // Extract the part after the underscore
+        if (strpos($segment, '_') !== false) {
+            $parts = explode('_', $segment);
+            $nameAfterUnderscore = isset($parts[1]) ? $parts[1] : $segment;
+            $formattedName = $nameAfterUnderscore;
+        } else {
+            $formattedName = $segment; // Default formatting
+        }
+
+        // Construct the path for the ZIP
+        $currentPath .= $formattedName . '/';
+
+        // Add the directory if it doesn't already exist in the ZIP
         if (!$zip->locateName($currentPath)) {
             $zip->addEmptyDir($currentPath);
         }
     }
 }
+
+private function formatDirectoryName($path)
+{
+    $segments = explode('/', $path);
+    $formattedSegments = [];
+
+    foreach ($segments as $segment) {
+        if (strpos($segment, '_') !== false) {
+            $parts = explode('_', $segment);
+            $nameAfterUnderscore = isset($parts[1]) ? $parts[1] : $segment;
+            $formattedSegments[] = $nameAfterUnderscore;
+        } else {
+            $formattedSegments[] = $segment;
+        }
+    }
+
+    return implode('/', $formattedSegments);
+}
+// working fine 
+
+
+
+// new version
+
+
 
 /**
  * Ensure unique file paths within the ZIP archive.
