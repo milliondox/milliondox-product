@@ -25455,6 +25455,7 @@ public function downloadFolder($folder_id)
 
 public function downloadZipSKY($zipFileName)
 {
+    // ok
     // Define the file path on the server
     $filePath = storage_path('app/public/' . $zipFileName); // Assuming the file is in the public storage folder
     // $filePathTemp = storage_path('app/public/temp/' . $zipFileName); // Assuming the file is in the public storage folder
