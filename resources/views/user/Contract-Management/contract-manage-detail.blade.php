@@ -740,7 +740,7 @@
 
                                                 Renew </a>
 
-                                            <a class="dropdown-itemm Addend" id="Addend">
+                                            <a class="dropdown-itemm Addend" id="Addend{{ $contract->id }}" data-id="{{ $contract->id }}"    data-file-name="{{ $contract->file_name }}"   data-renewal="{{$contract->renewal_terms}}"  data-fee="{{$contract->fee_escalation_clause}}"  data-payment="{{$contract->payment_terms}}" data-custid="{{$contract->customer_id}}">
                                                 <svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
                                                     <path d="M1.68029 10.5673C1.70709 10.3261 1.7205 10.2055 1.75699 10.0928C1.78936 9.99277 1.83511 9.89759 1.89298 9.80983C1.9582 9.71092 2.04401 9.62512 2.21561 9.45351L9.91929 1.74985C10.5636 1.10552 11.6083 1.10552 12.2526 1.74985C12.897 2.39418 12.897 3.43885 12.2526 4.08319L4.54894 11.7868C4.37734 11.9585 4.29154 12.0443 4.19262 12.1095C4.10487 12.1673 4.00969 12.2131 3.90968 12.2455C3.79696 12.282 3.67635 12.2954 3.43515 12.3222L1.46094 12.5415L1.68029 10.5673Z" stroke="#414651" stroke-width="1.66667" stroke-linecap="round" stroke-linejoin="round" />
                                                 </svg> Addend </a>
@@ -789,7 +789,7 @@
                                                                             <div class="gropu_form_set defaultoption">
                                                                               <label for="expiring_opm">Select an option</label>
                                                                               <select id="expiring_opm" name="expiring_opm" required="">
-                                                                                <option value="" disabled="" selected="">select</option>
+                                                                                <option value="" disabled="" selected="">Please select any option</option>
                                                                                 <option value="Upcoming Expiry Alert">Upcoming Expiry Alert</option>
                                                                                 <option value="Upcoming Renewal Alert">Upcoming Renewal Alert</option>
                                                                                 <option value="Missing Documentation">Missing Documentation</option>
@@ -801,7 +801,7 @@
 
                                                                             <div class="gropu_form_set option0">
                                                                                 <label for="Message">Message</label>
-                                                                                
+                                                                                <div class="read_onlyy">Please Select any option from above options</div>
                                                                               </div>
                                                                             
                                                                               <div class="gropu_form_set option1">
@@ -823,6 +823,10 @@
                                                                                 <label for="Message">Message</label>
                                                                                 <div class="read_onlyy result editable" id="message4">A payment of ₹<span id="amount" class="bolddata"></span> for contract <span id="fileName2" class="bolddata"></span>/<span id="custname2" class="bolddata"></span> with <span id="venname2" class="bolddata"></span> is due on <span id="renewDate1" class="bolddata"></span>. Kindly process the payment to avoid penalties or disruptions in services.</div>
                                                                             </div>
+                                                                            <div class="gropu_form_set option5" >
+                                                                                <label for="Message">Message</label>
+                                                                                <div class="read_onlyy result editable" id="message5"><span>Write Here......</span></div>
+                                                                            </div>
                                                                             <input type="hidden" id="selectedMessage" name="message">
                                                                             <input type="hidden" id="contractFilename" name="contractFilename">
                                                                             <div class="root_btn">
@@ -839,372 +843,11 @@
                                                                   </div>
                                                                   <!-- notify model end -->
 
-                                                                  <script>
-                                                                    $(document).ready(function () {
-                                                                        // On click, make the div editable
-                                                                        $('.editable').on('click', function () {
-                                                                            const $this = $(this);
-                                                                
-                                                                            // If it's already editable, return
-                                                                            if ($this.attr('contenteditable') === 'true') return;
-                                                                
-                                                                            // Make the div editable
-                                                                            $this.attr('contenteditable', 'true').focus();
-                                                                        });
-                                                                
-                                                                        // Save changes when the user clicks outside or presses Enter
-                                                                        $('.editable').on('blur keydown', function (e) {
-                                                                            const $this = $(this);
-                                                                
-                                                                            // If Enter key is pressed or blur occurs
-                                                                            if (e.type === 'blur' || (e.type === 'keydown' && e.key === 'Enter')) {
-                                                                                // Remove the editable attribute
-                                                                                $this.removeAttr('contenteditable');
-                                                                
-                                                                                // Log the updated content
-                                                                                console.log('Updated content:', $this.html());
-                                                                            }
-                                                                        });
-                                                                
-                                                                        // Update the message field dynamically on #expiring_opm change
-                                                                        $('#expiring_opm').on('change', function () {
-                                                                            const selectedOption = $(this).val();
-                                                                            let selectedMessage = '';
-                                                                
-                                                                            // Select the corresponding message based on the selected option
-                                                                            switch (selectedOption) {
-                                                                                case 'Upcoming Expiry Alert':
-                                                                                    selectedMessage = $('#message1').html();
-                                                                                    break;
-                                                                                case 'Upcoming Renewal Alert':
-                                                                                    selectedMessage = $('#message2').html();
-                                                                                    break;
-                                                                                case 'Missing Documentation':
-                                                                                    selectedMessage = $('#message3').html();
-                                                                                    break;
-                                                                                case 'Payment Due Alert':
-                                                                                    selectedMessage = $('#message4').html();
-                                                                                    break;
-                                                                                case 'Other':
-                                                                                    selectedMessage = 'Custom message'; // Replace with the custom message logic if needed
-                                                                                    break;
-                                                                            }
-                                                                
-                                                                            // Clean the message to remove <span> tags and ensure no unwanted markup
-                                                                            selectedMessage = selectedMessage.replace(/<span[^>]*>([^<]*)<\/span>/g, '$1');
-                                                                
-                                                                            // Set the cleaned message in the hidden field
-                                                                            $('#selectedMessage').val(selectedMessage);
-                                                                            const filename = $('#filename').text();
-                                                                            $('#contractFilename').val(filename);
-                                                                            // Log the updated message for debugging
-                                                                            console.log('Selected Message:', selectedMessage);
-                                                                        });
-                                                                
-                                                                        // Update form data dynamically before submission
-                                                                        $('form').on('submit', function () {
-                                                                            const selectedOption = $('#expiring_opm').val();
-                                                                            let selectedMessage = '';
-                                                                
-                                                                            // Dynamically fetch the current editable content
-                                                                            switch (selectedOption) {
-                                                                                case 'Upcoming Expiry Alert':
-                                                                                    selectedMessage = $('#message1').html();
-                                                                                    break;
-                                                                                case 'Upcoming Renewal Alert':
-                                                                                    selectedMessage = $('#message2').html();
-                                                                                    break;
-                                                                                case 'Missing Documentation':
-                                                                                    selectedMessage = $('#message3').html();
-                                                                                    break;
-                                                                                case 'Payment Due Alert':
-                                                                                    selectedMessage = $('#message4').html();
-                                                                                    break;
-                                                                                case 'Other':
-                                                                                    selectedMessage = 'Custom message'; // Replace with the custom message logic if needed
-                                                                                    break;
-                                                                            }
-                                                                
-                                                                            // Clean the message to remove <span> tags
-                                                                            selectedMessage = selectedMessage.replace(/<span[^>]*>([^<]*)<\/span>/g, '$1');
-                                                                
-                                                                            // Update the hidden field with the latest message
-                                                                            $('#selectedMessage').val(selectedMessage);
-                                                                            const filename = $('#filename').text();
-                                                                             $('#contractFilename').val(filename);
-                                                                            // Log the form submission data
-                                                                            console.log('Form Submitted with Message:', selectedMessage);
-                                                                        });
-                                                                    });
-                                                                </script>
-                                                                
-                                                                
-                                                                  <script>
-                                                                    $(document).ready(function() {
-                                                                        // Initially hide all option divs except the defaultoption
-                                                                        $('.gropu_form_set').not('.defaultoption').hide();
-                                                                
-                                                                        // On change event for the dropdown
-                                                                        $('#expiring_opm').on('change', function() {
-                                                                            // Get the selected option value
-                                                                            const selectedValue = $(this).val();
-                                                                
-                                                                            // Hide all non-default option divs
-                                                                            $('.gropu_form_set').not('.defaultoption').hide();
-                                                                
-                                                                            // Show the corresponding div based on the selected value
-                                                                            if (selectedValue === "Upcoming Expiry Alert") {
-                                                                                $('.option1').show();
-                                                                            } else if (selectedValue === "Upcoming Renewal Alert") {
-                                                                                $('.option2').show();
-                                                                            } else if (selectedValue === "Missing Documentation") {
-                                                                                $('.option3').show();
-                                                                            } else if (selectedValue === "Payment Due Alert") {
-                                                                                $('.option4').show();
-                                                                            } else {
-                                                                                // Show option0 for unselected or disabled state
-                                                                                $('.option0').show();
-                                                                            }
-                                                                        });
-                                                                
-                                                                        // Trigger change event on page load to show option0 by default
-                                                                        $('#expiring_opm').trigger('change');
-                                                                    });
-                                                                </script>
-                                                                
-<script>
-$(document).on('click', '.notify', function() {
-    // Get the file name from the data attribute
-    const fileName = $(this).data('file-name');
-    const contractid = $(this).data('id');
-    const enddate = $(this).data('startend');
-    const custname = $(this).data('cname');
-    const venname = $(this).data('vname');
-    const fileNames = $(this).data('file-name');
-    const venname1 = $(this).data('vname');
+                                                               
 
-    const fileName1 = $(this).data('file-name');
-    const custname1 = $(this).data('cname');
+                              
 
-
-    const venname2 = $(this).data('vname');
-
-    const fileName2 = $(this).data('file-name');
-    const custname2 = $(this).data('cname');
-    const amount = $(this).data('amount');
-
-    const startendDate = $(this).data('startend'); // Assuming this is in 'YYYY-MM-DD' format
-
-// Parse it into a Date object
-const date = new Date(startendDate);
-
-// Add one day to the date
-date.setDate(date.getDate() + 1);
-
-// Format the updated date back to 'YYYY-MM-DD'
-const renewDate = date.toISOString().split('T')[0];
-
-if (renewDate) {
-        const [year, month, day] = renewDate.split('-'); // Split the date
-        const formattedDates = `${day}-${month}-${year}`;   // Reformat to dd-mm-yyyy
-        $('#renewDate').text(formattedDates);          // Set the formatted date
-    } 
-
-    
-    if (enddate) {
-        const [year, month, day] = enddate.split('-'); // Split the date
-        const formattedDate = `${day}-${month}-${year}`;   // Reformat to dd-mm-yyyy
-        $('#enddate').text(formattedDate);          // Set the formatted date
-    } 
-
-
-    const startendDate1 = $(this).data('startend'); // Assuming this is in 'YYYY-MM-DD' format
-
-// Parse it into a Date object
-const date1 = new Date(startendDate1);
-
-// Add one day to the date
-date1.setDate(date1.getDate() + 1);
-
-// Format the updated date back to 'YYYY-MM-DD'
-const renewDate1 = date1.toISOString().split('T')[0];
-
-if (renewDate1) {
-        const [year, month, day] = renewDate1.split('-'); // Split the date
-        const formattedDates1 = `${day}-${month}-${year}`;   // Reformat to dd-mm-yyyy
-        $('#renewDate1').text(formattedDates1);          // Set the formatted date
-    } 
-    
-    
-    $('#filename').text(fileName);
-    $('#filenames').text(fileNames);
-
-    $('#contractid').text(contractid);
-    $('#custname').text(custname);
-    $('#venname').text(venname);
-
-    $('#fileName1').text(fileName1);
-    $('#custname1').text(custname1);
-    $('#venname1').text(venname1);
-
-
-    $('#fileName2').text(fileName2);
-    $('#custname2').text(custname2);
-    $('#venname2').text(venname2);
-   
-
-    $('#amount').text(amount);
-    
-});
-</script>
-
-                                <!-- notify model start -->
-
-                                <div class="modal fade drop_coman_file have_title" id="notify_customer" tabindex="-1" role="dialog" aria-labelledby="notify_customer" aria-hidden="true">
-                                    <div class="modal-dialog modal-dialog-centered" role="document">
-                                        <div class="modal-content">
-                                            <div class="modal-header">
-                                                <h5 class="modal-title" style="font-weight:700">Notify Customer</h5>
-                                                <button class="close" style="border-radius:5px;" type="button" data-bs-dismiss="modal">
-                                                    <span aria-hidden="true">
-                                                        <svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                                            <path d="M1 1L13 13M13 1L1 13" stroke="#535862" stroke-linecap="round" />
-                                                        </svg>
-                                                    </span>
-                                                </button>
-                                            </div>
-                                            <div class="modal-body">
-                                                <form id="" action="{{ route('customernotification') }}" method="POST" enctype="multipart/form-data">
-
-                                                    <div class="gropu_form_set defaultoption">
-                                                        @csrf
-                                                        <label for="read_onlyy">Selected Contract</label>
-                                                        <h2 class="read_onlyy" id="filename"></h2>
-                                                    </div>
-                                                    <div class="gropu_form_set defaultoption">
-                                                        <label for="expiring_opm">Select an option</label>
-                                                        <select id="expiring_opm" name="expiring_opm" required="">
-                                                            <option value="" disabled="" selected="">select</option>
-                                                            <option value="Upcoming Expiry Alert">Upcoming Expiry Alert</option>
-                                                            <option value="Upcoming Renewal Alert">Upcoming Renewal Alert</option>
-                                                            <option value="Missing Documentation">Missing Documentation</option>
-                                                            <option value="Payment Due Alert">Payment Due Alert</option>
-                                                            <option value="Other">Other</option>
-                                                        </select>
-                                                        <input type="hidden" name="email" value="{{$customerrecord->email}}">
-                                                    </div>
-                                                    <div class="gropu_form_set option0">
-                                                        <label for="Message">Message</label>
-                                                        <div class="read_onlyy">Select the option from options.</div>
-                                                    </div>
-
-                                                    <div class="gropu_form_set option1">
-                                                        <label for="Message">Message</label>
-                                                        {{-- <textarea placeholder="Your contract [Contract ID/Name] with [Vendor/Client Name] is set to expire on [Expiry Date]. Please take the necessary action to renew or terminate the contract before the expiry date." id="" name="" readonly></textarea> --}}
-
-                                                        <div class="read_onlyy">Your contract <span id="filenames" class="bolddata"></span>/<span id="custname" class="bolddata"></span> with <span id="venname" class="bolddata"></span> is set to expire on <span id="enddate" class="bolddata"></span>. Please take the necessary action to renew or terminate the contract before the expiry date.</div>
-                                                    </div>
-
-                                                    <div class="gropu_form_set option2">
-                                                        <label for="Message">Message</label>
-                                                        {{-- <textarea placeholder="Your contract [Contract ID/Name] with [Vendor/Client Name] is set to expire on [Expiry Date]. Please take the necessary action to renew or terminate the contract before the expiry date." id="" name="" readonly></textarea> --}}
-
-                                                        <div class="read_onlyy">Your contract [Contract ID/Name] with [Vendor/Client Name] is due for renewal on [Renewal Date]. Kindly review the terms and confirm the renewal process to avoid any disruptions.</div>
-                                                    </div>
-
-                                                    <div class="gropu_form_set option3">
-                                                        <label for="Message">Message</label>
-                                                        {{-- <textarea placeholder="Your contract [Contract ID/Name] with [Vendor/Client Name] is set to expire on [Expiry Date]. Please take the necessary action to renew or terminate the contract before the expiry date." id="" name="" readonly></textarea> --}}
-
-                                                        <div class="read_onlyy">Some required documents for [Contract ID/Name] are missing or incomplete. Please upload the following documents to ensure compliance:
-
-                                                            [Document Name 1]
-                                                            [Document Name 2]
-                                                            [Document Name 3]</div>
-                                                    </div>
-
-                                                    <div class="gropu_form_set option4">
-                                                        <label for="Message">Message</label>
-                                                        {{-- <textarea placeholder="Your contract [Contract ID/Name] with [Vendor/Client Name] is set to expire on [Expiry Date]. Please take the necessary action to renew or terminate the contract before the expiry date." id="" name="" readonly></textarea> --}}
-
-                                                        <div class="read_onlyy">A payment of ₹[Amount] for contract [Contract ID/Name] with [Vendor/Client Name] is due on [Due Date]. Kindly process the payment to avoid penalties or disruptions in services.</div>
-                                                    </div>
-
-
-                                                    <div class="root_btn">
-                                                        <button class="btn btn-primary" style="border-radius:5px;" type="submit">Send
-                                                            <svg width="12" height="10" viewBox="0 0 12 10" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                                                <path d="M0.980729 9.90006L11.1599 5.53673C11.2651 5.49191 11.3548 5.41713 11.4179 5.32172C11.481 5.2263 11.5146 5.11444 11.5146 5.00007C11.5146 4.88569 11.481 4.77383 11.4179 4.67842C11.3548 4.583 11.2651 4.50823 11.1599 4.4634L0.980729 0.100066C0.892588 0.0616207 0.796263 0.0457239 0.700443 0.0538091C0.604623 0.0618942 0.512323 0.093707 0.43187 0.146378C0.351417 0.199048 0.285342 0.270919 0.239607 0.355507C0.193871 0.440095 0.169914 0.534739 0.169896 0.630899L0.164062 3.32007C0.164062 3.61173 0.379896 3.86257 0.671562 3.89757L8.91406 5.00007L0.671562 6.09673C0.379896 6.13757 0.164062 6.3884 0.164062 6.68007L0.169896 9.36923C0.169896 9.7834 0.595729 10.0692 0.980729 9.90006Z" fill="white" />
-                                                            </svg>
-                                                        </button>
-                                                    </div>
-                                                </form>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <!-- notify model end -->
-
-                                <script>
-                                    $(document).ready(function() {
-                                        // Initially hide all option divs except the defaultoption
-                                        $('.gropu_form_set').not('.defaultoption').hide();
-
-                                        // On change event for the dropdown
-                                        $('#expiring_opm').on('change', function() {
-                                            // Get the selected option value
-                                            const selectedValue = $(this).val();
-
-                                            // Hide all non-default option divs
-                                            $('.gropu_form_set').not('.defaultoption').hide();
-
-                                            // Show the corresponding div based on the selected value
-                                            if (selectedValue === "Upcoming Expiry Alert") {
-                                                $('.option1').show();
-                                            } else if (selectedValue === "Upcoming Renewal Alert") {
-                                                $('.option2').show();
-                                            } else if (selectedValue === "Missing Documentation") {
-                                                $('.option3').show();
-                                            } else if (selectedValue === "Payment Due Alert") {
-                                                $('.option4').show();
-                                            } else {
-                                                // Show option0 for unselected or disabled state
-                                                $('.option0').show();
-                                            }
-                                        });
-
-                                        // Trigger change event on page load to show option0 by default
-                                        $('#expiring_opm').trigger('change');
-                                    });
-                                </script>
-
-                                <script>
-                                    $(document).on('click', '.notify', function() {
-                                        // Get the file name from the data attribute
-                                        const fileName = $(this).data('file-name');
-                                        const contractid = $(this).data('id');
-                                        const enddate = $(this).data('startend');
-                                        const custname = $(this).data('cname');
-                                        const venname = $(this).data('vname');
-                                        const fileNames = $(this).data('file-name');
-
-
-                                        if (enddate) {
-                                            const [year, month, day] = enddate.split('-'); // Split the date
-                                            const formattedDate = `${day}-${month}-${year}`; // Reformat to dd-mm-yyyy
-                                            $('#enddate').text(formattedDate); // Set the formatted date
-                                        }
-
-
-                                        $('#filename').text(fileName);
-                                        $('#filenames').text(fileNames);
-
-                                        $('#contractid').text(contractid);
-                                        $('#custname').text(custname);
-                                        $('#venname').text(venname);
-
-                                    });
-                                </script>
+                               
 
 
 
@@ -1214,44 +857,72 @@ if (renewDate1) {
                                     <h2 class="addcustomer_title">Addend</h2>
                                     <div class="customer_wrap">
 
-                                        <form id="" action="" method="POST" enctype="multipart/form-data" class="upload-form">
+                                        <form id="" action="{{ route('customeraddend') }}" method="POST" enctype="multipart/form-data" class="upload-form">
+                                            @csrf
                                             <div class="gropu_form name_svg_top">
                                                 <svg width="18" height="22" viewBox="0 0 18 22" fill="none" xmlns="http://www.w3.org/2000/svg">
                                                     <path d="M8.41927 17.4167H9.58594V13.9167H13.0859V12.75H9.58594V9.25H8.41927V12.75H4.91927V13.9167H8.41927V17.4167ZM2.72127 21.5C2.18383 21.5 1.73544 21.3203 1.3761 20.961C1.01677 20.6017 0.836715 20.1533 0.835938 19.6158V2.38417C0.835938 1.8475 1.01599 1.3995 1.3761 1.04017C1.73622 0.680833 2.1846 0.500778 2.72127 0.5H11.9193L17.1693 5.75V19.6158C17.1693 20.1525 16.9896 20.6009 16.6303 20.961C16.2709 21.3211 15.8222 21.5008 15.2839 21.5H2.72127ZM11.3359 6.33333H16.0026L11.3359 1.66667V6.33333Z" fill="#4D4D4D" />
                                                 </svg>
-                                                <h2>OrangeXT Design Contract - January</h2>
+                                                <h2 id="AddendfileNamefilename"></h2>
                                             </div>
 
 
                                             <div class="gropu_form">
                                                 <label for="con_type">Area of Addendum </label>
                                                 <select id="Addendum_type" name="Addendum_type" required>
-                                                    <option value="" disabled Selected>select</option>
+                                                    <option value="" disabled Selected>Select Area of Addendum</option>
                                                     <option value="Payment Terms Addendum">Payment Terms Addendum</option>
                                                     <option value="Renewal Terms Addendum">Renewal Terms Addendum</option>
                                                     <option value="Fee Exclusion Matrix Addendum">Fee Exclusion Matrix Addendum</option>
                                                 </select>
                                             </div>
-
-                                            <div class="gropu_form">
-                                                <label for="con_term">Current Renewal Terms </label>
-                                                <div class="renui_term">
-                                                    <p>
-                                                        Lorem ipsum dolor sit amet
-                                                        consectetur adipiscing elit, sed do eiusmod tempor
-                                                        incididunt ut labore et dolore magna aliqua. Ut enim ad minim
-                                                        veniam, quis nostrud exercitation
-                                                        Lorem ipsum dolor sit amet
-                                                        consectetur adipiscing elit, sed do eiusmod
-                                                        Lorem ipsum dolor sit amet
-                                                    </p>
+                                            <!-- Payment Terms Addendum Group -->
+                                            <div class="group_payment_terms" style="display:none;">
+                                                <div class="gropu_form">
+                                                    <label for="con_term">Current Payment Terms </label>
+                                                    <div class="renui_term">
+                                                        <p id="contractpayment"></p>
+                                                    </div>
+                                                </div>
+                                                <div class="gropu_form">
+                                                    <label for="con_add_term">Add to Payment Terms </label>
+                                                    <textarea name="con_add_payment_term" style="height: 150px;"></textarea>
                                                 </div>
                                             </div>
 
-                                            <div class="gropu_form">
-                                                <label for="con_add_term">Add to Renewal Terms </label>
-                                                <textarea name="con_add_term" style="height: 150px;"></textarea>
+                                            <!-- Renewal Terms Addendum Group -->
+                                            <div class="group_renewal_terms" style="display:none;">
+                                                <div class="gropu_form">
+                                                    <label for="con_term">Current Renewal Terms </label>
+                                                    <div class="renui_term">
+                                                        <p id="contractrenewal"></p>
+                                                    </div>
+                                                </div>
+                                                <div class="gropu_form">
+                                                    <label for="con_add_term">Add to Renewal Terms </label>
+                                                    <textarea name="con_add_renew_term" style="height: 150px;"></textarea>
+                                                </div>
                                             </div>
+
+                                            <!-- Fee Exclusion Matrix Addendum Group -->
+                                            <div class="group_fee_exclusion" style="display:none;">
+                                                <div class="gropu_form">
+                                                    <label for="con_term">Current Fee Exclusion Matrix </label>
+                                                    <div class="renui_term">
+                                                        <p id="contractfee"></p>
+                                                    </div>
+                                                </div>
+                                                <div class="gropu_form">
+                                                    <label for="con_add_term">Add to Fee Exclusion Matrix </label>
+                                                    <textarea name="con_add_fee_term" style="height: 150px;"></textarea>
+                                                </div>
+                                                
+                                            </div>
+
+                                            <input type="hidden" name="contractid" id="contractid">
+                                            <input type="hidden" name="contractcustid" id="contractcustid">
+
+                                           
                                             <div class="root_btn btn_draft">
                                                 <button class="btn" id="addcontarctt" type="submit">Add to Exisitng Contract</button>
                                             </div>
@@ -1353,4 +1024,357 @@ if (renewDate1) {
 
 
 </style>
+
+<script>
+    $(document).ready(function() {
+        // Initially hide all option divs except the defaultoption
+        $('.gropu_form_set').not('.defaultoption').hide();
+
+        // On change event for the dropdown
+        $('#expiring_opm').on('change', function() {
+            // Get the selected option value
+            const selectedValue = $(this).val();
+
+            // Hide all non-default option divs
+            $('.gropu_form_set').not('.defaultoption').hide();
+
+            // Show the corresponding div based on the selected value
+            if (selectedValue === "Upcoming Expiry Alert") {
+                $('.option1').show();
+            } else if (selectedValue === "Upcoming Renewal Alert") {
+                $('.option2').show();
+            } else if (selectedValue === "Missing Documentation") {
+                $('.option3').show();
+            } else if (selectedValue === "Payment Due Alert") {
+                $('.option4').show();
+            } else {
+                // Show option0 for unselected or disabled state
+                $('.option0').show();
+            }
+        });
+
+        // Trigger change event on page load to show option0 by default
+        $('#expiring_opm').trigger('change');
+    });
+</script>
+
+<script>
+    $(document).on('click', '.notify', function() {
+        // Get the file name from the data attribute
+        const fileName = $(this).data('file-name');
+        const contractid = $(this).data('id');
+        const enddate = $(this).data('startend');
+        const custname = $(this).data('cname');
+        const venname = $(this).data('vname');
+        const fileNames = $(this).data('file-name');
+
+
+        if (enddate) {
+            const [year, month, day] = enddate.split('-'); // Split the date
+            const formattedDate = `${day}-${month}-${year}`; // Reformat to dd-mm-yyyy
+            $('#enddate').text(formattedDate); // Set the formatted date
+        }
+
+
+        $('#filename').text(fileName);
+        $('#filenames').text(fileNames);
+
+        $('#contractid').text(contractid);
+        $('#custname').text(custname);
+        $('#venname').text(venname);
+
+    });
+</script>
+<script>
+    $(document).ready(function () {
+        // On click, make the div editable
+        $('.editable').on('click', function () {
+            const $this = $(this);
+
+            // If it's already editable, return
+            if ($this.attr('contenteditable') === 'true') return;
+
+            // Make the div editable
+            $this.attr('contenteditable', 'true').focus();
+        });
+
+        // Save changes when the user clicks outside or presses Enter
+        $('.editable').on('blur keydown', function (e) {
+            const $this = $(this);
+
+            // If Enter key is pressed or blur occurs
+            if (e.type === 'blur' || (e.type === 'keydown' && e.key === 'Enter')) {
+                // Remove the editable attribute
+                $this.removeAttr('contenteditable');
+
+                // Log the updated content
+                console.log('Updated content:', $this.html());
+            }
+        });
+
+        // Update the message field dynamically on #expiring_opm change
+        $('#expiring_opm').on('change', function () {
+            const selectedOption = $(this).val();
+            let selectedMessage = '';
+
+            // Select the corresponding message based on the selected option
+            switch (selectedOption) {
+                case 'Upcoming Expiry Alert':
+                    selectedMessage = $('#message1').html();
+                    break;
+                case 'Upcoming Renewal Alert':
+                    selectedMessage = $('#message2').html();
+                    break;
+                case 'Missing Documentation':
+                    selectedMessage = $('#message3').html();
+                    break;
+                case 'Payment Due Alert':
+                    selectedMessage = $('#message4').html();
+                    break;
+                case 'Other':
+                selectedMessage = $('#message5').html();
+                    break;
+            }
+
+            // Clean the message to remove <span> tags and ensure no unwanted markup
+            selectedMessage = selectedMessage.replace(/<span[^>]*>([^<]*)<\/span>/g, '$1');
+
+            // Set the cleaned message in the hidden field
+            $('#selectedMessage').val(selectedMessage);
+            const filename = $('#filename').text();
+            $('#contractFilename').val(filename);
+            // Log the updated message for debugging
+            console.log('Selected Message:', selectedMessage);
+        });
+
+        // Update form data dynamically before submission
+        $('form').on('submit', function () {
+            const selectedOption = $('#expiring_opm').val();
+            let selectedMessage = '';
+
+            // Dynamically fetch the current editable content
+            switch (selectedOption) {
+                case 'Upcoming Expiry Alert':
+                    selectedMessage = $('#message1').html();
+                    break;
+                case 'Upcoming Renewal Alert':
+                    selectedMessage = $('#message2').html();
+                    break;
+                case 'Missing Documentation':
+                    selectedMessage = $('#message3').html();
+                    break;
+                case 'Payment Due Alert':
+                    selectedMessage = $('#message4').html();
+                    break;
+                case 'Other':
+                selectedMessage = $('#message5').html();
+                    break;
+            }
+
+            // Clean the message to remove <span> tags
+            selectedMessage = selectedMessage.replace(/<span[^>]*>([^<]*)<\/span>/g, '$1');
+
+            // Update the hidden field with the latest message
+            $('#selectedMessage').val(selectedMessage);
+            const filename = $('#filename').text();
+             $('#contractFilename').val(filename);
+            // Log the form submission data
+            console.log('Form Submitted with Message:', selectedMessage);
+        });
+    });
+</script>
+
+<style>
+    .option0 {
+        display: none !important;
+    }
+    .option {
+        display: block !important;
+    }
+</style>
+
+<script>
+    $('#expiring_opm').on('change', function () {
+        const selectedValue = $(this).val().trim();
+        console.log("Selected Value:", selectedValue);
+
+        // Reset: Hide all visible `gropu_form_set` except `defaultoption`, and remove the `option` class
+        $('.gropu_form_set:visible').not('.defaultoption').hide().removeClass('option');
+
+        // Show the selected option only
+        if (selectedValue === "Other") {
+            $('.option5').show().addClass('option');
+        } else if (selectedValue === "Upcoming Expiry Alert") {
+            $('.option1').show().addClass('option');
+        } else if (selectedValue === "Upcoming Renewal Alert") {
+            $('.option2').show().addClass('option');
+        } else if (selectedValue === "Missing Documentation") {
+            $('.option3').show().addClass('option');
+        } else if (selectedValue === "Payment Due Alert") {
+            $('.option4').show().addClass('option');
+        } else {
+            $('.option0').show().addClass('option'); // Default case
+        }
+    });
+</script>
+
+
+
+
+
+
+ 
+
+
+        <script>
+        $(document).on('click', '.notify', function() {
+            // Get the file name from the data attribute
+            const fileName = $(this).data('file-name');
+            const contractid = $(this).data('id');
+            const enddate = $(this).data('startend');
+            const custname = $(this).data('cname');
+            const venname = $(this).data('vname');
+            const fileNames = $(this).data('file-name');
+            const venname1 = $(this).data('vname');
+
+            const fileName1 = $(this).data('file-name');
+            const custname1 = $(this).data('cname');
+
+
+            const venname2 = $(this).data('vname');
+
+            const fileName2 = $(this).data('file-name');
+            const custname2 = $(this).data('cname');
+            const amount = $(this).data('amount');
+
+            const startendDate = $(this).data('startend'); // Assuming this is in 'YYYY-MM-DD' format
+
+        // Parse it into a Date object
+        const date = new Date(startendDate);
+
+        // Add one day to the date
+        date.setDate(date.getDate() + 1);
+
+        // Format the updated date back to 'YYYY-MM-DD'
+        const renewDate = date.toISOString().split('T')[0];
+
+        if (renewDate) {
+                const [year, month, day] = renewDate.split('-'); // Split the date
+                const formattedDates = `${day}-${month}-${year}`;   // Reformat to dd-mm-yyyy
+                $('#renewDate').text(formattedDates);          // Set the formatted date
+            } 
+
+            
+            if (enddate) {
+                const [year, month, day] = enddate.split('-'); // Split the date
+                const formattedDate = `${day}-${month}-${year}`;   // Reformat to dd-mm-yyyy
+                $('#enddate').text(formattedDate);          // Set the formatted date
+            } 
+
+
+            const startendDate1 = $(this).data('startend'); // Assuming this is in 'YYYY-MM-DD' format
+
+        // Parse it into a Date object
+        const date1 = new Date(startendDate1);
+
+        // Add one day to the date
+        date1.setDate(date1.getDate() + 1);
+
+        // Format the updated date back to 'YYYY-MM-DD'
+        const renewDate1 = date1.toISOString().split('T')[0];
+
+        if (renewDate1) {
+                const [year, month, day] = renewDate1.split('-'); // Split the date
+                const formattedDates1 = `${day}-${month}-${year}`;   // Reformat to dd-mm-yyyy
+                $('#renewDate1').text(formattedDates1);          // Set the formatted date
+            } 
+            
+            
+            $('#filename').text(fileName);
+            $('#filenames').text(fileNames);
+
+            $('#contractid').text(contractid);
+            $('#custname').text(custname);
+            $('#venname').text(venname);
+
+            $('#fileName1').text(fileName1);
+            $('#custname1').text(custname1);
+            $('#venname1').text(venname1);
+
+
+            $('#fileName2').text(fileName2);
+            $('#custname2').text(custname2);
+            $('#venname2').text(venname2);
+        
+
+            $('#amount').text(amount);
+            
+
+    
+        });
+        </script>
+        <script>
+            // Ensure this is inside the $(document).ready() or $(window).on('load')
+            $(document).on('click', '[id^="Addend"]', function() {
+              // Get the specific contract ID dynamically
+              var contractId = $(this).attr('id').replace('Addend', '');  // Extract contract ID from the element ID
+          
+              // You can use this contractId to fetch data if needed, or just toggle the modal visibility
+              $('.addendcustomer_fix').addClass('active');
+              $('.addend_overlay_fix').addClass('active');
+            });
+          
+            // Close the modal when clicking on the overlay
+            $('.addend_overlay_fix').on('click', function() {
+              $('.addendcustomer_fix').removeClass('active');
+              $('.addend_overlay_fix').removeClass('active');
+            });
+          </script>
+
+<script>
+    $(document).on('click', '.Addend', function() {
+        // Get the file name from the data attribute
+        const AddendfileName = $(this).data('file-name');
+        const contractid = $(this).data('id');
+        const contractrenewal = $(this).data('renewal');
+        const contractfee = $(this).data('fee');
+        const contractpayment = $(this).data('payment');
+        const contractcustid = $(this).data('custid');
+
+        $('#AddendfileNamefilename').text(AddendfileName);
+        $('#contractrenewal').text(contractrenewal);
+        $('#contractfee').text(contractfee);
+        $('#contractpayment').text(contractpayment);
+        $('#contractid').val(contractid);
+        $('#contractcustid').val(contractcustid);
+
+        
+        
+
+
+    });
+    </script>
+    <script>
+        $(document).ready(function() {
+    // Listen for changes in the "Addendum_type" select field
+    $('#Addendum_type').on('change', function() {
+        var selectedAddendum = $(this).val();
+
+        // Hide all groups initially
+        $('.group_payment_terms').hide();
+        $('.group_renewal_terms').hide();
+        $('.group_fee_exclusion').hide();
+
+        // Show the corresponding group based on selected addendum type
+        if (selectedAddendum === 'Payment Terms Addendum') {
+            $('.group_payment_terms').show();
+        } else if (selectedAddendum === 'Renewal Terms Addendum') {
+            $('.group_renewal_terms').show();
+        } else if (selectedAddendum === 'Fee Exclusion Matrix Addendum') {
+            $('.group_fee_exclusion').show();
+        }
+    });
+});
+
+    </script>
 @endsection

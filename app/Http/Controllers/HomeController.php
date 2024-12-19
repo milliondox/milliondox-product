@@ -29437,7 +29437,9 @@ public function customernotification(Request $request)
     return redirect()->back()->with('success', 'Notification stored and email sent successfully!');
 }
 
-
+public function customeraddend(Request $request){
+    dd($request);
+}
 
     
 
