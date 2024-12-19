@@ -25352,10 +25352,12 @@ public function downloadFolder($folder_id)
         ->where('is_delete', 0)
         ->firstOrFail();
     $folderName = $folder->name;
+    $parentName = $folder->parent_name;
 
     // Get related directories
     $relatedDirectories = Folder::where('path', 'like', '%' . $folderName . '%')
         ->where('is_delete', 0)
+        ->where('parent_name', 'like', '%' . $parentName . '%')
         ->where(function ($query) {
             $query->where('user_id', Auth::id())
                 ->orWhere('user_id', 301);
@@ -25388,7 +25390,8 @@ public function downloadFolder($folder_id)
 
         foreach ($relatedDirectories as $directory) {
             // Include all parent directories in the ZIP
-            $this->addParentDirectories($zip, $directory->path);
+            // dd($directory->parent_name);
+            $this->addParentDirectories($zip, $directory->parent_name);
 
             foreach ($files as $file) {
                 // if ($file->location == $directory->path) {

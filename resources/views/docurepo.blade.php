@@ -2652,7 +2652,7 @@ document.addEventListener('DOMContentLoaded', function () {
                                                                                     // clearInterval(intervalId); // Stop simulated progress
                                                                                     // updateProgressBar(progressId, 100, "Zipping Completed");
                                                                                     $('#uploadSuccessCount').html("Download status");
-                                                                                    $(`#${progressId} .file_name`).text("Zipping Completed");
+                                                                                    $(`#${progressId} .file_name`).text("Zipping Completed. Downloading..");
 
 
                                                                                     $(`#${progressId} .done_tick`).show();
