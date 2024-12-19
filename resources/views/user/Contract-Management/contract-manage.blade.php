@@ -135,8 +135,6 @@
                                   <input id="phoneNumber" type="tel" name="phone" required inputmode="numeric"
                                     placeholder="Phone" oninput="this.value = this.value.replace(/[^0-9]/g, '');"
                                     title="Please enter a valid phone number, e.g., +1-123-456-7890" />
-                                    {{-- <input type="hidden" id="fullPhoneNumber" name="full_phone" /> --}}
-
                                     
                               </div>
                             </div>
