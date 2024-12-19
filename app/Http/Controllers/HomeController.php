@@ -25391,7 +25391,7 @@ public function downloadFolder($folder_id)
         foreach ($relatedDirectories as $directory) {
             // Include all parent directories in the ZIP
             // dd($directory->parent_name);
-            $this->addParentDirectories($zip, $directory->parent_name);
+            $this->addParentDirectories($zip, $directory->path);
 
             foreach ($files as $file) {
                 // if ($file->location == $directory->path) {
@@ -25455,6 +25455,7 @@ public function downloadFolder($folder_id)
 
 public function downloadZipSKY($zipFileName)
 {
+    // ok
     // Define the file path on the server
     $filePath = storage_path('app/public/' . $zipFileName); // Assuming the file is in the public storage folder
     // $filePathTemp = storage_path('app/public/temp/' . $zipFileName); // Assuming the file is in the public storage folder
