@@ -15438,7 +15438,7 @@ public function PreHandleCommonUploadFiles(Request $request)
                                     // $folderPaths2 = $folderPath;
                                     // $folderName = substr($folderPaths2, strrpos($folderPaths2, '/') + 1);
                                     // $folderName = trim($folderName);
-                                    $folderPaths2 = $folderPaths;
+                                    $folderPaths2 = $folderPath;
                                     // dd($folderPaths2);
                                     // Check if the string contains a '/'
                                     if (strrpos($folderPaths2, '/') !== false) {
@@ -15694,7 +15694,7 @@ public function PreHandleCommonUploadFiles(Request $request)
                         // $folderName = substr($folderPaths2, strrpos($folderPaths2, '/') + 1);
                         // $folderName = trim($folderName);
 
-                        $folderPaths2 = $folderPaths;
+                        $folderPaths2 = $folderPath;
                         // dd($folderPaths2);
                         // Check if the string contains a '/'
                         if (strrpos($folderPaths2, '/') !== false) {
@@ -15922,7 +15922,7 @@ public function PreHandleCommonUploadFiles(Request $request)
                         // $folderPaths2 = $folderPath;
                         // $folderName = substr($folderPaths2, strrpos($folderPaths2, '/') + 1);
                         // $folderName = trim($folderName);
-                        $folderPaths2 = $folderPaths;
+                        $folderPaths2 = $folderPath;
                         // dd($folderPaths2);
                         // Check if the string contains a '/'
                         if (strrpos($folderPaths2, '/') !== false) {
@@ -16212,7 +16212,7 @@ public function PreBankHandleCommonUploadFiles(Request $request)
                                     // $folderName = substr($folderPaths2, strrpos($folderPaths2, '/') + 1);
                                     // $folderName = trim($folderName);
 
-                                    $folderPaths2 = $folderPaths;
+                                    $folderPaths2 = $folderPath;
                                     // dd($folderPaths2);
                                     // Check if the string contains a '/'
                                     if (strrpos($folderPaths2, '/') !== false) {
@@ -16469,7 +16469,7 @@ public function PreBankHandleCommonUploadFiles(Request $request)
                         // $folderName = substr($folderPaths2, strrpos($folderPaths2, '/') + 1);
                         // $folderName = trim($folderName);
 
-                        $folderPaths2 = $folderPaths;
+                        $folderPaths2 = $folderPath;
                         // dd($folderPaths2);
                         // Check if the string contains a '/'
                         if (strrpos($folderPaths2, '/') !== false) {
@@ -16699,7 +16699,7 @@ public function PreBankHandleCommonUploadFiles(Request $request)
                         // $folderName = substr($folderPaths2, strrpos($folderPaths2, '/') + 1);
                         // $folderName = trim($folderName);
 
-                        $folderPaths2 = $folderPaths;
+                        $folderPaths2 = $folderPath;
                         // dd($folderPaths2);
                         // Check if the string contains a '/'
                         if (strrpos($folderPaths2, '/') !== false) {
@@ -25416,8 +25416,8 @@ public function downloadZipSKY($zipFileName)
     // Check if the file exists
     if (file_exists($filePath)) {
         // Return the file for download
-        // return response()->download($filePath); // The download function sends the file to the browser
-        return response()->download($filePath)->deleteFileAfterSend(true);
+        return response()->download($filePath); // The download function sends the file to the browser
+        // return response()->download($filePath)->deleteFileAfterSend(true);
     } else {
         // If the file doesn't exist, return an error response
         return response()->json([
