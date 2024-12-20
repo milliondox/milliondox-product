@@ -844,11 +844,17 @@ public function storecompanyemployee(Request $request)
     $uniqueId = Auth::id();
     $fiscalYear = now()->month < 4 ? ($currentYear - 1) . '-' . $currentYear : $currentYear . '-' . ($currentYear + 1);
     
-    $hrPrefix = "{$fiscalYear}{$currentMonth}0_";
+    // $hrPrefix = "{$fiscalYear}{$currentMonth}0_";
+    $hrPrefix = "2024-2025November0_";
+
     $otherPrefix ="{$fiscalYear}{$currentMonth}{$uniqueId}_";
 
+
     // Define Human Resources folder path with prefix
-    $hrFolderPath = "{$hrPrefix}Human Resources";
+    // $hrFolderPath = "{$hrPrefix}Human Resources";
+    // dd($hrFolderPath);
+
+    $hrFolderPath = "2024-2025November0_Human Resources";
 
     // Ensure HR folder exists
     if (!Storage::exists($hrFolderPath)) {
@@ -891,6 +897,7 @@ public function storecompanyemployee(Request $request)
     // Create fixed folders with prefix
     foreach ($fixedFolders as $mainFolder => $subFolders) {
         $mainFolderPath = "{$hrFolderPath}/{$hrPrefix}{$mainFolder}";
+        // dd($mainFolderPath);
 
         if (!Storage::exists($mainFolderPath)) {
             Storage::makeDirectory($mainFolderPath);
@@ -1331,11 +1338,19 @@ protected function createFolderStructure($employeeName, $userId, $employeeId)
     $uniqueId = Auth::id();
     $fiscalYear = now()->month < 4 ? ($currentYear - 1) . '-' . $currentYear : $currentYear . '-' . ($currentYear + 1);
     
-    $hrPrefix = "{$fiscalYear}{$currentMonth}0_";
-    $otherPrefix ="{$fiscalYear}{$currentMonth}{$uniqueId}_";
+    // $hrPrefix = "{$fiscalYear}{$currentMonth}0_";
+    // $otherPrefix ="{$fiscalYear}{$currentMonth}{$uniqueId}_";
 
+    // // Define Human Resources folder path with prefix
+    // $hrFolderPath = "{$hrPrefix}Human Resources";
+
+    // $hrPrefix = "{$fiscalYear}{$currentMonth}0_";
+    $hrPrefix = "2024-2025November0_";
+    $otherPrefix ="{$fiscalYear}{$currentMonth}{$uniqueId}_";
     // Define Human Resources folder path with prefix
-    $hrFolderPath = "{$hrPrefix}Human Resources";
+    // $hrFolderPath = "{$hrPrefix}Human Resources";
+    // dd($hrFolderPath);
+    $hrFolderPath = "2024-2025November0_Human Resources";
 
     // Ensure HR folder exists
     if (!Storage::exists($hrFolderPath)) {
@@ -25302,11 +25317,16 @@ public function downloadFolder($folder_id)
     $folder = Folder::where('id', $folder_id)
         ->where('is_delete', 0)
         ->firstOrFail();
-    $folderName = $folder->name;
-    $parentName = $folder->parent_name;
 
-    // Get related directories
-    $relatedDirectories = Folder::where('path', 'like', '%' . $folderName . '%')
+        // dd($folder);
+    $folderName = $folder->name;
+    // echo $folderName;
+    $parentName = $folder->parent_name;
+    // echo $parentName;
+
+    if(isset($parentName) && !empty($parentName)){
+        // Get related directories
+        $relatedDirectories = Folder::where('path', 'like', '%' . $folderName . '%')
         ->where('is_delete', 0)
         ->where('parent_name', 'like', '%' . $parentName . '%')
         ->where(function ($query) {
@@ -25314,20 +25334,43 @@ public function downloadFolder($folder_id)
                 ->orWhere('user_id', 301);
         })
         ->get();
+        // dd("inside isset");
+    }
+    else{
+        // Get related directories
+        $relatedDirectories = Folder::where('path', 'like', '%' . $folderName . '%')
+        ->where('is_delete', 0)
+        // ->where('parent_name', 'like', '%' . $parentName . '%')
+        ->where(function ($query) {
+            $query->where('user_id', Auth::id())
+                ->orWhere('user_id', 301);
+        })
+        ->get();
+        // dd("outside isset");
+
+
+    }
+
+    // dd($relatedDirectories);
 
     // Fetch files from the CommonTable based on locations
     $locations = $relatedDirectories->pluck('path');
+    // dd($locations);
     $files = CommonTable::whereIn('location', $locations)
         ->where('user_id', Auth::id())
         ->where('is_delete', 0)
         ->whereNull('is_replaced')
         ->get();
 
+        // dd($files);
+
     // Create a temporary ZIP file
     // $zipFileName = $folderName . '.zip';
     $userId = Auth::id();
     $currentDate = now()->format('d-M-Y'); // e.g., '18-Dec-2024'
     $folderName = preg_replace('/[^_]*_/', '', $folderName);
+    // dd($folderName);
+
     // dd($folderName);
 
     $zipFileName = $folderName . "_User{$userId}_{$currentDate}.zip";

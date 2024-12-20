@@ -4829,13 +4829,13 @@ td.file_dess {
 }
 
 .progree_cont_nt .progress_repeat .file_name {
-    font-size: 16px;
+    font-size: 14px;
     font-weight: 500;
     margin: 0;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    width: 200px;
+    width: 230px;
 }
 
 .progree_cont_nt .progress_circle {
