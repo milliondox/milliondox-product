@@ -400,6 +400,15 @@
                                                         Create Smart Contract
                                                     </a>
                                                 </li>
+                                                <li class="oplod_inner">
+                                                    <a data-bs-toggle="modal" data-bs-target="#contract_master_details">
+                                                        <svg width="16" height="15" viewBox="0 0 16 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                            <path d="M11.3359 5.50098C12.7859 5.50898 13.5713 5.57364 14.0833 6.08564C14.6693 6.67164 14.6693 7.61431 14.6693 9.49964V10.1663C14.6693 12.0523 14.6693 12.995 14.0833 13.581C13.4979 14.1663 12.5546 14.1663 10.6693 14.1663H5.33594C3.4506 14.1663 2.50727 14.1663 1.92194 13.581C1.33594 12.9943 1.33594 12.0523 1.33594 10.1663V9.49964C1.33594 7.61431 1.33594 6.67164 1.92194 6.08564C2.43394 5.57364 3.21927 5.50898 4.66927 5.50098" stroke="#5790FF" stroke-width="1.2" stroke-linecap="round" />
+                                                            <path d="M8 9.49967V0.833008M8 0.833008L10 3.16634M8 0.833008L6 3.16634" stroke="#5790FF" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" />
+                                                        </svg>
+                                                        Bulk Upload Contract
+                                                    </a>
+                                                </li>
                                             </ul>
                                         </div>
                                     </div>
@@ -726,14 +735,14 @@
                                         <div id="myDropdown3" class="dropdown-content">
 
                                             @php
-                                            $renewalTermsArray = json_decode($contract->renewal_terms, true);
-                                            $feeEscalationArray = json_decode($contract->fee_escalation_clause, true);
-                                            $paymentTermsArray = json_decode($contract->payment_terms, true);
-                                        
-                                            $lastRenewalTerm = end($renewalTermsArray);
-                                            $lastFeeEscalation = end($feeEscalationArray);
-                                            $lastPaymentTerm = end($paymentTermsArray);
-                                        @endphp
+                                                $renewalTermsArray = json_decode($contract->renewal_terms, true);
+                                                $feeEscalationArray = json_decode($contract->fee_escalation_clause, true);
+                                                $paymentTermsArray = json_decode($contract->payment_terms, true);
+
+                                                $lastRenewalTerm = is_array($renewalTermsArray) && !empty($renewalTermsArray) ? end($renewalTermsArray) : null;
+                                                $lastFeeEscalation = is_array($feeEscalationArray) && !empty($feeEscalationArray) ? end($feeEscalationArray) : null;
+                                                $lastPaymentTerm = is_array($paymentTermsArray) && !empty($paymentTermsArray) ? end($paymentTermsArray) : null;
+                                            @endphp
                                             <a class="dropdown-itemm notify" data-bs-toggle="modal" data-id="{{ $contract->id }}" data-amount="{{ $contract->contract_value }}"  data-bs-toggle="modal" data-bs-target="#notify_customer" data-file-name="{{ $contract->file_name }}" data-startend="{{ $contract->startend }}" data-cname="{{$customerrecord->lename}}" data-vname="{{$contract->vendor_name}}">
 
                                                 <svg width="12" height="10" viewBox="0 0 12 10" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -996,6 +1005,137 @@
         </div>
         <!-- Container-fluid start-->
 
+
+
+        <!--Eployees master details start-->
+
+        <div class="modal fade add_directorrs employees_master_details" id="contract_master_details" tabindex="-1" role="dialog" aria-labelledby="contract_master_details" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title">Contracts Master Details</h5>
+
+
+                </div>
+ 
+<div class="modal-footer">
+<div class="main_one_go">
+<div class="one_go_top">
+<h2>Upload All your contracts Data in One Go!</h2>
+
+</div>
+<div class="three_upload_bttn">
+<button class="emmp_go_download_tem downloadcontracttemp" type="button">
+  <svg width="18" height="19" viewBox="0 0 18 19" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M1 14V16C1 16.5304 1.21071 17.0391 1.58579 17.4142C1.96086 17.7893 2.46957 18 3 18H15C15.5304 18 16.0391 17.7893 16.4142 17.4142C16.7893 17.0391 17 16.5304 17 16V14M4 8L9 13M9 13L14 8M9 13V1" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>
+<span>
+<b>STEP 1</b>
+Download Contract Template
+</span>
+</button>
+<span><svg width="9" height="14" viewBox="0 0 9 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M1 1L7 7L1 13" stroke="#AEAEAE" stroke-width="2"/>
+</svg></span>
+<div class="go_step_2">
+<b>STEP 2</b>
+<span>Fill in Contract Data according to the given format</span>
+</div>
+<span><svg width="9" height="14" viewBox="0 0 9 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M1 1L7 7L1 13" stroke="#AEAEAE" stroke-width="2"/>
+</svg></span>
+
+
+<button class="emmp_go_upload_tem" type="button">
+<svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M19 13V17C19 17.5304 18.7893 18.0391 18.4142 18.4142C18.0391 18.7893 17.5304 19 17 19H3C2.46957 19 1.96086 18.7893 1.58579 18.4142C1.21071 18.0391 1 17.5304 1 17V13M15 6L10 1M10 1L5 6M10 1V13" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>
+<span>
+<b>STEP 3</b>
+Upload Contract Template
+</span>
+
+</button>
+
+
+
+
+</div>
+</div>
+</div>
+              </div>
+            </div>
+          </div>
+          
+<!--Eployees master details end-->
+
+<!-- popup for upload start -->
+<!-- Modal HTML -->
+<div class="modal fade" id="uploadModal" tabindex="-1" aria-labelledby="uploadModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="uploadModalLabel">Upload Contract Template</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <!-- Form inside modal -->
+          <form action="{{ route('contracts.import') }}" method="POST" enctype="multipart/form-data">
+            @csrf
+    
+            <!-- Excel file input -->
+            <div>
+                <label for="excel_file">Upload Excel File:</label>
+                <input type="file" name="excel_file" required>
+            </div>
+    
+            <!-- Contract file input -->
+            <div>
+                <label for="contracts">Upload Contract Files:</label>
+                <input type="file" name="contracts[]" multiple>
+            </div>
+    
+            <!-- Submit button -->
+            <button type="submit">Upload</button>
+        </form>
+    
+       
+    
+        </div>
+      </div>
+    </div>
+  </div>
+  
+
+<!-- end upload popup -->
+@if(session('success'))
+<p>{{ session('success') }}</p>
+@endif
+<script>
+    $(document).ready(function() {
+        $('.downloadcontracttemp').on('click', function() {
+            // Define the path to the CSV file
+            var filePath = '/assets/images/contracttemp.xlsx'; // Adjust this path if needed
+            
+            // Create a temporary anchor element to initiate download
+            var a = document.createElement('a');
+            a.href = filePath;
+            a.download = 'contracttemp.xlsx'; // Name of the downloaded file
+            document.body.appendChild(a);
+            a.click(); // Simulate click
+            document.body.removeChild(a); // Clean up
+        });
+    });
+</script>
+<script>
+    $(document).ready(function() {
+  // When the button is clicked, open the modal
+  $('.emmp_go_upload_tem').on('click', function() {
+    $('#uploadModal').modal('show'); // Open the modal
+  });
+});
+
+</script>
     </div>
 </div>
 </div>
