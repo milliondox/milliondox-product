@@ -166,9 +166,9 @@ Route::get('/fetch-hrempoff3-file-data', [App\Http\Controllers\HomeController::c
 
 Route::get('/fetch-hrempoff4-file-data', [App\Http\Controllers\HomeController::class, 'fetchhrempoff4fFileData'])->name('fetch-hrempoff4-file-data');
 
-Route::post('/customerstore', [App\Http\Controllers\HomeController::class, 'customerstore'])->name('customerstore');
+Route::post('/customerstore', [App\Http\Controllers\ContractController::class, 'customerstore'])->name('customerstore');
 
-Route::post('/storecustomercontract', [App\Http\Controllers\HomeController::class, 'storecustomercontract'])->name('storecustomercontract');
+Route::post('/storecustomercontract', [App\Http\Controllers\ContractController::class, 'storecustomercontract'])->name('storecustomercontract');
 
 // Save folder ID and URL to the session
 Route::post('/save-breadcrumb', [App\Http\Controllers\HomeController::class, 'saveBreadcrumb'])->name('save.breadcrumb');
@@ -1141,13 +1141,13 @@ Route::get('/user/MiscellaneousDocuments', [App\Http\Controllers\HomeController:
 Route::get('/user/Management', [App\Http\Controllers\HomeController::class, 'Management'])->name('user/Management');
     Route::get('/user/manageprofile', [App\Http\Controllers\HomeController::class, 'manageprofile'])->name('user/manageprofile');
 Route::get('/user/ContractManagement', [App\Http\Controllers\HomeController::class, 'ContractManagement'])->name('user/ContractManagement')->middleware('auth');
-Route::get('/user/contractmanage', [App\Http\Controllers\HomeController::class, 'contractmanage'])->name('user/contractmanage')->middleware('auth');
-Route::get('/user/contractmanagedetail/{id}', [App\Http\Controllers\HomeController::class, 'contractmanagedetail'])->name('user/contractmanagedetail')->middleware('auth');
-Route::post('/download-contracts', [App\Http\Controllers\HomeController::class, 'downloadContracts'])->name('download.contracts');
+Route::get('/user/contractmanage', [App\Http\Controllers\ContractController::class, 'contractmanage'])->name('user/contractmanage')->middleware('auth');
+Route::get('/user/contractmanagedetail/{id}', [App\Http\Controllers\ContractController::class, 'contractmanagedetail'])->name('user/contractmanagedetail')->middleware('auth');
+Route::post('/download-contracts', [App\Http\Controllers\ContractController::class, 'downloadContracts'])->name('download.contracts');
 
-Route::post('/customernotification', [App\Http\Controllers\HomeController::class, 'customernotification'])->name('customernotification');
+Route::post('/customernotification', [App\Http\Controllers\ContractController::class, 'customernotification'])->name('customernotification');
 
-Route::post('/customeraddend', [App\Http\Controllers\HomeController::class, 'customeraddend'])->name('customeraddend');
+Route::post('/customeraddend', [App\Http\Controllers\ContractController::class, 'customeraddend'])->name('customeraddend');
 
 Route::get('/user/companyprofile', [App\Http\Controllers\HomeController::class, 'companyprofile'])->name('user/companyprofile');
 Route::get('/user/Sop', [App\Http\Controllers\HomeController::class, 'Sop'])->name('user/Sop');
