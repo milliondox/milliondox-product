@@ -25314,11 +25314,53 @@ if (is_array($dataTags)) {
 public function downloadFolder($folder_id)
 {
     // Fetch the folder details
-    $folder = Folder::where('id', $folder_id)
-        ->where('is_delete', 0)
-        ->firstOrFail();
+    // $folder = Folder::where('id', $folder_id)
+    //     ->where('is_delete', 0)
+    //     ->firstOrFail();
 
-        // dd($folder);
+    // $folder = Folder::where('id', $folder_id)
+    // ->where('is_delete', 0)
+    // ->where(function ($query) {
+    //     $query->whereNull('employee_id')
+    //           ->orWhere(function ($subQuery) {
+    //               $subQuery->whereNotNull('employee_id')
+    //                        ->whereExists(function ($existsQuery) {
+    //                            $existsQuery->select(DB::raw(1))
+    //                                        ->from('store_company_employee')
+    //                                        ->whereColumn('store_company_employee.id', 'folders.employee_id')
+    //                                        ->where('store_company_employee.is_delete', 0);
+    //                        });
+    //           });
+    // })
+    // ->firstOrFail();
+
+    $folder = Folder::leftJoin('store_company_employee', function ($join) {
+        $join->on('store_company_employee.id', '=', 'folders.employee_id')
+             ->where('store_company_employee.is_delete', 0);
+    })
+    ->where('folders.id', $folder_id)
+    ->where('folders.is_delete', 0)
+    ->where(function ($query) {
+        $query->whereNull('folders.employee_id')
+              ->orWhereNotNull('store_company_employee.id');
+    })
+    ->select('folders.*') // Ensure you select only folder columns
+    ->firstOrFail();
+    // dd($folder);
+
+
+    $deletedEmployeeIds = DB::table('store_company_employee')
+    ->where('is_delete', 1)
+    ->pluck('id')
+    ->toArray();
+    // dd($deletedEmployeeIds);
+
+
+
+
+
+
+    // dd($folder);
     $folderName = $folder->name;
     // echo $folderName;
     $parentName = $folder->parent_name;
@@ -25326,6 +25368,15 @@ public function downloadFolder($folder_id)
 
     if(isset($parentName) && !empty($parentName)){
         // Get related directories
+        // $relatedDirectories = Folder::where('path', 'like', '%' . $folderName . '%')
+        // ->where('is_delete', 0)
+        // ->where('parent_name', 'like', '%' . $parentName . '%')
+        // ->where(function ($query) {
+        //     $query->where('user_id', Auth::id())
+        //         ->orWhere('user_id', 301);
+        // })
+        // ->get();
+        // dd("inside isset");
         $relatedDirectories = Folder::where('path', 'like', '%' . $folderName . '%')
         ->where('is_delete', 0)
         ->where('parent_name', 'like', '%' . $parentName . '%')
@@ -25333,20 +25384,34 @@ public function downloadFolder($folder_id)
             $query->where('user_id', Auth::id())
                 ->orWhere('user_id', 301);
         })
+        ->where(function ($query) use ($deletedEmployeeIds) {
+            $query->whereNotIn('employee_id', $deletedEmployeeIds)
+                ->orWhereNull('employee_id');
+        })
         ->get();
-        // dd("inside isset");
     }
     else{
         // Get related directories
+        // $relatedDirectories = Folder::where('path', 'like', '%' . $folderName . '%')
+        // ->where('is_delete', 0)
+        // // ->where('parent_name', 'like', '%' . $parentName . '%')
+        // ->where(function ($query) {
+        //     $query->where('user_id', Auth::id())
+        //         ->orWhere('user_id', 301);
+        // })
+        // ->get();
+        // dd("outside isset");
         $relatedDirectories = Folder::where('path', 'like', '%' . $folderName . '%')
         ->where('is_delete', 0)
-        // ->where('parent_name', 'like', '%' . $parentName . '%')
         ->where(function ($query) {
             $query->where('user_id', Auth::id())
                 ->orWhere('user_id', 301);
         })
+        ->where(function ($query) use ($deletedEmployeeIds) {
+            $query->whereNotIn('employee_id', $deletedEmployeeIds)
+                ->orWhereNull('employee_id');
+        })
         ->get();
-        // dd("outside isset");
 
 
     }
