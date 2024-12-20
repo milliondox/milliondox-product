@@ -15435,8 +15435,19 @@ public function PreHandleCommonUploadFiles(Request $request)
                                 if($fileRecord->save()){
 
 
-                                    $folderPaths2 = $folderPath;
-                                    $folderName = substr($folderPaths2, strrpos($folderPaths2, '/') + 1);
+                                    // $folderPaths2 = $folderPath;
+                                    // $folderName = substr($folderPaths2, strrpos($folderPaths2, '/') + 1);
+                                    // $folderName = trim($folderName);
+                                    $folderPaths2 = $folderPaths;
+                                    // dd($folderPaths2);
+                                    // Check if the string contains a '/'
+                                    if (strrpos($folderPaths2, '/') !== false) {
+                                        $folderName = substr($folderPaths2, strrpos($folderPaths2, '/') + 1);
+                                    } else {
+                                        // If no '/', use the full string as the folder name
+                                        $folderName = $folderPaths2;
+                                    }
+
                                     $folderName = trim($folderName);
 
                                     // Store file details in the database
@@ -15679,8 +15690,19 @@ public function PreHandleCommonUploadFiles(Request $request)
                     try {
                         $folderPath = preg_replace('/\s*\/\s*/', '/', trim($request->input('location')));
 
-                        $folderPaths2 = $folderPath;
-                        $folderName = substr($folderPaths2, strrpos($folderPaths2, '/') + 1);
+                        // $folderPaths2 = $folderPath;
+                        // $folderName = substr($folderPaths2, strrpos($folderPaths2, '/') + 1);
+                        // $folderName = trim($folderName);
+
+                        $folderPaths2 = $folderPaths;
+                        // dd($folderPaths2);
+                        // Check if the string contains a '/'
+                        if (strrpos($folderPaths2, '/') !== false) {
+                            $folderName = substr($folderPaths2, strrpos($folderPaths2, '/') + 1);
+                        } else {
+                            // If no '/', use the full string as the folder name
+                            $folderName = $folderPaths2;
+                        }
                         $folderName = trim($folderName);
 
                         $originalFileName = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME); // Get the file name without extension
@@ -15897,8 +15919,18 @@ public function PreHandleCommonUploadFiles(Request $request)
                         // $storedFileName = basename($filePath);
                         $folderPath = preg_replace('/\s*\/\s*/', '/', trim($request->input('location')));
 
-                        $folderPaths2 = $folderPath;
-                        $folderName = substr($folderPaths2, strrpos($folderPaths2, '/') + 1);
+                        // $folderPaths2 = $folderPath;
+                        // $folderName = substr($folderPaths2, strrpos($folderPaths2, '/') + 1);
+                        // $folderName = trim($folderName);
+                        $folderPaths2 = $folderPaths;
+                        // dd($folderPaths2);
+                        // Check if the string contains a '/'
+                        if (strrpos($folderPaths2, '/') !== false) {
+                            $folderName = substr($folderPaths2, strrpos($folderPaths2, '/') + 1);
+                        } else {
+                            // If no '/', use the full string as the folder name
+                            $folderName = $folderPaths2;
+                        }
                         $folderName = trim($folderName);
 
                         $originalFileName = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME); // Get the file name without extension
@@ -16176,8 +16208,19 @@ public function PreBankHandleCommonUploadFiles(Request $request)
 
                                     $folderPath = preg_replace('/\s*\/\s*/', '/', trim($request->input('location')));
 
-                                    $folderPaths2 = $folderPath;
-                                    $folderName = substr($folderPaths2, strrpos($folderPaths2, '/') + 1);
+                                    // $folderPaths2 = $folderPath;
+                                    // $folderName = substr($folderPaths2, strrpos($folderPaths2, '/') + 1);
+                                    // $folderName = trim($folderName);
+
+                                    $folderPaths2 = $folderPaths;
+                                    // dd($folderPaths2);
+                                    // Check if the string contains a '/'
+                                    if (strrpos($folderPaths2, '/') !== false) {
+                                        $folderName = substr($folderPaths2, strrpos($folderPaths2, '/') + 1);
+                                    } else {
+                                        // If no '/', use the full string as the folder name
+                                        $folderName = $folderPaths2;
+                                    }
                                     $folderName = trim($folderName);
 
                                     // Store file details in the database
@@ -16422,8 +16465,19 @@ public function PreBankHandleCommonUploadFiles(Request $request)
                     try {
                         $folderPath = preg_replace('/\s*\/\s*/', '/', trim($request->input('location')));
 
-                        $folderPaths2 = $folderPath;
-                        $folderName = substr($folderPaths2, strrpos($folderPaths2, '/') + 1);
+                        // $folderPaths2 = $folderPath;
+                        // $folderName = substr($folderPaths2, strrpos($folderPaths2, '/') + 1);
+                        // $folderName = trim($folderName);
+
+                        $folderPaths2 = $folderPaths;
+                        // dd($folderPaths2);
+                        // Check if the string contains a '/'
+                        if (strrpos($folderPaths2, '/') !== false) {
+                            $folderName = substr($folderPaths2, strrpos($folderPaths2, '/') + 1);
+                        } else {
+                            // If no '/', use the full string as the folder name
+                            $folderName = $folderPaths2;
+                        }
                         $folderName = trim($folderName);
 
                         $originalFileName = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME); // Get the file name without extension
@@ -16641,8 +16695,19 @@ public function PreBankHandleCommonUploadFiles(Request $request)
                         // $storedFileName = basename($filePath);
                         $folderPath = preg_replace('/\s*\/\s*/', '/', trim($request->input('location')));
 
-                        $folderPaths2 = $folderPath;
-                        $folderName = substr($folderPaths2, strrpos($folderPaths2, '/') + 1);
+                        // $folderPaths2 = $folderPath;
+                        // $folderName = substr($folderPaths2, strrpos($folderPaths2, '/') + 1);
+                        // $folderName = trim($folderName);
+
+                        $folderPaths2 = $folderPaths;
+                        // dd($folderPaths2);
+                        // Check if the string contains a '/'
+                        if (strrpos($folderPaths2, '/') !== false) {
+                            $folderName = substr($folderPaths2, strrpos($folderPaths2, '/') + 1);
+                        } else {
+                            // If no '/', use the full string as the folder name
+                            $folderName = $folderPaths2;
+                        }
                         $folderName = trim($folderName);
 
                         $originalFileName = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME); // Get the file name without extension
@@ -26464,8 +26529,21 @@ public function HandleCommonUploadFiles(Request $request)
         }
 
 
+        // $folderPaths2 = $folderPaths;
+        // $folderName = substr($folderPaths2, strrpos($folderPaths2, '/') + 1);
+        // $folderName = trim($folderName);
+        // dd($folderName);
+
         $folderPaths2 = $folderPaths;
-        $folderName = substr($folderPaths2, strrpos($folderPaths2, '/') + 1);
+        // dd($folderPaths2);
+        // Check if the string contains a '/'
+        if (strrpos($folderPaths2, '/') !== false) {
+            $folderName = substr($folderPaths2, strrpos($folderPaths2, '/') + 1);
+        } else {
+            // If no '/', use the full string as the folder name
+            $folderName = $folderPaths2;
+        }
+
         $folderName = trim($folderName);
         // $folderPaths = preg_replace('/\s*\/\s*/', ' / ', $folderPath);
         // if (!$folderPath) {
@@ -26622,9 +26700,22 @@ public function HandleCommonUploadFiles(Request $request)
             $folderPaths = $request->input('decodedFolder');
         }
 
+        // $folderPaths2 = $folderPaths;
+        // $folderName = substr($folderPaths2, strrpos($folderPaths2, '/') + 1);
+        // $folderName = trim($folderName);
+        // dd($folderName);
         $folderPaths2 = $folderPaths;
-        $folderName = substr($folderPaths2, strrpos($folderPaths2, '/') + 1);
+        // dd($folderPaths2);
+        // Check if the string contains a '/'
+        if (strrpos($folderPaths2, '/') !== false) {
+            $folderName = substr($folderPaths2, strrpos($folderPaths2, '/') + 1);
+        } else {
+            // If no '/', use the full string as the folder name
+            $folderName = $folderPaths2;
+        }
+
         $folderName = trim($folderName);
+
         // if (!$folderPath) {
         //     return response()->json(['success' => false, 'message' => 'Folder path is required.'], 400);
         // }
@@ -26777,9 +26868,27 @@ public function HandleCommonUploadFiles(Request $request)
         }
 
 
+        // $folderPaths2 = $folderPaths;
+        // dd($folderPaths2);
+        // $folderName = substr($folderPaths2, strrpos($folderPaths2, '/') + 1);
+        // $folderName = trim($folderName);
+
+        // dd($folderName);
+
         $folderPaths2 = $folderPaths;
-        $folderName = substr($folderPaths2, strrpos($folderPaths2, '/') + 1);
+        // dd($folderPaths2);
+
+        // Check if the string contains a '/'
+        if (strrpos($folderPaths2, '/') !== false) {
+            $folderName = substr($folderPaths2, strrpos($folderPaths2, '/') + 1);
+        } else {
+            // If no '/', use the full string as the folder name
+            $folderName = $folderPaths2;
+        }
+
         $folderName = trim($folderName);
+        // dd($folderName);
+
 
         // if (!$folderPath) {
         //     return response()->json(['success' => false, 'message' => 'Folder path is required.'], 400);
