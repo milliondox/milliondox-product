@@ -144,15 +144,15 @@
                                                     <img src="https://f-dev.milliondox.in/profile_pictures/V21JjJbUitpBjn45II8C6qqCtvj1ljfRyaOO2nfo.webp" alt="img">
                                                 </div>
                                                 <h2>Anurag Srivastava</h2>
-                                                                                      
-                                        <div class="Authrized_Signatory">
-                                            <b>Anurag 1</b>
-                                            <b>Anurag 2</b>
-                                            <b>Anurag 3</b>
-                                            <b>Anurag 4</b>
-                                            <b>Anurag 5</b>
-                                            <b class="count"></b>
-                                        </div>
+
+                                                <div class="Authrized_Signatory">
+                                                    <b>Anurag 1</b>
+                                                    <b>Anurag 2</b>
+                                                    <b>Anurag 3</b>
+                                                    <b>Anurag 4</b>
+                                                    <b>Anurag 5</b>
+                                                    <b class="count"></b>
+                                                </div>
 
                                             </li>
 
@@ -163,10 +163,10 @@
                                                 <h2>Devanshu Kumar</h2>
 
                                                 <div class="Authrized_Signatory">
-                                            <b>Devanshu 1</b>
-                                            <b>Devanshu 2</b>                                           
-                                            <b class="count"></b>
-                                        </div>
+                                                    <b>Devanshu 1</b>
+                                                    <b>Devanshu 2</b>
+                                                    <b class="count"></b>
+                                                </div>
 
                                             </li>
 
@@ -735,15 +735,15 @@
                                         <div id="myDropdown3" class="dropdown-content">
 
                                             @php
-                                                $renewalTermsArray = json_decode($contract->renewal_terms, true);
-                                                $feeEscalationArray = json_decode($contract->fee_escalation_clause, true);
-                                                $paymentTermsArray = json_decode($contract->payment_terms, true);
+                                            $renewalTermsArray = json_decode($contract->renewal_terms, true);
+                                            $feeEscalationArray = json_decode($contract->fee_escalation_clause, true);
+                                            $paymentTermsArray = json_decode($contract->payment_terms, true);
 
-                                                $lastRenewalTerm = is_array($renewalTermsArray) && !empty($renewalTermsArray) ? end($renewalTermsArray) : null;
-                                                $lastFeeEscalation = is_array($feeEscalationArray) && !empty($feeEscalationArray) ? end($feeEscalationArray) : null;
-                                                $lastPaymentTerm = is_array($paymentTermsArray) && !empty($paymentTermsArray) ? end($paymentTermsArray) : null;
+                                            $lastRenewalTerm = is_array($renewalTermsArray) && !empty($renewalTermsArray) ? end($renewalTermsArray) : null;
+                                            $lastFeeEscalation = is_array($feeEscalationArray) && !empty($feeEscalationArray) ? end($feeEscalationArray) : null;
+                                            $lastPaymentTerm = is_array($paymentTermsArray) && !empty($paymentTermsArray) ? end($paymentTermsArray) : null;
                                             @endphp
-                                            <a class="dropdown-itemm notify" data-bs-toggle="modal" data-id="{{ $contract->id }}" data-amount="{{ $contract->contract_value }}"  data-bs-toggle="modal" data-bs-target="#notify_customer" data-file-name="{{ $contract->file_name }}" data-startend="{{ $contract->startend }}" data-cname="{{$customerrecord->lename}}" data-vname="{{$contract->vendor_name}}">
+                                            <a class="dropdown-itemm notify" data-bs-toggle="modal" data-id="{{ $contract->id }}" data-amount="{{ $contract->contract_value }}" data-bs-toggle="modal" data-bs-target="#notify_customer" data-file-name="{{ $contract->file_name }}" data-startend="{{ $contract->startend }}" data-cname="{{$customerrecord->lename}}" data-vname="{{$contract->vendor_name}}">
 
                                                 <svg width="12" height="10" viewBox="0 0 12 10" fill="none" xmlns="http://www.w3.org/2000/svg">
                                                     <path d="M0.980729 9.90006L11.1599 5.53673C11.2651 5.49191 11.3548 5.41713 11.4179 5.32172C11.481 5.2263 11.5146 5.11444 11.5146 5.00007C11.5146 4.88569 11.481 4.77383 11.4179 4.67842C11.3548 4.583 11.2651 4.50823 11.1599 4.4634L0.980729 0.100066C0.892588 0.0616207 0.796263 0.0457239 0.700443 0.0538091C0.604623 0.0618942 0.512323 0.093707 0.43187 0.146378C0.351417 0.199048 0.285342 0.270919 0.239607 0.355507C0.193871 0.440095 0.169914 0.534739 0.169896 0.630899L0.164062 3.32007C0.164062 3.61173 0.379896 3.86257 0.671562 3.89757L8.91406 5.00007L0.671562 6.09673C0.379896 6.13757 0.164062 6.3884 0.164062 6.68007L0.169896 9.36923C0.169896 9.7834 0.595729 10.0692 0.980729 9.90006Z" fill="#414651" />
@@ -757,7 +757,7 @@
 
                                                 Renew </a>
 
-                                            <a class="dropdown-itemm Addend" id="Addend{{ $contract->id }}" data-id="{{ $contract->id }}"    data-file-name="{{ $contract->file_name }}"   data-renewal="{{ $lastRenewalTerm }}" data-fee="{{ $lastFeeEscalation }}" data-payment="{{ $lastPaymentTerm }}" data-custid="{{$contract->customer_id}}">
+                                            <a class="dropdown-itemm Addend" id="Addend{{ $contract->id }}" data-id="{{ $contract->id }}" data-file-name="{{ $contract->file_name }}" data-renewal="{{ $lastRenewalTerm }}" data-fee="{{ $lastFeeEscalation }}" data-payment="{{ $lastPaymentTerm }}" data-custid="{{$contract->customer_id}}">
                                                 <svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
                                                     <path d="M1.68029 10.5673C1.70709 10.3261 1.7205 10.2055 1.75699 10.0928C1.78936 9.99277 1.83511 9.89759 1.89298 9.80983C1.9582 9.71092 2.04401 9.62512 2.21561 9.45351L9.91929 1.74985C10.5636 1.10552 11.6083 1.10552 12.2526 1.74985C12.897 2.39418 12.897 3.43885 12.2526 4.08319L4.54894 11.7868C4.37734 11.9585 4.29154 12.0443 4.19262 12.1095C4.10487 12.1673 4.00969 12.2131 3.90968 12.2455C3.79696 12.282 3.67635 12.2954 3.43515 12.3222L1.46094 12.5415L1.68029 10.5673Z" stroke="#414651" stroke-width="1.66667" stroke-linecap="round" stroke-linejoin="round" />
                                                 </svg> Addend </a>
@@ -780,85 +780,85 @@
 
 
 
-                                                                 <!-- notify model start -->
+                                <!-- notify model start -->
 
-                                                                 <div class="modal fade drop_coman_file have_title" id="notify_customer" tabindex="-1" role="dialog" aria-labelledby="notify_customer" aria-hidden="true">
-                                                                    <div class="modal-dialog modal-dialog-centered" role="document">
-                                                                      <div class="modal-content">
-                                                                        <div class="modal-header">
-                                                                          <h5 class="modal-title" style="font-weight:700">Notify Customer</h5>
-                                                                          <button class="close" style="border-radius:5px;" type="button" data-bs-dismiss="modal">
-                                                                            <span aria-hidden="true">
-                                                                              <svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                                                                <path d="M1 1L13 13M13 1L1 13" stroke="#535862" stroke-linecap="round" />
-                                                                              </svg>
-                                                                            </span>
-                                                                          </button>
-                                                                        </div>
-                                                                        <div class="modal-body">
-                                                                          <form id="" action="{{ route('customernotification') }}" method="POST" enctype="multipart/form-data">
-                                                                           
-                                                                            <div class="gropu_form_set defaultoption">
-                                                                                @csrf
-                                                                              <label for="read_onlyy">Selected Contract</label>
-                                                                              <h2 class="read_onlyy" id="filename"></h2>           
-                                                                            </div>
-                                                                            <div class="gropu_form_set defaultoption">
-                                                                              <label for="expiring_opm">Select an option</label>
-                                                                              <select id="expiring_opm" name="expiring_opm" required="">
-                                                                                <option value="" disabled="" selected="">Please select any option</option>
-                                                                                <option value="Upcoming Expiry Alert">Upcoming Expiry Alert</option>
-                                                                                <option value="Upcoming Renewal Alert">Upcoming Renewal Alert</option>
-                                                                                <option value="Missing Documentation">Missing Documentation</option>
-                                                                                <option value="Payment Due Alert">Payment Due Alert</option>
-                                                                                <option value="Other">Other</option>
-                                                                              </select>
-                                                                              <input type="hidden" name="email" value="{{$customerrecord->email}}">
-                                                                            </div>
+                                <div class="modal fade drop_coman_file have_title" id="notify_customer" tabindex="-1" role="dialog" aria-labelledby="notify_customer" aria-hidden="true">
+                                    <div class="modal-dialog modal-dialog-centered" role="document">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title" style="font-weight:700">Notify Customer</h5>
+                                                <button class="close" style="border-radius:5px;" type="button" data-bs-dismiss="modal">
+                                                    <span aria-hidden="true">
+                                                        <svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                            <path d="M1 1L13 13M13 1L1 13" stroke="#535862" stroke-linecap="round" />
+                                                        </svg>
+                                                    </span>
+                                                </button>
+                                            </div>
+                                            <div class="modal-body">
+                                                <form id="" action="{{ route('customernotification') }}" method="POST" enctype="multipart/form-data">
 
-                                                                            <div class="gropu_form_set option0">
-                                                                                <label for="Message">Message</label>
-                                                                                <div class="read_onlyy">Please Select any option from above options</div>
-                                                                              </div>
-                                                                            
-                                                                              <div class="gropu_form_set option1">
-                                                                                <label for="Message">Message</label>
-                                                                                <div class="read_onlyy result editable" id="message1">Your contract <span id="filenames" class="bolddata"></span>/<span id="custname" class="bolddata"></span> with <span id="venname" class="bolddata"></span> is set to expire on <span id="enddate" class="bolddata"></span>. Please take the necessary action to renew or terminate the contract before the expiry date.</div>
-                                                                            </div>
-                                                                        
-                                                                            <div class="gropu_form_set option2">
-                                                                                <label for="Message">Message</label>
-                                                                                <div class="read_onlyy result editable" id="message2">Your contract <span id="fileName1" class="bolddata"></span>/<span id="custname1" class="bolddata"></span> with <span id="venname1" class="bolddata"></span> is due for renewal on <span id="renewDate" class="bolddata"></span>. Kindly review the terms and confirm the renewal process to avoid any disruptions.</div>
-                                                                            </div>
-                                                                        
-                                                                            <div class="gropu_form_set option3">
-                                                                                <label for="Message">Message</label>
-                                                                                <div class="read_onlyy result editable" id="message3">Some required documents for [Contract ID/Name] are missing or incomplete. Please upload the following documents to ensure compliance: [Document Name 1], [Document Name 2], [Document Name 3]</div>
-                                                                            </div>
-                                                                        
-                                                                            <div class="gropu_form_set option4">
-                                                                                <label for="Message">Message</label>
-                                                                                <div class="read_onlyy result editable" id="message4">A payment of ₹<span id="amount" class="bolddata"></span> for contract <span id="fileName2" class="bolddata"></span>/<span id="custname2" class="bolddata"></span> with <span id="venname2" class="bolddata"></span> is due on <span id="renewDate1" class="bolddata"></span>. Kindly process the payment to avoid penalties or disruptions in services.</div>
-                                                                            </div>
-                                                                            <div class="gropu_form_set option5" >
-                                                                                <label for="Message">Message</label>
-                                                                                <div class="read_onlyy result editable" id="message5"><span>Write Here......</span></div>
-                                                                            </div>
-                                                                            <input type="hidden" id="selectedMessage" name="message">
-                                                                            <input type="hidden" id="contractFilename" name="contractFilename">
-                                                                            <div class="root_btn">
-                                                                              <button class="btn btn-primary" style="border-radius:5px;" type="submit">Send
-                                                                                <svg width="12" height="10" viewBox="0 0 12 10" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                                                                  <path d="M0.980729 9.90006L11.1599 5.53673C11.2651 5.49191 11.3548 5.41713 11.4179 5.32172C11.481 5.2263 11.5146 5.11444 11.5146 5.00007C11.5146 4.88569 11.481 4.77383 11.4179 4.67842C11.3548 4.583 11.2651 4.50823 11.1599 4.4634L0.980729 0.100066C0.892588 0.0616207 0.796263 0.0457239 0.700443 0.0538091C0.604623 0.0618942 0.512323 0.093707 0.43187 0.146378C0.351417 0.199048 0.285342 0.270919 0.239607 0.355507C0.193871 0.440095 0.169914 0.534739 0.169896 0.630899L0.164062 3.32007C0.164062 3.61173 0.379896 3.86257 0.671562 3.89757L8.91406 5.00007L0.671562 6.09673C0.379896 6.13757 0.164062 6.3884 0.164062 6.68007L0.169896 9.36923C0.169896 9.7834 0.595729 10.0692 0.980729 9.90006Z" fill="white" />
-                                                                                </svg>
-                                                                              </button>
-                                                                            </div>
-                                                                          </form>
-                                                                        </div>
-                                                                      </div>
-                                                                    </div>
-                                                                  </div>
-                                                                  <!-- notify model end -->
+                                                    <div class="gropu_form_set defaultoption">
+                                                        @csrf
+                                                        <label for="read_onlyy">Selected Contract</label>
+                                                        <h2 class="read_onlyy" id="filename"></h2>
+                                                    </div>
+                                                    <div class="gropu_form_set defaultoption">
+                                                        <label for="expiring_opm">Select an option</label>
+                                                        <select id="expiring_opm" name="expiring_opm" required="">
+                                                            <option value="" disabled="" selected="">Please select any option</option>
+                                                            <option value="Upcoming Expiry Alert">Upcoming Expiry Alert</option>
+                                                            <option value="Upcoming Renewal Alert">Upcoming Renewal Alert</option>
+                                                            <option value="Missing Documentation">Missing Documentation</option>
+                                                            <option value="Payment Due Alert">Payment Due Alert</option>
+                                                            <option value="Other">Other</option>
+                                                        </select>
+                                                        <input type="hidden" name="email" value="{{$customerrecord->email}}">
+                                                    </div>
+
+                                                    <div class="gropu_form_set option0">
+                                                        <label for="Message">Message</label>
+                                                        <div class="read_onlyy">Please Select any option from above options</div>
+                                                    </div>
+
+                                                    <div class="gropu_form_set option1">
+                                                        <label for="Message">Message</label>
+                                                        <div class="read_onlyy result editable" id="message1">Your contract <span id="filenames" class="bolddata"></span>/<span id="custname" class="bolddata"></span> with <span id="venname" class="bolddata"></span> is set to expire on <span id="enddate" class="bolddata"></span>. Please take the necessary action to renew or terminate the contract before the expiry date.</div>
+                                                    </div>
+
+                                                    <div class="gropu_form_set option2">
+                                                        <label for="Message">Message</label>
+                                                        <div class="read_onlyy result editable" id="message2">Your contract <span id="fileName1" class="bolddata"></span>/<span id="custname1" class="bolddata"></span> with <span id="venname1" class="bolddata"></span> is due for renewal on <span id="renewDate" class="bolddata"></span>. Kindly review the terms and confirm the renewal process to avoid any disruptions.</div>
+                                                    </div>
+
+                                                    <div class="gropu_form_set option3">
+                                                        <label for="Message">Message</label>
+                                                        <div class="read_onlyy result editable" id="message3">Some required documents for [Contract ID/Name] are missing or incomplete. Please upload the following documents to ensure compliance: [Document Name 1], [Document Name 2], [Document Name 3]</div>
+                                                    </div>
+
+                                                    <div class="gropu_form_set option4">
+                                                        <label for="Message">Message</label>
+                                                        <div class="read_onlyy result editable" id="message4">A payment of ₹<span id="amount" class="bolddata"></span> for contract <span id="fileName2" class="bolddata"></span>/<span id="custname2" class="bolddata"></span> with <span id="venname2" class="bolddata"></span> is due on <span id="renewDate1" class="bolddata"></span>. Kindly process the payment to avoid penalties or disruptions in services.</div>
+                                                    </div>
+                                                    <div class="gropu_form_set option5">
+                                                        <label for="Message">Message</label>
+                                                        <div class="read_onlyy result editable" id="message5"><span>Write Here......</span></div>
+                                                    </div>
+                                                    <input type="hidden" id="selectedMessage" name="message">
+                                                    <input type="hidden" id="contractFilename" name="contractFilename">
+                                                    <div class="root_btn">
+                                                        <button class="btn btn-primary" style="border-radius:5px;" type="submit">Send
+                                                            <svg width="12" height="10" viewBox="0 0 12 10" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                                <path d="M0.980729 9.90006L11.1599 5.53673C11.2651 5.49191 11.3548 5.41713 11.4179 5.32172C11.481 5.2263 11.5146 5.11444 11.5146 5.00007C11.5146 4.88569 11.481 4.77383 11.4179 4.67842C11.3548 4.583 11.2651 4.50823 11.1599 4.4634L0.980729 0.100066C0.892588 0.0616207 0.796263 0.0457239 0.700443 0.0538091C0.604623 0.0618942 0.512323 0.093707 0.43187 0.146378C0.351417 0.199048 0.285342 0.270919 0.239607 0.355507C0.193871 0.440095 0.169914 0.534739 0.169896 0.630899L0.164062 3.32007C0.164062 3.61173 0.379896 3.86257 0.671562 3.89757L8.91406 5.00007L0.671562 6.09673C0.379896 6.13757 0.164062 6.3884 0.164062 6.68007L0.169896 9.36923C0.169896 9.7834 0.595729 10.0692 0.980729 9.90006Z" fill="white" />
+                                                            </svg>
+                                                        </button>
+                                                    </div>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- notify model end -->
 
 
 
@@ -929,13 +929,13 @@
                                                     <label for="con_add_term">Add to Fee Exclusion Matrix </label>
                                                     <textarea name="con_add_fee_term" style="height: 150px;"></textarea>
                                                 </div>
-                                                
+
                                             </div>
 
                                             <input type="hidden" name="contractid" id="contractid">
                                             <input type="hidden" name="contractcustid" id="contractcustid">
 
-                                           
+
                                             <div class="root_btn btn_draft">
                                                 <button class="btn" id="addcontarctt" type="submit">Add to Exisitng Contract</button>
                                             </div>
@@ -1011,131 +1011,141 @@
 
         <div class="modal fade add_directorrs employees_master_details" id="contract_master_details" tabindex="-1" role="dialog" aria-labelledby="contract_master_details" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered" role="document">
-              <div class="modal-content">
-                <div class="modal-header">
-                  <h5 class="modal-title">Contracts Master Details</h5>
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Contracts Master Details</h5>
+                    </div>
+
+                    <div class="modal-footer">
+                        <div class="main_one_go">
+                            <div class="one_go_top">
+                                <h2>Upload All your contracts Data in One Go!</h2>
+
+                            </div>
+                            <div class="three_upload_bttn">
+                                <button class="emmp_go_download_tem downloadcontracttemp" type="button">
+                                    <svg width="18" height="19" viewBox="0 0 18 19" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M1 14V16C1 16.5304 1.21071 17.0391 1.58579 17.4142C1.96086 17.7893 2.46957 18 3 18H15C15.5304 18 16.0391 17.7893 16.4142 17.4142C16.7893 17.0391 17 16.5304 17 16V14M4 8L9 13M9 13L14 8M9 13V1" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+                                    </svg>
+                                    <span>
+                                        <b>STEP 1</b>
+                                        Download Contract Template
+                                    </span>
+                                </button>
+                                <span><svg width="9" height="14" viewBox="0 0 9 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M1 1L7 7L1 13" stroke="#AEAEAE" stroke-width="2" />
+                                    </svg></span>
+                                <div class="go_step_2">
+                                    <b>STEP 2</b>
+                                    <span>Fill in Contract Data according to the given format</span>
+                                </div>
+                                <span><svg width="9" height="14" viewBox="0 0 9 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M1 1L7 7L1 13" stroke="#AEAEAE" stroke-width="2" />
+                                    </svg></span>
 
 
+                                <button class="emmp_go_upload_tem" type="button" id="upload_contact_managge">
+                                    <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M19 13V17C19 17.5304 18.7893 18.0391 18.4142 18.4142C18.0391 18.7893 17.5304 19 17 19H3C2.46957 19 1.96086 18.7893 1.58579 18.4142C1.21071 18.0391 1 17.5304 1 17V13M15 6L10 1M10 1L5 6M10 1V13" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                                    </svg>
+                                    <span>
+                                        <b>STEP 3</b>
+                                        Upload Contract Template
+                                    </span>
+
+                                </button>
+                            </div>
+                            </div>
+                            <div class="append_bootm_contarct">
+                                <form action="{{ route('contracts.import') }}" method="POST" enctype="multipart/form-data">
+                                    @csrf
+                                    <div class="append_bootm_contarct_wrap">
+
+                                    <div class="rept_cont_nt">
+                                        <label for="excel_file">Upload Excel File:</label>                                      
+                                
+                                      <div class="file-area">
+                                                <input type="file" class="dragfile" id="excel_file" name="excel_file" required>
+                                                <div class="file-dummy">
+                                                    <div class="default">
+                                                        <span class="upload_icon">
+                                                            <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                                <path fill-rule="evenodd" clip-rule="evenodd" d="M8.9974 0.041504C9.08764 0.0414466 9.17682 0.0609324 9.25882 0.0986218C9.34082 0.136311 9.41368 0.19131 9.47239 0.259837L11.9724 3.1765C12.0802 3.30248 12.1336 3.46615 12.1208 3.63149C12.108 3.79683 12.03 3.95032 11.9041 4.05817C11.7781 4.16603 11.6144 4.21942 11.4491 4.2066C11.2837 4.19379 11.1303 4.11581 11.0224 3.98984L9.6224 2.3565V11.4998C9.6224 11.6656 9.55655 11.8246 9.43934 11.9418C9.32213 12.059 9.16316 12.1248 8.9974 12.1248C8.83164 12.1248 8.67266 12.059 8.55545 11.9418C8.43824 11.8246 8.3724 11.6656 8.3724 11.4998V2.35567L6.9724 3.98984C6.91899 4.05222 6.85382 4.10346 6.78061 4.14066C6.7074 4.17785 6.62758 4.20026 6.54571 4.2066C6.46384 4.21295 6.38153 4.20311 6.30346 4.17764C6.22539 4.15217 6.15311 4.11157 6.09073 4.05817C6.02835 4.00477 5.9771 3.9396 5.93991 3.86639C5.90272 3.79318 5.88031 3.71336 5.87396 3.63149C5.86762 3.54962 5.87746 3.4673 5.90293 3.38923C5.9284 3.31117 5.96899 3.23888 6.0224 3.1765L8.5224 0.259837C8.58111 0.19131 8.65398 0.136311 8.73597 0.0986218C8.81797 0.0609324 8.90715 0.0414466 8.9974 0.041504ZM4.8274 5.8765C4.99316 5.87562 5.15248 5.94062 5.27031 6.05721C5.38815 6.17379 5.45484 6.33241 5.45573 6.49817C5.45661 6.66393 5.39161 6.82325 5.27503 6.94109C5.15844 7.05892 4.99982 7.12562 4.83406 7.1265C3.92323 7.1315 3.2774 7.15484 2.78656 7.24484C2.3149 7.33234 2.04073 7.4715 1.83823 7.674C1.6074 7.90484 1.4574 8.229 1.3749 8.84067C1.29073 9.46984 1.28906 10.304 1.28906 11.4998V12.3332C1.28906 13.5298 1.29073 14.364 1.3749 14.9932C1.4574 15.6048 1.60823 15.9282 1.83823 16.1598C2.06906 16.3898 2.3924 16.5398 3.0049 16.6223C3.63323 16.7073 4.46823 16.7082 5.66406 16.7082H12.3307C13.5266 16.7082 14.3607 16.7073 14.9907 16.6223C15.6024 16.5398 15.9257 16.3898 16.1566 16.159C16.3874 15.9282 16.5374 15.6048 16.6199 14.9932C16.7041 14.364 16.7057 13.5298 16.7057 12.3332V11.4998C16.7057 10.304 16.7041 9.46984 16.6199 8.83984C16.5374 8.229 16.3866 7.90484 16.1566 7.674C15.9532 7.4715 15.6799 7.33234 15.2082 7.24484C14.7174 7.15484 14.0716 7.1315 13.1607 7.1265C13.0787 7.12607 12.9975 7.10947 12.9218 7.07765C12.8461 7.04584 12.7775 6.99943 12.7198 6.94109C12.662 6.88274 12.6164 6.8136 12.5854 6.7376C12.5544 6.66161 12.5386 6.58025 12.5391 6.49817C12.5395 6.41609 12.5561 6.33491 12.5879 6.25925C12.6197 6.18359 12.6661 6.11493 12.7245 6.05721C12.7828 5.99948 12.852 5.95381 12.928 5.9228C13.004 5.8918 13.0853 5.87607 13.1674 5.8765C14.0691 5.8815 14.8199 5.90317 15.4341 6.01567C16.0657 6.13234 16.6032 6.35317 17.0407 6.79067C17.5424 7.2915 17.7574 7.924 17.8591 8.674C17.9557 9.39567 17.9557 10.3148 17.9557 11.454V12.379C17.9557 13.519 17.9557 14.4373 17.8591 15.1598C17.7574 15.9098 17.5424 16.5415 17.0407 17.0432C16.5391 17.5448 15.9074 17.7598 15.1574 17.8615C14.4349 17.9582 13.5157 17.9582 12.3766 17.9582H5.61823C4.47906 17.9582 3.5599 17.9582 2.8374 17.8615C2.0874 17.7607 1.45573 17.5448 0.954063 17.0432C0.452396 16.5415 0.237396 15.9098 0.136562 15.1598C0.0390625 14.4373 0.0390625 13.5182 0.0390625 12.379V11.454C0.0390625 10.3148 0.0390625 9.39567 0.136562 8.67317C0.236562 7.92317 0.453229 7.2915 0.954063 6.78984C1.39156 6.35317 1.92906 6.1315 2.56073 6.01567C3.1749 5.90317 3.92573 5.8815 4.8274 5.8765Z" fill="#ABABAB"></path>
+                                                            </svg>
+                                                            Upload a file
+                                                        </span>
+                                                        <span class="fille">Choose File</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            </div>
+                                            
+
+
+                                    <div class="rept_cont_nt">
+                                        <label for="contracts">Upload Contract Files:</label>
+                                      
+
+                                        <div class="file-area">
+                                                <input type="file" class="dragfile" id="contracts" name="contracts[]" multiple>
+                                                <div class="file-dummy">
+                                                    <div class="default">
+                                                        <span class="upload_icon">
+                                                            <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                                <path fill-rule="evenodd" clip-rule="evenodd" d="M8.9974 0.041504C9.08764 0.0414466 9.17682 0.0609324 9.25882 0.0986218C9.34082 0.136311 9.41368 0.19131 9.47239 0.259837L11.9724 3.1765C12.0802 3.30248 12.1336 3.46615 12.1208 3.63149C12.108 3.79683 12.03 3.95032 11.9041 4.05817C11.7781 4.16603 11.6144 4.21942 11.4491 4.2066C11.2837 4.19379 11.1303 4.11581 11.0224 3.98984L9.6224 2.3565V11.4998C9.6224 11.6656 9.55655 11.8246 9.43934 11.9418C9.32213 12.059 9.16316 12.1248 8.9974 12.1248C8.83164 12.1248 8.67266 12.059 8.55545 11.9418C8.43824 11.8246 8.3724 11.6656 8.3724 11.4998V2.35567L6.9724 3.98984C6.91899 4.05222 6.85382 4.10346 6.78061 4.14066C6.7074 4.17785 6.62758 4.20026 6.54571 4.2066C6.46384 4.21295 6.38153 4.20311 6.30346 4.17764C6.22539 4.15217 6.15311 4.11157 6.09073 4.05817C6.02835 4.00477 5.9771 3.9396 5.93991 3.86639C5.90272 3.79318 5.88031 3.71336 5.87396 3.63149C5.86762 3.54962 5.87746 3.4673 5.90293 3.38923C5.9284 3.31117 5.96899 3.23888 6.0224 3.1765L8.5224 0.259837C8.58111 0.19131 8.65398 0.136311 8.73597 0.0986218C8.81797 0.0609324 8.90715 0.0414466 8.9974 0.041504ZM4.8274 5.8765C4.99316 5.87562 5.15248 5.94062 5.27031 6.05721C5.38815 6.17379 5.45484 6.33241 5.45573 6.49817C5.45661 6.66393 5.39161 6.82325 5.27503 6.94109C5.15844 7.05892 4.99982 7.12562 4.83406 7.1265C3.92323 7.1315 3.2774 7.15484 2.78656 7.24484C2.3149 7.33234 2.04073 7.4715 1.83823 7.674C1.6074 7.90484 1.4574 8.229 1.3749 8.84067C1.29073 9.46984 1.28906 10.304 1.28906 11.4998V12.3332C1.28906 13.5298 1.29073 14.364 1.3749 14.9932C1.4574 15.6048 1.60823 15.9282 1.83823 16.1598C2.06906 16.3898 2.3924 16.5398 3.0049 16.6223C3.63323 16.7073 4.46823 16.7082 5.66406 16.7082H12.3307C13.5266 16.7082 14.3607 16.7073 14.9907 16.6223C15.6024 16.5398 15.9257 16.3898 16.1566 16.159C16.3874 15.9282 16.5374 15.6048 16.6199 14.9932C16.7041 14.364 16.7057 13.5298 16.7057 12.3332V11.4998C16.7057 10.304 16.7041 9.46984 16.6199 8.83984C16.5374 8.229 16.3866 7.90484 16.1566 7.674C15.9532 7.4715 15.6799 7.33234 15.2082 7.24484C14.7174 7.15484 14.0716 7.1315 13.1607 7.1265C13.0787 7.12607 12.9975 7.10947 12.9218 7.07765C12.8461 7.04584 12.7775 6.99943 12.7198 6.94109C12.662 6.88274 12.6164 6.8136 12.5854 6.7376C12.5544 6.66161 12.5386 6.58025 12.5391 6.49817C12.5395 6.41609 12.5561 6.33491 12.5879 6.25925C12.6197 6.18359 12.6661 6.11493 12.7245 6.05721C12.7828 5.99948 12.852 5.95381 12.928 5.9228C13.004 5.8918 13.0853 5.87607 13.1674 5.8765C14.0691 5.8815 14.8199 5.90317 15.4341 6.01567C16.0657 6.13234 16.6032 6.35317 17.0407 6.79067C17.5424 7.2915 17.7574 7.924 17.8591 8.674C17.9557 9.39567 17.9557 10.3148 17.9557 11.454V12.379C17.9557 13.519 17.9557 14.4373 17.8591 15.1598C17.7574 15.9098 17.5424 16.5415 17.0407 17.0432C16.5391 17.5448 15.9074 17.7598 15.1574 17.8615C14.4349 17.9582 13.5157 17.9582 12.3766 17.9582H5.61823C4.47906 17.9582 3.5599 17.9582 2.8374 17.8615C2.0874 17.7607 1.45573 17.5448 0.954063 17.0432C0.452396 16.5415 0.237396 15.9098 0.136562 15.1598C0.0390625 14.4373 0.0390625 13.5182 0.0390625 12.379V11.454C0.0390625 10.3148 0.0390625 9.39567 0.136562 8.67317C0.236562 7.92317 0.453229 7.2915 0.954063 6.78984C1.39156 6.35317 1.92906 6.1315 2.56073 6.01567C3.1749 5.90317 3.92573 5.8815 4.8274 5.8765Z" fill="#ABABAB"></path>
+                                                            </svg>
+                                                            Upload a file
+                                                        </span>
+                                                        <span class="fille">Choose File</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+
+                                    </div>
+                                    </div>
+
+                                    <div class="rept_cont_bbtn">
+                                        <button type="submit">Upload</button>
+                                    </div>
+                                   
+                                </form>
+                            </div>
+
+                    </div>
                 </div>
- 
-<div class="modal-footer">
-<div class="main_one_go">
-<div class="one_go_top">
-<h2>Upload All your contracts Data in One Go!</h2>
-
-</div>
-<div class="three_upload_bttn">
-<button class="emmp_go_download_tem downloadcontracttemp" type="button">
-  <svg width="18" height="19" viewBox="0 0 18 19" fill="none" xmlns="http://www.w3.org/2000/svg">
-<path d="M1 14V16C1 16.5304 1.21071 17.0391 1.58579 17.4142C1.96086 17.7893 2.46957 18 3 18H15C15.5304 18 16.0391 17.7893 16.4142 17.4142C16.7893 17.0391 17 16.5304 17 16V14M4 8L9 13M9 13L14 8M9 13V1" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-</svg>
-<span>
-<b>STEP 1</b>
-Download Contract Template
-</span>
-</button>
-<span><svg width="9" height="14" viewBox="0 0 9 14" fill="none" xmlns="http://www.w3.org/2000/svg">
-<path d="M1 1L7 7L1 13" stroke="#AEAEAE" stroke-width="2"/>
-</svg></span>
-<div class="go_step_2">
-<b>STEP 2</b>
-<span>Fill in Contract Data according to the given format</span>
-</div>
-<span><svg width="9" height="14" viewBox="0 0 9 14" fill="none" xmlns="http://www.w3.org/2000/svg">
-<path d="M1 1L7 7L1 13" stroke="#AEAEAE" stroke-width="2"/>
-</svg></span>
-
-
-<button class="emmp_go_upload_tem" type="button">
-<svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-<path d="M19 13V17C19 17.5304 18.7893 18.0391 18.4142 18.4142C18.0391 18.7893 17.5304 19 17 19H3C2.46957 19 1.96086 18.7893 1.58579 18.4142C1.21071 18.0391 1 17.5304 1 17V13M15 6L10 1M10 1L5 6M10 1V13" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-</svg>
-<span>
-<b>STEP 3</b>
-Upload Contract Template
-</span>
-
-</button>
-
-
-
-
-</div>
-</div>
-</div>
-              </div>
             </div>
-          </div>
-          
-<!--Eployees master details end-->
-
-<!-- popup for upload start -->
-<!-- Modal HTML -->
-<div class="modal fade" id="uploadModal" tabindex="-1" aria-labelledby="uploadModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title" id="uploadModalLabel">Upload Contract Template</h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
-        <div class="modal-body">
-          <!-- Form inside modal -->
-          <form action="{{ route('contracts.import') }}" method="POST" enctype="multipart/form-data">
-            @csrf
-    
-            <!-- Excel file input -->
-            <div>
-                <label for="excel_file">Upload Excel File:</label>
-                <input type="file" name="excel_file" required>
-            </div>
-    
-            <!-- Contract file input -->
-            <div>
-                <label for="contracts">Upload Contract Files:</label>
-                <input type="file" name="contracts[]" multiple>
-            </div>
-    
-            <!-- Submit button -->
-            <button type="submit">Upload</button>
-        </form>
-    
-       
-    
-        </div>
-      </div>
-    </div>
-  </div>
-  
 
-<!-- end upload popup -->
-@if(session('success'))
-<p>{{ session('success') }}</p>
-@endif
-<script>
-    $(document).ready(function() {
-        $('.downloadcontracttemp').on('click', function() {
-            // Define the path to the CSV file
-            var filePath = '/assets/images/contracttemp.xlsx'; // Adjust this path if needed
-            
-            // Create a temporary anchor element to initiate download
-            var a = document.createElement('a');
-            a.href = filePath;
-            a.download = 'contracttemp.xlsx'; // Name of the downloaded file
-            document.body.appendChild(a);
-            a.click(); // Simulate click
-            document.body.removeChild(a); // Clean up
-        });
-    });
-</script>
-<script>
-    $(document).ready(function() {
-  // When the button is clicked, open the modal
-  $('.emmp_go_upload_tem').on('click', function() {
-    $('#uploadModal').modal('show'); // Open the modal
-  });
-});
+        <!--Eployees master details end-->
 
-</script>
+        @if(session('success'))
+        <p>{{ session('success') }}</p>
+        @endif
+        <script>
+            $(document).ready(function() {
+                $('.downloadcontracttemp').on('click', function() {
+                    // Define the path to the CSV file
+                    var filePath = '/assets/images/contracttemp.xlsx'; // Adjust this path if needed
+
+                    // Create a temporary anchor element to initiate download
+                    var a = document.createElement('a');
+                    a.href = filePath;
+                    a.download = 'contracttemp.xlsx'; // Name of the downloaded file
+                    document.body.appendChild(a);
+                    a.click(); // Simulate click
+                    document.body.removeChild(a); // Clean up
+                });
+            });
+        </script>
+        <script>
+            $(document).ready(function() {
+                // When the button is clicked, open the modal
+                $('.emmp_go_upload_tem').on('click', function() {
+                    $('#uploadModal').modal('show'); // Open the modal
+                });
+            });
+        </script>
     </div>
 </div>
 </div>
@@ -1154,19 +1164,17 @@ Upload Contract Template
 
     .bolddata {
 
-    font-weight: 900;
-    text-transform: capitalize;
-    margin: 5px;
-}
-[contenteditable="true"] {
-    border: 1px dashed #ccc;
-    padding: 5px;
-    outline: none;
-    background-color: #f9f9f9;
-}
+        font-weight: 900;
+        text-transform: capitalize;
+        margin: 5px;
+    }
 
-
-
+    [contenteditable="true"] {
+        border: 1px dashed #ccc;
+        padding: 5px;
+        outline: none;
+        background-color: #f9f9f9;
+    }
 </style>
 
 <script>
@@ -1230,9 +1238,9 @@ Upload Contract Template
     });
 </script>
 <script>
-    $(document).ready(function () {
+    $(document).ready(function() {
         // On click, make the div editable
-        $('.editable').on('click', function () {
+        $('.editable').on('click', function() {
             const $this = $(this);
 
             // If it's already editable, return
@@ -1243,7 +1251,7 @@ Upload Contract Template
         });
 
         // Save changes when the user clicks outside or presses Enter
-        $('.editable').on('blur keydown', function (e) {
+        $('.editable').on('blur keydown', function(e) {
             const $this = $(this);
 
             // If Enter key is pressed or blur occurs
@@ -1257,7 +1265,7 @@ Upload Contract Template
         });
 
         // Update the message field dynamically on #expiring_opm change
-        $('#expiring_opm').on('change', function () {
+        $('#expiring_opm').on('change', function() {
             const selectedOption = $(this).val();
             let selectedMessage = '';
 
@@ -1276,7 +1284,7 @@ Upload Contract Template
                     selectedMessage = $('#message4').html();
                     break;
                 case 'Other':
-                selectedMessage = $('#message5').html();
+                    selectedMessage = $('#message5').html();
                     break;
             }
 
@@ -1292,7 +1300,7 @@ Upload Contract Template
         });
 
         // Update form data dynamically before submission
-        $('form').on('submit', function () {
+        $('form').on('submit', function() {
             const selectedOption = $('#expiring_opm').val();
             let selectedMessage = '';
 
@@ -1311,7 +1319,7 @@ Upload Contract Template
                     selectedMessage = $('#message4').html();
                     break;
                 case 'Other':
-                selectedMessage = $('#message5').html();
+                    selectedMessage = $('#message5').html();
                     break;
             }
 
@@ -1321,7 +1329,7 @@ Upload Contract Template
             // Update the hidden field with the latest message
             $('#selectedMessage').val(selectedMessage);
             const filename = $('#filename').text();
-             $('#contractFilename').val(filename);
+            $('#contractFilename').val(filename);
             // Log the form submission data
             console.log('Form Submitted with Message:', selectedMessage);
         });
@@ -1332,13 +1340,14 @@ Upload Contract Template
     .option0 {
         display: none !important;
     }
+
     .option {
         display: block !important;
     }
 </style>
 
 <script>
-    $('#expiring_opm').on('change', function () {
+    $('#expiring_opm').on('change', function() {
         const selectedValue = $(this).val().trim();
         console.log("Selected Value:", selectedValue);
 
@@ -1367,31 +1376,31 @@ Upload Contract Template
 
 
 
- 
 
 
-        <script>
-        $(document).on('click', '.notify', function() {
-            // Get the file name from the data attribute
-            const fileName = $(this).data('file-name');
-            const contractid = $(this).data('id');
-            const enddate = $(this).data('startend');
-            const custname = $(this).data('cname');
-            const venname = $(this).data('vname');
-            const fileNames = $(this).data('file-name');
-            const venname1 = $(this).data('vname');
 
-            const fileName1 = $(this).data('file-name');
-            const custname1 = $(this).data('cname');
+<script>
+    $(document).on('click', '.notify', function() {
+        // Get the file name from the data attribute
+        const fileName = $(this).data('file-name');
+        const contractid = $(this).data('id');
+        const enddate = $(this).data('startend');
+        const custname = $(this).data('cname');
+        const venname = $(this).data('vname');
+        const fileNames = $(this).data('file-name');
+        const venname1 = $(this).data('vname');
+
+        const fileName1 = $(this).data('file-name');
+        const custname1 = $(this).data('cname');
 
 
-            const venname2 = $(this).data('vname');
+        const venname2 = $(this).data('vname');
 
-            const fileName2 = $(this).data('file-name');
-            const custname2 = $(this).data('cname');
-            const amount = $(this).data('amount');
+        const fileName2 = $(this).data('file-name');
+        const custname2 = $(this).data('cname');
+        const amount = $(this).data('amount');
 
-            const startendDate = $(this).data('startend'); // Assuming this is in 'YYYY-MM-DD' format
+        const startendDate = $(this).data('startend'); // Assuming this is in 'YYYY-MM-DD' format
 
         // Parse it into a Date object
         const date = new Date(startendDate);
@@ -1403,20 +1412,20 @@ Upload Contract Template
         const renewDate = date.toISOString().split('T')[0];
 
         if (renewDate) {
-                const [year, month, day] = renewDate.split('-'); // Split the date
-                const formattedDates = `${day}-${month}-${year}`;   // Reformat to dd-mm-yyyy
-                $('#renewDate').text(formattedDates);          // Set the formatted date
-            } 
-
-            
-            if (enddate) {
-                const [year, month, day] = enddate.split('-'); // Split the date
-                const formattedDate = `${day}-${month}-${year}`;   // Reformat to dd-mm-yyyy
-                $('#enddate').text(formattedDate);          // Set the formatted date
-            } 
+            const [year, month, day] = renewDate.split('-'); // Split the date
+            const formattedDates = `${day}-${month}-${year}`; // Reformat to dd-mm-yyyy
+            $('#renewDate').text(formattedDates); // Set the formatted date
+        }
 
 
-            const startendDate1 = $(this).data('startend'); // Assuming this is in 'YYYY-MM-DD' format
+        if (enddate) {
+            const [year, month, day] = enddate.split('-'); // Split the date
+            const formattedDate = `${day}-${month}-${year}`; // Reformat to dd-mm-yyyy
+            $('#enddate').text(formattedDate); // Set the formatted date
+        }
+
+
+        const startendDate1 = $(this).data('startend'); // Assuming this is in 'YYYY-MM-DD' format
 
         // Parse it into a Date object
         const date1 = new Date(startendDate1);
@@ -1428,52 +1437,52 @@ Upload Contract Template
         const renewDate1 = date1.toISOString().split('T')[0];
 
         if (renewDate1) {
-                const [year, month, day] = renewDate1.split('-'); // Split the date
-                const formattedDates1 = `${day}-${month}-${year}`;   // Reformat to dd-mm-yyyy
-                $('#renewDate1').text(formattedDates1);          // Set the formatted date
-            } 
-            
-            
-            $('#filename').text(fileName);
-            $('#filenames').text(fileNames);
-
-            $('#contractid').text(contractid);
-            $('#custname').text(custname);
-            $('#venname').text(venname);
-
-            $('#fileName1').text(fileName1);
-            $('#custname1').text(custname1);
-            $('#venname1').text(venname1);
+            const [year, month, day] = renewDate1.split('-'); // Split the date
+            const formattedDates1 = `${day}-${month}-${year}`; // Reformat to dd-mm-yyyy
+            $('#renewDate1').text(formattedDates1); // Set the formatted date
+        }
 
 
-            $('#fileName2').text(fileName2);
-            $('#custname2').text(custname2);
-            $('#venname2').text(venname2);
-        
+        $('#filename').text(fileName);
+        $('#filenames').text(fileNames);
 
-            $('#amount').text(amount);
-            
+        $('#contractid').text(contractid);
+        $('#custname').text(custname);
+        $('#venname').text(venname);
 
-    
-        });
-        </script>
-        <script>
-            // Ensure this is inside the $(document).ready() or $(window).on('load')
-            $(document).on('click', '[id^="Addend"]', function() {
-              // Get the specific contract ID dynamically
-              var contractId = $(this).attr('id').replace('Addend', '');  // Extract contract ID from the element ID
-          
-              // You can use this contractId to fetch data if needed, or just toggle the modal visibility
-              $('.addendcustomer_fix').addClass('active');
-              $('.addend_overlay_fix').addClass('active');
-            });
-          
-            // Close the modal when clicking on the overlay
-            $('.addend_overlay_fix').on('click', function() {
-              $('.addendcustomer_fix').removeClass('active');
-              $('.addend_overlay_fix').removeClass('active');
-            });
-          </script>
+        $('#fileName1').text(fileName1);
+        $('#custname1').text(custname1);
+        $('#venname1').text(venname1);
+
+
+        $('#fileName2').text(fileName2);
+        $('#custname2').text(custname2);
+        $('#venname2').text(venname2);
+
+
+        $('#amount').text(amount);
+
+
+
+    });
+</script>
+<script>
+    // Ensure this is inside the $(document).ready() or $(window).on('load')
+    $(document).on('click', '[id^="Addend"]', function() {
+        // Get the specific contract ID dynamically
+        var contractId = $(this).attr('id').replace('Addend', ''); // Extract contract ID from the element ID
+
+        // You can use this contractId to fetch data if needed, or just toggle the modal visibility
+        $('.addendcustomer_fix').addClass('active');
+        $('.addend_overlay_fix').addClass('active');
+    });
+
+    // Close the modal when clicking on the overlay
+    $('.addend_overlay_fix').on('click', function() {
+        $('.addendcustomer_fix').removeClass('active');
+        $('.addend_overlay_fix').removeClass('active');
+    });
+</script>
 
 <script>
     $(document).on('click', '.Addend', function() {
@@ -1492,33 +1501,32 @@ Upload Contract Template
         $('#contractid').val(contractid);
         $('#contractcustid').val(contractcustid);
 
-        
-        
+
+
 
 
     });
-    </script>
-    <script>
-        $(document).ready(function() {
-    // Listen for changes in the "Addendum_type" select field
-    $('#Addendum_type').on('change', function() {
-        var selectedAddendum = $(this).val();
+</script>
+<script>
+    $(document).ready(function() {
+        // Listen for changes in the "Addendum_type" select field
+        $('#Addendum_type').on('change', function() {
+            var selectedAddendum = $(this).val();
 
-        // Hide all groups initially
-        $('.group_payment_terms').hide();
-        $('.group_renewal_terms').hide();
-        $('.group_fee_exclusion').hide();
+            // Hide all groups initially
+            $('.group_payment_terms').hide();
+            $('.group_renewal_terms').hide();
+            $('.group_fee_exclusion').hide();
 
-        // Show the corresponding group based on selected addendum type
-        if (selectedAddendum === 'Payment Terms Addendum') {
-            $('.group_payment_terms').show();
-        } else if (selectedAddendum === 'Renewal Terms Addendum') {
-            $('.group_renewal_terms').show();
-        } else if (selectedAddendum === 'Fee Exclusion Matrix Addendum') {
-            $('.group_fee_exclusion').show();
-        }
+            // Show the corresponding group based on selected addendum type
+            if (selectedAddendum === 'Payment Terms Addendum') {
+                $('.group_payment_terms').show();
+            } else if (selectedAddendum === 'Renewal Terms Addendum') {
+                $('.group_renewal_terms').show();
+            } else if (selectedAddendum === 'Fee Exclusion Matrix Addendum') {
+                $('.group_fee_exclusion').show();
+            }
+        });
     });
-});
-
-    </script>
+</script>
 @endsection

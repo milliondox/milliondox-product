@@ -22142,6 +22142,138 @@ span.clinet_name {
     color: #dbdbdb;
 }
 
+
+/*new div append css start*/
+.append_bootm_contarct {
+    display: none;;
+    background: #f7f7f7;
+    padding: 20px 15px;
+    border-radius: 10px;
+    width: 100%;
+    margin: 20px 0px 0px;
+}
+
+.append_bootm_contarct .rept_cont_nt {
+    width: 100%;
+    position: relative;
+}
+
+.append_bootm_contarct .rept_cont_nt label {
+    margin: 0;
+    color: #808080;
+    font-size: 14px;
+    font-weight: 700;
+    display: block;
+    margin-bottom: 10px;
+}
+
+.append_bootm_contarct .append_bootm_contarct_wrap {
+    display: flex;
+    gap: 0px 20px;
+    width: 100%;
+    margin-bottom: 20px;
+}
+
+.append_bootm_contarct .append_bootm_contarct_wrap .file-area {
+    display: flex;
+    align-items: center;
+    position: relative;
+    border: 1px solid #E7E8E9;
+    padding: 10px 10px;
+    border-radius: 10px;
+    cursor: pointer;
+}
+
+.append_bootm_contarct .append_bootm_contarct_wrap .file-area input {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+}
+
+.append_bootm_contarct .append_bootm_contarct_wrap .file-area .file-dummy {
+    display: block;
+    width: 100%;
+}
+
+.append_bootm_contarct .append_bootm_contarct_wrap .file-area .file-dummy .default {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.append_bootm_contarct .append_bootm_contarct_wrap .file-area .file-dummy .default 
+ .upload_icon {
+    display: flex;
+    align-items: center;
+    gap: 0px 5px;
+    font-size: 14px;
+    font-weight: 400;
+    color: #909AAE;
+}
+
+.append_bootm_contarct .append_bootm_contarct_wrap .file-area .file-dummy .default .fille {
+    background: #ABABAB;
+    font-size: 12px;
+    font-weight: 700;
+    color: #FFFFFF;
+    padding: 9px 10px;
+    border-radius: 5px;
+}
+
+.append_bootm_contarct form {
+    display: block;
+    width: 100%;
+}
+
+.append_bootm_contarct .rept_cont_bbtn {
+    display: flex;
+    justify-content: center;
+}
+
+.append_bootm_contarct .rept_cont_bbtn button {
+    box-shadow: none;
+    outline: none;
+    border: 0;
+    border-radius: 7px;
+    padding: 15px 10px;
+    display: flex;
+    align-items: center;
+    gap: 0px 6px;
+    background: #5b91fb;
+    color: #FFF;
+    font-size: 14px;
+    font-weight: 600;
+    width: 100%;
+    max-width: 50%;
+    justify-content: center;
+}
+
+.dark-only .append_bootm_contarct {
+    background: #595b67;
+}
+
+.dark-only .append_bootm_contarct .rept_cont_nt label {
+    color: #dbdbdb;
+}
+
+.dark-only .append_bootm_contarct .append_bootm_contarct_wrap .file-area .file-dummy .default .upload_icon {
+    color: #a3a3a3;
+}
+
+.dark-only .append_bootm_contarct .append_bootm_contarct_wrap .file-area {
+    border-color: #40424c;
+}
+
+.dark-only .append_bootm_contarct .append_bootm_contarct_wrap .file-area .file-dummy .default .fille {
+    background: #333942;
+}
+
+/*new div append css end*/
+
+
 /**********Employee Master Details pop css end*********/
 /******admminstartion css end*****/
 
@@ -30626,6 +30758,12 @@ b.toggle-password i {
         flex-wrap: wrap;
         gap: 15px 0px;
     }
+
+    .append_bootm_contarct .append_bootm_contarct_wrap {
+        flex-wrap: wrap;
+        gap: 20px 0px;
+    }
+    
 }
 
 /*****table boostarp neww css start******/

@@ -411,6 +411,13 @@ document.querySelectorAll('.emppicd').forEach(function(input) {
         // Toggle the active class on the button
         $(this).toggleClass("active");
     });
+
+        // Toggle behavior on button click
+        $("#upload_contact_managge").click(function() {
+        // Slide up or down the div       
+        $(".append_bootm_contarct").slideToggle();
+    });
+
 });
 
 </script>
