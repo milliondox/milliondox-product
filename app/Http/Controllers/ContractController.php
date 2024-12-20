@@ -20,8 +20,11 @@ use MailerSend\Helpers\Builder\Recipient;
 use MailerSend\Helpers\Builder\EmailParams;
 use MailerSend\Helpers\Builder\SmsParams;
 
+use Illuminate\Support\Facades\Storage;
+use PhpOffice\PhpSpreadsheet\IOFactory;
 use Illuminate\Support\Facades\Log;
-
+use PhpOffice\PhpSpreadsheet\Shared\Date;
+use DateTime;
 class ContractController extends Controller
 {
    // customer creation code start from here 
@@ -412,7 +415,97 @@ class ContractController extends Controller
            return redirect()->back()->with('success', 'Contract Updated successfully!');
    }
    
-       
+ 
+
+   public function import(Request $request)
+{
+    // Validate the request
+    $request->validate([
+        'excel_file' => 'required|mimes:xlsx,xls,csv|max:10240', // Validate excel file
+        'contracts' => 'required|array', // Ensure contracts field is an array
+    ]);
+
+    // Get the uploaded Excel file
+    $excelFile = $request->file('excel_file');
+    $contracts = $request->file('contracts'); // Get all contract files
+
+    // Load the spreadsheet using PhpSpreadsheet
+    $spreadsheet = \PhpOffice\PhpSpreadsheet\IOFactory::load($excelFile);
+    $worksheet = $spreadsheet->getActiveSheet();
+    $rows = $worksheet->toArray(); // Convert the worksheet data to an array
+
+    // Loop through each row in the Excel file
+    foreach ($rows as $index => $row) {
+        // Skip the header row (if applicable)
+        if ($index === 0) {
+            continue;
+        }
+
+        // Initialize contract file and file size variables
+        $contractFile = null;
+        $fileSize = null;
+
+        // Check if there are enough contract files for the current row
+        if (isset($contracts[$index - 1])) { // Offset by 1 to match the row index
+            $file = $contracts[$index - 1];
+
+            // Get the file size before storing it
+            $fileSize = $file->getSize(); // Size in bytes
+
+            // Store the contract file in 'contracts' directory and get the file path
+            $contractFile = $file->store('contracts', 'public');
+        }
+
+        // Convert startdate and enddate (if applicable)
+        try {
+            $startdate = isset($row[9]) && !empty($row[9])
+                ? Carbon::parse($row[9])->format('Y-m-d')
+                : null;
+
+            $startend = isset($row[10]) && !empty($row[10])
+                ? Carbon::parse($row[10])->format('Y-m-d')
+                : null;
+        } catch (\Exception $e) {
+            $startdate = null;
+            $startend = null;
+        }
+
+        // Ensure contract_value is numeric (to prevent the SQL error)
+        $contractValue = isset($row[11]) && is_numeric($row[11]) ? $row[11] : null;
+
+        // Ensure 'is_drafted' is an integer (default to 0 if not set or invalid)
+        $isDrafted = isset($row[17]) && is_numeric($row[17]) ? (int) $row[17] : 0;
+
+        // Create or update the customer contract
+        CustomerContract::updateOrCreate(
+            ['id' => $row[0]], // Assuming the first column is the 'id' field
+            [
+                'file_name' => $row[0],
+                'file_path' => $contractFile, // File path (contract file)
+                'file_size' => isset($fileSize) ? round($fileSize / 1024, 2) : null, // File size in KB
+                'contract_name' => $row[3],
+                'contracttype' => $row[4],
+                'contract_type' => $row[5],
+                'division' => $row[6],
+                'vendor_name' => $row[7],
+                'legal_entity_status' => $row[8],
+                'startdate' => $startdate,
+                'startend' => $startend,
+                'contract_value' => $contractValue,
+                'signing_status' => $row[12],
+                'renewal_terms' => json_encode(explode(';', $row[13])),
+                'payment_terms' => json_encode(explode(';', $row[14])),
+                'fee_escalation_clause' => isset($row[15]) ? json_encode(explode(';', $row[15])) : null,
+                'customer_id' => isset($row[16]) && is_numeric($row[16]) ? (int) $row[16] : null,
+                'is_drafted' => $isDrafted,
+            ]
+        );
+    }
+
+    return redirect()->back()->with('success', 'Contracts have been successfully imported.');
+}
+
+
    
        // customer creation code end here from here 
 }
