@@ -25353,13 +25353,17 @@ public function downloadFolder($folder_id)
     ->where('is_delete', 1)
     ->pluck('id')
     ->toArray();
-    // dd($deletedEmployeeIds);
+    // dd($deletedEmployeeIds); 
 
 
+    $deletedDirectorIds = DB::table('store_company_director')
+    ->where('is_delete', 1)
+    ->pluck('id')
+    ->toArray();
+    // dd($deletedDirectorIds); 
 
 
-
-
+    
     // dd($folder);
     $folderName = $folder->name;
     // echo $folderName;
@@ -25377,6 +25381,19 @@ public function downloadFolder($folder_id)
         // })
         // ->get();
         // dd("inside isset");
+        // $relatedDirectories = Folder::where('path', 'like', '%' . $folderName . '%')
+        // ->where('is_delete', 0)
+        // ->where('parent_name', 'like', '%' . $parentName . '%')
+        // ->where(function ($query) {
+        //     $query->where('user_id', Auth::id())
+        //         ->orWhere('user_id', 301);
+        // })
+        // ->where(function ($query) use ($deletedEmployeeIds) {
+        //     $query->whereNotIn('employee_id', $deletedEmployeeIds)
+        //         ->orWhereNull('employee_id');
+        // })
+        // ->get();
+
         $relatedDirectories = Folder::where('path', 'like', '%' . $folderName . '%')
         ->where('is_delete', 0)
         ->where('parent_name', 'like', '%' . $parentName . '%')
@@ -25384,11 +25401,18 @@ public function downloadFolder($folder_id)
             $query->where('user_id', Auth::id())
                 ->orWhere('user_id', 301);
         })
-        ->where(function ($query) use ($deletedEmployeeIds) {
-            $query->whereNotIn('employee_id', $deletedEmployeeIds)
-                ->orWhereNull('employee_id');
+        ->where(function ($query) use ($deletedEmployeeIds, $deletedDirectorIds) {
+            $query->where(function ($subQuery) use ($deletedEmployeeIds) {
+                $subQuery->whereNotIn('employee_id', $deletedEmployeeIds)
+                        ->orWhereNull('employee_id');
+            })
+            ->where(function ($subQuery) use ($deletedDirectorIds) {
+                $subQuery->whereNotIn('director_id', $deletedDirectorIds)
+                        ->orWhereNull('director_id');
+            });
         })
         ->get();
+
     }
     else{
         // Get related directories
@@ -25401,17 +25425,36 @@ public function downloadFolder($folder_id)
         // })
         // ->get();
         // dd("outside isset");
+        // $relatedDirectories = Folder::where('path', 'like', '%' . $folderName . '%')
+        // ->where('is_delete', 0)
+        // ->where(function ($query) {
+        //     $query->where('user_id', Auth::id())
+        //         ->orWhere('user_id', 301);
+        // })
+        // ->where(function ($query) use ($deletedEmployeeIds) {
+        //     $query->whereNotIn('employee_id', $deletedEmployeeIds)
+        //         ->orWhereNull('employee_id');
+        // })
+        // ->get();
         $relatedDirectories = Folder::where('path', 'like', '%' . $folderName . '%')
         ->where('is_delete', 0)
+        // ->where('parent_name', 'like', '%' . $parentName . '%')
         ->where(function ($query) {
             $query->where('user_id', Auth::id())
                 ->orWhere('user_id', 301);
         })
-        ->where(function ($query) use ($deletedEmployeeIds) {
-            $query->whereNotIn('employee_id', $deletedEmployeeIds)
-                ->orWhereNull('employee_id');
+        ->where(function ($query) use ($deletedEmployeeIds, $deletedDirectorIds) {
+            $query->where(function ($subQuery) use ($deletedEmployeeIds) {
+                $subQuery->whereNotIn('employee_id', $deletedEmployeeIds)
+                        ->orWhereNull('employee_id');
+            })
+            ->where(function ($subQuery) use ($deletedDirectorIds) {
+                $subQuery->whereNotIn('director_id', $deletedDirectorIds)
+                        ->orWhereNull('director_id');
+            });
         })
         ->get();
+
 
 
     }
