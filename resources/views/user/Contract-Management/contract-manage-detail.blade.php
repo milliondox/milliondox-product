@@ -124,13 +124,13 @@
                                             </button>
                                         </div>
                                     </div>
-                                    <div class="top_cont_btn">
+                                    {{-- <div class="top_cont_btn">
                                         <a href="#">Send Notification
                                             <svg width="12" height="10" viewBox="0 0 12 10" fill="none" xmlns="http://www.w3.org/2000/svg">
                                                 <path d="M0.980729 9.90006L11.1599 5.53673C11.2651 5.49191 11.3548 5.41713 11.4179 5.32172C11.481 5.2263 11.5146 5.11444 11.5146 5.00007C11.5146 4.88569 11.481 4.77383 11.4179 4.67842C11.3548 4.583 11.2651 4.50823 11.1599 4.4634L0.980729 0.100066C0.892588 0.0616207 0.796263 0.0457239 0.700443 0.0538091C0.604623 0.0618942 0.512323 0.093707 0.43187 0.146378C0.351417 0.199048 0.285342 0.270919 0.239607 0.355507C0.193871 0.440095 0.169914 0.534739 0.169896 0.630899L0.164062 3.32007C0.164062 3.61173 0.379896 3.86257 0.671562 3.89757L8.91406 5.00007L0.671562 6.09673C0.379896 6.13757 0.164062 6.3884 0.164062 6.68007L0.169896 9.36923C0.169896 9.7834 0.595729 10.0692 0.980729 9.90006Z" fill="#414651" />
                                             </svg>
                                         </a>
-                                    </div>
+                                    </div> --}}
                                 </div>
 
                                 <div class="contract_detail_middle">
@@ -272,7 +272,134 @@
                                                     </svg>
                                                 </a>
                                             </span>
+                                            <div id="filePreviewModal" class="modalsss" style="display: none;">
+                                                <div class="modal-contentsss">
+                                                    <span class="close-btnsss">&times;</span>
+                                                    <div id="filePreviewContainer"></div>
+                                                </div>
+                                            </div>
+                                            <style>
+                                                /* Modal styles */
+                                                .modalsss {
+                                                    position: absolute;
+                                                    top: 0;
+                                                    left: 0;
+                                                    width: 100%;
+                                                    height: 100%;
+                                                    background-color: rgba(0, 0, 0, 0.5);
+                                                    display: flex;
+                                                    justify-content: center;
+                                                    align-items: center;
+                                                }
+                                                
+                                                .modal-contentsss {
+                                                    background-color: #fff;
+                                                    padding: 20px;
+                                                    border-radius: 5px;
+                                                    width: 100%;
+                                                    max-height: 100%;
+                                                    overflow-y: auto;
+                                                }
+                                                
+                                                .close-btnsss {
+                                                    position: absolute;
+                                                    top: 15px;
+                                                    right: 15px;
+                                                    font-size: 30px !important;
+                                                    cursor: pointer;
+                                                    border: none !important;
+                                                    color: red !important;
+                                                }
+                                                </style>
+                                                
+                                                <script>
+document.addEventListener('DOMContentLoaded', function () {
+    // Attach click event listener to all relevant links
+    document.querySelectorAll('a[target="_blank"]').forEach(link => {
+        link.addEventListener('click', function (event) {
+            event.preventDefault(); // Prevent default link behavior
 
+            const fileUrl = this.getAttribute('href');
+            const fileType = fileUrl.split('.').pop().toLowerCase();
+
+            // Show the modal with file preview
+            showModal(fileUrl, fileType);
+        });
+    });
+
+    // Show modal with file preview
+    function showModal(fileUrl, fileType) {
+        const modal = document.getElementById('filePreviewModal');
+        const previewContainer = document.getElementById('filePreviewContainer');
+
+        // Clear previous content
+        previewContainer.innerHTML = '';
+
+        let previewContent = '';
+
+        // Handle various file types
+        if (['jpg', 'jpeg', 'png', 'gif', 'bmp', 'webp'].includes(fileType)) {
+            // Image preview
+            previewContent = `<img src="${fileUrl}" alt="Image Preview" style="max-width: 100%; max-height: 500px; display: block; margin: 0 auto;">`;
+        } else if (fileType === 'pdf') {
+            // PDF preview
+            previewContent = `<iframe src="${fileUrl}" style="width: 100%; height: 500px;" frameborder="0"></iframe>`;
+        } else if (['doc', 'docx', 'xls', 'xlsx', 'ppt', 'pptx'].includes(fileType)) {
+            // Office documents preview using Google Docs Viewer
+            previewContent = `<iframe src="https://docs.google.com/gview?url=${encodeURIComponent(fileUrl)}&embedded=true" style="width: 100%; height: 500px;" frameborder="0"></iframe>`;
+        } else if (['txt', 'csv', 'json', 'xml'].includes(fileType)) {
+            // Plain text file preview
+            fetch(fileUrl)
+                .then(response => response.text())
+                .then(text => {
+                    previewContainer.innerHTML = `
+                        <pre style="white-space: pre-wrap; word-wrap: break-word; max-height: 500px; overflow-y: auto; padding: 10px; background: #f4f4f4; border-radius: 5px;">${text}</pre>
+                    `;
+                    // Append download button
+                    appendDownloadButton(fileUrl, previewContainer);
+                });
+            return; // Exit early since the content is added dynamically
+        } else {
+            // Unsupported file types - provide download option
+            previewContent = `
+                <p style="text-align: center;">Preview not available for this file type.</p>
+            `;
+        }
+
+        // Add preview content to container
+        previewContainer.innerHTML = previewContent;
+
+        // Append download button
+        appendDownloadButton(fileUrl, previewContainer);
+
+        // Show modal
+        modal.style.display = 'flex';
+
+        // Close modal on click of close button
+        modal.querySelector('.close-btnsss').addEventListener('click', () => {
+            modal.style.display = 'none';
+        });
+    }
+
+    // Append download button to preview container
+    function appendDownloadButton(fileUrl, container) {
+        const downloadButton = document.createElement('div');
+        downloadButton.style.textAlign = 'right';
+        downloadButton.style.marginTop = '10px';
+        downloadButton.innerHTML = `
+            <a href="${fileUrl}" download class="download-btn" style="background: #007bff; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px;">
+                Download File
+            </a>
+        `;
+        container.appendChild(downloadButton);
+    }
+});
+
+
+
+
+                                                    </script>
+                                                    
 
                                             {{-- <span>Doc <svg width="10" height="7" viewBox="0 0 10 7" fill="none" xmlns="http://www.w3.org/2000/svg">
                                                     <path d="M5 7C6.10457 7 7 6.10457 7 5C7 3.89543 6.10457 3 5 3C3.89543 3 3 3.89543 3 5C3 6.10457 3.89543 7 5 7Z" fill="#414651" />
@@ -298,15 +425,49 @@
                                     </div>
 
                                     <div class="partners enty_cmnn">
-                                        <span>Partners</span>
-                                        <div class="partner_count">
-                                            <b>Anurag Srivastava</b>
-                                            <b>Anurag Srivastava</b>
-                                            <b>Anurag Srivastava</b>
-                                            <b>Anurag Srivastava</b>
-                                            <b>Anurag Srivastava</b>
-                                            <b class="count"></b>
+                                        <span>Director</span>
+                                        <div class="partner_counts">
+                                            <b> {{ $customerrecord->dname[0] ?? '' }}</b>
+                                            
+                                            @if(count($customerrecord->dname) > 1)
+                                            <b class="count" style="display: inline !important;">
+                                                +{{ count($customerrecord->dname) - 1 }}
+                                            
+                                            <div class="custom-tooltip">
+                                                {{ implode(', ', array_slice($customerrecord->dname, 1)) }}
+                                            </div>
+                                            </b>
+                                        @endif 
                                         </div>
+                                       
+                                              
+                                        <script>
+                                            document.addEventListener('DOMContentLoaded', function () {
+                                                document.querySelectorAll('.partner_counts .count').forEach(countElement => {
+                                                    // Select the tooltip element that is next to the count element
+                                                    const tooltip = countElement.nextElementSibling;
+                                            
+                                                    if (tooltip && tooltip.classList.contains('custom-tooltip')) {
+                                                        // Show the tooltip on hover
+                                                        countElement.addEventListener('mouseenter', () => {
+                                                            tooltip.style.opacity = '1';
+                                                            tooltip.style.visibility = 'visible';
+                                                        });
+                                            
+                                                        // Hide the tooltip when not hovering
+                                                        countElement.addEventListener('mouseleave', () => {
+                                                            tooltip.style.opacity = '0';
+                                                            tooltip.style.visibility = 'hidden';
+                                                        });
+                                                    }
+                                                });
+                                            });
+                                            
+                                                                          </script>
+                                            
+                                            
+                                          
+                                            
                                     </div>
 
                                 </div>
@@ -469,26 +630,16 @@
                                                     <option value="Supply Agreement">Supply Agreement</option>
                                                 </select>
                                             </div>
-
+                                           
                                             <div class="gropu_form">
                                                 <label for="Division">Division<span class="red_star">*</span></label>
-                                                <select id="divison" name="divison" required>
-                                                    <option value="" disabled Selected>select</option>
-                                                    <option value="Human Resources">Human Resources</option>
-                                                    <option value="Finance">Finance</option>
-                                                    <option value="Legal">Legal</option>
-                                                    <option value="Operations">Operations</option>
-                                                    <option value="IT/Technology">IT/Technology</option>
-                                                    <option value="Sales & Marketing">Sales & Marketing</option>
-                                                    <option value="Procurement">Procurement</option>
-                                                    <option value="Administration">Administration</option>
-                                                    <option value="Research & Development">Research & Development</option>
-                                                    <option value="Customer Support">Customer Support</option>
-                                                    <option value="Compliance">Compliance</option>
-                                                    <option value="Risk Management">Risk Management</option>
-                                                    <option value="Logistics">Logistics</option>
-                                                    <option value="Corporate Affairs">Corporate Affairs</option>
-                                                    <option value="Public Relations">Public Relations</option>
+                                                <select id="division" name="division" required>
+                                                    <option value="" disabled selected>Select</option>
+                                                   @foreach ( $div as $divi)
+                                                       
+                                                   
+                                                    <option value="{{ $divi->id }}">{{ $divi->division_name }}</option>
+                                                    @endforeach
                                                 </select>
                                             </div>
 

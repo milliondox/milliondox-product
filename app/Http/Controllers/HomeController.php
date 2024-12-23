@@ -62,7 +62,7 @@ use App\Models\OrganizationChart;
 use App\Models\StoreBankDoc;
 
 use App\Models\CustomerNotification;
-
+use App\Models\Division;
 use App\Models\CustomDoc;
 use App\Models\RegistrationDoc;
 use App\Models\MiscellaneousDoc;
@@ -19934,6 +19934,8 @@ public function rolemanagement()
     // Fetch the roles created by the authenticated user
     $roles = UserRole::where('user_id', $user->id)->where('is_deleted', 0)->get();
 
+    $division = Division::where('user_id', $user->id)->get();
+
     // Fetch the "Admin" role explicitly
     $adminRole = UserRole::where('role', 'Admin')->where('is_deleted', 0)->first();
 
@@ -19970,7 +19972,8 @@ public function rolemanagement()
         'userRoleR' => $userRoleR,
         'usersByRole' => $usersByRole, // Pass the users by role to the view
         'user' => $user,
-        'rolesexit' => $rolesexit
+        'rolesexit' => $rolesexit,
+        'division' => $division
     ]);
 }
 
