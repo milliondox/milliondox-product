@@ -422,6 +422,172 @@ document.querySelectorAll('.emppicd').forEach(function(input) {
 
 </script>
 
+<!-- show multiple files names in popup list script -->
+<script>
+$(document).ready(function () {
+    var fileData = {};
+
+    // Handle file input change
+    $('body').on('change', '#contracts', function () {
+        const fileInput = this;
+        const fileList = $(fileInput).closest('.file-area').next('.file-list');
+        const inputId = $(fileInput).attr('id');
+
+        if (!fileData[inputId]) fileData[inputId] = [];
+
+        // Append new files to fileData
+        const newFiles = Array.from(fileInput.files);
+        fileData[inputId] = [...fileData[inputId], ...newFiles];
+
+        refreshFileList(fileList, inputId);
+        updateFileInput(fileInput, inputId);
+    });
+
+    // Handle drag and drop events
+    $('.file-area').on('dragover', function (event) {
+        event.preventDefault();
+    }).on('dragleave', function () {
+        // No additional functionality here as per the request
+    }).on('drop', function (event) {
+        event.preventDefault();
+
+        const fileInput = $(this).find('#contracts')[0];
+        const fileList = $(this).next('.file-list');
+        const inputId = $(fileInput).attr('id');
+
+        if (!fileData[inputId]) fileData[inputId] = [];
+        const droppedFiles = Array.from(event.originalEvent.dataTransfer.files);
+
+        // Append dropped files to the fileData array
+        fileData[inputId] = [...fileData[inputId], ...droppedFiles];
+
+        // Update the file input before refreshing the list
+        updateFileInput(fileInput, inputId);
+        refreshFileList(fileList, inputId);
+    });
+
+    // Function to refresh the file list in the UI
+    function refreshFileList(fileList, inputId) {
+        fileList.empty();
+
+        fileData[inputId].forEach((file, index) => {
+            const fileItem = $('<div>', {
+                class: 'file-item'
+            }).append(
+                $('<span>').text(file.name),
+                $('<button>', {
+                    class: 'remove-btn',
+                    'data-file-index': index
+                }).text('X').on('click', function () {
+                    removeFile(index, fileList, inputId);
+                })
+            );
+            fileList.append(fileItem);
+        });
+    }
+
+    // Function to remove a file from the input
+    function removeFile(index, fileList, inputId) {
+        fileData[inputId].splice(index, 1);
+        refreshFileList(fileList, inputId);
+        updateFileInput($(`#${inputId}`)[0], inputId);
+    }
+
+    // Function to update the file input's file list
+    function updateFileInput(fileInput, inputId) {
+        const dataTransfer = new DataTransfer();
+        fileData[inputId].forEach(file => dataTransfer.items.add(file));
+        fileInput.files = dataTransfer.files;
+    }
+
+    // Initialize file data for the file input
+    $('#contracts').each(function () {
+        const inputId = $(this).attr('id');
+        fileData[inputId] = [];
+    });
+});
+</script>
+
+<!-- show single file names in popup list script -->
+<script>
+$(document).ready(function () {
+    var fileData = {};
+
+    // Handle file input change
+    $('body').on('change', '#excel_file', function () {
+        const fileInput = this;
+        const fileList = $(fileInput).closest('.file-area').next('.file-list');
+        const inputId = $(fileInput).attr('id');
+
+        // Only one file allowed for #excel_file
+        const newFile = fileInput.files[0];
+        fileData[inputId] = [newFile];
+
+        refreshFileList(fileList, inputId);
+        updateFileInput(fileInput, inputId);
+    });
+
+    // Handle drag and drop events
+    $('.file-area').on('dragover', function (event) {
+        event.preventDefault();
+    }).on('drop', function (event) {
+        event.preventDefault();
+
+        const fileInput = $(this).find('#excel_file')[0];
+        const fileList = $(this).next('.file-list');
+        const inputId = $(fileInput).attr('id');
+
+        // Only one file allowed for #excel_file
+        const droppedFile = event.originalEvent.dataTransfer.files[0];
+        fileData[inputId] = [droppedFile];
+
+        updateFileInput(fileInput, inputId);
+        refreshFileList(fileList, inputId);
+    });
+
+    // Function to refresh the file list in the UI
+    function refreshFileList(fileList, inputId) {
+        fileList.empty();
+
+        fileData[inputId].forEach((file, index) => {
+            const fileItem = $('<div>', {
+                class: 'file-item'
+            }).append(
+                $('<span>').text(file.name),
+                $('<button>', {
+                    class: 'remove-btn',
+                    'data-file-index': index
+                }).text('X').on('click', function () {
+                    removeFile(index, fileList, inputId);
+                })
+            );
+            fileList.append(fileItem);
+        });
+    }
+
+    // Function to remove a file from the input
+    function removeFile(index, fileList, inputId) {
+        fileData[inputId] = [];
+        refreshFileList(fileList, inputId);
+        updateFileInput($(`#${inputId}`)[0], inputId);
+    }
+
+    // Function to update the file input's file list
+    function updateFileInput(fileInput, inputId) {
+        const dataTransfer = new DataTransfer();
+        fileData[inputId].forEach(file => dataTransfer.items.add(file));
+        fileInput.files = dataTransfer.files;
+    }
+
+    // Initialize file data for the file input
+    $('#excel_file').each(function () {
+        const inputId = $(this).attr('id');
+        fileData[inputId] = [];
+    });
+});
+</script>
+
+
 
 </body>
 

@@ -1062,10 +1062,10 @@
                                     <div class="append_bootm_contarct_wrap">
 
                                     <div class="rept_cont_nt">
-                                        <label for="excel_file">Upload Excel File:</label>                                      
-                                
+                                        <label for="excel_filee">Upload Excel File:</label>                                      
+                                        <div class="file-area_cover">
                                       <div class="file-area">
-                                                <input type="file" class="dragfile" id="excel_file" name="excel_file" required>
+                                                <input type="file" class="drag_file" id="excel_file" name="excel_file" required>
                                                 <div class="file-dummy">
                                                     <div class="default">
                                                         <span class="upload_icon">
@@ -1077,17 +1077,19 @@
                                                         <span class="fille">Choose File</span>
                                                     </div>
                                                 </div>
+                                            </div>
+                                            <div class="file-list"></div>
                                             </div>
                                             </div>
                                             
 
 
                                     <div class="rept_cont_nt">
-                                        <label for="contracts">Upload Contract Files:</label>
+                                        <label for="contractss">Upload Contract Files:</label>
                                       
-
+                                        <div class="file-area_cover">
                                         <div class="file-area">
-                                                <input type="file" class="dragfile" id="contracts" name="contracts[]" multiple>
+                                                <input type="file" class="file_drag" id="contracts" name="contracts[]" multiple>
                                                 <div class="file-dummy">
                                                     <div class="default">
                                                         <span class="upload_icon">
@@ -1099,6 +1101,8 @@
                                                         <span class="fille">Choose File</span>
                                                     </div>
                                                 </div>
+                                            </div>
+                                            <div class="file-list"></div>
                                             </div>
 
 

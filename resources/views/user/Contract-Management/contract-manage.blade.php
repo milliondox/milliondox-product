@@ -74,7 +74,7 @@
                           </button>
                         </div>
                         <div class="add_custoer">
-                          <button type="button" id="addacustomer">
+                          <button type="button" id="addacustomer" data-bs-toggle="modal" data-bs-target="#threeStepModal">
                             <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
                               <path d="M1 6H11M6 11V1" stroke="#5790FF" stroke-width="1.66" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round" />
                             </svg>
@@ -84,239 +84,387 @@
                       </div>
                     </div>
 
-                    <div class="addcustomer_overlay_fix"></div>
-                    <div class="addcustomer_fix">
-                      <h2 class="addcustomer_title">Add Customer</h2>
-                      <div class="customer_wrap">
-                        <form id="customerForm" action="{{ route('customerstore') }}" method="POST" enctype="multipart/form-data" class="upload-form">
-                          @csrf
-                          <!-- Profile Picture Upload -->
-                          <div class="gropu_form ivoice-upload">
-                            <div class="file-area" id="round_uplad_image">
-                              <div class="inner_file_edit">
-                                <input type="file" id="emppicd" class="emppicd" name="profile_picture">
-                                <div class="dont_show">
-                                  <img id="previewd" class="previewd" src="../assets/images/image_placeholder.png" alt="Profile Picture">
-                                  <div class="EAyyHe">
-                                    <div class="EzQmEf"></div>
+
+                    <div class="modal fade drop_coman_file have_title custom_add_customer" id="threeStepModal" tabindex="-1" role="dialog" aria-labelledby="threeStepModalLabel" aria-hidden="true">
+                      <div class="modal-dialog modal-dialog-centered" role="document">
+                        <div class="modal-content">
+                          <div class="modal-header">
+                            <h5 class="modal-title" style="font-weight:700">Add Customer</h5>
+                            <button class="close" style="border-radius:5px;" type="button" data-bs-dismiss="modal">
+                              <span aria-hidden="true">
+                                <svg width="50" height="50" viewBox="0 0 50 50" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                  <rect width="4.27093" height="66.172" transform="matrix(0.702074 -0.712104 0.709324 0.704883 0 3.31244)" fill="black" />
+                                  <rect width="4.27086" height="66.3713" transform="matrix(-0.704896 -0.70931 0.706518 -0.707695 3.10742 50)" fill="black" />
+                                </svg>
+                              </span>
+                            </button>
+                          </div>
+
+                          <div class="modal-body">
+                            <!-- Progress Bar -->
+                            <div class="progress-bar-container_step">
+                              <div class="step" data-step="1">
+                                <span class="number">1</span>
+                                <span class="tick d-none">✓</span>
+                              </div>
+                              <div class="step" data-step="2">
+                                <span class="number">2</span>
+                                <span class="tick d-none">✓</span>
+                              </div>
+                              <div class="step" data-step="3">
+                                <span class="number">3</span>
+                                <span class="tick d-none">✓</span>
+                              </div>
+                            </div>
+                            <!-- Step Forms -->
+                            <form id="customerForm" action="{{ route('customerstore') }}" method="POST" enctype="multipart/form-data" class="upload-form">
+                            @csrf                              
+                              <!-- Step 1 -->
+                              <div class="step-form step-1">
+                                <h4>Business Details:</h4>
+
+                                <!-- Profile Picture Upload -->
+                                <div class="gropu_form ivoice-upload">
+                                  <div class="file-area" id="round_uplad_image">
+                                    <div class="inner_file_edit">
+                                      <input type="file" id="emppicd" class="emppicd" name="profile_picture">
+                                      <div class="dont_show">
+                                        <img id="previewd" class="previewd" src="../assets/images/image_placeholder.png" alt="Profile Picture">
+                                        <div class="EAyyHe">
+                                          <div class="EzQmEf"></div>
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </div>
+                                  <label for="profile_picture">Company Logo</label>
+                                </div>
+
+                                <!-- Legal Entity Name -->
+                                <div class="gropu_form">
+                                  <label for="lename">Legal Entity Name</label>
+                                  <input placeholder="Legal Entity Name" type="text" id="lename" name="lename" value="" required>
+                                </div>
+
+                                <div class="gropu_form">
+                                  <label for="brandname">Brand Name</label>
+                                  <input placeholder="Brand Name" type="text" id="brandname" name="brandname" value="">
+                                </div>
+
+                                <div class="gropu_form">
+                                  <label for="email">Email</label>
+                                  <input placeholder="Email" type="email" id="email" name="email" value="" pattern="[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}"
+                                    title="Please enter a valid email address (e.g., example@domain.com)" required>
+                                </div>
+
+                                <div class="gropu_form custo_phonne">
+                                  <label for="phone">Phone</label>
+                                  <div class="phone_country">
+                                    <div class="flag_cnty">
+
+                                      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/css/intlTelInput.css" />
+                                      <script src="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/js/intlTelInput.min.js"></script>
+                                      <!-- Updated input field -->
+                                      <input id="phoneNumber" type="tel" name="phone" required inputmode="numeric"
+                                        placeholder="Phone" oninput="this.value = this.value.replace(/[^0-9]/g, '');"
+                                        title="Please enter a valid phone number, e.g., +1-123-456-7890" />
+
+                                    </div>
+                                  </div>
+
+                                </div>
+
+                                <!-- Type of Entity -->
+                                <div class="gropu_form">
+                                  <label for="type_of_entity">Type Of Entity</label>
+                                  <select id="type_of_entity" name="type_of_entity" required>
+                                    <option value="" disabled selected>Legal Entity Type</option>
+                                    <option value="AOP/ BOI">AOP/ BOI</option>
+                                    <option value="Individuals">Individuals</option>
+                                    <option value="Limited Company">Limited Company</option>
+                                    <option value="LLP">LLP</option>
+                                    <option value="One-Person Company">One-Person Company</option>
+                                    <option value="Partnership Firm">Partnership Firm</option>
+                                    <option value="Proprietor">Proprietor</option>
+                                    <option value="Trusts">Trusts</option>
+                                    <option value="Private Limited Company">Private Limited Company</option>
+                                    <option value="Others">Others</option>
+                                  </select>
+                                </div>
+
+                                <!-- CIN No with File Upload -->
+                                <div class="gropu_form">
+                                  <label for="CinNo">CIN No</label>
+                                  <div class="file_coman_wrap">
+                                    <input placeholder="CIN No" type="text" id="CinNo" name="CinNo" value="" required>
+                                    <div class="coman_file_uplaodd" id="cin-file-upload" style="display: none;">
+                                      <label for="cin_file">Attach CIN File</label>
+                                      <input type="file" id="cin_file" name="cin_file" required>
+                                    </div>
+                                  </div>
+                                </div>
+
+                                <!-- GSTIN No with File Upload -->
+                                <div class="gropu_form">
+                                  <label for="GSTINNo">GSTIN No</label>
+                                  <div class="file_coman_wrap">
+                                    <input placeholder="GSTIN No" type="text" id="GSTINNo" name="GSTINNo" value="" required>
+                                    <div class="coman_file_uplaodd" id="gstin-file-upload" style="display: none;">
+                                      <label for="gstin_file">Attach GSTIN File</label>
+                                      <input type="file" id="gstin_file" name="gstin_file" required>
+                                    </div>
+                                  </div>
+                                </div>
+
+
+                                <div class="btn-group">
+                                  <div class="btn-container">
+                                    <button type="button" class="btn btn-primary next-step" data-next-step="2"><svg width="30" height="30" viewBox="0 0 30 30" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <rect x="29.5" y="29.5" width="29" height="29" rx="14.5" transform="rotate(180 29.5 29.5)" stroke="black"></rect>
+                                        <path d="M20.7866 15.5415H8.66608C8.50532 15.5415 8.35124 15.4776 8.2376 15.3639C8.12386 15.2502 8.06006 15.0959 8.06006 14.9351C8.06006 14.7742 8.12386 14.62 8.2376 14.5063C8.35124 14.3925 8.50532 14.3287 8.66608 14.3287H20.7866C20.9473 14.3287 21.1014 14.3925 21.2151 14.5063C21.3287 14.62 21.3926 14.7742 21.3926 14.9351C21.3926 15.0959 21.3287 15.2502 21.2151 15.3639C21.1014 15.4776 20.9473 15.5415 20.7866 15.5415Z" fill="black"></path>
+                                        <path d="M20.536 14.9349L15.5096 9.90645C15.3958 9.79264 15.3319 9.63817 15.3319 9.47711C15.3319 9.31614 15.3958 9.16167 15.5096 9.04775C15.6234 8.93394 15.7778 8.87 15.9387 8.87C16.0996 8.87 16.254 8.93394 16.3678 9.04775L21.822 14.5056C21.8784 14.562 21.9232 14.6289 21.9537 14.7026C21.9843 14.7762 22 14.8552 22 14.9349C22 15.0147 21.9843 15.0937 21.9537 15.1674C21.9232 15.2411 21.8784 15.308 21.822 15.3643L16.3678 20.8222C16.254 20.936 16.0996 21 15.9387 21C15.7778 21 15.6234 20.936 15.5096 20.8222C15.3958 20.7083 15.3319 20.5538 15.3319 20.3928C15.3319 20.2318 15.3958 20.0773 15.5096 19.9635L20.536 14.9349Z" fill="black"></path>
+                                      </svg></button>
                                   </div>
                                 </div>
                               </div>
-                            </div>
-                            <label for="profile_picture">Company Logo</label>
-                          </div>
 
-                          <!-- Legal Entity Name -->
-                          <div class="gropu_form">
-                            <label for="lename">Legal Entity Name</label>
-                            <input placeholder="Legal Entity Name" type="text" id="lename" name="lename" value="" required>
-                          </div>
+                              <!-- Step 2 -->
+                              <div class="step-form step-2 d-none">
+                                <h4>Business Location:</h4>
+                                <div class="gropu_form">
+                                  <label for="roa">Registered Office Address</label>
+                                  <textarea placeholder="Registered Office Address" id="roa" name="roa" required></textarea>
+                                </div>
+                                <div class="gropu_form">
+                                  <label for="pincode">Pin Code</label>
 
-                          <div class="gropu_form">
-                            <label for="lename">Brand Name</label>
-                            <input placeholder="Brand Name" type="text" id="brandname" name="brandname" value="">
-                          </div>
+                                  <input placeholder="Pin Code" type="text" id="pincode" name="pincode" value="" maxlength="6" required>
+                                  <ul id="pincode-suggestions" class="suggestions-list"></ul>
+                                </div>
+                                <div class="gropu_form">
+                                  <label for="city">City</label>
 
-                          <div class="gropu_form">
-                            <label for="lename">Email</label>
-                            <input placeholder="Email" type="email" id="email" name="email" value="" pattern="[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}"
-                              title="Please enter a valid email address (e.g., example@domain.com)" required>
-                          </div>
+                                  <input placeholder="City" type="text" id="city" name="city" value="" required>
+                                  <ul id="city-suggestions" class="suggestions-list"></ul>
+                                </div>
 
-                          <div class="gropu_form">
-                            <label for="lename">Phone</label>
+                                <div class="gropu_form">
+                                  <label for="state">State</label>
+                                  <input placeholder="State" type="text" id="state" name="state" value="" required>
+                                  <div id="state-suggestions" class="autocomplete-suggestions"></div>
+                                </div>
 
-                            <div class="phone_country">
-                              <div class="flag_cnty">
-                                
-                                <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/css/intlTelInput.css" />
-                                <script src="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/js/intlTelInput.min.js"></script>
-                                  <!-- Updated input field -->
-                                  <input id="phoneNumber" type="tel" name="phone" required inputmode="numeric"
-                                    placeholder="Phone" oninput="this.value = this.value.replace(/[^0-9]/g, '');"
-                                    title="Please enter a valid phone number, e.g., +1-123-456-7890" />
-                                    
+                                <div class="btn-group">
+                                  <div class="btn-container">
+                                    <button type="button" class="btn btn-secondary prev-step" data-prev-step="1">
+                                      <svg width="30" height="30" viewBox="0 0 30 30" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <rect x="0.5" y="-0.5" width="29" height="29" rx="14.5" transform="matrix(1 0 0 -1 0 29)" stroke="black"></rect>
+                                        <path d="M9.21345 15.5415H21.3339C21.4947 15.5415 21.6488 15.4776 21.7624 15.3639C21.8761 15.2502 21.9399 15.0959 21.9399 14.9351C21.9399 14.7742 21.8761 14.62 21.7624 14.5063C21.6488 14.3925 21.4947 14.3287 21.3339 14.3287H9.21345C9.05272 14.3287 8.89857 14.3925 8.78492 14.5063C8.67127 14.62 8.60742 14.7742 8.60742 14.9351C8.60742 15.0959 8.67127 15.2502 8.78492 15.3639C8.89857 15.4776 9.05272 15.5415 9.21345 15.5415Z" fill="black"></path>
+                                        <path d="M9.46402 14.9349L14.4904 9.90645C14.6042 9.79264 14.6681 9.63817 14.6681 9.47711C14.6681 9.31614 14.6042 9.16167 14.4904 9.04775C14.3766 8.93394 14.2222 8.87 14.0613 8.87C13.9004 8.87 13.746 8.93394 13.6322 9.04775L8.17804 14.5056C8.1216 14.562 8.07682 14.6289 8.04627 14.7026C8.01573 14.7762 8 14.8552 8 14.9349C8 15.0147 8.01573 15.0937 8.04627 15.1674C8.07682 15.2411 8.1216 15.308 8.17804 15.3643L13.6322 20.8222C13.746 20.936 13.9004 21 14.0613 21C14.2222 21 14.3766 20.936 14.4904 20.8222C14.6042 20.7083 14.6681 20.5538 14.6681 20.3928C14.6681 20.2318 14.6042 20.0773 14.4904 19.9635L9.46402 14.9349Z" fill="black"></path>
+                                      </svg>
+                                    </button>
+                                    <button type="button" class="btn btn-primary next-step" data-next-step="3"><svg width="30" height="30" viewBox="0 0 30 30" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <rect x="29.5" y="29.5" width="29" height="29" rx="14.5" transform="rotate(180 29.5 29.5)" stroke="black"></rect>
+                                        <path d="M20.7866 15.5415H8.66608C8.50532 15.5415 8.35124 15.4776 8.2376 15.3639C8.12386 15.2502 8.06006 15.0959 8.06006 14.9351C8.06006 14.7742 8.12386 14.62 8.2376 14.5063C8.35124 14.3925 8.50532 14.3287 8.66608 14.3287H20.7866C20.9473 14.3287 21.1014 14.3925 21.2151 14.5063C21.3287 14.62 21.3926 14.7742 21.3926 14.9351C21.3926 15.0959 21.3287 15.2502 21.2151 15.3639C21.1014 15.4776 20.9473 15.5415 20.7866 15.5415Z" fill="black"></path>
+                                        <path d="M20.536 14.9349L15.5096 9.90645C15.3958 9.79264 15.3319 9.63817 15.3319 9.47711C15.3319 9.31614 15.3958 9.16167 15.5096 9.04775C15.6234 8.93394 15.7778 8.87 15.9387 8.87C16.0996 8.87 16.254 8.93394 16.3678 9.04775L21.822 14.5056C21.8784 14.562 21.9232 14.6289 21.9537 14.7026C21.9843 14.7762 22 14.8552 22 14.9349C22 15.0147 21.9843 15.0937 21.9537 15.1674C21.9232 15.2411 21.8784 15.308 21.822 15.3643L16.3678 20.8222C16.254 20.936 16.0996 21 15.9387 21C15.7778 21 15.6234 20.936 15.5096 20.8222C15.3958 20.7083 15.3319 20.5538 15.3319 20.3928C15.3319 20.2318 15.3958 20.0773 15.5096 19.9635L20.536 14.9349Z" fill="black"></path>
+                                      </svg></button>
+                                  </div>
+                                </div>
                               </div>
-                            </div>
 
-                          </div>
+                              <!-- Step 3 -->
+                              <div class="step-form step-3 d-none">
+                                <h4>Director Details:</h4>
 
-                          <!-- Director Name with Add/Remove Buttons -->
-                          <div class="gropu_form" id="directors-container">
-                            <label for="dname">Director Name</label>
-                            <div class="director_field_wrap">
-                              <div class="director-field">
-                                <input placeholder="Director Name" type="text" id="dname" name="dname[]" value="" required>
-                                <button type="button" class="add-director">
-                                  <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                    <path d="M1 6H11M6 11V1" stroke="#5790FF" stroke-width="1.66" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"></path>
-                                  </svg>
-                                </button>
+                                <!-- Director Name with Add/Remove Buttons -->
+                                <div class="gropu_form" id="directors-container">
+                                  <label for="dname">Director's</label>
+                                  <div class="director_field_wrap">
+                                    <div class="director-field">
+                                      <div class="director-field_input">
+                                        <input placeholder="Director Name" type="text" id="dname" name="dname[]" required>
+                                        <input placeholder="Director Email" type="text" id="dmail" name="dmail[]" required>
+                                        <input placeholder="Director Mobile" type="text" id="dphone" name="dphone[]" required>
+                                      </div>
+                                      <button type="button" class="add-director"><svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                          <path d="M1 6H11M6 11V1" stroke="#5790FF" stroke-width="1.66" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"></path>
+                                        </svg></button>
+                                    </div>
+                                  </div>
+                                </div>
+
+                                <div class="btn-group">
+                                  <div class="btn-container">
+                                    <button type="button" class="btn btn-secondary prev-step" data-prev-step="2">
+                                      <svg width="30" height="30" viewBox="0 0 30 30" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <rect x="0.5" y="-0.5" width="29" height="29" rx="14.5" transform="matrix(1 0 0 -1 0 29)" stroke="black"></rect>
+                                        <path d="M9.21345 15.5415H21.3339C21.4947 15.5415 21.6488 15.4776 21.7624 15.3639C21.8761 15.2502 21.9399 15.0959 21.9399 14.9351C21.9399 14.7742 21.8761 14.62 21.7624 14.5063C21.6488 14.3925 21.4947 14.3287 21.3339 14.3287H9.21345C9.05272 14.3287 8.89857 14.3925 8.78492 14.5063C8.67127 14.62 8.60742 14.7742 8.60742 14.9351C8.60742 15.0959 8.67127 15.2502 8.78492 15.3639C8.89857 15.4776 9.05272 15.5415 9.21345 15.5415Z" fill="black"></path>
+                                        <path d="M9.46402 14.9349L14.4904 9.90645C14.6042 9.79264 14.6681 9.63817 14.6681 9.47711C14.6681 9.31614 14.6042 9.16167 14.4904 9.04775C14.3766 8.93394 14.2222 8.87 14.0613 8.87C13.9004 8.87 13.746 8.93394 13.6322 9.04775L8.17804 14.5056C8.1216 14.562 8.07682 14.6289 8.04627 14.7026C8.01573 14.7762 8 14.8552 8 14.9349C8 15.0147 8.01573 15.0937 8.04627 15.1674C8.07682 15.2411 8.1216 15.308 8.17804 15.3643L13.6322 20.8222C13.746 20.936 13.9004 21 14.0613 21C14.2222 21 14.3766 20.936 14.4904 20.8222C14.6042 20.7083 14.6681 20.5538 14.6681 20.3928C14.6681 20.2318 14.6042 20.0773 14.4904 19.9635L9.46402 14.9349Z" fill="black"></path>
+                                      </svg>
+                                    </button>
+                                    <button type="submit" class="btn btn-success">Submit</button>
+                                  </div>
+                                </div>
                               </div>
-                            </div>
+
+                            </form>
                           </div>
-
-                          <!-- Registered Office Address -->
-                          <div class="gropu_form">
-                            <label for="roa">Registered Office Address</label>
-                            <textarea placeholder="Registered Office Address" id="roa" name="roa" required></textarea>
-                          </div>
-                          <!-- Pin Code with Auto-fill State and City -->
-                          <div class="gropu_form">
-                            <label for="pincode">Pin Code</label>
-                            <input placeholder="Pin Code" type="text" id="pincode" name="pincode" value="" maxlength="6" required>
-                            <ul id="pincode-suggestions" class="suggestions-list"></ul>
-                          </div>
-                          <!-- City with Auto-fill State and Pin Code -->
-                          <div class="gropu_form">
-                            <label for="city">City</label>
-                            <input placeholder="City" type="text" id="city" name="city" value="" required>
-                            <ul id="city-suggestions" class="suggestions-list"></ul>
-                          </div>
+                        </div>
+                      </div>
+                    </div>
 
 
 
-                          <!-- State Dropdown -->
-                          <div class="gropu_form">
-                            <label for="state">State</label>
-                            <input placeholder="State" type="text" id="state" name="state" value="" required>
-                            <div id="state-suggestions" class="autocomplete-suggestions"></div>
-                          </div>
+                    <script>
+                      $(document).ready(function() {
+                        function validateStep(step) {
+                          const input = $(`.step-form.step-${step} input`);
+                          return input.val().trim() !== '';
+                        }
 
+                        function updateProgress(step) {
+                          $('.step').each(function() {
+                            const stepNum = $(this).data('step');
+                            const isValid = validateStep(stepNum);
 
-
-                          <!-- CIN No with File Upload -->
-                          <div class="gropu_form">
-                            <label for="CinNo">CIN No</label>
-                            <div class="file_coman_wrap">
-                              <input placeholder="CIN No" type="text" id="CinNo" name="CinNo" value="" required>
-                              <div class="coman_file_uplaodd" id="cin-file-upload" style="display: none;">
-                                <label for="cin_file">Attach CIN File</label>
-                                <input type="file" id="cin_file" name="cin_file" required>
-                              </div>
-                            </div>
-                          </div>
-
-                          <!-- GSTIN No with File Upload -->
-                          <div class="gropu_form">
-                            <label for="GSTINNo">GSTIN No</label>
-                            <div class="file_coman_wrap">
-                              <input placeholder="GSTIN No" type="text" id="GSTINNo" name="GSTINNo" value="" required>
-                              <div class="coman_file_uplaodd" id="gstin-file-upload" style="display: none;">
-                                <label for="gstin_file">Attach GSTIN File</label>
-                                <input type="file" id="gstin_file" name="gstin_file" required>
-                              </div>
-                            </div>
-                          </div>
-
-                          <!-- Type of Entity -->
-                          <div class="gropu_form">
-                            <label for="type_of_entity">Type Of Entity</label>
-                            <select id="type_of_entity" name="type_of_entity" required>
-                              <option value="" disabled selected>Legal Entity Type</option>
-                              <option value="AOP/ BOI">AOP/ BOI</option>
-                              <option value="Individuals">Individuals</option>
-                              <option value="Limited Company">Limited Company</option>
-                              <option value="LLP">LLP</option>
-                              <option value="One-Person Company">One-Person Company</option>
-                              <option value="Partnership Firm">Partnership Firm</option>
-                              <option value="Proprietor">Proprietor</option>
-                              <option value="Trusts">Trusts</option>
-                              <option value="Private Limited Company">Private Limited Company</option>
-                              <option value="Others">Others</option>
-                            </select>
-                          </div>
-
-
-                          <!-- Submit Button -->
-                          <div class="root_btn">
-                            <button class="btn" type="submit">Add Customer</button>
-                          </div>
-                        </form>
-                        <script>
-                          const phoneInputField = document.querySelector("#phoneNumber");
-                          const phoneInput = window.intlTelInput(phoneInputField, {
-                            utilsScript:
-                              "https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/js/utils.js",
-                            initialCountry: "in", // Default country (India)
-                            separateDialCode: true, // Show the country code separately
-                          });
-                        
-                          // Ensure the full phone number is stored in the input field before form submission
-                          document.querySelector("#customerForm").addEventListener("submit", (e) => {
-                            if (!phoneInput.isValidNumber()) {
-                              e.preventDefault();
-                              alert("Please enter a valid phone number.");
+                            if (stepNum < step) {
+                              $(this).addClass('active');
+                              if (isValid) {
+                                $(this).find('.number').addClass('d-none');
+                                $(this).find('.tick').removeClass('d-none');
+                              } else {
+                                $(this).find('.number').removeClass('d-none');
+                                $(this).find('.tick').addClass('d-none');
+                              }
                             } else {
-                              // Update the input field with the full phone number
-                              phoneInputField.value = phoneInput.getNumber();
+                              $(this).removeClass('active');
+                              $(this).find('.number').removeClass('d-none');
+                              $(this).find('.tick').addClass('d-none');
                             }
                           });
-                        </script>
-                        <link rel="stylesheet" href="https://code.jquery.com/ui/1.13.2/themes/smoothness/jquery-ui.css">
-                        <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-                        <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.min.js"></script>
+                        }
 
-                        <script>
-                          const states = [
-                            "Andhra Pradesh", "Arunachal Pradesh", "Assam", "Bihar",
-                            "Chhattisgarh", "Goa", "Gujarat", "Haryana",
-                            "Himachal Pradesh", "Jharkhand", "Karnataka", "Kerala",
-                            "Madhya Pradesh", "Maharashtra", "Manipur", "Meghalaya",
-                            "Mizoram", "Nagaland", "Odisha", "Punjab",
-                            "Rajasthan", "Sikkim", "Tamil Nadu", "Telangana",
-                            "Tripura", "Uttar Pradesh", "Uttarakhand", "West Bengal",
-                            "Andaman and Nicobar Islands", "Chandigarh", "Dadra and Nagar Haveli and Daman and Diu",
-                            "Delhi", "Jammu and Kashmir", "Ladakh", "Lakshadweep", "Puducherry"
-                          ];
+                        $('.next-step').on('click', function() {
+                          const currentStep = $(this).data('next-step') - 1;
+                          const nextStep = $(this).data('next-step');
 
-                          $(document).ready(function() {
-                            $("#state").autocomplete({
-                              source: states,
-                              minLength: 1,
-                              autoFocus: true,
-                              appendTo: "#state-suggestions", // Ensures suggestions are shown inside the defined div
-                            });
-                          });
-                        </script>
+                          if (!validateStep(currentStep)) return;
 
+                          $(`.step-form.step-${currentStep}`).addClass('d-none');
+                          $(`.step-form.step-${nextStep}`).removeClass('d-none');
+                          updateProgress(nextStep);
+                        });
 
-                        <script>
-                          // // Add/Remove Director Fields
-                          // document.querySelector('.add-director').addEventListener('click', function () {
-                          //   const container = document.getElementById('directors-container');
-                          //   const newField = document.createElement('div');
-                          //   newField.className = 'director-field';
-                          //   newField.innerHTML = `<input placeholder="Director Name" type="text" name="dname[]">
-                          //                         <button type="button" class="remove-director">-</button>`;
-                          //   container.appendChild(newField);
-                          //   newField.querySelector('.remove-director').addEventListener('click', function () {
-                          //     container.removeChild(newField);
-                          //   });
-                          // });
+                        $('.prev-step').on('click', function() {
+                          const prevStep = $(this).data('prev-step');
+                          const currentStep = prevStep + 1;
 
-                          // Show/Hide CIN and GSTIN File Upload
-                          document.getElementById('CinNo').addEventListener('input', function() {
-                            const cinFileUpload = document.getElementById('cin-file-upload');
-                            cinFileUpload.style.display = this.value ? 'block' : 'none';
-                          });
+                          $(`.step-form.step-${currentStep}`).addClass('d-none');
+                          $(`.step-form.step-${prevStep}`).removeClass('d-none');
+                          updateProgress(prevStep);
+                        });
 
-                          document.getElementById('GSTINNo').addEventListener('input', function() {
-                            const gstinFileUpload = document.getElementById('gstin-file-upload');
-                            gstinFileUpload.style.display = this.value ? 'block' : 'none';
-                          });
+                        $('#customerForm').on('submit', function(e) {
+                          e.preventDefault();
+                          if (validateStep(3)) {                           
+                            $('#threeStepModal').modal('hide');
+                          }
+                        });
+
+                        $('input').on('input', function() {
+                          const step = $(this).closest('.step-form').attr('class').match(/step-(\d)/)[1];
+                          updateProgress(parseInt(step));
+                        });
+                      });
+                    </script>
 
 
-                          document.querySelector('body').addEventListener('click', function(event) {
-                            if (event.target.closest('.add-director')) {
-                              // Locate the parent .director_field_wrap
-                              const container = document.querySelector('.director_field_wrap');
+                    <script>
+                      const phoneInputField = document.querySelector("#phoneNumber");
+                      const phoneInput = window.intlTelInput(phoneInputField, {
+                        utilsScript: "https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/js/utils.js",
+                        initialCountry: "in", // Default country (India)
+                        separateDialCode: true, // Show the country code separately
+                      });
 
-                              // Create the new director-field element
-                              const newField = document.createElement('div');
-                              newField.className = 'director-field';
-                              newField.innerHTML = `
+                      // Ensure the full phone number is stored in the input field before form submission
+                      document.querySelector("#customerForm").addEventListener("submit", (e) => {
+                        if (!phoneInput.isValidNumber()) {
+                          e.preventDefault();
+                          alert("Please enter a valid phone number.");
+                        } else {
+                          // Update the input field with the full phone number
+                          phoneInputField.value = phoneInput.getNumber();
+                        }
+                      });
+                    </script>
+                    <link rel="stylesheet" href="https://code.jquery.com/ui/1.13.2/themes/smoothness/jquery-ui.css">
+                    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+                    <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.min.js"></script>
+
+                    <script>
+                      const states = [
+                        "Andhra Pradesh", "Arunachal Pradesh", "Assam", "Bihar",
+                        "Chhattisgarh", "Goa", "Gujarat", "Haryana",
+                        "Himachal Pradesh", "Jharkhand", "Karnataka", "Kerala",
+                        "Madhya Pradesh", "Maharashtra", "Manipur", "Meghalaya",
+                        "Mizoram", "Nagaland", "Odisha", "Punjab",
+                        "Rajasthan", "Sikkim", "Tamil Nadu", "Telangana",
+                        "Tripura", "Uttar Pradesh", "Uttarakhand", "West Bengal",
+                        "Andaman and Nicobar Islands", "Chandigarh", "Dadra and Nagar Haveli and Daman and Diu",
+                        "Delhi", "Jammu and Kashmir", "Ladakh", "Lakshadweep", "Puducherry"
+                      ];
+
+                      $(document).ready(function() {
+                        $("#state").autocomplete({
+                          source: states,
+                          minLength: 1,
+                          autoFocus: true,
+                          appendTo: "#state-suggestions", // Ensures suggestions are shown inside the defined div
+                        });
+                      });
+                    </script>
+
+
+                    <script>
+                      // // Add/Remove Director Fields
+                      // document.querySelector('.add-director').addEventListener('click', function () {
+                      //   const container = document.getElementById('directors-container');
+                      //   const newField = document.createElement('div');
+                      //   newField.className = 'director-field';
+                      //   newField.innerHTML = `<input placeholder="Director Name" type="text" name="dname[]">
+                      //                         <button type="button" class="remove-director">-</button>`;
+                      //   container.appendChild(newField);
+                      //   newField.querySelector('.remove-director').addEventListener('click', function () {
+                      //     container.removeChild(newField);
+                      //   });
+                      // });
+
+                      // Show/Hide CIN and GSTIN File Upload
+                      document.getElementById('CinNo').addEventListener('input', function() {
+                        const cinFileUpload = document.getElementById('cin-file-upload');
+                        cinFileUpload.style.display = this.value ? 'block' : 'none';
+                      });
+
+                      document.getElementById('GSTINNo').addEventListener('input', function() {
+                        const gstinFileUpload = document.getElementById('gstin-file-upload');
+                        gstinFileUpload.style.display = this.value ? 'block' : 'none';
+                      });
+
+
+                      document.querySelector('body').addEventListener('click', function(event) {
+                        if (event.target.closest('.add-director')) {
+                          // Locate the parent .director_field_wrap
+                          const container = document.querySelector('.director_field_wrap');
+
+                          // Create the new director-field element
+                          const newField = document.createElement('div');
+                          newField.className = 'director-field';
+                          newField.innerHTML = `
+                          <div class="director-field_input">
       <input placeholder="Director Name" type="text" name="dname[]" value="">
+     <input placeholder="Director Email" type="text" id="dmail" name="dmail[]" required>
+    <input placeholder="Director Mobile" type="text" id="dphone" name="dphone[]" required>
+    </div>
       <button type="button" class="remove-director">
 <svg width="12" height="2" viewBox="0 0 12 2" fill="none" xmlns="http://www.w3.org/2000/svg">
 <path d="M1 1H11H10.873" stroke="#5790FF" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
@@ -324,155 +472,157 @@
       </button>
     `;
 
-                              // Append the newField inside the existing .director_field_wrap
-                              container.appendChild(newField);
-                            }
+                          // Append the newField inside the existing .director_field_wrap
+                          container.appendChild(newField);
+                        }
 
-                            if (event.target.closest('.remove-director')) {
-                              // Remove the specific .director-field
-                              const field = event.target.closest('.director-field');
-                              field.parentNode.removeChild(field);
-                            }
-                          });
-                        </script>
-
-
-                        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+                        if (event.target.closest('.remove-director')) {
+                          // Remove the specific .director-field
+                          const field = event.target.closest('.director-field');
+                          field.parentNode.removeChild(field);
+                        }
+                      });
+                    </script>
 
 
-                        <script>
-                          // Clear related fields when one is cleared
-                          document.getElementById('state').addEventListener('input', clearFields);
-                          document.getElementById('city').addEventListener('input', clearFields);
-                          document.getElementById('pincode').addEventListener('input', clearFields);
+                    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
-                          function clearFields() {
-                            if (this.value.trim() === "") {
-                              document.getElementById('state').value = "";
-                              document.getElementById('city').value = "";
-                              document.getElementById('pincode').value = "";
-                            }
-                          }
 
-                          // Fetch State and City based on Pin Code
-                          document.getElementById('pincode').addEventListener('input', function() {
-                            const pincode = this.value.trim();
-                            const suggestionList = document.getElementById('pincode-suggestions');
+                    <script>
+                      // Clear related fields when one is cleared
+                      document.getElementById('state').addEventListener('input', clearFields);
+                      document.getElementById('city').addEventListener('input', clearFields);
+                      document.getElementById('pincode').addEventListener('input', clearFields);
 
-                            if (pincode.length === 6) {
-                              // Show the suggestion list
-                              suggestionList.style.display = 'block';
-                              fetch(`https://api.postalpincode.in/pincode/${pincode}`)
-                                .then(response => response.json())
-                                .then(data => {
-                                  if (data[0].Status === "Success") {
-                                    suggestionList.innerHTML = ""; // Clear previous suggestions
-                                    const postOffices = data[0].PostOffice;
+                      function clearFields() {
+                        if (this.value.trim() === "") {
+                          document.getElementById('state').value = "";
+                          document.getElementById('city').value = "";
+                          document.getElementById('pincode').value = "";
+                        }
+                      }
 
-                                    postOffices.forEach(office => {
-                                      const li = document.createElement('li');
-                                      li.textContent = `${office.Name}, ${office.District}, ${office.State}`;
-                                      li.addEventListener('click', function() {
-                                        // Auto-fill inputs
-                                        document.getElementById('pincode').value = pincode;
-                                        document.getElementById('city').value = office.District;
-                                        document.getElementById('state').value = office.State;
-                                        suggestionList.innerHTML = ""; // Clear suggestions after selection
-                                        suggestionList.style.display = 'none'; // Hide the list after selection
-                                      });
-                                      suggestionList.appendChild(li);
-                                    });
-                                  } else {
-                                    suggestionList.innerHTML = "<li>No suggestions available</li>";
-                                  }
-                                })
-                                .catch(error => console.error("Error fetching pincode details:", error));
-                            } else {
-                              suggestionList.innerHTML = ""; // Clear suggestions if input is invalid
-                              suggestionList.style.display = 'none';
-                            }
-                          });
+                      // Fetch State and City based on Pin Code
+                      document.getElementById('pincode').addEventListener('input', function() {
+                        const pincode = this.value.trim();
+                        const suggestionList = document.getElementById('pincode-suggestions');
 
-                          // Fetch Pin Code and State based on City Name
-                          document.getElementById('city').addEventListener('input', function() {
-                            const city = this.value.trim();
-                            const suggestionList = document.getElementById('city-suggestions');
+                        if (pincode.length === 6) {
+                          // Show the suggestion list
+                          suggestionList.style.display = 'block';
+                          fetch(`https://api.postalpincode.in/pincode/${pincode}`)
+                            .then(response => response.json())
+                            .then(data => {
+                              if (data[0].Status === "Success") {
+                                suggestionList.innerHTML = ""; // Clear previous suggestions
+                                const postOffices = data[0].PostOffice;
 
-                            if (city.length > 1) {
-                              // Show the suggestion list
-                              suggestionList.style.display = 'block';
-                              fetch(`https://api.postalpincode.in/postoffice/${city}`)
-                                .then(response => response.json())
-                                .then(data => {
-                                  if (data[0].Status === "Success") {
-                                    suggestionList.innerHTML = ""; // Clear previous suggestions
-                                    const postOffices = data[0].PostOffice;
-
-                                    postOffices.forEach(office => {
-                                      const li = document.createElement('li');
-                                      li.textContent = `${office.Name}, ${office.State} - ${office.Pincode}`;
-                                      li.addEventListener('click', function() {
-                                        // Auto-fill inputs
-                                        document.getElementById('city').value = city;
-                                        document.getElementById('state').value = office.State;
-                                        document.getElementById('pincode').value = office.Pincode;
-                                        suggestionList.innerHTML = ""; // Clear suggestions after selection
-                                        suggestionList.style.display = 'none'; // Hide the list after selection
-                                      });
-                                      suggestionList.appendChild(li);
-                                    });
-                                  } else {
-                                    suggestionList.innerHTML = "<li>No suggestions available</li>";
-                                  }
-                                })
-                                .catch(error => console.error("Error fetching city details:", error));
-                            } else {
-                              suggestionList.innerHTML = ""; // Clear suggestions if input is invalid
-                              suggestionList.style.display = 'none';
-                            }
-                          });
-                        </script>
-
-                        <script>
-                          $(document).on('submit', '#customerForm', function(e) {
-                            e.preventDefault();
-                            let formData = new FormData(this);
-
-                            $.ajax({
-                              url: "{{ route('customerstore') }}",
-                              type: "POST",
-                              data: formData,
-                              contentType: false,
-                              processData: false,
-                              success: function(response) {
-                                Swal.fire({
-                                  title: 'Success!',
-                                  text: response.message,
-                                  icon: 'success',
-                                }).then(() => {
-                                  // Redirect to 'user/contractmanage' after the SweetAlert confirmation
-                                  window.location.href = "/user/contractmanage";
+                                postOffices.forEach(office => {
+                                  const li = document.createElement('li');
+                                  li.textContent = `${office.Name}, ${office.District}, ${office.State}`;
+                                  li.addEventListener('click', function() {
+                                    // Auto-fill inputs
+                                    document.getElementById('pincode').value = pincode;
+                                    document.getElementById('city').value = office.District;
+                                    document.getElementById('state').value = office.State;
+                                    suggestionList.innerHTML = ""; // Clear suggestions after selection
+                                    suggestionList.style.display = 'none'; // Hide the list after selection
+                                  });
+                                  suggestionList.appendChild(li);
                                 });
-                              },
-                              error: function(xhr) {
-                                let errorMessage = 'An error occurred while saving the data.';
-
-                                // Extract error message from server response if available
-                                if (xhr.responseJSON && xhr.responseJSON.message) {
-                                  errorMessage = xhr.responseJSON.message;
-                                }
-
-                                Swal.fire({
-                                  title: 'Error!',
-                                  text: errorMessage,
-                                  icon: 'error',
-                                });
+                              } else {
+                                suggestionList.innerHTML = "<li>No suggestions available</li>";
                               }
+                            })
+                            .catch(error => console.error("Error fetching pincode details:", error));
+                        } else {
+                          suggestionList.innerHTML = ""; // Clear suggestions if input is invalid
+                          suggestionList.style.display = 'none';
+                        }
+                      });
+
+                      // Fetch Pin Code and State based on City Name
+                      document.getElementById('city').addEventListener('input', function() {
+                        const city = this.value.trim();
+                        const suggestionList = document.getElementById('city-suggestions');
+
+                        if (city.length > 1) {
+                          // Show the suggestion list
+                          suggestionList.style.display = 'block';
+                          fetch(`https://api.postalpincode.in/postoffice/${city}`)
+                            .then(response => response.json())
+                            .then(data => {
+                              if (data[0].Status === "Success") {
+                                suggestionList.innerHTML = ""; // Clear previous suggestions
+                                const postOffices = data[0].PostOffice;
+
+                                postOffices.forEach(office => {
+                                  const li = document.createElement('li');
+                                  li.textContent = `${office.Name}, ${office.State} - ${office.Pincode}`;
+                                  li.addEventListener('click', function() {
+                                    // Auto-fill inputs
+                                    document.getElementById('city').value = city;
+                                    document.getElementById('state').value = office.State;
+                                    document.getElementById('pincode').value = office.Pincode;
+                                    suggestionList.innerHTML = ""; // Clear suggestions after selection
+                                    suggestionList.style.display = 'none'; // Hide the list after selection
+                                  });
+                                  suggestionList.appendChild(li);
+                                });
+                              } else {
+                                suggestionList.innerHTML = "<li>No suggestions available</li>";
+                              }
+                            })
+                            .catch(error => console.error("Error fetching city details:", error));
+                        } else {
+                          suggestionList.innerHTML = ""; // Clear suggestions if input is invalid
+                          suggestionList.style.display = 'none';
+                        }
+                      });
+                    </script>
+
+                    <script>
+                      $(document).on('submit', '#customerForm', function(e) {
+                        e.preventDefault();
+                        let formData = new FormData(this);
+
+                        $.ajax({
+                          url: "{{ route('customerstore') }}",
+                          type: "POST",
+                          data: formData,
+                          contentType: false,
+                          processData: false,
+                          success: function(response) {
+                            Swal.fire({
+                              title: 'Success!',
+                              text: response.message,
+                              icon: 'success',
+                            }).then(() => {
+                              // Redirect to 'user/contractmanage' after the SweetAlert confirmation
+                              window.location.href = "/user/contractmanage";
                             });
-                          });
-                        </script>
-                      </div>
-                    </div>
+                          },
+                          error: function(xhr) {
+                            let errorMessage = 'An error occurred while saving the data.';
+
+                            // Extract error message from server response if available
+                            if (xhr.responseJSON && xhr.responseJSON.message) {
+                              errorMessage = xhr.responseJSON.message;
+                            }
+
+                            Swal.fire({
+                              title: 'Error!',
+                              text: errorMessage,
+                              icon: 'error',
+                            });
+                          }
+                        });
+                      });
+                    </script>
+
+
+
+
 
                     <div class="entery_body table-responsive">
                       <table id="contarct_table" class="table table-striped">

@@ -22145,7 +22145,8 @@ span.clinet_name {
 
 /*new div append css start*/
 .append_bootm_contarct {
-    display: none;;
+    display: none;
+    ;
     background: #f7f7f7;
     padding: 20px 15px;
     border-radius: 10px;
@@ -22204,8 +22205,7 @@ span.clinet_name {
     justify-content: space-between;
 }
 
-.append_bootm_contarct .append_bootm_contarct_wrap .file-area .file-dummy .default 
- .upload_icon {
+.append_bootm_contarct .append_bootm_contarct_wrap .file-area .file-dummy .default .upload_icon {
     display: flex;
     align-items: center;
     gap: 0px 5px;
@@ -22269,6 +22269,283 @@ span.clinet_name {
 
 .dark-only .append_bootm_contarct .append_bootm_contarct_wrap .file-area .file-dummy .default .fille {
     background: #333942;
+}
+
+.append_bootm_contarct .file-area_cover .file-list {
+    width: 100%;
+    max-height: 140px;
+    overflow: auto;
+    margin: 10px 0px;
+    padding: 0px 4px 0px 0px;
+}
+
+.append_bootm_contarct .file-area_cover .file-list .file-item {
+    display: flex;
+    align-items: center;
+    padding: 13px 5px;
+    border-bottom: 1px solid #e1e1e1;
+    justify-content: space-between;
+}
+
+.append_bootm_contarct .file-area_cover .file-list .file-item span {
+    color: #808080;
+    text-align: left;
+    font-size: 11px;
+    line-height: normal;
+    width: 200px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.append_bootm_contarct .file-area_cover .file-list .file-item .remove-btn {
+    box-shadow: none;
+    outline: none;
+    border: 0;
+    color: #FFF;
+    padding: 0;
+    background: red;
+    width: 15px;
+    height: 15px;
+    border-radius: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 9px;
+}
+
+.append_bootm_contarct .file-area_cover .file-list::-webkit-scrollbar {
+    width: 5px;
+    border-radius: 50px;
+}
+
+.append_bootm_contarct .file-area_cover .file-list::-webkit-scrollbar-thumb {
+    background: #5f92f7;
+    border-radius: 50px;
+}
+
+.append_bootm_contarct .file-area_cover .file-list::-webkit-scrollbar-track {
+    background: #dadada;
+    border-radius: 50px;
+}
+
+.dark-only .append_bootm_contarct .file-area_cover .file-list .file-item span {
+    color: #dbdbdb;
+}
+
+.dark-only .append_bootm_contarct .file-area_cover .file-list .file-item {
+    border-color: #40424c;
+}
+
+/*  */
+
+.progress-bar-container_step {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 20px;
+    position: relative;
+}
+
+.progress-bar-container_step .step {
+    width: 40px;
+    height: 40px;
+    border: 2px solid #ccc;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    position: relative;
+    color: #ccc;
+    background: #fff;
+    z-index: 1;
+}
+
+.progress-bar-container_step .step.active {
+    border-color: #28a745;
+}
+
+.progress-bar-container_step .step .number {
+    color: #ccc;
+}
+
+.progress-bar-container_step .step .tick {
+    color: #28a745;
+    font-size: 18px;
+}
+
+.progress-bar-container_step .step.active .number {
+    color: #28a745;
+}
+
+
+.custom_add_customer .step-form h4 {
+    display: block;
+    text-align: left;
+    font-size: 16px;
+    margin: 0px 0px 15px;
+    padding: 0;
+    color: #868686;
+    position: relative;
+}
+
+
+.progress-bar-container_step:after {
+    content: "";
+    position: absolute;
+    width: 100%;
+    height: 1px;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    border: 1px dashed #DDD;
+}
+
+
+.custom_add_customer #round_uplad_image {
+    flex: unset !IMPORTANT;
+    width: auto;
+}
+
+.custom_add_customer .gropu_form.ivoice-upload label {
+    color: #9b9b9b;
+    font-weight: 600 !important;
+}
+
+.custom_add_customer .btn-group {
+    width: 100%;
+    display: block;
+}
+
+.custom_add_customer .btn-group .btn-container {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    margin: 20px 0px 0px;
+    gap: 0px 10px;
+}
+
+.custom_add_customer .btn-group .btn-container .prev-step, .custom_add_customer .btn-group .btn-container .next-step {
+    background: transparent !important;
+    box-shadow: none ! IMPORTANT;
+    outline: none;
+    border: 0 !IMPORTANT;
+    font-size: 16px !important;
+    text-decoration: underline;
+    color: #0066FF ! IMPORTANT;
+    padding: 0 !important;
+}
+
+.custom_add_customer .btn-group .btn-container svg path {
+    fill: #0066FF;
+}
+
+.custom_add_customer .btn-group .btn-container svg rect {
+    stroke: #0066FF;
+}
+
+.custo_phonne .phone_country .iti {
+    width: 100%;
+}
+
+.custo_phonne .phone_country {
+    min-width: 120px;
+    flex: 2.1;
+}
+
+.custo_phonne .phone_country .iti__country-list {
+    white-space: unset;
+    width: 320px;
+}
+.custo_phonne .phone_country .iti input {
+    padding-left: 90px !important;
+    min-width: unset !important;
+    width: 100%;
+}
+
+.custom_add_customer.drop_coman_file.have_title  .file_coman_wrap .coman_file_uplaodd label {
+    font-size: 12px;
+    margin-bottom: 3px;
+    display: block;
+    margin-top: 4px;
+}
+
+
+.custom_add_customer  .gropu_form .director_field_wrap {
+    max-height: 300px;
+    overflow: auto;
+    padding: 0px 2px 0px 0px;
+    width: 100%;
+    display: block;
+    flex: 2;
+}
+
+
+.custom_add_customer  .gropu_form .director-field_input {
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: column;
+    gap: 10px 0px;
+    flex: 1;
+    margin-bottom: 10px;
+    border-bottom: 1px solid #DDD;
+    padding-bottom: 10px;
+}
+
+.custom_add_customer .gropu_form .director-field:last-child .director-field_input {
+    margin: 0;
+    border: 0;
+}
+
+.custom_add_customer .gropu_form .director_field_wrap button {
+    width: 35px;
+    height: 35px;
+    border-radius: 50px;
+    box-shadow: none;
+    outline: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all .25s ease-out;
+    border: 1px solid #5790FF;
+    background: #E2ECFF;
+    padding: 0;
+}
+.custom_add_customer .gropu_form .director_field_wrap button:hover {
+    background: #d0dbef;
+}
+.dark-only .custom_add_customer .gropu_form .director_field_wrap button {
+    background: #363a41;
+}
+.dark-only .custom_add_customer .gropu_form .director_field_wrap button:hover {
+    background: #2e323b;
+}
+
+.custom_add_customer .gropu_form .director-field input {
+    width: 100%;
+    display: block;
+}
+.custom_add_customer .gropu_form .director_field_wrap .director-field {
+    display: flex;
+    align-items: center;
+    gap: 0px 10px;
+}
+
+.dark-only .progress-bar-container_step .step {
+    background: #262b33;
+    border-color: #3e4d70;
+}
+
+.dark-only .progress-bar-container_step:after {
+    border-color: #3e4d70;
+}
+
+.dark-only .custom_add_customer .gropu_form .director-field_input {
+    border-color: #3e4d70;
+}
+
+.custom_add_customer .btn-group .btn-container button.btn.btn-success {
+    background: #5790FF !important;
 }
 
 /*new div append css end*/
@@ -23388,8 +23665,7 @@ span.clinet_name {
     border-radius: 5px;
     border-top: 0;
     flex: 2;
-    ;
-    width: 100%;
+    width: 290px;
     text-align: left;
     display: none;
 }
@@ -23604,7 +23880,7 @@ div.dataTables_wrapper {
     margin: 0px 0px 6px;
 }
 
-.addcustomer_fix  .phone_country {
+.addcustomer_fix .phone_country {
     width: 100%;
 }
 
@@ -24171,6 +24447,7 @@ div.dataTables_wrapper {
 .dark-only .request_nerrow .gropu_form_request h2 {
     color: #DBDBDB;
 }
+
 .dark-only .request_nerrow .gropu_form_request.red_alret h2 {
     color: #FA4A4A;
 }
@@ -24649,6 +24926,7 @@ div.dataTables_wrapper {
 .contract_detail_middle .customer_status span.expire {
     background: #d92d20;
 }
+
 .contract_detail_middle .customer_status span.inactive {
     background: #ffa500;
 }
@@ -25309,7 +25587,7 @@ div.dataTables_wrapper {
 
 #notify_customer.drop_coman_file .gropu_form_set select,
 #notify_customer.drop_coman_file .gropu_form_set textarea,
-#notify_customer.drop_coman_file .gropu_form_set .read_onlyy  {
+#notify_customer.drop_coman_file .gropu_form_set .read_onlyy {
     border: 1px solid #DDDDDD;
     width: 100%;
     border-radius: 10px;
@@ -30763,7 +31041,7 @@ b.toggle-password i {
         flex-wrap: wrap;
         gap: 20px 0px;
     }
-    
+
 }
 
 /*****table boostarp neww css start******/

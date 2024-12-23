@@ -358,8 +358,6 @@ $(document).ready(function() {
     <!--<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>-->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/store.js/1.3.14/store.min.js"></script>
 
-    <script>
-
 
   </body>
 </html>
