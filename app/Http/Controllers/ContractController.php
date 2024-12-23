@@ -9,6 +9,7 @@ use App\Models\Announcement;
 use DB;
 use App\Providers\RouteServiceProvider;
 use App\Models\User;
+use App\Models\Division;
 use Carbon\Carbon;
 use RealRashid\SweetAlert\Facades\Alert;
 use Illuminate\Foundation\Auth\RegistersUsers;
@@ -114,6 +115,7 @@ class ContractController extends Controller
        $cli_announcements = Announcement::where('role', 'Client')->latest()->get();
        $user = auth()->user();
        $customerrecord = Customer::find($id);
+    //    dd($customerrecord);
 
        $customercontract = CustomerContract::where('customer_id', $id)->get();
        $divisions = $customerrecord->customerContracts->pluck('division')->unique();
@@ -141,8 +143,16 @@ class ContractController extends Controller
    // Determine overall status
    $overallStatus = $hasActive ? 'Active' : 'Inactive';
 
+
+   
+   $div = Division::get();
+
+
+
+//    dd($division);
+
       
-      return view('user.Contract-Management.contract-manage-detail',compact('cli_announcements','user','customerrecord','customercontract','divisions','overallStatus'));
+      return view('user.Contract-Management.contract-manage-detail',compact('div','cli_announcements','user','customerrecord','customercontract','divisions','overallStatus'));
    }
 
    public function customerstore(Request $request)
@@ -215,8 +225,8 @@ class ContractController extends Controller
                'contracttype' => 'required|string',
                'contract_type' => 'required|string',
                'divison' => 'required|string',
-               'vendor_name' => 'required|string',
-               'legal_entity_status' => 'required|string',
+            //    'vendor_name' => 'required|string',
+            //    'legal_entity_status' => 'required|string',
                'startdate' => 'required|date',
                'startend' => 'required|date',
                'contract_value' => 'required|numeric',
@@ -251,8 +261,8 @@ class ContractController extends Controller
                'contracttype' => $request->contracttype,
                'contract_type' => $request->contract_type,
                'division' => $request->divison,
-               'vendor_name' => $request->vendor_name,
-               'legal_entity_status' => $request->legal_entity_status,
+            //    'vendor_name' => $request->vendor_name,
+            //    'legal_entity_status' => $request->legal_entity_status,
                'startdate' => $request->startdate,
                'startend' => $request->startend,
                'contract_value' => $request->contract_value,
@@ -505,6 +515,29 @@ class ContractController extends Controller
     return redirect()->back()->with('success', 'Contracts have been successfully imported.');
 }
 
+public function adddivision(Request $request){
+    $userId = auth()->user()->id;
+
+    
+    // $existingDivision = Division::where('user_id', $userId)
+    //                         ->where('division_name', $request->division_name)
+    //                         ->first();
+
+    
+    // if ($existingDivision) {
+    //     return redirect()->back()->with('error', 'You have already created this Division.');
+    // }
+
+    
+    $userdivisionModel = new Division([
+        'division_name' => $request->division_name,
+         'user_id' => $userId,
+    ]);
+
+    
+    $userdivisionModel->save();
+    return redirect()->back()->with('success', 'Division created successfully.');
+}
 
    
        // customer creation code end here from here 

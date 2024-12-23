@@ -1145,6 +1145,8 @@ Route::get('/user/contractmanage', [App\Http\Controllers\ContractController::cla
 Route::get('/user/contractmanagedetail/{id}', [App\Http\Controllers\ContractController::class, 'contractmanagedetail'])->name('user/contractmanagedetail')->middleware('auth');
 Route::post('/download-contracts', [App\Http\Controllers\ContractController::class, 'downloadContracts'])->name('download.contracts');
 
+
+Route::post('/adddivision', [App\Http\Controllers\ContractController::class, 'adddivision'])->name('adddivision');
 Route::post('/contracts/import', [App\Http\Controllers\ContractController::class, 'import'])->name('contracts.import');
 Route::post('/customernotification', [App\Http\Controllers\ContractController::class, 'customernotification'])->name('customernotification');
 
