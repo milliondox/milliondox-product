@@ -3427,16 +3427,16 @@ document.addEventListener('DOMContentLoaded', function () {
 
 
                                                             {{-- @foreach ($RealFileFoldersBank as $folderBank)
-    @php
-    // Remove any prefix that ends with an underscore after each "/" and also remove the leading slash if it exists
-    $realFileNames = json_decode($folder->real_file_name, true);
+                                                                @php
+                                                                // Remove any prefix that ends with an underscore after each "/" and also remove the leading slash if it exists
+                                                                $realFileNames = json_decode($folder->real_file_name, true);
 
-    $formattedPath = preg_replace('/(?:^|\/)[^\/_]+_/', '/', $folderBank->path);
-    $formattedPath = ltrim($formattedPath, '/'); // Remove leading slash
-    @endphp
+                                                                $formattedPath = preg_replace('/(?:^|\/)[^\/_]+_/', '/', $folderBank->path);
+                                                                $formattedPath = ltrim($formattedPath, '/'); // Remove leading slash
+                                                                @endphp
 
-<li>
-    <span>{{ $formattedPath }} / {{ $folderBank->real_file_name }} </span>
+                                                            <li>
+                                                                <span>{{ $formattedPath }} / {{ $folderBank->real_file_name }} </span>
                                                             <button data-bs-toggle="modal" data-bs-target="#common_file_upload_pop_bank"
                                                                 data-location="{{ $folderBank->path }}"
                                                                 data-real-file-name="{{ $folderBank->real_file_name }}">
@@ -3655,36 +3655,36 @@ document.addEventListener('DOMContentLoaded', function () {
                                                                 <label>Path :</label>
 
                                                                 {{-- <script>
-                        $(document).ready(function() {
-                            // Function to get query parameter by name
-                            function getQueryParamd(param) {
-                                var urlParams = new URLSearchParams(window.location.search);
-                                return urlParams.get(param);
-                            }
+                                                                    $(document).ready(function() {
+                                                                        // Function to get query parameter by name
+                                                                        function getQueryParamd(param) {
+                                                                            var urlParams = new URLSearchParams(window.location.search);
+                                                                            return urlParams.get(param);
+                                                                        }
 
-                            // Function to update the folder path
-                            function updateFolderPathd() {
-                                var folder = getQueryParamd('folder');
+                                                                        // Function to update the folder path
+                                                                        function updateFolderPathd() {
+                                                                            var folder = getQueryParamd('folder');
 
-                                if (folder) {
-                                    folder = decodeURIComponent(folder); // Decode if folder exists
-                                    // console.log("Folder parameter: " + folder);
+                                                                            if (folder) {
+                                                                                folder = decodeURIComponent(folder); // Decode if folder exists
+                                                                                // console.log("Folder parameter: " + folder);
 
-                                    // Set the folder value to data-my-folder attribute
-                                    $('#parent-folderd').attr('data-my-folder', folder);
-                                    
-                                    // Set the folder value in the input field using a template literal style
-                                    $('#parent-folderd').val(`${folder}`); // Using template literal syntax
-                                }
-                            }
+                                                                                // Set the folder value to data-my-folder attribute
+                                                                                $('#parent-folderd').attr('data-my-folder', folder);
+                                                                                
+                                                                                // Set the folder value in the input field using a template literal style
+                                                                                $('#parent-folderd').val(`${folder}`); // Using template literal syntax
+                                                                            }
+                                                                        }
 
-                            // Call updateFolderPath immediately to set initial value
-                            updateFolderPathd();
+                                                                        // Call updateFolderPath immediately to set initial value
+                                                                        updateFolderPathd();
 
-                            // Fetch the URL parameter every second
-                            setInterval(updateFolderPathd, 100);
-                        });
-                    </script> --}}
+                                                                        // Fetch the URL parameter every second
+                                                                        setInterval(updateFolderPathd, 100);
+                                                                    });
+                                                                </script> --}}
 
                                                                 <input type="text" id="parent-folderd" name="parent_folder" value="" readonly disable>
                                                             </div>
@@ -3743,46 +3743,46 @@ document.addEventListener('DOMContentLoaded', function () {
                                                                 <label for="fname">All Locations</label>
                                                                 <div class="all_locations">
                                                                     {{-- <ul class="nav navbar-nav dropdown customulli">
-                                    <li class="dropdown">
-                                        <a href="#" class="dropdown-toggle folder-link selected-folder" id="autohome" data-folder-path="">
-                                        <div class="folder-card">
-                                                <div class="folder-image">
-                                                    <div class="folder_in">
-                                                        <svg width="100" height="100" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                                            <path d="M49.9259 2.10898C49.5062 2.12346 49.1017 2.26969 48.7697 2.52695L2.76969 38.4215C2.35115 38.7478 2.07939 39.2271 2.01419 39.7538C1.94899 40.2805 2.0957 40.8115 2.42204 41.2301C2.74838 41.6486 3.22762 41.9204 3.75433 41.9856C4.28105 42.0508 4.81209 41.9041 5.23063 41.5777L8.00016 39.4176V91.9996C8.00022 92.53 8.21095 93.0387 8.58601 93.4138C8.96107 93.7888 9.46975 93.9996 10.0002 93.9996H37.6642C37.8802 94.0353 38.1006 94.0353 38.3166 93.9996H61.6642C61.8802 94.0353 62.1006 94.0353 62.3166 93.9996H90.0002C90.5306 93.9996 91.0393 93.7888 91.4143 93.4138C91.7894 93.0387 92.0001 92.53 92.0002 91.9996V39.4176L94.7697 41.5777C94.9769 41.7393 95.214 41.8585 95.4673 41.9285C95.7206 41.9985 95.9852 42.018 96.246 41.9857C96.5068 41.9534 96.7587 41.8701 96.9874 41.7404C97.216 41.6108 97.4168 41.4374 97.5784 41.2302C97.74 41.0229 97.8592 40.7859 97.9292 40.5325C97.9991 40.2792 98.0185 40.0146 97.9862 39.7538C97.954 39.493 97.8706 39.2411 97.741 39.0125C97.6113 38.7839 97.4379 38.5831 97.2306 38.4215L82.0002 26.5387V11.9996H70.0002V17.1715L51.2306 2.52695C50.8585 2.23839 50.3965 2.09038 49.9259 2.10898ZM50.0002 6.64414L88.0002 36.2965V89.9996H64.0002V51.9996H36.0002V89.9996H12.0002V36.2965L50.0002 6.64414ZM74.0002 15.9996H78.0002V23.4176L74.0002 20.2926V15.9996ZM40.0002 55.9996H60.0002V89.9996H40.0002V55.9996Z" fill="#D1D5E1"/>
-                                                        </svg>
+                                                                        <li class="dropdown">
+                                                                            <a href="#" class="dropdown-toggle folder-link selected-folder" id="autohome" data-folder-path="">
+                                                                            <div class="folder-card">
+                                                                                    <div class="folder-image">
+                                                                                        <div class="folder_in">
+                                                                                            <svg width="100" height="100" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                                                                <path d="M49.9259 2.10898C49.5062 2.12346 49.1017 2.26969 48.7697 2.52695L2.76969 38.4215C2.35115 38.7478 2.07939 39.2271 2.01419 39.7538C1.94899 40.2805 2.0957 40.8115 2.42204 41.2301C2.74838 41.6486 3.22762 41.9204 3.75433 41.9856C4.28105 42.0508 4.81209 41.9041 5.23063 41.5777L8.00016 39.4176V91.9996C8.00022 92.53 8.21095 93.0387 8.58601 93.4138C8.96107 93.7888 9.46975 93.9996 10.0002 93.9996H37.6642C37.8802 94.0353 38.1006 94.0353 38.3166 93.9996H61.6642C61.8802 94.0353 62.1006 94.0353 62.3166 93.9996H90.0002C90.5306 93.9996 91.0393 93.7888 91.4143 93.4138C91.7894 93.0387 92.0001 92.53 92.0002 91.9996V39.4176L94.7697 41.5777C94.9769 41.7393 95.214 41.8585 95.4673 41.9285C95.7206 41.9985 95.9852 42.018 96.246 41.9857C96.5068 41.9534 96.7587 41.8701 96.9874 41.7404C97.216 41.6108 97.4168 41.4374 97.5784 41.2302C97.74 41.0229 97.8592 40.7859 97.9292 40.5325C97.9991 40.2792 98.0185 40.0146 97.9862 39.7538C97.954 39.493 97.8706 39.2411 97.741 39.0125C97.6113 38.7839 97.4379 38.5831 97.2306 38.4215L82.0002 26.5387V11.9996H70.0002V17.1715L51.2306 2.52695C50.8585 2.23839 50.3965 2.09038 49.9259 2.10898ZM50.0002 6.64414L88.0002 36.2965V89.9996H64.0002V51.9996H36.0002V89.9996H12.0002V36.2965L50.0002 6.64414ZM74.0002 15.9996H78.0002V23.4176L74.0002 20.2926V15.9996ZM40.0002 55.9996H60.0002V89.9996H40.0002V55.9996Z" fill="#D1D5E1"/>
+                                                                                            </svg>
 
-                                                        <!-- <img src="../assets/images/solar_folder-bold.png"  id="folders" class="folder-icon" alt="Folder Icon"> -->
-                                                    </div>
-                                                    <div class="folder-title">
-                                                        <span>Home</span>
-                                                    </div>
-                                                </div>
-                                            
-                                            </div>
-                                            
-                                        </a>
-                                    </li>
+                                                                                            <!-- <img src="../assets/images/solar_folder-bold.png"  id="folders" class="folder-icon" alt="Folder Icon"> -->
+                                                                                        </div>
+                                                                                        <div class="folder-title">
+                                                                                            <span>Home</span>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                
+                                                                                </div>
+                                                                                
+                                                                            </a>
+                                                                        </li>
 
-                                    @foreach($folders->where('parent_name', null) as $parent)
-                                        <li class="dropdown">
-                                            <a href="#" class="dropdown-toggle folder-link" data-folder-path="{{ $parent->path }}">
-                                                                    <div class="folder-card">
-                                                                        <div class="folder-image">
-                                                                            <div class="folder_in">
-                                                                                <svg class="d_fadee" width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                                                                    <path fill-rule="evenodd" clip-rule="evenodd" d="M5.635 3.5525L6.01912 3.9375H10.9375C11.2856 3.9375 11.6194 4.07578 11.8656 4.32192C12.1117 4.56806 12.25 4.9019 12.25 5.25V9.625C12.25 9.9731 12.1117 10.3069 11.8656 10.5531C11.6194 10.7992 11.2856 10.9375 10.9375 10.9375H3.0625C2.7144 10.9375 2.38056 10.7992 2.13442 10.5531C1.88828 10.3069 1.75 9.9731 1.75 9.625V3.9375C1.75 3.5894 1.88828 3.25556 2.13442 3.00942C2.38056 2.76328 2.7144 2.625 3.0625 2.625H4.16237C4.33483 2.62504 4.50558 2.65906 4.66487 2.72512C4.82417 2.79118 4.96888 2.88798 5.09075 3.01L5.635 3.5525ZM0.4375 3.9375C0.4375 3.24131 0.714062 2.57363 1.20634 2.08134C1.69863 1.58906 2.36631 1.3125 3.0625 1.3125H4.16237C4.50721 1.31246 4.84868 1.38036 5.16727 1.51233C5.48586 1.6443 5.77532 1.83775 6.01912 2.08162L6.5625 2.625H10.9375C11.6337 2.625 12.3014 2.90156 12.7937 3.39384C13.2859 3.88613 13.5625 4.55381 13.5625 5.25V9.625C13.5625 10.3212 13.2859 10.9889 12.7937 11.4812C12.3014 11.9734 11.6337 12.25 10.9375 12.25H3.0625C2.36631 12.25 1.69863 11.9734 1.20634 11.4812C0.714062 10.9889 0.4375 10.3212 0.4375 9.625V3.9375ZM4.15625 5.6875C3.9822 5.6875 3.81528 5.75664 3.69221 5.87971C3.56914 6.00278 3.5 6.1697 3.5 6.34375C3.5 6.5178 3.56914 6.68472 3.69221 6.80779C3.81528 6.93086 3.9822 7 4.15625 7H9.84375C10.0178 7 10.1847 6.93086 10.3078 6.80779C10.4309 6.68472 10.5 6.5178 10.5 6.34375C10.5 6.1697 10.4309 6.00278 10.3078 5.87971C10.1847 5.75664 10.0178 5.6875 9.84375 5.6875H4.15625Z" fill="#C5C5C5" />
-                                                                                </svg>
-                                                                            </div>
-                                                                            <div class="folder-title">
-                                                                                <span>{{ $parent->name }}</span>
-                                                                            </div>
-                                                                        </div>
-                                                                    </div>
-                                                                    </a>
-                                                                    <ul class="dropdown-menu" id="subfolders-{{ urlencode(str_replace(['/', ' '], '_', $parent->path)) }}"></ul>
-                                                                    </li>
-                                                                    @endforeach
+                                                                        @foreach($folders->where('parent_name', null) as $parent)
+                                                                            <li class="dropdown">
+                                                                                <a href="#" class="dropdown-toggle folder-link" data-folder-path="{{ $parent->path }}">
+                                                                                    <div class="folder-card">
+                                                                                        <div class="folder-image">
+                                                                                            <div class="folder_in">
+                                                                                                <svg class="d_fadee" width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                                                                    <path fill-rule="evenodd" clip-rule="evenodd" d="M5.635 3.5525L6.01912 3.9375H10.9375C11.2856 3.9375 11.6194 4.07578 11.8656 4.32192C12.1117 4.56806 12.25 4.9019 12.25 5.25V9.625C12.25 9.9731 12.1117 10.3069 11.8656 10.5531C11.6194 10.7992 11.2856 10.9375 10.9375 10.9375H3.0625C2.7144 10.9375 2.38056 10.7992 2.13442 10.5531C1.88828 10.3069 1.75 9.9731 1.75 9.625V3.9375C1.75 3.5894 1.88828 3.25556 2.13442 3.00942C2.38056 2.76328 2.7144 2.625 3.0625 2.625H4.16237C4.33483 2.62504 4.50558 2.65906 4.66487 2.72512C4.82417 2.79118 4.96888 2.88798 5.09075 3.01L5.635 3.5525ZM0.4375 3.9375C0.4375 3.24131 0.714062 2.57363 1.20634 2.08134C1.69863 1.58906 2.36631 1.3125 3.0625 1.3125H4.16237C4.50721 1.31246 4.84868 1.38036 5.16727 1.51233C5.48586 1.6443 5.77532 1.83775 6.01912 2.08162L6.5625 2.625H10.9375C11.6337 2.625 12.3014 2.90156 12.7937 3.39384C13.2859 3.88613 13.5625 4.55381 13.5625 5.25V9.625C13.5625 10.3212 13.2859 10.9889 12.7937 11.4812C12.3014 11.9734 11.6337 12.25 10.9375 12.25H3.0625C2.36631 12.25 1.69863 11.9734 1.20634 11.4812C0.714062 10.9889 0.4375 10.3212 0.4375 9.625V3.9375ZM4.15625 5.6875C3.9822 5.6875 3.81528 5.75664 3.69221 5.87971C3.56914 6.00278 3.5 6.1697 3.5 6.34375C3.5 6.5178 3.56914 6.68472 3.69221 6.80779C3.81528 6.93086 3.9822 7 4.15625 7H9.84375C10.0178 7 10.1847 6.93086 10.3078 6.80779C10.4309 6.68472 10.5 6.5178 10.5 6.34375C10.5 6.1697 10.4309 6.00278 10.3078 5.87971C10.1847 5.75664 10.0178 5.6875 9.84375 5.6875H4.15625Z" fill="#C5C5C5" />
+                                                                                                </svg>
+                                                                                            </div>
+                                                                                            <div class="folder-title">
+                                                                                                <span>{{ $parent->name }}</span>
+                                                                                            </div>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </a>
+                                                                                <ul class="dropdown-menu" id="subfolders-{{ urlencode(str_replace(['/', ' '], '_', $parent->path)) }}"></ul>
+                                                                            </li>
+                                                                        @endforeach
 
                                                                     </ul> --}}
                                                                     <div class="nav-paths"></div>
@@ -3791,12 +3791,12 @@ document.addEventListener('DOMContentLoaded', function () {
                                                             </div>
 
                                                             {{-- <div class="gropu_form mainpath">
-                        <label for="fname"></label>
-                        <div class="select_path_view">
-                            <b>selected path:</b>
-                            <div class="nav-path"></div>
-                        </div>
-                        </div> --}}
+                                                                <label for="fname"></label>
+                                                                <div class="select_path_view">
+                                                                    <b>selected path:</b>
+                                                                    <div class="nav-path"></div>
+                                                                </div>
+                                                            </div> --}}
 
                                                             <div class="gropu_form">
                                                                 <label for="fname">Folder Name</label>
@@ -4049,21 +4049,21 @@ document.addEventListener('DOMContentLoaded', function () {
                                                                     // Generate the back button if there is a parent folder
                                                                     const backButtonHtml = parentFolderPath ?
                                                                         `<button class="btn-back backbutton" data-folder-path="${parentFolderPath}">
-            <svg width="16" height="12" viewBox="0 0 16 12" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <g clip-path="url(#clip0_642_662)">
-                    <path d="M14.6641 6H1.33073M1.33073 6L6.33073 11M1.33073 6L6.33073 1" 
-                          stroke="#1E1E1E" 
-                          stroke-width="1.5" 
-                          stroke-linecap="round" 
-                          stroke-linejoin="round"/>
-                </g>
-                <defs>
-                    <clipPath id="clip0_642_662">
-                        <rect width="16" height="12" fill="white"/>
-                    </clipPath>
-                </defs>
-            </svg>
-       </button>` :
+                                                                                <svg width="16" height="12" viewBox="0 0 16 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                                                    <g clip-path="url(#clip0_642_662)">
+                                                                                        <path d="M14.6641 6H1.33073M1.33073 6L6.33073 11M1.33073 6L6.33073 1" 
+                                                                                            stroke="#1E1E1E" 
+                                                                                            stroke-width="1.5" 
+                                                                                            stroke-linecap="round" 
+                                                                                            stroke-linejoin="round"/>
+                                                                                    </g>
+                                                                                    <defs>
+                                                                                        <clipPath id="clip0_642_662">
+                                                                                            <rect width="16" height="12" fill="white"/>
+                                                                                        </clipPath>
+                                                                                    </defs>
+                                                                                </svg>
+                                                                        </button>` :
                                                                         `<button class="btn-docurepo">Home</button>`; // Show "Home" button if no parent folder
 
                                                                     // Update the breadcrumb navigation path and back button
@@ -4752,11 +4752,76 @@ document.addEventListener('DOMContentLoaded', function () {
                                                                         triggerDocurepo(folderPath); // Call the reusable function
                                                                     });
 
+                                                                    // for inside form location click 23 December 2024
+                                                                
                                                                     $(document).on('click', '.fold-link', function(e) {
                                                                         e.preventDefault();
                                                                         e.stopPropagation();
-                                                                        var folderPath = $(this).data('folder-path'); // Get folder path from data attribute
+                                                                        var folderPath = $(this).data('folder-path2'); // Get folder path from data attribute
+
+                                                                        ////////////// sandeep start here 23 December 2024 
                                                                         // alert(folderPath);
+                                                                        var finalPathToUse2;
+                                                                        finalPathToUse2 = folderPath;
+
+                                                                        if (finalPathToUse2 && finalPathToUse2.includes('/')) {
+                                                                            const parts2 = finalPathToUse2.split('/');
+                                                                            // Remove the prefix before the '_' for each part
+                                                                            const result2 = parts2.map(part => part.includes('_') ? part.split('_')[1] : part);
+                                                                            // Join the cleaned parts with '/'
+                                                                            const output2 = result2.join(' / ');
+                                                                            $('#folderscont1').html(output2).css('color', 'green').attr('data-folderdata', finalPathToUse2); // Set thclass="backs-button"e data-folderdata attribute;;
+                                                                            $('.backs-button').attr('data-folderdata', finalPathToUse2); // Set thclass="backs-button"e data-folderdata attribute;;
+
+                                                                        } else {
+                                                                            // If selectedPath doesn't contain '/', remove everything before '_'
+                                                                            if (finalPathToUse2.includes('_')) {
+                                                                                const output2 = finalPathToUse2.split('_')[1];
+                                                                                $('#folderscont1').html(output2).css('color', 'green').attr('data-folderdata', finalPathToUse2); // Set the data-folderdata attribute;;
+                                                                                $('.backs-button').attr('data-folderdata', finalPathToUse2); // Set thclass="backs-button"e data-folderdata attribute;;
+
+                                                                            } else {
+                                                                                // If there is no '_', just use selectedPath as it is
+                                                                                $('#folderscont1').html("Home").css('color', 'green').attr('data-folderdata', finalPathToUse2); // Set the data-folderdata attribute;;
+                                                                                $('.backs-button').attr('data-folderdata', finalPathToUse2); // Set thclass="backs-button"e data-folderdata attribute;;
+
+                                                                            }
+                                                                        }
+
+                                                                        $.ajax({
+                                                                        url: '/fetchfolderfold',
+                                                                        method: 'GET',
+                                                                        data: {
+                                                                            folderName: folderPath,
+                                                                            folderClicked: 1
+
+                                                                        },
+                                                                        success: function(response) {
+                                                                            // Update the folder and file content
+                                                                            $('.folder-cont').html(response.folderHtml);
+                                                                            $('.file-cont').html(response.filesHtml || '<p>No files available</p>');
+
+                                                                            // Handle the back button if needed
+                                                                            if (response.showBackButton) {
+                                                                                // $('.nav-paths').prepend(`
+                                                                                //     <button class="backs-button" data-folder-path="root">
+                                                                                //         Back
+                                                                                //     </button>
+                                                                                // `);
+                                                                            }
+
+                                                                            // Hide the loader after the AJAX response
+
+                                                                        },
+                                                                        error: function(xhr) {
+                                                                            console.error('Error fetching folder contents:', xhr.responseText);
+
+                                                                            // Hide the loader on error
+
+                                                                        }
+                                                                    });
+
+
 
                                                                     });
 
@@ -4807,16 +4872,16 @@ document.addEventListener('DOMContentLoaded', function () {
 
                                                                 });
 
-                                                                $('.fold-link').on('click', function(event) {
-                                                                    event.preventDefault(); // Prevent default link behavior
+                                                                // $('.fold-link').on('click', function(event) {
+                                                                //     event.preventDefault(); // Prevent default link behavior
 
-                                                                    // Get the folder path from the clicked link (assuming data-folder-path is an attribute)
-                                                                    const folderPath = $(this).data('folder-path'); // Change to your actual attribute
+                                                                //     // Get the folder path from the clicked link (assuming data-folder-path is an attribute)
+                                                                //     const folderPath = $(this).data('folder-path'); // Change to your actual attribute
 
-                                                                    // Call the fetchTotalSize function with the folder path
+                                                                //     // Call the fetchTotalSize function with the folder path
 
 
-                                                                });
+                                                                // });
 
                                                                 $(document).on('click', '.toggle_icconn', function(e) {
                                                                     e.preventDefault();
@@ -4913,35 +4978,124 @@ document.addEventListener('DOMContentLoaded', function () {
                                                                 }
 
 
-                                                                $(document).on('click', '.fold-link', function(e) {
-                                                                    e.preventDefault();
+                                                                // $(document).on('click', '.fold-link', function(e) {
+                                                                //     e.preventDefault();
 
-                                                                    // Get the folder path from the data attribute of the clicked link
-                                                                    const folderPath = $(this).data('folder-path');
-
-
-                                                                    // Update the hidden input field with the folder path
-                                                                    $('#parent-folderlll').val(folderPath);
-                                                                    $('#parent-folderd').val(folderPath);
+                                                                //     // Get the folder path from the data attribute of the clicked link
+                                                                //     const folderPath = $(this).data('folder-path');
 
 
+                                                                //     // Update the hidden input field with the folder path
+                                                                //     $('#parent-folderlll').val(folderPath);
+                                                                //     $('#parent-folderd').val(folderPath);
 
-                                                                    fetchfolderfold();
-                                                                });
+
+
+                                                                //     fetchfolderfold();
+                                                                // });
                                                                 $(document).on('click', '.backs-button', function(e) {
                                                                     e.preventDefault();
 
-                                                                    // Get the folder path from the data attribute of the clicked link
-                                                                    const folderPath = $(this).data('folder-path');
+                                                                    // // Get the folder path from the data attribute of the clicked link
+                                                                    // var folderPathBack = $('#folderscont1').data('folderdata');
+                                                                    // // alert(folderPath);
+                                                                    // console.log(folderPathBack);
+                                                                    // // 2024-2025November0_Human Resources/2024-2025November0_Employee Database/2024-2025December269_test HR2/2024-2025December269_Appraisals/2024-2025December269_Appraisals forms
+
+                                                                    // // Find the last index of '/'
+                                                                    // const lastSlashIndex = folderPathBack.lastIndexOf('/');
+
+                                                                    // // Remove the substring after the last '/'
+                                                                    // if (lastSlashIndex !== -1) {
+                                                                    //     folderPathBack = folderPathBack.substring(0, lastSlashIndex);
+                                                                    // }
+
+                                                                    // console.log(folderPathBack);
+                                                                    // var folderPathBack2 = folderPathBack;
+
+                                                                    // $('#folderscont1').html(folderPathBack).css('color', 'green').attr('data-folderdata', folderPathBack2); // Set the data-folderdata attribute;
 
 
-                                                                    // Update the hidden input field with the folder path
-                                                                    $('#parent-folderlll').val(folderPath);
-                                                                    $('#parent-folderd').val(folderPath);
+                                                                    // Get the current folder path from the data attribute of #folderscont1
+                                                                    var folderPathBack = $('#folderscont1').attr('data-folderdata');
+                                                                    
+                                                                    console.log("Current folder path:", folderPathBack);
+
+                                                                    if (folderPathBack) {
+                                                                        // Find the last index of '/'
+                                                                        const lastSlashIndex = folderPathBack.lastIndexOf('/');
+
+                                                                        // Remove the substring after the last '/'
+                                                                        if (lastSlashIndex !== -1) {
+                                                                            folderPathBack = folderPathBack.substring(0, lastSlashIndex);
+                                                                        } else {
+                                                                            folderPathBack = "Home"; // Default to 'Home' if no '/' exists
+                                                                        }
+
+                                                                        console.log("Updated folder path:", folderPathBack);
+
+                                                                        // Update #folderscont1
+                                                                        $('#folderscont1').html(folderPathBack).css('color', 'green').attr('data-folderdata', folderPathBack); // Update the data-folderdata attribute
+                                                                    } else {
+                                                                        console.warn("No folder path found in data-folderdata.");
+                                                                    }
 
 
+                                                                    if (folderPathBack && folderPathBack.includes('/')) {
+                                                                        const parts2 = folderPathBack.split('/');
+                                                                        // Remove the prefix before the '_' for each part
+                                                                        const result2 = parts2.map(part => part.includes('_') ? part.split('_')[1] : part);
+                                                                        // Join the cleaned parts with '/'
+                                                                        const output2 = result2.join(' / ');
+                                                                        $('#folderscont1').html(output2).css('color', 'green').attr('data-folderdata', folderPathBack); // Set the data-folderdata attribute;
+                                                                      
+                                                                    } else {
+                                                                        // If selectedPath doesn't contain '/', remove everything before '_'
+                                                                        if (folderPathBack.includes('_')) {
+                                                                            const output2 = folderPathBack.split('_')[1];
+                                                                            $('#folderscont1').html(output2).css('color', 'green').attr('data-folderdata', folderPathBack); // Set the data-folderdata attribute;
+                                                                         
+                                                                        } else {
+                                                                            // If there is no '_', just use selectedPath as it is
+                                                                            $('#folderscont1').html("Home").css('color', 'green').attr('data-folderdata', folderPathBack); // Set the data-folderdata attribute;
+                                                                         
+                                                                        }
+                                                                    }
 
-                                                                    fetchfolderfold();
+
+                                                                    // fetchfolderfold();
+
+                                                                    $.ajax({
+                                                                        url: '/fetchfolderfold',
+                                                                        method: 'GET',
+                                                                        data: {
+                                                                            folderName: folderPathBack,
+                                                                            backPress: 1
+                                                                        },
+                                                                        success: function(response) {
+                                                                            // Update the folder and file content
+                                                                            $('.folder-cont').html(response.folderHtml);
+                                                                            $('.file-cont').html(response.filesHtml || '<p>No files available</p>');
+
+                                                                            // Handle the back button if needed
+                                                                            if (response.showBackButton) {
+                                                                                // $('.nav-paths').prepend(`
+                                                                                //     <button class="backs-button" data-folder-path="root">
+                                                                                //         Back
+                                                                                //     </button>
+                                                                                // `);
+                                                                            }
+
+                                                                            // Hide the loader after the AJAX response
+
+                                                                        },
+                                                                        error: function(xhr) {
+                                                                            console.error('Error fetching folder contents:', xhr.responseText);
+
+                                                                            // Hide the loader on error
+
+                                                                        }
+                                                                    });
                                                                 });
 
                                                                 function getQueryParam(param) {
@@ -4955,21 +5109,21 @@ document.addEventListener('DOMContentLoaded', function () {
                                                                     }
                                                                     return null;
                                                                 }
-                                                                $(document).on('click', '.hvr-rotatee', function(e) {
-                                                                    e.preventDefault();
+                                                                // $(document).on('click', '.hvr-rotatee', function(e) {
+                                                                //     e.preventDefault();
 
 
-                                                                    const folderPaths = getQueryParam('folder');
-                                                                    const finalPathToUse = decodeURIComponent(folderPaths);
+                                                                //     const folderPaths = getQueryParam('folder');
+                                                                //     const finalPathToUse = decodeURIComponent(folderPaths);
 
-                                                                    // Update the hidden input field with the folder path
-                                                                    $('#parent-folderlll').val(finalPathToUse);
-                                                                    $('#parent-folderd').val(finalPathToUse);
+                                                                //     // Update the hidden input field with the folder path
+                                                                //     $('#parent-folderlll').val(finalPathToUse);
+                                                                //     $('#parent-folderd').val(finalPathToUse);
 
 
 
-                                                                    fetchfolderfold();
-                                                                });
+                                                                //     fetchfolderfold();
+                                                                // });
 
 
                                                                 function fetchfolderfold() {
@@ -4989,10 +5143,41 @@ document.addEventListener('DOMContentLoaded', function () {
                                                                     // Default folder when no parent is defined
                                                                     const defaultFolder = 'root';
                                                                     const folderPaths = getQueryParam('folder');
+                                                                    
                                                                     const finalPathToUse = folderPaths ? decodeURIComponent(folderPaths) : defaultFolder;
+                                                                    
+                                                                    // const parts = finalPathToUse.split('/');
+                                                                    // // Remove the prefix before the '_' for each part
+                                                                    // const result = parts.map(part => part.split('_')[1]);
 
-                                                                    // Show the loader with video (if applicable)
+                                                                    // // Join the cleaned parts with '/'
+                                                                    // const output = result.join(' / ');
 
+                                                                    // // $('#folderscont1').html(output);
+                                                                    // $('#folderscont1').html(output).css('color', 'green');
+                                                                    if (finalPathToUse && finalPathToUse.includes('/')) {
+                                                                        const parts2 = finalPathToUse.split('/');
+                                                                        // Remove the prefix before the '_' for each part
+                                                                        const result2 = parts2.map(part => part.includes('_') ? part.split('_')[1] : part);
+                                                                        // Join the cleaned parts with '/'
+                                                                        const output2 = result2.join(' / ');
+                                                                        $('#folderscont1').html(output2).css('color', 'green').attr('data-folderdata', finalPathToUse); // Set the data-folderdata attribute;
+                                                                        $('.backs-button').attr('data-folderdata', finalPathToUse); // Set thclass="backs-button"e data-folderdata attribute;;
+
+                                                                    } else {
+                                                                        // If selectedPath doesn't contain '/', remove everything before '_'
+                                                                        if (finalPathToUse.includes('_')) {
+                                                                            const output2 = finalPathToUse.split('_')[1];
+                                                                            $('#folderscont1').html(output2).css('color', 'green').attr('data-folderdata', finalPathToUse); // Set the data-folderdata attribute;
+                                                                            $('.backs-button').attr('data-folderdata', finalPathToUse); // Set thclass="backs-button"e data-folderdata attribute;;
+
+                                                                        } else {
+                                                                            // If there is no '_', just use selectedPath as it is
+                                                                            $('#folderscont1').html("Home").css('color', 'green').attr('data-folderdata', finalPathToUse); // Set the data-folderdata attribute;
+                                                                            $('.backs-button').attr('data-folderdata', finalPathToUse); // Set thclass="backs-button"e data-folderdata attribute;;
+
+                                                                        }
+                                                                    }
 
                                                                     $.ajax({
                                                                         url: '/fetchfolderfold',
@@ -5026,6 +5211,8 @@ document.addEventListener('DOMContentLoaded', function () {
                                                                     });
                                                                 }
 
+
+
                                                                 // Call the function immediately when the page loads to get the initial folder path from the URL
                                                                 $(document).ready(function() {
                                                                     // fetchfolderfold();
@@ -5037,48 +5224,55 @@ document.addEventListener('DOMContentLoaded', function () {
                                                                     $('#create_folder').on('click', function() {
                                                                         fetchfolderfold();
                                                                     });
+
+                                                                    // $('.fold-link').on('click', function() {
+                                                                    //     // fetchfolderfold();
+                                                                    //     alert("sdfgsdfg");
+                                                                    //     console.log("asdfhasfdu");
+                                                                    // });
+                                                                    
                                                                 });
 
 
-                                                                $(document).on('click', '.fold-link', function(e) {
-                                                                    e.preventDefault();
+                                                                // $(document).on('click', '.fold-link', function(e) {
+                                                                //     e.preventDefault();
 
-                                                                    // Get the folder path from the clicked element
-                                                                    const folderPath = $(this).data('folder-path');
+                                                                //     // Get the folder path from the clicked element
+                                                                //     const folderPath = $(this).data('folder-path');
 
-                                                                    // Update the breadcrumb navigation
-                                                                    updateBreadcrumbs(folderPath);
+                                                                //     // Update the breadcrumb navigation
+                                                                //     updateBreadcrumbs(folderPath);
 
-                                                                    // Show a loading spinner or message (optional)
-                                                                    $('.folder-cont').html('<p>Loading...</p>'); // This shows the loading text or spinner
-                                                                    let loaderTimeout = setTimeout(function() {
-                                                                        $('.folder-cont').html('<p>Data is still loading...</p>');
-                                                                    }, 30000); // 30 seconds
-                                                                    // Send an AJAX request to fetch the folder contents
-                                                                    $.ajax({
-                                                                        url: '/fetchfolderfold', // Adjust this to match your route
-                                                                        method: 'POST',
-                                                                        data: {
-                                                                            folderName: folderPath,
-                                                                            _token: $('meta[name="csrf-token"]').attr('content') // CSRF token for security
-                                                                        },
-                                                                        beforeSend: function() {
-                                                                            // Optional: Show a loader spinner before the request is sent
-                                                                            $('.folder-cont').html('<div class="loader" style="color: #C5C5C5; font-size: 12px; position: relative; top: 50px;">Loading...</div>'); // Apply inline styles for color and font size
-                                                                        },
-                                                                        success: function(response) {
-                                                                            // Update the folder contents with the HTML response
-                                                                            clearTimeout(loaderTimeout);
-                                                                            $('.folder-cont').html(response.folderHtml); // Replace loader with the real content
-                                                                        },
-                                                                        error: function(xhr, status, error) {
-                                                                            clearTimeout(loaderTimeout);
-                                                                            // Handle errors
-                                                                            console.error(error);
-                                                                            $('.folder-cont').html('<p>Failed to load folder contents. Please try again.</p>');
-                                                                        }
-                                                                    });
-                                                                });
+                                                                //     // Show a loading spinner or message (optional)
+                                                                //     $('.folder-cont').html('<p>Loading...</p>'); // This shows the loading text or spinner
+                                                                //     let loaderTimeout = setTimeout(function() {
+                                                                //         $('.folder-cont').html('<p>Data is still loading...</p>');
+                                                                //     }, 30000); // 30 seconds
+                                                                //     // Send an AJAX request to fetch the folder contents
+                                                                //     $.ajax({
+                                                                //         url: '/fetchfolderfold', // Adjust this to match your route
+                                                                //         method: 'POST',
+                                                                //         data: {
+                                                                //             folderName: folderPath,
+                                                                //             _token: $('meta[name="csrf-token"]').attr('content') // CSRF token for security
+                                                                //         },
+                                                                //         beforeSend: function() {
+                                                                //             // Optional: Show a loader spinner before the request is sent
+                                                                //             $('.folder-cont').html('<div class="loader" style="color: #C5C5C5; font-size: 12px; position: relative; top: 50px;">Loading...</div>'); // Apply inline styles for color and font size
+                                                                //         },
+                                                                //         success: function(response) {
+                                                                //             // Update the folder contents with the HTML response
+                                                                //             clearTimeout(loaderTimeout);
+                                                                //             $('.folder-cont').html(response.folderHtml); // Replace loader with the real content
+                                                                //         },
+                                                                //         error: function(xhr, status, error) {
+                                                                //             clearTimeout(loaderTimeout);
+                                                                //             // Handle errors
+                                                                //             console.error(error);
+                                                                //             $('.folder-cont').html('<p>Failed to load folder contents. Please try again.</p>');
+                                                                //         }
+                                                                //     });
+                                                                // });
 
                                                                 function updateBreadcrumbs(folderPath) {
                                                                     // Split the folder path into parts
@@ -5090,18 +5284,18 @@ document.addEventListener('DOMContentLoaded', function () {
                                                                     if (folderParts.length > 1 || folderParts[0] !== 'root') {
                                                                         const parentPath = folderParts.slice(0, -1).join('/') || 'root';
                                                                         breadcrumbHtml += `
-            <button class="backs-button" data-folder-path="${parentPath}">
-               <svg width="16" height="12" viewBox="0 0 16 12" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <g clip-path="url(#clip0_642_662)">
-                    <path d="M14.6641 6H1.33073M1.33073 6L6.33073 11M1.33073 6L6.33073 1" stroke="#1E1E1E" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
-                </g>
-                <defs>
-                    <clipPath id="clip0_642_662">
-                        <rect width="16" height="12" fill="white"></rect>
-                    </clipPath>
-                </defs>
-            </svg>
-            </button>`;
+                                                                        <button class="backs-button" data-folder-path="${parentPath}">
+                                                                        <svg width="16" height="12" viewBox="0 0 16 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                                            <g clip-path="url(#clip0_642_662)">
+                                                                                <path d="M14.6641 6H1.33073M1.33073 6L6.33073 11M1.33073 6L6.33073 1" stroke="#1E1E1E" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+                                                                            </g>
+                                                                            <defs>
+                                                                                <clipPath id="clip0_642_662">
+                                                                                    <rect width="16" height="12" fill="white"></rect>
+                                                                                </clipPath>
+                                                                            </defs>
+                                                                        </svg>
+                                                                        </button>`;
                                                                     }
 
                                                                     breadcrumbHtml += '<nav><ul class="breadcrumbs">';
@@ -5115,11 +5309,11 @@ document.addEventListener('DOMContentLoaded', function () {
                                                                         const cleanName = part.includes('_') ? part.split('_')[1] : part;
 
                                                                         breadcrumbHtml += `
-            <li>
-                <a href="#" class="breadcrumbs-link" data-folder-path="${cumulativePath.slice(0, -1)}">
-                    ${cleanName}
-                </a>
-            </li>`;
+                                                                        <li>
+                                                                            <a href="#" class="breadcrumbs-link" data-folder-path="${cumulativePath.slice(0, -1)}">
+                                                                                ${cleanName}
+                                                                            </a>
+                                                                        </li>`;
                                                                     });
 
                                                                     breadcrumbHtml += '</ul></nav></div>';
@@ -5150,25 +5344,25 @@ document.addEventListener('DOMContentLoaded', function () {
                                                                 const folderPaths = getQueryParam('folder');
 
                                                                 // Check every second if there's no value in data-folder-path, then update it from URL param
-                                                                setInterval(() => {
-                                                                    $('.backs-button').each(function() {
-                                                                        const dataFolderPath = $(this).data('folder-path');
-                                                                        if (!dataFolderPath && folderPaths) {
-                                                                            $(this).data('folder-path', folderPaths);
-                                                                        }
-                                                                    });
-                                                                }, 1); // Check every second
+                                                                // setInterval(() => {
+                                                                //     $('.backs-button').each(function() {
+                                                                //         const dataFolderPath = $(this).data('folder-path');
+                                                                //         if (!dataFolderPath && folderPaths) {
+                                                                //             $(this).data('folder-path', folderPaths);
+                                                                //         }
+                                                                //     });
+                                                                // }, 1); // Check every second
 
                                                                 // Example to call updateBreadcrumbs
                                                                 updateBreadcrumbs(folderPaths || 'root');
 
 
                                                                 // Handle "Back" button clicks
-                                                                $(document).on('click', '.backs-button', function(e) {
-                                                                    e.preventDefault();
-                                                                    const folderPath = $(this).data('folder-path');
-                                                                    navigateToFolders(folderPath);
-                                                                });
+                                                                // $(document).on('click', '.backs-button', function(e) {
+                                                                //     e.preventDefault();
+                                                                //     const folderPath = $(this).data('folder-path');
+                                                                //     navigateToFolders(folderPath);
+                                                                // });
 
                                                                 // Handle breadcrumb link clicks
                                                                 $(document).on('click', '.breadcrumbs-link', function(e) {
@@ -5178,28 +5372,28 @@ document.addEventListener('DOMContentLoaded', function () {
                                                                 });
 
                                                                 // Function to navigate to a folder and update contents
-                                                                function navigateToFolders(folderPath) {
-                                                                    // Update breadcrumbs
-                                                                    updateBreadcrumbs(folderPath);
+                                                                // function navigateToFolders(folderPath) {
+                                                                //     // Update breadcrumbs
+                                                                //     updateBreadcrumbs(folderPath);
 
-                                                                    // Fetch folder contents via AJAX
-                                                                    $.ajax({
-                                                                        url: '/fetchfolderfold',
-                                                                        method: 'POST',
-                                                                        data: {
-                                                                            folderName: folderPath,
-                                                                            _token: $('meta[name="csrf-token"]').attr('content')
-                                                                        },
+                                                                //     // Fetch folder contents via AJAX
+                                                                //     $.ajax({
+                                                                //         url: '/fetchfolderfold',
+                                                                //         method: 'POST',
+                                                                //         data: {
+                                                                //             folderName: folderPath,
+                                                                //             _token: $('meta[name="csrf-token"]').attr('content')
+                                                                //         },
 
-                                                                        success: function(response) {
-                                                                            $('.folder-cont').html(response.folderHtml || '<p>No folders available.</p>');
-                                                                        },
-                                                                        error: function(xhr) {
-                                                                            console.error('Error fetching folder contents:', xhr.responseText);
-                                                                        },
+                                                                //         success: function(response) {
+                                                                //             $('.folder-cont').html(response.folderHtml || '<p>No folders available.</p>');
+                                                                //         },
+                                                                //         error: function(xhr) {
+                                                                //             console.error('Error fetching folder contents:', xhr.responseText);
+                                                                //         },
 
-                                                                    });
-                                                                }
+                                                                //     });
+                                                                // }
 
 
 
@@ -5998,7 +6192,7 @@ document.addEventListener('DOMContentLoaded', function () {
                                                                         indirecttaxGSTR9cTableAppended = true; // Set the flag to true to prevent further appends
                                                                     } else if (folderPath === "Accounting & Taxation/Indirect Tax/Indirect/GST/Litigations" && !indirecttaxLitigationsTableAppended) {
                                                                         // alert(resultto);  // Display the result
-                                                                        alert("i am inside Litigations");
+                                                                        // alert("i am inside Litigations");
                                                                         insertindirecttaxLitigationsTableAppendeds(); // Call the function to append the table
                                                                         indirecttaxLitigationsTableAppended = true; // Set the flag to true to prevent further appends
                                                                     }
@@ -6060,137 +6254,141 @@ document.addEventListener('DOMContentLoaded', function () {
 
                                                                 function insertcharterdocumentsRegistrationsTableAppendedTable() {
                                                                     const tableHtml = `
-            @include('Charter_documents_Registrations')
-        `;
+                                                                        @include('Charter_documents_Registrations')
+                                                                    `;
                                                                     $('.file-container').append(tableHtml);
                                                                 }
 
 
                                                                 function insertcharterdocumentsIncorporationTableAppendedTable() {
                                                                     const tableHtml = `
-            @include('Charter_documents_Incorporation')
-        `;
+                                                                        @include('Charter_documents_Incorporation')
+                                                                    `;
                                                                     $('.file-container').append(tableHtml);
                                                                 }
 
                                                                 function insertcharterdocumentsDirectordetatilsDirector2Table() {
                                                                     const tableHtml = `
-            @include('Charter_documents_Director_Details_Director_2')
-        `;
+                                                                        @include('Charter_documents_Director_Details_Director_2')
+                                                                    `;
                                                                     $('.file-container').append(tableHtml);
                                                                 }
 
                                                                 function insertcharterdocumentsDirectordetatilsDirector1Table() {
                                                                     const tableHtml = `
-            @include('Charter_documents_Director_Details_Director_1')
-        `;
+                                                                        @include('Charter_documents_Director_Details_Director_1')
+                                                                    `;
                                                                     $('.file-container').append(tableHtml);
                                                                 }
 
                                                                 function insertbankMutualFundStatementsTable() {
                                                                     const tableHtml = `
-            @include('Book-Keeping_Mutual_Fund_Statements')
-        `;
+                                                                        @include('Book-Keeping_Mutual_Fund_Statements')
+                                                                    `;
                                                                     $('.file-container').append(tableHtml);
                                                                 }
 
                                                                 function insertbankCreditCardStatementsTable() {
                                                                     const tableHtml = `
-            @include('Book-Keeping_Credit_Card_Statements')
-        `;
+                                                                        @include('Book-Keeping_Credit_Card_Statements')
+                                                                    `;
                                                                     $('.file-container').append(tableHtml);
                                                                 }
 
                                                                 function insertbankFixedDepositStatementsTable() {
                                                                     const tableHtml = `
-            @include('Book-Keeping_Fixed_Deposit_Statements')
-        `;
+                                                                        @include('Book-Keeping_Fixed_Deposit_Statements')
+                                                                    `;
                                                                     $('.file-container').append(tableHtml);
                                                                 }
 
                                                                 function insertbankAccountStatementsTable() {
                                                                     const tableHtml = `
-            @include('Book-Keeping_Bank_Account_Statements')
-        `;
+                                                                        @include('Book-Keeping_Bank_Account_Statements')
+                                                                    `;
                                                                     $('.file-container').append(tableHtml);
                                                                 }
 
                                                                 function insertundertakingTable() {
                                                                     const tableHtml = `
-            @include('Secretarial_Deposit_Undertakings')
-        `;
+                                                                        @include('Secretarial_Deposit_Undertakings')
+                                                                    `;
                                                                     $('.file-container').append(tableHtml);
                                                                 }
 
                                                                 function insertstaturegiTable() {
                                                                     const tableHtml = `
-            @include('Secretarial_Statutory_Registers')
-        `;
+                                                                        @include('Secretarial_Statutory_Registers')
+                                                                    `;
                                                                     $('.file-container').append(tableHtml);
                                                                 }
 
                                                                 function insertauditexitTable() {
                                                                     const tableHtml = `
-            @include('Secretarial_Auditor_Exits')
-        `;
+                                                                        @include('Secretarial_Auditor_Exits')
+                                                                    `;
                                                                     $('.file-container').append(tableHtml);
                                                                 }
 
                                                                 function insertauditappTable() {
                                                                     const tableHtml = `
-            @include('Secretarial_Auditor_Appointment')
-        `;
+                                                                        @include('Secretarial_Auditor_Appointment')
+                                                                    `;
                                                                     $('.file-container').append(tableHtml);
                                                                 }
 
                                                                 function insertDirectexitTable() {
                                                                     const tableHtml = `
-            @include('Secretarial_Director_Exits')
-        `;
+                                                                        @include('Secretarial_Director_Exits')
+                                                                    `;
                                                                     $('.file-container').append(tableHtml);
                                                                 }
 
                                                                 function insertDirectTable() {
                                                                     const tableHtml = `
-            @include('Secretarial_Director_Appointments')
-        `;
+                                                                        @include('Secretarial_Director_Appointments')
+                                                                    `;
                                                                     $('.file-container').append(tableHtml);
                                                                 }
 
                                                                 function insertANNTable() {
                                                                     const tableHtml = `
-            @include('Secretarial_Annual_Filings')
-        `;
+                                                                        @include('Secretarial_Annual_Filings')
+                                                                    `;
                                                                     $('.file-container').append(tableHtml);
                                                                 }
 
                                                                 function insertINCTable() {
                                                                     const tableHtml = `
-            @include('Secretarial_Incorporation')
-        `;
+                                                                        @include('Secretarial_Incorporation')
+                                                                    `;
                                                                     $('.file-container').append(tableHtml);
                                                                 }
 
                                                                 function insertOrderTable() {
                                                                     const tableHtml = `
-            @include('Secretarial_Extra_Ordinary_General_Meeting')
-        `;
+                                                                        @include('Secretarial_Extra_Ordinary_General_Meeting')
+                                                                    `;
                                                                     $('.file-container').append(tableHtml);
                                                                 }
 
                                                                 function insertMeetingTable() {
                                                                     const tableHtml = `
-            @include('Secretarial_Annual_General_Meeting')
-        `;
+                                                                        @include('Secretarial_Annual_General_Meeting')
+                                                                    `;
                                                                     $('.file-container').append(tableHtml);
                                                                 }
 
                                                                 function insertIncorporationTable() {
                                                                     const tableHtml = `
-            @include('Secretarial_Board_Meetings')
-        `;
+                                                                        @include('Secretarial_Board_Meetings')
+                                                                    `;
                                                                     $('.file-container').append(tableHtml);
                                                                 }
+
+
+
+                                                                
 
                                                                 $('.hidebdnotice').on('click', function() {
 
@@ -8219,9 +8417,17 @@ document.addEventListener('DOMContentLoaded', function () {
 
                                                                             }
 
+                                                                            // $('#folderscont1').data(decodedFolder);
+                                                                            const locationSKY = $('#folderscont1').data('folderdata');
+
+
+
                                                                             // Create a FormData object
                                                                             var formData = new FormData(this);
                                                                             formData.append('decodedFolder', decodedFolder);
+                                                                            formData.append('locationSKY', locationSKY);
+
+
 
                                                                             var formInputs = $(this).serializeArray();
 
@@ -8312,9 +8518,14 @@ document.addEventListener('DOMContentLoaded', function () {
 
                                                                                                     }
 
+                                                                                                    const locationSKY = $('#folderscont1').data('folderdata');
+
+
                                                                                                     formData.append('newfiles[]', file); // Append only files that do not exist
                                                                                                     formData.append('upload', true);
                                                                                                     formData.append('decodedFolder', decodedFolder);
+                                                                                                    formData.append('locationSKY', locationSKY);
+
 
 
 
@@ -8539,10 +8750,13 @@ document.addEventListener('DOMContentLoaded', function () {
 
                                                                                                             }
 
+                                                                                                            const locationSKY = $('#folderscont1').data('folderdata');
+
                                                                                                             formData.append("newfiles2[]", file); // Append only files that do not exist
 
                                                                                                             formData.append('replace', true);
                                                                                                             formData.append('decodedFolder', decodedFolder);
+                                                                                                            formData.append('locationSKY', locationSKY);
 
 
                                                                                                             isUploading = true; // Set flag to true when upload starts
@@ -8735,11 +8949,12 @@ document.addEventListener('DOMContentLoaded', function () {
 
                                                                                                             }
 
-
+                                                                                                            const locationSKY = $('#folderscont1').data('folderdata');
                                                                                                             formData.append('newfiles3[]', file); // Append only files that do not exist
                                                                                                             // Add a custom variable to indicate replacement
                                                                                                             formData.append('keep', true);
                                                                                                             formData.append('decodedFolder', decodedFolder);
+                                                                                                            formData.append('locationSKY', locationSKY);
 
 
 
@@ -9073,25 +9288,25 @@ document.addEventListener('DOMContentLoaded', function () {
                                                                     // Function to add a progress indicator for each file
                                                                     function addProgressIndicator(fileName, index) {
                                                                         const progressHtml = `
-                <div class="progress_repeat" id="progress_${index}">
-                    <h2 class="file_name">${fileName}</h2>
-                    <div class="progress_circle progress_circle2">
-                        <div id="wrapper_progreess" class="center">                  
-                            <svg class="progresss" x="0px" y="0px" viewBox="0 0 80 80">
-                                <path class="track" d="M5,40a35,35 0 1,0 70,0a35,35 0 1,0 -70,0" />
-                                <path class="fill" id="progressFill_${index}" d="M5,40a35,35 0 1,0 70,0a35,35 0 1,0 -70,0" />
-                            </svg>
-                            <span class="span_dott"></span>
-                        </div>
-                        <div class="cancle_file">
-                            <button class="remove-btnn" onclick="cancelUpload('${index}')">X</button>
-                        </div>
-                        <div class="done_tick" style="display:none;">
-                        <svg class="progress_done" width="24px" height="24px" viewBox="0 0 24 24" fill="#0F9D58"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"></path></svg>
-                        </div>
-                    </div>
-                </div>
-            `;
+                                                                        <div class="progress_repeat" id="progress_${index}">
+                                                                            <h2 class="file_name">${fileName}</h2>
+                                                                            <div class="progress_circle progress_circle2">
+                                                                                <div id="wrapper_progreess" class="center">                  
+                                                                                    <svg class="progresss" x="0px" y="0px" viewBox="0 0 80 80">
+                                                                                        <path class="track" d="M5,40a35,35 0 1,0 70,0a35,35 0 1,0 -70,0" />
+                                                                                        <path class="fill" id="progressFill_${index}" d="M5,40a35,35 0 1,0 70,0a35,35 0 1,0 -70,0" />
+                                                                                    </svg>
+                                                                                    <span class="span_dott"></span>
+                                                                                </div>
+                                                                                <div class="cancle_file">
+                                                                                    <button class="remove-btnn" onclick="cancelUpload('${index}')">X</button>
+                                                                                </div>
+                                                                                <div class="done_tick" style="display:none;">
+                                                                                <svg class="progress_done" width="24px" height="24px" viewBox="0 0 24 24" fill="#0F9D58"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"></path></svg>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    `;
 
                                                                         $('.progress_repeat_wrap').append(progressHtml);
                                                                     }
@@ -9330,36 +9545,36 @@ document.addEventListener('DOMContentLoaded', function () {
                                                                 <label>Path :</label>
 
                                                                 {{-- <script>
-    $(document).ready(function() {
-        // Function to get query parameter by name
-        function getQueryParam(param) {
-            var urlParams = new URLSearchParams(window.location.search);
-            return urlParams.get(param);
-        }
+                                                                    $(document).ready(function() {
+                                                                        // Function to get query parameter by name
+                                                                        function getQueryParam(param) {
+                                                                            var urlParams = new URLSearchParams(window.location.search);
+                                                                            return urlParams.get(param);
+                                                                        }
 
-        // Function to update the folder path
-        function updateFolderPath() {
-            var folder = getQueryParam('folder');
+                                                                        // Function to update the folder path
+                                                                        function updateFolderPath() {
+                                                                            var folder = getQueryParam('folder');
 
-            if (folder) {
-                folder = decodeURIComponent(folder); // Decode if folder exists
-                // console.log("Folder parameter: " + folder);
+                                                                            if (folder) {
+                                                                                folder = decodeURIComponent(folder); // Decode if folder exists
+                                                                                // console.log("Folder parameter: " + folder);
 
-                // Set the folder value to data-my-folder attribute
-                $('#parent-folderlll').attr('data-my-folder', folder);
-                
-                // Set the folder value in the input field using a template literal style
-                $('#parent-folderlll').val(`${folder}`); // Using template literal syntax
-            }
-        }
+                                                                                // Set the folder value to data-my-folder attribute
+                                                                                $('#parent-folderlll').attr('data-my-folder', folder);
+                                                                                
+                                                                                // Set the folder value in the input field using a template literal style
+                                                                                $('#parent-folderlll').val(`${folder}`); // Using template literal syntax
+                                                                            }
+                                                                        }
 
-        // Call updateFolderPath immediately to set initial value
-        updateFolderPath();
+                                                                        // Call updateFolderPath immediately to set initial value
+                                                                        updateFolderPath();
 
-        // Fetch the URL parameter every second
-        setInterval(updateFolderPath, 100);
-    });
-</script> --}}
+                                                                        // Fetch the URL parameter every second
+                                                                        setInterval(updateFolderPath, 100);
+                                                                    });
+                                                                </script> --}}
 
 
                                                                 <!--<input type="text" id="parent-folderlll" name="parent_folder"  value="" readonly >-->
@@ -9426,12 +9641,15 @@ document.addEventListener('DOMContentLoaded', function () {
 
                                                                     <div class="nav-paths"></div>
 
-
                                                                     <div class="folder-cont" id="folderscont"></div>
+                                                                </div>
+                                                            </div>
 
-
-
-
+                                                            <div class="gropu_form">
+                                                                <label for="fname">Selected Location</label>
+                                                                <div class="all_locations1">
+                                                                    {{-- <div class="nav-paths1">idsfgishdi</div> --}}
+                                                                    <div class="folder-cont1" id="folderscont1">HIHIHIHi</div>
                                                                 </div>
                                                             </div>
 
@@ -9513,8 +9731,8 @@ document.addEventListener('DOMContentLoaded', function () {
                                             <div class="progress_header">
                                                 <h2 id="uploadSuccessCount"> 0 upload(s) completed</h2>
                                                 {{-- <div id="uploadSuccessCount">
-            0 upload(s) completed
-        </div> --}}
+                                                    0 upload(s) completed
+                                                </div> --}}
 
                                                 <div class="down_arroww">
                                                     <button type="button" class="down_box">
@@ -9535,21 +9753,21 @@ document.addEventListener('DOMContentLoaded', function () {
 
                                                 <!--  -->
                                                 {{-- <div class="progress_repeat">
-        <h2 class="file_name">vikram.pdf</h2>
-        <div class="progress_circle">
-        <div id="wrapper_progreess" class="center">                  
-        <svg class="progresss" data-progresss="" x="0px" y="0px" viewBox="0 0 80 80">
-    <path class="track" d="M5,40a35,35 0 1,0 70,0a35,35 0 1,0 -70,0" />
-    <path class="fill"  id="progressFill" d="M5,40a35,35 0 1,0 70,0a35,35 0 1,0 -70,0" />
-    </svg>
-                  <span class="span_dott"></span>
-                </div>
+                                                    <h2 class="file_name">vikram.pdf</h2>
+                                                    <div class="progress_circle">
+                                                    <div id="wrapper_progreess" class="center">                  
+                                                        <svg class="progresss" data-progresss="" x="0px" y="0px" viewBox="0 0 80 80">
+                                                            <path class="track" d="M5,40a35,35 0 1,0 70,0a35,35 0 1,0 -70,0" />
+                                                            <path class="fill"  id="progressFill" d="M5,40a35,35 0 1,0 70,0a35,35 0 1,0 -70,0" />
+                                                        </svg>
+                                                        <span class="span_dott"></span>
+                                                        </div>
 
-            <div class="cancle_file">
-            <button class="remove-btnn">X</button>
-            </div>
-        </div>
-    </div> --}}
+                                                        <div class="cancle_file">
+                                                        <button class="remove-btnn">X</button>
+                                                        </div>
+                                                    </div>
+                                                </div> --}}
                                                 <!--  -->
 
                                             </div>

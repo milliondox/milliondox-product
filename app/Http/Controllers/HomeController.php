@@ -23779,39 +23779,100 @@ if (is_array($dataTags)) {
 
     public function fetchfolderfold(Request $request)
     {
-        $folderPath = $request->get('folderName', null); // Default is null for root-level folders
+        // $folderPath = $request->get('folderName', null); // Default is null for root-level folders
     
-        // Default root folder path name
-        $isRoot = is_null($folderPath) || $folderPath === 'root';
+        // // Default root folder path name
+        // $isRoot = is_null($folderPath) || $folderPath === 'root';
     
-        $commonFoldersQuery = Folder::query();
-        if ($isRoot) {
-            $commonFoldersQuery->whereNull('parent_name')->where('common_folder', 1);
-        } else {
-            $commonFoldersQuery->where('parent_name', $folderPath)->where('common_folder', 1);
+        // $commonFoldersQuery = Folder::query();
+        // if ($isRoot) {
+        //     // $commonFoldersQuery->whereNull('parent_name')->where('common_folder', 1);
+        //     $commonFoldersQuery->whereNull('parent_name')->where('user_id', 301);
+
+        // } else {
+        //     $commonFoldersQuery->where('parent_name', $folderPath)->where('user_id', 301);
+        // }
+        // dd($request->get('folderName'),$request->get('selectedPath'));
+
+        // dd($request->get('selectedPath'));
+
+
+        // folderName: 2024-2025November301_Legal
+        // selectedPath: 2024-2025November0_Human Resources
+
+        if($request->get('folderName') && ($request->get('folderClicked') == 1)){
+            $parent_name = $request->get('folderName');
+            // dd($parent_name);
+
+            $userFoldersQuery = Folder::where(function ($query) {
+                $query->where('user_id', 301)
+                    ->orWhere('user_id', Auth::id());
+            })
+            ->where('is_delete', 0)
+            ->where('parent_name' , $parent_name)
+            ->orderBy('name', 'ASC')
+            ->get();
+
+            // dd($userFoldersQuery);
+        }
+        else if($request->get('folderName') && ($request->get('backPress') == 1)){
+            $parent_name = $request->get('folderName');
+            // dd($parent_name);
+            
+            if($parent_name == "Home"){
+                $userFoldersQuery = Folder::where(function ($query) {
+                    $query->where('user_id', 301)
+                        ->orWhere('user_id', Auth::id());
+                })
+                ->where('is_delete', 0)
+                ->whereNull('parent_name')
+                ->orderBy('name', 'ASC')
+                ->get();
+    
+                // dd($userFoldersQuery);
+            }else{
+                $userFoldersQuery = Folder::where(function ($query) {
+                    $query->where('user_id', 301)
+                        ->orWhere('user_id', Auth::id());
+                })
+                ->where('is_delete', 0)
+                ->where('parent_name' , $parent_name)
+                ->orderBy('name', 'ASC')
+                ->get();
+    
+                // dd($userFoldersQuery);
+
+            }  
+        }
+        else{
+            $userFoldersQuery = Folder::where(function ($query) {
+                $query->where('user_id', 301)
+                    ->orWhere('user_id', Auth::id());
+            })
+            ->where('is_delete', 0)
+            ->whereNull('parent_name')
+            ->orderBy('name', 'ASC')
+            ->get();
         }
     
-        $userFoldersQuery = Folder::where('parent_name', $folderPath)
-            ->where('user_id', Auth::id())
-            ->where('is_delete', 0);
+        // $sortOption = $request->get('sortOption', 'a-to-z');
+        // $order = $sortOption === 'z-to-a' ? 'desc' : 'asc';
     
-        $sortOption = $request->get('sortOption', 'a-to-z');
-        $order = $sortOption === 'z-to-a' ? 'desc' : 'asc';
+        // // $commonFolders = $commonFoldersQuery->orderBy('name', $order)->get();
+        // $userFolders = $userFoldersQuery->orderBy('name', $order)->get();
+        // dd($userFoldersQuery);
     
-        $commonFolders = $commonFoldersQuery->orderBy('name', $order)->get();
-        $userFolders = $userFoldersQuery->orderBy('name', $order)->get();
-    
-        $folderContents = $commonFolders->merge($userFolders);
+        // $folderContents = $commonFolders->merge($userFolders);
     
         $folderHtml = '<ul class="customulli">';
-        foreach ($folderContents as $folder) {
+        foreach ($userFoldersQuery as $folder) {
             $folderName = strpos($folder->name, '_') !== false 
                 ? substr($folder->name, strpos($folder->name, '_') + 1) 
                 : $folder->name;
     
             $folderHtml .= 
                 '<li>
-                    <a href="#" class="fold-link wedcolor" data-folder-path="' . $folder->path . '">
+                    <a href="#" class="fold-link wedcolor" id="folder_'.$folder->id.'" data-folder-path2="' . $folder->path . '">
                         <div class="folder_wraap">
                             <img src="../assets/images/solar_folder-bold.png" id="folders" class="folder-icon" alt="Folder Icon">
                             <span>' . htmlspecialchars($folderName) . '</span>
@@ -23822,12 +23883,12 @@ if (is_array($dataTags)) {
         $folderHtml .= '</ul>';
     
         // Include back button logic at root
-        $showBackButton = !$isRoot;
+        // $showBackButton = !$isRoot;
     
         return response()->json([
             'folderHtml' => $folderHtml,
-            'filesHtml' => $folderContents->isEmpty() ? '<p>No files available</p>' : '', // Default filesHtml
-            'showBackButton' => $showBackButton,
+            'filesHtml' => $userFoldersQuery->isEmpty() ? '<p>No files available</p>' : '', // Default filesHtml
+            // 'showBackButton' => $showBackButton,
         ]);
     }
     
@@ -25557,11 +25618,9 @@ public function downloadFolder($folder_id)
 
 public function downloadZipSKY($zipFileName)
 {
-    // ok
     // Define the file path on the server
     $filePath = storage_path('app/public/' . $zipFileName); // Assuming the file is in the public storage folder
     // $filePathTemp = storage_path('app/public/temp/' . $zipFileName); // Assuming the file is in the public storage folder
-
     // dd($filePath);
 
     // Check if the file exists
@@ -25575,67 +25634,6 @@ public function downloadZipSKY($zipFileName)
             'error' => 'File not found'
         ], 404);
     }
-
-    // // Step 1: Extract the original zip file to a temporary location
-    // $zip = new ZipArchive();
-    // if ($zip->open($filePath) === TRUE) {
-    //     $zip->extractTo($filePathTemp);  // Extract to temp folder
-    //     $zip->close();
-    // }
-
-    // // Step 2: Rename directories and subdirectories
-    // $iterator = new RecursiveIteratorIterator(
-    //     new RecursiveDirectoryIterator($filePathTemp, RecursiveDirectoryIterator::SKIP_DOTS),
-    //     RecursiveIteratorIterator::CHILD_FIRST
-    // );
-
-    // foreach ($iterator as $file) {
-    //     if ($file->isDir()) {
-    //         $dirPath = $file->getPathname();
-    //         echo "Attempting to rename: " . $dirPath . "\n";  // Debugging
-    //         $dirName = basename($dirPath);
-            
-    //         // Get the last substring after the last "_"
-    //         $newDirName = substr(strrchr($dirName, '_'), 1);
-    //         $newDirPath = dirname($dirPath) . DIRECTORY_SEPARATOR . $newDirName;
-            
-    //         echo "Renaming to: " . $newDirPath . "\n";  // Debugging
-            
-    //         if (!rename($dirPath, $newDirPath)) {
-    //             echo "Failed to rename: " . $dirPath . "\n";  // Debugging failure
-    //         }
-    //     }
-    // }
-
-    // // Step 3: Create a new zip file with the renamed directories
-    // $newZipFilePath = storage_path('app/public/temp/renamed_' . $zipFileName);
-    // $zip = new ZipArchive();
-    // if ($zip->open($newZipFilePath, ZipArchive::CREATE) === TRUE) {
-    //     $files = new RecursiveIteratorIterator(
-    //         new RecursiveDirectoryIterator($filePathTemp),
-    //         RecursiveIteratorIterator::LEAVES_ONLY
-    //     );
-        
-    //     foreach ($files as $file) {
-    //         if ($file->isFile()) {
-    //             $filePathInZip = $file->getPathname();
-    //             // Get the relative path from the extraction directory
-    //             $relativePath = substr($filePathInZip, strlen($filePathTemp) + 1);
-    //             $zip->addFile($filePathInZip, $relativePath);
-    //         }
-    //     }
-    //     $zip->close();
-    // }
-
-    // if (file_exists($newZipFilePath)) {
-    //     // Return the file for download
-    //     return response()->download($newZipFilePath); // The download function sends the file to the browser
-    // } else {
-    //     // If the file doesn't exist, return an error response
-    //     return response()->json([
-    //         'error' => 'File not found'
-    //     ], 404);
-    // }
 }
 
 /**
@@ -26655,6 +26653,7 @@ public function uploadFile(Request $request)
 public function HandleCommonUploadFiles(Request $request)
 {
     //  dd($request);
+    // dd($request->get("locationSKY"));
 
     // dd($request->input('replace'));
     // dd("here");
@@ -26779,7 +26778,8 @@ public function HandleCommonUploadFiles(Request $request)
                                         'fyear' => $request->input('fyear'),
                                         'month' => $request->input('Month'),
                                         'tags' => $tags, // Store tags as JSON
-                                        'location' => $folderPaths,
+                                        'location' => $request->input('locationSKY'),
+                                        // 'location' => $folderPaths,
                                         'folder_name'=>$folderName,
                                         'descp' => $request->input('desc'),
                                     ]);
@@ -26968,7 +26968,8 @@ public function HandleCommonUploadFiles(Request $request)
                             'fyear' => $request->input('fyear'),
                             'month' => $request->input('Month'),
                             'tags' => $tags, // Store tags as JSON
-                            'location' => $folderPaths,
+                            // 'location' => $folderPaths,
+                            'location' => $request->input('locationSKY'),
                             'folder_name'=>$folderName,
                             'descp' => $request->input('desc'),
                             'is_keep' => 1,
@@ -27102,7 +27103,8 @@ public function HandleCommonUploadFiles(Request $request)
                             'fyear' => $request->input('fyear'),
                             'month' => $request->input('Month'),
                             'tags' => $tags, // Store tags as JSON
-                            'location' => $folderPaths,
+                            // 'location' => $folderPaths,
+                            'location' => $request->input('locationSKY'),
                             'folder_name'=>$folderName,
                             'descp' => $request->input('desc'),
                         ]);
