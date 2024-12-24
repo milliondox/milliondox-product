@@ -23802,8 +23802,19 @@ if (is_array($dataTags)) {
 
         // folderName: 2024-2025November301_Legal
         // selectedPath: 2024-2025November0_Human Resources
+        if($request->get('folderName') == "root"){
+            // dd($request->get('folderName'));
+            $userFoldersQuery = Folder::where(function ($query) {
+                $query->where('user_id', 301)
+                    ->orWhere('user_id', Auth::id());
+            })
+            ->where('is_delete', 0)
+            ->whereNull('parent_name')
+            ->orderBy('name', 'ASC')
+            ->get();
 
-        if($request->get('folderName') && ($request->get('folderClicked') == 1)){
+        }
+        else if($request->get('folderName') && ($request->get('folderClicked') == 1)){
             $parent_name = $request->get('folderName');
             // dd($parent_name);
 
@@ -23848,12 +23859,14 @@ if (is_array($dataTags)) {
             }  
         }
         else{
+            $parent_name = $request->get('folderName');
+
             $userFoldersQuery = Folder::where(function ($query) {
                 $query->where('user_id', 301)
                     ->orWhere('user_id', Auth::id());
             })
             ->where('is_delete', 0)
-            ->whereNull('parent_name')
+            ->where('parent_name',$parent_name)
             ->orderBy('name', 'ASC')
             ->get();
         }
@@ -26611,7 +26624,12 @@ public function uploadFile(Request $request)
         
         $exists = [];
         $do_not_exists = [];
-        $folderPaths = $request->input('parent_folder');
+        // $folderPaths = $request->input('parent_folder');
+        $folderPaths = $request->input('locationSKY');
+
+        // dd($folderPaths);
+
+
 
         // If 'parent_folder' is null, check for 'decodedFolder' in the request
         if ($folderPaths === null) {
@@ -26687,7 +26705,9 @@ public function HandleCommonUploadFiles(Request $request)
         // $folderName = trim($folderName);
         // dd($folderName);
 
-        $folderPaths2 = $folderPaths;
+        // $folderPaths2 = $folderPaths;
+
+        $folderPaths2 = trim($request->input('locationSKY'));
         // dd($folderPaths2);
         // Check if the string contains a '/'
         if (strrpos($folderPaths2, '/') !== false) {
@@ -26739,7 +26759,7 @@ public function HandleCommonUploadFiles(Request $request)
                      
                         $fileId = CommonTable::where('file_type', $file->getClientMimeType())
                         ->where('file_name', $file->getClientOriginalName())
-                        ->where('location', $folderPaths)  // Comment out if you don't need this condition
+                        ->where('location', $folderPaths2) // Comment out if you don't need this condition
                         ->where('user_id', auth()->user()->id)
                         ->where('fyear', $request->input('fyear'))
                         ->where('month', $request->input('Month'))
@@ -26766,7 +26786,7 @@ public function HandleCommonUploadFiles(Request $request)
                                     $originalFileName = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME); // Get the file name without extension
                                     $extension = $file->getClientOriginalExtension(); // Get the file extension
                                     $fileName = $originalFileName . '.' . $extension; // Start with the original file name
-                                    $filePath = $file->store($folderPaths);
+                                    $filePath = $file->store($folderPaths2);
                                     $storedFileName = basename($filePath);  
 
                                     $newEntry = CommonTable::create([
@@ -26781,7 +26801,7 @@ public function HandleCommonUploadFiles(Request $request)
                                         'fyear' => $request->input('fyear'),
                                         'month' => $request->input('Month'),
                                         'tags' => $tags, // Store tags as JSON
-                                        'location' => $request->input('locationSKY'),
+                                        'location' => $folderPaths2,
                                         // 'location' => $folderPaths,
                                         'folder_name'=>$folderName,
                                         'descp' => $request->input('desc'),
@@ -26859,6 +26879,8 @@ public function HandleCommonUploadFiles(Request $request)
         // $folderName = trim($folderName);
         // dd($folderName);
         $folderPaths2 = $folderPaths;
+        $folderPaths2 = trim($request->input('locationSKY'));
+
         // dd($folderPaths2);
         // Check if the string contains a '/'
         if (strrpos($folderPaths2, '/') !== false) {
@@ -26941,7 +26963,7 @@ public function HandleCommonUploadFiles(Request $request)
                 
                         // Check if the file name exists in the database and append a counter if it does
                         $counter = 1;
-                        while (CommonTable::where('file_name', $fileName)->where('is_delete', 0 )->where('location', $folderPaths)->whereNull('real_file_name')->exists()) {
+                        while (CommonTable::where('file_name', $fileName)->where('is_delete', 0 )->where('location', $folderPaths2)->whereNull('real_file_name')->exists()) {
                             $fileName = $originalFileName . " ($counter)." . $extension;
                             $counter++;
                         }
@@ -26949,7 +26971,7 @@ public function HandleCommonUploadFiles(Request $request)
                         // $originalFileName = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME); // Get the file name without extension
                         // $extension = $file->getClientOriginalExtension(); // Get the file extension
                         // $fileName = $originalFileName . '.' . $extension; // Start with the original file name
-                        $filePath = $file->store($folderPaths);
+                        $filePath = $file->store($folderPaths2);
                         $storedFileName = basename($filePath);  
                 
                         // Save the file with the updated unique name
@@ -26971,8 +26993,8 @@ public function HandleCommonUploadFiles(Request $request)
                             'fyear' => $request->input('fyear'),
                             'month' => $request->input('Month'),
                             'tags' => $tags, // Store tags as JSON
-                            // 'location' => $folderPaths,
-                            'location' => $request->input('locationSKY'),
+                            'location' => $folderPaths2,
+                            // 'location' => $request->input('locationSKY'),
                             'folder_name'=>$folderName,
                             'descp' => $request->input('desc'),
                             'is_keep' => 1,
@@ -27031,6 +27053,11 @@ public function HandleCommonUploadFiles(Request $request)
         // dd($folderName);
 
         $folderPaths2 = $folderPaths;
+        $folderPaths2 = trim($request->input('locationSKY'));
+        $folderPaths3 = trim($request->input('locationSKY'));
+
+        
+
         // dd($folderPaths2);
 
         // Check if the string contains a '/'
@@ -27089,7 +27116,7 @@ public function HandleCommonUploadFiles(Request $request)
                         $originalFileName = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME); // Get the file name without extension
                         $extension = $file->getClientOriginalExtension(); // Get the file extension
                         $fileName = $originalFileName . '.' . $extension; // Start with the original file name
-                        $filePath = $file->store($folderPaths);
+                        $filePath = $file->store($folderPaths2);
                         $storedFileName = basename($filePath);  
 
     
@@ -27106,8 +27133,8 @@ public function HandleCommonUploadFiles(Request $request)
                             'fyear' => $request->input('fyear'),
                             'month' => $request->input('Month'),
                             'tags' => $tags, // Store tags as JSON
-                            // 'location' => $folderPaths,
-                            'location' => $request->input('locationSKY'),
+                            'location' => $folderPaths2,
+                            // 'location' => $request->input('locationSKY'),
                             'folder_name'=>$folderName,
                             'descp' => $request->input('desc'),
                         ]);

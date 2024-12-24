@@ -540,7 +540,29 @@ document.addEventListener('DOMContentLoaded', function () {
         // Initialize fileData for the input if not already present
         if (!fileData[inputId]) fileData[inputId] = [];
 
+
         handleFiles(fileInput, fileList, inputId, Array.from(fileInput.files));
+
+
+        // const urlParams2 = new URLSearchParams(window.location.search);
+        // // Get the 'folder' parameter
+        // let folderQuery2 = urlParams2.get('folder');
+        // if (folderQuery2) {
+        //     // Decode the folder query parameter twice
+        //     var decodedFolder2 = decodeURIComponent(decodeURIComponent(folderQuery2));
+        //     console.log("Fetched and decoded folder from URL:", decodedFolder2);
+
+        //     // Do something with the decoded folder value (e.g., set it in a hidden input field)
+        //     $('#parent-folder').val(decodedFolder2);
+        //     // $('#folderscont1').attr(decodedFolder2);
+        //     $('#folderscont1').data('folderdata', decodedFolder2);
+
+
+        // } else {
+        //     console.log("No folder query parameter found in the URL.");
+        // }
+
+
     });
 
     // Clear file data and reset input when closing the modal
@@ -4770,19 +4792,21 @@ document.addEventListener('DOMContentLoaded', function () {
                                                                             const result2 = parts2.map(part => part.includes('_') ? part.split('_')[1] : part);
                                                                             // Join the cleaned parts with '/'
                                                                             const output2 = result2.join(' / ');
-                                                                            $('#folderscont1').html(output2).css('color', 'green').attr('data-folderdata', finalPathToUse2); // Set thclass="backs-button"e data-folderdata attribute;;
+                                                                            $('#folderscont1').html(output2).css({'color': 'white'}).attr('data-folderdata', finalPathToUse2); // Set thclass="backs-button"e data-folderdata attribute;;
                                                                             $('.backs-button').attr('data-folderdata', finalPathToUse2); // Set thclass="backs-button"e data-folderdata attribute;;
 
                                                                         } else {
                                                                             // If selectedPath doesn't contain '/', remove everything before '_'
                                                                             if (finalPathToUse2.includes('_')) {
                                                                                 const output2 = finalPathToUse2.split('_')[1];
-                                                                                $('#folderscont1').html(output2).css('color', 'green').attr('data-folderdata', finalPathToUse2); // Set the data-folderdata attribute;;
+                                                                                $('#folderscont1').html(output2).css({'color': 'white'}).attr('data-folderdata', finalPathToUse2); // Set the data-folderdata attribute;;
                                                                                 $('.backs-button').attr('data-folderdata', finalPathToUse2); // Set thclass="backs-button"e data-folderdata attribute;;
 
                                                                             } else {
                                                                                 // If there is no '_', just use selectedPath as it is
-                                                                                $('#folderscont1').html("Home").css('color', 'green').attr('data-folderdata', finalPathToUse2); // Set the data-folderdata attribute;;
+                                                                                $('#folderscont1').html("Home").css({'color': 'white'}).attr('data-folderdata', finalPathToUse2); // Set the data-folderdata attribute;;
+                                                                                // $('#folderscont1').html("Home").css({'color': '#CEFFA8'}).attr('data-folderdata', finalPathToUse2); // Set the data-folderdata attribute;;
+
                                                                                 $('.backs-button').attr('data-folderdata', finalPathToUse2); // Set thclass="backs-button"e data-folderdata attribute;;
 
                                                                             }
@@ -4995,27 +5019,17 @@ document.addEventListener('DOMContentLoaded', function () {
                                                                 // });
                                                                 $(document).on('click', '.backs-button', function(e) {
                                                                     e.preventDefault();
+                                                                    // alert($('#folderscont1').data('folderdata'));
 
-                                                                    // // Get the folder path from the data attribute of the clicked link
-                                                                    // var folderPathBack = $('#folderscont1').data('folderdata');
-                                                                    // // alert(folderPath);
-                                                                    // console.log(folderPathBack);
-                                                                    // // 2024-2025November0_Human Resources/2024-2025November0_Employee Database/2024-2025December269_test HR2/2024-2025December269_Appraisals/2024-2025December269_Appraisals forms
-
-                                                                    // // Find the last index of '/'
-                                                                    // const lastSlashIndex = folderPathBack.lastIndexOf('/');
-
-                                                                    // // Remove the substring after the last '/'
-                                                                    // if (lastSlashIndex !== -1) {
-                                                                    //     folderPathBack = folderPathBack.substring(0, lastSlashIndex);
+                                                                    // if ($('#folderscont1').data('folderdata') == "root") {
+                                                                    //     // Hide the button if the value is "Home"
+                                                                    //     $('.backs-button').hide();
+                                                                    // }
+                                                                    // else{
+                                                                    //     $('.backs-button').show();
                                                                     // }
 
-                                                                    // console.log(folderPathBack);
-                                                                    // var folderPathBack2 = folderPathBack;
-
-                                                                    // $('#folderscont1').html(folderPathBack).css('color', 'green').attr('data-folderdata', folderPathBack2); // Set the data-folderdata attribute;
-
-
+                                                        
                                                                     // Get the current folder path from the data attribute of #folderscont1
                                                                     var folderPathBack = $('#folderscont1').attr('data-folderdata');
                                                                     
@@ -5035,7 +5049,7 @@ document.addEventListener('DOMContentLoaded', function () {
                                                                         console.log("Updated folder path:", folderPathBack);
 
                                                                         // Update #folderscont1
-                                                                        $('#folderscont1').html(folderPathBack).css('color', 'green').attr('data-folderdata', folderPathBack); // Update the data-folderdata attribute
+                                                                        $('#folderscont1').html(folderPathBack).css('color', 'white').attr('data-folderdata', folderPathBack); // Update the data-folderdata attribute
                                                                     } else {
                                                                         console.warn("No folder path found in data-folderdata.");
                                                                     }
@@ -5047,17 +5061,17 @@ document.addEventListener('DOMContentLoaded', function () {
                                                                         const result2 = parts2.map(part => part.includes('_') ? part.split('_')[1] : part);
                                                                         // Join the cleaned parts with '/'
                                                                         const output2 = result2.join(' / ');
-                                                                        $('#folderscont1').html(output2).css('color', 'green').attr('data-folderdata', folderPathBack); // Set the data-folderdata attribute;
+                                                                        $('#folderscont1').html(output2).css('color', 'white').attr('data-folderdata', folderPathBack); // Set the data-folderdata attribute;
                                                                       
                                                                     } else {
                                                                         // If selectedPath doesn't contain '/', remove everything before '_'
                                                                         if (folderPathBack.includes('_')) {
                                                                             const output2 = folderPathBack.split('_')[1];
-                                                                            $('#folderscont1').html(output2).css('color', 'green').attr('data-folderdata', folderPathBack); // Set the data-folderdata attribute;
+                                                                            $('#folderscont1').html(output2).css('color', 'white').attr('data-folderdata', folderPathBack); // Set the data-folderdata attribute;
                                                                          
                                                                         } else {
                                                                             // If there is no '_', just use selectedPath as it is
-                                                                            $('#folderscont1').html("Home").css('color', 'green').attr('data-folderdata', folderPathBack); // Set the data-folderdata attribute;
+                                                                            $('#folderscont1').html("Home").css('color', 'white').attr('data-folderdata', folderPathBack); // Set the data-folderdata attribute;
                                                                          
                                                                         }
                                                                     }
@@ -5161,19 +5175,19 @@ document.addEventListener('DOMContentLoaded', function () {
                                                                         const result2 = parts2.map(part => part.includes('_') ? part.split('_')[1] : part);
                                                                         // Join the cleaned parts with '/'
                                                                         const output2 = result2.join(' / ');
-                                                                        $('#folderscont1').html(output2).css('color', 'green').attr('data-folderdata', finalPathToUse); // Set the data-folderdata attribute;
+                                                                        $('#folderscont1').html(output2).css('color', 'white').attr('data-folderdata', finalPathToUse); // Set the data-folderdata attribute;
                                                                         $('.backs-button').attr('data-folderdata', finalPathToUse); // Set thclass="backs-button"e data-folderdata attribute;;
 
                                                                     } else {
                                                                         // If selectedPath doesn't contain '/', remove everything before '_'
                                                                         if (finalPathToUse.includes('_')) {
                                                                             const output2 = finalPathToUse.split('_')[1];
-                                                                            $('#folderscont1').html(output2).css('color', 'green').attr('data-folderdata', finalPathToUse); // Set the data-folderdata attribute;
+                                                                            $('#folderscont1').html(output2).css('color', 'white').attr('data-folderdata', finalPathToUse); // Set the data-folderdata attribute;
                                                                             $('.backs-button').attr('data-folderdata', finalPathToUse); // Set thclass="backs-button"e data-folderdata attribute;;
 
                                                                         } else {
                                                                             // If there is no '_', just use selectedPath as it is
-                                                                            $('#folderscont1').html("Home").css('color', 'green').attr('data-folderdata', finalPathToUse); // Set the data-folderdata attribute;
+                                                                            $('#folderscont1').html("Home").css('color', 'white').attr('data-folderdata', finalPathToUse); // Set the data-folderdata attribute;
                                                                             $('.backs-button').attr('data-folderdata', finalPathToUse); // Set thclass="backs-button"e data-folderdata attribute;;
 
                                                                         }
@@ -5274,58 +5288,58 @@ document.addEventListener('DOMContentLoaded', function () {
                                                                 //     });
                                                                 // });
 
-                                                                function updateBreadcrumbs(folderPath) {
-                                                                    // Split the folder path into parts
-                                                                    const folderParts = folderPath ? folderPath.split('/') : ['root'];
+                                                                // function updateBreadcrumbs(folderPath) {
+                                                                //     // Split the folder path into parts
+                                                                //     const folderParts = folderPath ? folderPath.split('/') : ['root'];
 
-                                                                    let breadcrumbHtml = '<div class="breadcrumbs-container">';
+                                                                //     let breadcrumbHtml = '<div class="breadcrumbs-container">';
 
-                                                                    // Add "Back" button logic
-                                                                    if (folderParts.length > 1 || folderParts[0] !== 'root') {
-                                                                        const parentPath = folderParts.slice(0, -1).join('/') || 'root';
-                                                                        breadcrumbHtml += `
-                                                                        <button class="backs-button" data-folder-path="${parentPath}">
-                                                                        <svg width="16" height="12" viewBox="0 0 16 12" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                                                            <g clip-path="url(#clip0_642_662)">
-                                                                                <path d="M14.6641 6H1.33073M1.33073 6L6.33073 11M1.33073 6L6.33073 1" stroke="#1E1E1E" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
-                                                                            </g>
-                                                                            <defs>
-                                                                                <clipPath id="clip0_642_662">
-                                                                                    <rect width="16" height="12" fill="white"></rect>
-                                                                                </clipPath>
-                                                                            </defs>
-                                                                        </svg>
-                                                                        </button>`;
-                                                                    }
+                                                                //     // Add "Back" button logic
+                                                                //     if (folderParts.length > 1 || folderParts[0] !== 'root') {
+                                                                //         const parentPath = folderParts.slice(0, -1).join('/') || 'root';
+                                                                //         breadcrumbHtml += `
+                                                                //         <button class="backs-button" data-folder-path="${parentPath}">
+                                                                //         <svg width="16" height="12" viewBox="0 0 16 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                                //             <g clip-path="url(#clip0_642_662)">
+                                                                //                 <path d="M14.6641 6H1.33073M1.33073 6L6.33073 11M1.33073 6L6.33073 1" stroke="#1E1E1E" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+                                                                //             </g>
+                                                                //             <defs>
+                                                                //                 <clipPath id="clip0_642_662">
+                                                                //                     <rect width="16" height="12" fill="white"></rect>
+                                                                //                 </clipPath>
+                                                                //             </defs>
+                                                                //         </svg>
+                                                                //         </button>`;
+                                                                //     }
 
-                                                                    breadcrumbHtml += '<nav><ul class="breadcrumbs">';
+                                                                //     breadcrumbHtml += '<nav><ul class="breadcrumbs">';
 
-                                                                    // Construct the breadcrumb links
-                                                                    let cumulativePath = '';
-                                                                    folderParts.forEach((part) => {
-                                                                        cumulativePath += part + '/';
+                                                                //     // Construct the breadcrumb links
+                                                                //     let cumulativePath = '';
+                                                                //     folderParts.forEach((part) => {
+                                                                //         cumulativePath += part + '/';
 
-                                                                        // Remove any prefix from folder names
-                                                                        const cleanName = part.includes('_') ? part.split('_')[1] : part;
+                                                                //         // Remove any prefix from folder names
+                                                                //         const cleanName = part.includes('_') ? part.split('_')[1] : part;
 
-                                                                        breadcrumbHtml += `
-                                                                        <li>
-                                                                            <a href="#" class="breadcrumbs-link" data-folder-path="${cumulativePath.slice(0, -1)}">
-                                                                                ${cleanName}
-                                                                            </a>
-                                                                        </li>`;
-                                                                    });
+                                                                //         breadcrumbHtml += `
+                                                                //         <li>
+                                                                //             <a href="#" class="breadcrumbs-link" data-folder-path="${cumulativePath.slice(0, -1)}">
+                                                                //                 ${cleanName}
+                                                                //             </a>
+                                                                //         </li>`;
+                                                                //     });
 
-                                                                    breadcrumbHtml += '</ul></nav></div>';
+                                                                //     breadcrumbHtml += '</ul></nav></div>';
 
-                                                                    // Update the breadcrumb container
-                                                                    $('.nav-paths').html(breadcrumbHtml);
+                                                                //     // Update the breadcrumb container
+                                                                //     // $('.nav-paths').html(breadcrumbHtml);
 
-                                                                    // Hide the "Back" button if the current folder is root
-                                                                    if (folderPath === 'root') {
-                                                                        $('.backs-button').hide();
-                                                                    }
-                                                                }
+                                                                //     // Hide the "Back" button if the current folder is root
+                                                                //     // if (folderPath === 'root') {
+                                                                //     //     $('.backs-button').hide();
+                                                                //     // }
+                                                                // }
 
                                                                 // Get query parameter from URL
                                                                 function getQueryParam(param) {
@@ -5354,7 +5368,7 @@ document.addEventListener('DOMContentLoaded', function () {
                                                                 // }, 1); // Check every second
 
                                                                 // Example to call updateBreadcrumbs
-                                                                updateBreadcrumbs(folderPaths || 'root');
+                                                                // updateBreadcrumbs(folderPaths || 'root');
 
 
                                                                 // Handle "Back" button clicks
@@ -9635,23 +9649,73 @@ document.addEventListener('DOMContentLoaded', function () {
                                                                     <option value="December">December</option>
                                                                 </select>
                                                             </div>
-                                                            <div class="gropu_form">
+                                                            <div class="gropu_form sky_location" style="display: none">
                                                                 <label for="fname">All Locations</label>
                                                                 <div class="all_locations">
 
-                                                                    <div class="nav-paths"></div>
-
+                                                                    {{-- <div class="nav-paths"></div> --}}
+                                                                    <div class="nav-paths">
+                                                                        <div class="breadcrumbs-container">
+                                                                            <button class="backs-button" data-folder-path="" data-folderdata="">
+                                                                                <svg width="16" height="12" viewBox="0 0 16 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                                                    <g clip-path="url(#clip0_642_662)">
+                                                                                        <path d="M14.6641 6H1.33073M1.33073 6L6.33073 11M1.33073 6L6.33073 1" stroke="#1E1E1E" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+                                                                                    </g>
+                                                                                    <defs>
+                                                                                        <clipPath id="clip0_642_662">
+                                                                                            <rect width="16" height="12" fill="white"></rect>
+                                                                                        </clipPath>
+                                                                                    </defs>
+                                                                                </svg>
+                                                                            </button>
+                                                                            <nav>
+                                                                                <ul class="breadcrumbs">
+                                                                                    <li>
+                                                                                        <a href="#" class="breadcrumbs-link" data-folder-path="">
+                                                                                        </a>
+                                                                                    </li>
+                                                                                </ul>
+                                                                            </nav>
+                                                                        </div>
+                                                                    </div>
                                                                     <div class="folder-cont" id="folderscont"></div>
                                                                 </div>
                                                             </div>
 
                                                             <div class="gropu_form">
-                                                                <label for="fname">Selected Location</label>
+                                                                <label for="fname">Current Location</label>
                                                                 <div class="all_locations1">
                                                                     {{-- <div class="nav-paths1">idsfgishdi</div> --}}
-                                                                    <div class="folder-cont1" id="folderscont1">HIHIHIHi</div>
+                                                                    <div class="folder-cont1" data-folderdata='' id="folderscont1"></div>
                                                                 </div>
+
+                                                                {{-- !-- Button to show the div --> --}}
+                                                                <button type="button" style="background-color: #CEFFA8 ! IMPORTANT; border:none; border-radius:5px" id="toggleLocationBtn">Show</button>
                                                             </div>
+                                                            <script>
+                                                                $(document).ready(function () {
+                                                                    // Add click event for the toggle button
+                                                                    $('#toggleLocationBtn').on('click', function () {
+                                                                        const locationDiv = $('.sky_location');
+
+                                                                        // Toggle visibility
+                                                                        if (locationDiv.is(':visible')) {
+                                                                            locationDiv.hide();
+                                                                            $(this).text('Show'); // Update button text
+                                                                        } else {
+                                                                            locationDiv.show();
+                                                                            $(this).text('Hide'); // Update button text
+                                                                        }
+                                                                    });
+
+                                                                    // if ($('#folderscont1').data('folderdata') == "Home") {
+                                                                    //     // Hide the button if the value is "Home"
+                                                                    //     $('.backs-button').hide();
+                                                                    // }
+
+                                                                });
+                                                            </script>
+                                                            
 
                                                             <div class="gropu_form ivoice-upload">
                                                                 <label for="fname">Upload File</label>
