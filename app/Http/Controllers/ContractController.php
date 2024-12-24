@@ -424,14 +424,19 @@ class ContractController extends Controller
    
        // Check the status of email sending
        if ($adminEmailSent && $userEmailSent) {
-           return response()->json(['status' => 'success', 'message' => 'Emails sent successfully.']);
-       } elseif (!$adminEmailSent) {
-           return response()->json(['status' => 'error', 'message' => 'Failed to send email to the admin.']);
-       } elseif (!$userEmailSent) {
-           return response()->json(['status' => 'error', 'message' => 'Failed to send thank-you email to the user.']);
-       } else {
-           return response()->json(['status' => 'error', 'message' => 'Failed to send emails.']);
-       }
+        // Redirect with success message
+        return redirect()->back()->with('success', 'Emails sent successfully.');
+    } elseif (!$adminEmailSent) {
+        // Redirect with error message for admin email
+        return redirect()->back()->with('error', 'Failed to send email to the admin.');
+    } elseif (!$userEmailSent) {
+        // Redirect with error message for user email
+        return redirect()->back()->with('error', 'Failed to send thank-you email to the user.');
+    } else {
+        // Redirect with a general error message
+        return redirect()->back()->with('error', 'Failed to send emails.');
+    }
+    
    
        // Redirect back with a success message
        return redirect()->back()->with('success', 'Notification stored and email sent successfully!');
