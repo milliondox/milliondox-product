@@ -215,72 +215,78 @@ class ContractController extends Controller
    }
    
    public function storecustomercontract(Request $request)
-   {
-       // dd($request);
-       // Validate the request data
-       if ($request->is_drafted != 1) { // Skip validation if saving as draft
-           $request->validate([
-               'file' => 'required|mimes:pdf,doc,docx|max:20048',
-               'contract_name' => 'required|string',
-               'contracttype' => 'required|string',
-               'contract_type' => 'required|string',
-               'divison' => 'required|string',
-            //    'vendor_name' => 'required|string',
-            //    'legal_entity_status' => 'required|string',
-               'startdate' => 'required|date',
-               'startend' => 'required|date',
-               'contract_value' => 'required|numeric',
-               'signing_status' => 'required|string',
-               'renewal_terms' => 'required|array', // Ensure it's an array
-               'payment_terms' => 'required|array', // Ensure it's an array
-               'fee_escalation_clause' => 'required|array', // Ensure it's an array
-               'customer_id' => 'required|exists:customertb,id',
-           ]);
-       }
-   
-       // Handle file upload (if provided)
-       $filePath = null;
-       $fileName = null;
-       $fileSize = null;
-   
-       if ($request->hasFile('file')) {
-           $file = $request->file('file');
-           $filePath = $file->store('contracts', 'public');
-           $fileName = $file->getClientOriginalName();
-           $fileSize = round($file->getSize() / 1024, 2); // Size in KB
-       }
-   
-       // Save or update the customer contract
-       CustomerContract::updateOrCreate(
-           ['id' => $request->id], // Update if the record exists
-           [
-               'file_name' => $fileName,
-               'file_path' => $filePath,
-               'file_size' => $fileSize,
-               'contract_name' => $request->contract_name,
-               'contracttype' => $request->contracttype,
-               'contract_type' => $request->contract_type,
-               'division' => $request->divison,
-            //    'vendor_name' => $request->vendor_name,
-            //    'legal_entity_status' => $request->legal_entity_status,
-               'startdate' => $request->startdate,
-               'startend' => $request->startend,
-               'contract_value' => $request->contract_value,
-               'signing_status' => $request->signing_status,
-               'renewal_terms' => json_encode($request->renewal_terms), // Convert to JSON
-               'payment_terms' => json_encode($request->payment_terms), // Convert to JSON
-               'fee_escalation_clause' => json_encode($request->fee_escalation_clause), // Convert to JSON
-               'customer_id' => $request->customer_id,
-               'is_drafted' => $request->is_drafted ?? 0, // Set draft status
-           ]
-       );
-   
-       // Redirect back with a success message
-       $message = $request->is_drafted == 1
-           ? 'Customer contract saved as draft!'
-           : 'Customer contract submitted successfully!';
-       return redirect()->back()->with('success', $message);
-   }
+{
+    // dd($request); // Uncomment this to debug incoming data.
+
+    // Validate the request data
+    if ($request->is_drafted != 1) { // Skip validation if saving as draft
+        $request->validate([
+            'file' => 'required|mimes:pdf,doc,docx|max:20048',
+            'contract_name' => 'required|string',
+            'contracttype' => 'required|string',
+            'contract_type' => 'required|string',
+            'division' => 'required',
+            'startdate' => 'required|date',
+            'startend' => 'required|date',
+            'contract_value' => 'required|numeric',
+            'signing_status' => 'required|string',
+            'renewal_terms' => 'required|array', // Ensure it's an array
+            'payment_terms' => 'required|array', // Ensure it's an array
+            'fee_escalation_clause' => 'required|array', // Ensure it's an array
+            'customer_id' => 'required|exists:customertb,id',
+        ]);
+    }
+
+    // Handle file upload (if provided)
+    $filePath = null;
+    $fileName = null;
+    $fileSize = null;
+
+    if ($request->hasFile('file')) {
+        $file = $request->file('file');
+        $filePath = $file->store('contracts', 'public');
+        $fileName = $file->getClientOriginalName();
+        $fileSize = round($file->getSize() / 1024, 2); // Size in KB
+    }
+
+    // Save or update the customer contract using updateOrCreate
+    try {
+        $cust = CustomerContract::updateOrCreate(
+            ['id' => $request->id], // Check if the record exists, if not, it will create a new one
+            [
+                'file_name' => $fileName,
+                'file_path' => $filePath,
+                'file_size' => $fileSize,
+                'contract_name' => $request->contract_name,
+                'contracttype' => $request->contracttype,
+                'contract_type' => $request->contract_type,
+                'division' => $request->division,
+                'startdate' => $request->startdate,
+                'startend' => $request->startend,
+                'contract_value' => $request->contract_value,
+                'signing_status' => $request->signing_status,
+                'renewal_terms' => json_encode($request->renewal_terms), // Convert array to JSON
+                'payment_terms' => json_encode($request->payment_terms), // Convert array to JSON
+                'fee_escalation_clause' => json_encode($request->fee_escalation_clause), // Convert array to JSON
+                'customer_id' => $request->customer_id,
+                'is_drafted' => $request->is_drafted ?? 0, // Set draft status (0 if not drafted)
+            ]
+        );
+
+        // If the contract is drafted, show a message indicating it was saved as draft
+        $message = $request->is_drafted == 1
+            ? 'Customer contract saved as draft!'
+            : 'Customer contract submitted successfully!';
+
+        // Redirect back with a success message
+        
+
+     return response()->json(['success' => true, 'message' =>  $message]);
+    } catch (\Exception $e) {
+        return response()->json(['success' => false, 'message' => 'Failed to store contract data.']);
+    }
+}
+
    
    
    public function downloadContracts(Request $request)

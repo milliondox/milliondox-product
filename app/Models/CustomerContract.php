@@ -19,8 +19,6 @@ class CustomerContract extends Model
         'contracttype',
         'contract_type',
         'division',
-        'vendor_name',
-        'legal_entity_status',
         'startdate',
         'startend',
         'contract_value',
