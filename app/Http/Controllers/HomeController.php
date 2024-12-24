@@ -20140,74 +20140,100 @@ Member::create([
 ]);
 
 
-$mailersend = new MailerSend(['api_key' => 'mlsn.3cf1d191812b63e38d5edf34dd0146657c403d79af8c2cf2609e26f5b09c0a64']);
+$fromEmail = "no-reply@milliondox.in";
+    
+$email = $request->email;
+$thankYouSubject = "Your Account Details";
 
 
-        $recipients = [
-            new Recipient($request->personal_email_id, "{$request->fname} {$request->lname}"),
-        ];
 
-        $emailParams = (new EmailParams())
-            ->setFrom('admin@milliondox.in')
-            ->setFromName('Admin')
-            ->setRecipients($recipients)
-            ->setSubject('Your Account Details')
-            ->setHtml("<html>
-                <head>
-        <title>Welcome Onboard</title>
-    </head>
-  <body style='font-family: Arial, sans-serif; margin: 0; padding: 0; background-color: #f5f5f5;'>
+$thankYouMessage = <<<HTML
+<!DOCTYPE html>
+<html>
+            <head>
+    <title>Welcome Onboard</title>
+</head>
+<body style='font-family: Arial, sans-serif; margin: 0; padding: 0; background-color: #f5f5f5;'>
 <table width='100%' cellpadding='0' cellspacing='0' border='0'>
-    <tr>
-        <td>
-            <table class='email-container' cellpadding='0' cellspacing='0' border='0' style='width: 100%;  max-width: 600px;    margin: 0 auto;   background-color: #ffffff;
-            border-radius: 8px;  overflow: hidden;  border: 1px solid #dddddd;'>
-                
-                 <!-- Banner -->
-                 <tr>
-                    <td class='banner'>
-                        <img src='https://milliondox.in/assets/images/welcome_onboard.png' alt='img' style='max-width: 100%;  margin: 0 auto;'>
-                    </td>
-                </tr>
+<tr>
+    <td>
+        <table class='email-container' cellpadding='0' cellspacing='0' border='0' style='width: 100%;  max-width: 600px;    margin: 0 auto;   background-color: #ffffff;
+        border-radius: 8px;  overflow: hidden;  border: 1px solid #dddddd;'>
+            
+             <!-- Banner -->
+             <tr>
+                <td class='banner'>
+                    <img src='https://milliondox.in/assets/images/welcome_onboard.png' alt='img' style='max-width: 100%;  margin: 0 auto;'>
+                </td>
+            </tr>
 
-                <!-- Content -->
-                <tr>
-                    <td class='content' style='padding: 20px; color: #333333;'>
-                        <p class='user_title' style='font-weight: 800;'>Dear {$request->fname} {$request->lname}!,</p>
-                        <p>We hope this message finds you well.</p>
-                        <p>We are writing to provide you with your account credentials. For security reasons, please ensure that you handle this information with care.</p>
-                        <table cellpadding='0' cellspacing='0' border='0' style=' width: 100%;  border-collapse: collapse;'>
-                            <tr>
-                                <td style='padding: 10px;  border: 1px solid #dddddd; background-color: #f9f9f9;'><strong>Username:</strong> {$member->user_name}</td>
-                            </tr>
-                            <tr>
-                                <td style='padding: 10px;  border: 1px solid #dddddd; background-color: #f9f9f9;'><strong>Password:</strong>  {$request->password}</td>
-                            </tr>
-                            <tr>
-                                <td style='padding: 10px;  border: 1px solid #dddddd; background-color: #f9f9f9;'><strong>E-mail:</strong>  {$request->email}</td>
-                            </tr>
-                        </table>
-                        <a href='https://milliondox.in/login' class='login_me' style=' display: inline-block;   padding: 12px 60px;   color: #FFF;     border-radius: 50px;
-                        margin: 20px 0px 0px;   background: #fc8c92;   text-decoration: none;'>Login</a>
-                        <p>For your security, we recommend changing your password as soon as you log in. If you have any questions or need further assistance, please do not hesitate to contact our support team.</p>
-                    </td>
-                </tr>
-                <!-- Footer -->
-                <tr>
-                    <td class='footer' style='background-color: #f98b93;    color: #ffffff;   text-align: center;   padding: 20px;'>
-                        <p class='thanks' style='font-weight: bold;'>Thank you for choosing Milliondox!</p>
-                        <p class='important' style='color: #fdbcbc;  font-weight: 800;'>Important Notice:</p>
-                        <p>Please do not share your password with anyone. If you suspect that your account may be compromised, please contact us immediately.</p>
-                    </td>
-                </tr>
-            </table>
-        </td>
-    </tr>
+            <!-- Content -->
+            <tr>
+                <td class='content' style='padding: 20px; color: #333333;'>
+                    <p class='user_title' style='font-weight: 800;'>Dear {$request->fname} {$request->lname}!,</p>
+                    <p>We hope this message finds you well.</p>
+                    <p>We are writing to provide you with your account credentials. For security reasons, please ensure that you handle this information with care.</p>
+                    <table cellpadding='0' cellspacing='0' border='0' style=' width: 100%;  border-collapse: collapse;'>
+                        <tr>
+                            <td style='padding: 10px;  border: 1px solid #dddddd; background-color: #f9f9f9;'><strong>Username:</strong> {$member->user_name}</td>
+                        </tr>
+                        <tr>
+                            <td style='padding: 10px;  border: 1px solid #dddddd; background-color: #f9f9f9;'><strong>Password:</strong>  {$request->password}</td>
+                        </tr>
+                        <tr>
+                            <td style='padding: 10px;  border: 1px solid #dddddd; background-color: #f9f9f9;'><strong>E-mail:</strong>  {$request->email}</td>
+                        </tr>
+                    </table>
+                    <a href='https://milliondox.in/login' class='login_me' style=' display: inline-block;   padding: 12px 60px;   color: #FFF;     border-radius: 50px;
+                    margin: 20px 0px 0px;   background: #fc8c92;   text-decoration: none;'>Login</a>
+                    <p>For your security, we recommend changing your password as soon as you log in. If you have any questions or need further assistance, please do not hesitate to contact our support team.</p>
+                </td>
+            </tr>
+            <!-- Footer -->
+            <tr>
+                <td class='footer' style='background-color: #f98b93;    color: #ffffff;   text-align: center;   padding: 20px;'>
+                    <p class='thanks' style='font-weight: bold;'>Thank you for choosing Milliondox!</p>
+                    <p class='important' style='color: #fdbcbc;  font-weight: 800;'>Important Notice:</p>
+                    <p>Please do not share your password with anyone. If you suspect that your account may be compromised, please contact us immediately.</p>
+                </td>
+            </tr>
+        </table>
+    </td>
+</tr>
 </table>
 </body>
-            </html>");
-        
-        $mailersend->email->send($emailParams);
+        </html>
+HTML;
+
+
+
+// Email headers
+$headers = "From: $fromEmail\r\n";
+$headers .= "Reply-To: $fromEmail\r\n";
+$headers .= "MIME-Version: 1.0\r\n";
+$headers .= "Content-Type: text/html; charset=UTF-8\r\n";
+
+// Recipients
+$recipients = [
+new Recipient($request->personal_email_id, "{$request->fname} {$request->lname}"),
+];
+
+// Send email to each recipient
+foreach ($recipients as $recipient) {
+if (mail($recipient->email, $thankYouSubject, $thankYouMessage, $headers)) {
+    $responses[] = [
+        'email' => $recipient->email,
+        'status' => 'success',
+        'message' => "Email sent successfully to {$recipient->name}."
+    ];
+} else {
+    $responses[] = [
+        'email' => $recipient->email,
+        'status' => 'error',
+        'message' => "Failed to send email to {$recipient->name}."
+    ];
+}
+}
 
 // dd($mailersend->email->send($emailParams));
 
