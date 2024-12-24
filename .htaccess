@@ -52,7 +52,32 @@ RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
     Deny from all
 </FilesMatch>
 
+<Directory "/f-dev.milliondox.in/storage/app/gstin_files">
+    <FilesMatch "\.(doc|pdf|xls|xlsx|xlsm)$">
+        Allow from all
+    </FilesMatch>
+    Require all granted
+</Directory>
 
+<Directory "/f-dev.milliondox.in/storage/app/cin_files">
+    <FilesMatch "\.(doc|pdf|xls|xlsx|xlsm)$">
+        Allow from all
+    </FilesMatch>
+    Require all granted
+</Directory>
+<Directory "/milliondox.in/storage/app/gstin_files">
+    <FilesMatch "\.(doc|pdf|xls|xlsx|xlsm)$">
+        Allow from all
+    </FilesMatch>
+    Require all granted
+</Directory>
+
+<Directory "/milliondox.in/storage/app/cin_files">
+    <FilesMatch "\.(doc|pdf|xls|xlsx|xlsm)$">
+        Allow from all
+    </FilesMatch>
+    Require all granted
+</Directory>
 
 # Allow access to the specific file vikram.pdf
 <Files "tc.pdf">
