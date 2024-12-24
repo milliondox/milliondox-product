@@ -386,6 +386,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // Function to check if any modal is currently open
     function isModalOpen() {
+        // alert("a am grer modal open");
         return $('.modal:visible').length > 0;
     }
 
@@ -434,6 +435,50 @@ document.addEventListener('DOMContentLoaded', function () {
 
             // Open the modal
             $('#upload_filee').modal('show');
+
+            const urlParams2 = new URLSearchParams(window.location.search);
+            // Get the 'folder' parameter
+            let folderQuery2 = urlParams2.get('folder');
+            if (folderQuery2) {
+                // Decode the folder query parameter twice
+                var decodedFolder2 = decodeURIComponent(decodeURIComponent(folderQuery2));
+                // console.log("Fetched and decoded folder from URL:", decodedFolder2);
+                // Do something with the decoded folder value (e.g., set it in a hidden input field)
+                // $('#parent-folder').val(decodedFolder2);
+                // $('#folderscont1').attr(decodedFolder2);
+            } else {
+                // console.log("No folder query parameter found in the URL.");
+            }
+            // $('#folderscont1').data('folderdata', decodedFolder2);
+            $('#folderscont1').attr('data-folderdata', decodedFolder2);
+            // alert("i amdf eurhihtui");
+
+            if (decodedFolder2 && decodedFolder2.includes('/')) {
+                const parts2 = decodedFolder2.split('/');
+                // Remove the prefix before the '_' for each part
+                const result2 = parts2.map(part => part.includes('_') ? part.split('_')[1] : part);
+                // Join the cleaned parts with '/'
+                const output2 = result2.join(' / ');
+                $('#folderscont1').html(output2).css({'color': 'white'}).attr('data-folderdata', decodedFolder2); // Set thclass="backs-button"e data-folderdata attribute;;
+                // $('.backs-button').attr('data-folderdata', decodedFolder2); // Set thclass="backs-button"e data-folderdata attribute;;
+
+            } else {
+                // If selectedPath doesn't contain '/', remove everything before '_'
+                if (decodedFolder2.includes('_')) {
+                    const output2 = decodedFolder2.split('_')[1];
+                    $('#folderscont1').html(output2).css({'color': 'white'}).attr('data-folderdata', decodedFolder2); // Set the data-folderdata attribute;;
+                    // $('.backs-button').attr('data-folderdata', decodedFolder2); // Set thclass="backs-button"e data-folderdata attribute;;
+
+                } else {
+                    // If there is no '_', just use selectedPath as it is
+                    $('#folderscont1').html("Home").css({'color': 'white'}).attr('data-folderdata', decodedFolder2); // Set the data-folderdata attribute;;
+                    // $('#folderscont1').html("Home").css({'color': '#CEFFA8'}).attr('data-folderdata', finalPathToUse2); // Set the data-folderdata attribute;;
+                    // $('.backs-button').attr('data-folderdata', decodedFolder2); // Set thclass="backs-button"e data-folderdata attribute;;
+
+                }
+            }
+
+            
         }
     });
 
@@ -544,23 +589,8 @@ document.addEventListener('DOMContentLoaded', function () {
         handleFiles(fileInput, fileList, inputId, Array.from(fileInput.files));
 
 
-        // const urlParams2 = new URLSearchParams(window.location.search);
-        // // Get the 'folder' parameter
-        // let folderQuery2 = urlParams2.get('folder');
-        // if (folderQuery2) {
-        //     // Decode the folder query parameter twice
-        //     var decodedFolder2 = decodeURIComponent(decodeURIComponent(folderQuery2));
-        //     console.log("Fetched and decoded folder from URL:", decodedFolder2);
+       
 
-        //     // Do something with the decoded folder value (e.g., set it in a hidden input field)
-        //     $('#parent-folder').val(decodedFolder2);
-        //     // $('#folderscont1').attr(decodedFolder2);
-        //     $('#folderscont1').data('folderdata', decodedFolder2);
-
-
-        // } else {
-        //     console.log("No folder query parameter found in the URL.");
-        // }
 
 
     });
