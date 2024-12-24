@@ -53,23 +53,23 @@ RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
 </FilesMatch>
 
 # Allow access to files in specific directories
-# <Directory "/path/to/public/cin_files">
-#     <FilesMatch "\.(doc|pdf|xls|xlsx|xlsm)$">
-#         Allow from all
-#     </FilesMatch>
-# </Directory>
+<Directory "cin_files">
+    <FilesMatch "\.(doc|pdf|xls|xlsx|xlsm)$">
+        Allow from all
+    </FilesMatch>
+</Directory>
 
-# <Directory "/path/to/public/contracts">
-#     <FilesMatch "\.(doc|pdf|xls|xlsx|xlsm)$">
-#         Allow from all
-#     </FilesMatch>
-# </Directory>
+<Directory "contracts">
+    <FilesMatch "\.(doc|pdf|xls|xlsx|xlsm)$">
+        Allow from all
+    </FilesMatch>
+</Directory>
 
-# <Directory "/path/to/public/gstin_files">
-#     <FilesMatch "\.(doc|pdf|xls|xlsx|xlsm)$">
-#         Allow from all
-#     </FilesMatch>
-# </Directory>
+<Directory "gstin_files">
+    <FilesMatch "\.(doc|pdf|xls|xlsx|xlsm)$">
+        Allow from all
+    </FilesMatch>
+</Directory>
 
 # Allow access to the specific file vikram.pdf
 <Files "tc.pdf">
