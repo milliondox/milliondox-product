@@ -100,7 +100,7 @@
                                                 if ($customerrecord->profile_picture === NULL || !file_exists($profilePicturePath)) {
                                                     echo '<h2>' . $firstLetter . $secondLetter . '</h2>';
                                                 } else {
-                                                    echo '<img id="profile-image" src="' . asset('/' . $customerrecord->profile_picture) . '" class="mtt" alt="Profile Image">';
+                                                    echo '<img id="profile-image" src="' . asset('storage/' . $customerrecord->profile_picture) . '" class="mtt" alt="Profile Image">';
                                                 }
                                                 ?>
 
@@ -254,7 +254,7 @@
                                                 </svg>
                                             </span> --}}
                                             <span>
-                                                <a href="{{ asset('/' . $customerrecord->gstin_file) }}" target="_blank">
+                                                <a href="{{ asset('storage/' . $customerrecord->gstin_file) }}"" target="_blank">
                                                     GSTIN
                                                     <svg width="10" height="7" viewBox="0 0 10 7" fill="none" xmlns="http://www.w3.org/2000/svg">
                                                         <path d="M5 7C6.10457 7 7 6.10457 7 5C7 3.89543 6.10457 3 5 3C3.89543 3 3 3.89543 3 5C3 6.10457 3.89543 7 5 7Z" fill="#414651" />
@@ -264,7 +264,7 @@
                                             </span>
 
                                             <span>
-                                                <a href="{{ asset('/' . $customerrecord->cin_file) }}" target="_blank">
+                                                <a href="{{ asset('storage/' . $customerrecord->cin_file) }}" target="_blank">
                                                     CIN
                                                     <svg width="10" height="7" viewBox="0 0 10 7" fill="none" xmlns="http://www.w3.org/2000/svg">
                                                         <path d="M5 7C6.10457 7 7 6.10457 7 5C7 3.89543 6.10457 3 5 3C3.89543 3 3 3.89543 3 5C3 6.10457 3.89543 7 5 7Z" fill="#414651" />
