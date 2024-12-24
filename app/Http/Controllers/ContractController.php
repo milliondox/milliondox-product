@@ -330,58 +330,102 @@ class ContractController extends Controller
        $customerNotification->save();
    
        // Initialize MailerSend
-       $mailersend = new MailerSend(['api_key' => 'mlsn.3cf1d191812b63e38d5edf34dd0146657c403d79af8c2cf2609e26f5b09c0a64']);
+       $adminEmail = "admin@milliondox.in";
+       $fromEmail = "no-reply@milliondox.in";
+       $subject = $request->expiring_opm;
+       $email = $request->email;
+       $thankYouSubject = "Thank You for Your Submission";
    
-       // Prepare the recipient
-       $recipients = [
-           new Recipient($request->email, 'Customer'),  // Assuming 'Customer' as a default name
-       ];
+       // Admin email content
+       $adminMessage = <<<HTML
+   <!DOCTYPE html>
+   <html>
+   <head>
+       <title>{$request->expiring_opm}</title>
+   </head>
+   <body style='font-family: Arial, sans-serif; margin: 0; padding: 0; background-color: #f5f5f5;'>
+       <table width='100%' cellpadding='0' cellspacing='0' border='0'>
+           <tr>
+               <td>
+                   <table style='width: 100%; max-width: 600px; margin: 0 auto; background-color: #ffffff; border-radius: 8px; border: 1px solid #dddddd;'>
+                       <tr>
+                           <td style='padding: 20px;'>
+                               <p>{$request->message}</p>
+                           </td>
+                       </tr>
+                       <tr>
+                           <td style='background-color: #f98b93; color: #ffffff; text-align: center; padding: 20px;'>
+                               <p style='font-weight: bold;'>Thank you for choosing Milliondox!</p>
+                               <p style='color: #fdbcbc; font-weight: 800;'>Important Notice:</p>
+                               <p>Please do not share your password with anyone. If you suspect your account is compromised, contact us immediately.</p>
+                           </td>
+                       </tr>
+                   </table>
+               </td>
+           </tr>
+       </table>
+   </body>
+   </html>
+   HTML;
    
-       // Prepare the email subject
-       $subject = $request->expiring_opm;  // Dynamically set the subject from the request
+       // User thank-you email content
+       $thankYouMessage = <<<HTML
+   <!DOCTYPE html>
+   <html>
+   <head>
+       <title>{$request->expiring_opm}</title>
+   </head>
+   <body style='font-family: Arial, sans-serif; margin: 0; padding: 0; background-color: #f5f5f5;'>
+       <table width='100%' cellpadding='0' cellspacing='0' border='0'>
+           <tr>
+               <td>
+                   <table style='width: 100%; max-width: 600px; margin: 0 auto; background-color: #ffffff; border-radius: 8px; border: 1px solid #dddddd;'>
+                       <tr>
+                           <td style='padding: 20px;'>
+                               <p>{$request->message}</p>
+                           </td>
+                       </tr>
+                       <tr>
+                           <td style='background-color: #f98b93; color: #ffffff; text-align: center; padding: 20px;'>
+                               <p style='font-weight: bold;'>Thank you for choosing Milliondox!</p>
+                               <p style='color: #fdbcbc; font-weight: 800;'>Important Notice:</p>
+                               <p>Please do not share your password with anyone. If you suspect your account is compromised, contact us immediately.</p>
+                           </td>
+                       </tr>
+                   </table>
+               </td>
+           </tr>
+       </table>
+   </body>
+   </html>
+   HTML;
    
-       // Prepare the email content with dynamic message
-       $emailParams = (new EmailParams())
-           ->setFrom('admin@milliondox.in')
-           ->setFromName('Admin')
-           ->setRecipients($recipients)
-           ->setSubject($subject)
-           ->setHtml("
-               <html>
-                   <head>
-                       <title>{$request->expiring_opm}</title>
-                   </head>
-                   <body style='font-family: Arial, sans-serif; margin: 0; padding: 0; background-color: #f5f5f5;'>
-                       <table width='100%' cellpadding='0' cellspacing='0' border='0'>
-                           <tr>
-                               <td>
-                                   <table class='email-container' cellpadding='0' cellspacing='0' border='0' style='width: 100%; max-width: 600px; margin: 0 auto; background-color: #ffffff; border-radius: 8px; overflow: hidden; border: 1px solid #dddddd;'>
-                                       <!-- Banner -->
-                                      
-                                       <!-- Content -->
-                                       <tr>
-                                           <td style='padding: 20px;'>
-                                               <p>{$request->message}</p>
-                                           </td>
-                                       </tr>
-                                       <!-- Footer -->
-                                       <tr>
-                                           <td class='footer' style='background-color: #f98b93; color: #ffffff; text-align: center; padding: 20px;'>
-                                               <p class='thanks' style='font-weight: bold;'>Thank you for choosing Milliondox!</p>
-                                               <p class='important' style='color: #fdbcbc; font-weight: 800;'>Important Notice:</p>
-                                               <p>Please do not share your password with anyone. If you suspect that your account may be compromised, please contact us immediately.</p>
-                                           </td>
-                                       </tr>
-                                   </table>
-                               </td>
-                           </tr>
-                       </table>
-                   </body>
-               </html>
-           ");
+       // Admin email headers
+       $adminHeaders = "From: $fromEmail\r\n";
+       $adminHeaders .= "Reply-To: $fromEmail\r\n";
+       $adminHeaders .= "MIME-Version: 1.0\r\n";
+       $adminHeaders .= "Content-Type: text/html; charset=UTF-8\r\n";
    
-       // Send the email using MailerSend
-       $mailersend->email->send($emailParams);
+       // User email headers
+       $thankYouHeaders = "From: $fromEmail\r\n";
+       $thankYouHeaders .= "Reply-To: $fromEmail\r\n";
+       $thankYouHeaders .= "MIME-Version: 1.0\r\n";
+       $thankYouHeaders .= "Content-Type: text/html; charset=UTF-8\r\n";
+   
+       // Send emails
+       $adminEmailSent = mail($adminEmail, $subject, $adminMessage, $adminHeaders);
+       $userEmailSent = mail($email, $thankYouSubject, $thankYouMessage, $thankYouHeaders);
+   
+       // Check the status of email sending
+       if ($adminEmailSent && $userEmailSent) {
+           return response()->json(['status' => 'success', 'message' => 'Emails sent successfully.']);
+       } elseif (!$adminEmailSent) {
+           return response()->json(['status' => 'error', 'message' => 'Failed to send email to the admin.']);
+       } elseif (!$userEmailSent) {
+           return response()->json(['status' => 'error', 'message' => 'Failed to send thank-you email to the user.']);
+       } else {
+           return response()->json(['status' => 'error', 'message' => 'Failed to send emails.']);
+       }
    
        // Redirect back with a success message
        return redirect()->back()->with('success', 'Notification stored and email sent successfully!');

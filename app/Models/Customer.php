@@ -12,6 +12,8 @@ class Customer extends Model
         'profile_picture',
         'lename',
         'dname',
+        'dmail',
+        'dphone',
         'roa',
         'state',
         'city',
@@ -29,6 +31,8 @@ class Customer extends Model
     ];
     protected $casts = [
         'dname' => 'array',
+        'dmail' => 'array',
+        'dphone' => 'array',
     ];
     public function customerContracts()
 {
