@@ -26653,7 +26653,7 @@ public function uploadFile(Request $request)
         // $folderPaths = $request->input('parent_folder');
         $folderPaths = $request->input('locationSKY');
 
-        // dd($folderPaths);
+        // dd($folderPaths);   
 
 
 
