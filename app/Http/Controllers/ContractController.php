@@ -192,18 +192,18 @@ class ContractController extends Controller
            ], 422);
        }
    
-       // Handle file uploads
-       $validated['profile_picture'] = $request->file('profile_picture') 
-           ? $request->file('profile_picture')->store('profile_pictures', 'public') 
-           : null;
-   
-       $validated['cin_file'] = $request->file('cin_file') 
-           ? $request->file('cin_file')->store('cin_files', 'public') 
-           : null;
-   
-       $validated['gstin_file'] = $request->file('gstin_file') 
-           ? $request->file('gstin_file')->store('gstin_files', 'public') 
-           : null;
+      // Handle file uploads
+$validated['profile_picture'] = $request->file('profile_picture') 
+? $request->file('profile_picture')->store('profile_pictures') // Store in storage/app/profile_pictures
+: null;
+
+$validated['cin_file'] = $request->file('cin_file') 
+? $request->file('cin_file')->store('cin_files') // Store in storage/app/cin_files
+: null;
+
+$validated['gstin_file'] = $request->file('gstin_file') 
+? $request->file('gstin_file')->store('gstin_files') // Store in storage/app/gstin_files
+: null;
    
        // Include the authenticated user ID
        $validated['customer_created_by'] = auth()->id();
@@ -244,7 +244,7 @@ class ContractController extends Controller
 
     if ($request->hasFile('file')) {
         $file = $request->file('file');
-        $filePath = $file->store('contracts', 'public');
+        $filePath = $file->store('contracts');
         $fileName = $file->getClientOriginalName();
         $fileSize = round($file->getSize() / 1024, 2); // Size in KB
     }
