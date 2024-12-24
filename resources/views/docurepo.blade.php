@@ -459,19 +459,19 @@ document.addEventListener('DOMContentLoaded', function () {
                 const result2 = parts2.map(part => part.includes('_') ? part.split('_')[1] : part);
                 // Join the cleaned parts with '/'
                 const output2 = result2.join(' / ');
-                $('#folderscont1').html(output2).css({'color': 'white'}).attr('data-folderdata', decodedFolder2); // Set thclass="backs-button"e data-folderdata attribute;;
+                $('#folderscont1').html(output2).css({'color': '#CEFFA8'}).attr('data-folderdata', decodedFolder2); // Set thclass="backs-button"e data-folderdata attribute;;
                 // $('.backs-button').attr('data-folderdata', decodedFolder2); // Set thclass="backs-button"e data-folderdata attribute;;
 
             } else {
                 // If selectedPath doesn't contain '/', remove everything before '_'
                 if (decodedFolder2.includes('_')) {
                     const output2 = decodedFolder2.split('_')[1];
-                    $('#folderscont1').html(output2).css({'color': 'white'}).attr('data-folderdata', decodedFolder2); // Set the data-folderdata attribute;;
+                    $('#folderscont1').html(output2).css({'color': '#CEFFA8'}).attr('data-folderdata', decodedFolder2); // Set the data-folderdata attribute;;
                     // $('.backs-button').attr('data-folderdata', decodedFolder2); // Set thclass="backs-button"e data-folderdata attribute;;
 
                 } else {
                     // If there is no '_', just use selectedPath as it is
-                    $('#folderscont1').html("Home").css({'color': 'white'}).attr('data-folderdata', decodedFolder2); // Set the data-folderdata attribute;;
+                    $('#folderscont1').html("Home").css({'color': '#CEFFA8'}).attr('data-folderdata', decodedFolder2); // Set the data-folderdata attribute;;
                     // $('#folderscont1').html("Home").css({'color': '#CEFFA8'}).attr('data-folderdata', finalPathToUse2); // Set the data-folderdata attribute;;
                     // $('.backs-button').attr('data-folderdata', decodedFolder2); // Set thclass="backs-button"e data-folderdata attribute;;
 
@@ -2287,7 +2287,9 @@ document.addEventListener('DOMContentLoaded', function () {
                                                                     $('.progree_cont_nt').css('display', 'block');
                                                                     $('#uploadSuccessCount').html("Preparing files...");
 
-                                                                    var progressId = `progress_${folderid}`;
+                                                                    // var progressId = `progress_${folderid}`;
+                                                                    var progressId = `progress_${folderid}_${Date.now()}`;
+
                                                                     const progressHtmlZipp = `
                                                                         <div class="progress_repeat" id="${progressId}">
                                                                             <h2 class="file_name">Zipping Files</h2>
@@ -4822,19 +4824,19 @@ document.addEventListener('DOMContentLoaded', function () {
                                                                             const result2 = parts2.map(part => part.includes('_') ? part.split('_')[1] : part);
                                                                             // Join the cleaned parts with '/'
                                                                             const output2 = result2.join(' / ');
-                                                                            $('#folderscont1').html(output2).css({'color': 'white'}).attr('data-folderdata', finalPathToUse2); // Set thclass="backs-button"e data-folderdata attribute;;
+                                                                            $('#folderscont1').html(output2).css({'color': '#CEFFA8'}).attr('data-folderdata', finalPathToUse2); // Set thclass="backs-button"e data-folderdata attribute;;
                                                                             $('.backs-button').attr('data-folderdata', finalPathToUse2); // Set thclass="backs-button"e data-folderdata attribute;;
 
                                                                         } else {
                                                                             // If selectedPath doesn't contain '/', remove everything before '_'
                                                                             if (finalPathToUse2.includes('_')) {
                                                                                 const output2 = finalPathToUse2.split('_')[1];
-                                                                                $('#folderscont1').html(output2).css({'color': 'white'}).attr('data-folderdata', finalPathToUse2); // Set the data-folderdata attribute;;
+                                                                                $('#folderscont1').html(output2).css({'color': '#CEFFA8'}).attr('data-folderdata', finalPathToUse2); // Set the data-folderdata attribute;;
                                                                                 $('.backs-button').attr('data-folderdata', finalPathToUse2); // Set thclass="backs-button"e data-folderdata attribute;;
 
                                                                             } else {
                                                                                 // If there is no '_', just use selectedPath as it is
-                                                                                $('#folderscont1').html("Home").css({'color': 'white'}).attr('data-folderdata', finalPathToUse2); // Set the data-folderdata attribute;;
+                                                                                $('#folderscont1').html("Home").css({'color': '#CEFFA8'}).attr('data-folderdata', finalPathToUse2); // Set the data-folderdata attribute;;
                                                                                 // $('#folderscont1').html("Home").css({'color': '#CEFFA8'}).attr('data-folderdata', finalPathToUse2); // Set the data-folderdata attribute;;
 
                                                                                 $('.backs-button').attr('data-folderdata', finalPathToUse2); // Set thclass="backs-button"e data-folderdata attribute;;
@@ -5079,7 +5081,7 @@ document.addEventListener('DOMContentLoaded', function () {
                                                                         console.log("Updated folder path:", folderPathBack);
 
                                                                         // Update #folderscont1
-                                                                        $('#folderscont1').html(folderPathBack).css('color', 'white').attr('data-folderdata', folderPathBack); // Update the data-folderdata attribute
+                                                                        $('#folderscont1').html(folderPathBack).css('color', '#CEFFA8').attr('data-folderdata', folderPathBack); // Update the data-folderdata attribute
                                                                     } else {
                                                                         console.warn("No folder path found in data-folderdata.");
                                                                     }
@@ -5091,17 +5093,17 @@ document.addEventListener('DOMContentLoaded', function () {
                                                                         const result2 = parts2.map(part => part.includes('_') ? part.split('_')[1] : part);
                                                                         // Join the cleaned parts with '/'
                                                                         const output2 = result2.join(' / ');
-                                                                        $('#folderscont1').html(output2).css('color', 'white').attr('data-folderdata', folderPathBack); // Set the data-folderdata attribute;
+                                                                        $('#folderscont1').html(output2).css('color', '#CEFFA8').attr('data-folderdata', folderPathBack); // Set the data-folderdata attribute;
                                                                       
                                                                     } else {
                                                                         // If selectedPath doesn't contain '/', remove everything before '_'
                                                                         if (folderPathBack.includes('_')) {
                                                                             const output2 = folderPathBack.split('_')[1];
-                                                                            $('#folderscont1').html(output2).css('color', 'white').attr('data-folderdata', folderPathBack); // Set the data-folderdata attribute;
+                                                                            $('#folderscont1').html(output2).css('color', '#CEFFA8').attr('data-folderdata', folderPathBack); // Set the data-folderdata attribute;
                                                                          
                                                                         } else {
                                                                             // If there is no '_', just use selectedPath as it is
-                                                                            $('#folderscont1').html("Home").css('color', 'white').attr('data-folderdata', folderPathBack); // Set the data-folderdata attribute;
+                                                                            $('#folderscont1').html("Home").css('color', '#CEFFA8').attr('data-folderdata', folderPathBack); // Set the data-folderdata attribute;
                                                                          
                                                                         }
                                                                     }
@@ -5205,19 +5207,19 @@ document.addEventListener('DOMContentLoaded', function () {
                                                                         const result2 = parts2.map(part => part.includes('_') ? part.split('_')[1] : part);
                                                                         // Join the cleaned parts with '/'
                                                                         const output2 = result2.join(' / ');
-                                                                        $('#folderscont1').html(output2).css('color', 'white').attr('data-folderdata', finalPathToUse); // Set the data-folderdata attribute;
+                                                                        $('#folderscont1').html(output2).css('color', '#CEFFA8').attr('data-folderdata', finalPathToUse); // Set the data-folderdata attribute;
                                                                         $('.backs-button').attr('data-folderdata', finalPathToUse); // Set thclass="backs-button"e data-folderdata attribute;;
 
                                                                     } else {
                                                                         // If selectedPath doesn't contain '/', remove everything before '_'
                                                                         if (finalPathToUse.includes('_')) {
                                                                             const output2 = finalPathToUse.split('_')[1];
-                                                                            $('#folderscont1').html(output2).css('color', 'white').attr('data-folderdata', finalPathToUse); // Set the data-folderdata attribute;
+                                                                            $('#folderscont1').html(output2).css('color', '#CEFFA8').attr('data-folderdata', finalPathToUse); // Set the data-folderdata attribute;
                                                                             $('.backs-button').attr('data-folderdata', finalPathToUse); // Set thclass="backs-button"e data-folderdata attribute;;
 
                                                                         } else {
                                                                             // If there is no '_', just use selectedPath as it is
-                                                                            $('#folderscont1').html("Home").css('color', 'white').attr('data-folderdata', finalPathToUse); // Set the data-folderdata attribute;
+                                                                            $('#folderscont1').html("Home").css('color', '#CEFFA8').attr('data-folderdata', finalPathToUse); // Set the data-folderdata attribute;
                                                                             $('.backs-button').attr('data-folderdata', finalPathToUse); // Set thclass="backs-button"e data-folderdata attribute;;
 
                                                                         }
@@ -9724,7 +9726,10 @@ document.addEventListener('DOMContentLoaded', function () {
                                                                 </div>
 
                                                                 {{-- !-- Button to show the div --> --}}
-                                                                <button type="button" style="background-color: #CEFFA8 ! IMPORTANT; border:none; border-radius:5px" id="toggleLocationBtn">Show</button>
+                                                                {{-- <button type="button" style="border:none; border-radius:5px" id="toggleLocationBtn">Show/Change</button> --}}
+                                                                <a href="#" style="border: none; color: white; border-radius: 5px;" id="toggleLocationBtn">Show/Change</a>
+                                                                {{-- <button type="button" style="background-color: #CEFFA8 ! IMPORTANT; border:none; border-radius:5px" id="toggleLocationBtn">Show</button> --}}
+
                                                             </div>
                                                             <script>
                                                                 $(document).ready(function () {
@@ -9735,10 +9740,10 @@ document.addEventListener('DOMContentLoaded', function () {
                                                                         // Toggle visibility
                                                                         if (locationDiv.is(':visible')) {
                                                                             locationDiv.hide();
-                                                                            $(this).text('Show'); // Update button text
+                                                                            $(this).text('Show/Change'); // Update button text
                                                                         } else {
                                                                             locationDiv.show();
-                                                                            $(this).text('Hide'); // Update button text
+                                                                            $(this).text('Cancel'); // Update button text
                                                                         }
                                                                     });
 
