@@ -48,13 +48,11 @@ RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
 # Prevent direct access to specific file types
 
 # Deny access to all files with the extensions .doc, .pdf, .xls, .xlsx, .xlsm
-<FilesMatch "\.(doc|pdf|xls|xlsx|xlsm)$">
-    Deny from all
-</FilesMatch>
+# <FilesMatch "\.(doc|pdf|xls|xlsx|xlsm)$">
+#     Deny from all
+# </FilesMatch>
 
-SetEnvIf Request_URI "^/cin_files/" ALLOW_ACCESS
-SetEnvIf Request_URI "^/contracts/" ALLOW_ACCESS
-SetEnvIf Request_URI "^/gstin_files/" ALLOW_ACCESS
+
 
 # Allow access to the specific file vikram.pdf
 <Files "tc.pdf">
