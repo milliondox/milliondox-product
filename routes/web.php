@@ -59,6 +59,16 @@ Route::middleware(['auth', 'prevent_direct_access'])->group(function () {
     // Routes that require authentication and the prevent_direct_access middleware
    
 });
+Route::get('files/{filename}', function ($filename) {
+    if (auth()->check()) {  // Ensure the user is authenticated
+        $path = storage_path('app/public/' . $filename);
+        if (file_exists($path)) {
+            return response()->file($path);
+        }
+    }
+    abort(403);  // Forbidden if not authenticated
+});
+
 Route::group(['middleware' => ['auth', 'check.role']], function () {
     // All routes that require authentication and a valid role
    
