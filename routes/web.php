@@ -84,7 +84,8 @@ Route::get('/fetch-folder-contents', [App\Http\Controllers\HomeController::class
 Route::get('/fetch-users', [App\Http\Controllers\HomeController::class, 'fetchUsers'])->name('fetchUsers');
 Route::match(['get', 'post'], '/fetchfolderfold', [App\Http\Controllers\HomeController::class,'fetchfolderfold']);
 
-
+Route::get('/showgst/{id}', [App\Http\Controllers\ContractController::class, 'showGst'])->name('showGst');
+Route::get('/showcin/{id}', [App\Http\Controllers\ContractController::class, 'showCin'])->name('showCin');
 
 
 Route::delete('/delete-user/{id}', [App\Http\Controllers\HomeController::class, 'deleteUser'])->name('user.delete');

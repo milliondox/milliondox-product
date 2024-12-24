@@ -100,7 +100,7 @@
                                                 if ($customerrecord->profile_picture === NULL || !file_exists($profilePicturePath)) {
                                                     echo '<h2>' . $firstLetter . $secondLetter . '</h2>';
                                                 } else {
-                                                    echo '<img id="profile-image" src="' . asset('storage/' . $customerrecord->profile_picture) . '" class="mtt" alt="Profile Image">';
+                                                    echo '<img id="profile-image" src="' . asset('/' . $customerrecord->profile_picture) . '" class="mtt" alt="Profile Image">';
                                                 }
                                                 ?>
 
@@ -254,7 +254,7 @@
                                                 </svg>
                                             </span> --}}
                                             <span>
-                                                <a href="{{ asset('storage/' . $customerrecord->gstin_file) }}"" target="_blank">
+                                                <a href="{{ url('/showgst/' . $customerrecord->id) }}"  target="_blank">
                                                     GSTIN
                                                     <svg width="10" height="7" viewBox="0 0 10 7" fill="none" xmlns="http://www.w3.org/2000/svg">
                                                         <path d="M5 7C6.10457 7 7 6.10457 7 5C7 3.89543 6.10457 3 5 3C3.89543 3 3 3.89543 3 5C3 6.10457 3.89543 7 5 7Z" fill="#414651" />
@@ -264,7 +264,7 @@
                                             </span>
 
                                             <span>
-                                                <a href="{{ asset('storage/' . $customerrecord->cin_file) }}" target="_blank">
+                                                <a href="{{ url('/showcin/' . $customerrecord->id) }}" target="_blank">
                                                     CIN
                                                     <svg width="10" height="7" viewBox="0 0 10 7" fill="none" xmlns="http://www.w3.org/2000/svg">
                                                         <path d="M5 7C6.10457 7 7 6.10457 7 5C7 3.89543 6.10457 3 5 3C3.89543 3 3 3.89543 3 5C3 6.10457 3.89543 7 5 7Z" fill="#414651" />
@@ -314,15 +314,14 @@
                                                 
                                                 <script>
 document.addEventListener('DOMContentLoaded', function () {
-    // Attach click event listener to all relevant links
-    document.querySelectorAll('a[target="_blank"]').forEach(link => {
+    // Handle click events for file preview links
+    document.querySelectorAll('.preview-link').forEach(link => {
         link.addEventListener('click', function (event) {
-            event.preventDefault(); // Prevent default link behavior
+            event.preventDefault();
 
             const fileUrl = this.getAttribute('href');
             const fileType = fileUrl.split('.').pop().toLowerCase();
 
-            // Show the modal with file preview
             showModal(fileUrl, fileType);
         });
     });
@@ -335,65 +334,53 @@ document.addEventListener('DOMContentLoaded', function () {
         // Clear previous content
         previewContainer.innerHTML = '';
 
-        let previewContent = '';
+        let previewContent;
 
-        // Handle various file types
         if (['jpg', 'jpeg', 'png', 'gif', 'bmp', 'webp'].includes(fileType)) {
-            // Image preview
-            previewContent = `<img src="${fileUrl}" alt="Image Preview" style="max-width: 100%; max-height: 500px; display: block; margin: 0 auto;">`;
+            previewContent = `<img src="${fileUrl}" alt="Image Preview" style="max-width: 100%; max-height: 500px;">`;
         } else if (fileType === 'pdf') {
-            // PDF preview
             previewContent = `<iframe src="${fileUrl}" style="width: 100%; height: 500px;" frameborder="0"></iframe>`;
         } else if (['doc', 'docx', 'xls', 'xlsx', 'ppt', 'pptx'].includes(fileType)) {
-            // Office documents preview using Google Docs Viewer
             previewContent = `<iframe src="https://docs.google.com/gview?url=${encodeURIComponent(fileUrl)}&embedded=true" style="width: 100%; height: 500px;" frameborder="0"></iframe>`;
         } else if (['txt', 'csv', 'json', 'xml'].includes(fileType)) {
-            // Plain text file preview
             fetch(fileUrl)
                 .then(response => response.text())
                 .then(text => {
                     previewContainer.innerHTML = `
-                        <pre style="white-space: pre-wrap; word-wrap: break-word; max-height: 500px; overflow-y: auto; padding: 10px; background: #f4f4f4; border-radius: 5px;">${text}</pre>
+                        <pre style="white-space: pre-wrap; word-wrap: break-word; max-height: 500px; overflow-y: auto; background: #f4f4f4; padding: 10px; border-radius: 5px;">${text}</pre>
                     `;
-                    // Append download button
                     appendDownloadButton(fileUrl, previewContainer);
                 });
-            return; // Exit early since the content is added dynamically
+            return; // Exit early since content is dynamically loaded
         } else {
-            // Unsupported file types - provide download option
-            previewContent = `
-                <p style="text-align: center;">Preview not available for this file type.</p>
-            `;
+            previewContent = `<p style="text-align: center;">Preview not available for this file type.</p>`;
         }
 
-        // Add preview content to container
+        // Add content and show modal
         previewContainer.innerHTML = previewContent;
-
-        // Append download button
         appendDownloadButton(fileUrl, previewContainer);
-
-        // Show modal
         modal.style.display = 'flex';
 
-        // Close modal on click of close button
+        // Close modal
         modal.querySelector('.close-btnsss').addEventListener('click', () => {
             modal.style.display = 'none';
         });
     }
 
-    // Append download button to preview container
+    // Append download button
     function appendDownloadButton(fileUrl, container) {
         const downloadButton = document.createElement('div');
         downloadButton.style.textAlign = 'right';
         downloadButton.style.marginTop = '10px';
         downloadButton.innerHTML = `
-            <a href="${fileUrl}" download class="download-btn" style="background: #007bff; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px;">
+            <a href="${fileUrl}" download style="background: #007bff; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px;">
                 Download File
             </a>
         `;
         container.appendChild(downloadButton);
     }
 });
+
 
 
 

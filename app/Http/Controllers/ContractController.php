@@ -193,17 +193,18 @@ class ContractController extends Controller
        }
    
       // Handle file uploads
-$validated['profile_picture'] = $request->file('profile_picture') 
-? $request->file('profile_picture')->store('profile_pictures') // Store in storage/app/profile_pictures
-: null;
+ // Handle file uploads
+ $validated['profile_picture'] = $request->file('profile_picture') 
+ ? $request->file('profile_picture')->store('profile_pictures', 'public') 
+ : null;
 
 $validated['cin_file'] = $request->file('cin_file') 
-? $request->file('cin_file')->store('cin_files') // Store in storage/app/cin_files
-: null;
+ ? $request->file('cin_file')->store('cin_files', 'public') 
+ : null;
 
 $validated['gstin_file'] = $request->file('gstin_file') 
-? $request->file('gstin_file')->store('gstin_files') // Store in storage/app/gstin_files
-: null;
+ ? $request->file('gstin_file')->store('gstin_files', 'public') 
+ : null;
    
        // Include the authenticated user ID
        $validated['customer_created_by'] = auth()->id();
@@ -244,7 +245,7 @@ $validated['gstin_file'] = $request->file('gstin_file')
 
     if ($request->hasFile('file')) {
         $file = $request->file('file');
-        $filePath = $file->store('contracts');
+        $filePath = $file->store('contracts', 'public');
         $fileName = $file->getClientOriginalName();
         $fileSize = round($file->getSize() / 1024, 2); // Size in KB
     }
@@ -593,7 +594,31 @@ public function adddivision(Request $request){
     $userdivisionModel->save();
     return redirect()->back()->with('success', 'Division created successfully.');
 }
+public function showGst($id)
+    {
+        // Fetch GST-related file for the customer
+        $customer = Customer::findOrFail($id);
+        $filePath = public_path('gstin_files/' . $customer->gstin_file);
 
+        if (!file_exists($filePath)) {
+            abort(404, 'GST file not found.');
+        }
+
+        return response()->file($filePath);
+    }
+
+    public function showCin($id)
+    {
+        // Fetch CIN-related file for the customer
+        $customer = Customer::findOrFail($id);
+        $filePath = public_path('cin_files/' . $customer->cin_file);
+
+        if (!file_exists($filePath)) {
+            abort(404, 'CIN file not found.');
+        }
+
+        return response()->file($filePath);
+    }
    
        // customer creation code end here from here 
 }
