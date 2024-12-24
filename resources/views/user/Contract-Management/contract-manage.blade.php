@@ -663,7 +663,7 @@
                                     if ($cust->profile_picture === NULL || !file_exists($profilePicturePath)) {
                                       echo '<h2>' . $firstLetter . $secondLetter . '</h2>';
                                     } else {
-                                      echo '<img id="profile-image" src="' . asset('storage/' . $cust->profile_picture) . '" class="mtt" alt="Profile Image">';
+                                      echo '<img id="profile-image" src="' . asset('/' . $cust->profile_picture) . '" class="mtt" alt="Profile Image">';
                                     }
                                     ?>
 
