@@ -8432,7 +8432,8 @@ document.addEventListener('DOMContentLoaded', function () {
                                                                             }
 
                                                                             // $('#folderscont1').data(decodedFolder);
-                                                                            const locationSKY = $('#folderscont1').data('folderdata');
+                                                                            // var locationSKY = $('#folderscont1').data('folderdata');
+                                                                            var locationSKY = $('#folderscont1').attr('data-folderdata'); // Use attr() instead of data() for the latest value
 
 
 
@@ -8532,7 +8533,8 @@ document.addEventListener('DOMContentLoaded', function () {
 
                                                                                                     }
 
-                                                                                                    const locationSKY = $('#folderscont1').data('folderdata');
+                                                                                                    // var locationSKY = $('#folderscont1').data('folderdata');
+                                                                                                    var locationSKY = $('#folderscont1').attr('data-folderdata'); // Use attr() instead of data() for the latest value
 
 
                                                                                                     formData.append('newfiles[]', file); // Append only files that do not exist
@@ -8764,7 +8766,8 @@ document.addEventListener('DOMContentLoaded', function () {
 
                                                                                                             }
 
-                                                                                                            const locationSKY = $('#folderscont1').data('folderdata');
+                                                                                                            // var locationSKY = $('#folderscont1').data('folderdata');
+                                                                                                            var locationSKY = $('#folderscont1').attr('data-folderdata'); // Use attr() instead of data() for the latest value
 
                                                                                                             formData.append("newfiles2[]", file); // Append only files that do not exist
 
@@ -8963,7 +8966,8 @@ document.addEventListener('DOMContentLoaded', function () {
 
                                                                                                             }
 
-                                                                                                            const locationSKY = $('#folderscont1').data('folderdata');
+                                                                                                            // var locationSKY = $('#folderscont1').data('folderdata');
+                                                                                                            var locationSKY = $('#folderscont1').attr('data-folderdata'); // Use attr() instead of data() for the latest value
                                                                                                             formData.append('newfiles3[]', file); // Append only files that do not exist
                                                                                                             // Add a custom variable to indicate replacement
                                                                                                             formData.append('keep', true);
