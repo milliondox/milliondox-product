@@ -643,31 +643,7 @@ document.addEventListener('DOMContentLoaded', function () {
                                                 </select>
                                             </div>
 
-                                            <div class="gropu_form">
-                                                <label for="fname">Vendor name <span class="red_star">*</span></label>
-                                                <input placeholder="Type" type="text" required id="vendor_name" name="vendor_name" pattern="^[A-Za-z\s]+$"
-                                                    title="Only alphabets and spaces are allowed">
-                                            </div>
-
-
-                                            <div class="gropu_form">
-                                                <label for="les">Legal entity status <span class="red_star">*</span></label>
-                                                <select id="legal_entity_status" name="legal_entity_status" required>
-                                                    <option value="" disabled Selected>select</option>
-                                                    <option value="Sole Proprietorship">Sole Proprietorship</option>
-                                                    <option value="Partnership">Partnership</option>
-                                                    <option value="Limited Liability Company (LLC)">Limited Liability Company (LLC)</option>
-                                                    <option value="Private Limited Company (Pvt Ltd)">Private Limited Company (Pvt Ltd)</option>
-                                                    <option value="Public Limited Company (Ltd)">Public Limited Company (Ltd)</option>
-                                                    <option value="Corporation">Corporation</option>
-                                                    <option value="Non-Profit Organization (NGO)">Non-Profit Organization (NGO)</option>
-                                                    <option value="Trust">Trust</option>
-                                                    <option value="Government Entity">Government Entity</option>
-                                                    <option value="Joint Venture">Joint Venture</option>
-                                                    <option value="Association">Association</option>
-                                                    <option value="Cooperative Society">Cooperative Society</option>
-                                                </select>
-                                            </div>
+                                           
 
                                             <div class="gropu_form">
                                                 <label for="start">Date of commencement <span class="red_star">*</span></label>
@@ -726,7 +702,41 @@ document.addEventListener('DOMContentLoaded', function () {
 
 
                                         </form>
-
+                                        <script>
+                                            $(document).ready(function () {
+                                                // Handle form submission
+                                                $('#customerContractForm').on('submit', function (e) {
+                                                    e.preventDefault();  // Prevent default form submission
+                                            
+                                                    // Create a FormData object to hold form data including the file
+                                                    var formData = new FormData(this);
+                                            
+                                                    // Send AJAX request
+                                                    $.ajax({
+                                                        url: $(this).attr('action'), // Use the form's action attribute (route)
+                                                        type: $(this).attr('method'), // Use the form's method attribute (POST)
+                                                        data: formData, // The FormData object containing form data
+                                                        contentType: false, // Don't set content type because it's automatically handled by FormData
+                                                        processData: false, // Don't process data, it's already in the form of FormData
+                                                        success: function (response) {
+                                                            // Handle success response
+                                                            if (response.success) {
+                                                                toastr.success('Contract data has been stored successfully.', 'Success');
+                                                                // Reload the page after success
+                                                                location.reload();
+                                                            } else {
+                                                                toastr.error(response.message || 'There was an issue with storing the contract data.', 'Error');
+                                                            }
+                                                        },
+                                                        error: function (xhr, status, error) {
+                                                            // Handle AJAX error
+                                                            toastr.error('An error occurred. Please try again later.', 'Error');
+                                                        }
+                                                    });
+                                                });
+                                            });
+                                            </script>
+                                            
                                         <script>
                                             document.addEventListener('DOMContentLoaded', function() {
                                                 const form = document.getElementById('customerContractForm');
