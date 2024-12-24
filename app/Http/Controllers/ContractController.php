@@ -598,7 +598,8 @@ public function showGst($id)
     {
         // Fetch GST-related file for the customer
         $customer = Customer::findOrFail($id);
-        $filePath = public_path('gstin_files/' . $customer->gstin_file);
+        // dd($customer);
+        $filePath = public_path('/' . $customer->gstin_file);
 
         if (!file_exists($filePath)) {
             abort(404, 'GST file not found.');
@@ -611,7 +612,7 @@ public function showGst($id)
     {
         // Fetch CIN-related file for the customer
         $customer = Customer::findOrFail($id);
-        $filePath = public_path('cin_files/' . $customer->cin_file);
+        $filePath = public_path('/' . $customer->cin_file);
 
         if (!file_exists($filePath)) {
             abort(404, 'CIN file not found.');
