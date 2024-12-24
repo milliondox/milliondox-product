@@ -52,24 +52,9 @@ RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
     Deny from all
 </FilesMatch>
 
-# Allow access to files in specific directories
-<Directory "cin_files">
-    <FilesMatch "\.(doc|pdf|xls|xlsx|xlsm)$">
-        Allow from all
-    </FilesMatch>
-</Directory>
-
-<Directory "contracts">
-    <FilesMatch "\.(doc|pdf|xls|xlsx|xlsm)$">
-        Allow from all
-    </FilesMatch>
-</Directory>
-
-<Directory "gstin_files">
-    <FilesMatch "\.(doc|pdf|xls|xlsx|xlsm)$">
-        Allow from all
-    </FilesMatch>
-</Directory>
+# Allow access to files in specific directories using RewriteRule
+RewriteEngine On
+RewriteRule ^(cin_files|contracts|gstin_files)/ - [L]
 
 # Allow access to the specific file vikram.pdf
 <Files "tc.pdf">
