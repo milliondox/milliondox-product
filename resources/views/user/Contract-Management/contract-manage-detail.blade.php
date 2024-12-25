@@ -552,20 +552,24 @@
                                                     <option value="Terminated">Terminated</option>
                                                 </select>
                                             </div>
+                                           
+
+                                           
+                                            
 
                                             <div class="gropu_form">
                                                 <label for="renewal_terms">Renewal Terms <span class="red_star">*</span></label>
-                                                <textarea name="renewal_terms[]" style="height: 58px;" required></textarea>
+                                                <textarea name="renewal_terms[]" id="renewal_terms" style="height: 58px;" required></textarea>
                                             </div>
 
                                             <div class="gropu_form">
                                                 <label for="payment_terms">Payment Terms <span class="red_star">*</span></label>
-                                                <textarea name="payment_terms[]" style="height: 58px;" required></textarea>
+                                                <textarea name="payment_terms[]" id="payment_terms" style="height: 58px;" required></textarea>
                                             </div>
 
                                             <div class="gropu_form">
                                                 <label for="fee_escalation_clause">Fee Escalation Clause <span class="red_star">*</span></label>
-                                                <textarea name="fee_escalation_clause[]" style="height: 58px;" required></textarea>
+                                                <textarea name="fee_escalation_clause[]" id="fee_escalation_clause" style="height: 58px;" required></textarea>
                                             </div>
 
 
@@ -574,47 +578,68 @@
                                                 <button class="btn" id="submitButton" type="submit">Upload</button>
                                             </div>
 
-
+                                            
                                         </form>
                                         <script>
                                             $(document).ready(function () {
-                                                // Handle form submission
-                                                $('#customerContractForm').on('submit', function (e) {
-                                                    e.preventDefault();  // Prevent default form submission
-                                            
-                                                    // Create a FormData object to hold form data including the file
-                                                    var formData = new FormData(this);
-                                            
-                                                    // Send AJAX request
+                                                // When the "Save as Draft" button is clicked
+                                                $('#draftButton').on('click', function () {
+                                                    var formData = new FormData($('#customerContractForm')[0]);
+                                                    formData.append('draft', true);  // Add a flag to indicate it's a draft
+                                        
                                                     $.ajax({
-                                                        url: $(this).attr('action'), // Use the form's action attribute (route)
-                                                        type: $(this).attr('method'), // Use the form's method attribute (POST)
-                                                        data: formData, // The FormData object containing form data
-                                                        contentType: false, // Don't set content type because it's automatically handled by FormData
-                                                        processData: false, // Don't process data, it's already in the form of FormData
+                                                        url: $('#customerContractForm').attr('action'),
+                                                        type: 'POST',
+                                                        data: formData,
+                                                        contentType: false,
+                                                        processData: false,
                                                         success: function (response) {
-                                                            // Handle success response
                                                             if (response.success) {
-                                                                toastr.success('Contract data has been stored successfully.', 'Success');
-                                                                // Reload the page after success
+                                                                toastr.success(response.message, 'Success', { timeOut: 3000 });  // Set timeOut to 3 seconds
                                                                 location.reload();
                                                             } else {
-                                                                toastr.error(response.message || 'There was an issue with storing the contract data.', 'Error');
+                                                                toastr.error(response.message || 'There was an issue saving the draft.', 'Error');
                                                             }
                                                         },
-                                                        error: function (xhr, status, error) {
-                                                            // Handle AJAX error
-                                                            toastr.error('An error occurred. Please try again later.', 'Error');
+                                                        error: function () {
+                                                            toastr.error('An error occurred while saving the draft.', 'Error');
+                                                        }
+                                                    });
+                                                });
+                                        
+                                                // When the "Submit" button is clicked
+                                                $('#submitButton').on('click', function (e) {
+                                                    e.preventDefault(); // Prevent the default form submission
+                                        
+                                                    var formData = new FormData($('#customerContractForm')[0]);
+                                        
+                                                    $.ajax({
+                                                        url: $('#customerContractForm').attr('action'),
+                                                        type: 'POST',
+                                                        data: formData,
+                                                        contentType: false,
+                                                        processData: false,
+                                                        success: function (response) {
+                                                            if (response.success) {
+                                                                toastr.success(response.message, 'Success', { timeOut: 3000 });  // Set timeOut to 3 seconds
+                                                                location.reload();
+                                                            } else {
+                                                                toastr.error(response.message || 'There was an issue submitting the contract.', 'Error');
+                                                            }
+                                                        },
+                                                        error: function () {
+                                                            toastr.error('An error occurred while submitting the contract.', 'Error');
                                                         }
                                                     });
                                                 });
                                             });
-                                            </script>
-                                            
+                                        </script>
+                                        
+                                        
                                         <script>
                                             document.addEventListener('DOMContentLoaded', function() {
                                                 const form = document.getElementById('customerContractForm');
-
+                                        
                                                 if (form) {
                                                     // Remove the 'required' attribute from all input and select elements for draft
                                                     document.getElementById('draftButton').addEventListener('click', function() {
@@ -629,7 +654,7 @@
                                                         });
                                                         form.submit(); // Submit the form
                                                     });
-
+                                        
                                                     // Handle final submission
                                                     document.getElementById('submitButton').addEventListener('click', function() {
                                                         const isDrafted = document.getElementById('is_drafted');
@@ -642,6 +667,7 @@
                                                 }
                                             });
                                         </script>
+                                        
 
 
                                         <script>
