@@ -23414,7 +23414,7 @@ public function shareFolder(Request $request)
           $folderPath = $request->get('folderName');
           $folderPaths = $request->get('folderName');
         //   dd($folderPaths);
-        
+
         //   "2024-2025November301_Office Administration"
        
         //   $folderPaths = preg_replace('/\//', ' / ', $folderPath);
@@ -26245,6 +26245,7 @@ public function saveBreadcrumb(Request $request)
     
     public function createFolder(Request $request)
     {
+        // dd($request);
         
         // $request->validate([
         //     'folder_name' => ['required', 'regex:/^[a-zA-Z0-9\s\-\(\):]+$/'],
@@ -26266,18 +26267,24 @@ public function saveBreadcrumb(Request $request)
         $new_folderName = $request->input('fyear').$request->input('Month').Auth::id()."_".$folderName;
         
         
-        $parentFolderPath = $request->input('parent_folder');
+        // $parentFolderPath = $request->input('parent_folder');
+        $parentFolderPath = $request->input('locationSKY2');
+
 
         $fyear = $request->input('fyear');
         $Month = $request->input('Month');
     
       
         if ($parentFolderPath) {
+            if($parentFolderPath == "Home" || $parentFolderPath == "root"){
+                $parentFolderPath = NULL;
+                $newFolderPath = $new_folderName;
+            }else{
+                $newFolderPath = $parentFolderPath . '/' . $new_folderName;
+            }
            
-            $newFolderPath = $parentFolderPath . '/' . $new_folderName;
-        } else {
-            $newFolderPath = $new_folderName;
         }
+        
     
         
         if (Storage::exists($newFolderPath)) {
