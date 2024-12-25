@@ -23414,6 +23414,7 @@ public function shareFolder(Request $request)
           $folderPath = $request->get('folderName');
           $folderPaths = $request->get('folderName');
         //   dd($folderPaths);
+        
         //   "2024-2025November301_Office Administration"
        
         //   $folderPaths = preg_replace('/\//', ' / ', $folderPath);
