@@ -5658,6 +5658,8 @@ span.red_star {
         margin: 10px 0px 10px;
     }
 
+  
+
     .dark-only .drop_coman_file.have_title .modal-content .gropu_form input,
     .dark-only .drop_coman_file.have_title .modal-content .gropu_form select {
         color-scheme: dark;
@@ -19675,6 +19677,22 @@ span#totalCount {
     margin: 10px 0px 10px;
 }
 
+.customer_wrap .file-area .file-dummy .file_dow_name {
+    position: absolute;
+    bottom: 2px;
+    left: 0;
+    right: 0;
+    z-index: 1;
+    font-size: 11px;
+    color: #008000;
+}
+
+.customer_wrap .file-area .upload_icon svg {
+    width: 19px !important;
+    height: 19px !important;
+}
+
+
 .dark-only .drop_coman_file.have_title .modal-content .gropu_form input,
 .dark-only .drop_coman_file.have_title .modal-content .gropu_form select {
     color-scheme: dark;
@@ -24126,14 +24144,16 @@ div.dataTables_wrapper {
 
 
 .customer_wrap.customer_details .file-area {
-    display: flex;
-    align-items: center;
-    position: relative;
-    border: 1px solid #E7E8E9;
-    padding: 10px 10px;
+    display: flex !IMPORTANT;
+    align-items: center !important;
+    position: relative !important;
+    border: 1px solid #E7E8E9 !IMPORTANT;
+    padding: 0px 0px !IMPORTANT;
     border-radius: 10px;
     cursor: pointer;
-    margin: 30px 0px 25px;
+    margin: 0px 0px 25px !important;
+    outline-offset: 0 !IMPORTANT;
+    outline: none !IMPORTANT;
 }
 
 .customer_wrap .file-area input {
@@ -24163,6 +24183,7 @@ div.dataTables_wrapper {
 .customer_wrap .file-area .file-dummy {
     display: block;
     width: 100%;
+    padding: 10px 15px !IMPORTANT;
 }
 
 .customer_wrap .file-area .file-dummy .fille {
@@ -24683,6 +24704,10 @@ div.dataTables_wrapper {
     height: 45px;
     border-radius: 50px;
     overflow: hidden;
+}
+
+.main_contractt_detail .contract_deatols .contract_detail_top .con_image_wrap .inner_tp_img .text_cos_tp {
+    flex: 1;
 }
 
 .main_contractt_detail .contract_deatols .contract_detail_top .con_image_wrap .inner_tp_img .mini_iage_wrap h2 {
