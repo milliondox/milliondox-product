@@ -452,31 +452,39 @@ document.addEventListener('DOMContentLoaded', function () {
             // $('#folderscont1').data('folderdata', decodedFolder2);
             $('#folderscont1').attr('data-folderdata', decodedFolder2);
             // alert("i amdf eurhihtui");
-
-            if (decodedFolder2 && decodedFolder2.includes('/')) {
-                const parts2 = decodedFolder2.split('/');
-                // Remove the prefix before the '_' for each part
-                const result2 = parts2.map(part => part.includes('_') ? part.split('_')[1] : part);
-                // Join the cleaned parts with '/'
-                const output2 = result2.join(' / ');
-                $('#folderscont1').html(output2).css({'color': '#CEFFA8'}).attr('data-folderdata', decodedFolder2); // Set thclass="backs-button"e data-folderdata attribute;;
-                // $('.backs-button').attr('data-folderdata', decodedFolder2); // Set thclass="backs-button"e data-folderdata attribute;;
-
-            } else {
-                // If selectedPath doesn't contain '/', remove everything before '_'
-                if (decodedFolder2.includes('_')) {
-                    const output2 = decodedFolder2.split('_')[1];
-                    $('#folderscont1').html(output2).css({'color': '#CEFFA8'}).attr('data-folderdata', decodedFolder2); // Set the data-folderdata attribute;;
+            // alert(decodedFolder2);
+            if(decodedFolder2 === undefined || decodedFolder2 === null || decodedFolder2 === ''){
+                $('#folderscont1').html('Home').css({'color': '#CEFFA8'}).attr('data-folderdata', 'root'); // Set thclass="backs-button"e data-folderdata attribute;;
+            }
+            else{
+                if (decodedFolder2 && decodedFolder2.includes('/')) {
+                    const parts2 = decodedFolder2.split('/');
+                    // Remove the prefix before the '_' for each part
+                    const result2 = parts2.map(part => part.includes('_') ? part.split('_')[1] : part);
+                    // Join the cleaned parts with '/'
+                    const output2 = result2.join(' / ');
+                    $('#folderscont1').html(output2).css({'color': '#CEFFA8'}).attr('data-folderdata', decodedFolder2); // Set thclass="backs-button"e data-folderdata attribute;;
                     // $('.backs-button').attr('data-folderdata', decodedFolder2); // Set thclass="backs-button"e data-folderdata attribute;;
 
                 } else {
-                    // If there is no '_', just use selectedPath as it is
-                    $('#folderscont1').html("Home").css({'color': '#CEFFA8'}).attr('data-folderdata', decodedFolder2); // Set the data-folderdata attribute;;
-                    // $('#folderscont1').html("Home").css({'color': '#CEFFA8'}).attr('data-folderdata', finalPathToUse2); // Set the data-folderdata attribute;;
-                    // $('.backs-button').attr('data-folderdata', decodedFolder2); // Set thclass="backs-button"e data-folderdata attribute;;
+                    // If selectedPath doesn't contain '/', remove everything before '_'
+                    if (decodedFolder2.includes('_')) {
+                        const output2 = decodedFolder2.split('_')[1];
+                        $('#folderscont1').html(output2).css({'color': '#CEFFA8'}).attr('data-folderdata', decodedFolder2); // Set the data-folderdata attribute;;
+                        // $('.backs-button').attr('data-folderdata', decodedFolder2); // Set thclass="backs-button"e data-folderdata attribute;;
 
+                    } else {
+                        // If there is no '_', just use selectedPath as it is
+                        $('#folderscont1').html("Home").css({'color': '#CEFFA8'}).attr('data-folderdata', decodedFolder2); // Set the data-folderdata attribute;;
+                        // $('#folderscont1').html("Home").css({'color': '#CEFFA8'}).attr('data-folderdata', finalPathToUse2); // Set the data-folderdata attribute;;
+                        // $('.backs-button').attr('data-folderdata', decodedFolder2); // Set thclass="backs-button"e data-folderdata attribute;;
+
+                    }
                 }
+
             }
+
+            
 
             
         }
