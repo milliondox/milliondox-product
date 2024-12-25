@@ -450,11 +450,11 @@ document.addEventListener('DOMContentLoaded', function () {
                 // console.log("No folder query parameter found in the URL.");
             }
             // $('#folderscont1').data('folderdata', decodedFolder2);
-            $('#folderscont1').attr('data-folderdata', decodedFolder2);
+            $('.folder-cont1').attr('data-folderdata', decodedFolder2);
             // alert("i amdf eurhihtui");
             // alert(decodedFolder2);
             if(decodedFolder2 === undefined || decodedFolder2 === null || decodedFolder2 === ''){
-                $('#folderscont1').html('Home').css({'color': '#CEFFA8'}).attr('data-folderdata', 'root'); // Set thclass="backs-button"e data-folderdata attribute;;
+                $('.folder-cont1').html('Home').css({'color': '#CEFFA8'}).attr('data-folderdata', 'root'); // Set thclass="backs-button"e data-folderdata attribute;;
             }
             else{
                 if (decodedFolder2 && decodedFolder2.includes('/')) {
@@ -463,19 +463,19 @@ document.addEventListener('DOMContentLoaded', function () {
                     const result2 = parts2.map(part => part.includes('_') ? part.split('_')[1] : part);
                     // Join the cleaned parts with '/'
                     const output2 = result2.join(' / ');
-                    $('#folderscont1').html(output2).css({'color': '#CEFFA8'}).attr('data-folderdata', decodedFolder2); // Set thclass="backs-button"e data-folderdata attribute;;
+                    $('.folder-cont1').html(output2).css({'color': '#CEFFA8'}).attr('data-folderdata', decodedFolder2); // Set thclass="backs-button"e data-folderdata attribute;;
                     // $('.backs-button').attr('data-folderdata', decodedFolder2); // Set thclass="backs-button"e data-folderdata attribute;;
 
                 } else {
                     // If selectedPath doesn't contain '/', remove everything before '_'
                     if (decodedFolder2.includes('_')) {
                         const output2 = decodedFolder2.split('_')[1];
-                        $('#folderscont1').html(output2).css({'color': '#CEFFA8'}).attr('data-folderdata', decodedFolder2); // Set the data-folderdata attribute;;
+                        $('.folder-cont1').html(output2).css({'color': '#CEFFA8'}).attr('data-folderdata', decodedFolder2); // Set the data-folderdata attribute;;
                         // $('.backs-button').attr('data-folderdata', decodedFolder2); // Set thclass="backs-button"e data-folderdata attribute;;
 
                     } else {
                         // If there is no '_', just use selectedPath as it is
-                        $('#folderscont1').html("Home").css({'color': '#CEFFA8'}).attr('data-folderdata', decodedFolder2); // Set the data-folderdata attribute;;
+                        $('.folder-cont1').html("Home").css({'color': '#CEFFA8'}).attr('data-folderdata', decodedFolder2); // Set the data-folderdata attribute;;
                         // $('#folderscont1').html("Home").css({'color': '#CEFFA8'}).attr('data-folderdata', finalPathToUse2); // Set the data-folderdata attribute;;
                         // $('.backs-button').attr('data-folderdata', decodedFolder2); // Set thclass="backs-button"e data-folderdata attribute;;
 
@@ -3849,9 +3849,10 @@ document.addEventListener('DOMContentLoaded', function () {
                                                                     <option value="December">December</option>
                                                                 </select>
                                                             </div>
-                                                            <div class="gropu_form">
+                                                            {{-- <div class="gropu_form">
                                                                 <label for="fname">All Locations</label>
-                                                                <div class="all_locations">
+                                                                <div class="all_locations"> --}}
+
                                                                     {{-- <ul class="nav navbar-nav dropdown customulli">
                                                                         <li class="dropdown">
                                                                             <a href="#" class="dropdown-toggle folder-link selected-folder" id="autohome" data-folder-path="">
@@ -3895,10 +3896,84 @@ document.addEventListener('DOMContentLoaded', function () {
                                                                         @endforeach
 
                                                                     </ul> --}}
-                                                                    <div class="nav-paths"></div>
+
+                                                                    {{-- <div class="nav-paths"></div>
+                                                                    <div class="folder-cont" id="folderscont"></div>
+                                                                </div>
+                                                            </div> --}}
+
+                                                            <div class="gropu_form sky_location2" style="display: none">
+                                                                <label for="fname">All Locations</label>
+                                                                <div class="all_locations">
+
+                                                                    {{-- <div class="nav-paths"></div> --}}
+                                                                    <div class="nav-paths">
+                                                                        <div class="breadcrumbs-container">
+                                                                            <button class="backs-button" data-folder-path="" data-folderdata="">
+                                                                                <svg width="16" height="12" viewBox="0 0 16 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                                                    <g clip-path="url(#clip0_642_662)">
+                                                                                        <path d="M14.6641 6H1.33073M1.33073 6L6.33073 11M1.33073 6L6.33073 1" stroke="#1E1E1E" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+                                                                                    </g>
+                                                                                    <defs>
+                                                                                        <clipPath id="clip0_642_662">
+                                                                                            <rect width="16" height="12" fill="white"></rect>
+                                                                                        </clipPath>
+                                                                                    </defs>
+                                                                                </svg>
+                                                                            </button>
+                                                                            <nav>
+                                                                                <ul class="breadcrumbs">
+                                                                                    <li>
+                                                                                        <a href="#" class="breadcrumbs-link" data-folder-path="">
+                                                                                        </a>
+                                                                                    </li>
+                                                                                </ul>
+                                                                            </nav>
+                                                                        </div>
+                                                                    </div>
                                                                     <div class="folder-cont" id="folderscont"></div>
                                                                 </div>
                                                             </div>
+
+                                                            <div class="gropu_form">
+                                                                <label for="fname"></label>
+                                                                <div class="loaction_small">
+                                                                    <b>Current Location:</b>
+                                                                <div class="all_locations1">
+                                                                    {{-- <div class="nav-paths1">idsfgishdi</div> --}}
+                                                                    <div class="folder-cont1" data-folderdata='' id="folderscont1"></div>
+                                                                </div>
+
+                                                                {{-- !-- Button to show the div --> --}}
+                                                                {{-- <button type="button" style="border:none; border-radius:5px" id="toggleLocationBtn">Show/Change</button> --}}
+                                                                <a href="#" style="border: none; color: white; border-radius: 5px;" id="toggleLocationBtn2">Show/Change</a>
+                                                                {{-- <button type="button" style="background-color: #CEFFA8 ! IMPORTANT; border:none; border-radius:5px" id="toggleLocationBtn">Show</button> --}}
+                                                                </div>
+                                                            </div>
+                                                            <script>
+                                                                $(document).ready(function () {
+                                                                    // Add click event for the toggle button
+                                                                    $('#toggleLocationBtn2').on('click', function () {
+                                                                        const locationDiv = $('.sky_location2');
+
+                                                                        // Toggle visibility
+                                                                        if (locationDiv.is(':visible')) {
+                                                                            locationDiv.hide();
+                                                                            $(this).text('Show/Change'); // Update button text
+                                                                        } else {
+                                                                            locationDiv.show();
+                                                                            $(this).text('Cancel'); // Update button text
+                                                                        }
+                                                                    });
+
+                                                                    // if ($('#folderscont1').data('folderdata') == "Home") {
+                                                                    //     // Hide the button if the value is "Home"
+                                                                    //     $('.backs-button').hide();
+                                                                    // }
+
+                                                                });
+                                                            </script>
+                                                            
 
                                                             {{-- <div class="gropu_form mainpath">
                                                                 <label for="fname"></label>
@@ -4880,19 +4955,19 @@ document.addEventListener('DOMContentLoaded', function () {
                                                                             const result2 = parts2.map(part => part.includes('_') ? part.split('_')[1] : part);
                                                                             // Join the cleaned parts with '/'
                                                                             const output2 = result2.join(' / ');
-                                                                            $('#folderscont1').html(output2).css({'color': '#CEFFA8'}).attr('data-folderdata', finalPathToUse2); // Set thclass="backs-button"e data-folderdata attribute;;
+                                                                            $('.folder-cont1').html(output2).css({'color': '#CEFFA8'}).attr('data-folderdata', finalPathToUse2); // Set thclass="backs-button"e data-folderdata attribute;;
                                                                             $('.backs-button').attr('data-folderdata', finalPathToUse2); // Set thclass="backs-button"e data-folderdata attribute;;
 
                                                                         } else {
                                                                             // If selectedPath doesn't contain '/', remove everything before '_'
                                                                             if (finalPathToUse2.includes('_')) {
                                                                                 const output2 = finalPathToUse2.split('_')[1];
-                                                                                $('#folderscont1').html(output2).css({'color': '#CEFFA8'}).attr('data-folderdata', finalPathToUse2); // Set the data-folderdata attribute;;
+                                                                                $('.folder-cont1').html(output2).css({'color': '#CEFFA8'}).attr('data-folderdata', finalPathToUse2); // Set the data-folderdata attribute;;
                                                                                 $('.backs-button').attr('data-folderdata', finalPathToUse2); // Set thclass="backs-button"e data-folderdata attribute;;
 
                                                                             } else {
                                                                                 // If there is no '_', just use selectedPath as it is
-                                                                                $('#folderscont1').html("Home").css({'color': '#CEFFA8'}).attr('data-folderdata', finalPathToUse2); // Set the data-folderdata attribute;;
+                                                                                $('.folder-cont1').html("Home").css({'color': '#CEFFA8'}).attr('data-folderdata', finalPathToUse2); // Set the data-folderdata attribute;;
                                                                                 // $('#folderscont1').html("Home").css({'color': '#CEFFA8'}).attr('data-folderdata', finalPathToUse2); // Set the data-folderdata attribute;;
 
                                                                                 $('.backs-button').attr('data-folderdata', finalPathToUse2); // Set thclass="backs-button"e data-folderdata attribute;;
@@ -5119,7 +5194,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
                                                         
                                                                     // Get the current folder path from the data attribute of #folderscont1
-                                                                    var folderPathBack = $('#folderscont1').attr('data-folderdata');
+                                                                    var folderPathBack = $('.folder-cont1').attr('data-folderdata');
                                                                     
                                                                     console.log("Current folder path:", folderPathBack);
 
@@ -5137,7 +5212,7 @@ document.addEventListener('DOMContentLoaded', function () {
                                                                         console.log("Updated folder path:", folderPathBack);
 
                                                                         // Update #folderscont1
-                                                                        $('#folderscont1').html(folderPathBack).css('color', '#CEFFA8').attr('data-folderdata', folderPathBack); // Update the data-folderdata attribute
+                                                                        $('.folder-cont1').html(folderPathBack).css('color', '#CEFFA8').attr('data-folderdata', folderPathBack); // Update the data-folderdata attribute
                                                                     } else {
                                                                         console.warn("No folder path found in data-folderdata.");
                                                                     }
@@ -5149,17 +5224,17 @@ document.addEventListener('DOMContentLoaded', function () {
                                                                         const result2 = parts2.map(part => part.includes('_') ? part.split('_')[1] : part);
                                                                         // Join the cleaned parts with '/'
                                                                         const output2 = result2.join(' / ');
-                                                                        $('#folderscont1').html(output2).css('color', '#CEFFA8').attr('data-folderdata', folderPathBack); // Set the data-folderdata attribute;
+                                                                        $('.folder-cont1').html(output2).css('color', '#CEFFA8').attr('data-folderdata', folderPathBack); // Set the data-folderdata attribute;
                                                                       
                                                                     } else {
                                                                         // If selectedPath doesn't contain '/', remove everything before '_'
                                                                         if (folderPathBack.includes('_')) {
                                                                             const output2 = folderPathBack.split('_')[1];
-                                                                            $('#folderscont1').html(output2).css('color', '#CEFFA8').attr('data-folderdata', folderPathBack); // Set the data-folderdata attribute;
+                                                                            $('.folder-cont1').html(output2).css('color', '#CEFFA8').attr('data-folderdata', folderPathBack); // Set the data-folderdata attribute;
                                                                          
                                                                         } else {
                                                                             // If there is no '_', just use selectedPath as it is
-                                                                            $('#folderscont1').html("Home").css('color', '#CEFFA8').attr('data-folderdata', folderPathBack); // Set the data-folderdata attribute;
+                                                                            $('.folder-cont1').html("Home").css('color', '#CEFFA8').attr('data-folderdata', folderPathBack); // Set the data-folderdata attribute;
                                                                          
                                                                         }
                                                                     }
@@ -5263,19 +5338,19 @@ document.addEventListener('DOMContentLoaded', function () {
                                                                         const result2 = parts2.map(part => part.includes('_') ? part.split('_')[1] : part);
                                                                         // Join the cleaned parts with '/'
                                                                         const output2 = result2.join(' / ');
-                                                                        $('#folderscont1').html(output2).css('color', '#CEFFA8').attr('data-folderdata', finalPathToUse); // Set the data-folderdata attribute;
+                                                                        $('.folder-cont1').html(output2).css('color', '#CEFFA8').attr('data-folderdata', finalPathToUse); // Set the data-folderdata attribute;
                                                                         $('.backs-button').attr('data-folderdata', finalPathToUse); // Set thclass="backs-button"e data-folderdata attribute;;
 
                                                                     } else {
                                                                         // If selectedPath doesn't contain '/', remove everything before '_'
                                                                         if (finalPathToUse.includes('_')) {
                                                                             const output2 = finalPathToUse.split('_')[1];
-                                                                            $('#folderscont1').html(output2).css('color', '#CEFFA8').attr('data-folderdata', finalPathToUse); // Set the data-folderdata attribute;
+                                                                            $('.folder-cont1').html(output2).css('color', '#CEFFA8').attr('data-folderdata', finalPathToUse); // Set the data-folderdata attribute;
                                                                             $('.backs-button').attr('data-folderdata', finalPathToUse); // Set thclass="backs-button"e data-folderdata attribute;;
 
                                                                         } else {
                                                                             // If there is no '_', just use selectedPath as it is
-                                                                            $('#folderscont1').html("Home").css('color', '#CEFFA8').attr('data-folderdata', finalPathToUse); // Set the data-folderdata attribute;
+                                                                            $('.folder-cont1').html("Home").css('color', '#CEFFA8').attr('data-folderdata', finalPathToUse); // Set the data-folderdata attribute;
                                                                             $('.backs-button').attr('data-folderdata', finalPathToUse); // Set thclass="backs-button"e data-folderdata attribute;;
 
                                                                         }
@@ -6501,7 +6576,14 @@ document.addEventListener('DOMContentLoaded', function () {
                                                                     e.preventDefault();
                                                                     var $submitButton = $(this).find('button[type="submit"]');
                                                                     $submitButton.prop('disabled', true).append('<span class="button-spinner"></span>');
+
+                                                                    
                                                                     var formData = $(this).serialize();
+                                                                    // Get the additional data from the element
+                                                                    var locationSKY2 = $('.folder-cont1').attr('data-folderdata');
+
+                                                                    // Append locationSKY2 to the serialized data
+                                                                    formData += '&locationSKY2=' + encodeURIComponent(locationSKY2);
 
                                                                     var parentFolderValue = $('#parent-folder').val();
 
@@ -8521,7 +8603,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
                                                                             // $('#folderscont1').data(decodedFolder);
                                                                             // var locationSKY = $('#folderscont1').data('folderdata');
-                                                                            var locationSKY = $('#folderscont1').attr('data-folderdata'); // Use attr() instead of data() for the latest value
+                                                                            var locationSKY = $('.folder-cont1').attr('data-folderdata'); // Use attr() instead of data() for the latest value
 
 
 
@@ -8622,7 +8704,7 @@ document.addEventListener('DOMContentLoaded', function () {
                                                                                                     }
 
                                                                                                     // var locationSKY = $('#folderscont1').data('folderdata');
-                                                                                                    var locationSKY = $('#folderscont1').attr('data-folderdata'); // Use attr() instead of data() for the latest value
+                                                                                                    var locationSKY = $('.folder-cont1').attr('data-folderdata'); // Use attr() instead of data() for the latest value
 
 
                                                                                                     formData.append('newfiles[]', file); // Append only files that do not exist
@@ -8855,7 +8937,7 @@ document.addEventListener('DOMContentLoaded', function () {
                                                                                                             }
 
                                                                                                             // var locationSKY = $('#folderscont1').data('folderdata');
-                                                                                                            var locationSKY = $('#folderscont1').attr('data-folderdata'); // Use attr() instead of data() for the latest value
+                                                                                                            var locationSKY = $('.folder-cont1').attr('data-folderdata'); // Use attr() instead of data() for the latest value
 
                                                                                                             formData.append("newfiles2[]", file); // Append only files that do not exist
 
@@ -9055,7 +9137,7 @@ document.addEventListener('DOMContentLoaded', function () {
                                                                                                             }
 
                                                                                                             // var locationSKY = $('#folderscont1').data('folderdata');
-                                                                                                            var locationSKY = $('#folderscont1').attr('data-folderdata'); // Use attr() instead of data() for the latest value
+                                                                                                            var locationSKY = $('.folder-cont1').attr('data-folderdata'); // Use attr() instead of data() for the latest value
                                                                                                             formData.append('newfiles3[]', file); // Append only files that do not exist
                                                                                                             // Add a custom variable to indicate replacement
                                                                                                             formData.append('keep', true);
