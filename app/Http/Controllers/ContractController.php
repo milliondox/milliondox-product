@@ -20,6 +20,7 @@ use MailerSend\MailerSend;
 use MailerSend\Helpers\Builder\Recipient;
 use MailerSend\Helpers\Builder\EmailParams;
 use MailerSend\Helpers\Builder\SmsParams;
+use App\Models\AuthorizeManagement;
 
 use Illuminate\Support\Facades\Storage;
 use PhpOffice\PhpSpreadsheet\IOFactory;
@@ -164,6 +165,10 @@ class ContractController extends Controller
            'lename' => 'required|string|max:255',
            'dname' => 'required|array',
            'dname.*' => 'required|string|max:255',
+           'dmail' => 'required|array',
+           'dmail.*' => 'required|string|max:255',
+           'dphone' => 'required|array',
+           'dphone.*' => 'required|string|max:255',
            'roa' => 'required|string',
            'state' => 'required|string|max:255',
            'city' => 'required|string|max:255',
@@ -626,6 +631,34 @@ public function showGst($id)
         }
 
         return response()->file($filePath);
+    }
+
+    public function addauthmanagement(Request $request){
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|email|max:255',
+            'phone' => 'required|string|max:20',
+            'division' => 'required|exists:divisions,id',
+            'image' => 'required|image|mimes:jpeg,png,jpg|max:2048',
+            'sign_image' => 'required|image|mimes:jpeg,png,jpg|max:2048',
+        ]);
+        $userId = auth()->user()->id;
+        // Handle image upload
+        $imagePath = $request->file('image')->store('uploads/images', 'public');
+        $signImagePath = $request->file('sign_image')->store('uploads/signatures', 'public');
+
+        // Save data to the database
+        AuthorizeManagement::create([
+            'name' => $request->name,
+            'email' => $request->email,
+            'phone' => $request->phone,
+            'division_id' => $request->division,
+            'auth_user_id' => $userId,
+            'image_path' => $imagePath,
+            'sign_image_path' => $signImagePath,
+        ]);
+
+        return redirect()->back()->with('success', 'Authorize Management added successfully.');
     }
    
        // customer creation code end here from here 

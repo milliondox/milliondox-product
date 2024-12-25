@@ -452,7 +452,7 @@
                                     <div class="modal-dialog modal-dialog-centered" role="document">
                                         <div class="modal-content">
                                             <div class="modal-header">
-                                                <h5 class="modal-title" style="font-weight:700">Add Customer</h5>
+                                                <h5 class="modal-title" style="font-weight:700">Add Contract</h5>
                                                 <button class="close" style="border-radius:5px;" type="button" data-bs-dismiss="modal">
                                                     <span aria-hidden="true">
                                                         <svg width="50" height="50" viewBox="0 0 50 50" fill="none" xmlns="http://www.w3.org/2000/svg">
