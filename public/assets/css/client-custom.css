@@ -22304,15 +22304,20 @@ span.clinet_name {
     border: 0;
     color: #FFF;
     padding: 0;
-    background: red;
-    width: 15px;
-    height: 15px;
+    background: transparent;
+    width: 13px;
+    height: 13px;
     border-radius: 50px;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 9px;
 }
+
+.append_bootm_contarct .file-area_cover .file-list .file-item .remove-btn svg {
+    width: 100%;
+    height: 100%;
+}
+
 
 .append_bootm_contarct .file-area_cover .file-list::-webkit-scrollbar {
     width: 5px;
@@ -22546,6 +22551,7 @@ span.clinet_name {
 
 .custom_add_customer .btn-group .btn-container button.btn.btn-success {
     background: #5790FF !important;
+    color: #FFF;
 }
 
 /*new div append css end*/
