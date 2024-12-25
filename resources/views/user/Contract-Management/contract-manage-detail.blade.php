@@ -636,34 +636,54 @@
                                                 </form>
 
                                                 <script>
-                                                    $(document).ready(function() {
-                                                        // Handle form submission
-                                                        $('#customerContractForm').on('submit', function(e) {
-                                                            e.preventDefault(); // Prevent default form submission
-
-                                                            // Create a FormData object to hold form data including the file
-                                                            var formData = new FormData(this);
-
-                                                            // Send AJAX request
+                                                    $(document).ready(function () {
+                                                        // When the "Save as Draft" button is clicked
+                                                        $('#draftButton').on('click', function () {
+                                                            var formData = new FormData($('#customerContractForm')[0]);
+                                                            formData.append('draft', true);  // Add a flag to indicate it's a draft
+                                                
                                                             $.ajax({
-                                                                url: $(this).attr('action'), // Use the form's action attribute (route)
-                                                                type: $(this).attr('method'), // Use the form's method attribute (POST)
-                                                                data: formData, // The FormData object containing form data
-                                                                contentType: false, // Don't set content type because it's automatically handled by FormData
-                                                                processData: false, // Don't process data, it's already in the form of FormData
-                                                                success: function(response) {
-                                                                    // Handle success response
+                                                                url: $('#customerContractForm').attr('action'),
+                                                                type: 'POST',
+                                                                data: formData,
+                                                                contentType: false,
+                                                                processData: false,
+                                                                success: function (response) {
                                                                     if (response.success) {
-                                                                        toastr.success('Contract data has been stored successfully.', 'Success');
-                                                                        // Reload the page after success
+                                                                        toastr.success(response.message, 'Success', { timeOut: 3000 });  // Set timeOut to 3 seconds
                                                                         location.reload();
                                                                     } else {
-                                                                        toastr.error(response.message || 'There was an issue with storing the contract data.', 'Error');
+                                                                        toastr.error(response.message || 'There was an issue saving the draft.', 'Error');
                                                                     }
                                                                 },
-                                                                error: function(xhr, status, error) {
-                                                                    // Handle AJAX error
-                                                                    toastr.error('An error occurred. Please try again later.', 'Error');
+                                                                error: function () {
+                                                                    toastr.error('An error occurred while saving the draft.', 'Error');
+                                                                }
+                                                            });
+                                                        });
+                                                
+                                                        // When the "Submit" button is clicked
+                                                        $('#submitButton').on('click', function (e) {
+                                                            e.preventDefault(); // Prevent the default form submission
+                                                
+                                                            var formData = new FormData($('#customerContractForm')[0]);
+                                                
+                                                            $.ajax({
+                                                                url: $('#customerContractForm').attr('action'),
+                                                                type: 'POST',
+                                                                data: formData,
+                                                                contentType: false,
+                                                                processData: false,
+                                                                success: function (response) {
+                                                                    if (response.success) {
+                                                                        toastr.success(response.message, 'Success', { timeOut: 3000 });  // Set timeOut to 3 seconds
+                                                                        location.reload();
+                                                                    } else {
+                                                                        toastr.error(response.message || 'There was an issue submitting the contract.', 'Error');
+                                                                    }
+                                                                },
+                                                                error: function () {
+                                                                    toastr.error('An error occurred while submitting the contract.', 'Error');
                                                                 }
                                                             });
                                                         });
