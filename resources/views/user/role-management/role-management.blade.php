@@ -186,8 +186,8 @@
     
                                                                     <!-- tab button left start -->
                                                                     @foreach ($roles as $role)
-                                                                        <button class="tablinks"
-                                                                            onclick="fetchUsersByRole('{{ $role->role }}', 'tab-dsc1{{ $role->id }}'); openTab(event, 'tab1{{ $role->id }}')">
+                                                                        <button class="tablinksd"
+                                                                            onclick="fetchUsersByRole('{{ $role->role }}', 'tab-dsc1{{ $role->id }}'); openTabdb(event, 'tab1{{ $role->id }}')">
                                                                             <span class="dott"></span>{{ $role->role }}
                                                                         </button>
                                                                     @endforeach
@@ -778,7 +778,7 @@
                                                             <div class="column-tabs">
                                                                 @foreach ($roles as $role)
                                                                     <!-- main tab content start -->
-                                                                    <div id="tab1{{ $role->id }}" class="tabcontent">
+                                                                    <div id="tab1{{ $role->id }}" class="tabcontentdd">
                                                                         <div class="tabs">
                                                                             {{-- <button class="tab-link active" onclick="openTabbb('kyc')">Basic</button> --}}
                                                                             <button class="tab-link active"
@@ -1239,14 +1239,14 @@
                                                                     <!-- main tab content end -->
                                                                 @endforeach
                                                                 <script>
-                                                                    function openTab(evt, roleId) {
+                                                                    function openTabdb(evt, roleId) {
                                                                         // Hide all tab contents
                                                                         document.querySelectorAll('.tabcontent').forEach(tab => {
                                                                             tab.style.display = 'none';
                                                                         });
     
                                                                         // Remove active class from all tab links
-                                                                        document.querySelectorAll('.tablinks').forEach(link => {
+                                                                        document.querySelectorAll('.tablinksd').forEach(link => {
                                                                             link.classList.remove('active');
                                                                         });
     
@@ -1368,7 +1368,47 @@
                                         
                                         <div id="authorizeManagement" class="tabcontent">
                                             <h3>Authorize Management</h3>
-                                            <p>Manage user authorization and access controls.</p>
+                                            <div class="row">
+                                                <div class="col-lg-3" style="border-right: 2px solid #ccc; padding-right: 15px;">
+                                                    <button class="btn_command" style="border-radius:5px;" data-bs-toggle="modal" data-bs-target="#addartho">
+                                                        <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                          <path d="M8.25 12V5.8875L6.3 7.8375L5.25 6.75L9 3L12.75 6.75L11.7 7.8375L9.75 5.8875V12H8.25ZM4.5 15C4.0875 15 3.7345 14.8533 3.441 14.5597C3.1475 14.2662 3.0005 13.913 3 13.5V11.25H4.5V13.5H13.5V11.25H15V13.5C15 13.9125 14.8533 14.2657 14.5597 14.5597C14.2662 14.8538 13.913 15.0005 13.5 15H4.5Z" fill="#7E7E7E" />
+                                                        </svg> Add Authorize Management 
+                                                    </button>
+                                                </div>
+                                                <div class="col-lg-9">
+                                                    <div id="contarct_table_wrapper" class="dataTables_wrapper no-footer">
+                                                    <table id="contarct_table" class="table table-striped dataTable no-footer" role="grid">
+                                                        <thead>
+                                                            <tr>
+                                                            <th>#</th>
+                                                            <th>Name</th>
+                                                            <th>Email</th>
+                                                            <th>Phone</th>
+                                                            <th>Division</th>
+                                                            <th>Image</th>
+                                                            <th>Signature</th>
+                                                            
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                            @foreach ($authmanagement as $auth )
+                                                                <tr>
+                                                                    <td>{{$auth->id}}</td>
+                                                                    <td>{{$auth->name}}</td>
+                                                                    <td>{{$auth->email}}</td>
+                                                                    <td>{{$auth->phone}}</td>
+                                                                    <td>{{$auth->division_name}}</td>
+                                                                    <td><img src="{{ asset($auth->image_path) }}" alt="Image" style="max-width: 100px;"></td>
+                                                                    <td><img src="{{ asset($auth->sign_image_path) }}" alt="Signature" style="max-width: 100px;"></td>
+                                                                    
+                                                                </tr>
+                                                            @endforeach
+                                                        </tbody>
+                                                    </table>
+                                                    </div>
+                                                </div>
+                                            </div>
                                         </div>
                                         <!-- The divisionModal start -->
                                         
@@ -1407,6 +1447,121 @@
                                             </div>
                                           </div>
                                         <!-- The divisionModal end -->
+
+
+                                        <!-- The divisionModal start -->
+                                        
+                                        <div class="modal fade drop_coman_file have_title" id="addartho" tabindex="-1" role="dialog" aria-labelledby="addartho" aria-hidden="true">
+                                            <div class="modal-dialog modal-dialog-centered" role="document">
+                                              <div class="modal-content">
+                                                <div class="modal-header">
+                                                  <h5 class="modal-title" style="font-weight:700">Add Authorize Management</h5>
+                                                  <button class="close closeed" style="border-radius:5px;" type="button" data-bs-dismiss="modal">
+                                                    <span aria-hidden="true">
+                                                        <svg width="50" height="50" viewBox="0 0 50 50" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                            <rect width="4.27093" height="66.172" transform="matrix(0.702074 -0.712104 0.709324 0.704883 0 3.31244)" fill="black"></rect>
+                                                            <rect width="4.27086" height="66.3713" transform="matrix(-0.704896 -0.70931 0.706518 -0.707695 3.10742 50)" fill="black"></rect>
+                                                        </svg>
+                                                    </span>
+                                                </button>
+                                                </div>
+                                                <div class="modal-body">
+                                                    <h3>Add Authorize Management </h3>
+
+
+                                                    <form action="{{ route('addauthmanagement') }}" method="POST" enctype="multipart/form-data" class="upload-form" id="divisionForm">
+                                                        @csrf
+                                                    
+                                                      
+                                                    
+                                                        <!-- Name Input -->
+                                                        <div class="gropu_form">
+                                                            <label for="name">Name<span class="red_star">*</span></label>
+                                                            <input type="text" id="name" name="name" required>
+                                                        </div>
+                                                    
+                                                        <!-- Email Input -->
+                                                        <div class="gropu_form">
+                                                            <label for="email">Email<span class="red_star">*</span></label>
+                                                            <input type="email" id="email" name="email" required>
+                                                        </div>
+                                                    
+                                                        <!-- Phone Input -->
+                                                        <div class="gropu_form">
+                                                            <label for="phone">Phone<span class="red_star">*</span></label>
+                                                            <input type="tel" id="phone" name="phone" required>
+                                                        </div>
+
+                                                          <!-- Division Selection -->
+                                                          <div class="gropu_form">
+                                                            <label for="Division">Division<span class="red_star">*</span></label>
+                                                            <select id="division" name="division" required>
+                                                                <option value="" disabled selected>Select</option>
+                                                                @foreach ($ddsdsdiv as $divi)
+                                                                    <option value="{{ $divi->id }}">{{ $divi->division_name }}</option>
+                                                                @endforeach
+                                                            </select>
+                                                        </div>
+                                                    
+                                                        <!-- Image Input with Preview -->
+                                                        <div class="gropu_form">
+                                                            <label for="image">Image<span class="red_star">*</span></label>
+                                                            <input type="file" id="image" name="image" accept="image/*" required onchange="previewImage(event)">
+                                                            <img id="imagePreview" src="" alt="Image Preview" style="display:none; max-width: 200px; margin-top: 10px;">
+                                                        </div>
+                                                    
+                                                        <!-- Signature Input with Preview -->
+                                                        <div class="gropu_form">
+                                                            <label for="sign_image">Signature<span class="red_star">*</span></label>
+                                                            <input type="file" id="sign_image" name="sign_image" accept="image/*" required onchange="previewSign(event)">
+                                                            <img id="signPreview" src="" alt="Signature Preview" style="display:none; max-width: 200px; margin-top: 10px;">
+                                                        </div>
+                                                    
+                                                        <!-- Submit Button -->
+                                                        <div class="root_btn">
+                                                            <button class="btn btn-primary" style="border-radius:5px;" type="submit">Add</button>
+                                                        </div>
+                                                    </form>
+                                                    
+                                                    <!-- JavaScript for Image and Signature Previews -->
+                                                    <script>
+                                                        function previewImage(event) {
+                                                            const image = document.getElementById('imagePreview');
+                                                            const file = event.target.files[0];
+                                                            
+                                                            if (file) {
+                                                                const reader = new FileReader();
+                                                                reader.onload = function() {
+                                                                    image.src = reader.result;
+                                                                    image.style.display = 'block'; // Show the preview
+                                                                };
+                                                                reader.readAsDataURL(file);
+                                                            } else {
+                                                                image.style.display = 'none'; // Hide the preview if no file is selected
+                                                            }
+                                                        }
+                                                    
+                                                        function previewSign(event) {
+                                                            const sign = document.getElementById('signPreview');
+                                                            const file = event.target.files[0];
+                                                            
+                                                            if (file) {
+                                                                const reader = new FileReader();
+                                                                reader.onload = function() {
+                                                                    sign.src = reader.result;
+                                                                    sign.style.display = 'block'; // Show the preview
+                                                                };
+                                                                reader.readAsDataURL(file);
+                                                            } else {
+                                                                sign.style.display = 'none'; // Hide the preview if no file is selected
+                                                            }
+                                                        }
+                                                    </script>
+                                                </div>
+                                              </div>
+                                            </div>
+                                          </div>
+                                        <!-- The divisionModal end -->
                                     </div>
 
                                 </div>
@@ -1426,23 +1581,33 @@
     <script>
         function openTab(evt, tabName) {
             var i, tabcontent, tablinks;
-            tabcontent = document.getElementsByClassName("tabcontent");
+            
+            // Get all tab contents and hide them
+            tabcontent = document.getElementsByClassName("tabcontentd");
             for (i = 0; i < tabcontent.length; i++) {
-                tabcontent[i].classList.remove("active"); // Hide all tab contents
+                tabcontent[i].classList.remove("active");
             }
-    
-            tablinks = document.getElementsByClassName("tablinks");
+            
+            // Get all tab links and remove active class
+            tablinks = document.getElementsByClassName("tablinksd");
             for (i = 0; i < tablinks.length; i++) {
-                tablinks[i].classList.remove("active"); // Remove active class from all tabs
+                tablinks[i].classList.remove("active");
             }
-    
-            document.getElementById(tabName).classList.add("active"); // Show the clicked tab content
-            evt.currentTarget.classList.add("active"); // Add active class to the clicked tab
+            
+            // Show the clicked tab content
+            document.getElementById(tabName).classList.add("active");
+            
+            // Add active class to the clicked tab link
+            evt.currentTarget.classList.add("active");
+            
+            // Ensure the tab navigation bar (.tabz) is always displayed
+            document.querySelector('.tabz').style.display = 'flex'; // This ensures the tabs are visible
         }
     
         // Set default tab on page load
         document.getElementById("defaultOpen").click();
     </script>
+    
     
         <style>
             * {box-sizing: border-box}

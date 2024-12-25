@@ -48,7 +48,7 @@ use App\Models\RegTAN;
 use App\Models\RegINC;
 use App\Models\RegSpiceDoc;
 use App\Models\RegCustomDoc;
-
+use App\Models\AuthorizeManagement;
 use App\Models\MisUploadedFile;
 use App\Models\MisCharteredDoc;
 use App\Models\MisCOI;
@@ -19936,6 +19936,8 @@ public function rolemanagement()
 
     $division = Division::where('user_id', $user->id)->get();
 
+    // dd($division);
+
     // Fetch the "Admin" role explicitly
     $adminRole = UserRole::where('role', 'Admin')->where('is_deleted', 0)->first();
 
@@ -19963,6 +19965,16 @@ public function rolemanagement()
 
     // Fetch the current user's role record (if needed elsewhere)
     $userRoleRecord = UserRole::where('role', $user->role)->where('is_deleted', 0)->first();
+    $ddsdsdiv = Division::get();
+
+    // $authmanagement = AuthorizeManagement::where('auth_user_id', $user->id)->get();
+
+    $authmanagement = DB::table('authorize_management as a')
+    ->join('divisions as d', 'a.division_id', '=', 'd.id')
+    ->select('a.*', 'd.division_name') // Adjust the selected columns as needed
+    ->whereColumn('a.auth_user_id', 'd.user_id') // Compares auth_user_id with user_id in divisions
+    ->get();
+    // dd($authmanagement);
 
     // Pass all data to the view
     return view('user.role-management.role-management', [
@@ -19973,7 +19985,9 @@ public function rolemanagement()
         'usersByRole' => $usersByRole, // Pass the users by role to the view
         'user' => $user,
         'rolesexit' => $rolesexit,
-        'division' => $division
+        'division' => $division,
+        'ddsdsdiv' => $ddsdsdiv,
+        'authmanagement' => $authmanagement
     ]);
 }
 
