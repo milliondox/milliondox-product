@@ -25429,22 +25429,6 @@ public function downloadFolder($folder_id)
     //     ->where('is_delete', 0)
     //     ->firstOrFail();
 
-    // $folder = Folder::where('id', $folder_id)
-    // ->where('is_delete', 0)
-    // ->where(function ($query) {
-    //     $query->whereNull('employee_id')
-    //           ->orWhere(function ($subQuery) {
-    //               $subQuery->whereNotNull('employee_id')
-    //                        ->whereExists(function ($existsQuery) {
-    //                            $existsQuery->select(DB::raw(1))
-    //                                        ->from('store_company_employee')
-    //                                        ->whereColumn('store_company_employee.id', 'folders.employee_id')
-    //                                        ->where('store_company_employee.is_delete', 0);
-    //                        });
-    //           });
-    // })
-    // ->firstOrFail();
-
     $folder = Folder::leftJoin('store_company_employee', function ($join) {
         $join->on('store_company_employee.id', '=', 'folders.employee_id')
              ->where('store_company_employee.is_delete', 0);
@@ -25459,21 +25443,17 @@ public function downloadFolder($folder_id)
     ->firstOrFail();
     // dd($folder);
 
-
     $deletedEmployeeIds = DB::table('store_company_employee')
     ->where('is_delete', 1)
     ->pluck('id')
     ->toArray();
     // dd($deletedEmployeeIds); 
 
-
     $deletedDirectorIds = DB::table('store_company_director')
     ->where('is_delete', 1)
     ->pluck('id')
     ->toArray();
     // dd($deletedDirectorIds); 
-
-
     
     // dd($folder);
     $folderName = $folder->name;
@@ -25523,7 +25503,6 @@ public function downloadFolder($folder_id)
             });
         })
         ->get();
-
     }
     else{
         // Get related directories
@@ -25565,11 +25544,7 @@ public function downloadFolder($folder_id)
             });
         })
         ->get();
-
-
-
     }
-
     // dd($relatedDirectories);
 
     // Fetch files from the CommonTable based on locations
@@ -25587,6 +25562,8 @@ public function downloadFolder($folder_id)
     // $zipFileName = $folderName . '.zip';
     $userId = Auth::id();
     $currentDate = now()->format('d-M-Y'); // e.g., '18-Dec-2024'
+    $folderName_original = $folderName;
+
     $folderName = preg_replace('/[^_]*_/', '', $folderName);
     // dd($folderName);
 
@@ -25604,7 +25581,28 @@ public function downloadFolder($folder_id)
         foreach ($relatedDirectories as $directory) {
             // Include all parent directories in the ZIP
             // dd($directory->parent_name);
-            $this->addParentDirectories($zip, $directory->path);
+            
+            // dd($folderName_original, "Directory Path : ",$directory->path);
+            // $this->addParentDirectories($zip, $directory->path);
+
+            // $matchString = "2024-2025November301_GSTR 9C";
+            $matchString = $folderName_original;
+            $directoryPath = $directory->path;
+
+            // Find the position of the match string in the directory path
+            $position = strpos($directoryPath, $matchString);
+
+            if ($position !== false) {
+                // Extract the substring starting from the match string
+                $updatedPath = substr($directoryPath, $position);
+                
+                // Pass the updated path
+                // dd($folderName_original, "Updated Directory Path:", $updatedPath);   
+                $this->addParentDirectories($zip, $updatedPath);
+            } else {
+                dd("Match string not found in the directory path.");
+            }
+
 
             foreach ($files as $file) {
                 // if ($file->location == $directory->path) {
@@ -25628,26 +25626,59 @@ public function downloadFolder($folder_id)
                 //         $addedFiles[] = $uniqueZipPath;
                 //     }
                 // }
+                // if ($file->location == $directory->path) {
+
+
+                //     $formattedPath = $this->formatDirectoryName($directory->path);
+                //     $relativeZipPath = !empty($file->real_file_name)
+                //         ? $formattedPath . '/' . $file->real_file_name . '/' . $file->file_name
+                //         : $formattedPath . '/' . $file->file_name;
+                
+                //     $storedFilePath = storage_path('app/' . $directory->path . '/' . $file->temp_file_name);
+                
+                //     if (file_exists($storedFilePath)) {
+                //         $uniqueZipPath = $this->ensureUniqueZipPath($relativeZipPath, $addedFiles);
+                //         $zip->addFile($storedFilePath, $uniqueZipPath);
+                //         $addedFiles[] = $uniqueZipPath;
+                //     }
+                // }
                 if ($file->location == $directory->path) {
-                    $formattedPath = $this->formatDirectoryName($directory->path);
-                    $relativeZipPath = !empty($file->real_file_name)
-                        ? $formattedPath . '/' . $file->real_file_name . '/' . $file->file_name
-                        : $formattedPath . '/' . $file->file_name;
+                    // Define the match string
+                    $matchString = $folderName_original;
+                    
+                    // Find the position of the match string in the directory path
+                    $position = strpos($directory->path, $matchString);
                 
-                    $storedFilePath = storage_path('app/' . $directory->path . '/' . $file->temp_file_name);
+                    // Ensure the match string exists in the path
+                    if ($position !== false) {
+                        // Extract the substring starting from the match string
+                        $updatedPath = substr($directory->path, $position);
                 
-                    if (file_exists($storedFilePath)) {
-                        $uniqueZipPath = $this->ensureUniqueZipPath($relativeZipPath, $addedFiles);
-                        $zip->addFile($storedFilePath, $uniqueZipPath);
-                        $addedFiles[] = $uniqueZipPath;
+                        // Format the directory name with the updated path
+                        $formattedPath = $this->formatDirectoryName($updatedPath);
+                        $relativeZipPath = !empty($file->real_file_name)
+                            ? $formattedPath . '/' . $file->real_file_name . '/' . $file->file_name
+                            : $formattedPath . '/' . $file->file_name;
+                
+                        $storedFilePath = storage_path('app/' . $directory->path . '/' . $file->temp_file_name);
+                
+                        if (file_exists($storedFilePath)) {
+                            $uniqueZipPath = $this->ensureUniqueZipPath($relativeZipPath, $addedFiles);
+                            $zip->addFile($storedFilePath, $uniqueZipPath);
+                            $addedFiles[] = $uniqueZipPath;
+                        }
+                    } else {
+                        // Handle the case where the match string is not found
+                        // dd("Match string not found in the directory path.");
+                        dd("Something Went wrong.");
+
                     }
                 }
                 
-            }
+            }   
         }
         $zip->close();
 
-        
             // Return the public URL of the zip file
             // $zipFileUrl = asset('storage/app/public/' . $zipFileName);  // Generates a public URL
 
@@ -25656,7 +25687,6 @@ public function downloadFolder($folder_id)
                 'zipFilePath' => $zipFileName,
             ]);
       
-
         // return response()->download($zipFilePath)->deleteFileAfterSend(true);
     } else {
         return response()->json(['error' => 'Unable to create ZIP file.'], 500);
@@ -25704,7 +25734,8 @@ public function downloadZipSKY($zipFileName)
 
 // working fine
 private function addParentDirectories($zip, $path)
-{
+{   
+    // dd($path);
     $pathSegments = explode('/', $path);
     $currentPath = '';
     // $currentDate = now()->format('Y-m-d'); // Adjust this format if needed
@@ -25748,11 +25779,7 @@ private function formatDirectoryName($path)
 }
 // working fine 
 
-
-
 // new version
-
-
 
 /**
  * Ensure unique file paths within the ZIP archive.
