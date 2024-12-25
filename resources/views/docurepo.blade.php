@@ -500,19 +500,43 @@ document.addEventListener('DOMContentLoaded', function () {
 
         // Append each new file to the file list UI
         newFilesToAdd.forEach((file, index) => {
-            const fileItem = $('<div>', {
-                class: 'file-item'
-            }).append(
-                $('<span>').text(file.name),
-                $('<button>', {
-                    class: 'remove-btn',
-                    'data-file-index': index
-                }).text('X').on('click', function () {
-                    removeFile(fileInput, index, fileList, inputId);
-                })
-            );
-            fileList.append(fileItem);
-        });
+    const fileItem = $('<div>', {
+        class: 'file-item'
+    }).append(
+        $('<span>').text(file.name),
+        $('<button>', {
+            class: 'remove-btn',
+            'data-file-index': index
+        }).on('click', function () {
+            removeFile(fileInput, index, fileList, inputId);
+        })
+    );
+
+    // Create the SVG element
+    const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+    svg.setAttribute("width", "11");
+    svg.setAttribute("height", "11");
+    svg.setAttribute("viewBox", "0 0 11 11");
+    svg.setAttribute("fill", "none");
+    svg.setAttribute("xmlns", "http://www.w3.org/2000/svg");
+
+    const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
+    path.setAttribute("d", "M1.24264 9.72799L9.72792 1.24271M9.72792 9.72799L1.24264 1.24271");
+    path.setAttribute("stroke", "#FF0000");
+    path.setAttribute("stroke-width", "1.66");
+    path.setAttribute("stroke-miterlimit", "10");
+    path.setAttribute("stroke-linecap", "round");
+    path.setAttribute("stroke-linejoin", "round");
+
+    svg.appendChild(path);
+
+    // Append the SVG to the button
+    fileItem.find('.remove-btn').append(svg);
+
+    // Append the file item to the file list
+    fileList.append(fileItem);
+});
+
 
         // Update the input's file list with the new files
         updateFileInput(fileInput, inputId);
@@ -538,22 +562,46 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // Function to refresh the file list in the UI
     function refreshFileList(fileList, fileInput, inputId) {
-        fileList.empty();
-        fileData[inputId].forEach((file, i) => {
-            const fileItem = $('<div>', {
-                class: 'file-item'
-            }).append(
-                $('<span>').text(file.name),
-                $('<button>', {
-                    class: 'remove-btn',
-                    'data-file-index': i
-                }).text('X').on('click', function () {
-                    removeFile(fileInput, i, fileList, inputId);
-                })
-            );
-            fileList.append(fileItem);
-        });
-    }
+    fileList.empty();
+    fileData[inputId].forEach((file, i) => {
+        const fileItem = $('<div>', {
+            class: 'file-item'
+        }).append(
+            $('<span>').text(file.name),
+            $('<button>', {
+                class: 'remove-btn',
+                'data-file-index': i
+            }).on('click', function () {
+                removeFile(fileInput, i, fileList, inputId);
+            })
+        );
+
+        // Create the SVG element
+        const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+        svg.setAttribute("width", "11");
+        svg.setAttribute("height", "11");
+        svg.setAttribute("viewBox", "0 0 11 11");
+        svg.setAttribute("fill", "none");
+        svg.setAttribute("xmlns", "http://www.w3.org/2000/svg");
+
+        const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
+        path.setAttribute("d", "M1.24264 9.72799L9.72792 1.24271M9.72792 9.72799L1.24264 1.24271");
+        path.setAttribute("stroke", "#FF0000");
+        path.setAttribute("stroke-width", "1.66");
+        path.setAttribute("stroke-miterlimit", "10");
+        path.setAttribute("stroke-linecap", "round");
+        path.setAttribute("stroke-linejoin", "round");
+
+        svg.appendChild(path);
+
+        // Append the SVG to the button
+        fileItem.find('.remove-btn').append(svg);
+
+        // Append the file item to the file list
+        fileList.append(fileItem);
+    });
+}
+
 
     // Handle file input change
     $('body').on('change', '.dragfile', function () {
@@ -9445,19 +9493,6 @@ document.addEventListener('DOMContentLoaded', function () {
                                                                 //     $('.progree_cont_nt').hide(); // Simply hide the progress container
                                                                 // }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
                                                                 function resetFileInput($fileInput) {
                                                                     $fileInput.val('');
                                                                     var fileArea = $fileInput.closest('.modal-content');
@@ -9719,7 +9754,9 @@ document.addEventListener('DOMContentLoaded', function () {
                                                             </div>
 
                                                             <div class="gropu_form">
-                                                                <label for="fname">Current Location</label>
+                                                                <label for="fname"></label>
+                                                                <div class="loaction_small">
+                                                                    <b>Current Location:</b>
                                                                 <div class="all_locations1">
                                                                     {{-- <div class="nav-paths1">idsfgishdi</div> --}}
                                                                     <div class="folder-cont1" data-folderdata='' id="folderscont1"></div>
@@ -9729,7 +9766,7 @@ document.addEventListener('DOMContentLoaded', function () {
                                                                 {{-- <button type="button" style="border:none; border-radius:5px" id="toggleLocationBtn">Show/Change</button> --}}
                                                                 <a href="#" style="border: none; color: white; border-radius: 5px;" id="toggleLocationBtn">Show/Change</a>
                                                                 {{-- <button type="button" style="background-color: #CEFFA8 ! IMPORTANT; border:none; border-radius:5px" id="toggleLocationBtn">Show</button> --}}
-
+                                                                </div>
                                                             </div>
                                                             <script>
                                                                 $(document).ready(function () {

@@ -597,8 +597,13 @@ public function adddivision(Request $request){
 public function showGst($id)
     {
         // Fetch GST-related file for the customer
-        $customer = Customer::findOrFail($id);
-        $filePath = public_path('gstin_files/' . $customer->gstin_file);
+        // $customer = Customer::findOrFail($id);
+        $userId = auth()->user()->id;
+        $customer = Customer::where('id', $id)
+                    ->where('customer_created_by', $userId)
+                    ->firstOrFail();
+        // dd($customer);
+        $filePath = public_path('/' . $customer->gstin_file);
 
         if (!file_exists($filePath)) {
             abort(404, 'GST file not found.');
@@ -610,8 +615,11 @@ public function showGst($id)
     public function showCin($id)
     {
         // Fetch CIN-related file for the customer
-        $customer = Customer::findOrFail($id);
-        $filePath = public_path('cin_files/' . $customer->cin_file);
+        $userId = auth()->user()->id;
+        $customer = Customer::where('id', $id)
+        ->where('customer_created_by', $userId)
+        ->firstOrFail();
+        $filePath = public_path('/' . $customer->cin_file);
 
         if (!file_exists($filePath)) {
             abort(404, 'CIN file not found.');
