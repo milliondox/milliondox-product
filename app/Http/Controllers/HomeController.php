@@ -23413,6 +23413,8 @@ public function shareFolder(Request $request)
     {
           $folderPath = $request->get('folderName');
           $folderPaths = $request->get('folderName');
+        //   dd($folderPaths);
+        //   "2024-2025November301_Office Administration"
        
         //   $folderPaths = preg_replace('/\//', ' / ', $folderPath);
         //   dd($folderPath);
@@ -23475,7 +23477,12 @@ public function shareFolder(Request $request)
     }
 
         // $fileContents = CommonTable::where('location', $folderPaths)->where('user_id', Auth::id())->where('is_delete', 0 )->get();
-        $fileContents = CommonTable::where('location', $folderPaths)->where('user_id', Auth::id())->where('is_delete', 0 )->whereNull('is_replaced')->whereNull('real_file_name')->get();
+        if(!isset($folderPaths) || is_null($folderPaths)){
+            $fileContents = CommonTable::where('location', 'root')->where('user_id', Auth::id())->where('is_delete', 0 )->whereNull('is_replaced')->whereNull('real_file_name')->get();
+        }
+        else{
+            $fileContents = CommonTable::where('location', $folderPaths)->where('user_id', Auth::id())->where('is_delete', 0 )->whereNull('is_replaced')->whereNull('real_file_name')->get();
+        }
 
 
         // dd($fileContents);
@@ -26629,7 +26636,7 @@ public function saveBreadcrumb(Request $request)
 //         }
 //     }
 
-
+// 24 December old
 public function uploadFile(Request $request)
 {
  // dd($request);
@@ -26695,6 +26702,58 @@ public function uploadFile(Request $request)
         return response()->json(['success' => false, 'message' => 'No files uploaded.'], 400);
     }
 }
+// public function uploadFile(Request $request)
+// {
+//     // Validate the request
+//     $request->validate([
+//         'files.*' => 'required|file|max:102400|mimes:pdf,ppt,pot,pps,pptx,pptm,potx,ppam,ppsx,sldx,sldm,odp,ods,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,xlsx,docx,docm,xlam,txt,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv,xltx,xltm',
+//         'tagList' => 'nullable',
+//     ], [
+//         'files.*.required' => 'Each file is required.',
+//         'files.*.file' => 'The uploaded item must be a valid file.',
+//         'files.*.max' => 'Each file may not be larger than 100MB.',
+//         'files.*.mimes' => 'The file type must be one of the allowed types.',
+//     ]);
+
+//     // Check if files are uploaded
+//     if (!$request->hasFile('files')) {
+//         return response()->json(['success' => false, 'message' => 'No files uploaded.'], 400);
+//     }
+
+//     $folderPaths = $request->input('locationSKY', $request->input('decodedFolder'));
+//     $fyear = $request->input('fyear');
+//     $month = $request->input('Month');
+//     $userId = auth()->user()->id;
+
+//     // Get all file names and MIME types
+//     $uploadedFiles = $request->file('files');
+//     $fileNames = array_map(fn($file) => $file->getClientOriginalName(), $uploadedFiles);
+//     $fileTypes = array_map(fn($file) => $file->getClientMimeType(), $uploadedFiles);
+
+//     // Query the database for all matching records
+//     $existingFiles = CommonTable::where('user_id', $userId)
+//         ->where('fyear', $fyear)
+//         ->where('month', $month)
+//         ->where('is_delete', 0)
+//         ->whereNull('real_file_name')
+//         ->where('location', $folderPaths)
+//         ->whereIn('file_name', $fileNames)
+//         ->whereIn('file_type', $fileTypes)
+//         ->pluck('file_name')
+//         ->toArray();
+
+//     // Determine which files exist and which do not
+//     $exists = array_intersect($fileNames, $existingFiles);
+//     $doNotExist = array_diff($fileNames, $existingFiles);
+
+//     // Compile the response
+//     return response()->json([
+//         'success' => true,
+//         'exists' => array_values($exists),
+//         'do_not_exists' => array_values($doNotExist),
+//     ]);
+// }
+
 
 
 public function HandleCommonUploadFiles(Request $request)
