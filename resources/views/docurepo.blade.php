@@ -5134,20 +5134,20 @@ document.addEventListener('DOMContentLoaded', function () {
                                                                     }
                                                                 }
 
-                                                                // Listen for browser navigation (back/forward buttons)
-                                                                window.addEventListener('popstate', function(event) {
-                                                                    // Check if the event has state information (this is your folderPath)
-                                                                    if (event.state && event.state.folderPath) {
-                                                                        // Update the page based on the state stored in the history
-                                                                        updateBreadcrumb(event.state.folderPath);
-                                                                        fetchSubfolders(event.state.folderPath);
-                                                                    } else {
-                                                                        // Handle the case where there's no state (for example, the initial page load)
-                                                                        const initialFolderPath = getQueryParamSKY('folder') || '/'; // Default to root if no folder is in the URL
-                                                                        updateBreadcrumb(initialFolderPath);
-                                                                        fetchSubfolders(initialFolderPath);
-                                                                    }
-                                                                });
+                                                                // //   Listen for browser navigation (back/forward buttons)
+                                                                // window.addEventListener('popstate', function(event) {
+                                                                //     // Check if the event has state information (this is your folderPath)
+                                                                //     if (event.state && event.state.folderPath) {
+                                                                //         // Update the page based on the state stored in the history
+                                                                //         updateBreadcrumb(event.state.folderPath);
+                                                                //         fetchSubfolders(event.state.folderPath);
+                                                                //     } else {
+                                                                //         // Handle the case where there's no state (for example, the initial page load)
+                                                                //         const initialFolderPath = getQueryParamSKY('folder') || '/'; // Default to root if no folder is in the URL
+                                                                //         updateBreadcrumb(initialFolderPath);
+                                                                //         // fetchSubfolders(initialFolderPath);
+                                                                //     }
+                                                                // });
 
                                                                 function getQueryParamSKY(param) {
                                                                     const params = new URLSearchParams(window.location.search);
