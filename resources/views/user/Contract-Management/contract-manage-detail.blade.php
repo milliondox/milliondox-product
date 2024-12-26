@@ -619,13 +619,10 @@
 
                                                     <!-- Step 2 -->
                                                     <div class="step-form step-2 d-none">
-<<<<<<< HEAD
+
                                                         <h4></h4>
-                                                        <div class="gropu_form">
-=======
-                                                        <h4>Terms of Contract:</h4>
                                                         <div class="group_form">
->>>>>>> b7b2700be5c9dbe63c40a7761cc89926d998b396
+
                                                             <label for="renewal_terms">Renewal Terms <span class="red_star">*</span></label>
                                                             <div id="quill-renewal-terms" class="quill-editor"></div>
                                                             <textarea name="renewal_terms[]" id="renewal_terms" required></textarea>
