@@ -633,6 +633,46 @@
         });
     </script>
 
+    <script>
+        $(document).ready(function() {
+            $('.drag_file_signature').on('change', function(event) {
+                const file = event.target.files[0];
+                const $fileAreaCover = $(this).closest('.file-area_cover');
+                const $signaturePre = $fileAreaCover.next('.show_signature_pre');
+
+                if (file && file.type.startsWith('image/')) {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        // Create the preview content
+                        const previewHTML = `
+                    <div class="preview-wrapper">
+                        <img src="${e.target.result}" alt="Selected File" class="preview-image">
+                    </div>
+                                            <button type="button" class="remove-btn">
+                            <svg width="11" height="11" viewBox="0 0 11 11" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M1.24264 9.72799L9.72792 1.24271M9.72792 9.72799L1.24264 1.24271" stroke="#FF0000" stroke-width="1.66" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"></path>
+                            </svg>
+                        </button>`;
+                        $signaturePre.html(previewHTML).show();
+                        $fileAreaCover.hide();
+                    };
+                    reader.readAsDataURL(file);
+                }
+            });
+
+            // Handle the remove button click
+            $(document).on('click', '.remove-btn', function() {
+                const $signaturePre = $(this).closest('.show_signature_pre');
+                const $fileAreaCover = $signaturePre.prev('.file-area_cover');
+                const $fileInput = $fileAreaCover.find('input');
+
+                // Clear the input and reset views
+                $fileInput.val('');
+                $signaturePre.hide().empty();
+                $fileAreaCover.show();
+            });
+        });
+    </script>
 
 
 </body>
