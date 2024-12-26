@@ -301,7 +301,11 @@
                                         <path d="M9.46402 14.9349L14.4904 9.90645C14.6042 9.79264 14.6681 9.63817 14.6681 9.47711C14.6681 9.31614 14.6042 9.16167 14.4904 9.04775C14.3766 8.93394 14.2222 8.87 14.0613 8.87C13.9004 8.87 13.746 8.93394 13.6322 9.04775L8.17804 14.5056C8.1216 14.562 8.07682 14.6289 8.04627 14.7026C8.01573 14.7762 8 14.8552 8 14.9349C8 15.0147 8.01573 15.0937 8.04627 15.1674C8.07682 15.2411 8.1216 15.308 8.17804 15.3643L13.6322 20.8222C13.746 20.936 13.9004 21 14.0613 21C14.2222 21 14.3766 20.936 14.4904 20.8222C14.6042 20.7083 14.6681 20.5538 14.6681 20.3928C14.6681 20.2318 14.6042 20.0773 14.4904 19.9635L9.46402 14.9349Z" fill="black"></path>
                                       </svg>
                                     </button>
-                                    <button type="submit" class="btn btn-success">Submit</button>
+                                    <button type="submit" class="btn btn-success submit-btn" id="submitButton">
+                                      <span id="submitText">Submit</span>
+                                      <span id="submitSpinner" class="spinner-border spinner-border-sm d-none" role="status" aria-hidden="true"></span>
+                                    </button>
+                                    
                                   </div>
                                 </div>
                               </div>
@@ -315,17 +319,20 @@
 
 
                     <script>
-                      $(document).ready(function() {
+                      $(document).ready(function () {
                         function validateStep(step) {
-                          const input = $(`.step-form.step-${step} input`);
-                          return input.val().trim() !== '';
+                          const form = $(`.step-form.step-${step}`);
+                          const inputs = form.find('input:not([type="file"])'); // Exclude file input from mandatory validation
+                          
+                          // Validate all inputs except the file input
+                          return inputs.toArray().every(input => $(input).val().trim() !== '');
                         }
-
+                    
                         function updateProgress(step) {
-                          $('.step').each(function() {
+                          $('.step').each(function () {
                             const stepNum = $(this).data('step');
                             const isValid = validateStep(stepNum);
-
+                    
                             if (stepNum < step) {
                               $(this).addClass('active');
                               if (isValid) {
@@ -342,40 +349,41 @@
                             }
                           });
                         }
-
-                        $('.next-step').on('click', function() {
+                    
+                        $('.next-step').on('click', function () {
                           const currentStep = $(this).data('next-step') - 1;
                           const nextStep = $(this).data('next-step');
-
-                          if (!validateStep(currentStep)) return;
-
+                    
+                          if (!validateStep(currentStep)) return; // Proceed only if current step inputs are valid
+                    
                           $(`.step-form.step-${currentStep}`).addClass('d-none');
                           $(`.step-form.step-${nextStep}`).removeClass('d-none');
                           updateProgress(nextStep);
                         });
-
-                        $('.prev-step').on('click', function() {
+                    
+                        $('.prev-step').on('click', function () {
                           const prevStep = $(this).data('prev-step');
                           const currentStep = prevStep + 1;
-
+                    
                           $(`.step-form.step-${currentStep}`).addClass('d-none');
                           $(`.step-form.step-${prevStep}`).removeClass('d-none');
                           updateProgress(prevStep);
                         });
-
-                        $('#customerForm').on('submit', function(e) {
+                    
+                        $('#customerForm').on('submit', function (e) {
                           e.preventDefault();
-                          if (validateStep(3)) {                           
+                          if (validateStep(3)) {
                             $('#threeStepModal').modal('hide');
                           }
                         });
-
-                        $('input').on('input', function() {
+                    
+                        $('input').on('input', function () {
                           const step = $(this).closest('.step-form').attr('class').match(/step-(\d)/)[1];
                           updateProgress(parseInt(step));
                         });
                       });
                     </script>
+                    
 
 
                     <script>
@@ -493,7 +501,7 @@
                       document.getElementById('state').addEventListener('input', clearFields);
                       document.getElementById('city').addEventListener('input', clearFields);
                       document.getElementById('pincode').addEventListener('input', clearFields);
-
+                    
                       function clearFields() {
                         if (this.value.trim() === "") {
                           document.getElementById('state').value = "";
@@ -501,12 +509,12 @@
                           document.getElementById('pincode').value = "";
                         }
                       }
-
+                    
                       // Fetch State and City based on Pin Code
-                      document.getElementById('pincode').addEventListener('input', function() {
+                      document.getElementById('pincode').addEventListener('input', function () {
                         const pincode = this.value.trim();
                         const suggestionList = document.getElementById('pincode-suggestions');
-
+                    
                         if (pincode.length === 6) {
                           // Show the suggestion list
                           suggestionList.style.display = 'block';
@@ -516,11 +524,11 @@
                               if (data[0].Status === "Success") {
                                 suggestionList.innerHTML = ""; // Clear previous suggestions
                                 const postOffices = data[0].PostOffice;
-
+                    
                                 postOffices.forEach(office => {
                                   const li = document.createElement('li');
                                   li.textContent = `${office.Name}, ${office.District}, ${office.State}`;
-                                  li.addEventListener('click', function() {
+                                  li.addEventListener('click', function () {
                                     // Auto-fill inputs
                                     document.getElementById('pincode').value = pincode;
                                     document.getElementById('city').value = office.District;
@@ -531,7 +539,7 @@
                                   suggestionList.appendChild(li);
                                 });
                               } else {
-                                suggestionList.innerHTML = "<li>No suggestions available</li>";
+                                suggestionList.innerHTML = "<li class='no-suggestions'>No suggestions available. Click to Enter Manually.</li>";
                               }
                             })
                             .catch(error => console.error("Error fetching pincode details:", error));
@@ -540,12 +548,20 @@
                           suggestionList.style.display = 'none';
                         }
                       });
-
+                    
+                      // Hide "No suggestions available" message on click
+                      document.getElementById('pincode-suggestions').addEventListener('click', function (event) {
+                        if (event.target && event.target.classList.contains('no-suggestions')) {
+                          this.innerHTML = ""; // Clear the suggestions list
+                          this.style.display = 'none'; // Hide the list
+                        }
+                      });
+                    
                       // Fetch Pin Code and State based on City Name
-                      document.getElementById('city').addEventListener('input', function() {
+                      document.getElementById('city').addEventListener('input', function () {
                         const city = this.value.trim();
                         const suggestionList = document.getElementById('city-suggestions');
-
+                    
                         if (city.length > 1) {
                           // Show the suggestion list
                           suggestionList.style.display = 'block';
@@ -555,11 +571,11 @@
                               if (data[0].Status === "Success") {
                                 suggestionList.innerHTML = ""; // Clear previous suggestions
                                 const postOffices = data[0].PostOffice;
-
+                    
                                 postOffices.forEach(office => {
                                   const li = document.createElement('li');
                                   li.textContent = `${office.Name}, ${office.State} - ${office.Pincode}`;
-                                  li.addEventListener('click', function() {
+                                  li.addEventListener('click', function () {
                                     // Auto-fill inputs
                                     document.getElementById('city').value = city;
                                     document.getElementById('state').value = office.State;
@@ -570,7 +586,7 @@
                                   suggestionList.appendChild(li);
                                 });
                               } else {
-                                suggestionList.innerHTML = "<li>No suggestions available</li>";
+                                suggestionList.innerHTML = "<li class='no-suggestions'>No suggestions available. Click to Enter Manually.</li>";
                               }
                             })
                             .catch(error => console.error("Error fetching city details:", error));
@@ -579,45 +595,59 @@
                           suggestionList.style.display = 'none';
                         }
                       });
+                    
+                      // Hide "No suggestions available" message on click
+                      document.getElementById('city-suggestions').addEventListener('click', function (event) {
+                        if (event.target && event.target.classList.contains('no-suggestions')) {
+                          this.innerHTML = ""; // Clear the suggestions list
+                          this.style.display = 'none'; // Hide the list
+                        }
+                      });
                     </script>
-
+                    
+                    
+<style>
+  .spinner-border {
+    vertical-align: middle;
+    margin-left: 10px;
+  }
+</style>
                     <script>
                       $(document).on('submit', '#customerForm', function(e) {
                         e.preventDefault();
-                        let formData = new FormData(this);
+                        const formData = new FormData(this);
+  const submitButton = $('#submitButton');
 
-                        $.ajax({
-                          url: "{{ route('customerstore') }}",
-                          type: "POST",
-                          data: formData,
-                          contentType: false,
-                          processData: false,
-                          success: function(response) {
-                            Swal.fire({
-                              title: 'Success!',
-                              text: response.message,
-                              icon: 'success',
-                            }).then(() => {
-                              // Redirect to 'user/contractmanage' after the SweetAlert confirmation
-                              window.location.href = "/user/contractmanage";
-                            });
-                          },
-                          error: function(xhr) {
-                            let errorMessage = 'An error occurred while saving the data.';
+  submitButton.prop('disabled', true);
+  $('#submitSpinner').removeClass('d-none');
+  $('#submitText').text('Processing...');
 
-                            // Extract error message from server response if available
-                            if (xhr.responseJSON && xhr.responseJSON.message) {
-                              errorMessage = xhr.responseJSON.message;
-                            }
+  $.ajax({
+    url: $(this).attr('action'),
+    method: $(this).attr('method'),
+    data: formData,
+    processData: false,
+    contentType: false,
+    success: function (response) {
+      // Handle success
+      $('#submitText').text('Submit');
+      $('#submitSpinner').addClass('d-none');
+      submitButton.prop('disabled', false);
 
-                            Swal.fire({
-                              title: 'Error!',
-                              text: errorMessage,
-                              icon: 'error',
-                            });
-                          }
-                        });
-                      });
+      // Display success message
+      Swal.fire('Success', response.message, 'success');
+    },
+    error: function (error) {
+      // Handle error
+      $('#submitText').text('Submit');
+      $('#submitSpinner').addClass('d-none');
+      submitButton.prop('disabled', false);
+
+      // Display error message
+      Swal.fire('Error', 'Something went wrong. Please try again.', 'error');
+    }
+  });
+});
                     </script>
 
 

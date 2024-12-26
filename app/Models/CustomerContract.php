@@ -28,5 +28,15 @@ class CustomerContract extends Model
         'fee_escalation_clause',
         'customer_id',
         'is_drafted',
+        'sign_party1_name',
+        'sign_party1_email',
+        'sign_party1_phone',
+        'sign_party1_sign_path',
+        'sign_party2_name',
+        'sign_party2_email',
+        'sign_party2_phone',
+        'sign_party2_image_path',
+        'sign_party2_sign_path',
+
     ];
 }
