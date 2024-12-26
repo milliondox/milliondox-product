@@ -404,77 +404,87 @@ public function sendOtpd(Request $request)
         $fname =   $request->first_name;
         $lname =   $request->last_name;
 
-//         // Initialize MailerSend with API key
-        $mailersend = new MailerSend([
-            'api_key' => 'mlsn.03217a4451ec465d76cae4b1dbb824284c32facf3d720cddc19b1fe420dc4c20'
-        ]);
-
-        // Create the recipient object (requires both email and name)
-        $recipients = [
-            new Recipient($toEmail, 'Recipient Name'),
-        ];
-
-        // Set email parameters
-        $emailParams = (new EmailParams())
-            ->setFrom('admin@milliondox.in')
-            ->setFromName('Admin')
-            ->setRecipients($recipients)
-            ->setSubject('Your OTP')
-            ->setHtml("
-                <html>
-                <head>
+        $fromEmail = "no-reply@milliondox.in";
     
-    <title>One-Time Password Alert</title>
-</head>
-<body style='font-family: Arial, sans-serif; margin: 0; padding: 0; background-color: #f5f5f5;'>
-    <table width='100%' cellpadding='0' cellspacing='0' border='0'>
-        <tr>
-            <td>
-                <table class='email-container' cellpadding='0' cellspacing='0' border='0' style='width: 100%; max-width: 600px; margin: 0 auto; background-color: #ffffff; border-radius: 8px; overflow: hidden; border: 1px solid #dddddd;'>
-                    <!-- Banner -->
-                    <tr>
-                        <td class='banner'>
-                            <img src='https://milliondox.in/assets/images/one_time_pas.png' alt='One-Time Password' style='max-width: 100%; margin: 0 auto; display: block;'>
-                        </td>
-                    </tr>
-                    <!-- Content -->
-                    <tr>
-                        <td class='content' style='padding: 20px; color: #333333;'>
-                            <p class='user_title' style='font-weight: 800;'>Dear {$fname} {$lname},</p>
-                            <p>Your request for a one-time password (OTP) has been processed. Below is your OTP for accessing the requested feature.</p>
-                            <p><strong>One-Time Password:</strong> <span style='font-size: 24px; font-weight: bold;'>{$otp}</span></p>
-                            <p>Please use this OTP within the next 10 minutes to complete your request. If you did not request this OTP, please disregard this email.</p>
-                            <a href='https://milliondox.com/contact.html' class='contact_support' style='display: inline-block; padding: 12px 60px; color: #FFF; border-radius: 50px; margin: 20px 0 0; background: #B498E9; text-decoration: none;'>Contact Support</a>
-                            <p>For your security, do not share this OTP with anyone.</p>
-                        </td>
-                    </tr>
-                    <!-- Footer -->
-                    <tr>
-                        <td class='footer' style='background-color: #B498E9; color: #ffffff; text-align: center; padding: 20px;'>
-                            <p class='thanks' style='font-weight: bold;'>Thank you for your attention!</p>
-                            <p class='important' style='color: #ffffff; font-weight: 800;'>Important Notice:</p>
-                            <p>If you did not request this OTP, please contact us immediately for assistance.</p>
-                        </td>
-                    </tr>
-                </table>
-            </td>
-        </tr>
-    </table>
-</body>
-</html>
-            ");
-
-        // Send the email
-        $mailersend->email->send($emailParams);
-        if($mailersend){
-
-$message = "OTP sent to your email.";
-            return response()->json(['message' => $message]);
+        $email = $request->email;
+        $thankYouSubject = "Your Account Details";
+    
+       
+        
+        $thankYouMessage = <<<HTML
+    <!DOCTYPE html>
+    <html>
+                    <head>
+        
+        <title>One-Time Password Alert</title>
+    </head>
+    <body style='font-family: Arial, sans-serif; margin: 0; padding: 0; background-color: #f5f5f5;'>
+        <table width='100%' cellpadding='0' cellspacing='0' border='0'>
+            <tr>
+                <td>
+                    <table class='email-container' cellpadding='0' cellspacing='0' border='0' style='width: 100%; max-width: 600px; margin: 0 auto; background-color: #ffffff; border-radius: 8px; overflow: hidden; border: 1px solid #dddddd;'>
+                        <!-- Banner -->
+                        <tr>
+                            <td class='banner'>
+                                <img src='https://milliondox.in/assets/images/one_time_pas.png' alt='One-Time Password' style='max-width: 100%; margin: 0 auto; display: block;'>
+                            </td>
+                        </tr>
+                        <!-- Content -->
+                        <tr>
+                            <td class='content' style='padding: 20px; color: #333333;'>
+                                <p class='user_title' style='font-weight: 800;'>Dear {$fname} {$lname},</p>
+                                <p>Your request for a one-time password (OTP) has been processed. Below is your OTP for accessing the requested feature.</p>
+                                <p><strong>One-Time Password:</strong> <span style='font-size: 24px; font-weight: bold;'>{$otp}</span></p>
+                                <p>Please use this OTP within the next 10 minutes to complete your request. If you did not request this OTP, please disregard this email.</p>
+                                <a href='https://milliondox.com/contact.html' class='contact_support' style='display: inline-block; padding: 12px 60px; color: #FFF; border-radius: 50px; margin: 20px 0 0; background: #B498E9; text-decoration: none;'>Contact Support</a>
+                                <p>For your security, do not share this OTP with anyone.</p>
+                            </td>
+                        </tr>
+                        <!-- Footer -->
+                        <tr>
+                            <td class='footer' style='background-color: #B498E9; color: #ffffff; text-align: center; padding: 20px;'>
+                                <p class='thanks' style='font-weight: bold;'>Thank you for your attention!</p>
+                                <p class='important' style='color: #ffffff; font-weight: 800;'>Important Notice:</p>
+                                <p>If you did not request this OTP, please contact us immediately for assistance.</p>
+                            </td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+        </table>
+    </body>
+    </html>
+    HTML;
+    
+       
+    
+    // Email headers
+    $headers = "From: $fromEmail\r\n";
+    $headers .= "Reply-To: $fromEmail\r\n";
+    $headers .= "MIME-Version: 1.0\r\n";
+    $headers .= "Content-Type: text/html; charset=UTF-8\r\n";
+    
+    // Recipients
+    $recipients = [
+        new Recipient($toEmail, 'Recipient Name'),
+    ];
+    
+    // Send email to each recipient
+    foreach ($recipients as $recipient) {
+        if (mail($toEmail, $thankYouSubject, $thankYouMessage, $headers)) {
+            $responses[] = [
+                'email' => $toEmail,
+                'status' => 'success',
+                'message' => "Email sent successfully to {$request->first_name}."
+            ];
+        } else {
+            $responses[] = [
+                'email' => $toEmail,
+                'status' => 'error',
+                'message' => "Failed to send email to {$request->first_name}."
+            ];
         }
-        else{
-
-        return response()->json(['message' => 'OTP not sent to your email.']);
-        }
+    }
     }
     
     

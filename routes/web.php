@@ -59,6 +59,16 @@ Route::middleware(['auth', 'prevent_direct_access'])->group(function () {
     // Routes that require authentication and the prevent_direct_access middleware
    
 });
+Route::get('files/{filename}', function ($filename) {
+    if (auth()->check()) {  // Ensure the user is authenticated
+        $path = storage_path('app/public/' . $filename);
+        if (file_exists($path)) {
+            return response()->file($path);
+        }
+    }
+    abort(403);  // Forbidden if not authenticated
+});
+
 Route::group(['middleware' => ['auth', 'check.role']], function () {
     // All routes that require authentication and a valid role
    
@@ -72,6 +82,11 @@ Route::get('/fetch-subfolders',  [App\Http\Controllers\HomeController::class, 'f
 Route::get('/fetch-subfolders2',  [App\Http\Controllers\HomeController::class, 'fetchSubfolders2']);
 Route::get('/fetch-folder-contents', [App\Http\Controllers\HomeController::class,'fetchFolderContents']);
 Route::get('/fetch-users', [App\Http\Controllers\HomeController::class, 'fetchUsers'])->name('fetchUsers');
+Route::match(['get', 'post'], '/fetchfolderfold', [App\Http\Controllers\HomeController::class,'fetchfolderfold']);
+
+Route::get('/showgst/{id}', [App\Http\Controllers\ContractController::class, 'showGst'])->name('showGst')->middleware('auth');
+Route::get('/showcin/{id}', [App\Http\Controllers\ContractController::class, 'showCin'])->name('showCin')->middleware('auth');
+
 
 Route::delete('/delete-user/{id}', [App\Http\Controllers\HomeController::class, 'deleteUser'])->name('user.delete');
 
@@ -162,7 +177,9 @@ Route::get('/fetch-hrempoff3-file-data', [App\Http\Controllers\HomeController::c
 
 Route::get('/fetch-hrempoff4-file-data', [App\Http\Controllers\HomeController::class, 'fetchhrempoff4fFileData'])->name('fetch-hrempoff4-file-data');
 
+Route::post('/customerstore', [App\Http\Controllers\ContractController::class, 'customerstore'])->name('customerstore');
 
+Route::post('/storecustomercontract', [App\Http\Controllers\ContractController::class, 'storecustomercontract'])->name('storecustomercontract');
 
 // Save folder ID and URL to the session
 Route::post('/save-breadcrumb', [App\Http\Controllers\HomeController::class, 'saveBreadcrumb'])->name('save.breadcrumb');
@@ -252,6 +269,9 @@ Route::post('/updateEvents', [App\Http\Controllers\HomeController::class, 'updat
 Route::get('/getTask/{id}', [App\Http\Controllers\HomeController::class, 'getTask'])
 ->name('getTask');
 
+Route::post('/renamecustomfile', [App\Http\Controllers\HomeController::class, 'renamecustomfile'])
+->name('renamecustomfile');
+
 
 Route::get('/download-common-file/{id}', [App\Http\Controllers\HomeController::class, 'downloadCommonFile'])->name('download-common-file');
 Route::post('/softdeleteCommonFile/{id}', [App\Http\Controllers\HomeController::class, 'softdeleteCommonFile'])->name('softdeleteCommonFile');
@@ -260,6 +280,24 @@ Route::post('/deleteCustomFile/{id}', [App\Http\Controllers\HomeController::clas
 ////////////////////////////////// sandeep added this route for predefined common files upload  4 october 2024 ////////////////////////////////////////////////////
 Route::post('/PredefinedCommonUploadFiles', [App\Http\Controllers\HomeController::class, 'PredefinedCommonUploadFiles'])->name('PredefinedCommonUploadFiles');
 Route::post('/PredefinedCommonUploadFilesBank', [App\Http\Controllers\HomeController::class, 'PredefinedCommonUploadFilesBank'])->name('PredefinedCommonUploadFilesBank');
+
+
+Route::post('/HandleCommonUploadFiles', [App\Http\Controllers\HomeController::class, 'HandleCommonUploadFiles'])->name('HandleCommonUploadFiles');
+Route::post('/PreHandleCommonUploadFiles', [App\Http\Controllers\HomeController::class, 'PreHandleCommonUploadFiles'])->name('PreHandleCommonUploadFiles');
+Route::post('/PreBankHandleCommonUploadFiles', [App\Http\Controllers\HomeController::class, 'PreBankHandleCommonUploadFiles'])->name('PreBankHandleCommonUploadFiles');
+
+Route::get('/fetchfixedFiles', [App\Http\Controllers\HomeController::class, 'fetchfixedFiles'])->name('fetchfixedFiles');
+
+// dont use without permission
+Route::get('/updateTempfilesName', [App\Http\Controllers\HomeController::class, 'updateTempfilesName'])->name('updateTempfilesName');
+Route::get('/updateFolderNamesSKY', [App\Http\Controllers\HomeController::class, 'updateFolderNamesSKY'])->name('updateFolderNamesSKY');
+// dont use without permission
+
+Route::get('/downloadZipSKY/{zipFileName}', [App\Http\Controllers\HomeController::class, 'downloadZipSKY'])->name('downloadZipSKY');
+
+
+
+// sandeep added above route "fetchfixedFiles" for dynamic fetch fixed path files i.e real_file_name 26 November 2024 
 
 
 // sandeep routes end
@@ -1114,6 +1152,17 @@ Route::get('/user/MiscellaneousDocuments', [App\Http\Controllers\HomeController:
 Route::get('/user/Management', [App\Http\Controllers\HomeController::class, 'Management'])->name('user/Management');
     Route::get('/user/manageprofile', [App\Http\Controllers\HomeController::class, 'manageprofile'])->name('user/manageprofile');
 Route::get('/user/ContractManagement', [App\Http\Controllers\HomeController::class, 'ContractManagement'])->name('user/ContractManagement')->middleware('auth');
+Route::get('/user/contractmanage', [App\Http\Controllers\ContractController::class, 'contractmanage'])->name('user/contractmanage')->middleware('auth');
+Route::get('/user/contractmanagedetail/{id}', [App\Http\Controllers\ContractController::class, 'contractmanagedetail'])->name('user/contractmanagedetail')->middleware('auth');
+Route::post('/download-contracts', [App\Http\Controllers\ContractController::class, 'downloadContracts'])->name('download.contracts');
+
+Route::post('/addauthmanagement', [App\Http\Controllers\ContractController::class, 'addauthmanagement'])->name('addauthmanagement');
+Route::post('/adddivision', [App\Http\Controllers\ContractController::class, 'adddivision'])->name('adddivision');
+Route::post('/contracts/import', [App\Http\Controllers\ContractController::class, 'import'])->name('contracts.import');
+Route::post('/customernotification', [App\Http\Controllers\ContractController::class, 'customernotification'])->name('customernotification');
+
+Route::post('/customeraddend', [App\Http\Controllers\ContractController::class, 'customeraddend'])->name('customeraddend');
+
 Route::get('/user/companyprofile', [App\Http\Controllers\HomeController::class, 'companyprofile'])->name('user/companyprofile');
 Route::get('/user/Sop', [App\Http\Controllers\HomeController::class, 'Sop'])->name('user/Sop');
 	Route::get('/user/Employeelifecycle', [App\Http\Controllers\HomeController::class, 'Employeelifecycle'])->name('user/Employeelifecycle');
@@ -1177,6 +1226,10 @@ Route::get('/user/docrepostry', [App\Http\Controllers\HomeController::class, 'do
 Route::post('/create-folder', [App\Http\Controllers\HomeController::class,'createFolder'])->name('create.folder');
 Route::post('/upload-file', [App\Http\Controllers\HomeController::class,'uploadFile'])->name('upload.file');
 Route::get('/check-folder-contents', [App\Http\Controllers\HomeController::class, 'checkFolderContents'])->name('check.folder.contents');
+
+Route::post('/handle-file-conflict', [App\Http\Controllers\HomeController::class, 'handleFileConflict']);
+
+
 
 Route::post('/misupdateFileName', [App\Http\Controllers\UploadedFileController::class, 'misupdateFileName'])->name('misupdateFileName');
 Route::post('/misupdateFileName1', [App\Http\Controllers\UploadedFileController::class, 'misupdateFileName1'])->name('misupdateFileName1');

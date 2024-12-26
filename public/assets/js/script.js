@@ -736,7 +736,7 @@ $('body').on('click touchend', '.toggle-password', function(e) {
 
 
 setInterval(() => {
-    if (window.location.pathname !== '/login') {
+    if (window.location.pathname !== '/login' && window.location.pathname !== '/register') {
         fetch('/check-session', {
             method: 'GET',
             credentials: 'same-origin', // Include session cookie
@@ -755,4 +755,5 @@ setInterval(() => {
         });
     }
 }, 5000); // Check every 5 seconds
+
     

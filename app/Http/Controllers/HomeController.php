@@ -36,7 +36,7 @@ use App\Models\EmployeeStatus;
 use App\Models\TemplateFile;
 use App\Models\ChartedDocument;
 use App\Models\Folder;
-
+use App\Models\Customer;
 use App\Models\Files;
 use App\Models\UserOtp;
 use App\Models\UploadedFile;
@@ -48,7 +48,7 @@ use App\Models\RegTAN;
 use App\Models\RegINC;
 use App\Models\RegSpiceDoc;
 use App\Models\RegCustomDoc;
-
+use App\Models\AuthorizeManagement;
 use App\Models\MisUploadedFile;
 use App\Models\MisCharteredDoc;
 use App\Models\MisCOI;
@@ -61,6 +61,8 @@ use App\Models\OrganizationChart;
 
 use App\Models\StoreBankDoc;
 
+use App\Models\CustomerNotification;
+use App\Models\Division;
 use App\Models\CustomDoc;
 use App\Models\RegistrationDoc;
 use App\Models\MiscellaneousDoc;
@@ -194,8 +196,11 @@ use App\Models\StoreGST;
 use App\Models\StoreCompanyEmployee;
 use App\Models\TaskEvents;
 use App\Models\Feedback;
+use App\Models\CustomerContract;
 
 use ZipArchive;
+use RecursiveIteratorIterator;
+use RecursiveDirectoryIterator;
 
 
 
@@ -279,11 +284,22 @@ if ($userRoleRecord) {
         ->groupBy('title')
         ->get();
 
-    $tasks = Tasks::where('status', '!=', 'deleted')->where('user_id', $user->id)->get();
+    $tasks = Tasks::where('status', '!=', 'deleted')->where('user_id', $user->id)->whereDate('taskDeadline', Carbon::today())->get();
                     // ->whereDate('taskDeadline', Carbon::today())->get();
 
         // $eventsData = TaskEvents::whereDate('eventDate', Carbon::today())->get();
-         $eventsData = TaskEvents::where('user_id', $user->id)->get();
+         $eventsData = TaskEvents::where('user_id', $user->id)->whereDate('eventDate', Carbon::today())->get();
+
+
+
+         $tasksall = Tasks::where('status', '!=', 'deleted')->where('user_id', $user->id)->get();
+                // ->whereDate('taskDeadline', Carbon::today())->get();
+
+        // $eventsData = TaskEvents::whereDate('eventDate', Carbon::today())->get();
+        $eventsDataall = TaskEvents::where('user_id', $user->id)->get();
+
+
+
         // dd($eventsData);
         $upcomingevent = TaskEvents::whereDate('eventDate', '>=', Carbon::today())
         ->where('user_id', $user->id)
@@ -346,6 +362,8 @@ $progressPercentage = 0;
         'currentDate' => $currentDate,
         'eventsData' => $eventsData,
         'progressPercentage' => $progressPercentage,
+        'tasksall' => $tasksall,
+        'eventsDataall' => $eventsDataall,
         'upcomingevent' => $upcomingevent
     ]);
 
@@ -826,11 +844,17 @@ public function storecompanyemployee(Request $request)
     $uniqueId = Auth::id();
     $fiscalYear = now()->month < 4 ? ($currentYear - 1) . '-' . $currentYear : $currentYear . '-' . ($currentYear + 1);
     
-    $hrPrefix = "{$fiscalYear}{$currentMonth}0_";
+    // $hrPrefix = "{$fiscalYear}{$currentMonth}0_";
+    $hrPrefix = "2024-2025November0_";
+
     $otherPrefix ="{$fiscalYear}{$currentMonth}{$uniqueId}_";
 
+
     // Define Human Resources folder path with prefix
-    $hrFolderPath = "{$hrPrefix}Human Resources";
+    // $hrFolderPath = "{$hrPrefix}Human Resources";
+    // dd($hrFolderPath);
+
+    $hrFolderPath = "2024-2025November0_Human Resources";
 
     // Ensure HR folder exists
     if (!Storage::exists($hrFolderPath)) {
@@ -873,6 +897,7 @@ public function storecompanyemployee(Request $request)
     // Create fixed folders with prefix
     foreach ($fixedFolders as $mainFolder => $subFolders) {
         $mainFolderPath = "{$hrFolderPath}/{$hrPrefix}{$mainFolder}";
+        // dd($mainFolderPath);
 
         if (!Storage::exists($mainFolderPath)) {
             Storage::makeDirectory($mainFolderPath);
@@ -1260,7 +1285,6 @@ public function uploadempcsv(Request $request)
     $header = fgetcsv($file_handle);
 
     $employeesToInsert = [];
-    $existingEmpCodes = [];
     $skippedRecords = 0;
 
     while (($row = fgetcsv($file_handle, 1000, ",")) !== false) {
@@ -1284,18 +1308,19 @@ public function uploadempcsv(Request $request)
     fclose($file_handle);
 
     $storedRecords = 0;
-    $lastStoredEmployee = null;
 
     if (count($employeesToInsert) > 0) {
+        // Insert employees and fetch their IDs
         StoreCompanyEmployee::insert($employeesToInsert);
-
-        // Retrieve the last stored employee
-        $lastStoredEmployee = StoreCompanyEmployee::latest('id')->first();
         $storedRecords = count($employeesToInsert);
-    }
 
-    if ($lastStoredEmployee) {
-        $this->createFolderStructure($lastStoredEmployee->name, $userId, $lastStoredEmployee->id);
+        // Fetch all newly inserted employees
+        $newEmployees = StoreCompanyEmployee::whereIn('emp_code', array_column($employeesToInsert, 'emp_code'))->get();
+
+        // Create folders for each employee
+        foreach ($newEmployees as $employee) {
+            $this->createFolderStructure($employee->name, $userId, $employee->id);
+        }
     }
 
     return redirect()->back()->with('success', "{$storedRecords} employees stored successfully and {$skippedRecords} duplicate employees were skipped.");
@@ -1313,11 +1338,19 @@ protected function createFolderStructure($employeeName, $userId, $employeeId)
     $uniqueId = Auth::id();
     $fiscalYear = now()->month < 4 ? ($currentYear - 1) . '-' . $currentYear : $currentYear . '-' . ($currentYear + 1);
     
-    $hrPrefix = "{$fiscalYear}{$currentMonth}0_";
-    $otherPrefix ="{$fiscalYear}{$currentMonth}{$uniqueId}_";
+    // $hrPrefix = "{$fiscalYear}{$currentMonth}0_";
+    // $otherPrefix ="{$fiscalYear}{$currentMonth}{$uniqueId}_";
 
+    // // Define Human Resources folder path with prefix
+    // $hrFolderPath = "{$hrPrefix}Human Resources";
+
+    // $hrPrefix = "{$fiscalYear}{$currentMonth}0_";
+    $hrPrefix = "2024-2025November0_";
+    $otherPrefix ="{$fiscalYear}{$currentMonth}{$uniqueId}_";
     // Define Human Resources folder path with prefix
-    $hrFolderPath = "{$hrPrefix}Human Resources";
+    // $hrFolderPath = "{$hrPrefix}Human Resources";
+    // dd($hrFolderPath);
+    $hrFolderPath = "2024-2025November0_Human Resources";
 
     // Ensure HR folder exists
     if (!Storage::exists($hrFolderPath)) {
@@ -1852,21 +1885,47 @@ $userRoleRecord = UserRole::where('role', $userRole)->first();
     }
     
     
-    public function downloadCommonFile($id)
+//     public function downloadCommonFile($id)
+// {
+//     // $userId = Auth::id(); 
+//     // $file = CommonTable::findOrFail($id);
+//     $userId = Auth::id();
+//     $file = CommonTable::where('id', $id)
+//                    ->where('user_id', $userId)
+//                    ->firstOrFail();
+
+    
+//     // Assuming you store the file path in a 'file_path' column
+//     $filePath = $file->file_path;
+//     $fileName = basename($filePath);
+//     // $realfileName = $file->file_name;
+    
+//     if (Storage::exists($filePath)) {
+//         return Storage::download($filePath);
+//     } else {
+//         return redirect()->back()->with('error', 'File not found.');
+//     }
+    
+// }
+
+public function downloadCommonFile($id)
 {
-    $file = CommonTable::findOrFail($id);
-    
-    // Assuming you store the file path in a 'file_path' column
-    $filePath = $file->file_path;
-    $fileName = basename($filePath);
-    // $realfileName = $file->file_name;
-    
-    if (Storage::exists($filePath)) {
-        return Storage::download($filePath);
-    } else {
-        return redirect()->back()->with('error', 'File not found.');
+    // $file = CommonTable::findOrFail($id); // Replace with your model
+    // dd($file);
+    $userId = Auth::id();
+    $file = CommonTable::where('id', $id)
+                   ->where('user_id', $userId)
+                   ->where('is_delete', 0)
+                   ->firstOrFail();
+
+    $filePath = storage_path("app/{$file->file_path}");
+    // dd($filePath);
+
+    if (!file_exists($filePath)) {
+        abort(404, 'File not found');
+        return response()->json(['error' => 'File Not Found']);
     }
-    
+    return response()->download($filePath, $file->file_name);
 }
 
 public function softdeleteCommonFile($id)
@@ -1875,7 +1934,7 @@ public function softdeleteCommonFile($id)
     if($file->is_delete == 0){
         $file->is_delete = 1; // Or set to a specific value like 0 or 1
         $file->save();
-        return response()->json(['success' => 'File Moved to Trash']);
+        return response()->json(['success' => 'File Moved to Bin']);
         // return redirect()->back()->with('success', 'File Moved to Trash.');
     }
      else {
@@ -1891,7 +1950,7 @@ public function deleteCustomFile($id)
     if($file->is_delete == 0){
         $file->is_delete = 1; // Or set to a specific value like 0 or 1
         $file->save();
-        return response()->json(['success' => 'File is Deleted']);
+        return response()->json(['success' => 'File Moved to Bin']);
         // return redirect()->back()->with('success', 'File Moved to Trash.');
     }
      else {
@@ -3653,6 +3712,8 @@ public function fetchOrderFileMinBookData(Request $request)
     ->where('real_file_name', 'Minute Book')
     ->get();
    
+    // comment
+    
 
     return response()->json(['files' => $files]);
 }
@@ -5749,6 +5810,7 @@ public function bankaccountstatement(Request $request)
             $user = auth()->user();
             $entries = CommonTable::where('user_id', $user->id)
     ->where('is_delete', 0)
+    ->whereNull('is_replaced')
    ->where('location', 'LIKE', '%Bank Account Statements%')
         ->where('real_file_name', 'Bank account statement')
     ->get();
@@ -5781,6 +5843,7 @@ public function bankaccountstatement(Request $request)
         // Fetch entries for the authenticated user
         $entries = CommonTable::where('user_id', $user->id)
     ->where('is_delete', 0)
+    ->whereNull('is_replaced')
     ->where('location', 'LIKE', '%Bank Account Statements%')
         ->where('real_file_name', 'Bank Account Statement')
     ->get();
@@ -5803,6 +5866,7 @@ public function fetchBankFileAccsData(Request $request)
     // Get the query without executing it
     $query = CommonTable::where('user_id', $user->id)
         ->where('is_delete', 0)
+        ->whereNull('is_replaced')
        ->where('location', 'LIKE', '%Bank Account Statements%')
     //    ->where('location', $location)
         ->where('real_file_name', 'Bank Account Statement');
@@ -6463,6 +6527,7 @@ public function creditcardstatement(Request $request)
             $user = auth()->user();
             $entries = CommonTable::where('user_id', $user->id)
     ->where('is_delete', 0)
+    ->whereNull('is_replaced')
    ->where('location', 'LIKE', '%Credit Card Statement%')
         ->where('real_file_name', 'Add Credit Card Statements')
     ->get();
@@ -6495,6 +6560,7 @@ public function creditcardstatement(Request $request)
         // Fetch entries for the authenticated user
         $entries = CommonTable::where('user_id', $user->id)
     ->where('is_delete', 0)
+    ->whereNull('is_replaced')
     ->where('location', 'LIKE', '%Credit Card Statement%')
         ->where('real_file_name', 'Add Credit Card Statements')
     ->get();
@@ -6517,6 +6583,7 @@ public function fetchcreditcardstatementFileData(Request $request)
     // Fetch files based on the selected bank
     $files = CommonTable::where('user_id', $user->id)
         ->where('is_delete', 0)
+        ->whereNull('is_replaced')
         ->where('location', 'LIKE', '%Credit Card Statement%')
         ->where('real_file_name', 'Add Credit Card Statements')
         ->when($selectedBank, function ($query) use ($selectedBank) {
@@ -6608,6 +6675,7 @@ public function mutualfundstatement(Request $request)
             $user = auth()->user();
             $entries = CommonTable::where('user_id', $user->id)
     ->where('is_delete', 0)
+    ->whereNull('is_replaced')
     ->where('location', 'LIKE', '%Mutual Fund Statements%')
     ->where('real_file_name', 'Add Mutual Fund Statements')
     ->get();
@@ -6640,6 +6708,7 @@ public function mutualfundstatement(Request $request)
         // Fetch entries for the authenticated user
         $entries = CommonTable::where('user_id', $user->id)
     ->where('is_delete', 0)
+    ->whereNull('is_replaced')
     ->where('location', 'LIKE', '%Mutual Fund Statements%')
     ->where('real_file_name', 'Add Mutual Fund Statements')
     ->get();
@@ -6659,6 +6728,7 @@ public function fetchmutualfundstatementFileData()
     $user = auth()->user();
     $files = CommonTable::where('user_id', $user->id)
     ->where('is_delete', 0)
+    ->whereNull('is_replaced')
     ->where('location', 'LIKE', '%Mutual Fund Statements%')
     ->where('real_file_name', 'Add Mutual Fund Statements')
     ->get();
@@ -6748,6 +6818,7 @@ public function fixeddepoiststatement(Request $request)
             $user = auth()->user();
             $entries = CommonTable::where('user_id', $user->id)
     ->where('is_delete', 0)
+    ->whereNull('is_replaced')
     ->where('location', 'LIKE', '%Fixed Deposit Statements%')
     ->where('real_file_name', 'Fixed Deposit Account Statement')
     ->get();
@@ -6776,10 +6847,11 @@ public function fixeddepoiststatement(Request $request)
      public function fetchfixeddepoiststatementData()
 {
     $user = Auth::user(); // Retrieve authenticated user
-
+// ok
         // Fetch entries for the authenticated user
         $entries = CommonTable::where('user_id', $user->id)
     ->where('is_delete', 0)
+    ->whereNull('is_replaced')
     ->where('location', 'LIKE', '%Fixed Deposit Statements%')
     ->where('real_file_name', 'Fixed Deposit Account Statement')
     ->get();
@@ -6799,6 +6871,7 @@ public function fetchfixeddepoiststatementFileData()
     $user = auth()->user();
     $files = CommonTable::where('user_id', $user->id)
     ->where('is_delete', 0)
+    ->whereNull('is_replaced')
     ->where('location', 'LIKE', '%Fixed Deposit Statements%')
     ->where('real_file_name', 'Fixed Deposit Account Statement')
     ->get();
@@ -14984,6 +15057,209 @@ public function SecretarialStatutoryRegistersRPB(Request $request)
 
 
 ////////////////////////////////////////////// 4 october sandeep added code here for prdefined paths common pop upload form file upload  start ///////////////////////////////////////////////////////////////////
+// public function PredefinedCommonUploadFiles(Request $request)
+// {
+//     $request->validate([
+//         'files.*' => 'required|file|max:102400|mimes:pdf,ppt,pot,pps,pptx,pptm,potx,ppam,ppsx,sldx,sldm,odp,ods,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,xlsx,docx,docm,xlam,txt,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv,xltx,xltm', // Allow specific file types up to 100MB
+//         'tagList' => 'nullable', // Allow tagList to be nullable
+//         'location' => 'required|string', // Require location
+//         'real_file_name' => 'required|string', // Require real file name
+//         'fyear' => 'required|string', // Require real file name
+//         'Month' => 'required|string', // Require real file name
+
+
+//     ], [
+//         'files.*.required' => 'Each file is required.',
+//         'files.*.file' => 'The uploaded item must be a valid file.',
+//         'files.*.max' => 'Each file may not be larger than 100MB.',
+//         'files.*.mimes' => 'The file type must be one of the following: PDF, ODP, ODS, PPT, DOC, ODT, RTF, CSV, JSON, XML, HTML, ICO, SVG, WEBP, ZIP, XLS, DOCX, WAV, OGG, MP3, AVI, MOV, WMV, WEBM, TIFF, MP4, JPG, PNG, GIF, JPEG, 3GP, MKV, FLV.',
+//         'location.required' => 'Location is required.',
+//         'real_file_name.required' => 'Real File name is required.',
+//         'fyear.required' => 'Financial Year is required.',
+//         'Month.required' => 'Month is required.',
+
+//     ]);
+
+
+//     // Legal / Secretarial / Deposit Undertakings
+
+//     $user = auth()->user();
+
+//     // Query your table to validate the location and real_file_name
+//     // $temp_location = $request->input('location');
+
+//     // // dd($temp_location);
+//     // // $temp_location = "Accounting & Taxation / Charter documents / Registrations";
+//     // $final_location = preg_replace('/\s*\/\s*/', '/', $temp_location);
+//     // // "Accounting & Taxation/Charter documents/Registrations"
+
+//     // $entry = Folder::where('path', $final_location)
+//     //                     // ->where('real_file_name', $request->input('real_file_name'))
+//     //                     // ->where('user_id', $user->id)
+//     //                     ->where('is_delete', 0)
+//     //                     ->first();
+
+//     // if (!$entry) {
+//     //     // Return an error if the location and real_file_name are not valid
+//     //     return response()->json([
+//     //         'success' => false,
+//     //         'message' => 'Invalid location or file name. Please check and try again.',
+//     //     ], 400);
+//     // }
+
+
+//     if ($request->hasFile('files')) {
+//         try {
+//             // Initialize counters
+//             $totalSize = 0;
+
+//             // Store success and error messages for individual files
+//             $successMessages = [];
+//             $errorMessages = [];
+
+            
+            
+//             // 22 August code added by sandeep ---- default tags added -- reference excel sheet shared by sir;
+//                     // Default tags
+//                     $tag_list = [];
+                    
+//                     // $automated_tags=[];
+                    
+//                     $automated_tags_temp1 = $request->input('location'); // 'Legal /Secretarial /Statutory Registers'
+//                     $automated_tags_temp2 = $request->input('real_file_name'); // Example: 'File1 /File2 /File3'
+                    
+//                     $automated_tags_temp11 = array_map('trim', explode('/', $automated_tags_temp1)); // ['Legal', 'Secretarial', 'Statutory Registers']
+//                     $automated_tags_temp22 = array_map('trim', explode('/', $automated_tags_temp2)); // ['File1', 'File2', 'File3']
+                    
+//                     // Merge both arrays
+//                     $merged_automated_tags = array_merge($automated_tags_temp11, $automated_tags_temp22);
+                    
+//                     // Display the merged array
+//                     // dd($merged_automated_tags);
+                    
+
+//                     // Handle tagList whether it's an array, a comma-separated string, or empty
+//                     $userTags = $request->input('tagList', []);
+                    
+//                     // Convert to array if it's a comma-separated string
+//                     if (is_string($userTags)) {
+//                         $userTags = explode(',', $userTags);
+//                     }
+//                     // Ensure $userTags is an array and remove any empty values
+//                     if (is_array($userTags)) {
+//                         $userTags = array_filter($userTags); // Remove empty values
+//                     } else {
+//                         $userTags = []; // Fallback to empty array if not an array
+//                     }
+                    
+//                     // Merge with default tags
+//                     $tag_list = array_merge($tag_list, $userTags);
+//                     // dd($tag_list);
+                    
+//                     $final_automated_tags = array_merge($merged_automated_tags , $tag_list);
+//                     //  dd($final_automated_tags);
+//                     // dd("okokokok");
+                    
+                    
+//                     // $tags = empty($tag_list) ? NULL : json_encode($tag_list);
+//                     $tags = empty($final_automated_tags) ? NULL : json_encode($final_automated_tags);
+
+//                     $location = preg_replace('/\s*\/\s*/', '/', trim($request->input('location')));
+//                     // "Legal/Secretarial/Board Meetings" 
+        
+//                     // Legal/Secretarial/Board Meetings/rtR2ORS7jdMq05zW6c704CUXesvrqkZ59ZNNWOib.pdf
+//                     foreach ($request->file('files') as $file) {
+//                         try {
+//                             // Store file inside the dynamically created folder
+//                             //////
+//                             $originalFileName = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME); // Get the file name without extension
+//                             $extension = $file->getClientOriginalExtension(); // Get the file extension
+//                             $fileName = $originalFileName . '.' . $extension; // Start with the original file name
+//                             // $filePath = $file->storeAs($folderPath, $fileName);
+//                             // $storedFileName = basename($filePath);  
+//                             //////
+                        
+//                             //  $filePath = $file->storeAs($location,$fileName);
+//                             // Create a new entry for each file
+//                             $filePath = $file->store($location);
+
+//                             $storedFileName = basename($filePath);
+
+                           
+//                             // dd($storedFileName);
+//                             CommonTable::create([
+//                                 'file_type' => $file->getClientMimeType(),
+//                                 'file_name' => $file->getClientOriginalName(),
+//                                 'real_file_name' => $request->input('real_file_name'),
+//                                 'temp_file_name' => $storedFileName,
+//                                 'file_size' => $file->getSize(),
+//                                 'file_path' => $filePath,
+//                                 'user_name' => auth()->user()->name, // Assuming user is authenticated
+//                                 'user_id' => auth()->user()->id,
+//                                 'file_status' => $request->input('file_status', 0),
+//                                 'fyear' => $request->input('fyear'),
+//                                 'month' => $request->input('Month'),
+//                                 'tags' => $tags, // Store tags as JSON
+//                                 'location' => $request->input('location'), // Store the dynamic location
+//                                 'descp' => $request->input('desc'),
+//                             ]);
+        
+//                             $totalSize += $file->getSize();
+//                             $successMessages[] = "File {$file->getClientOriginalName()} uploaded successfully.";
+//                         } catch (\Exception $e) {
+//                             $errorMessages[] = "Failed to save file {$file->getClientOriginalName()} to database.";
+//                         }
+//                     }
+            
+            
+
+//             // Compile overall success message
+//             $user = auth()->user();
+//             $entries = CommonTable::where('user_id', $user->id)
+//             ->where('is_delete', 0)
+//             ->where('location', $request->input('location'))
+//             ->where('real_file_name', $request->input('real_file_name'))
+//             ->get();
+//             $count = $entries->count();
+//             $totalFileSize = $entries->sum('file_size');
+
+//             $totalSizeKB = round($totalFileSize / 1024, 2); // Convert to KB
+
+//             if ($totalSizeKB > 1024) {
+//                 $totalSizeMB = round($totalSizeKB / 1024, 2); // Convert to MB
+//                 if ($totalSizeMB > 1024) {
+//                     $totalSizeGB = round($totalSizeMB / 1024, 2); // Convert to GB
+//                     $totalSizef = $totalSizeGB . ' GB';
+//                 } else {
+//                     $totalSizef = $totalSizeMB . ' MB';
+//                 }
+//             } else {
+//                 $totalSizef = $totalSizeKB . ' KB';
+//             }
+            
+            
+            
+//             // return redirect()->back()->with('success2', 'File Uploaded successfully.');
+
+//             return response()->json([
+//                 'success' => empty($errorMessages),
+//                 'count' => $count,
+//                 'totalSize' => $totalSizef,
+//                 'successMessages' => $successMessages,
+//                 'errorMessages' => $errorMessages,
+//                 'real_file_name' => $request->input('real_file_name'),
+//             ]);
+
+//         } catch (\Exception $e) {
+//             // Handle any exceptions that occur during file upload or database saving
+//             return response()->json(['success' => false, 'message' => 'Failed to process file uploads.'], 500);
+//         }
+//     } else {
+//         // Return a JSON response indicating no file was uploaded
+//         return response()->json(['success' => false, 'message' => 'No files uploaded.'], 400);
+//     }
+// }
+// ////////////////////// new version PredefinedCommonUploadFiles start
 public function PredefinedCommonUploadFiles(Request $request)
 {
     $request->validate([
@@ -14993,8 +15269,6 @@ public function PredefinedCommonUploadFiles(Request $request)
         'real_file_name' => 'required|string', // Require real file name
         'fyear' => 'required|string', // Require real file name
         'Month' => 'required|string', // Require real file name
-
-
     ], [
         'files.*.required' => 'Each file is required.',
         'files.*.file' => 'The uploaded item must be a valid file.',
@@ -15004,49 +15278,349 @@ public function PredefinedCommonUploadFiles(Request $request)
         'real_file_name.required' => 'Real File name is required.',
         'fyear.required' => 'Financial Year is required.',
         'Month.required' => 'Month is required.',
-
     ]);
-
-
     // Legal / Secretarial / Deposit Undertakings
-
     $user = auth()->user();
 
-    // Query your table to validate the location and real_file_name
-    // $temp_location = $request->input('location');
-
-    // // dd($temp_location);
-    // // $temp_location = "Accounting & Taxation / Charter documents / Registrations";
-    // $final_location = preg_replace('/\s*\/\s*/', '/', $temp_location);
-    // // "Accounting & Taxation/Charter documents/Registrations"
-
-    // $entry = Folder::where('path', $final_location)
-    //                     // ->where('real_file_name', $request->input('real_file_name'))
-    //                     // ->where('user_id', $user->id)
-    //                     ->where('is_delete', 0)
-    //                     ->first();
-
-    // if (!$entry) {
-    //     // Return an error if the location and real_file_name are not valid
-    //     return response()->json([
-    //         'success' => false,
-    //         'message' => 'Invalid location or file name. Please check and try again.',
-    //     ], 400);
-    // }
-
-
     if ($request->hasFile('files')) {
-        try {
-            // Initialize counters
-            $totalSize = 0;
+        // Process each file
+        
+        $Pre_exists = [];
+        $Pre_do_not_exists = [];
+        foreach ($request->file('files') as $file) {
 
-            // Store success and error messages for individual files
-            $successMessages = [];
-            $errorMessages = [];
+            $fileExists = CommonTable::where('file_name', $file->getClientOriginalName())
+            ->where('user_id', auth()->user()->id)
+            ->where('is_delete', 0 )
+            ->where('file_type', $file->getClientMimeType())
+            ->where('real_file_name', $request->input('real_file_name'))
+            ->where('fyear', $request->input('fyear'))
+            ->where('month', $request->input('Month'))
+            ->where('location', $request->input('location'))
+            ->exists();
 
+            // $query = CommonTable::where('file_name', $file->getClientOriginalName())
+            //     ->where('user_id', auth()->user()->id)
+            //     ->where('file_type', $file->getClientMimeType())
+            //     ->where('fyear', $request->input('fyear'))
+            //     ->where('month', $request->input('Month'))
+            //     ->where('location', $request->input('location'));
+
+            // // Print the query with bindings
+            // $sql = vsprintf(
+            //     str_replace('?', "'%s'", $query->toSql()),
+            //     $query->getBindings()
+            // );
+
+            // dd($sql);
+            if ($fileExists) {
+                $Pre_exists[]=$file->getClientOriginalName();
+            } else {
+                $Pre_do_not_exists[]=$file->getClientOriginalName();
+            }
+        }
+        // Compile the response
+        return response()->json([
+            'success' => true,
+            'Pre_do_not_exists' => $Pre_do_not_exists,
+            'Pre_exists' => $Pre_exists,
             
-            
-            // 22 August code added by sandeep ---- default tags added -- reference excel sheet shared by sir;
+        ]);
+       
+    } else {
+        // No files were uploaded
+        return response()->json(['success' => false, 'message' => 'No files uploaded.'], 400);
+    }
+}
+
+public function PreHandleCommonUploadFiles(Request $request)
+{
+    if($request->input('replace')){ 
+        // Validate the request
+        $request->validate([
+            'files.*' => 'required|file|max:102400|mimes:pdf,ppt,pot,pps,pptx,pptm,potx,ppam,ppsx,sldx,sldm,odp,ods,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,xlsx,docx,docm,xlam,txt,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv,xltx,xltm', // Allow specific file types up to 100MB
+            'tagList' => 'nullable', // Allow tagList to be nullable
+            'location' => 'required|string', // Require location
+            'real_file_name' => 'required|string', // Require real file name
+            'fyear' => 'required|string', // Require real file name
+            'Month' => 'required|string', // Require real file name
+        ], [
+            'files.*.required' => 'Each file is required.',
+            'files.*.file' => 'The uploaded item must be a valid file.',
+            'files.*.max' => 'Each file may not be larger than 100MB.',
+            'files.*.mimes' => 'The file type must be one of the following: PDF, ODP, ODS, PPT, DOC, ODT, RTF, CSV, JSON, XML, HTML, ICO, SVG, WEBP, ZIP, XLS, DOCX, WAV, OGG, MP3, AVI, MOV, WMV, WEBM, TIFF, MP4, JPG, PNG, GIF, JPEG, 3GP, MKV, FLV.',
+            'location.required' => 'Location is required.',
+            'real_file_name.required' => 'Real File name is required.',
+            'fyear.required' => 'Financial Year is required.',
+            'Month.required' => 'Month is required.',
+        ]);
+    
+        // Check if folder path is provided
+        // $folderPath = $request->input('parent_folder');
+        // $folderPaths = $request->input('parent_folder');
+        // $folderPaths = preg_replace('/\s*\/\s*/', ' / ', $folderPath);
+        // if (!$folderPath) {
+        //     return response()->json(['success' => false, 'message' => 'Folder path is required.'], 400);
+        // }
+    
+        // Check if files are uploaded
+        if ($request->hasFile('pre_newfiles2')) {
+            try {
+                $totalSize = 0;
+                $successMessages = [];
+                $errorMessages = [];
+                // $tag_list = [];
+    
+                // 22 August code added by sandeep ---- default tags added -- reference excel sheet shared by sir;
+                    // Default tags
+                    $tag_list = [];
+                    
+                    // $automated_tags=[];
+                    
+                    $automated_tags_temp1 = $request->input('location'); // 'Legal /Secretarial /Statutory Registers'
+                    $automated_tags_temp2 = $request->input('real_file_name'); // Example: 'File1 /File2 /File3'
+                    
+                    $automated_tags_temp11 = array_map('trim', explode('/', $automated_tags_temp1)); // ['Legal', 'Secretarial', 'Statutory Registers']
+                    $automated_tags_temp22 = array_map('trim', explode('/', $automated_tags_temp2)); // ['File1', 'File2', 'File3']
+                    
+                    // Merge both arrays
+                    $merged_automated_tags = array_merge($automated_tags_temp11, $automated_tags_temp22);
+                    
+                    // Display the merged array
+                    // dd($merged_automated_tags);
+                    
+
+                    // Handle tagList whether it's an array, a comma-separated string, or empty
+                    $userTags = $request->input('tagList', []);
+                    
+                    // Convert to array if it's a comma-separated string
+                    if (is_string($userTags)) {
+                        $userTags = explode(',', $userTags);
+                    }
+                    // Ensure $userTags is an array and remove any empty values
+                    if (is_array($userTags)) {
+                        $userTags = array_filter($userTags); // Remove empty values
+                    } else {
+                        $userTags = []; // Fallback to empty array if not an array
+                    }
+                    
+                    // Merge with default tags
+                    $tag_list = array_merge($tag_list, $userTags);
+                    // dd($tag_list);
+                    
+                    $final_automated_tags = array_merge($merged_automated_tags , $tag_list);
+                    //  dd($final_automated_tags);
+                    // dd("okokokok");
+                    
+                    
+                    // $tags = empty($tag_list) ? NULL : json_encode($tag_list);
+                    $tags = empty($final_automated_tags) ? NULL : json_encode($final_automated_tags);
+    
+                // Process each file
+                foreach ($request->file('pre_newfiles2') as $file) {
+                    try {
+                       
+
+
+                        // Retrieve the file's ID based on the given conditions
+                        $folderPath = preg_replace('/\s*\/\s*/', '/', trim($request->input('location')));
+
+                     
+                        $fileId = CommonTable::where('file_type', $file->getClientMimeType())
+                        ->where('file_name', $file->getClientOriginalName())
+                        ->where('location', $folderPath)  // Comment out if you don't need this condition
+                        ->where('user_id', auth()->user()->id)
+                        ->where('is_delete', 0 )
+                        ->where('fyear', $request->input('fyear'))
+                        ->where('month', $request->input('Month'))
+                        ->where('real_file_name', $request->input('real_file_name'))
+                        ->whereNull('is_replaced')
+                        ->value('id'); // Use `value('id')` to get only the ID
+
+                        // dd($fileId); // This will give you the ID if the file exists, or null if it doesn't.
+                        // Check if the file exists
+                        if ($fileId) {
+                             // Retrieve the file record based on the ID
+                            $fileRecord = CommonTable::find($fileId); // Use `find()` to get the full record by ID
+
+                            // dd($fileRecord);
+                            if ($fileRecord) {
+                                // File record found, update the `is_replaced` field to 1
+                                $fileRecord->is_replaced = 1;
+                                if($fileRecord->save()){
+
+
+                                    // $folderPaths2 = $folderPath;
+                                    // $folderName = substr($folderPaths2, strrpos($folderPaths2, '/') + 1);
+                                    // $folderName = trim($folderName);
+                                    $folderPaths2 = $folderPath;
+                                    // dd($folderPaths2);
+                                    // Check if the string contains a '/'
+                                    if (strrpos($folderPaths2, '/') !== false) {
+                                        $folderName = substr($folderPaths2, strrpos($folderPaths2, '/') + 1);
+                                    } else {
+                                        // If no '/', use the full string as the folder name
+                                        $folderName = $folderPaths2;
+                                    }
+
+                                    $folderName = trim($folderName);
+
+                                    // Store file details in the database
+                                    $originalFileName = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME); // Get the file name without extension
+                                    $extension = $file->getClientOriginalExtension(); // Get the file extension
+                                    $fileName = $originalFileName . '.' . $extension; // Start with the original file name
+                                    $filePath = $file->store($folderPath);
+                                    $storedFileName = basename($filePath);  
+
+                                    // CommonTable::create([
+                                    //     'file_type' => $file->getClientMimeType(),
+                                    //     'file_name' => $file->getClientOriginalName(),
+                                    //     'file_size' => $file->getSize(),
+                                    //     'file_path' => $filePath,
+                                    //     'temp_file_name' => $storedFileName,
+                                    //     'user_name' => auth()->user()->name,
+                                    //     'user_id' => auth()->user()->id,
+                                    //     'file_status' => $request->input('file_status', 0),
+                                    //     'fyear' => $request->input('fyear'),
+                                    //     'month' => $request->input('Month'),
+                                    //     'real_file_name' => $request->input('real_file_name'),
+                                    //     'tags' => $tags, // Store tags as JSON
+                                    //     'location' => $folderPath,
+                                    //     'descp' => $request->input('desc'),
+                                    // ]);
+
+                                     // Store file details in the database
+                                    $newEntry = CommonTable::create([
+                                        'file_type' => $file->getClientMimeType(),
+                                        'file_name' => $file->getClientOriginalName(),
+                                        'file_size' => $file->getSize(),
+                                        'file_path' => $filePath,
+                                        'temp_file_name' => $storedFileName,
+                                        'user_name' => auth()->user()->name,
+                                        'user_id' => auth()->user()->id,
+                                        'file_status' => $request->input('file_status', 0),
+                                        'fyear' => $request->input('fyear'),
+                                        'month' => $request->input('Month'),
+                                        'real_file_name' => $request->input('real_file_name'),
+                                        'tags' => $tags, // Store tags as JSON
+                                        'location' => $folderPath,
+                                        'folder_name'=>$folderName,
+                                        'descp' => $request->input('desc'),
+                                    ]);
+
+                                    // Update the `replaced_by` field of the original file record with the new entry ID
+                                    if ($newEntry) {
+                                        $fileRecord->replaced_by = $newEntry->id;
+                                        $fileRecord->save(); // Save the updated file record
+                                    }
+
+                                    
+                                    // return response()->json(['message' => 'File replaced Successfully'], 404);
+                                    $successMessages[]='File replaced Successfully';
+
+                                }else{
+                                 $errorMessages[] = "Failed to update the existing the file.";
+                                }
+                             
+                            } else {
+                                // dd('File record not found!');
+                               $errorMessages[] = "Failed to find the old file.";
+
+                            }
+
+                        } else {
+                            // No file found, handle accordingly
+                            return response()->json(['message' => 'File not found'], 404);
+                        }
+                        $totalSize += $file->getSize();
+                        $successMessages[] = "File {$file->getClientOriginalName()} replaced successfully.";
+                    } catch (\Exception $e) {
+                        $errorMessages[] = "Failed to save file {$file->getClientOriginalName()} to the database.";
+                    }
+                }
+
+                // Compile overall success message
+                $user = auth()->user();
+                $entries = CommonTable::where('user_id', $user->id)
+                ->where('is_delete', 0)
+                ->whereNull('is_replaced')
+                ->where('location', $request->input('location'))
+                ->where('real_file_name', $request->input('real_file_name'))
+                ->get();
+                $count = $entries->count();
+                $totalFileSize = $entries->sum('file_size');
+
+                $totalSizeKB = round($totalFileSize / 1024, 2); // Convert to KB
+
+                if ($totalSizeKB > 1024) {
+                    $totalSizeMB = round($totalSizeKB / 1024, 2); // Convert to MB
+                    if ($totalSizeMB > 1024) {
+                        $totalSizeGB = round($totalSizeMB / 1024, 2); // Convert to GB
+                        $totalSizef = $totalSizeGB . ' GB';
+                    } else {
+                        $totalSizef = $totalSizeMB . ' MB';
+                    }
+                } else {
+                    $totalSizef = $totalSizeKB . ' KB';
+                }
+    
+                // Compile the response
+                return response()->json([
+                    'success' => empty($errorMessages),
+                    'count' => $count,
+                    'totalSize' => $totalSizef,
+                    'successMessages' => $successMessages,
+                    'errorMessages' => $errorMessages,
+                    'real_file_name' => $request->input('real_file_name'),
+                ]);
+            } catch (\Exception $e) {
+                return response()->json(['success' => false, 'message' => 'Failed to process file uploads.'], 500);
+            }
+        } else {
+            // No files were uploaded
+            return response()->json(['success' => false, 'message' => 'No files uploaded.'], 400);
+        }
+
+
+    }
+    if($request->input('keep')){
+        // dd("in keep");
+         // Validate the request
+        $request->validate([
+            'files.*' => 'required|file|max:102400|mimes:pdf,ppt,pot,pps,pptx,pptm,potx,ppam,ppsx,sldx,sldm,odp,ods,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,xlsx,docx,docm,xlam,txt,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv,xltx,xltm', // Allow specific file types up to 100MB
+            'tagList' => 'nullable', // Allow tagList to be nullable
+            'location' => 'required|string', // Require location
+            'real_file_name' => 'required|string', // Require real file name
+            'fyear' => 'required|string', // Require real file name
+            'Month' => 'required|string', // Require real file name
+        ], [
+            'files.*.required' => 'Each file is required.',
+            'files.*.file' => 'The uploaded item must be a valid file.',
+            'files.*.max' => 'Each file may not be larger than 100MB.',
+            'files.*.mimes' => 'The file type must be one of the following: PDF, ODP, ODS, PPT, DOC, ODT, RTF, CSV, JSON, XML, HTML, ICO, SVG, WEBP, ZIP, XLS, DOCX, WAV, OGG, MP3, AVI, MOV, WMV, WEBM, TIFF, MP4, JPG, PNG, GIF, JPEG, 3GP, MKV, FLV.',
+            'location.required' => 'Location is required.',
+            'real_file_name.required' => 'Real File name is required.',
+            'fyear.required' => 'Financial Year is required.',
+            'Month.required' => 'Month is required.',
+    
+        ]);
+    
+        // Check if folder path is provided
+        // $folderPath = $request->input('parent_folder');
+        // $folderPaths = $request->input('parent_folder');
+        // if (!$folderPath) {
+        //     return response()->json(['success' => false, 'message' => 'Folder path is required.'], 400);
+        // }
+    
+        // Check if files are uploaded
+        if ($request->hasFile('pre_newfiles3')) {
+            try {
+                $totalSize = 0;
+                $successMessages = [];
+                $errorMessages = [];
+                // $tag_list = [];
+    
+                // 22 August code added by sandeep ---- default tags added -- reference excel sheet shared by sir;
                     // Default tags
                     $tag_list = [];
                     
@@ -15091,113 +15665,737 @@ public function PredefinedCommonUploadFiles(Request $request)
                     // $tags = empty($tag_list) ? NULL : json_encode($tag_list);
                     $tags = empty($final_automated_tags) ? NULL : json_encode($final_automated_tags);
 
-                    $location = preg_replace('/\s*\/\s*/', '/', trim($request->input('location')));
+                    // $location = preg_replace('/\s*\/\s*/', '/', trim($request->input('location')));
+                    // "Legal/Secretarial/Board Meetings" 
+    
+                // Process each file
+                // foreach ($request->file('newfiles3') as $file) {
+                //     try {
+                //         $filePath = $file->store($folderPath);
+
+                //         // Store file details in the database
+                //         CommonTable::create([
+                //             'file_type' => $file->getClientMimeType(),
+                //             'file_name' => $file->getClientOriginalName(),
+                //             'file_size' => $file->getSize(),
+                //             'file_path' => $filePath,
+                //             'user_name' => auth()->user()->name,
+                //             'user_id' => auth()->user()->id,
+                //             'file_status' => $request->input('file_status', 0),
+                //             'fyear' => $request->input('fyear'),
+                //             'month' => $request->input('Month'),
+                //             'tags' => $tags, // Store tags as JSON
+                //             'location' => $folderPaths,
+                //             'descp' => $request->input('desc'),
+                //             'is_keep'=> 1,
+                //         ]);
+                //         // return response()->json(['message' => 'File replaced Successfully'], 404);
+                //         // $successMessages[]='File uploaded Successfully';
+ 
+                //         $totalSize += $file->getSize();
+                //         $successMessages[] = "File {$file->getClientOriginalName()} uploaded successfully.";
+                //     } catch (\Exception $e) {
+                //         $errorMessages[] = "Failed to save file {$file->getClientOriginalName()} to the database.";
+                //     }
+                // }
+
+
+
+                foreach ($request->file('pre_newfiles3') as $file) {
+                    try {
+                        $folderPath = preg_replace('/\s*\/\s*/', '/', trim($request->input('location')));
+
+                        // $folderPaths2 = $folderPath;
+                        // $folderName = substr($folderPaths2, strrpos($folderPaths2, '/') + 1);
+                        // $folderName = trim($folderName);
+
+                        $folderPaths2 = $folderPath;
+                        // dd($folderPaths2);
+                        // Check if the string contains a '/'
+                        if (strrpos($folderPaths2, '/') !== false) {
+                            $folderName = substr($folderPaths2, strrpos($folderPaths2, '/') + 1);
+                        } else {
+                            // If no '/', use the full string as the folder name
+                            $folderName = $folderPaths2;
+                        }
+                        $folderName = trim($folderName);
+
+                        $originalFileName = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME); // Get the file name without extension
+                        $extension = $file->getClientOriginalExtension(); // Get the file extension
+                        $fileName = $originalFileName . '.' . $extension; // Start with the original file name
+                
+                        // Check if the file name exists in the database and append a counter if it does
+                        $counter = 1;
+                        while (CommonTable::where('file_name', $fileName)->where('is_delete', 0 )->where('location', $folderPath)->whereNull('is_replaced')->exists()) {
+                            $fileName = $originalFileName . " ($counter)." . $extension;
+                            $counter++;
+                        }
+        
+                        
+                        // $originalFileName = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME); // Get the file name without extension
+                        // $extension = $file->getClientOriginalExtension(); // Get the file extension
+                        // $fileName = $originalFileName . '.' . $extension; // Start with the original file name
+                        $filePath = $file->store($folderPath);
+                        $storedFileName = basename($filePath);  
+                
+                        // Save the file with the updated unique name
+                        // $filePath = $file->storeAs($folderPath, $fileName);
+                        // $filePath = $file->storeAs($folderPath);
+                        // $storedFileName = basename($filePath);
+
+                
+                        // // Store file details in the database
+                        // CommonTable::create([
+                        //     'file_type' => $file->getClientMimeType(),
+                        //     'file_name' => $fileName, // Use the updated unique name
+                        //     'file_size' => $file->getSize(),
+                        //     'file_path' => $filePath,
+                        //     'temp_file_name' => $storedFileName,
+                        //     'user_name' => auth()->user()->name,
+                        //     'user_id' => auth()->user()->id,
+                        //     'file_status' => $request->input('file_status', 0),
+                        //     'fyear' => $request->input('fyear'),
+                        //     'month' => $request->input('Month'),
+                        //     'real_file_name' => $request->input('real_file_name'),
+                        //     'tags' => $tags, // Store tags as JSON
+                        //     'location' => $folderPath,
+                        //     'descp' => $request->input('desc'),
+                        //     'is_keep' => 1,
+                        // ]);
+
+                         // Store file details in the database
+                         CommonTable::create([
+                            'file_type' => $file->getClientMimeType(),
+                            'file_name' => $fileName,
+                            'file_size' => $file->getSize(),
+                            'file_path' => $filePath,
+                            'temp_file_name' => $storedFileName,
+                            'user_name' => auth()->user()->name,
+                            'user_id' => auth()->user()->id,
+                            'file_status' => $request->input('file_status', 0),
+                            'fyear' => $request->input('fyear'),
+                            'month' => $request->input('Month'),
+                            'real_file_name' => $request->input('real_file_name'),
+                            'tags' => $tags, // Store tags as JSON
+                            'location' => $folderPath,
+                            'descp' => $request->input('desc'),
+                            'folder_name'=>$folderName,
+                            'is_keep' => 1,
+                        ]);
+                
+                        $totalSize += $file->getSize();
+                        $successMessages[] = "File {$fileName} uploaded successfully.";
+                    } catch (\Exception $e) {
+                        $errorMessages[] = "Failed to save file {$file->getClientOriginalName()} to the database.";
+                    }
+                }
+
+                // Compile overall success message
+                $user = auth()->user();
+                $entries = CommonTable::where('user_id', $user->id)
+                ->where('is_delete', 0)
+                ->whereNull('is_replaced')
+                ->where('location', $request->input('location'))
+                ->where('real_file_name', $request->input('real_file_name'))
+                ->get();
+                $count = $entries->count();
+                $totalFileSize = $entries->sum('file_size');
+
+                $totalSizeKB = round($totalFileSize / 1024, 2); // Convert to KB
+
+                if ($totalSizeKB > 1024) {
+                    $totalSizeMB = round($totalSizeKB / 1024, 2); // Convert to MB
+                    if ($totalSizeMB > 1024) {
+                        $totalSizeGB = round($totalSizeMB / 1024, 2); // Convert to GB
+                        $totalSizef = $totalSizeGB . ' GB';
+                    } else {
+                        $totalSizef = $totalSizeMB . ' MB';
+                    }
+                } else {
+                    $totalSizef = $totalSizeKB . ' KB';
+                }
+                
+    
+                // Compile the response
+                return response()->json([
+                    'success' => empty($errorMessages),
+                    'count' => $count,
+                    'totalSize' => $totalSizef,
+                    'successMessages' => $successMessages,
+                    'errorMessages' => $errorMessages,
+                    'real_file_name' => $request->input('real_file_name'),
+                ]);
+            } catch (\Exception $e) {
+                return response()->json(['success' => false, 'message' => 'Failed to process file uploads.'], 500);
+            }
+        } else {
+            // No files were uploaded
+            return response()->json(['success' => false, 'message' => 'No files uploaded.'], 400);
+        }
+
+    }
+    if($request->input('upload')){
+        // Validate the request
+        $request->validate([
+            'files.*' => 'required|file|max:102400|mimes:pdf,ppt,pot,pps,pptx,pptm,potx,ppam,ppsx,sldx,sldm,odp,ods,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,xlsx,docx,docm,xlam,txt,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv,xltx,xltm', // Allow specific file types up to 100MB
+            'tagList' => 'nullable', // Allow tagList to be nullable
+            'location' => 'required|string', // Require location
+            'real_file_name' => 'required|string', // Require real file name
+            'fyear' => 'required|string', // Require real file name
+            'Month' => 'required|string', // Require real file name
+    
+    
+        ], [
+            'files.*.required' => 'Each file is required.',
+            'files.*.file' => 'The uploaded item must be a valid file.',
+            'files.*.max' => 'Each file may not be larger than 100MB.',
+            'files.*.mimes' => 'The file type must be one of the following: PDF, ODP, ODS, PPT, DOC, ODT, RTF, CSV, JSON, XML, HTML, ICO, SVG, WEBP, ZIP, XLS, DOCX, WAV, OGG, MP3, AVI, MOV, WMV, WEBM, TIFF, MP4, JPG, PNG, GIF, JPEG, 3GP, MKV, FLV.',
+            'location.required' => 'Location is required.',
+            'real_file_name.required' => 'Real File name is required.',
+            'fyear.required' => 'Financial Year is required.',
+            'Month.required' => 'Month is required.',
+    
+        ]);
+    
+        // Check if folder path is provided
+        // $folderPath = $request->input('parent_folder');
+        // $folderPaths = $request->input('parent_folder');
+        // dd($folderPath);
+
+        // if (!$folderPath) {
+        //     return response()->json(['success' => false, 'message' => 'Folder path is required.'], 400);
+        // }
+    
+        // Check if files are uploaded
+        if ($request->hasFile('pre_newfiles')) {
+            try {
+                $totalSize = 0;
+                $successMessages = [];
+                $errorMessages = [];
+                // $tag_list = [];
+    
+                // 22 August code added by sandeep ---- default tags added -- reference excel sheet shared by sir;
+                    // Default tags
+                    $tag_list = [];
+                    
+                    // $automated_tags=[];
+                    
+                    $automated_tags_temp1 = $request->input('location'); // 'Legal /Secretarial /Statutory Registers'
+                    $automated_tags_temp2 = $request->input('real_file_name'); // Example: 'File1 /File2 /File3'
+                    
+                    $automated_tags_temp11 = array_map('trim', explode('/', $automated_tags_temp1)); // ['Legal', 'Secretarial', 'Statutory Registers']
+                    $automated_tags_temp22 = array_map('trim', explode('/', $automated_tags_temp2)); // ['File1', 'File2', 'File3']
+                    
+                    // Merge both arrays
+                    $merged_automated_tags = array_merge($automated_tags_temp11, $automated_tags_temp22);
+                    
+                    // Display the merged array
+                    // dd($merged_automated_tags);
+                    
+
+                    // Handle tagList whether it's an array, a comma-separated string, or empty
+                    $userTags = $request->input('tagList', []);
+                    
+                    // Convert to array if it's a comma-separated string
+                    if (is_string($userTags)) {
+                        $userTags = explode(',', $userTags);
+                    }
+                    // Ensure $userTags is an array and remove any empty values
+                    if (is_array($userTags)) {
+                        $userTags = array_filter($userTags); // Remove empty values
+                    } else {
+                        $userTags = []; // Fallback to empty array if not an array
+                    }
+                    
+                    // Merge with default tags
+                    $tag_list = array_merge($tag_list, $userTags);
+                    // dd($tag_list);
+                    
+                    $final_automated_tags = array_merge($merged_automated_tags , $tag_list);
+                    //  dd($final_automated_tags);
+                    // dd("okokokok");
+                    
+                    
+                    // $tags = empty($tag_list) ? NULL : json_encode($tag_list);
+                    $tags = empty($final_automated_tags) ? NULL : json_encode($final_automated_tags);
+
+                    // $location = preg_replace('/\s*\/\s*/', '/', trim($request->input('location')));
                     // "Legal/Secretarial/Board Meetings" 
         
-                    // Legal/Secretarial/Board Meetings/rtR2ORS7jdMq05zW6c704CUXesvrqkZ59ZNNWOib.pdf
-                    foreach ($request->file('files') as $file) {
-                        try {
-                            // Store file inside the dynamically created folder
-                           
-                            $filePath = $file->store($location);
-                            // Create a new entry for each file
-                            $storedFileName = basename($filePath);
+    
+                // Process each file
+                foreach ($request->file('pre_newfiles') as $file) {
+                    try {
+                        // $originalFileName = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME); // Get the file name without extension
+                        // $extension = $file->getClientOriginalExtension(); // Get the file extension
+                        // $fileName = $originalFileName . '.' . $extension; // Start with the original file name
+                        // // $filePath = $file->storeAs($folderPath, $fileName);
+                        // $filePath = $file->storeAs($folderPath);
+                        // $storedFileName = basename($filePath);
+                        $folderPath = preg_replace('/\s*\/\s*/', '/', trim($request->input('location')));
 
-                            // dd($storedFileName);
-                            CommonTable::create([
-                                'file_type' => $file->getClientMimeType(),
-                                'file_name' => $file->getClientOriginalName(),
-                                'real_file_name' => $request->input('real_file_name'),
-                                'temp_file_name' => $storedFileName,
-                                'file_size' => $file->getSize(),
-                                'file_path' => $filePath,
-                                'user_name' => auth()->user()->name, // Assuming user is authenticated
-                                'user_id' => auth()->user()->id,
-                                'file_status' => $request->input('file_status', 0),
-                                'fyear' => $request->input('fyear'),
-                                'month' => $request->input('Month'),
-                                'tags' => $tags, // Store tags as JSON
-                                'location' => $request->input('location'), // Store the dynamic location
-                                'descp' => $request->input('desc'),
-                            ]);
-        
-                            $totalSize += $file->getSize();
-                            $successMessages[] = "File {$file->getClientOriginalName()} uploaded successfully.";
-                        } catch (\Exception $e) {
-                            $errorMessages[] = "Failed to save file {$file->getClientOriginalName()} to database.";
+                        // $folderPaths2 = $folderPath;
+                        // $folderName = substr($folderPaths2, strrpos($folderPaths2, '/') + 1);
+                        // $folderName = trim($folderName);
+                        $folderPaths2 = $folderPath;
+                        // dd($folderPaths2);
+                        // Check if the string contains a '/'
+                        if (strrpos($folderPaths2, '/') !== false) {
+                            $folderName = substr($folderPaths2, strrpos($folderPaths2, '/') + 1);
+                        } else {
+                            // If no '/', use the full string as the folder name
+                            $folderName = $folderPaths2;
                         }
+                        $folderName = trim($folderName);
+
+                        $originalFileName = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME); // Get the file name without extension
+                        $extension = $file->getClientOriginalExtension(); // Get the file extension
+                        $fileName = $originalFileName . '.' . $extension; // Start with the original file name
+                        $filePath = $file->store($folderPath);
+                        $storedFileName = basename($filePath);  
+
+    
+                        // Store file details in the database
+                        CommonTable::create([
+                            'file_type' => $file->getClientMimeType(),
+                            'file_name' => $file->getClientOriginalName(),
+                            'file_size' => $file->getSize(),
+                            'file_path' => $filePath,
+                            'temp_file_name' => $storedFileName,
+                            'user_name' => auth()->user()->name,
+                            'user_id' => auth()->user()->id,
+                            'file_status' => $request->input('file_status', 0),
+                            'fyear' => $request->input('fyear'),
+                            'month' => $request->input('Month'),
+                            'real_file_name' => $request->input('real_file_name'),
+                            'tags' => $tags, // Store tags as JSON
+                            'location' => $folderPath,
+                            'folder_name'=>$folderName,
+                            'descp' => $request->input('desc'),
+                        ]);
+    
+                        $totalSize += $file->getSize();
+                        $successMessages[] = "File {$file->getClientOriginalName()} uploaded successfully.";
+                    } catch (\Exception $e) {
+                        $errorMessages[] = "Failed to save file {$file->getClientOriginalName()} to the database.";
                     }
-            
-            
-
-            // Compile overall success message
-            $user = auth()->user();
-            $entries = CommonTable::where('user_id', $user->id)
-            ->where('is_delete', 0)
-            ->where('location', $request->input('location'))
-            ->where('real_file_name', $request->input('real_file_name'))
-            ->get();
-            $count = $entries->count();
-            $totalFileSize = $entries->sum('file_size');
-
-            $totalSizeKB = round($totalFileSize / 1024, 2); // Convert to KB
-
-            if ($totalSizeKB > 1024) {
-                $totalSizeMB = round($totalSizeKB / 1024, 2); // Convert to MB
-                if ($totalSizeMB > 1024) {
-                    $totalSizeGB = round($totalSizeMB / 1024, 2); // Convert to GB
-                    $totalSizef = $totalSizeGB . ' GB';
-                } else {
-                    $totalSizef = $totalSizeMB . ' MB';
                 }
-            } else {
-                $totalSizef = $totalSizeKB . ' KB';
+
+                // Compile overall success message
+                $user = auth()->user();
+                $entries = CommonTable::where('user_id', $user->id)
+                ->where('is_delete', 0)
+                ->whereNull('is_replaced')
+                ->where('location', $request->input('location'))
+                ->where('real_file_name', $request->input('real_file_name'))
+                ->get();
+                $count = $entries->count();
+                $totalFileSize = $entries->sum('file_size');
+
+                $totalSizeKB = round($totalFileSize / 1024, 2); // Convert to KB
+
+                if ($totalSizeKB > 1024) {
+                    $totalSizeMB = round($totalSizeKB / 1024, 2); // Convert to MB
+                    if ($totalSizeMB > 1024) {
+                        $totalSizeGB = round($totalSizeMB / 1024, 2); // Convert to GB
+                        $totalSizef = $totalSizeGB . ' GB';
+                    } else {
+                        $totalSizef = $totalSizeMB . ' MB';
+                    }
+                } else {
+                    $totalSizef = $totalSizeKB . ' KB';
+                }
+    
+                // Compile the response
+                return response()->json([
+                    'success' => empty($errorMessages),
+                    'count' => $count,
+                    'totalSize' => $totalSizef,
+                    'successMessages' => $successMessages,
+                    'errorMessages' => $errorMessages,
+                    'real_file_name' => $request->input('real_file_name'),
+                ]);
+            } catch (\Exception $e) {
+                return response()->json(['success' => false, 'message' => 'Failed to process file uploads.'], 500);
             }
-            
-            
-            
-            // return redirect()->back()->with('success2', 'File Uploaded successfully.');
-
-            return response()->json([
-                'success' => empty($errorMessages),
-                'count' => $count,
-                'totalSize' => $totalSizef,
-                'successMessages' => $successMessages,
-                'errorMessages' => $errorMessages,
-                'real_file_name' => $request->input('real_file_name'),
-            ]);
-
-        } catch (\Exception $e) {
-            // Handle any exceptions that occur during file upload or database saving
-            return response()->json(['success' => false, 'message' => 'Failed to process file uploads.'], 500);
+        } else {
+            // No files were uploaded
+            return response()->json(['success' => false, 'message' => 'No files uploaded.'], 400);
         }
-    } else {
-        // Return a JSON response indicating no file was uploaded
-        return response()->json(['success' => false, 'message' => 'No files uploaded.'], 400);
+
     }
+
+    
 }
 
+// start for bank
 
 public function PredefinedCommonUploadFilesBank(Request $request)
 {
     $request->validate([
         'files.*' => 'required|file|max:102400|mimes:pdf,ppt,pot,pps,pptx,pptm,potx,ppam,ppsx,sldx,sldm,odp,ods,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,xlsx,docx,docm,xlam,txt,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv,xltx,xltm', // Allow specific file types up to 100MB
         'tagList' => 'nullable', // Allow tagList to be nullable
+        'location' => 'required|string', // Require location
+        'real_file_name' => 'required|string', // Require real file name
+        'fyear' => 'required|string', // Require real file name
+        'Month' => 'required|string', // Require real file name
     ], [
         'files.*.required' => 'Each file is required.',
         'files.*.file' => 'The uploaded item must be a valid file.',
         'files.*.max' => 'Each file may not be larger than 100MB.',
         'files.*.mimes' => 'The file type must be one of the following: PDF, ODP, ODS, PPT, DOC, ODT, RTF, CSV, JSON, XML, HTML, ICO, SVG, WEBP, ZIP, XLS, DOCX, WAV, OGG, MP3, AVI, MOV, WMV, WEBM, TIFF, MP4, JPG, PNG, GIF, JPEG, 3GP, MKV, FLV.',
+        'location.required' => 'Location is required.',
+        'real_file_name.required' => 'Real File name is required.',
+        'fyear.required' => 'Financial Year is required.',
+        'Month.required' => 'Month is required.',
     ]);
+    // Legal / Secretarial / Deposit Undertakings
+    $user = auth()->user();
 
     if ($request->hasFile('files')) {
-        try {
-            // Initialize counters and message arrays
-            $totalSize = 0;
-            $successMessages = [];
-            $errorMessages = [];
+        // Process each file
+        
+        $PreBank_exists = [];
+        $PreBank_do_not_exists = [];
+        foreach ($request->file('files') as $file) {
+
+            $fileExists = CommonTable::where('file_name', $file->getClientOriginalName())
+            ->where('user_id', auth()->user()->id)
+            ->where('is_delete', 0 )
+            ->where('file_type', $file->getClientMimeType())
+            ->where('real_file_name', $request->input('real_file_name'))
+            ->where('bank_name', $request->input('bank_name'))
+            ->where('fyear', $request->input('fyear'))
+            ->where('month', $request->input('Month'))
+            ->where('location', $request->input('location'))
+            ->exists();
+
+            // $query = CommonTable::where('file_name', $file->getClientOriginalName())
+            //     ->where('user_id', auth()->user()->id)
+            //     ->where('file_type', $file->getClientMimeType())
+            //     ->where('fyear', $request->input('fyear'))
+            //     ->where('month', $request->input('Month'))
+            //     ->where('location', $request->input('location'));
+
+            // // Print the query with bindings
+            // $sql = vsprintf(
+            //     str_replace('?', "'%s'", $query->toSql()),
+            //     $query->getBindings()
+            // );
+
+            // dd($sql);
+            if ($fileExists) {
+                $PreBank_exists[]=$file->getClientOriginalName();
+            } else {
+                $PreBank_do_not_exists[]=$file->getClientOriginalName();
+            }
+        }
+        // Compile the response
+        return response()->json([
+            'success' => true,
+            'PreBank_do_not_exists' => $PreBank_do_not_exists,
+            'PreBank_exists' => $PreBank_exists,
             
-            // 22 August code added by sandeep ---- default tags added -- reference excel sheet shared by sir;
+        ]);
+       
+    } else {
+        // No files were uploaded
+        return response()->json(['success' => false, 'message' => 'No files uploaded.'], 400);
+    }
+}
+
+public function PreBankHandleCommonUploadFiles(Request $request)
+{
+    if($request->input('replace')){ 
+        // Validate the request
+        $request->validate([
+            'files.*' => 'required|file|max:102400|mimes:pdf,ppt,pot,pps,pptx,pptm,potx,ppam,ppsx,sldx,sldm,odp,ods,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,xlsx,docx,docm,xlam,txt,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv,xltx,xltm', // Allow specific file types up to 100MB
+            'tagList' => 'nullable', // Allow tagList to be nullable
+            'location' => 'required|string', // Require location
+            'real_file_name' => 'required|string', // Require real file name
+            'fyear' => 'required|string', // Require real file name
+            'Month' => 'required|string', // Require real file name
+        ], [
+            'files.*.required' => 'Each file is required.',
+            'files.*.file' => 'The uploaded item must be a valid file.',
+            'files.*.max' => 'Each file may not be larger than 100MB.',
+            'files.*.mimes' => 'The file type must be one of the following: PDF, ODP, ODS, PPT, DOC, ODT, RTF, CSV, JSON, XML, HTML, ICO, SVG, WEBP, ZIP, XLS, DOCX, WAV, OGG, MP3, AVI, MOV, WMV, WEBM, TIFF, MP4, JPG, PNG, GIF, JPEG, 3GP, MKV, FLV.',
+            'location.required' => 'Location is required.',
+            'real_file_name.required' => 'Real File name is required.',
+            'fyear.required' => 'Financial Year is required.',
+            'Month.required' => 'Month is required.',
+        ]);
+    
+        // Check if folder path is provided
+        // $folderPath = $request->input('parent_folder');
+        // $folderPaths = $request->input('parent_folder');
+        // $folderPaths = preg_replace('/\s*\/\s*/', ' / ', $folderPath);
+        // if (!$folderPath) {
+        //     return response()->json(['success' => false, 'message' => 'Folder path is required.'], 400);
+        // }
+    
+        // Check if files are uploaded
+        if ($request->hasFile('pre_bank_newfiles2')) {
+            try {
+                $totalSize = 0;
+                $successMessages = [];
+                $errorMessages = [];
+                // $tag_list = [];
+    
+                // 22 August code added by sandeep ---- default tags added -- reference excel sheet shared by sir;
+                    // Default tags
+                    $tag_list = [];
+                    
+                    // $automated_tags=[];
+                    
+                    $automated_tags_temp1 = $request->input('location'); // 'Legal /Secretarial /Statutory Registers'
+                    $automated_tags_temp2 = $request->input('real_file_name'); // Example: 'File1 /File2 /File3'
+                    
+                    $automated_tags_temp11 = array_map('trim', explode('/', $automated_tags_temp1)); // ['Legal', 'Secretarial', 'Statutory Registers']
+                    $automated_tags_temp22 = array_map('trim', explode('/', $automated_tags_temp2)); // ['File1', 'File2', 'File3']
+                    
+                    // Merge both arrays
+                    $merged_automated_tags = array_merge($automated_tags_temp11, $automated_tags_temp22);
+                    
+                    // Display the merged array
+                    // dd($merged_automated_tags);
+                    
+
+                    // Handle tagList whether it's an array, a comma-separated string, or empty
+                    $userTags = $request->input('tagList', []);
+                    
+                    // Convert to array if it's a comma-separated string
+                    if (is_string($userTags)) {
+                        $userTags = explode(',', $userTags);
+                    }
+                    // Ensure $userTags is an array and remove any empty values
+                    if (is_array($userTags)) {
+                        $userTags = array_filter($userTags); // Remove empty values
+                    } else {
+                        $userTags = []; // Fallback to empty array if not an array
+                    }
+                    
+                    // Merge with default tags
+                    $tag_list = array_merge($tag_list, $userTags);
+                    // dd($tag_list);
+                    
+                    $final_automated_tags = array_merge($merged_automated_tags , $tag_list);
+                    //  dd($final_automated_tags);
+                    // dd("okokokok");
+                    
+                    
+                    // $tags = empty($tag_list) ? NULL : json_encode($tag_list);
+                    $tags = empty($final_automated_tags) ? NULL : json_encode($final_automated_tags);
+                    $folderPath = preg_replace('/\s*\/\s*/', '/', trim($request->input('location')));
+
+    
+                // Process each file
+                foreach ($request->file('pre_bank_newfiles2') as $file) {
+                    try {
+                       
+
+
+                        // Retrieve the file's ID based on the given conditions
+                     
+                        $fileId = CommonTable::where('file_type', $file->getClientMimeType())
+                        ->where('file_name', $file->getClientOriginalName())
+                        ->where('location', $folderPath)  // Comment out if you don't need this condition
+                        ->where('user_id', auth()->user()->id)
+                        ->where('is_delete', 0 )
+                        ->where('fyear', $request->input('fyear'))
+                        ->where('month', $request->input('Month'))
+                        ->where('real_file_name', $request->input('real_file_name'))
+                        ->where('bank_name', $request->input('bank_name'))
+                        ->whereNull('is_replaced')
+                        ->value('id'); // Use `value('id')` to get only the ID
+
+                        // dd($fileId); // This will give you the ID if the file exists, or null if it doesn't.
+                        // Check if the file exists
+                        if ($fileId) {
+                             // Retrieve the file record based on the ID
+                            $fileRecord = CommonTable::find($fileId); // Use `find()` to get the full record by ID
+
+                            // dd($fileRecord);
+                            if ($fileRecord) {
+                                // File record found, update the `is_replaced` field to 1
+                                $fileRecord->is_replaced = 1;
+                                if($fileRecord->save()){
+
+                                    $folderPath = preg_replace('/\s*\/\s*/', '/', trim($request->input('location')));
+
+                                    // $folderPaths2 = $folderPath;
+                                    // $folderName = substr($folderPaths2, strrpos($folderPaths2, '/') + 1);
+                                    // $folderName = trim($folderName);
+
+                                    $folderPaths2 = $folderPath;
+                                    // dd($folderPaths2);
+                                    // Check if the string contains a '/'
+                                    if (strrpos($folderPaths2, '/') !== false) {
+                                        $folderName = substr($folderPaths2, strrpos($folderPaths2, '/') + 1);
+                                    } else {
+                                        // If no '/', use the full string as the folder name
+                                        $folderName = $folderPaths2;
+                                    }
+                                    $folderName = trim($folderName);
+
+                                    // Store file details in the database
+                                    $originalFileName = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME); // Get the file name without extension
+                                    $extension = $file->getClientOriginalExtension(); // Get the file extension
+                                    $fileName = $originalFileName . '.' . $extension; // Start with the original file name
+                                    $filePath = $file->store($folderPath);
+                                    $storedFileName = basename($filePath);  
+
+                                    // CommonTable::create([
+                                    //     'file_type' => $file->getClientMimeType(),
+                                    //     'file_name' => $file->getClientOriginalName(),
+                                    //     'file_size' => $file->getSize(),
+                                    //     'file_path' => $filePath,
+                                    //     'temp_file_name' => $storedFileName,
+                                    //     'user_name' => auth()->user()->name,
+                                    //     'user_id' => auth()->user()->id,
+                                    //     'file_status' => $request->input('file_status', 0),
+                                    //     'fyear' => $request->input('fyear'),
+                                    //     'month' => $request->input('Month'),
+                                    //     'real_file_name' => $request->input('real_file_name'),
+                                    //     'tags' => $tags, // Store tags as JSON
+                                    //     'location' => $folderPath,
+                                    //     'descp' => $request->input('desc'),
+                                    // ]);
+
+                                     // Store file details in the database
+                                    $newEntry = CommonTable::create([
+                                        'file_type' => $file->getClientMimeType(),
+                                        'file_name' => $file->getClientOriginalName(),
+                                        'file_size' => $file->getSize(),
+                                        'file_path' => $filePath,
+                                        'temp_file_name' => $storedFileName,
+                                        'user_name' => auth()->user()->name,
+                                        'user_id' => auth()->user()->id,
+                                        'file_status' => $request->input('file_status', 0),
+                                        'fyear' => $request->input('fyear'),
+                                        'month' => $request->input('Month'),
+                                        'real_file_name' => $request->input('real_file_name'),
+                                        'tags' => $tags, // Store tags as JSON
+                                        'bank_name'=>$request->input('bank_name'),
+                                        'location' => $folderPath,
+                                        'folder_name'=>$folderName,
+                                        'descp' => $request->input('desc'),
+                                    ]);
+
+                                    // Update the `replaced_by` field of the original file record with the new entry ID
+                                    if ($newEntry) {
+                                        $fileRecord->replaced_by = $newEntry->id;
+                                        $fileRecord->save(); // Save the updated file record
+                                    }
+
+                                    
+                                    // return response()->json(['message' => 'File replaced Successfully'], 404);
+                                    $successMessages[]='File replaced Successfully';
+
+                                }else{
+                                 $errorMessages[] = "Failed to update the existing the file.";
+                                }
+                             
+                            } else {
+                                // dd('File record not found!');
+                               $errorMessages[] = "Failed to find the old file.";
+
+                            }
+
+                        } else {
+                            // No file found, handle accordingly
+                            return response()->json(['message' => 'File not found'], 404);
+                        }
+                        $totalSize += $file->getSize();
+                        $successMessages[] = "File {$file->getClientOriginalName()} replaced successfully.";
+                    } catch (\Exception $e) {
+                        $errorMessages[] = "Failed to save file {$file->getClientOriginalName()} to the database.";
+                    }
+                }
+
+                // Compile overall success message
+                $user = auth()->user();
+                $entries = CommonTable::where('user_id', $user->id)
+                ->where('is_delete', 0)
+                ->whereNull('is_replaced')
+                ->where('location', $request->input('location'))
+                ->where('real_file_name', $request->input('real_file_name'))
+                ->where('bank_name', $request->input('bank_name'))
+                ->get();
+                $count = $entries->count();
+                $totalFileSize = $entries->sum('file_size');
+
+                $totalSizeKB = round($totalFileSize / 1024, 2); // Convert to KB
+
+                if ($totalSizeKB > 1024) {
+                    $totalSizeMB = round($totalSizeKB / 1024, 2); // Convert to MB
+                    if ($totalSizeMB > 1024) {
+                        $totalSizeGB = round($totalSizeMB / 1024, 2); // Convert to GB
+                        $totalSizef = $totalSizeGB . ' GB';
+                    } else {
+                        $totalSizef = $totalSizeMB . ' MB';
+                    }
+                } else {
+                    $totalSizef = $totalSizeKB . ' KB';
+                }
+    
+                // Compile the response
+                return response()->json([
+                    'success' => empty($errorMessages),
+                    'count' => $count,
+                    'totalSize' => $totalSizef,
+                    'successMessages' => $successMessages,
+                    'errorMessages' => $errorMessages,
+                    'real_file_name' => $request->input('real_file_name'),
+                ]);
+            } catch (\Exception $e) {
+                return response()->json(['success' => false, 'message' => 'Failed to process file uploads.'], 500);
+            }
+        } else {
+            // No files were uploaded
+            return response()->json(['success' => false, 'message' => 'No files uploaded.'], 400);
+        }
+
+
+    }
+    if($request->input('keep')){
+        // dd("in keep");
+         // Validate the request
+        $request->validate([
+            'files.*' => 'required|file|max:102400|mimes:pdf,ppt,pot,pps,pptx,pptm,potx,ppam,ppsx,sldx,sldm,odp,ods,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,xlsx,docx,docm,xlam,txt,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv,xltx,xltm', // Allow specific file types up to 100MB
+            'tagList' => 'nullable', // Allow tagList to be nullable
+            'location' => 'required|string', // Require location
+            'real_file_name' => 'required|string', // Require real file name
+            'fyear' => 'required|string', // Require real file name
+            'Month' => 'required|string', // Require real file name
+        ], [
+            'files.*.required' => 'Each file is required.',
+            'files.*.file' => 'The uploaded item must be a valid file.',
+            'files.*.max' => 'Each file may not be larger than 100MB.',
+            'files.*.mimes' => 'The file type must be one of the following: PDF, ODP, ODS, PPT, DOC, ODT, RTF, CSV, JSON, XML, HTML, ICO, SVG, WEBP, ZIP, XLS, DOCX, WAV, OGG, MP3, AVI, MOV, WMV, WEBM, TIFF, MP4, JPG, PNG, GIF, JPEG, 3GP, MKV, FLV.',
+            'location.required' => 'Location is required.',
+            'real_file_name.required' => 'Real File name is required.',
+            'fyear.required' => 'Financial Year is required.',
+            'Month.required' => 'Month is required.',
+    
+        ]);
+    
+        // Check if folder path is provided
+        // $folderPath = $request->input('parent_folder');
+        // $folderPaths = $request->input('parent_folder');
+        // if (!$folderPath) {
+        //     return response()->json(['success' => false, 'message' => 'Folder path is required.'], 400);
+        // }
+    
+        // Check if files are uploaded
+        if ($request->hasFile('pre_bank_newfiles3')) {
+            try {
+                $totalSize = 0;
+                $successMessages = [];
+                $errorMessages = [];
+                // $tag_list = [];
+    
+                // 22 August code added by sandeep ---- default tags added -- reference excel sheet shared by sir;
                     // Default tags
                     $tag_list = [];
                     
@@ -15242,94 +16440,542 @@ public function PredefinedCommonUploadFilesBank(Request $request)
                     // $tags = empty($tag_list) ? NULL : json_encode($tag_list);
                     $tags = empty($final_automated_tags) ? NULL : json_encode($final_automated_tags);
 
-                    $location = preg_replace('/\s*\/\s*/', '/', trim($request->input('location')));
+                    // $location = preg_replace('/\s*\/\s*/', '/', trim($request->input('location')));
+                    // "Legal/Secretarial/Board Meetings" 
+    
+                // Process each file
+                // foreach ($request->file('newfiles3') as $file) {
+                //     try {
+                //         $filePath = $file->store($folderPath);
+
+                //         // Store file details in the database
+                //         CommonTable::create([
+                //             'file_type' => $file->getClientMimeType(),
+                //             'file_name' => $file->getClientOriginalName(),
+                //             'file_size' => $file->getSize(),
+                //             'file_path' => $filePath,
+                //             'user_name' => auth()->user()->name,
+                //             'user_id' => auth()->user()->id,
+                //             'file_status' => $request->input('file_status', 0),
+                //             'fyear' => $request->input('fyear'),
+                //             'month' => $request->input('Month'),
+                //             'tags' => $tags, // Store tags as JSON
+                //             'location' => $folderPaths,
+                //             'descp' => $request->input('desc'),
+                //             'is_keep'=> 1,
+                //         ]);
+                //         // return response()->json(['message' => 'File replaced Successfully'], 404);
+                //         // $successMessages[]='File uploaded Successfully';
+ 
+                //         $totalSize += $file->getSize();
+                //         $successMessages[] = "File {$file->getClientOriginalName()} uploaded successfully.";
+                //     } catch (\Exception $e) {
+                //         $errorMessages[] = "Failed to save file {$file->getClientOriginalName()} to the database.";
+                //     }
+                // }
+
+
+
+                foreach ($request->file('pre_bank_newfiles3') as $file) {
+                    try {
+                        $folderPath = preg_replace('/\s*\/\s*/', '/', trim($request->input('location')));
+
+                        // $folderPaths2 = $folderPath;
+                        // $folderName = substr($folderPaths2, strrpos($folderPaths2, '/') + 1);
+                        // $folderName = trim($folderName);
+
+                        $folderPaths2 = $folderPath;
+                        // dd($folderPaths2);
+                        // Check if the string contains a '/'
+                        if (strrpos($folderPaths2, '/') !== false) {
+                            $folderName = substr($folderPaths2, strrpos($folderPaths2, '/') + 1);
+                        } else {
+                            // If no '/', use the full string as the folder name
+                            $folderName = $folderPaths2;
+                        }
+                        $folderName = trim($folderName);
+
+                        $originalFileName = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME); // Get the file name without extension
+                        $extension = $file->getClientOriginalExtension(); // Get the file extension
+                        $fileName = $originalFileName . '.' . $extension; // Start with the original file name
+                
+                        // Check if the file name exists in the database and append a counter if it does
+                        $counter = 1;
+                        while (CommonTable::where('file_name', $fileName)->where('is_delete', 0 )->where('location', $folderPath)->whereNull('is_replaced')->exists()) {
+                            $fileName = $originalFileName . " ($counter)." . $extension;
+                            $counter++;
+                        }
+                        
+                        // $originalFileName = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME); // Get the file name without extension
+                        // $extension = $file->getClientOriginalExtension(); // Get the file extension
+                        // $fileName = $originalFileName . '.' . $extension; // Start with the original file name
+                        $filePath = $file->store($folderPath);
+                        $storedFileName = basename($filePath);  
+                
+                        // Save the file with the updated unique name
+                        // $filePath = $file->storeAs($folderPath, $fileName);
+                        // $filePath = $file->storeAs($folderPath);
+                        // $storedFileName = basename($filePath);
+
+                
+                        // // Store file details in the database
+                        // CommonTable::create([
+                        //     'file_type' => $file->getClientMimeType(),
+                        //     'file_name' => $fileName, // Use the updated unique name
+                        //     'file_size' => $file->getSize(),
+                        //     'file_path' => $filePath,
+                        //     'temp_file_name' => $storedFileName,
+                        //     'user_name' => auth()->user()->name,
+                        //     'user_id' => auth()->user()->id,
+                        //     'file_status' => $request->input('file_status', 0),
+                        //     'fyear' => $request->input('fyear'),
+                        //     'month' => $request->input('Month'),
+                        //     'real_file_name' => $request->input('real_file_name'),
+                        //     'tags' => $tags, // Store tags as JSON
+                        //     'location' => $folderPath,
+                        //     'descp' => $request->input('desc'),
+                        //     'is_keep' => 1,
+                        // ]);
+
+                         // Store file details in the database
+                         CommonTable::create([
+                            'file_type' => $file->getClientMimeType(),
+                            'file_name' => $fileName,
+                            'file_size' => $file->getSize(),
+                            'file_path' => $filePath,
+                            'temp_file_name' => $storedFileName,
+                            'user_name' => auth()->user()->name,
+                            'user_id' => auth()->user()->id,
+                            'file_status' => $request->input('file_status', 0),
+                            'fyear' => $request->input('fyear'),
+                            'month' => $request->input('Month'),
+                            'real_file_name' => $request->input('real_file_name'),
+                            'bank_name'=>$request->input('bank_name'),
+                            'tags' => $tags, // Store tags as JSON
+                            'location' => $folderPath,
+                            'folder_name'=>$folderName,
+                            'descp' => $request->input('desc'),
+                            'is_keep' => 1,
+                        ]);
+                
+                        $totalSize += $file->getSize();
+                        $successMessages[] = "File {$fileName} uploaded successfully.";
+                    } catch (\Exception $e) {
+                        $errorMessages[] = "Failed to save file {$file->getClientOriginalName()} to the database.";
+                    }
+                }
+
+                // Compile overall success message
+                $user = auth()->user();
+                $entries = CommonTable::where('user_id', $user->id)
+                ->where('is_delete', 0)
+                ->whereNull('is_replaced')
+                ->where('location', $request->input('location'))
+                ->where('real_file_name', $request->input('real_file_name'))
+                ->where('bank_name', $request->input('bank_name'))
+                ->get();
+                $count = $entries->count();
+                $totalFileSize = $entries->sum('file_size');
+
+                $totalSizeKB = round($totalFileSize / 1024, 2); // Convert to KB
+
+                if ($totalSizeKB > 1024) {
+                    $totalSizeMB = round($totalSizeKB / 1024, 2); // Convert to MB
+                    if ($totalSizeMB > 1024) {
+                        $totalSizeGB = round($totalSizeMB / 1024, 2); // Convert to GB
+                        $totalSizef = $totalSizeGB . ' GB';
+                    } else {
+                        $totalSizef = $totalSizeMB . ' MB';
+                    }
+                } else {
+                    $totalSizef = $totalSizeKB . ' KB';
+                }
+                
+    
+                // Compile the response
+                return response()->json([
+                    'success' => empty($errorMessages),
+                    'count' => $count,
+                    'totalSize' => $totalSizef,
+                    'successMessages' => $successMessages,
+                    'errorMessages' => $errorMessages,
+                    'real_file_name' => $request->input('real_file_name'),
+                ]);
+            } catch (\Exception $e) {
+                return response()->json(['success' => false, 'message' => 'Failed to process file uploads.'], 500);
+            }
+        } else {
+            // No files were uploaded
+            return response()->json(['success' => false, 'message' => 'No files uploaded.'], 400);
+        }
+
+    }
+    if($request->input('upload')){
+        // Validate the request
+        $request->validate([
+            'files.*' => 'required|file|max:102400|mimes:pdf,ppt,pot,pps,pptx,pptm,potx,ppam,ppsx,sldx,sldm,odp,ods,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,xlsx,docx,docm,xlam,txt,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv,xltx,xltm', // Allow specific file types up to 100MB
+            'tagList' => 'nullable', // Allow tagList to be nullable
+            'location' => 'required|string', // Require location
+            'real_file_name' => 'required|string', // Require real file name
+            'fyear' => 'required|string', // Require real file name
+            'Month' => 'required|string', // Require real file name
+    
+    
+        ], [
+            'files.*.required' => 'Each file is required.',
+            'files.*.file' => 'The uploaded item must be a valid file.',
+            'files.*.max' => 'Each file may not be larger than 100MB.',
+            'files.*.mimes' => 'The file type must be one of the following: PDF, ODP, ODS, PPT, DOC, ODT, RTF, CSV, JSON, XML, HTML, ICO, SVG, WEBP, ZIP, XLS, DOCX, WAV, OGG, MP3, AVI, MOV, WMV, WEBM, TIFF, MP4, JPG, PNG, GIF, JPEG, 3GP, MKV, FLV.',
+            'location.required' => 'Location is required.',
+            'real_file_name.required' => 'Real File name is required.',
+            'fyear.required' => 'Financial Year is required.',
+            'Month.required' => 'Month is required.',
+    
+        ]);
+    
+        // Check if folder path is provided
+        // $folderPath = $request->input('parent_folder');
+        // $folderPaths = $request->input('parent_folder');
+        // dd($folderPath);
+
+        // if (!$folderPath) {
+        //     return response()->json(['success' => false, 'message' => 'Folder path is required.'], 400);
+        // }
+    
+        // Check if files are uploaded
+        if ($request->hasFile('pre_bank_newfiles')) {
+            try {
+                $totalSize = 0;
+                $successMessages = [];
+                $errorMessages = [];
+                // $tag_list = [];
+    
+                // 22 August code added by sandeep ---- default tags added -- reference excel sheet shared by sir;
+                    // Default tags
+                    $tag_list = [];
+                    
+                    // $automated_tags=[];
+                    
+                    $automated_tags_temp1 = $request->input('location'); // 'Legal /Secretarial /Statutory Registers'
+                    $automated_tags_temp2 = $request->input('real_file_name'); // Example: 'File1 /File2 /File3'
+                    
+                    $automated_tags_temp11 = array_map('trim', explode('/', $automated_tags_temp1)); // ['Legal', 'Secretarial', 'Statutory Registers']
+                    $automated_tags_temp22 = array_map('trim', explode('/', $automated_tags_temp2)); // ['File1', 'File2', 'File3']
+                    
+                    // Merge both arrays
+                    $merged_automated_tags = array_merge($automated_tags_temp11, $automated_tags_temp22);
+                    
+                    // Display the merged array
+                    // dd($merged_automated_tags);
+                    
+
+                    // Handle tagList whether it's an array, a comma-separated string, or empty
+                    $userTags = $request->input('tagList', []);
+                    
+                    // Convert to array if it's a comma-separated string
+                    if (is_string($userTags)) {
+                        $userTags = explode(',', $userTags);
+                    }
+                    // Ensure $userTags is an array and remove any empty values
+                    if (is_array($userTags)) {
+                        $userTags = array_filter($userTags); // Remove empty values
+                    } else {
+                        $userTags = []; // Fallback to empty array if not an array
+                    }
+                    
+                    // Merge with default tags
+                    $tag_list = array_merge($tag_list, $userTags);
+                    // dd($tag_list);
+                    
+                    $final_automated_tags = array_merge($merged_automated_tags , $tag_list);
+                    //  dd($final_automated_tags);
+                    // dd("okokokok");
+                    
+                    
+                    // $tags = empty($tag_list) ? NULL : json_encode($tag_list);
+                    $tags = empty($final_automated_tags) ? NULL : json_encode($final_automated_tags);
+
+                    // $location = preg_replace('/\s*\/\s*/', '/', trim($request->input('location')));
                     // "Legal/Secretarial/Board Meetings" 
         
-                    // Legal/Secretarial/Board Meetings/rtR2ORS7jdMq05zW6c704CUXesvrqkZ59ZNNWOib.pdf
-                    foreach ($request->file('files') as $file) {
-                        try {
-                            // Store file inside the dynamically created folder
-                           
-                            $filePath = $file->store($location);
-                            // Create a new entry for each file
-                            CommonTable::create([
-                                'file_type' => $file->getClientMimeType(),
-                                'file_name' => $file->getClientOriginalName(),
-                                'real_file_name' => $request->input('real_file_name'),
-                                'file_size' => $file->getSize(),
-                                'file_path' => $filePath,
-                                'user_name' => auth()->user()->name, // Assuming user is authenticated
-                                'user_id' => auth()->user()->id,
-                                'file_status' => $request->input('file_status', 0),
-                                'fyear' => $request->input('fyear'),
-                                'month' => $request->input('Month'),
-                                'tags' => $tags, // Store tags as JSON
-                                'bank_name'=>$request->input('bank_name'),
-                                'location' => $request->input('location'), // Store the dynamic location
-                                'descp' => $request->input('desc'),
-                            ]);
-        
-                            $totalSize += $file->getSize();
-                            $successMessages[] = "File {$file->getClientOriginalName()} uploaded successfully.";
-                        } catch (\Exception $e) {
-                            $errorMessages[] = "Failed to save file {$file->getClientOriginalName()} to database.";
+    
+                // Process each file
+                foreach ($request->file('pre_bank_newfiles') as $file) {
+                    try {
+                        // $originalFileName = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME); // Get the file name without extension
+                        // $extension = $file->getClientOriginalExtension(); // Get the file extension
+                        // $fileName = $originalFileName . '.' . $extension; // Start with the original file name
+                        // // $filePath = $file->storeAs($folderPath, $fileName);
+                        // $filePath = $file->storeAs($folderPath);
+                        // $storedFileName = basename($filePath);
+                        $folderPath = preg_replace('/\s*\/\s*/', '/', trim($request->input('location')));
+
+                        // $folderPaths2 = $folderPath;
+                        // $folderName = substr($folderPaths2, strrpos($folderPaths2, '/') + 1);
+                        // $folderName = trim($folderName);
+
+                        $folderPaths2 = $folderPath;
+                        // dd($folderPaths2);
+                        // Check if the string contains a '/'
+                        if (strrpos($folderPaths2, '/') !== false) {
+                            $folderName = substr($folderPaths2, strrpos($folderPaths2, '/') + 1);
+                        } else {
+                            // If no '/', use the full string as the folder name
+                            $folderName = $folderPaths2;
                         }
+                        $folderName = trim($folderName);
+
+                        $originalFileName = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME); // Get the file name without extension
+                        $extension = $file->getClientOriginalExtension(); // Get the file extension
+                        $fileName = $originalFileName . '.' . $extension; // Start with the original file name
+                        $filePath = $file->store($folderPath);
+                        $storedFileName = basename($filePath);  
+
+    
+                        // Store file details in the database
+                        CommonTable::create([
+                            'file_type' => $file->getClientMimeType(),
+                            'file_name' => $file->getClientOriginalName(),
+                            'file_size' => $file->getSize(),
+                            'file_path' => $filePath,
+                            'temp_file_name' => $storedFileName,
+                            'user_name' => auth()->user()->name,
+                            'user_id' => auth()->user()->id,
+                            'file_status' => $request->input('file_status', 0),
+                            'fyear' => $request->input('fyear'),
+                            'month' => $request->input('Month'),
+                            'real_file_name' => $request->input('real_file_name'),
+                            'bank_name'=>$request->input('bank_name'),
+                            'tags' => $tags, // Store tags as JSON
+                            'location' => $folderPath,
+                            'folder_name'=>$folderName,
+                            'descp' => $request->input('desc'),
+                        ]);
+    
+                        $totalSize += $file->getSize();
+                        $successMessages[] = "File {$file->getClientOriginalName()} uploaded successfully.";
+                    } catch (\Exception $e) {
+                        $errorMessages[] = "Failed to save file {$file->getClientOriginalName()} to the database.";
                     }
-
-            // Compile overall success message
-            // $user = auth()->user();
-//             $entries = CommonTable::where('user_id', $user->id)
-//     ->where('is_delete', 0)
-//    ->where('location', 'LIKE', '%Bank Account Statements%')
-//         ->where('real_file_name', 'Bank account statement')
-//     ->get();
-//             $count = $entries->count(); // Count of entries
-//             $totalSizeKB = round($totalSize / 1024, 2); // Convert to KB and round
-
-            // return redirect()->back()->with('success2', 'File Uploaded successfully.');
-
-            $user = auth()->user();
-            $entries = CommonTable::where('user_id', $user->id)
-            ->where('is_delete', 0)
-            ->where('location', 'LIKE', $request->input('location'))
-            ->where('real_file_name', $request->input('real_file_name'))
-            ->get();
-            $count = $entries->count();
-            $totalFileSize = $entries->sum('file_size');
-
-            $totalSizeKB = round($totalFileSize / 1024, 2); // Convert to KB
-
-            if ($totalSizeKB > 1024) {
-                $totalSizeMB = round($totalSizeKB / 1024, 2); // Convert to MB
-                if ($totalSizeMB > 1024) {
-                    $totalSizeGB = round($totalSizeMB / 1024, 2); // Convert to GB
-                    $totalSizef = $totalSizeGB . ' GB';
-                } else {
-                    $totalSizef = $totalSizeMB . ' MB';
                 }
-            } else {
-                $totalSizef = $totalSizeKB . ' KB';
+
+                // Compile overall success message
+                $user = auth()->user();
+                $entries = CommonTable::where('user_id', $user->id)
+                ->where('is_delete', 0)
+                ->whereNull('is_replaced')
+                ->where('location', $request->input('location'))
+                ->where('real_file_name', $request->input('real_file_name'))
+                ->where('bank_name', $request->input('bank_name'))
+                ->get();
+                $count = $entries->count();
+                $totalFileSize = $entries->sum('file_size');
+
+                $totalSizeKB = round($totalFileSize / 1024, 2); // Convert to KB
+
+                if ($totalSizeKB > 1024) {
+                    $totalSizeMB = round($totalSizeKB / 1024, 2); // Convert to MB
+                    if ($totalSizeMB > 1024) {
+                        $totalSizeGB = round($totalSizeMB / 1024, 2); // Convert to GB
+                        $totalSizef = $totalSizeGB . ' GB';
+                    } else {
+                        $totalSizef = $totalSizeMB . ' MB';
+                    }
+                } else {
+                    $totalSizef = $totalSizeKB . ' KB';
+                }
+    
+                // Compile the response
+                return response()->json([
+                    'success' => empty($errorMessages),
+                    'count' => $count,
+                    'totalSize' => $totalSizef,
+                    'successMessages' => $successMessages,
+                    'errorMessages' => $errorMessages,
+                    'real_file_name' => $request->input('real_file_name'),
+                ]);
+            } catch (\Exception $e) {
+                return response()->json(['success' => false, 'message' => 'Failed to process file uploads.'], 500);
             }
-
-
-            return response()->json([
-                'success' => empty($errorMessages),
-                'count' => $count,
-                'totalSize' => $totalSizef,
-                'successMessages' => $successMessages,
-                'errorMessages' => $errorMessages,
-                'real_file_name' => $request->input('real_file_name'),
-            ]);
-
-        } catch (\Exception $e) {
-            // Handle any exceptions that occur during file upload or database saving
-            return response()->json(['success' => false, 'message' => 'Failed to process file uploads.'], 500);
+        } else {
+            // No files were uploaded
+            return response()->json(['success' => false, 'message' => 'No files uploaded.'], 400);
         }
-    } else {
-        // Return a JSON response indicating no files were uploaded
-        return response()->json(['success' => false, 'message' => 'No files uploaded.'], 400);
+
     }
+
+    
 }
+
+// ////////////////////// new version PredefinedCommonUploadFiles end
+
+
+
+// public function PredefinedCommonUploadFilesBank(Request $request)
+// {
+//     $request->validate([
+//         'files.*' => 'required|file|max:102400|mimes:pdf,ppt,pot,pps,pptx,pptm,potx,ppam,ppsx,sldx,sldm,odp,ods,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,xlsx,docx,docm,xlam,txt,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv,xltx,xltm', // Allow specific file types up to 100MB
+//         'tagList' => 'nullable', // Allow tagList to be nullable
+//     ], [
+//         'files.*.required' => 'Each file is required.',
+//         'files.*.file' => 'The uploaded item must be a valid file.',
+//         'files.*.max' => 'Each file may not be larger than 100MB.',
+//         'files.*.mimes' => 'The file type must be one of the following: PDF, ODP, ODS, PPT, DOC, ODT, RTF, CSV, JSON, XML, HTML, ICO, SVG, WEBP, ZIP, XLS, DOCX, WAV, OGG, MP3, AVI, MOV, WMV, WEBM, TIFF, MP4, JPG, PNG, GIF, JPEG, 3GP, MKV, FLV.',
+//     ]);
+
+//     if ($request->hasFile('files')) {
+//         try {
+//             // Initialize counters and message arrays
+//             $totalSize = 0;
+//             $successMessages = [];
+//             $errorMessages = [];
+            
+//             // 22 August code added by sandeep ---- default tags added -- reference excel sheet shared by sir;
+//                     // Default tags
+//                     $tag_list = [];
+                    
+//                     // $automated_tags=[];
+                    
+//                     $automated_tags_temp1 = $request->input('location'); // 'Legal /Secretarial /Statutory Registers'
+//                     $automated_tags_temp2 = $request->input('real_file_name'); // Example: 'File1 /File2 /File3'
+                    
+//                     $automated_tags_temp11 = array_map('trim', explode('/', $automated_tags_temp1)); // ['Legal', 'Secretarial', 'Statutory Registers']
+//                     $automated_tags_temp22 = array_map('trim', explode('/', $automated_tags_temp2)); // ['File1', 'File2', 'File3']
+                    
+//                     // Merge both arrays
+//                     $merged_automated_tags = array_merge($automated_tags_temp11, $automated_tags_temp22);
+                    
+//                     // Display the merged array
+//                     // dd($merged_automated_tags);
+                    
+
+//                     // Handle tagList whether it's an array, a comma-separated string, or empty
+//                     $userTags = $request->input('tagList', []);
+                    
+//                     // Convert to array if it's a comma-separated string
+//                     if (is_string($userTags)) {
+//                         $userTags = explode(',', $userTags);
+//                     }
+//                     // Ensure $userTags is an array and remove any empty values
+//                     if (is_array($userTags)) {
+//                         $userTags = array_filter($userTags); // Remove empty values
+//                     } else {
+//                         $userTags = []; // Fallback to empty array if not an array
+//                     }
+                    
+//                     // Merge with default tags
+//                     $tag_list = array_merge($tag_list, $userTags);
+//                     // dd($tag_list);
+                    
+//                     $final_automated_tags = array_merge($merged_automated_tags , $tag_list);
+//                     //  dd($final_automated_tags);
+//                     // dd("okokokok");
+                    
+                    
+//                     // $tags = empty($tag_list) ? NULL : json_encode($tag_list);
+//                     $tags = empty($final_automated_tags) ? NULL : json_encode($final_automated_tags);
+
+//                     $location = preg_replace('/\s*\/\s*/', '/', trim($request->input('location')));
+//                     // "Legal/Secretarial/Board Meetings" 
+        
+//                     // Legal/Secretarial/Board Meetings/rtR2ORS7jdMq05zW6c704CUXesvrqkZ59ZNNWOib.pdf
+//                     foreach ($request->file('files') as $file) {
+//                         try {
+//                             // Store file inside the dynamically created folder
+//                             //////
+//                             $originalFileName = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME); // Get the file name without extension
+//                             $extension = $file->getClientOriginalExtension(); // Get the file extension
+//                             $fileName = $originalFileName . '.' . $extension; // Start with the original file name
+//                             // $filePath = $file->storeAs($folderPath, $fileName);
+//                             // $storedFileName = basename($filePath);  
+//                             //////
+                        
+//                             //  $filePath = $file->storeAs($location,$fileName);
+//                             // Create a new entry for each file
+//                             $filePath = $file->store($location);
+
+//                             $storedFileName = basename($filePath);
+                           
+//                             // Create a new entry for each file
+//                             CommonTable::create([
+//                                 'file_type' => $file->getClientMimeType(),
+//                                 'file_name' => $file->getClientOriginalName(),
+//                                 'real_file_name' => $request->input('real_file_name'),
+//                                 'temp_file_name' => $storedFileName,
+//                                 'file_size' => $file->getSize(),
+//                                 'file_path' => $filePath,
+//                                 'user_name' => auth()->user()->name, // Assuming user is authenticated
+//                                 'user_id' => auth()->user()->id,
+//                                 'file_status' => $request->input('file_status', 0),
+//                                 'fyear' => $request->input('fyear'),
+//                                 'month' => $request->input('Month'),
+//                                 'tags' => $tags, // Store tags as JSON
+//                                 'bank_name'=>$request->input('bank_name'),
+//                                 'location' => $request->input('location'), // Store the dynamic location
+//                                 'descp' => $request->input('desc'),
+//                             ]);
+        
+//                             $totalSize += $file->getSize();
+//                             $successMessages[] = "File {$file->getClientOriginalName()} uploaded successfully.";
+//                         } catch (\Exception $e) {
+//                             $errorMessages[] = "Failed to save file {$file->getClientOriginalName()} to database.";
+//                         }
+//                     }
+
+//             // Compile overall success message
+//             // $user = auth()->user();
+//     //             $entries = CommonTable::where('user_id', $user->id)
+//     //     ->where('is_delete', 0)
+//     //    ->where('location', 'LIKE', '%Bank Account Statements%')
+//     //         ->where('real_file_name', 'Bank account statement')
+//     //     ->get();
+//     //             $count = $entries->count(); // Count of entries
+//     //             $totalSizeKB = round($totalSize / 1024, 2); // Convert to KB and round
+
+//             // return redirect()->back()->with('success2', 'File Uploaded successfully.');
+
+//             $user = auth()->user();
+//             $entries = CommonTable::where('user_id', $user->id)
+//             ->where('is_delete', 0)
+//             ->where('location', 'LIKE', $request->input('location'))
+//             ->where('real_file_name', $request->input('real_file_name'))
+//             ->get();
+//             $count = $entries->count();
+//             $totalFileSize = $entries->sum('file_size');
+
+//             $totalSizeKB = round($totalFileSize / 1024, 2); // Convert to KB
+
+//             if ($totalSizeKB > 1024) {
+//                 $totalSizeMB = round($totalSizeKB / 1024, 2); // Convert to MB
+//                 if ($totalSizeMB > 1024) {
+//                     $totalSizeGB = round($totalSizeMB / 1024, 2); // Convert to GB
+//                     $totalSizef = $totalSizeGB . ' GB';
+//                 } else {
+//                     $totalSizef = $totalSizeMB . ' MB';
+//                 }
+//             } else {
+//                 $totalSizef = $totalSizeKB . ' KB';
+//             }
+
+
+//             return response()->json([
+//                 'success' => empty($errorMessages),
+//                 'count' => $count,
+//                 'totalSize' => $totalSizef,
+//                 'successMessages' => $successMessages,
+//                 'errorMessages' => $errorMessages,
+//                 'real_file_name' => $request->input('real_file_name'),
+//             ]);
+
+//         } catch (\Exception $e) {
+//             // Handle any exceptions that occur during file upload or database saving
+//             return response()->json(['success' => false, 'message' => 'Failed to process file uploads.'], 500);
+//         }
+//     } else {
+//         // Return a JSON response indicating no files were uploaded
+//         return response()->json(['success' => false, 'message' => 'No files uploaded.'], 400);
+//     }
+// }
 
 //////////////////////////////////////////// 4 october sandeep added code here for prdefined paths common pop upload form file upload  start /////////////////////////////////////////////////////////////////////////
 
@@ -15525,6 +17171,7 @@ public function fetchSecretarialStatutoryRegistersRPBFileData(Request $request)
     $user = auth()->user();
     $files = CommonTable::where('user_id', $user->id)
     ->where('is_delete', 0)
+    ->whereNull('is_replaced')
     ->where('location', $location)
     ->where('real_file_name', $real_file_name)
     ->get();
@@ -18188,6 +19835,12 @@ public function tickting()
     $userRoleRecord = UserRole::where('role', $userRole)->first();
        return view('user.Contract-Management.Contract-Management',compact('cli_announcements','contract','user'));
     }
+
+    
+    
+
+   
+
     public function Sop()
     {
         $cli_announcements = Announcement::where('role', 'Client')->latest()->get();
@@ -18281,6 +19934,10 @@ public function rolemanagement()
     // Fetch the roles created by the authenticated user
     $roles = UserRole::where('user_id', $user->id)->where('is_deleted', 0)->get();
 
+    $division = Division::where('user_id', $user->id)->get();
+
+    // dd($division);
+
     // Fetch the "Admin" role explicitly
     $adminRole = UserRole::where('role', 'Admin')->where('is_deleted', 0)->first();
 
@@ -18308,6 +19965,16 @@ public function rolemanagement()
 
     // Fetch the current user's role record (if needed elsewhere)
     $userRoleRecord = UserRole::where('role', $user->role)->where('is_deleted', 0)->first();
+    $ddsdsdiv = Division::get();
+
+    // $authmanagement = AuthorizeManagement::where('auth_user_id', $user->id)->get();
+
+    $authmanagement = DB::table('authorize_management as a')
+    ->join('divisions as d', 'a.division_id', '=', 'd.id')
+    ->select('a.*', 'd.division_name') // Adjust the selected columns as needed
+    ->whereColumn('a.auth_user_id', 'd.user_id') // Compares auth_user_id with user_id in divisions
+    ->get();
+    // dd($authmanagement);
 
     // Pass all data to the view
     return view('user.role-management.role-management', [
@@ -18317,7 +19984,10 @@ public function rolemanagement()
         'userRoleR' => $userRoleR,
         'usersByRole' => $usersByRole, // Pass the users by role to the view
         'user' => $user,
-        'rolesexit' => $rolesexit
+        'rolesexit' => $rolesexit,
+        'division' => $division,
+        'ddsdsdiv' => $ddsdsdiv,
+        'authmanagement' => $authmanagement
     ]);
 }
 
@@ -18484,74 +20154,100 @@ Member::create([
 ]);
 
 
-$mailersend = new MailerSend(['api_key' => 'mlsn.3cf1d191812b63e38d5edf34dd0146657c403d79af8c2cf2609e26f5b09c0a64']);
+$fromEmail = "no-reply@milliondox.in";
+    
+$email = $request->email;
+$thankYouSubject = "Your Account Details";
 
 
-        $recipients = [
-            new Recipient($request->personal_email_id, "{$request->fname} {$request->lname}"),
-        ];
 
-        $emailParams = (new EmailParams())
-            ->setFrom('admin@milliondox.in')
-            ->setFromName('Admin')
-            ->setRecipients($recipients)
-            ->setSubject('Your Account Details')
-            ->setHtml("<html>
-                <head>
-        <title>Welcome Onboard</title>
-    </head>
-  <body style='font-family: Arial, sans-serif; margin: 0; padding: 0; background-color: #f5f5f5;'>
+$thankYouMessage = <<<HTML
+<!DOCTYPE html>
+<html>
+            <head>
+    <title>Welcome Onboard</title>
+</head>
+<body style='font-family: Arial, sans-serif; margin: 0; padding: 0; background-color: #f5f5f5;'>
 <table width='100%' cellpadding='0' cellspacing='0' border='0'>
-    <tr>
-        <td>
-            <table class='email-container' cellpadding='0' cellspacing='0' border='0' style='width: 100%;  max-width: 600px;    margin: 0 auto;   background-color: #ffffff;
-            border-radius: 8px;  overflow: hidden;  border: 1px solid #dddddd;'>
-                
-                 <!-- Banner -->
-                 <tr>
-                    <td class='banner'>
-                        <img src='https://milliondox.in/assets/images/welcome_onboard.png' alt='img' style='max-width: 100%;  margin: 0 auto;'>
-                    </td>
-                </tr>
+<tr>
+    <td>
+        <table class='email-container' cellpadding='0' cellspacing='0' border='0' style='width: 100%;  max-width: 600px;    margin: 0 auto;   background-color: #ffffff;
+        border-radius: 8px;  overflow: hidden;  border: 1px solid #dddddd;'>
+            
+             <!-- Banner -->
+             <tr>
+                <td class='banner'>
+                    <img src='https://milliondox.in/assets/images/welcome_onboard.png' alt='img' style='max-width: 100%;  margin: 0 auto;'>
+                </td>
+            </tr>
 
-                <!-- Content -->
-                <tr>
-                    <td class='content' style='padding: 20px; color: #333333;'>
-                        <p class='user_title' style='font-weight: 800;'>Dear {$request->fname} {$request->lname}!,</p>
-                        <p>We hope this message finds you well.</p>
-                        <p>We are writing to provide you with your account credentials. For security reasons, please ensure that you handle this information with care.</p>
-                        <table cellpadding='0' cellspacing='0' border='0' style=' width: 100%;  border-collapse: collapse;'>
-                            <tr>
-                                <td style='padding: 10px;  border: 1px solid #dddddd; background-color: #f9f9f9;'><strong>Username:</strong> {$member->user_name}</td>
-                            </tr>
-                            <tr>
-                                <td style='padding: 10px;  border: 1px solid #dddddd; background-color: #f9f9f9;'><strong>Password:</strong>  {$request->password}</td>
-                            </tr>
-                            <tr>
-                                <td style='padding: 10px;  border: 1px solid #dddddd; background-color: #f9f9f9;'><strong>E-mail:</strong>  {$request->email}</td>
-                            </tr>
-                        </table>
-                        <a href='https://milliondox.in/login' class='login_me' style=' display: inline-block;   padding: 12px 60px;   color: #FFF;     border-radius: 50px;
-                        margin: 20px 0px 0px;   background: #fc8c92;   text-decoration: none;'>Login</a>
-                        <p>For your security, we recommend changing your password as soon as you log in. If you have any questions or need further assistance, please do not hesitate to contact our support team.</p>
-                    </td>
-                </tr>
-                <!-- Footer -->
-                <tr>
-                    <td class='footer' style='background-color: #f98b93;    color: #ffffff;   text-align: center;   padding: 20px;'>
-                        <p class='thanks' style='font-weight: bold;'>Thank you for choosing Milliondox!</p>
-                        <p class='important' style='color: #fdbcbc;  font-weight: 800;'>Important Notice:</p>
-                        <p>Please do not share your password with anyone. If you suspect that your account may be compromised, please contact us immediately.</p>
-                    </td>
-                </tr>
-            </table>
-        </td>
-    </tr>
+            <!-- Content -->
+            <tr>
+                <td class='content' style='padding: 20px; color: #333333;'>
+                    <p class='user_title' style='font-weight: 800;'>Dear {$request->fname} {$request->lname}!,</p>
+                    <p>We hope this message finds you well.</p>
+                    <p>We are writing to provide you with your account credentials. For security reasons, please ensure that you handle this information with care.</p>
+                    <table cellpadding='0' cellspacing='0' border='0' style=' width: 100%;  border-collapse: collapse;'>
+                        <tr>
+                            <td style='padding: 10px;  border: 1px solid #dddddd; background-color: #f9f9f9;'><strong>Username:</strong> {$member->user_name}</td>
+                        </tr>
+                        <tr>
+                            <td style='padding: 10px;  border: 1px solid #dddddd; background-color: #f9f9f9;'><strong>Password:</strong>  {$request->password}</td>
+                        </tr>
+                        <tr>
+                            <td style='padding: 10px;  border: 1px solid #dddddd; background-color: #f9f9f9;'><strong>E-mail:</strong>  {$request->email}</td>
+                        </tr>
+                    </table>
+                    <a href='https://milliondox.in/login' class='login_me' style=' display: inline-block;   padding: 12px 60px;   color: #FFF;     border-radius: 50px;
+                    margin: 20px 0px 0px;   background: #fc8c92;   text-decoration: none;'>Login</a>
+                    <p>For your security, we recommend changing your password as soon as you log in. If you have any questions or need further assistance, please do not hesitate to contact our support team.</p>
+                </td>
+            </tr>
+            <!-- Footer -->
+            <tr>
+                <td class='footer' style='background-color: #f98b93;    color: #ffffff;   text-align: center;   padding: 20px;'>
+                    <p class='thanks' style='font-weight: bold;'>Thank you for choosing Milliondox!</p>
+                    <p class='important' style='color: #fdbcbc;  font-weight: 800;'>Important Notice:</p>
+                    <p>Please do not share your password with anyone. If you suspect that your account may be compromised, please contact us immediately.</p>
+                </td>
+            </tr>
+        </table>
+    </td>
+</tr>
 </table>
 </body>
-            </html>");
-        
-        $mailersend->email->send($emailParams);
+        </html>
+HTML;
+
+
+
+// Email headers
+$headers = "From: $fromEmail\r\n";
+$headers .= "Reply-To: $fromEmail\r\n";
+$headers .= "MIME-Version: 1.0\r\n";
+$headers .= "Content-Type: text/html; charset=UTF-8\r\n";
+
+// Recipients
+$recipients = [
+new Recipient($request->personal_email_id, "{$request->fname} {$request->lname}"),
+];
+
+// Send email to each recipient
+foreach ($recipients as $recipient) {
+if (mail($recipient->email, $thankYouSubject, $thankYouMessage, $headers)) {
+    $responses[] = [
+        'email' => $recipient->email,
+        'status' => 'success',
+        'message' => "Email sent successfully to {$recipient->name}."
+    ];
+} else {
+    $responses[] = [
+        'email' => $recipient->email,
+        'status' => 'error',
+        'message' => "Failed to send email to {$recipient->name}."
+    ];
+}
+}
 
 // dd($mailersend->email->send($emailParams));
 
@@ -19009,12 +20705,14 @@ $commonColumns = [
 
 $files4 = CommonTable::where('user_id', $user->id)
     ->where('is_delete', 1)
+    ->orderBy('updated_at', 'desc')
     ->get();
 
 
     $deleteFolder = Folder::with('user')
     ->where('user_id', $user->id)
     ->where('is_delete', 1)
+    ->orderBy('updated_at', 'desc')
     ->get();
 
 
@@ -19059,6 +20757,7 @@ $files4 = CommonTable::where('user_id', $user->id)
 
         $entries = CommonTable::where('user_id', $user->id)
     ->where('is_delete', 0)
+    ->whereNull('is_replaced')
     ->where('location', $decodedFolderLocation)
     ->where('real_file_name', 'Notices')
     ->get();
@@ -19077,6 +20776,7 @@ $files4 = CommonTable::where('user_id', $user->id)
 
         $entriesMinbook =CommonTable::where('user_id', $user->id)
     ->where('is_delete', 0)
+    ->whereNull('is_replaced')
     ->where('location', $decodedFolderLocation)
     ->where('real_file_name', 'Minute Book')
     ->get();
@@ -19087,6 +20787,7 @@ $files4 = CommonTable::where('user_id', $user->id)
         
           $entriesreso = CommonTable::where('user_id', $user->id)
     ->where('is_delete', 0)
+    ->whereNull('is_replaced')
     ->where('location', $decodedFolderLocation)
     ->where('real_file_name', 'Resolutions')
     ->get();
@@ -19098,6 +20799,7 @@ $files4 = CommonTable::where('user_id', $user->id)
         
         $entriesas = CommonTable::where('user_id', $user->id)
     ->where('is_delete', 0)
+    ->whereNull('is_replaced')
     ->where('location', $decodedFolderLocation)
     ->where('real_file_name', 'Attendance sheet')
     ->get();
@@ -19129,6 +20831,7 @@ if ($countentriesas > 0) {
         
         $entriesnomeet = CommonTable::where('user_id', $user->id)
     ->where('is_delete', 0)
+    ->whereNull('is_replaced')
     ->where('location', $decodedFolderLocation)
     ->where('real_file_name', 'Notices')
     ->get();
@@ -19139,6 +20842,7 @@ if ($countentriesas > 0) {
         
         $entriesminbookmeet = CommonTable::where('user_id', $user->id)
     ->where('is_delete', 0)
+    ->whereNull('is_replaced')
     ->where('location', $decodedFolderLocation)
     ->where('real_file_name', 'Minute Book')
     ->get();
@@ -19149,6 +20853,7 @@ if ($countentriesas > 0) {
         
          $entriesasmeet = CommonTable::where('user_id', $user->id)
     ->where('is_delete', 0)
+    ->whereNull('is_replaced')
     ->where('location', $decodedFolderLocation)
     ->where('real_file_name', 'Attendance sheet')
     ->get();
@@ -19159,6 +20864,7 @@ if ($countentriesas > 0) {
         
         $entriesresomeet = CommonTable::where('user_id', $user->id)
     ->where('is_delete', 0)
+    ->whereNull('is_replaced')
     ->where('location', $decodedFolderLocation)
     ->where('real_file_name', 'Resolutions')
     ->get();
@@ -19189,6 +20895,7 @@ if ($countentriesresomeet > 0) {
         
          $entriesordernotice = CommonTable::where('user_id', $user->id)
     ->where('is_delete', 0)
+    ->whereNull('is_replaced')
     ->where('location', $decodedFolderLocation)
     ->where('real_file_name', 'Notices')
     ->get();
@@ -19199,6 +20906,7 @@ if ($countentriesresomeet > 0) {
         
         $entriesorderminbook = CommonTable::where('user_id', $user->id)
     ->where('is_delete', 0)
+    ->whereNull('is_replaced')
     ->where('location', $decodedFolderLocation)
     ->where('real_file_name', 'Minute Book')
     ->get();
@@ -19208,6 +20916,7 @@ if ($countentriesresomeet > 0) {
         
         $entriesorderAttend = CommonTable::where('user_id', $user->id)
     ->where('is_delete', 0)
+    ->whereNull('is_replaced')
     ->where('location', $decodedFolderLocation)
     ->where('real_file_name', 'Attendance sheet')
     ->get();
@@ -19217,6 +20926,7 @@ if ($countentriesresomeet > 0) {
         
             $entriesorderreso = CommonTable::where('user_id', $user->id)
     ->where('is_delete', 0)
+    ->whereNull('is_replaced')
     ->where('location', $decodedFolderLocation)
     ->where('real_file_name', 'Resolutions')
     ->get();
@@ -19227,6 +20937,7 @@ if ($countentriesresomeet > 0) {
         
           $entriesinnerrun = CommonTable::where('user_id', $user->id)
     ->where('is_delete', 0)
+    ->whereNull('is_replaced')
     ->where('location', $decodedFolderLocation)
     ->where('real_file_name', 'RUN Form (Reserve Unique Name)')
     ->get();
@@ -19236,6 +20947,7 @@ $totalSizeKBinnerrun = round($totalSizeinnerrun / 1024, 2); // Convert to KB and
 
 $entriesinc9 = CommonTable::where('user_id', $user->id)
     ->where('is_delete', 0)
+    ->whereNull('is_replaced')
     ->where('location', $decodedFolderLocation)
     ->where('real_file_name', 'INC-9 (Declaration of Subscribers and First Directors)')
     ->get();
@@ -19247,6 +20959,7 @@ $entriesinc9 = CommonTable::where('user_id', $user->id)
         
          $entriesinnerspice = CommonTable::where('user_id', $user->id)
     ->where('is_delete', 0)
+    ->whereNull('is_replaced')
     ->where('location', $decodedFolderLocation)
     ->where('real_file_name', 'SPICe+Part B (Simplified Proforma for Incorporating Company Electronically)')
     ->get();
@@ -19257,6 +20970,7 @@ $entriesinc9 = CommonTable::where('user_id', $user->id)
         
          $entriesinnerinc33 = CommonTable::where('user_id', $user->id)
     ->where('is_delete', 0)
+    ->whereNull('is_replaced')
     ->where('location', $decodedFolderLocation)
     ->where('real_file_name', 'INC-33 SPICe MoA (e-Momorandum of Association)')
     ->get();
@@ -19267,6 +20981,7 @@ $entriesinc9 = CommonTable::where('user_id', $user->id)
         
         $entriesinnerinc34 = CommonTable::where('user_id', $user->id)
     ->where('is_delete', 0)
+    ->whereNull('is_replaced')
     ->where('location', $decodedFolderLocation)
     ->where('real_file_name', 'INC-34 SPICe AoA (e-Articles of Association)')
     ->get();
@@ -19276,6 +20991,7 @@ $entriesinc9 = CommonTable::where('user_id', $user->id)
         
         $entriesinnerinc35 = CommonTable::where('user_id', $user->id)
     ->where('is_delete', 0)
+    ->whereNull('is_replaced')
     ->where('location', $decodedFolderLocation)
     ->where('real_file_name', 'INC-35 AGILE-PRO-s')
     ->get();
@@ -19285,6 +21001,7 @@ $entriesinc9 = CommonTable::where('user_id', $user->id)
         
             $entriesinnerinc22 = CommonTable::where('user_id', $user->id)
     ->where('is_delete', 0)
+    ->whereNull('is_replaced')
     ->where('location', $decodedFolderLocation)
     ->where('real_file_name', 'INC-22 (Notice of situation or change of situation of registered office)')
     ->get();
@@ -19296,6 +21013,7 @@ $entriesinc9 = CommonTable::where('user_id', $user->id)
         
         $entriesinnerinc20a = CommonTable::where('user_id', $user->id)
     ->where('is_delete', 0)
+    ->whereNull('is_replaced')
     ->where('location', $decodedFolderLocation)
     ->where('real_file_name', 'INC-20A (Commencement of Business)')
     ->get();
@@ -19306,6 +21024,7 @@ $entriesinc9 = CommonTable::where('user_id', $user->id)
         
          $entriesafs = CommonTable::where('user_id', $user->id)
     ->where('is_delete', 0)
+    ->whereNull('is_replaced')
     ->where('location', $decodedFolderLocation)
     ->where('real_file_name', 'AoC-4 (Annual Filing Statement Form)')
     ->get();
@@ -19318,6 +21037,7 @@ $entriesinc9 = CommonTable::where('user_id', $user->id)
         
          $entriescfs = CommonTable::where('user_id', $user->id)
     ->where('is_delete', 0)
+    ->whereNull('is_replaced')
     ->where('location', $decodedFolderLocation)
     ->where('real_file_name', 'AoC-4 (CFS) (Form for filing consolidated financial statements and other documents with the Registrar)')
     ->get();
@@ -19328,6 +21048,7 @@ $entriesinc9 = CommonTable::where('user_id', $user->id)
         
         $entriesmgt7 = CommonTable::where('user_id', $user->id)
     ->where('is_delete', 0)
+    ->whereNull('is_replaced')
     ->where('location', $decodedFolderLocation)
     ->where('real_file_name', 'MGT-7/ (Annual Return of a company)')
     ->get();
@@ -19337,6 +21058,7 @@ $entriesinc9 = CommonTable::where('user_id', $user->id)
         
          $entriesmgt7a = CommonTable::where('user_id', $user->id)
     ->where('is_delete', 0)
+    ->whereNull('is_replaced')
     ->where('location', $decodedFolderLocation)
     ->where('real_file_name', 'MGT-7A (Annual Return of a small company)')
     ->get();
@@ -19346,6 +21068,7 @@ $entriesinc9 = CommonTable::where('user_id', $user->id)
         
         $entriesbank = CommonTable::where('user_id', $user->id)
     ->where('is_delete', 0)
+    ->whereNull('is_replaced')
     ->where('location', 'LIKE', '%Bank Account Statements%')
     // ->where('location', $decodedFolderLocation)
    
@@ -19361,6 +21084,7 @@ $entriesinc9 = CommonTable::where('user_id', $user->id)
         
         $entriesdirectorappointmentsdir3din = CommonTable::where('user_id', $user->id)
     ->where('is_delete', 0)
+    ->whereNull('is_replaced')
     ->where('location', $decodedFolderLocation)
     ->where('real_file_name', 'DIR-3 form/ DIN number')
     ->get();
@@ -19372,6 +21096,7 @@ $entriesinc9 = CommonTable::where('user_id', $user->id)
         
         $entriesdirectorappointmentsdir3 = CommonTable::where('user_id', $user->id)
     ->where('is_delete', 0)
+    ->whereNull('is_replaced')
     ->where('location', $decodedFolderLocation)
     ->where('real_file_name', 'DIR-3 KYC')
     ->get();
@@ -19382,6 +21107,7 @@ $entriesinc9 = CommonTable::where('user_id', $user->id)
         
         $entriesdirectorappointmentsdir6 =CommonTable::where('user_id', $user->id)
     ->where('is_delete', 0)
+    ->whereNull('is_replaced')
     ->where('location', $decodedFolderLocation)
     ->where('real_file_name', 'DIR-6 form')
     ->get();
@@ -19391,6 +21117,7 @@ $entriesinc9 = CommonTable::where('user_id', $user->id)
         
         $entriesdirectorappointmentsdir12 = CommonTable::where('user_id', $user->id)
     ->where('is_delete', 0)
+    ->whereNull('is_replaced')
     ->where('location', $decodedFolderLocation)
     ->where('real_file_name', 'DIR-12 form')
     ->get();
@@ -19401,6 +21128,7 @@ $entriesinc9 = CommonTable::where('user_id', $user->id)
         
          $entriescreditcardstatement = CommonTable::where('user_id', $user->id)
     ->where('is_delete', 0)
+    ->whereNull('is_replaced')
     ->where('location', 'LIKE', '%Credit Card Statement%')
     // ->where('location', $decodedFolderLocation)
     
@@ -19412,6 +21140,7 @@ $entriesinc9 = CommonTable::where('user_id', $user->id)
         
         $entriesfixeddepoiststatement = CommonTable::where('user_id', $user->id)
     ->where('is_delete', 0)
+    ->whereNull('is_replaced')
     ->where('location', 'LIKE', '%Fixed Deposit Statements%')
     // ->where('location', 'LIKE', $decodedFolderLocation)
     
@@ -19424,6 +21153,7 @@ $entriesinc9 = CommonTable::where('user_id', $user->id)
         
         $entriesmutualfundstatement = CommonTable::where('user_id', $user->id)
     ->where('is_delete', 0)
+    ->whereNull('is_replaced')
     ->where('location', 'LIKE', '%Mutual Fund Statements%')
     // ->where('location', 'LIKE', $decodedFolderLocation)
     ->where('real_file_name', 'Add Mutual Fund Statements')
@@ -19435,6 +21165,7 @@ $entriesinc9 = CommonTable::where('user_id', $user->id)
         
       $entriesdirectorresignationdir11 = CommonTable::where('user_id', $user->id)
     ->where('is_delete', 0)
+    ->whereNull('is_replaced')
     ->where('location', $decodedFolderLocation)
     ->where('real_file_name', 'DIR-11 form')
     ->get();
@@ -19446,6 +21177,7 @@ $entriesinc9 = CommonTable::where('user_id', $user->id)
         
         $entriesdirectorresignationdir12 = CommonTable::where('user_id', $user->id)
     ->where('is_delete', 0)
+    ->whereNull('is_replaced')
     ->where('location', $decodedFolderLocation)
     ->where('real_file_name', 'DIR-12 form')
     ->get();
@@ -19456,6 +21188,7 @@ $entriesinc9 = CommonTable::where('user_id', $user->id)
         
         $entriesdepositundertakingsFormDPT3 = CommonTable::where('user_id', $user->id)
     ->where('is_delete', 0)
+    ->whereNull('is_replaced')
     ->where('location', $decodedFolderLocation)
     ->where('real_file_name', 'Form DPT-3')
     ->get();
@@ -19467,6 +21200,7 @@ $entriesinc9 = CommonTable::where('user_id', $user->id)
         
          $entriesAuditorExitsADT3 = CommonTable::where('user_id', $user->id)
     ->where('is_delete', 0)
+    ->whereNull('is_replaced')
     ->where('location', $decodedFolderLocation)
     ->where('real_file_name', 'ADT-3 form')
     ->get();
@@ -19478,6 +21212,7 @@ $entriesinc9 = CommonTable::where('user_id', $user->id)
         
         $entriesAuditorExitsResignletteraud = CommonTable::where('user_id', $user->id)
     ->where('is_delete', 0)
+    ->whereNull('is_replaced')
     ->where('location', $decodedFolderLocation)
     ->where('real_file_name', 'Resignation letter by auditor')
     ->get();
@@ -19489,6 +21224,7 @@ $entriesinc9 = CommonTable::where('user_id', $user->id)
         
         $entriesAuditorExitsResignDetofgroundsseekremaud = CommonTable::where('user_id', $user->id)
     ->where('is_delete', 0)
+    ->whereNull('is_replaced')
     ->where('location', $decodedFolderLocation)
     ->where('real_file_name', 'Details of the grounds for seeking removal of auditor')
     ->get();
@@ -19502,6 +21238,7 @@ $entriesinc9 = CommonTable::where('user_id', $user->id)
         
         $entriesAuditorExitsSpecialResol = CommonTable::where('user_id', $user->id)
     ->where('is_delete', 0)
+    ->whereNull('is_replaced')
     ->where('location', $decodedFolderLocation)
     ->where('real_file_name', 'Special Resolution')
     ->get();
@@ -19512,6 +21249,7 @@ $entriesinc9 = CommonTable::where('user_id', $user->id)
         
          $entriesAuditorExitsADT2 = CommonTable::where('user_id', $user->id)
     ->where('is_delete', 0)
+    ->whereNull('is_replaced')
     ->where('location', $decodedFolderLocation)
     ->where('real_file_name', 'ADT-2 (Application for removal of auditor(s) before expiry of term)')
     ->get();
@@ -19524,6 +21262,7 @@ $entriesinc9 = CommonTable::where('user_id', $user->id)
         
         $entriesDirector1AadharKYC = CommonTable::where('user_id', $user->id)
     ->where('is_delete', 0)
+    ->whereNull('is_replaced')
     // ->where('location', 'LIKE', '%Taxation / Charter documents / Director Details / Director 1')
     ->where('location', $decodedFolderLocation)
     ->where('real_file_name', 'Aadhar KYC')
@@ -19536,6 +21275,7 @@ $entriesinc9 = CommonTable::where('user_id', $user->id)
         
         $entriesDirector1AddressProof = CommonTable::where('user_id', $user->id)
     ->where('is_delete', 0)
+    ->whereNull('is_replaced')
     // ->where('location', 'LIKE', '%Taxation / Charter documents / Director Details / Director 1')
 
     ->where('location', $decodedFolderLocation)
@@ -19549,6 +21289,7 @@ $entriesinc9 = CommonTable::where('user_id', $user->id)
         
         $entriesDirector1ContactDetails = CommonTable::where('user_id', $user->id)
     ->where('is_delete', 0)
+    ->whereNull('is_replaced')
     // ->where('location', 'LIKE', '%Taxation / Charter documents / Director Details / Director 1')
     ->where('location', $decodedFolderLocation)
     ->where('real_file_name', 'Contact Details')
@@ -19561,6 +21302,7 @@ $entriesinc9 = CommonTable::where('user_id', $user->id)
         
         $entriesDirector1PANKYC = CommonTable::where('user_id', $user->id)
     ->where('is_delete', 0)
+    ->whereNull('is_replaced')
     // ->where('location', 'LIKE', '%Taxation / Charter documents / Director Details / Director 1')
 
     ->where('location', $decodedFolderLocation)
@@ -19573,6 +21315,7 @@ $entriesinc9 = CommonTable::where('user_id', $user->id)
         
         $entriesDirector1Photo = CommonTable::where('user_id', $user->id)
     ->where('is_delete', 0)
+    ->whereNull('is_replaced')
     // ->where('location', 'LIKE', '%Taxation / Charter documents / Director Details / Director 1')
     ->where('location', $decodedFolderLocation)
     ->where('real_file_name', 'Photo')
@@ -19583,6 +21326,7 @@ $entriesinc9 = CommonTable::where('user_id', $user->id)
         
         $entriesDirector1Signimg = CommonTable::where('user_id', $user->id)
     ->where('is_delete', 0)
+    ->whereNull('is_replaced')
     ->where('location', $decodedFolderLocation)
     // ->where('location', 'LIKE', '%Taxation / Charter documents / Director Details / Director 1')
     ->where('real_file_name', 'Signature image')
@@ -19598,6 +21342,7 @@ $entriesinc9 = CommonTable::where('user_id', $user->id)
         
          $entriesDirector2AadharKYC = CommonTable::where('user_id', $user->id)
     ->where('is_delete', 0)
+    ->whereNull('is_replaced')
     // ->where('location', 'LIKE', '%Taxation / Charter documents / Director Details / Director 2')
 
     ->where('location', $decodedFolderLocation)
@@ -19610,6 +21355,7 @@ $entriesinc9 = CommonTable::where('user_id', $user->id)
         
         $entriesDirector2AddressProof = CommonTable::where('user_id', $user->id)
     ->where('is_delete', 0)
+    ->whereNull('is_replaced')
     // ->where('location', 'LIKE', '%Taxation / Charter documents / Director Details / Director 2')
 
     ->where('location', $decodedFolderLocation)
@@ -19623,6 +21369,7 @@ $entriesinc9 = CommonTable::where('user_id', $user->id)
         
         $entriesDirector2ContactDetails = CommonTable::where('user_id', $user->id)
     ->where('is_delete', 0)
+    ->whereNull('is_replaced')
     // ->where('location', 'LIKE', '%Taxation / Charter documents / Director Details / Director 2')
 
     ->where('location', $decodedFolderLocation)
@@ -19636,6 +21383,7 @@ $entriesinc9 = CommonTable::where('user_id', $user->id)
         
         $entriesDirector2PANKYC = CommonTable::where('user_id', $user->id)
     ->where('is_delete', 0)
+    ->whereNull('is_replaced')
     // ->where('location', 'LIKE', '%Taxation / Charter documents / Director Details / Director 2')
 
     ->where('location', $decodedFolderLocation)
@@ -19648,6 +21396,7 @@ $entriesinc9 = CommonTable::where('user_id', $user->id)
         
         $entriesDirector2Photo = CommonTable::where('user_id', $user->id)
     ->where('is_delete', 0)
+    ->whereNull('is_replaced')
     // ->where('location', 'LIKE', '%Taxation / Charter documents / Director Details / Director 2')
 
     ->where('location', $decodedFolderLocation)
@@ -19659,6 +21408,7 @@ $entriesinc9 = CommonTable::where('user_id', $user->id)
         
         $entriesDirector2Signimg = CommonTable::where('user_id', $user->id)
     ->where('is_delete', 0)
+    ->whereNull('is_replaced')
     // ->where('location', 'LIKE', '%Taxation / Charter documents / Director Details / Director 2')
     ->where('location', $decodedFolderLocation)
     ->where('real_file_name', 'Signature image')
@@ -19670,6 +21420,7 @@ $entriesinc9 = CommonTable::where('user_id', $user->id)
         
         $entriesIncorporationArtofAssoc = CommonTable::where('user_id', $user->id)
     ->where('is_delete', 0)
+    ->whereNull('is_replaced')
     // ->where('location', 'LIKE', '%Taxation / Charter documents / Incorporation')
     ->where('location', $decodedFolderLocation)
     ->where('real_file_name', 'Articles of Association')
@@ -19681,6 +21432,7 @@ $entriesinc9 = CommonTable::where('user_id', $user->id)
         // dd($entriesIncorporationArtofAssoc);
         $entriesIncorporationCertifofincorp = CommonTable::where('user_id', $user->id)
     ->where('is_delete', 0)
+    ->whereNull('is_replaced')
     // ->where('location', 'LIKE', '%Charter documents / Incorporation')
     ->where('location', $decodedFolderLocation)
     ->where('real_file_name', 'Certificate of incorporation')
@@ -19695,6 +21447,7 @@ $entriesinc9 = CommonTable::where('user_id', $user->id)
         
         $entriesIncorporationMemoofAssoc = CommonTable::where('user_id', $user->id)
     ->where('is_delete', 0)
+    ->whereNull('is_replaced')
     // ->where('location', 'LIKE', '%Taxation / Charter documents / Incorporation')
     ->where('location', $decodedFolderLocation)
     ->where('real_file_name', 'Memorandum of Association')
@@ -19706,6 +21459,7 @@ $entriesinc9 = CommonTable::where('user_id', $user->id)
         
          $entriesIncorporationPartnerdeed = CommonTable::where('user_id', $user->id)
     ->where('is_delete', 0)
+    ->whereNull('is_replaced')
     // ->where('location', 'LIKE', '%Taxation / Charter documents / Incorporation')
     ->where('location', $decodedFolderLocation)
     ->where('real_file_name', 'Partnership deed')
@@ -19717,6 +21471,7 @@ $entriesinc9 = CommonTable::where('user_id', $user->id)
         
         $entriesIncorporationLLPAgreement = CommonTable::where('user_id', $user->id)
     ->where('is_delete', 0)
+    ->whereNull('is_replaced')
     // ->where('location', 'LIKE', '%Taxation / Charter documents / Incorporation')
     ->where('location', $decodedFolderLocation)
     ->where('real_file_name', 'LLP Agreement')
@@ -19728,6 +21483,7 @@ $entriesinc9 = CommonTable::where('user_id', $user->id)
         
         $entriesIncorporationTrustDeed = CommonTable::where('user_id', $user->id)
     ->where('is_delete', 0)
+    ->whereNull('is_replaced')
     // ->where('location', 'LIKE', '%Taxation / Charter documents / Incorporation')
     ->where('location', $decodedFolderLocation)
     ->where('real_file_name', 'Trust Deed')
@@ -19739,6 +21495,7 @@ $entriesinc9 = CommonTable::where('user_id', $user->id)
         
         $entriesIncorporationSharecertifF = CommonTable::where('user_id', $user->id)
     ->where('is_delete', 0)
+    ->whereNull('is_replaced')
     // ->where('location', 'LIKE', '%Taxation / Charter documents / Incorporation')
     ->where('location', $decodedFolderLocation)
     ->where('real_file_name', 'Share certificates')
@@ -19753,6 +21510,7 @@ $entriesinc9 = CommonTable::where('user_id', $user->id)
         
         $entriescharregpan = CommonTable::where('user_id', $user->id)
     ->where('is_delete', 0)
+    ->whereNull('is_replaced')
     // ->where('location', 'LIKE', '%Taxation / Charter documents / Registrations')
     ->where('location', $decodedFolderLocation)
     ->where('real_file_name', 'PAN certificate')
@@ -19766,6 +21524,7 @@ $entriesinc9 = CommonTable::where('user_id', $user->id)
         
         $entriescharregtan = CommonTable::where('user_id', $user->id)
     ->where('is_delete', 0)
+    ->whereNull('is_replaced')
     // ->where('location', 'LIKE', '%Taxation / Charter documents / Registrations')
     ->where('location', $decodedFolderLocation)
     ->where('real_file_name', 'TAN certificate')
@@ -19777,6 +21536,7 @@ $entriesinc9 = CommonTable::where('user_id', $user->id)
         
          $entriescharregGSTIN = CommonTable::where('user_id', $user->id)
     ->where('is_delete', 0)
+    ->whereNull('is_replaced')
     // ->where('location', 'LIKE', '%Taxation / Charter documents / Registrations')
     ->where('location', $decodedFolderLocation)
     ->where('real_file_name', 'GSTIN certificate')
@@ -19788,6 +21548,7 @@ $entriesinc9 = CommonTable::where('user_id', $user->id)
         
          $entriescharregMSME = CommonTable::where('user_id', $user->id)
     ->where('is_delete', 0)
+    ->whereNull('is_replaced')
     // ->where('location', 'LIKE', '%Taxation / Charter documents / Registrations')
     ->where('location', $decodedFolderLocation)
     ->where('real_file_name', 'MSME certificate')
@@ -19800,6 +21561,7 @@ $entriesinc9 = CommonTable::where('user_id', $user->id)
         
         $entriescharregTrademark = CommonTable::where('user_id', $user->id)
     ->where('is_delete', 0)
+    ->whereNull('is_replaced')
     // ->where('location', 'LIKE', '%Taxation / Charter documents / Registrations')
     ->where('location', $decodedFolderLocation)
     ->where('real_file_name', 'Trademark')
@@ -19812,6 +21574,7 @@ $entriesinc9 = CommonTable::where('user_id', $user->id)
         
         $entriescharregPFC = CommonTable::where('user_id', $user->id)
     ->where('is_delete', 0)
+    ->whereNull('is_replaced')
     // ->where('location', 'LIKE', '%Taxation / Charter documents / Registrations')
     ->where('location', $decodedFolderLocation)
     ->where('real_file_name', 'Provident Fund certificate')
@@ -19823,6 +21586,7 @@ $entriesinc9 = CommonTable::where('user_id', $user->id)
         
         $entriescharregESIC = CommonTable::where('user_id', $user->id)
     ->where('is_delete', 0)
+    ->whereNull('is_replaced')
     // ->where('location', 'LIKE', '%Taxation / Charter documents / Registrations')
     ->where('location', $decodedFolderLocation)
     ->where('real_file_name', 'Employee State Insurance certificate')
@@ -19834,6 +21598,7 @@ $entriesinc9 = CommonTable::where('user_id', $user->id)
         
         $entriescharregPTC = CommonTable::where('user_id', $user->id)
     ->where('is_delete', 0)
+    ->whereNull('is_replaced')
     // ->where('location', 'LIKE', '%Taxation / Charter documents / Registrations')
     ->where('location', $decodedFolderLocation)
     ->where('real_file_name', 'Professional Tax certificate')
@@ -19845,6 +21610,7 @@ $entriesinc9 = CommonTable::where('user_id', $user->id)
         
         $entriescharregLWFC = CommonTable::where('user_id', $user->id)
     ->where('is_delete', 0)
+    ->whereNull('is_replaced')
     // ->where('location', 'LIKE', '%Taxation / Charter documents / Registrations')
     ->where('location', $decodedFolderLocation)
     ->where('real_file_name', 'Labour Welfare Fund certificate')
@@ -19856,6 +21622,7 @@ $entriesinc9 = CommonTable::where('user_id', $user->id)
         
         $entriescharregPP = CommonTable::where('user_id', $user->id)
     ->where('is_delete', 0)
+    ->whereNull('is_replaced')
     // ->where('location', 'LIKE', '%Taxation / Charter documents / Registrations')
     ->where('location', $decodedFolderLocation)
     ->where('real_file_name', 'POSH Policy')
@@ -19868,6 +21635,7 @@ $entriesinc9 = CommonTable::where('user_id', $user->id)
         
         $entriesSECAABRAA = CommonTable::where('user_id', $user->id)
     ->where('is_delete', 0)
+    ->whereNull('is_replaced')
     // ->where('location', 'Legal / Secretarial / Auditor Appointment')
     ->where('location', $decodedFolderLocation)
     ->where('real_file_name', 'Board Resolution for the appointment of Auditor')
@@ -19879,6 +21647,7 @@ $entriesinc9 = CommonTable::where('user_id', $user->id)
         
          $entriesSECAAIA = CommonTable::where('user_id', $user->id)
     ->where('is_delete', 0)
+    ->whereNull('is_replaced')
     // ->where('location', 'Legal / Secretarial / Auditor Appointment')
     ->where('location', $decodedFolderLocation)
     ->where('real_file_name', 'Intimation to auditor')
@@ -19891,6 +21660,7 @@ $entriesinc9 = CommonTable::where('user_id', $user->id)
         
           $entriesSECAALA = CommonTable::where('user_id', $user->id)
     ->where('is_delete', 0)
+    ->whereNull('is_replaced')
     // ->where('location', 'Legal / Secretarial / Auditor Appointment')
     ->where('location', $decodedFolderLocation)
     ->where('real_file_name', 'Letter of appointment')
@@ -19903,6 +21673,7 @@ $entriesinc9 = CommonTable::where('user_id', $user->id)
         
          $entriesSECAACRCAA = CommonTable::where('user_id', $user->id)
     ->where('is_delete', 0)
+    ->whereNull('is_replaced')
     // ->where('location', 'Legal / Secretarial / Auditor Appointment')
     ->where('location', $decodedFolderLocation)
     ->where('real_file_name', 'Certificate as per Rule 4 and consent by Auditor for his appointment')
@@ -19915,6 +21686,7 @@ $entriesinc9 = CommonTable::where('user_id', $user->id)
         
                  $entriesSECAAALA = CommonTable::where('user_id', $user->id)
     ->where('is_delete', 0)
+    ->whereNull('is_replaced')
     // ->where('location', 'Legal / Secretarial / Auditor Appointment')
     ->where('location', $decodedFolderLocation)
     ->where('real_file_name', 'Acceptance letter for appointment')
@@ -19926,6 +21698,7 @@ $entriesinc9 = CommonTable::where('user_id', $user->id)
         
          $entriesSECAASR = CommonTable::where('user_id', $user->id)
     ->where('is_delete', 0)
+    ->whereNull('is_replaced')
     // ->where('location', 'Legal / Secretarial / Auditor Appointment')
     ->where('location', $decodedFolderLocation)
     ->where('real_file_name', 'Special Resolution')
@@ -19938,6 +21711,7 @@ $entriesinc9 = CommonTable::where('user_id', $user->id)
         
          $entriesSECSRRM = CommonTable::where('user_id', $user->id)
     ->where('is_delete', 0)
+    ->whereNull('is_replaced')
     // ->where('location', 'Legal / Secretarial / Statutory Registers')
     ->where('location', $decodedFolderLocation)
     ->where('real_file_name', 'Register of Members')
@@ -19949,6 +21723,7 @@ $entriesinc9 = CommonTable::where('user_id', $user->id)
         // sandeep start here 30 sept 2024 secreterial fix path 
         $entriesSECSRROSH = CommonTable::where('user_id', $user->id)
             ->where('is_delete', 0)
+            ->whereNull('is_replaced')
             // ->where('location', 'Legal / Secretarial / Statutory Registers')
             ->where('location', $decodedFolderLocation)
             ->where('real_file_name', 'Register of Other Security Holders')
@@ -19960,6 +21735,7 @@ $entriesinc9 = CommonTable::where('user_id', $user->id)
         
         $entriesSECSRFR = CommonTable::where('user_id', $user->id)
             ->where('is_delete', 0)
+            ->whereNull('is_replaced')
             // ->where('location', 'Legal / Secretarial / Statutory Registers')
             ->where('location', $decodedFolderLocation)
             ->where('real_file_name', '⁠Foreign Register')
@@ -19971,6 +21747,7 @@ $entriesinc9 = CommonTable::where('user_id', $user->id)
         
         $entriesSECSRRDKMPR = CommonTable::where('user_id', $user->id)
             ->where('is_delete', 0)
+            ->whereNull('is_replaced')
             // ->where('location', 'Legal / Secretarial / Statutory Registers')
             ->where('location', $decodedFolderLocation)
             ->where('real_file_name', 'Register of Directors and KMP')
@@ -19982,6 +21759,7 @@ $entriesinc9 = CommonTable::where('user_id', $user->id)
         
         $entriesSECSRROC = CommonTable::where('user_id', $user->id)
             ->where('is_delete', 0)
+            ->whereNull('is_replaced')
             // ->where('location', 'Legal / Secretarial / Statutory Registers')
             ->where('location', $decodedFolderLocation)
             ->where('real_file_name', '⁠Register of Charges')
@@ -19993,6 +21771,7 @@ $entriesinc9 = CommonTable::where('user_id', $user->id)
         
         $entriesSECSRROD = CommonTable::where('user_id', $user->id)
             ->where('is_delete', 0)
+            ->whereNull('is_replaced')
             // ->where('location', 'Legal / Secretarial / Statutory Registers')
             ->where('location', $decodedFolderLocation)
             ->where('real_file_name', 'Register of Deposits')
@@ -20004,6 +21783,7 @@ $entriesinc9 = CommonTable::where('user_id', $user->id)
         
         $entriesSECSRRLGS = CommonTable::where('user_id', $user->id)
             ->where('is_delete', 0)
+            ->whereNull('is_replaced')
             // ->where('location', 'Legal / Secretarial / Statutory Registers')
             ->where('location', $decodedFolderLocation)
             ->where('real_file_name', 'Register of Loans, Guarantees and Securities')
@@ -20015,6 +21795,7 @@ $entriesinc9 = CommonTable::where('user_id', $user->id)
         
          $entriesSECSRROINHCN = CommonTable::where('user_id', $user->id)
             ->where('is_delete', 0)
+            ->whereNull('is_replaced')
             // ->where('location', 'Legal / Secretarial / Statutory Registers')
             ->where('location', $decodedFolderLocation)
             ->where('real_file_name', 'Register of Investments not held in Company’s name')
@@ -20026,6 +21807,7 @@ $entriesinc9 = CommonTable::where('user_id', $user->id)
         
         $entriesSECSRRCDI = CommonTable::where('user_id', $user->id)
             ->where('is_delete', 0)
+            ->whereNull('is_replaced')
             // ->where('location', 'Legal / Secretarial / Statutory Registers')
             ->where('location', $decodedFolderLocation)
             ->where('real_file_name', '⁠Register of Contracts in which Directors are interested')
@@ -20037,6 +21819,7 @@ $entriesinc9 = CommonTable::where('user_id', $user->id)
         
         $entriesSECSRRSES = CommonTable::where('user_id', $user->id)
             ->where('is_delete', 0)
+            ->whereNull('is_replaced')
             // ->where('location', 'Legal / Secretarial / Statutory Registers')
             ->where('location', $decodedFolderLocation)
             ->where('real_file_name', 'Register of Sweat Equity Shares')
@@ -20048,6 +21831,7 @@ $entriesinc9 = CommonTable::where('user_id', $user->id)
         
         $entriesSECSRRESO = CommonTable::where('user_id', $user->id)
             ->where('is_delete', 0)
+            ->whereNull('is_replaced')
             // ->where('location', 'Legal / Secretarial / Statutory Registers')
             ->where('location', $decodedFolderLocation)
             ->where('real_file_name', 'Register of Employee Stock Options')
@@ -20059,6 +21843,7 @@ $entriesinc9 = CommonTable::where('user_id', $user->id)
         
         $entriesSECSRROSBB = CommonTable::where('user_id', $user->id)
             ->where('is_delete', 0)
+            ->whereNull('is_replaced')
             // ->where('location', 'Legal / Secretarial / Statutory Registers')
             ->where('location', $decodedFolderLocation)
             ->where('real_file_name', 'Register of Securities Bought Back')
@@ -20070,6 +21855,7 @@ $entriesinc9 = CommonTable::where('user_id', $user->id)
         
         $entriesSECSRRRDSC = CommonTable::where('user_id', $user->id)
             ->where('is_delete', 0)
+            ->whereNull('is_replaced')
             // ->where('location', 'Legal / Secretarial / Statutory Registers')
             ->where('location', $decodedFolderLocation)
             ->where('real_file_name', 'Register of Renewed or Duplicate Share Certificates')
@@ -20081,6 +21867,7 @@ $entriesinc9 = CommonTable::where('user_id', $user->id)
         
         $entriesSECSRRSBO = CommonTable::where('user_id', $user->id)
             ->where('is_delete', 0)
+            ->whereNull('is_replaced')
             ->where('location', $decodedFolderLocation)
             ->where('real_file_name', 'Register of SBO')
             ->get();
@@ -20091,6 +21878,7 @@ $entriesinc9 = CommonTable::where('user_id', $user->id)
         
         $entriesSECSRRPB = CommonTable::where('user_id', $user->id)
             ->where('is_delete', 0)
+            ->whereNull('is_replaced')
             // ->where('location', 'Legal / Secretarial / Statutory Registers')
             ->where('location', $decodedFolderLocation)
             ->where('real_file_name', 'Register of Postal Ballot')
@@ -20111,6 +21899,7 @@ $entriesinc9 = CommonTable::where('user_id', $user->id)
     // Fetch entries from the database based on the user ID, is_delete status, location, and real_file_name
     $entriesemponboard = CommonTable::where('user_id', $user->id)
         ->where('is_delete', 0)
+        ->whereNull('is_replaced')
         ->where('location', $decodedFolderLocation) // Use the decoded folder parameter here
         ->where('real_file_name', 'Offer Letter')
         ->get();
@@ -20126,6 +21915,7 @@ $entriesinc9 = CommonTable::where('user_id', $user->id)
         
         $entriesemponboardal = CommonTable::where('user_id', $user->id)
         ->where('is_delete', 0)
+        ->whereNull('is_replaced')
         ->where('location', $decodedFolderLocation) // Use the decoded folder parameter here
         ->where('real_file_name', 'Acceptance Letter')
         ->get();
@@ -20136,6 +21926,7 @@ $entriesinc9 = CommonTable::where('user_id', $user->id)
 
         $entriesemponboardea = CommonTable::where('user_id', $user->id)
         ->where('is_delete', 0)
+        ->whereNull('is_replaced')
         ->where('location', $decodedFolderLocation) // Use the decoded folder parameter here
         ->where('real_file_name', 'Employment Agreement')
         ->get();
@@ -20147,6 +21938,7 @@ $entriesinc9 = CommonTable::where('user_id', $user->id)
 
         $entriesemponboardnda = CommonTable::where('user_id', $user->id)
         ->where('is_delete', 0)
+        ->whereNull('is_replaced')
         ->where('location', $decodedFolderLocation) // Use the decoded folder parameter here
         ->where('real_file_name', 'Non Disclosure Agreement')
         ->get();
@@ -20157,6 +21949,7 @@ $entriesinc9 = CommonTable::where('user_id', $user->id)
 
         $entriesemponboardnc = CommonTable::where('user_id', $user->id)
         ->where('is_delete', 0)
+        ->whereNull('is_replaced')
         ->where('location', $decodedFolderLocation) // Use the decoded folder parameter here
         ->where('real_file_name', 'Non-compete')
         ->get();
@@ -20168,6 +21961,7 @@ $entriesinc9 = CommonTable::where('user_id', $user->id)
 
         $entriesemponboardcb = CommonTable::where('user_id', $user->id)
         ->where('is_delete', 0)
+        ->whereNull('is_replaced')
         ->where('location', $decodedFolderLocation) // Use the decoded folder parameter here
         ->where('real_file_name', 'Contractual Bond')
         ->get();
@@ -20179,6 +21973,7 @@ $entriesinc9 = CommonTable::where('user_id', $user->id)
 
         $entriesemponboardepf = CommonTable::where('user_id', $user->id)
         ->where('is_delete', 0)
+        ->whereNull('is_replaced')
         ->where('location', $decodedFolderLocation) // Use the decoded folder parameter here
         ->where('real_file_name', 'Form 11 - EPF')
         ->get();
@@ -20190,6 +21985,7 @@ $entriesinc9 = CommonTable::where('user_id', $user->id)
 
         $entriesemponboardincometax = CommonTable::where('user_id', $user->id)
         ->where('is_delete', 0)
+        ->whereNull('is_replaced')
         ->where('location', $decodedFolderLocation) // Use the decoded folder parameter here
         ->where('real_file_name', 'Form 12BB - Income Tax')
         ->get();
@@ -20201,6 +21997,7 @@ $entriesinc9 = CommonTable::where('user_id', $user->id)
 
         $entrieskycphoto = CommonTable::where('user_id', $user->id)
         ->where('is_delete', 0)
+        ->whereNull('is_replaced')
         ->where('location', $decodedFolderLocation) // Use the decoded folder parameter here
         ->where('real_file_name', 'Photo')
         ->get();
@@ -20211,6 +22008,7 @@ $entriesinc9 = CommonTable::where('user_id', $user->id)
 
         $entrieskycaadhar = CommonTable::where('user_id', $user->id)
         ->where('is_delete', 0)
+        ->whereNull('is_replaced')
         ->where('location', $decodedFolderLocation) // Use the decoded folder parameter here
         ->where('real_file_name', 'Aadhar KYC')
         ->get();
@@ -20222,6 +22020,7 @@ $entriesinc9 = CommonTable::where('user_id', $user->id)
 
         $entrieskycpan = CommonTable::where('user_id', $user->id)
         ->where('is_delete', 0)
+        ->whereNull('is_replaced')
         ->where('location', $decodedFolderLocation) // Use the decoded folder parameter here
         ->where('real_file_name', 'PAN KYC')
         ->get();
@@ -20233,6 +22032,7 @@ $entriesinc9 = CommonTable::where('user_id', $user->id)
 
         $entrieskycaddressproof = CommonTable::where('user_id', $user->id)
         ->where('is_delete', 0)
+        ->whereNull('is_replaced')
         ->where('location', $decodedFolderLocation) // Use the decoded folder parameter here
         ->where('real_file_name', 'Address Proof')
         ->get();
@@ -20244,6 +22044,7 @@ $entriesinc9 = CommonTable::where('user_id', $user->id)
 
         $entrieskyccontactdetails = CommonTable::where('user_id', $user->id)
         ->where('is_delete', 0)
+        ->whereNull('is_replaced')
         ->where('location', $decodedFolderLocation) // Use the decoded folder parameter here
         ->where('real_file_name', 'Contact Details')
         ->get();
@@ -20256,6 +22057,7 @@ $entriesinc9 = CommonTable::where('user_id', $user->id)
 
         $entrieshrpayrim = CommonTable::where('user_id', $user->id)
         ->where('is_delete', 0)
+        ->whereNull('is_replaced')
         ->where('location', $decodedFolderLocation) // Use the decoded folder parameter here
         ->where('real_file_name', 'Reimbursement forms & Invoices')
         ->get();
@@ -20266,6 +22068,7 @@ $entriesinc9 = CommonTable::where('user_id', $user->id)
 
         $entrieshrpayrimapprove = CommonTable::where('user_id', $user->id)
         ->where('is_delete', 0)
+        ->whereNull('is_replaced')
         ->where('location', $decodedFolderLocation) // Use the decoded folder parameter here
         ->where('real_file_name', 'Approvals')
         ->get();
@@ -20276,6 +22079,7 @@ $entriesinc9 = CommonTable::where('user_id', $user->id)
 
         $entrieshrempdec = CommonTable::where('user_id', $user->id)
         ->where('is_delete', 0)
+        ->whereNull('is_replaced')
         ->where('location', $decodedFolderLocation) // Use the decoded folder parameter here
         ->where('real_file_name', 'Asset Declaration Forms')
         ->get();
@@ -20286,6 +22090,7 @@ $entriesinc9 = CommonTable::where('user_id', $user->id)
 
         $entrieshrempdecmaster = CommonTable::where('user_id', $user->id)
         ->where('is_delete', 0)
+        ->whereNull('is_replaced')
         ->where('location', $decodedFolderLocation) // Use the decoded folder parameter here
         ->where('real_file_name', 'Employee Master')
         ->get();
@@ -20297,6 +22102,7 @@ $entriesinc9 = CommonTable::where('user_id', $user->id)
 
         $entrieshrpaymoney1 = CommonTable::where('user_id', $user->id)
         ->where('is_delete', 0)
+        ->whereNull('is_replaced')
         ->where('location', $decodedFolderLocation) // Use the decoded folder parameter here
         ->where('real_file_name', 'Attendance log')
         ->get();
@@ -20308,6 +22114,7 @@ $entriesinc9 = CommonTable::where('user_id', $user->id)
 
         $entrieshrpaymoney2 = CommonTable::where('user_id', $user->id)
         ->where('is_delete', 0)
+        ->whereNull('is_replaced')
         ->where('location', $decodedFolderLocation) // Use the decoded folder parameter here
         ->where('real_file_name', 'Variable pays')
         ->get();
@@ -20319,6 +22126,7 @@ $entriesinc9 = CommonTable::where('user_id', $user->id)
 
         $entrieshrpaymoney3 = CommonTable::where('user_id', $user->id)
         ->where('is_delete', 0)
+        ->whereNull('is_replaced')
         ->where('location', $decodedFolderLocation) // Use the decoded folder parameter here
         ->where('real_file_name', 'Terminations/ Exits')
         ->get();
@@ -20330,6 +22138,7 @@ $entriesinc9 = CommonTable::where('user_id', $user->id)
 
         $entrieshrpaymoney4 = CommonTable::where('user_id', $user->id)
         ->where('is_delete', 0)
+        ->whereNull('is_replaced')
         ->where('location', $decodedFolderLocation) // Use the decoded folder parameter here
         ->where('real_file_name', 'New Hires')
         ->get();
@@ -20341,6 +22150,7 @@ $entriesinc9 = CommonTable::where('user_id', $user->id)
 
         $entrieshrpaymoney5 = CommonTable::where('user_id', $user->id)
         ->where('is_delete', 0)
+        ->whereNull('is_replaced')
         ->where('location', $decodedFolderLocation) // Use the decoded folder parameter here
         ->where('real_file_name', 'Pay Register')
         ->get();
@@ -20353,6 +22163,7 @@ $entriesinc9 = CommonTable::where('user_id', $user->id)
 
         $entrieshremppol1 = CommonTable::where('user_id', $user->id)
         ->where('is_delete', 0)
+        ->whereNull('is_replaced')
         ->where('location', $decodedFolderLocation) // Use the decoded folder parameter here
         ->where('real_file_name', 'Policy')
         ->get();
@@ -20364,6 +22175,7 @@ $entriesinc9 = CommonTable::where('user_id', $user->id)
 
         $entrieshremppol2 = CommonTable::where('user_id', $user->id)
         ->where('is_delete', 0)
+        ->whereNull('is_replaced')
         ->where('location', $decodedFolderLocation) // Use the decoded folder parameter here
         ->where('real_file_name', 'Grant Letters')
         ->get();
@@ -20375,6 +22187,7 @@ $entriesinc9 = CommonTable::where('user_id', $user->id)
 
         $entrieshremppol3 = CommonTable::where('user_id', $user->id)
         ->where('is_delete', 0)
+        ->whereNull('is_replaced')
         ->where('location', $decodedFolderLocation) // Use the decoded folder parameter here
         ->where('real_file_name', 'Acceptance Letters')
         ->get();
@@ -20386,6 +22199,7 @@ $entriesinc9 = CommonTable::where('user_id', $user->id)
 
         $entrieshremppol4 = CommonTable::where('user_id', $user->id)
         ->where('is_delete', 0)
+        ->whereNull('is_replaced')
         ->where('location', $decodedFolderLocation) // Use the decoded folder parameter here
         ->where('real_file_name', 'Nominations')
         ->get();
@@ -20398,6 +22212,7 @@ $entriesinc9 = CommonTable::where('user_id', $user->id)
 
         $entrieshroff1 = CommonTable::where('user_id', $user->id)
         ->where('is_delete', 0)
+        ->whereNull('is_replaced')
         ->where('location', $decodedFolderLocation) // Use the decoded folder parameter here
         ->where('real_file_name', 'Resignation letter')
         ->get();
@@ -20409,6 +22224,7 @@ $entriesinc9 = CommonTable::where('user_id', $user->id)
 
         $entrieshroff2 = CommonTable::where('user_id', $user->id)
         ->where('is_delete', 0)
+        ->whereNull('is_replaced')
         ->where('location', $decodedFolderLocation) // Use the decoded folder parameter here
         ->where('real_file_name', 'Experience Letter')
         ->get();
@@ -20420,6 +22236,7 @@ $entriesinc9 = CommonTable::where('user_id', $user->id)
 
         $entrieshroff3 = CommonTable::where('user_id', $user->id)
         ->where('is_delete', 0)
+        ->whereNull('is_replaced')
         ->where('location', $decodedFolderLocation) // Use the decoded folder parameter here
         ->where('real_file_name', 'No Dues certificate')
         ->get();
@@ -20431,6 +22248,7 @@ $entriesinc9 = CommonTable::where('user_id', $user->id)
 
         $entrieshroff4 = CommonTable::where('user_id', $user->id)
         ->where('is_delete', 0)
+        ->whereNull('is_replaced')
         ->where('location', $decodedFolderLocation) // Use the decoded folder parameter here
         ->where('real_file_name', 'Character certificate')
         ->get();
@@ -20443,6 +22261,7 @@ $entriesinc9 = CommonTable::where('user_id', $user->id)
 
         $entriesdirecttaxmonthlyworking = CommonTable::where('user_id', $user->id)
         ->where('is_delete', 0)
+        ->whereNull('is_replaced')
         ->where('location', $decodedFolderLocation) // Use the decoded folder parameter here
         ->where('real_file_name', 'Workings')
         ->get();
@@ -20455,6 +22274,7 @@ $entriesinc9 = CommonTable::where('user_id', $user->id)
 
         $entriesdirecttaxmonthlyChallan = CommonTable::where('user_id', $user->id)
         ->where('is_delete', 0)
+        ->whereNull('is_replaced')
         ->where('location', $decodedFolderLocation) // Use the decoded folder parameter here
         ->where('real_file_name', 'Challan')
         ->get();
@@ -20466,6 +22286,7 @@ $entriesinc9 = CommonTable::where('user_id', $user->id)
 
         $entriesdirecttaxQuarterlyFilingsWorkings = CommonTable::where('user_id', $user->id)
         ->where('is_delete', 0)
+        ->whereNull('is_replaced')
         ->where('location', $decodedFolderLocation) // Use the decoded folder parameter here
         ->where('real_file_name', 'Workings')
         ->get();
@@ -20477,6 +22298,7 @@ $entriesinc9 = CommonTable::where('user_id', $user->id)
 
         $entriesdirecttaxQuarterlyFilingsReturn = CommonTable::where('user_id', $user->id)
         ->where('is_delete', 0)
+        ->whereNull('is_replaced')
         ->where('location', $decodedFolderLocation) // Use the decoded folder parameter here
         ->where('real_file_name', 'Return')
         ->get();
@@ -20488,6 +22310,7 @@ $entriesinc9 = CommonTable::where('user_id', $user->id)
 
         $entriesdirecttaxQuarterlyFilingsAcknowledgement = CommonTable::where('user_id', $user->id)
         ->where('is_delete', 0)
+        ->whereNull('is_replaced')
         ->where('location', $decodedFolderLocation) // Use the decoded folder parameter here
         ->where('real_file_name', 'Acknowledgement')
         ->get();
@@ -20500,6 +22323,7 @@ $entriesinc9 = CommonTable::where('user_id', $user->id)
 
         $entriesdirecttaxLitigationsNotices = CommonTable::where('user_id', $user->id)
         ->where('is_delete', 0)
+        ->whereNull('is_replaced')
         ->where('location', $decodedFolderLocation) // Use the decoded folder parameter here
         ->where('real_file_name', 'Notices')
         ->get();
@@ -20511,6 +22335,7 @@ $entriesinc9 = CommonTable::where('user_id', $user->id)
 
         $entriesdirecttaxLitigationsResponses = CommonTable::where('user_id', $user->id)
         ->where('is_delete', 0)
+        ->whereNull('is_replaced')
         ->where('location', $decodedFolderLocation) // Use the decoded folder parameter here
         ->where('real_file_name', 'Responses')
         ->get();
@@ -20522,6 +22347,7 @@ $entriesinc9 = CommonTable::where('user_id', $user->id)
 
         $entriesdirecttaxLitigationsOrders = CommonTable::where('user_id', $user->id)
         ->where('is_delete', 0)
+        ->whereNull('is_replaced')
         ->where('location', $decodedFolderLocation) // Use the decoded folder parameter here
         ->where('real_file_name', 'Orders')
         ->get();
@@ -20533,6 +22359,7 @@ $entriesinc9 = CommonTable::where('user_id', $user->id)
 
         $entriesdirecttaxQuarterlyPaymentsWorkings = CommonTable::where('user_id', $user->id)
         ->where('is_delete', 0)
+        ->whereNull('is_replaced')
         ->where('location', $decodedFolderLocation) // Use the decoded folder parameter here
         ->where('real_file_name', 'Workings')
         ->get();
@@ -20544,6 +22371,7 @@ $entriesinc9 = CommonTable::where('user_id', $user->id)
 
         $entriesdirecttaxQuarterlyPaymentsChallan = CommonTable::where('user_id', $user->id)
         ->where('is_delete', 0)
+        ->whereNull('is_replaced')
         ->where('location', $decodedFolderLocation) // Use the decoded folder parameter here
         ->where('real_file_name', 'Challan')
         ->get();
@@ -20555,6 +22383,7 @@ $entriesinc9 = CommonTable::where('user_id', $user->id)
 
         $entriesdirecttaxIncomeTaxAnnualReturnsFinancialStatements  = CommonTable::where('user_id', $user->id)
         ->where('is_delete', 0)
+        ->whereNull('is_replaced')
         ->where('location', $decodedFolderLocation) // Use the decoded folder parameter here
         ->where('real_file_name', 'Financial Statements')
         ->get();
@@ -20566,6 +22395,7 @@ $entriesinc9 = CommonTable::where('user_id', $user->id)
 
         $entriesdirecttaxIncomeTaxAnnualReturnsCOI  = CommonTable::where('user_id', $user->id)
         ->where('is_delete', 0)
+        ->whereNull('is_replaced')
         ->where('location', $decodedFolderLocation) // Use the decoded folder parameter here
         ->where('real_file_name', 'COI')
         ->get();
@@ -20576,6 +22406,7 @@ $entriesinc9 = CommonTable::where('user_id', $user->id)
 
         $entriesdirecttaxIncomeTaxAnnualReturnsReturn  = CommonTable::where('user_id', $user->id)
         ->where('is_delete', 0)
+        ->whereNull('is_replaced')
         ->where('location', $decodedFolderLocation) // Use the decoded folder parameter here
         ->where('real_file_name', 'Return')
         ->get();
@@ -20586,6 +22417,7 @@ $entriesinc9 = CommonTable::where('user_id', $user->id)
 
         $entriesdirecttaxIncomeTaxAnnualReturnsAcknowledgement  = CommonTable::where('user_id', $user->id)
         ->where('is_delete', 0)
+        ->whereNull('is_replaced')
         ->where('location', $decodedFolderLocation) // Use the decoded folder parameter here
         ->where('real_file_name', 'Acknowledgement')
         ->get();
@@ -20597,6 +22429,7 @@ $entriesinc9 = CommonTable::where('user_id', $user->id)
 
         $entriesdirecttaxIncomeTaxLitigationsNotices  = CommonTable::where('user_id', $user->id)
         ->where('is_delete', 0)
+        ->whereNull('is_replaced')
         ->where('location', $decodedFolderLocation) // Use the decoded folder parameter here
         ->where('real_file_name', 'Notices')
         ->get();
@@ -20608,6 +22441,7 @@ $entriesinc9 = CommonTable::where('user_id', $user->id)
 
         $entriesdirecttaxIncomeTaxLitigationsResponses  = CommonTable::where('user_id', $user->id)
         ->where('is_delete', 0)
+        ->whereNull('is_replaced')
         ->where('location', $decodedFolderLocation) // Use the decoded folder parameter here
         ->where('real_file_name', 'Responses')
         ->get();
@@ -20619,6 +22453,7 @@ $entriesinc9 = CommonTable::where('user_id', $user->id)
         // dd($user->id);
         $entriesindirecttaxIncomeTaxLitigationsNotices  = CommonTable::where('user_id', $user->id)
         ->where('is_delete', 0)
+        ->whereNull('is_replaced')
         ->where('location', $decodedFolderLocation) // Use the decoded folder parameter here
         ->where('real_file_name', 'Notices')
         ->get();
@@ -20626,6 +22461,7 @@ $entriesinc9 = CommonTable::where('user_id', $user->id)
         // dd("Hey   i am herr  ::: ".$decodedFolderLocation);
         // $entriesindirecttaxIncomeTaxLitigationsNotices = CommonTable::where('user_id', $user->id)
         // ->where('is_delete', 0)
+        // ->whereNull('is_replaced')
         // ->where('location', $decodedFolderLocation)
         // ->where('real_file_name', 'Notices');
 
@@ -20645,6 +22481,7 @@ $entriesinc9 = CommonTable::where('user_id', $user->id)
 
         $entriesindirecttaxIncomeTaxLitigationsResponses  = CommonTable::where('user_id', $user->id)
         ->where('is_delete', 0)
+        ->whereNull('is_replaced')
         ->where('location', $decodedFolderLocation) // Use the decoded folder parameter here
         ->where('real_file_name', 'Responses')
         ->get();
@@ -20655,6 +22492,7 @@ $entriesinc9 = CommonTable::where('user_id', $user->id)
 
         $entriesindirecttaxIncomeTaxLitigationsOrders  = CommonTable::where('user_id', $user->id)
         ->where('is_delete', 0)
+        ->whereNull('is_replaced')
         ->where('location', $decodedFolderLocation) // Use the decoded folder parameter here
         ->where('real_file_name', 'Orders')
         ->get();
@@ -20666,6 +22504,7 @@ $entriesinc9 = CommonTable::where('user_id', $user->id)
 
         $entriesindirecttaxIncomeTaxGSTR1Workings  = CommonTable::where('user_id', $user->id)
         ->where('is_delete', 0)
+        ->whereNull('is_replaced')
         ->where('location', $decodedFolderLocation) // Use the decoded folder parameter here
         ->where('real_file_name', 'Workings')
         ->get();
@@ -20676,6 +22515,7 @@ $entriesinc9 = CommonTable::where('user_id', $user->id)
 
         $entriesindirecttaxIncomeTaxGSTR1Return  = CommonTable::where('user_id', $user->id)
         ->where('is_delete', 0)
+        ->whereNull('is_replaced')
         ->where('location', $decodedFolderLocation) // Use the decoded folder parameter here
         ->where('real_file_name', 'Return')
         ->get();
@@ -20687,6 +22527,7 @@ $entriesinc9 = CommonTable::where('user_id', $user->id)
 
         $entriesindirecttaxIncomeTaxGSTR1Acknowledgement  = CommonTable::where('user_id', $user->id)
         ->where('is_delete', 0)
+        ->whereNull('is_replaced')
         ->where('location', $decodedFolderLocation) // Use the decoded folder parameter here
         ->where('real_file_name', 'Acknowledgement')
         ->get();
@@ -20698,6 +22539,7 @@ $entriesinc9 = CommonTable::where('user_id', $user->id)
 
         $entriesindirecttaxIncomeTaxGSTR3bWorkings  = CommonTable::where('user_id', $user->id)
         ->where('is_delete', 0)
+        ->whereNull('is_replaced')
         ->where('location', $decodedFolderLocation) // Use the decoded folder parameter here
         ->where('real_file_name', 'Workings')
         ->get();
@@ -20709,6 +22551,7 @@ $entriesinc9 = CommonTable::where('user_id', $user->id)
 
         $entriesindirecttaxIncomeTaxGSTR3bReturn  = CommonTable::where('user_id', $user->id)
         ->where('is_delete', 0)
+        ->whereNull('is_replaced')
         ->where('location', $decodedFolderLocation) // Use the decoded folder parameter here
         ->where('real_file_name', 'Return')
         ->get();
@@ -20720,6 +22563,7 @@ $entriesinc9 = CommonTable::where('user_id', $user->id)
 
         $entriesindirecttaxIncomeTaxGSTR3bChallanReceipt  = CommonTable::where('user_id', $user->id)
         ->where('is_delete', 0)
+        ->whereNull('is_replaced')
         ->where('location', $decodedFolderLocation) // Use the decoded folder parameter here
         ->where('real_file_name', 'Challan & Receipt')
         ->get();
@@ -20731,6 +22575,7 @@ $entriesinc9 = CommonTable::where('user_id', $user->id)
 
         $entriesindirecttaxIncomeTaxGSTR3bAcknowledgement  = CommonTable::where('user_id', $user->id)
         ->where('is_delete', 0)
+        ->whereNull('is_replaced')
         ->where('location', $decodedFolderLocation) // Use the decoded folder parameter here
         ->where('real_file_name', 'Acknowledgement')
         ->get();
@@ -20744,6 +22589,7 @@ $entriesinc9 = CommonTable::where('user_id', $user->id)
 
         $entriesindirecttaxIncomeTaxGSTR9Workings  = CommonTable::where('user_id', $user->id)
         ->where('is_delete', 0)
+        ->whereNull('is_replaced')
         ->where('location', $decodedFolderLocation) // Use the decoded folder parameter here
         ->where('real_file_name', 'Workings')
         ->get();
@@ -20755,6 +22601,7 @@ $entriesinc9 = CommonTable::where('user_id', $user->id)
 
         $entriesindirecttaxIncomeTaxGSTR9Return  = CommonTable::where('user_id', $user->id)
         ->where('is_delete', 0)
+        ->whereNull('is_replaced')
         ->where('location', $decodedFolderLocation) // Use the decoded folder parameter here
         ->where('real_file_name', 'Return')
         ->get();
@@ -20766,6 +22613,7 @@ $entriesinc9 = CommonTable::where('user_id', $user->id)
 
         $entriesindirecttaxIncomeTaxGSTR9ChallanReceipt  = CommonTable::where('user_id', $user->id)
         ->where('is_delete', 0)
+        ->whereNull('is_replaced')
         ->where('location', $decodedFolderLocation) // Use the decoded folder parameter here
         ->where('real_file_name', 'Challan & Receipt')
         ->get();
@@ -20777,6 +22625,7 @@ $entriesinc9 = CommonTable::where('user_id', $user->id)
 
         $entriesindirecttaxIncomeTaxGSTR9Acknowledgement  = CommonTable::where('user_id', $user->id)
         ->where('is_delete', 0)
+        ->whereNull('is_replaced')
         ->where('location', $decodedFolderLocation) // Use the decoded folder parameter here
         ->where('real_file_name', 'Acknowledgement')
         ->get();
@@ -20791,6 +22640,7 @@ $entriesinc9 = CommonTable::where('user_id', $user->id)
 
         $entriesindirecttaxIncomeTaxGSTR9cWorkings  = CommonTable::where('user_id', $user->id)
         ->where('is_delete', 0)
+        ->whereNull('is_replaced')
         ->where('location', $decodedFolderLocation) // Use the decoded folder parameter here
         ->where('real_file_name', 'Workings')
         ->get();
@@ -20813,6 +22663,7 @@ $entriesinc9 = CommonTable::where('user_id', $user->id)
 
         $entriesindirecttaxIncomeTaxGSTR9cChallanReceipt  = CommonTable::where('user_id', $user->id)
         ->where('is_delete', 0)
+        ->whereNull('is_replaced')
         ->where('location', $decodedFolderLocation) // Use the decoded folder parameter here
         ->where('real_file_name', 'Challan & Receipt')
         ->get();
@@ -20824,6 +22675,7 @@ $entriesinc9 = CommonTable::where('user_id', $user->id)
 
         $entriesindirecttaxIncomeTaxGSTR9cAcknowledgement  = CommonTable::where('user_id', $user->id)
         ->where('is_delete', 0)
+        ->whereNull('is_replaced')
         ->where('location', $decodedFolderLocation) // Use the decoded folder parameter here
         ->where('real_file_name', 'Acknowledgement')
         ->get();
@@ -21506,7 +23358,7 @@ if ($subfolders->isNotEmpty()) {
 
         // Build folder HTML
         $folderHtml .= '<li>
-                            <a href="#" class="folder-link wedcolor" data-folder-path="' . $folder->path . '">
+                            <a href="#" class="folder-link wedcolor sortafter" data-folder-path="' . $folder->path . '">
                                 <div class="folder_wraap foldreload">
                                     <img src="../assets/images/solar_folder-bold.png" id="folders" class="folder-icon" alt="Folder Icon">
                                     <span>' . $folder->name . '</span>
@@ -21571,10 +23423,15 @@ public function shareFolder(Request $request)
 
 
     
-   public function fetchFolderContents(Request $request)
+  public function fetchFolderContents(Request $request)
     {
           $folderPath = $request->get('folderName');
-          $folderPaths = preg_replace('/\//', ' / ', $folderPath);
+          $folderPaths = $request->get('folderName');
+        //   dd($folderPaths);
+
+        //   "2024-2025November301_Office Administration"
+       
+        //   $folderPaths = preg_replace('/\//', ' / ', $folderPath);
         //   dd($folderPath);
     $sortOption = $request->get('sortOption');  // Get the selected sorting option
     
@@ -21634,12 +23491,19 @@ public function shareFolder(Request $request)
         $folderContents = ($sortOption === 'a-to-z') ? $folderContents->sortBy('name') : $folderContents->sortByDesc('name');
     }
 
+        // $fileContents = CommonTable::where('location', $folderPaths)->where('user_id', Auth::id())->where('is_delete', 0 )->get();
+        if(!isset($folderPaths) || is_null($folderPaths)){
+            $fileContents = CommonTable::where('location', 'root')->where('user_id', Auth::id())->where('is_delete', 0 )->whereNull('is_replaced')->whereNull('real_file_name')->get();
+        }
+        else{
+            $fileContents = CommonTable::where('location', $folderPaths)->where('user_id', Auth::id())->where('is_delete', 0 )->whereNull('is_replaced')->whereNull('real_file_name')->get();
+        }
 
-        $fileContents = CommonTable::where('location', $folderPaths)->where('user_id', Auth::id())->where('is_delete', 0 )->get();
+
         // dd($fileContents);
         // Legal/Secretarial/Board Meetings
         // dd($folderPath);
-        $files = UploadedFile::all();
+        // $files = UploadedFile::all();
         // Generate the HTML for folders
           if (!$folderContents->isEmpty()) {
         $folderHtml = '<ul class="customulli">';
@@ -21695,7 +23559,7 @@ public function shareFolder(Request $request)
                                    
                                     <a class="dropdown-itemm rename_nt" data-bs-toggle="modal" data-bs-target="#renamefolder" data-director_id="' . $folder->director_id . '" data-employee_id="' . $folder->employee_id . '" data-folder_path="' . $folder->path . '" data-old_folder_name="' . $folder->name . '" data-folder_name="' . $folder->name . '" data-folder_id="' . $folder->id . '"><img src="../assets/images/rename_nt.png">Rename</a>
 
-                                     <a class="dropdown-itemm download_nt downloadfolder" data-folder-path="' . $folder->path . '" data-id="' . $folder->id . '"><svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                     <a class="dropdown-itemm download_nts downloadfolder" data-folder-path="' . $folder->path . '" data-id="' . $folder->id . '"><svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
                                       <path d="M2.40625 12.25C2.00014 12.25 1.61066 12.0887 1.32349 11.8015C1.03633 11.5143 0.875 11.1249 0.875 10.7188V8.53125C0.875 8.3572 0.94414 8.19028 1.06721 8.06721C1.19028 7.94414 1.3572 7.875 1.53125 7.875C1.7053 7.875 1.87222 7.94414 1.99529 8.06721C2.11836 8.19028 2.1875 8.3572 2.1875 8.53125V10.7188C2.1875 10.8395 2.2855 10.9375 2.40625 10.9375H11.5938C11.6518 10.9375 11.7074 10.9145 11.7484 10.8734C11.7895 10.8324 11.8125 10.7768 11.8125 10.7188V8.53125C11.8125 8.3572 11.8816 8.19028 12.0047 8.06721C12.1278 7.94414 12.2947 7.875 12.4688 7.875C12.6428 7.875 12.8097 7.94414 12.9328 8.06721C13.0559 8.19028 13.125 8.3572 13.125 8.53125V10.7188C13.125 11.1249 12.9637 11.5143 12.6765 11.8015C12.3893 12.0887 11.9999 12.25 11.5938 12.25H2.40625Z" fill="#CEFFA8"></path>
                                       <path d="M6.34334 6.72788V1.75C6.34334 1.57595 6.41248 1.40903 6.53555 1.28596C6.65862 1.16289 6.82554 1.09375 6.99959 1.09375C7.17364 1.09375 7.34056 1.16289 7.46363 1.28596C7.5867 1.40903 7.65584 1.57595 7.65584 1.75V6.72788L9.37959 5.005C9.44049 4.9441 9.51279 4.89579 9.59236 4.86283C9.67193 4.82987 9.75722 4.81291 9.84334 4.81291C9.92947 4.81291 10.0148 4.82987 10.0943 4.86283C10.1739 4.89579 10.2462 4.9441 10.3071 5.005C10.368 5.0659 10.4163 5.1382 10.4493 5.21777C10.4822 5.29734 10.4992 5.38262 10.4992 5.46875C10.4992 5.55488 10.4822 5.64016 10.4493 5.71973C10.4163 5.7993 10.368 5.8716 10.3071 5.9325L7.46334 8.77625C7.40247 8.83721 7.33018 8.88556 7.25061 8.91856C7.17103 8.95155 7.08574 8.96853 6.99959 8.96853C6.91345 8.96853 6.82815 8.95155 6.74857 8.91856C6.669 8.88556 6.59671 8.83721 6.53584 8.77625L3.69209 5.9325C3.63119 5.8716 3.58288 5.7993 3.54992 5.71973C3.51696 5.64016 3.5 5.55488 3.5 5.46875C3.5 5.38262 3.51696 5.29734 3.54992 5.21777C3.58288 5.1382 3.63119 5.0659 3.69209 5.005C3.75299 4.9441 3.82529 4.89579 3.90486 4.86283C3.98443 4.82987 4.06972 4.81291 4.15584 4.81291C4.24197 4.81291 4.32725 4.82987 4.40682 4.86283C4.48639 4.89579 4.55869 4.9441 4.61959 5.005L6.34334 6.72788Z" fill="#CEFFA8"></path>
                                   </svg>Download</a>
@@ -21796,7 +23660,7 @@ public function shareFolder(Request $request)
                                    
                                                    
 
-                                                    <a class="dropdown-itemm download_nt downloadfolder" data-folder-path="' . $folder->path . '" data-id="' . $folder->id . '"><svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                    <a class="dropdown-itemm download_nts downloadfolder" data-folder-path="' . $folder->path . '" data-id="' . $folder->id . '"><svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
                                       <path d="M2.40625 12.25C2.00014 12.25 1.61066 12.0887 1.32349 11.8015C1.03633 11.5143 0.875 11.1249 0.875 10.7188V8.53125C0.875 8.3572 0.94414 8.19028 1.06721 8.06721C1.19028 7.94414 1.3572 7.875 1.53125 7.875C1.7053 7.875 1.87222 7.94414 1.99529 8.06721C2.11836 8.19028 2.1875 8.3572 2.1875 8.53125V10.7188C2.1875 10.8395 2.2855 10.9375 2.40625 10.9375H11.5938C11.6518 10.9375 11.7074 10.9145 11.7484 10.8734C11.7895 10.8324 11.8125 10.7768 11.8125 10.7188V8.53125C11.8125 8.3572 11.8816 8.19028 12.0047 8.06721C12.1278 7.94414 12.2947 7.875 12.4688 7.875C12.6428 7.875 12.8097 7.94414 12.9328 8.06721C13.0559 8.19028 13.125 8.3572 13.125 8.53125V10.7188C13.125 11.1249 12.9637 11.5143 12.6765 11.8015C12.3893 12.0887 11.9999 12.25 11.5938 12.25H2.40625Z" fill="#CEFFA8"></path>
                                       <path d="M6.34334 6.72788V1.75C6.34334 1.57595 6.41248 1.40903 6.53555 1.28596C6.65862 1.16289 6.82554 1.09375 6.99959 1.09375C7.17364 1.09375 7.34056 1.16289 7.46363 1.28596C7.5867 1.40903 7.65584 1.57595 7.65584 1.75V6.72788L9.37959 5.005C9.44049 4.9441 9.51279 4.89579 9.59236 4.86283C9.67193 4.82987 9.75722 4.81291 9.84334 4.81291C9.92947 4.81291 10.0148 4.82987 10.0943 4.86283C10.1739 4.89579 10.2462 4.9441 10.3071 5.005C10.368 5.0659 10.4163 5.1382 10.4493 5.21777C10.4822 5.29734 10.4992 5.38262 10.4992 5.46875C10.4992 5.55488 10.4822 5.64016 10.4493 5.71973C10.4163 5.7993 10.368 5.8716 10.3071 5.9325L7.46334 8.77625C7.40247 8.83721 7.33018 8.88556 7.25061 8.91856C7.17103 8.95155 7.08574 8.96853 6.99959 8.96853C6.91345 8.96853 6.82815 8.95155 6.74857 8.91856C6.669 8.88556 6.59671 8.83721 6.53584 8.77625L3.69209 5.9325C3.63119 5.8716 3.58288 5.7993 3.54992 5.71973C3.51696 5.64016 3.5 5.55488 3.5 5.46875C3.5 5.38262 3.51696 5.29734 3.54992 5.21777C3.58288 5.1382 3.63119 5.0659 3.69209 5.005C3.75299 4.9441 3.82529 4.89579 3.90486 4.86283C3.98443 4.82987 4.06972 4.81291 4.15584 4.81291C4.24197 4.81291 4.32725 4.82987 4.40682 4.86283C4.48639 4.89579 4.55869 4.9441 4.61959 5.005L6.34334 6.72788Z" fill="#CEFFA8"></path>
                                   </svg>Download</a>
@@ -21897,16 +23761,31 @@ public function shareFolder(Request $request)
             $fileHtml .= '<thead>';
             $fileHtml .= '<tr>';
             $fileHtml .= '<th>File Name</th>';
+            
             $fileHtml .= '<th class="funtion_buttnss">Action</th>';
             $fileHtml .= '</tr>';
             $fileHtml .= '</thead>';
             $fileHtml .= '<tbody>';
             foreach ($fileContents as $file) {
-                
+                 $fyear =  $file->fyear;
+
+                 $dataTags = json_decode($file->tags, true); // Attempt to decode JSON string
+
+if (is_array($dataTags)) {
+    $tagsArray = implode(', ', $dataTags); // Join array elements
+} else {
+    $tagsArray = $file->tags; // Fallback to the original value
+}
+
+// dd($tagsArray) ;
+
+                //  $dataTags = json_encode($file->tags);
+                //  $tagsArray = json_decode($dataTags);
+                 
                 $fileHtml .= '<tr>';
                 $fileHtml .= '<td>' . $file->file_name . '</td>';
                 $fileHtml .= '<td class="funtion_buttnss">                
-                <a href="' . route('downloadFilecustom', $file->id) . '">
+                <a class="down_cust_file" href=""# data-id="' . $file->id . '">
                                   <svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
                                       <path d="M2.40625 12.25C2.00014 12.25 1.61066 12.0887 1.32349 11.8015C1.03633 11.5143 0.875 11.1249 0.875 10.7188V8.53125C0.875 8.3572 0.94414 8.19028 1.06721 8.06721C1.19028 7.94414 1.3572 7.875 1.53125 7.875C1.7053 7.875 1.87222 7.94414 1.99529 8.06721C2.11836 8.19028 2.1875 8.3572 2.1875 8.53125V10.7188C2.1875 10.8395 2.2855 10.9375 2.40625 10.9375H11.5938C11.6518 10.9375 11.7074 10.9145 11.7484 10.8734C11.7895 10.8324 11.8125 10.7768 11.8125 10.7188V8.53125C11.8125 8.3572 11.8816 8.19028 12.0047 8.06721C12.1278 7.94414 12.2947 7.875 12.4688 7.875C12.6428 7.875 12.8097 7.94414 12.9328 8.06721C13.0559 8.19028 13.125 8.3572 13.125 8.53125V10.7188C13.125 11.1249 12.9637 11.5143 12.6765 11.8015C12.3893 12.0887 11.9999 12.25 11.5938 12.25H2.40625Z" fill="#CEFFA8" />
                                       <path d="M6.34334 6.72788V1.75C6.34334 1.57595 6.41248 1.40903 6.53555 1.28596C6.65862 1.16289 6.82554 1.09375 6.99959 1.09375C7.17364 1.09375 7.34056 1.16289 7.46363 1.28596C7.5867 1.40903 7.65584 1.57595 7.65584 1.75V6.72788L9.37959 5.005C9.44049 4.9441 9.51279 4.89579 9.59236 4.86283C9.67193 4.82987 9.75722 4.81291 9.84334 4.81291C9.92947 4.81291 10.0148 4.82987 10.0943 4.86283C10.1739 4.89579 10.2462 4.9441 10.3071 5.005C10.368 5.0659 10.4163 5.1382 10.4493 5.21777C10.4822 5.29734 10.4992 5.38262 10.4992 5.46875C10.4992 5.55488 10.4822 5.64016 10.4493 5.71973C10.4163 5.7993 10.368 5.8716 10.3071 5.9325L7.46334 8.77625C7.40247 8.83721 7.33018 8.88556 7.25061 8.91856C7.17103 8.95155 7.08574 8.96853 6.99959 8.96853C6.91345 8.96853 6.82815 8.95155 6.74857 8.91856C6.669 8.88556 6.59671 8.83721 6.53584 8.77625L3.69209 5.9325C3.63119 5.8716 3.58288 5.7993 3.54992 5.71973C3.51696 5.64016 3.5 5.55488 3.5 5.46875C3.5 5.38262 3.51696 5.29734 3.54992 5.21777C3.58288 5.1382 3.63119 5.0659 3.69209 5.005C3.75299 4.9441 3.82529 4.89579 3.90486 4.86283C3.98443 4.82987 4.06972 4.81291 4.15584 4.81291C4.24197 4.81291 4.32725 4.82987 4.40682 4.86283C4.48639 4.89579 4.55869 4.9441 4.61959 5.005L6.34334 6.72788Z" fill="#CEFFA8" />
@@ -21929,7 +23808,10 @@ public function shareFolder(Request $request)
               <div id="myDropdown3" class="dropdown-content"> 
                 <a class="dropdown-itemm open_eye_pdf" href="' . route('showfile', $file->id) . '" target="_blank">
                   View </a>
+                  <a class="dropdown-itemm rename_file edit" data-bs-toggle="modal"  data-bs-target="#edit_fileex" data-file_id="' . $file->id . '" data-filename="' . $file->file_name . '" data-desc="' . $file->descp . '" data-fyear="' . $fyear . '" data-month="' . $file->month . '" data-tags=\'' . $tagsArray . '\'>
+                  Edit </a>
             </div>
+            
         </div>
                           </td>';
                 $fileHtml .= '</tr>';
@@ -21945,6 +23827,233 @@ public function shareFolder(Request $request)
     
         return response()->json(['folderHtml' => $folderHtml,  'fileHtml' => $fileHtml,'directorfolderNames' =>$directorfolderNames]);
     }
+
+    public function fetchfolderfold(Request $request)
+    {
+        // $folderPath = $request->get('folderName', null); // Default is null for root-level folders
+    
+        // // Default root folder path name
+        // $isRoot = is_null($folderPath) || $folderPath === 'root';
+    
+        // $commonFoldersQuery = Folder::query();
+        // if ($isRoot) {
+        //     // $commonFoldersQuery->whereNull('parent_name')->where('common_folder', 1);
+        //     $commonFoldersQuery->whereNull('parent_name')->where('user_id', 301);
+
+        // } else {
+        //     $commonFoldersQuery->where('parent_name', $folderPath)->where('user_id', 301);
+        // }
+        // dd($request->get('folderName'),$request->get('selectedPath'));
+
+        // dd($request->get('selectedPath'));
+
+
+        // folderName: 2024-2025November301_Legal
+        // selectedPath: 2024-2025November0_Human Resources
+        if($request->get('folderName') == "root"){
+            // dd($request->get('folderName'));
+            $userFoldersQuery = Folder::where(function ($query) {
+                $query->where('user_id', 301)
+                    ->orWhere('user_id', Auth::id());
+            })
+            ->where('is_delete', 0)
+            ->whereNull('parent_name')
+            ->orderBy('name', 'ASC')
+            ->get();
+
+        }
+        else if($request->get('folderName') && ($request->get('folderClicked') == 1)){
+            $parent_name = $request->get('folderName');
+            // dd($parent_name);
+
+            $userFoldersQuery = Folder::where(function ($query) {
+                $query->where('user_id', 301)
+                    ->orWhere('user_id', Auth::id());
+            })
+            ->where('is_delete', 0)
+            ->where('parent_name' , $parent_name)
+            ->orderBy('name', 'ASC')
+            ->get();
+
+            // dd($userFoldersQuery);
+        }
+        else if($request->get('folderName') && ($request->get('backPress') == 1)){
+            $parent_name = $request->get('folderName');
+            // dd($parent_name);
+            
+            if($parent_name == "Home"){
+                $userFoldersQuery = Folder::where(function ($query) {
+                    $query->where('user_id', 301)
+                        ->orWhere('user_id', Auth::id());
+                })
+                ->where('is_delete', 0)
+                ->whereNull('parent_name')
+                ->orderBy('name', 'ASC')
+                ->get();
+    
+                // dd($userFoldersQuery);
+            }else{
+                $userFoldersQuery = Folder::where(function ($query) {
+                    $query->where('user_id', 301)
+                        ->orWhere('user_id', Auth::id());
+                })
+                ->where('is_delete', 0)
+                ->where('parent_name' , $parent_name)
+                ->orderBy('name', 'ASC')
+                ->get();
+    
+                // dd($userFoldersQuery);
+
+            }  
+        }
+        else{
+            $parent_name = $request->get('folderName');
+
+            $userFoldersQuery = Folder::where(function ($query) {
+                $query->where('user_id', 301)
+                    ->orWhere('user_id', Auth::id());
+            })
+            ->where('is_delete', 0)
+            ->where('parent_name',$parent_name)
+            ->orderBy('name', 'ASC')
+            ->get();
+        }
+    
+        // $sortOption = $request->get('sortOption', 'a-to-z');
+        // $order = $sortOption === 'z-to-a' ? 'desc' : 'asc';
+    
+        // // $commonFolders = $commonFoldersQuery->orderBy('name', $order)->get();
+        // $userFolders = $userFoldersQuery->orderBy('name', $order)->get();
+        // dd($userFoldersQuery);
+    
+        // $folderContents = $commonFolders->merge($userFolders);
+    
+        $folderHtml = '<ul class="customulli">';
+        foreach ($userFoldersQuery as $folder) {
+            $folderName = strpos($folder->name, '_') !== false 
+                ? substr($folder->name, strpos($folder->name, '_') + 1) 
+                : $folder->name;
+    
+            $folderHtml .= 
+                '<li>
+                    <a href="#" class="fold-link wedcolor" id="folder_'.$folder->id.'" data-folder-path2="' . $folder->path . '">
+                        <div class="folder_wraap">
+                            <img src="../assets/images/solar_folder-bold.png" id="folders" class="folder-icon" alt="Folder Icon">
+                            <span>' . htmlspecialchars($folderName) . '</span>
+                        </div>
+                    </a>
+                </li>';
+        }
+        $folderHtml .= '</ul>';
+    
+        // Include back button logic at root
+        // $showBackButton = !$isRoot;
+    
+        return response()->json([
+            'folderHtml' => $folderHtml,
+            'filesHtml' => $userFoldersQuery->isEmpty() ? '<p>No files available</p>' : '', // Default filesHtml
+            // 'showBackButton' => $showBackButton,
+        ]);
+    }
+    
+    
+
+    // start **** sandeep added above route "fetchfixedFiles" for dynamic fetch fixed path files i.e real_file_name 26 November 2024 
+
+    public function fetchfixedFiles(Request $request)
+    {
+        $user_id = Auth::id();
+        if($user_id === 269){
+             // Fetch folder path from the request query
+            $path = $request->query('path');
+            // Ensure the folder path is provided
+            if (!$path) {
+                return response()->json(['error' => 'Folder path is required'], 400);
+            }
+            // dd($path);
+            // Fetch data from the database where `path` matches and `real_file_name` is not null
+            $data = DB::table('folders')
+            ->where('path', $path)
+            ->whereNotNull('real_file_name')
+            ->first();
+
+            if ($data) {
+                $real_file_names = $data->real_file_name; // Access the real_file_name column
+                // dd($real_file_names);
+                // $counts = [];
+                // foreach ($real_file_names as $file_name) {
+                //     $count = DB::table('common_table')
+                //         ->where('location', $path) // Match the same path
+                //         ->where('real_file_name', $file_name) // Match the specific file name
+                //         ->count();
+
+                //     $counts[$file_name] = $count; // Store the count for each file name
+                // }
+                $real_file_names = json_decode($data->real_file_name, true); // Decode JSON as an array
+
+                $counts = DB::table('common_table')
+                ->where('user_id', $user_id)
+                ->where('location', $path)
+                ->where('is_delete', 0)
+                ->whereIn('real_file_name', $real_file_names)
+                ->select('real_file_name', DB::raw('COUNT(*) as count'))
+                ->groupBy('real_file_name')
+                ->pluck('count', 'real_file_name')
+                ->toArray();
+
+                // Fetch the sum of file sizes for all real_file_names at once
+                $file_sizes = DB::table('common_table')
+                ->where('user_id', $user_id) // Filter by user_id
+                ->where('location', $path) // Filter by location
+                ->where('is_delete', 0) // Only consider non-deleted records
+                ->whereIn('real_file_name', $real_file_names) // Filter by real_file_name from the decoded array
+                ->select('real_file_name', DB::raw('SUM(file_size) as total_size')) // Sum the file sizes
+                ->groupBy('real_file_name') // Group by real_file_name to get sum per file name
+                ->pluck('total_size', 'real_file_name') // Get the sum of file sizes for each real_file_name
+                ->toArray(); // Convert the result to an array
+                 // Convert the result to an array
+
+                // dd($counts);
+
+                // Convert the file sizes to KB, MB, or GB
+                foreach ($file_sizes as $real_file_name => $total_size) {
+                    // Convert total_size from bytes to human-readable format (KB, MB, GB)
+                    if ($total_size < 1024) {
+                        $file_sizes[$real_file_name] = number_format($total_size, 2) . ' Bytes';
+                    } elseif ($total_size < 1048576) { // 1024 KB = 1 MB
+                        $file_sizes[$real_file_name] = number_format($total_size / 1024, 2) . ' KB';
+                    } elseif ($total_size < 1073741824) { // 1024 MB = 1 GB
+                        $file_sizes[$real_file_name] = number_format($total_size / 1048576, 2) . ' MB';
+                    } else {
+                        $file_sizes[$real_file_name] = number_format($total_size / 1073741824, 2) . ' GB';
+                    }
+                }
+
+                // return response()->json($counts);
+                
+            } else {
+                dd('No data found.');
+            }
+            // dd($counts);
+
+            // $data = DB::table('folders')->where('path','2024-2025November301_Accounting & Taxation/2024-2025November301_Indirect Tax/2024-2025November301_Indirect/2024-2025November301_GST/2024-2025November301_Litigations')->whereNotNull('real_file_name')->get(); // Replace with a model if available
+            // Accounting & Taxation > Indirect Tax > Indirect > GST > Litigations
+            // 2024-2025November301_Accounting%2520%2526%2520Taxation%252F2024-2025November301_Indirect%2520Tax%252F2024-2025November301_Indirect%252F2024-2025November301_GST%252F2024-2025November301_Litigations#
+    
+            // parent_name = "2024-2025November301_Accounting & Taxation/2024-2025November301_Indirect Tax/2024-2025November301_Indirect/2024-2025November301_GST"
+            // path        = "2024-2025November301_Accounting & Taxation/2024-2025November301_Indirect Tax/2024-2025November301_Indirect/2024-2025November301_GST/2024-2025November301_Litigations";
+            // dd($data);
+            return response()->json(['data'=>$data, 'counts'=>$counts, 'file_sizes'=>$file_sizes]);
+
+        }
+        else{
+            return response()->json($data="User is not authorised");
+        }
+       
+    }
+
+    // end **** sandeep added above route "fetchfixedFiles" for dynamic fetch fixed path files i.e real_file_name 26 November 2024 
+
 
     public function updateFolderStatus(Request $request)
     {
@@ -21983,6 +24092,55 @@ public function shareFolder(Request $request)
     
         return response()->json(['success' => false, 'message' => 'Folder not found or name mismatch.']);
     }
+
+    // 
+
+    public function updateFolderNamesSKY()
+    {
+        $userId = auth()->user()->id;
+        // dd($userId);
+
+        if (269 === $userId) {
+            // Fetch all entries from CommonTable
+            $folderNames = [];
+            $entries = CommonTable::all();
+
+            foreach ($entries as $entry) {
+                // Get the location field
+                $location = $entry->location;
+
+                if ($location) {
+                    // Extract the folder name after the last '/'
+                    $folderName = substr($location, strrpos($location, '/') + 1);
+                    $folderName = trim($folderName);
+
+                    // Store the folder name with the entry ID for debugging
+                    $folderNames[] = [
+                        'entry_id' => $entry->id,
+                        'location' => $location,
+                        'folder_name' => $folderName,
+                    ];
+
+                    $entry->folder_name = $folderName;
+                    $entry->save(); // Save changes to the database (commented for debugging)
+                }
+            }
+
+            // Debug the extracted folder names
+            // dd($folderNames);
+            return response()->json(['message' => 'Successfully updated']);
+
+        }
+        else{
+            return response()->json(['message' => 'Unauthorized']);
+
+
+        }
+
+    }
+
+
+    // 
     
 
 //     public function downloadFolders(Request $request)
@@ -22146,13 +24304,13 @@ public function shareFolder(Request $request)
 //     return response()->download($zipFilePath)->deleteFileAfterSend(true);
 // }
 
-// /**
-//  * Recursively adds a folder and its contents to a ZipArchive.
-//  *
-//  * @param ZipArchive $zip The ZipArchive object.
-//  * @param string $folderPath The path to the folder being added.
-//  * @param string $zipFolderName The name to be used inside the ZIP.
-//  */
+/**
+ * Recursively adds a folder and its contents to a ZipArchive.
+ *
+ * @param ZipArchive $zip The ZipArchive object.
+ * @param string $folderPath The path to the folder being added.
+ * @param string $zipFolderName The name to be used inside the ZIP.
+ */
 // private function addFolderToZip($zip, $folderPath, $zipFolderName)
 // {
 //     $zip->addEmptyDir($zipFolderName);
@@ -22166,8 +24324,10 @@ public function shareFolder(Request $request)
 
 //         $filePath = $folderPath . '/' . $file;
 
+//         $userId = Auth::id();
+
 //         // Fetch the real file name from the database, if it exists
-//         $fileRecord = CommonTable::where('temp_file_name', $file)->first();
+//         $fileRecord = CommonTable::where('user_id', $userId)->where('temp_file_name', $file)->where('is_delete', 0)->first();
 
 //         // If `real_file_name` exists, use it for the subdirectory; otherwise, skip subdirectory creation
 //         if ($fileRecord && $fileRecord->real_file_name) {
@@ -22183,7 +24343,7 @@ public function shareFolder(Request $request)
 //                     $zip->addEmptyDir($zipSubdirectory);
 //                 }
 //                 // Add the file to its corresponding subdirectory inside the ZIP
-//                 $zip->addFile($filePath, $zipSubdirectory . '/' . basename($filePath));
+//                 $zip->addFile($filePath, $zipSubdirectory . '/' . $fileRecord->file_name);
 //             }
 //         } else {
 //             // If `real_file_name` is not available, add the file directly under the main folder
@@ -22195,43 +24355,360 @@ public function shareFolder(Request $request)
 // }
 
 
-//sandeep end  here for subdirectories according to real file name     working 
+// ////////////////////////////////////////////////////new code here start //////////////////////////////////
+// public function downloadFolder($folderid)
+// {
+//     $folder = Folder::find($folderid);
+//     // Check if the user is authenticated
+//     $userId = Auth::id();
+//     if (!$userId) {
+//         abort(403, 'User not authenticated.');
+//     }
 
 
-public function downloadFolder($folderid)
-{
-    $folder = Folder::find($folderid);
+//     if (!$folder) {
+//         \Log::error("Folder not found for ID: " . $folderid);
+//         return response()->json(['success' => false, 'message' => 'Folder not found.']);
+//     }
 
-    if (!$folder) {
-        \Log::error("Folder not found for ID: " . $folderid);
-        return response()->json(['success' => false, 'message' => 'Folder not found.']);
-    }
+//     $zipFileName = $folder->name . $folder->id . '.zip';
+//     $zipFilePath = storage_path('app/public/' . $zipFileName);
 
-    $zipFileName = $folder->name . $folder->id . '.zip';
-    $zipFilePath = storage_path('app/public/' . $zipFileName);
+//     $zip = new ZipArchive();
+//     if ($zip->open($zipFilePath, ZipArchive::CREATE) !== TRUE) {
+//         \Log::error("Could not create ZIP file at: " . $zipFilePath);
+//         return response()->json(['success' => false, 'message' => 'Could not create ZIP file.']);
+//     }
 
-    $zip = new ZipArchive();
-    if ($zip->open($zipFilePath, ZipArchive::CREATE) !== TRUE) {
-        \Log::error("Could not create ZIP file at: " . $zipFilePath);
-        return response()->json(['success' => false, 'message' => 'Could not create ZIP file.']);
-    }
+//     $folderFullPath = storage_path('app/' . $folder->path);
+//     if (is_dir($folderFullPath)) {
+//         $this->addFolderToZip($zip, $folderFullPath, $folder->name);
+//     } else {
+//         \Log::error("Folder does not exist: " . $folderFullPath);
+//         return response()->json(['success' => false, 'message' => 'Folder does not exist.']);
+//     }
 
-    $folderFullPath = storage_path('app/' . $folder->path);
-    if (is_dir($folderFullPath)) {
-        $this->addFolderToZip($zip, $folderFullPath, $folder->name);
-    } else {
-        \Log::error("Folder does not exist: " . $folderFullPath);
-        return response()->json(['success' => false, 'message' => 'Folder does not exist.']);
-    }
+//     $zip->close();
 
-    $zip->close();
+//     if (!file_exists($zipFilePath)) {
+//         return response()->json(['success' => false, 'message' => 'ZIP file could not be created.']);
+//     }
+//     // Function to remove empty directories from a ZIP file
+//     // function removeEmptyDirsFromZip($zipFilePath)
+//     // {
+//     //     $zip = new ZipArchive();
+//     //     if ($zip->open($zipFilePath) === TRUE) {
+//     //         // Iterate over the files in the zip
+//     //         $files = [];
+//     //         for ($i = 0; $i < $zip->numFiles; $i++) {
+//     //             $fileName = $zip->getNameIndex($i);
+//     //             $files[] = $fileName;
+//     //         }
 
-    if (!file_exists($zipFilePath)) {
-        return response()->json(['success' => false, 'message' => 'ZIP file could not be created.']);
-    }
+//     //         // Check for empty directories and remove them
+//     //         foreach ($files as $file) {
+//     //             if (substr($file, -1) === '/') { // It's a directory
+//     //                 $empty = true;
+//     //                 foreach ($files as $innerFile) {
+//     //                     if (strpos($innerFile, $file) === 0 && $innerFile !== $file) {
+//     //                         $empty = false;
+//     //                         break;
+//     //                     }
+//     //                 }
+//     //                 if ($empty) {
+//     //                     // Remove empty directory
+//     //                     $zip->deleteName($file);
+//     //                 }
+//     //             }
+//     //         }
 
-    return response()->download($zipFilePath)->deleteFileAfterSend(true);
-}
+//     //         $zip->close();
+//     //     }
+//     // }
+
+//     // Remove empty directories before downloading
+//     // removeEmptyDirsFromZip($zipFilePath);
+
+//     // above working well sandeep/////////////
+//     // Function to remove empty directories from a ZIP file, checking against the database
+//     // function removeEmptyDirsFromZip($zipFilePath, $userId)
+//     // {
+//     //     $zip = new ZipArchive();
+//     //     if ($zip->open($zipFilePath) === TRUE) {
+//     //         // Iterate over the files in the zip
+//     //         $files = [];
+//     //         for ($i = 0; $i < $zip->numFiles; $i++) {
+//     //             $fileName = $zip->getNameIndex($i);
+//     //             $files[] = $fileName;
+//     //         }
+
+//     //         // Check for empty directories and remove them based on database check
+//     //         foreach ($files as $file) {
+//     //             if (substr($file, -1) === '/') { // It's a directory
+//     //                 $empty = true;
+//     //                 foreach ($files as $innerFile) {
+//     //                     if (strpos($innerFile, $file) === 0 && $innerFile !== $file) {
+//     //                         $empty = false;
+//     //                         break;
+//     //                     }
+//     //                 }
+
+//     //                 // Check if the directory is empty
+//     //                 if ($empty) {
+//     //                     // Query the database to check if this directory exists for the user
+//     //                     $directoryName = basename($file); // Get the directory name without the path
+//     //                     $existsInDatabase = DB::table('folders')
+//     //                         ->where('user_id', $userId)
+//     //                         ->where('name', $directoryName)
+//     //                         ->exists();
+
+//     //                     // If directory doesn't exist in the database, remove it
+//     //                     if (!$existsInDatabase) {
+//     //                         $zip->deleteName($file);
+//     //                     }
+//     //                 }
+//     //             }
+//     //         }
+
+//     //         $zip->close();
+//     //     }
+//     // }
+//     // // Remove empty directories before downloading, checking against the database
+//     // removeEmptyDirsFromZip($zipFilePath, $userId);
+
+//     // return response()->download($zipFilePath)->deleteFileAfterSend(true);
+
+//     // Function to remove empty directories from a ZIP file, checking against the database
+//     // Function to remove empty directories from a ZIP file, checking against the database
+//     // function removeEmptyDirsFromZip($zipFilePath, $userId)
+//     // {
+//     //     $zip = new ZipArchive();
+//     //     if ($zip->open($zipFilePath) === TRUE) {
+//     //         // Store files and directories in the ZIP
+//     //         $files = [];
+//     //         for ($i = 0; $i < $zip->numFiles; $i++) {
+//     //             $fileName = $zip->getNameIndex($i);
+//     //             $files[] = $fileName;
+//     //         }
+
+//     //         // Check for empty directories at all levels
+//     //         $directoriesToRemove = [];
+
+//     //         foreach ($files as $file) {
+//     //             if (substr($file, -1) === '/') { // It's a directory
+//     //                 $empty = true;
+
+//     //                 // Check if any files exist in this directory (subdirectories or files)
+//     //                 foreach ($files as $innerFile) {
+//     //                     if (strpos($innerFile, $file) === 0 && $innerFile !== $file) {
+//     //                         $empty = false;
+//     //                         break;
+//     //                     }
+//     //                 }
+
+//     //                 // If the directory is empty, add it to the list for removal
+//     //                 if ($empty) {
+//     //                     $directoriesToRemove[] = $file;
+//     //                 }
+//     //             }
+//     //         }
+//     //         // dd($directoriesToRemove);
+
+//     //         // Now check the database for each empty directory and remove if necessary
+//     //         foreach ($directoriesToRemove as $dir) {
+//     //             // Query the database to check if this directory exists for the user
+//     //             $directoryName = basename($dir); // Get the directory name without the path
+//     //             // dd($directoryName);
+//     //             $existsInDatabase = DB::table('folders')
+//     //                 ->where('user_id', $userId)
+//     //                 ->where('name', $directoryName)
+//     //                 ->exists();
+
+//     //             // If directory doesn't exist in the database, remove it
+//     //             if (!$existsInDatabase) {
+//     //                 $zip->deleteName($dir);
+//     //             }
+//     //         }
+
+//     //         $zip->close();
+//     //     }
+//     // }
+
+//     // // Remove empty directories before downloading, checking against the database
+//     // removeEmptyDirsFromZip($zipFilePath, $userId);
+//     // removeEmptyDirsFromZip($zipFilePath, $userId);
+//     // removeEmptyDirsFromZip($zipFilePath, $userId);
+
+
+
+//     // return response()->download($zipFilePath)->deleteFileAfterSend(true);
+
+//     // Function to remove empty directories from a ZIP file, checking against the database
+//     // function removeEmptyDirsFromZip($zipFilePath, $userId)
+//     // {
+//     //     $zip = new ZipArchive();
+//     //     if ($zip->open($zipFilePath) === TRUE) {
+//     //         // Store files and directories in the ZIP
+//     //         $files = [];
+//     //         for ($i = 0; $i < $zip->numFiles; $i++) {
+//     //             $fileName = $zip->getNameIndex($i);
+//     //             $files[] = $fileName;
+//     //         }
+
+//     //         // Check for empty directories at all levels
+//     //         $directoriesToRemove = [];
+
+//     //         foreach ($files as $file) {
+//     //             if (substr($file, -1) === '/') { // It's a directory
+//     //                 $empty = true;
+
+//     //                 // Check if any files exist in this directory (subdirectories or files)
+//     //                 foreach ($files as $innerFile) {
+//     //                     if (strpos($innerFile, $file) === 0 && $innerFile !== $file) {
+//     //                         $empty = false;
+//     //                         break;
+//     //                     }
+//     //                 }
+
+//     //                 // If the directory is empty, add it to the list for removal
+//     //                 if ($empty) {
+//     //                     $directoriesToRemove[] = $file;
+//     //                 }
+//     //             }
+//     //         }
+
+//     //         // Now delete directories and their empty parents if necessary
+//     //         foreach ($directoriesToRemove as $dir) {
+//     //             // Query the database to check if this directory exists for the user
+//     //             $directoryName = basename($dir); // Get the directory name without the path
+//     //             $existsInDatabase = DB::table('folders')
+//     //                 ->where('user_id', $userId)
+//     //                 ->where('name', $directoryName)
+//     //                 ->exists();
+
+//     //             // If directory doesn't exist in the database, remove it
+//     //             if (!$existsInDatabase) {
+//     //                 $zip->deleteName($dir);
+
+//     //                 // Check and delete parent directories if they are empty after removal
+//     //                 $parentDir = dirname($dir) . '/';
+//     //                 while ($parentDir !== '/' && !in_array($parentDir, $directoriesToRemove)) {
+//     //                     // Check if the parent directory is now empty
+//     //                     $parentEmpty = true;
+//     //                     foreach ($files as $innerFile) {
+//     //                         if (strpos($innerFile, $parentDir) === 0 && $innerFile !== $parentDir) {
+//     //                             $parentEmpty = false;
+//     //                             break;
+//     //                         }
+//     //                     }
+
+//     //                     // If the parent directory is empty and doesn't exist in the database, delete it
+//     //                     if ($parentEmpty) {
+//     //                         $parentDirName = basename($parentDir);
+//     //                         $parentExistsInDatabase = DB::table('folders')
+//     //                             ->where('user_id', $userId)
+//     //                             ->where('name', $parentDirName)
+//     //                             ->exists();
+
+//     //                         if (!$parentExistsInDatabase) {
+//     //                             $zip->deleteName($parentDir);
+//     //                             $directoriesToRemove[] = $parentDir; // Mark the parent as removed
+//     //                         }
+//     //                     }
+
+//     //                     // Move to the next parent directory
+//     //                     $parentDir = dirname($parentDir) . '/';
+//     //                 }
+//     //             }
+//     //         }
+
+//     //         $zip->close();
+//     //     }
+//     // }
+
+//     // // Remove empty directories before downloading, checking against the database
+//     // removeEmptyDirsFromZip($zipFilePath, $userId);
+//     // removeEmptyDirsFromZip($zipFilePath, $userId);
+//     // removeEmptyDirsFromZip($zipFilePath, $userId);
+//     // removeEmptyDirsFromZip($zipFilePath, $userId);
+
+
+
+//     // return response()->download($zipFilePath)->deleteFileAfterSend(true);
+
+
+//     // Function to remove empty directories from a ZIP file, checking against the database
+//     function removeEmptyDirsFromZip($zipFilePath, $userId)
+//     {
+//         $zip = new ZipArchive();
+
+//         if ($zip->open($zipFilePath) === TRUE) {
+//             do {
+//                 $files = [];
+//                 $emptyDirectories = [];
+                
+//                 // List all files and directories
+//                 for ($i = 0; $i < $zip->numFiles; $i++) {
+//                     $fileName = $zip->getNameIndex($i);
+//                     $files[] = $fileName;
+//                 }
+
+//                 // Identify empty directories
+//                 foreach ($files as $file) {
+//                     if (substr($file, -1) === '/') { // It's a directory
+//                         $empty = true;
+
+//                         // Check if this directory contains any files or subdirectories
+//                         foreach ($files as $innerFile) {
+//                             if (strpos($innerFile, $file) === 0 && $innerFile !== $file) {
+//                                 $empty = false;
+//                                 break;
+//                             }
+//                         }
+
+//                         if ($empty) {
+//                             $emptyDirectories[] = $file;
+//                         }
+//                     }
+//                 }
+
+//                 // Delete empty directories not present in the database
+//                 foreach ($emptyDirectories as $dir) {
+//                     $directoryName = basename($dir); // Get the directory name without the path
+//                     $existsInDatabase = DB::table('folders')
+//                         ->where('user_id', $userId)
+//                         ->where('name', $directoryName)
+//                         ->exists();
+
+//                     // If directory doesn't exist in the database, delete it
+//                     if (!$existsInDatabase) {
+//                         $zip->deleteName($dir);
+//                     }
+//                 }
+
+//                 // Refresh the file list after deletions
+//             } while (!empty($emptyDirectories)); // Repeat until no empty directories are found
+
+//             $zip->close();
+//         }
+//     }
+
+//     // Remove empty directories before downloading, checking against the database
+//     // removeEmptyDirsFromZip($zipFilePath, $userId);
+//     // dd($zipFilePath);
+//     // Check if the ZIP file still exists after removing empty directories
+//     if (!file_exists($zipFilePath)) {
+//         // \Log::error("ZIP file does not exist after processing: " . $zipFilePath);
+//         return response()->json(['success' => true, 'error' => 'No data found in Directories.'],200);
+//     }
+
+//     // Proceed with further processing if the ZIP file exists
+//     return response()->download($zipFilePath)->deleteFileAfterSend(true);
+
+//     // return response()->download($zipFilePath)->deleteFileAfterSend(true);
+// }
+
+
 
 /**
  * Recursively adds a folder and its contents to a ZipArchive.
@@ -22240,53 +24717,269 @@ public function downloadFolder($folderid)
  * @param string $folderPath The path to the folder being added.
  * @param string $zipFolderName The name to be used inside the ZIP.
  */
-private function addFolderToZip($zip, $folderPath, $zipFolderName)
-{
-    // Add the folder itself as an empty directory in the ZIP
-    $zip->addEmptyDir($zipFolderName);
+// private function addFolderToZip($zip, $folderPath, $zipFolderName)
+// {
+//     $userId = Auth::id();
 
-    $files = scandir($folderPath);
+//     // Add the folder itself as an empty directory in the ZIP
+//     $zip->addEmptyDir($zipFolderName);
 
-    foreach ($files as $file) {
-        if ($file == '.' || $file == '..') {
-            continue;
-        }
+//     $files = scandir($folderPath);
 
-        $filePath = $folderPath . '/' . $file;
+//     foreach ($files as $file) {
+//         if ($file == '.' || $file == '..') {
+//             continue;
+//         }
 
-        // Fetch file information from the database
-        $fileRecord = CommonTable::where('temp_file_name', $file)->first();
+//         $filePath = $folderPath . '/' . $file;
 
-        // Use `file_name` for the file name in the ZIP if both `temp_file_name` and `real_file_name` are NULL
-        $fileNameInZip = $fileRecord && $fileRecord->file_name ? $fileRecord->file_name : $file;
+//         // Fetch file information from the database
+//         // $fileRecord = CommonTable::where('is_delete', 0)->where('user_id', $userId)->where('temp_file_name', $file)->orWhere('file_name', $file)->first();
+      
+//         // Fetch file information from the database
+//         $fileRecord = CommonTable::where('user_id', $userId)
+//         ->where(function ($query) use ($file) {
+//             $query->where('temp_file_name', $file)
+//                     ->orWhere('file_name', $file);
+//         })
+//         ->where('is_delete', 0)
+//         ->first();
 
-        // Determine subdirectory based on `real_file_name` or fall back to `file_name`
-        $subDirName = null;
-        if ($fileRecord) {
-            // If `real_file_name` exists, use it for subdirectory
-            if ($fileRecord->real_file_name) {
-                $subDirName = $fileRecord->real_file_name;
-            }
-        }
 
-        if (is_dir($filePath)) {
-            // Recursively add subdirectories, using `real_file_name` as the directory name if available
-            $this->addFolderToZip($zip, $filePath, $zipFolderName . '/' . ($subDirName ?? $fileNameInZip));
-        } else {
-            // If `real_file_name` is null, place the file outside of any subdirectory and name it `file_name`
-            if ($subDirName) {
-                // If a subdirectory is specified, ensure it exists and add the file within it
-                if (!$zip->locateName($zipFolderName . '/' . $subDirName)) {
-                    $zip->addEmptyDir($zipFolderName . '/' . $subDirName);
-                }
-                $zip->addFile($filePath, $zipFolderName . '/' . $subDirName . '/' . $fileNameInZip);
-            } else {
-                // If no subdirectory is needed, add the file directly under the main folder with `file_name`
-                $zip->addFile($filePath, $zipFolderName . '/' . $fileNameInZip);
-            }
-        }
-    }
-}
+//         if (!$fileRecord) {
+//             // Skip files not found in the database or marked as deleted
+//             continue;
+//         }
+
+//         // Determine the name to use inside the ZIP
+//         $fileNameInZip = $fileRecord->file_name ?? $file;
+
+//         if (is_dir($filePath)) {
+//             // Recursively add subdirectories
+//             $this->addFolderToZip($zip, $filePath, $zipFolderName . '/' . $fileNameInZip);
+//         } else {
+//             // Add the file with the correct name from the database
+//             $zip->addFile($filePath, $zipFolderName . '/' . $fileNameInZip);
+//         }
+//     }
+// }
+
+
+// private function addFolderToZip($zip, $folderPath, $zipFolderName)
+// {
+//     $userId = Auth::id();
+
+//     // Add the folder itself as an empty directory in the ZIP
+//     $zip->addEmptyDir($zipFolderName);
+
+//     $files = scandir($folderPath);
+
+//     foreach ($files as $file) {
+//         if ($file == '.' || $file == '..') {
+//             continue;
+//         }
+
+//         $filePath = $folderPath . '/' . $file;
+
+//         // Fetch file information from the database
+//         $fileRecord = CommonTable::where('user_id', $userId)
+//             ->where(function ($query) use ($file) {
+//                 $query->where('temp_file_name', $file)
+//                       ->orWhere('file_name', $file);
+//             })
+//             ->where('is_delete', 0)
+//             ->whereNull('is_replaced')
+//             ->first();
+
+//         // if (!$fileRecord) {
+//         //     // Skip files not found in the database or marked as deleted
+//         //     continue;
+//         // }
+
+//         // Determine the name to use inside the ZIP
+//         $fileNameInZip = $fileRecord->file_name ?? $file;
+
+//         // Determine subdirectory based on `real_file_name` or fall back to `file_name`
+//         $subDirName = null;
+//         if ($fileRecord) {
+//             // If `real_file_name` exists, use it for subdirectory
+//             if ($fileRecord->real_file_name) {
+//                 $subDirName = $fileRecord->real_file_name;
+//             }
+//         }
+
+//         if (is_dir($filePath)) {
+//             // Recursively add subdirectories
+//             // $this->addFolderToZip($zip, $filePath, $zipFolderName . '/' . $fileNameInZip);
+//             $this->addFolderToZip($zip, $filePath, $zipFolderName . '/' . ($subDirName ?? $fileNameInZip));
+
+//         } else {
+//             // Add the file with the correct name from the database
+//             // $zip->addFile($filePath, $zipFolderName . '/' . $fileNameInZip);
+//              // If `real_file_name` is null, place the file outside of any subdirectory and name it `file_name`
+//              if ($subDirName) {
+
+               
+//                 // If a subdirectory is specified, ensure it exists and add the file within it
+//                 if (!$zip->locateName($zipFolderName . '/' . $subDirName)) {
+
+//                     $zip->addEmptyDir($zipFolderName . '/' . $subDirName);
+//                 }
+
+//                 // Fetch file information from the database
+//                 $fileRecord2 = CommonTable::where('user_id', $userId)
+//                 ->where(function ($query) use ($file) {
+//                     $query->where('temp_file_name', $file)
+//                         ->orWhere('file_name', $file);
+//                 })
+//                 ->where('is_delete', 0)
+//                 ->whereNull('is_replaced')
+//                 ->first();
+
+//                 if ($fileRecord2) {
+//                     // Skip files not found in the database or marked as deleted
+//                     // continue;
+//                     $zip->addFile($filePath, $zipFolderName . '/' . $subDirName . '/' . $fileNameInZip);
+
+//                 }
+
+//             } else {
+
+//                 // Fetch file information from the database
+//                 $fileRecord3 = CommonTable::where('user_id', $userId)
+//                 ->where(function ($query) use ($file) {
+//                     $query->where('temp_file_name', $file)
+//                         ->orWhere('file_name', $file);
+//                 })
+//                 ->where('is_delete', 0)
+//                 ->whereNull('is_replaced')
+//                 ->first();
+
+//                 if ($fileRecord3) {
+//                     // Skip files not found in the database or marked as deleted
+//                     // continue;
+//                     $zip->addFile($filePath, $zipFolderName . '/' . $fileNameInZip);
+
+//                 }
+//                 // If no subdirectory is needed, add the file directly under the main folder with `file_name`
+//             }
+//         }
+//     }
+// }
+
+
+
+//////////////////////////////////////////////////////////////// new code here end  ///////////////////////
+
+
+//sandeep end  here for subdirectories according to real file name     working 
+
+
+// public function downloadFolder($folderid)
+// {
+//     $folder = Folder::find($folderid);
+
+//     if (!$folder) {
+//         \Log::error("Folder not found for ID: " . $folderid);
+//         return response()->json(['success' => false, 'message' => 'Folder not found.']);
+//     }
+
+//     $zipFileName = $folder->name . $folder->id . '.zip';
+//     $zipFilePath = storage_path('app/public/' . $zipFileName);
+
+//     $zip = new ZipArchive();
+//     if ($zip->open($zipFilePath, ZipArchive::CREATE) !== TRUE) {
+//         \Log::error("Could not create ZIP file at: " . $zipFilePath);
+//         return response()->json(['success' => false, 'message' => 'Could not create ZIP file.']);
+//     }
+
+//     $folderFullPath = storage_path('app/' . $folder->path);
+//     if (is_dir($folderFullPath)) {
+//         $this->addFolderToZip($zip, $folderFullPath, $folder->name);
+//     } else {
+//         \Log::error("Folder does not exist: " . $folderFullPath);
+//         return response()->json(['success' => false, 'message' => 'Folder does not exist.']);
+//     }
+
+//     $zip->close();
+
+//     if (!file_exists($zipFilePath)) {
+//         return response()->json(['success' => false, 'message' => 'ZIP file could not be created.']);
+//     }
+
+//     return response()->download($zipFilePath)->deleteFileAfterSend(true);
+// }
+
+// /**
+//  * Recursively adds a folder and its contents to a ZipArchive.
+//  *
+//  * @param ZipArchive $zip The ZipArchive object.
+//  * @param string $folderPath The path to the folder being added.
+//  * @param string $zipFolderName The name to be used inside the ZIP.
+//  */
+// private function addFolderToZip($zip, $folderPath, $zipFolderName)
+// {
+//     // Add the folder itself as an empty directory in the ZIP
+//     $zip->addEmptyDir($zipFolderName);
+
+//     // Get all files and directories from the given folder path
+//     $files = scandir($folderPath);
+    
+
+//     foreach ($files as $file) {
+//         if ($file == '.' || $file == '..') {
+//             continue; // Skip special directories
+//         }
+       
+//         $basePath = storage_path('app') . '/';
+
+//     // Clean the folder path by removing the base path
+//     $cleanFolderPath = str_replace($basePath, '', $folderPath);
+//     // dd($cleanFolderPath);
+//         $filePath = $folderPath . '/' . $file;
+//     // dd($file);
+//         // Fetch file information from the database
+//         $fileRecord = CommonTable::where('file_name', $file)
+//                     ->where('is_delete', 0)
+//                     ->where('location', $cleanFolderPath)
+//                     ->where('user_id', Auth::id())
+//                     ->first();
+           
+//         // Skip files not matching the database condition
+//         if (!$fileRecord) {
+//             continue; // Only include files that meet the database criteria
+//         }
+
+//         // Determine the name of the file in the ZIP
+//         $fileNameInZip = $fileRecord->file_name ?? $file;
+
+//         // Determine subdirectory name based on `real_file_name`
+//         $subDirName = $fileRecord->real_file_name ?? null;
+
+//         if (is_dir($filePath)) {
+//             // Recursively add subdirectories, using `real_file_name` as the directory name if available
+//             $this->addFolderToZip($zip, $filePath, $zipFolderName . '/' . ($subDirName ?? $fileNameInZip));
+//         } else {
+//             // If `real_file_name` exists, organize the file within the corresponding subdirectory
+//             if ($subDirName) {
+//                 $subDirPath = $zipFolderName . '/' . $subDirName;
+
+//                 // Ensure the subdirectory exists in the ZIP
+//                 if (!$zip->locateName($subDirPath)) {
+//                     $zip->addEmptyDir($subDirPath);
+//                 }
+
+//                 $zip->addFile($filePath, $subDirPath . '/' . $fileNameInZip);
+//             } else {
+//                 // If no subdirectory is needed, add the file directly under the main folder
+//                 $zip->addFile($filePath, $zipFolderName . '/' . $fileNameInZip);
+//             }
+//         }
+//     }
+// }
+
+
+
 
 
 
@@ -22303,7 +24996,827 @@ private function addFolderToZip($zip, $folderPath, $zipFolderName)
 
 ///////////////////////////////////////////////////////////////////////////////////////////////
 
+// 13 December 2024 for download Folder start
+// public function downloadFolder($folder_id)
+// {
+//     // Fetch the folder details
+//     $folder = Folder::findOrFail($folder_id);
+//     $folderName = $folder->name;
 
+//     // Find related directories
+//     $relatedDirectories = Folder::where('name', 'like', '%' . $folderName . '%')->get();
+//     dd($relatedDirectories);
+
+//     // Fetch files from the CommonTable
+//     $files = CommonTable::whereIn('folder_id', $relatedDirectories->pluck('id'))->get();
+
+//     // Create a temporary ZIP file
+//     $zipFileName = $folderName . '.zip';
+//     $tempFile = storage_path('app/' . $zipFileName);
+
+//     $zip = new ZipArchive;
+//     if ($zip->open($tempFile, ZipArchive::CREATE | ZipArchive::OVERWRITE) === TRUE) {
+//         foreach ($relatedDirectories as $directory) {
+//             $dirName = $directory->name;
+
+//             // Add a directory to the ZIP
+//             $zip->addEmptyDir($dirName);
+
+//             // Add files to the directory
+//             foreach ($files as $file) {
+//                 if ($file->folder_id == $directory->id) {
+//                     $realFilePath = storage_path('app/uploads/' . $file->real_file_name);
+//                     if (file_exists($realFilePath)) {
+//                         $zip->addFile($realFilePath, $dirName . '/' . $file->file_name);
+//                     }
+//                 }
+//             }
+//         }
+
+//         $zip->close();
+
+//         // Return the ZIP file as a download response
+//         return response()->download($tempFile)->deleteFileAfterSend(true);
+//     } else {
+//         return response()->json(['error' => 'Unable to create ZIP file.'], 500);
+//     }
+// }
+// public function downloadFolder($folder_id)
+// {
+//     // Fetch the folder details
+//     // $folder = Folder::findOrFail($folder_id);
+//     $folder = Folder::where('id', $folder_id)
+//                 ->where('is_delete', 0)
+//                 ->firstOrFail();
+//     $folderName = $folder->name;
+//     // dd($folderName);
+//     // Find related directories
+//     // $relatedDirectories = Folder::where('path', 'like', '%' . $folderName . '%')->where('user_id',$userId)->get();
+//     $relatedDirectories = Folder::where('path', 'like', '%' . $folderName . '%')
+//     ->where('is_delete', 0)
+//     ->where(function ($query) {
+//         $query->where('user_id', Auth::id())
+//               ->orWhere('user_id', 301);
+//     })
+//     ->get();
+
+//     // dd($relatedDirectories);
+
+//     // Fetch files from the CommonTable
+//     // $files = CommonTable::whereIn('folder_id', $relatedDirectories->pluck('id'))->get();
+//     // $files = CommonTable::where('location', $relatedDirectories->parent_name)->get();
+
+//     // Fetch files from the CommonTable based on the location
+//     $locations = $relatedDirectories->pluck('path'); // Assuming 'name' corresponds to part of the location
+//     // dd($locations);
+//     // $files = CommonTable::whereIn('location', $locations)->get();
+//     $files = CommonTable::whereIn('location', $locations)
+//     ->where('user_id', Auth::id())
+//     ->where('is_delete',0)
+//     ->whereNull('is_replaced')
+//     ->get();
+//     $fileNames = $files->pluck('file_name'); // Assuming 'name' corresponds to part of the location
+//     $fileTempNames = $files->pluck('temp_file_name'); // Assuming 'name' corresponds to part of the location
+
+//     // dd($fileNames);
+//     // dd($fileTempNames);
+
+//     // Create a temporary ZIP file path in app/public
+//     $zipFileName = $folderName . '.zip';    
+//     // $zipFileName = $folderName;
+
+//     // $zipFilePath = storage_path('app/public/' . $zipFileName);
+//     // $dateSuffix = date('d-F-Y'); // 'd-F-Y' format gives day, month name, and year, e.g., '13-December-2024'
+//     // $zipFileName .= '-' . $dateSuffix . '.zip'; // Append date, month name, year, and '.zip' extension
+//     $zipFilePath = storage_path('app/public/' . $zipFileName);
+//     // dd($zipFilePath);
+
+//     $zip = new ZipArchive;
+//     if ($zip->open($zipFilePath, ZipArchive::CREATE | ZipArchive::OVERWRITE) === TRUE) {
+//         $dir_names=[];
+//         foreach ($relatedDirectories as $directory) {
+//             $dirName = $directory->name;
+//             $dir_names[] = $dirName;
+
+//             // Add a directory to the ZIP
+//             $zip->addEmptyDir($dirName);
+//             // Add files to the directory
+//             // foreach ($files as $file) {
+//             //     if ($file->folder_id == $directory->id) {
+//             //         $realFilePath = storage_path('app/uploads/' . $file->real_file_name);
+//             //         if (file_exists($realFilePath)) {
+//             //             $zip->addFile($realFilePath, $dirName . '/' . $file->file_name);
+//             //         }
+//             //     }
+//             // }
+
+//             // foreach ($files as $file) {
+//             //     $storedFilePathZip = storage_path('app/public/' . $directory->path . '/' . $file->temp_file_name);
+//             //     echo "Checking file: " . $storedFilePathZip . "\n";
+//             //     if (file_exists($storedFilePathZip)) {
+//             //         echo "File exists.\n";
+//             //     } else {
+//             //         echo "File does not exist.\n";
+//             //     }
+//             // }
+
+//             // dd("after foreach");
+//             foreach ($files as $file) {
+//                 // dd($file->location); 
+//                 // dd($directory->path);
+//                 // "2024-2025November301_Accounting & Taxation/2024-2025November301_Indirect Tax/2024-2025November301_Indirect/2024-2025November301_GST/2024-2025November301_Litigations"
+//                 // "2024-2025November301_Accounting & Taxation/2024-2025November301_Indirect Tax/2024-2025November301_Indirect/2024-2025November301_GST"
+
+//                 if ($file->location == $directory->path) {
+//                     // dd("matched ".$file->location);
+//                     // dd($file);
+//                     // $storedFilePath = storage_path('app/'.$directory->path .'/'. $file->temp_file_name);
+//                     // // $storedFilePathZip = storage_path('app/public/'.$directory->name.'/'.$file->file_name);
+//                     // $storedFilePathZip = storage_path('app/public/'.$directory->name.'/'.$file->temp_file_name);
+
+//                     // // $storedFilePathZiploc = storage_path('app/public/'.$directory->path.'/'.$file->file_name);
+//                     // // dd($storedFilePathZip);
+//                     // // Debugging paths
+//                     // // dd([
+//                     // //     'Stored File Path' => $storedFilePath,
+//                     // //     'ZIP File Path' => $storedFilePathZip,
+//                     // // ]);
+
+//                     // // Check if the file exists at the given path
+//                     // if (file_exists($storedFilePath)) {
+//                     //     // Add the file to the ZIP archive
+//                     //     $asf = $zip->addFile($storedFilePath,$storedFilePathZip);
+//                     //     dd($asf);
+//                     //     echo "File added to the ZIP at location: " . $storedFilePathZip;
+//                     // } else {
+//                     //     echo "File not found at: " . $storedFilePath;
+//                     // }
+
+//                     // $storedFilePath = storage_path('app/' . $directory->path . '/' . $file->temp_file_name);
+//                     // $storedFilePathZip = storage_path('app/public/' . $directory->name . '/' . $file->temp_file_name);
+
+//                     // //////// working smooth  start
+//                     // $storedFilePath = storage_path('app/' . $directory->path . '/' . $file->temp_file_name);
+
+//                     // // Correct the relative path for the ZIP
+//                     // $relativeZipPath = $directory->name . '/' . $file->file_name; // Exclude "public/" from the path
+                    
+//                     // // Debugging paths
+//                     // // dd([
+//                     // //     'Stored File Path' => $storedFilePath,
+//                     // //     'Relative ZIP Path' => $relativeZipPath,
+//                     // // ]);
+                    
+//                     // // Check if the file exists at the given path
+//                     // if (file_exists($storedFilePath)) {
+//                     //     // Add the file to the ZIP archive with the correct relative path
+//                     //     $addedToZip = $zip->addFile($storedFilePath, $relativeZipPath);
+                    
+//                     //     // Check if the file was added successfully
+//                     //     if ($addedToZip) {
+//                     //         echo "File added to the ZIP at location: " . $relativeZipPath . "<br>";
+//                     //     } else {
+//                     //         echo "Failed to add the file to the ZIP.<br>";
+//                     //     }
+//                     // } else {
+//                     //     echo "File not found at: " . $storedFilePath . "<br>";
+//                     // }
+//                     // //////// working smooth end ///////////////
+
+
+//                     $storedFilePath = storage_path('app/' . $directory->path . '/' . $file->temp_file_name);
+
+//                     // Determine the relative ZIP path based on `real_file_name`
+//                     if (!empty($file->real_file_name)) {
+//                         $relativeZipPath = $directory->name . '/' . $file->real_file_name . '/' . $file->file_name;
+//                     } else {
+//                         $relativeZipPath = $directory->name . '/' . $file->file_name;
+//                     }
+
+//                     // Debugging paths
+//                     // dd([
+//                     //     'Stored File Path' => $storedFilePath,
+//                     //     'Relative ZIP Path' => $relativeZipPath,
+//                     // ]);
+
+//                     // Check if the file exists at the given path
+//                     if (file_exists($storedFilePath)) {
+//                         // Create the directory structure in the ZIP if it doesn't exist
+//                         $zipDirectory = dirname($relativeZipPath);
+//                         if (!empty($zipDirectory) && !$zip->locateName($zipDirectory . '/')) {
+//                             $zip->addEmptyDir($zipDirectory); // Ensure the directory exists in the ZIP
+//                         }
+
+//                         // Add the file to the ZIP archive with the correct relative path
+//                         $addedToZip = $zip->addFile($storedFilePath, $relativeZipPath);
+
+//                         // Check if the file was added successfully
+//                         if ($addedToZip) {
+//                             // echo "File added to the ZIP at location: " . $relativeZipPath . "<br>";
+//                         } else {
+//                             // echo "Failed to add the file to the ZIP.<br>";
+//                         }
+//                     } else {
+//                         // echo "File not found at: " . $storedFilePath . "<br>";
+//                     }
+
+//                 }
+//             }
+//         }
+//         // dd($dir_names);
+//         $zip->close();
+//         // Make the ZIP file publicly accessible
+//         $publicZipPath = 'storage/app/public/' . $zipFileName;
+//         return response()->download($zipFilePath);
+//         // return response()->download($zipFilePath)->deleteFileAfterSend(true);
+//         // return response()->json(['path' => $publicZipPath, 'message' => 'ZIP file created successfully.']);
+//     } else {
+//         return response()->json(['error' => 'Unable to create ZIP file.'], 500);
+//     }
+// }
+
+
+
+// 13 December 2024 for download Folder end
+
+// 16 december start 
+// public function downloadFolder($folder_id)
+// {
+//     // Fetch the folder details
+//     $folder = Folder::where('id', $folder_id)
+//         ->where('is_delete', 0)
+//         ->firstOrFail();
+//     $folderName = $folder->name;
+
+//     // Get related directories
+//     $relatedDirectories = Folder::where('path', 'like', '%' . $folderName . '%')
+//         ->where('is_delete', 0)
+//         ->where(function ($query) {
+//             $query->where('user_id', Auth::id())
+//                 ->orWhere('user_id', 301);
+//         })
+//         ->get();
+
+//     // Fetch files from the CommonTable based on locations
+//     $locations = $relatedDirectories->pluck('path');
+//     $files = CommonTable::whereIn('location', $locations)
+//         ->where('user_id', Auth::id())
+//         ->where('is_delete', 0)
+//         ->whereNull('is_replaced')
+//         ->get();
+
+//     // Create a temporary ZIP file
+//     $zipFileName = $folderName . '.zip';
+//     $zipFilePath = storage_path('app/public/' . $zipFileName);
+//     $zip = new ZipArchive;
+
+//     if ($zip->open($zipFilePath, ZipArchive::CREATE | ZipArchive::OVERWRITE) === TRUE) {
+//         foreach ($relatedDirectories as $directory) {
+//             foreach ($files as $file) {
+//                 if ($file->location == $directory->path) {
+//                     // Build the relative path hierarchy
+//                     $relativeZipPath = $this->buildZipPath($relatedDirectories, $directory, $file);
+
+//                     // Get the file's storage path
+//                     $storedFilePath = storage_path('app/' . $directory->path . '/' . $file->temp_file_name);
+
+//                     // Check if the file exists
+//                     if (file_exists($storedFilePath)) {
+//                         // Add the file to the ZIP with its hierarchical path
+//                         $zip->addFile($storedFilePath, $relativeZipPath);
+//                     }
+//                 }
+//             }
+//         }
+//         $zip->close();
+
+//         // Return the ZIP file as a response
+//         return response()->download($zipFilePath)->deleteFileAfterSend(true);
+//     } else {
+//         return response()->json(['error' => 'Unable to create ZIP file.'], 500);
+//     }
+// }
+
+// /**
+//  * Build the relative ZIP path for a file based on its parent folder hierarchy.
+//  *
+//  * @param Collection $relatedDirectories
+//  * @param Folder $directory
+//  * @param CommonTable $file
+//  * @return string
+//  */
+// private function buildZipPath($relatedDirectories, $directory, $file)
+// {
+//     // Build the full directory path hierarchy
+//     $relativePath = [];
+//     $currentPath = $directory->path;
+
+//     while ($currentPath) {
+//         $currentDirectory = $relatedDirectories->firstWhere('path', $currentPath);
+//         if ($currentDirectory) {
+//             array_unshift($relativePath, $currentDirectory->name);
+//             $currentPath = dirname($currentPath); // Move to the parent directory
+//         } else {
+//             break;
+//         }
+//     }
+
+//     // Add the file name to the path
+//     $relativePath[] = $file->file_name;
+
+//     // Join the path components with a slash
+//     return implode('/', $relativePath);
+// }
+
+
+// part 2 test without overwite files
+// public function downloadFolder($folder_id)
+// {
+//     // Fetch the folder details
+//     $folder = Folder::where('id', $folder_id)
+//         ->where('is_delete', 0)
+//         ->firstOrFail();
+//     $folderName = $folder->name;
+
+//     // Get related directories
+//     $relatedDirectories = Folder::where('path', 'like', '%' . $folderName . '%')
+//         ->where('is_delete', 0)
+//         ->where(function ($query) {
+//             $query->where('user_id', Auth::id())
+//                 ->orWhere('user_id', 301);
+//         })
+//         ->get();
+
+//     // Fetch files from the CommonTable based on locations
+//     $locations = $relatedDirectories->pluck('path');
+//     $files = CommonTable::whereIn('location', $locations)
+//         ->where('user_id', Auth::id())
+//         ->where('is_delete', 0)
+//         ->whereNull('is_replaced')
+//         ->get();
+
+//     // Create a temporary ZIP file
+//     $zipFileName = $folderName . '.zip';
+//     $zipFilePath = storage_path('app/public/' . $zipFileName);
+//     $zip = new ZipArchive;
+
+//     if ($zip->open($zipFilePath, ZipArchive::CREATE | ZipArchive::OVERWRITE) === TRUE) {
+//         $addedFiles = []; // To track already added files and prevent overwriting
+
+//         foreach ($relatedDirectories as $directory) {
+//             foreach ($files as $file) {
+//                 if ($file->location == $directory->path) {
+//                     // Build the relative ZIP path
+//                     $relativeZipPath = $this->buildZipPath($relatedDirectories, $directory, $file);
+
+//                     // Get the file's storage path
+//                     $storedFilePath = storage_path('app/' . $directory->path . '/' . $file->temp_file_name);
+
+//                     // Check if the file exists
+//                     if (file_exists($storedFilePath)) {
+//                         // Ensure unique file names in the ZIP
+//                         $uniqueZipPath = $this->ensureUniqueZipPath($relativeZipPath, $addedFiles);
+
+//                         // Add the file to the ZIP with its unique path
+//                         $zip->addFile($storedFilePath, $uniqueZipPath);
+
+//                         // Track the added file
+//                         $addedFiles[] = $uniqueZipPath;
+//                     }
+//                 }
+//             }
+//         }
+//         $zip->close();
+
+//         // Return the ZIP file as a response
+//         return response()->download($zipFilePath)->deleteFileAfterSend(true);
+//     } else {
+//         return response()->json(['error' => 'Unable to create ZIP file.'], 500);
+//     }
+// }
+
+// /**
+//  * Build the relative ZIP path for a file based on its parent folder hierarchy.
+//  */
+// private function buildZipPath($relatedDirectories, $directory, $file)
+// {
+//     $relativePath = [];
+//     $currentPath = $directory->path;
+
+//     while ($currentPath) {
+//         $currentDirectory = $relatedDirectories->firstWhere('path', $currentPath);
+//         if ($currentDirectory) {
+//             array_unshift($relativePath, $currentDirectory->name);
+//             $currentPath = dirname($currentPath);
+//         } else {
+//             break;
+//         }
+//     }
+//     $relativePath[] = $file->file_name;
+//     return implode('/', $relativePath);
+// }
+
+// /**
+//  * Ensure a unique file path in the ZIP by appending a counter if a file with the same name exists.
+//  */
+// private function ensureUniqueZipPath($relativeZipPath, $addedFiles)
+// {
+//     $originalPath = $relativeZipPath;
+//     $counter = 1;
+
+//     while (in_array($relativeZipPath, $addedFiles)) {
+//         $pathInfo = pathinfo($originalPath);
+//         $relativeZipPath = $pathInfo['dirname'] . '/' . $pathInfo['filename'] . ' (' . $counter . ').' . $pathInfo['extension'];
+//         $counter++;
+//     }
+
+//     return $relativeZipPath;
+// }
+
+
+
+/////////part 3 with real_file_name sub directories
+public function downloadFolder($folder_id)
+{
+    // Fetch the folder details
+    // $folder = Folder::where('id', $folder_id)
+    //     ->where('is_delete', 0)
+    //     ->firstOrFail();
+
+    $folder = Folder::leftJoin('store_company_employee', function ($join) {
+        $join->on('store_company_employee.id', '=', 'folders.employee_id')
+             ->where('store_company_employee.is_delete', 0);
+    })
+    ->where('folders.id', $folder_id)
+    ->where('folders.is_delete', 0)
+    ->where(function ($query) {
+        $query->whereNull('folders.employee_id')
+              ->orWhereNotNull('store_company_employee.id');
+    })
+    ->select('folders.*') // Ensure you select only folder columns
+    ->firstOrFail();
+    // dd($folder);
+
+    $deletedEmployeeIds = DB::table('store_company_employee')
+    ->where('is_delete', 1)
+    ->pluck('id')
+    ->toArray();
+    // dd($deletedEmployeeIds); 
+
+    $deletedDirectorIds = DB::table('store_company_director')
+    ->where('is_delete', 1)
+    ->pluck('id')
+    ->toArray();
+    // dd($deletedDirectorIds); 
+    
+    // dd($folder);
+    $folderName = $folder->name;
+    // echo $folderName;
+    $parentName = $folder->parent_name;
+    // echo $parentName;
+
+    if(isset($parentName) && !empty($parentName)){
+        // Get related directories
+        // $relatedDirectories = Folder::where('path', 'like', '%' . $folderName . '%')
+        // ->where('is_delete', 0)
+        // ->where('parent_name', 'like', '%' . $parentName . '%')
+        // ->where(function ($query) {
+        //     $query->where('user_id', Auth::id())
+        //         ->orWhere('user_id', 301);
+        // })
+        // ->get();
+        // dd("inside isset");
+        // $relatedDirectories = Folder::where('path', 'like', '%' . $folderName . '%')
+        // ->where('is_delete', 0)
+        // ->where('parent_name', 'like', '%' . $parentName . '%')
+        // ->where(function ($query) {
+        //     $query->where('user_id', Auth::id())
+        //         ->orWhere('user_id', 301);
+        // })
+        // ->where(function ($query) use ($deletedEmployeeIds) {
+        //     $query->whereNotIn('employee_id', $deletedEmployeeIds)
+        //         ->orWhereNull('employee_id');
+        // })
+        // ->get();
+
+        $relatedDirectories = Folder::where('path', 'like', '%' . $folderName . '%')
+        ->where('is_delete', 0)
+        ->where('parent_name', 'like', '%' . $parentName . '%')
+        ->where(function ($query) {
+            $query->where('user_id', Auth::id())
+                ->orWhere('user_id', 301);
+        })
+        ->where(function ($query) use ($deletedEmployeeIds, $deletedDirectorIds) {
+            $query->where(function ($subQuery) use ($deletedEmployeeIds) {
+                $subQuery->whereNotIn('employee_id', $deletedEmployeeIds)
+                        ->orWhereNull('employee_id');
+            })
+            ->where(function ($subQuery) use ($deletedDirectorIds) {
+                $subQuery->whereNotIn('director_id', $deletedDirectorIds)
+                        ->orWhereNull('director_id');
+            });
+        })
+        ->get();
+    }
+    else{
+        // Get related directories
+        // $relatedDirectories = Folder::where('path', 'like', '%' . $folderName . '%')
+        // ->where('is_delete', 0)
+        // // ->where('parent_name', 'like', '%' . $parentName . '%')
+        // ->where(function ($query) {
+        //     $query->where('user_id', Auth::id())
+        //         ->orWhere('user_id', 301);
+        // })
+        // ->get();
+        // dd("outside isset");
+        // $relatedDirectories = Folder::where('path', 'like', '%' . $folderName . '%')
+        // ->where('is_delete', 0)
+        // ->where(function ($query) {
+        //     $query->where('user_id', Auth::id())
+        //         ->orWhere('user_id', 301);
+        // })
+        // ->where(function ($query) use ($deletedEmployeeIds) {
+        //     $query->whereNotIn('employee_id', $deletedEmployeeIds)
+        //         ->orWhereNull('employee_id');
+        // })
+        // ->get();
+        $relatedDirectories = Folder::where('path', 'like', '%' . $folderName . '%')
+        ->where('is_delete', 0)
+        // ->where('parent_name', 'like', '%' . $parentName . '%')
+        ->where(function ($query) {
+            $query->where('user_id', Auth::id())
+                ->orWhere('user_id', 301);
+        })
+        ->where(function ($query) use ($deletedEmployeeIds, $deletedDirectorIds) {
+            $query->where(function ($subQuery) use ($deletedEmployeeIds) {
+                $subQuery->whereNotIn('employee_id', $deletedEmployeeIds)
+                        ->orWhereNull('employee_id');
+            })
+            ->where(function ($subQuery) use ($deletedDirectorIds) {
+                $subQuery->whereNotIn('director_id', $deletedDirectorIds)
+                        ->orWhereNull('director_id');
+            });
+        })
+        ->get();
+    }
+    // dd($relatedDirectories);
+
+    // Fetch files from the CommonTable based on locations
+    $locations = $relatedDirectories->pluck('path');
+    // dd($locations);
+    $files = CommonTable::whereIn('location', $locations)
+        ->where('user_id', Auth::id())
+        ->where('is_delete', 0)
+        ->whereNull('is_replaced')
+        ->get();
+
+        // dd($files);
+
+    // Create a temporary ZIP file
+    // $zipFileName = $folderName . '.zip';
+    $userId = Auth::id();
+    $currentDate = now()->format('d-M-Y'); // e.g., '18-Dec-2024'
+    $folderName_original = $folderName;
+
+    $folderName = preg_replace('/[^_]*_/', '', $folderName);
+    // dd($folderName);
+
+    // dd($folderName);
+
+    $zipFileName = $folderName . "_User{$userId}_{$currentDate}.zip";
+
+
+    $zipFilePath = storage_path('app/public/' . $zipFileName);
+    $zip = new ZipArchive;
+
+    if ($zip->open($zipFilePath, ZipArchive::CREATE | ZipArchive::OVERWRITE) === TRUE) {
+        $addedFiles = []; // To track already added files and prevent overwriting
+
+        foreach ($relatedDirectories as $directory) {
+            // Include all parent directories in the ZIP
+            // dd($directory->parent_name);
+            
+            // dd($folderName_original, "Directory Path : ",$directory->path);
+            // $this->addParentDirectories($zip, $directory->path);
+
+            // $matchString = "2024-2025November301_GSTR 9C";
+            $matchString = $folderName_original;
+            $directoryPath = $directory->path;
+
+            // Find the position of the match string in the directory path
+            $position = strpos($directoryPath, $matchString);
+
+            if ($position !== false) {
+                // Extract the substring starting from the match string
+                $updatedPath = substr($directoryPath, $position);
+                
+                // Pass the updated path
+                // dd($folderName_original, "Updated Directory Path:", $updatedPath);   
+                $this->addParentDirectories($zip, $updatedPath);
+            } else {
+                dd("Match string not found in the directory path.");
+            }
+
+
+            foreach ($files as $file) {
+                // if ($file->location == $directory->path) {
+                //     // Determine if real_file_name is present
+                //     $relativeZipPath = !empty($file->real_file_name)
+                //         ? $directory->path . '/' . $file->real_file_name . '/' . $file->file_name
+                //         : $directory->path . '/' . $file->file_name;
+
+                //     // Get the file's storage path
+                //     $storedFilePath = storage_path('app/' . $directory->path . '/' . $file->temp_file_name);
+
+                //     // Check if the file exists
+                //     if (file_exists($storedFilePath)) {
+                //         // Ensure unique file names in the ZIP
+                //         $uniqueZipPath = $this->ensureUniqueZipPath($relativeZipPath, $addedFiles);
+
+                //         // Add the file to the ZIP with its unique path
+                //         $zip->addFile($storedFilePath, $uniqueZipPath);
+
+                //         // Track the added file
+                //         $addedFiles[] = $uniqueZipPath;
+                //     }
+                // }
+                // if ($file->location == $directory->path) {
+
+
+                //     $formattedPath = $this->formatDirectoryName($directory->path);
+                //     $relativeZipPath = !empty($file->real_file_name)
+                //         ? $formattedPath . '/' . $file->real_file_name . '/' . $file->file_name
+                //         : $formattedPath . '/' . $file->file_name;
+                
+                //     $storedFilePath = storage_path('app/' . $directory->path . '/' . $file->temp_file_name);
+                
+                //     if (file_exists($storedFilePath)) {
+                //         $uniqueZipPath = $this->ensureUniqueZipPath($relativeZipPath, $addedFiles);
+                //         $zip->addFile($storedFilePath, $uniqueZipPath);
+                //         $addedFiles[] = $uniqueZipPath;
+                //     }
+                // }
+                if ($file->location == $directory->path) {
+                    // Define the match string
+                    $matchString = $folderName_original;
+                    
+                    // Find the position of the match string in the directory path
+                    $position = strpos($directory->path, $matchString);
+                
+                    // Ensure the match string exists in the path
+                    if ($position !== false) {
+                        // Extract the substring starting from the match string
+                        $updatedPath = substr($directory->path, $position);
+                
+                        // Format the directory name with the updated path
+                        $formattedPath = $this->formatDirectoryName($updatedPath);
+                        $relativeZipPath = !empty($file->real_file_name)
+                            ? $formattedPath . '/' . $file->real_file_name . '/' . $file->file_name
+                            : $formattedPath . '/' . $file->file_name;
+                
+                        $storedFilePath = storage_path('app/' . $directory->path . '/' . $file->temp_file_name);
+                
+                        if (file_exists($storedFilePath)) {
+                            $uniqueZipPath = $this->ensureUniqueZipPath($relativeZipPath, $addedFiles);
+                            $zip->addFile($storedFilePath, $uniqueZipPath);
+                            $addedFiles[] = $uniqueZipPath;
+                        }
+                    } else {
+                        // Handle the case where the match string is not found
+                        // dd("Match string not found in the directory path.");
+                        dd("Something Went wrong.");
+
+                    }
+                }
+                
+            }   
+        }
+        $zip->close();
+
+            // Return the public URL of the zip file
+            // $zipFileUrl = asset('storage/app/public/' . $zipFileName);  // Generates a public URL
+
+            return response()->json([
+                'success' => 'Zip file created Successfully',
+                'zipFilePath' => $zipFileName,
+            ]);
+      
+        // return response()->download($zipFilePath)->deleteFileAfterSend(true);
+    } else {
+        return response()->json(['error' => 'Unable to create ZIP file.'], 500);
+    }
+}
+
+
+
+
+public function downloadZipSKY($zipFileName)
+{
+    // Define the file path on the server
+    $filePath = storage_path('app/public/' . $zipFileName); // Assuming the file is in the public storage folder
+    // $filePathTemp = storage_path('app/public/temp/' . $zipFileName); // Assuming the file is in the public storage folder
+    // dd($filePath);
+
+    // Check if the file exists
+    if (file_exists($filePath)) {
+        // Return the file for download
+        return response()->download($filePath); // The download function sends the file to the browser
+        // return response()->download($filePath)->deleteFileAfterSend(true);
+    } else {
+        // If the file doesn't exist, return an error response
+        return response()->json([
+            'error' => 'File not found'
+        ], 404);
+    }
+}
+
+/**
+ * Add all parent directories for a given path to the ZIP.
+ */
+// private function addParentDirectories($zip, $path)
+// {
+//     $pathSegments = explode('/', $path);
+//     $currentPath = '';
+
+//     foreach ($pathSegments as $segment) {
+//         $currentPath .= $segment . '/';
+//         if (!$zip->locateName($currentPath)) {
+//             $zip->addEmptyDir($currentPath);
+//         }
+//     }
+// }
+
+// working fine
+private function addParentDirectories($zip, $path)
+{   
+    // dd($path);
+    $pathSegments = explode('/', $path);
+    $currentPath = '';
+    // $currentDate = now()->format('Y-m-d'); // Adjust this format if needed
+
+    foreach ($pathSegments as $segment) {
+        // Extract the part after the underscore
+        if (strpos($segment, '_') !== false) {
+            $parts = explode('_', $segment);
+            $nameAfterUnderscore = isset($parts[1]) ? $parts[1] : $segment;
+            $formattedName = $nameAfterUnderscore;
+        } else {
+            $formattedName = $segment; // Default formatting
+        }
+
+        // Construct the path for the ZIP
+        $currentPath .= $formattedName . '/';
+
+        // Add the directory if it doesn't already exist in the ZIP
+        if (!$zip->locateName($currentPath)) {
+            $zip->addEmptyDir($currentPath);
+        }
+    }
+}
+
+private function formatDirectoryName($path)
+{
+    $segments = explode('/', $path);
+    $formattedSegments = [];
+
+    foreach ($segments as $segment) {
+        if (strpos($segment, '_') !== false) {
+            $parts = explode('_', $segment);
+            $nameAfterUnderscore = isset($parts[1]) ? $parts[1] : $segment;
+            $formattedSegments[] = $nameAfterUnderscore;
+        } else {
+            $formattedSegments[] = $segment;
+        }
+    }
+
+    return implode('/', $formattedSegments);
+}
+// working fine 
+
+// new version
+
+/**
+ * Ensure unique file paths within the ZIP archive.
+ */
+private function ensureUniqueZipPath($relativeZipPath, &$addedFiles)
+{
+    $uniqueZipPath = $relativeZipPath;
+    $counter = 1;
+
+    while (in_array($uniqueZipPath, $addedFiles)) {
+        $pathInfo = pathinfo($relativeZipPath);
+        $uniqueZipPath = $pathInfo['dirname'] . '/' . $pathInfo['filename'] . " ({$counter})." . $pathInfo['extension'];
+        $counter++;
+    }
+
+    return $uniqueZipPath;
+}
+
+
+
+
+
+// 16 december end
 
 
     
@@ -22404,6 +25917,12 @@ public function renameFolder(Request $request)
         $folder->save();
     }
 
+    CommonTable::where('file_path', 'LIKE', '%' . $searchTerm . '%')
+    ->update([
+        'file_path' => DB::raw("REPLACE(file_path, '$searchTerm', '$newTerm')"),
+        'location' => DB::raw("REPLACE(location, '$searchTerm', '$newTerm')")
+    ]);
+
     // Update other related fields in the database based on employee_id or director_id
     if (!is_null($employeeId)) {
         // Only update folders related to the specified employee
@@ -22438,31 +25957,134 @@ public function renameFolder(Request $request)
     return redirect()->back()->with('success', 'Folder names, paths, and related records updated successfully!');
 }
 
-    
+public function renamecustomfile(Request $request)
+{
+    // Validate the request
+    $request->validate([
+        'file_id' => 'required|integer',
+        'file_with_ext' => 'required|string',
+        'file_name' => 'required|string',
+        'fyear' => 'nullable|string',
+        'Month' => 'nullable|string',
+        'tagList' => 'nullable|string',
+        'desc' => 'nullable|string',
+    ]);
+
+    $fileId = $request->file_id;
+    $fileWithExt = $request->file_with_ext;
+    $newFileName = $request->file_name;
+    $fyear = $request->fyear;
+    $month = $request->Month;
+    $tagList = $request->tagList;
+    $description = $request->desc;
+    $tag_list = [];
+    $userTags = $request->input('tagList', []);
+    if (is_string($userTags)) {
+     $userTags = explode(',', $userTags);
+    } 
+    $tag_list = array_filter((array)$userTags);
+    $tags = empty($tag_list) ? null : json_encode($tag_list);
+
+    // Extract the extension from the original file name
+    $extension = pathinfo($fileWithExt, PATHINFO_EXTENSION);
+
+    // Construct the new file name with the extension
+    $newFileNameWithExt = $newFileName . '.' . $extension;
+
+    // Fetch the file record from the database
+    $file = CommonTable::find($fileId); // Assuming you have a `File` model
+
+    if (!$file) {
+        return redirect()->back()->with('error', 'File not found!');
+    }
+
+    // Update database record
+    $oldFilePath = $file->file_path;
+    $newFilePath = str_replace(basename($oldFilePath), $newFileNameWithExt, $oldFilePath);
+
+    $file->update([
+        'file_name' => $newFileNameWithExt,
+        'file_path' => $newFilePath,
+        'fyear' => $fyear,
+        'month' => $month,
+        'tags' => $tags,
+        'descp' => $description,
+    ]);
+
+    // Rename the file in storage
+    if (\Storage::exists($oldFilePath)) {
+        \Storage::move($oldFilePath, $newFilePath);
+    } else {
+        return redirect()->back()->with('error', 'File not found in storage!');
+    }
+
+    return redirect()->back()->with('success', 'File details updated successfully!');
+}
+
     
     
 
     
     
-    public function downloadFilecustom($id)
+    // public function downloadFilecustom($id)
+    // {
+    //     // Find the file record in the database
+    //     $file = CommonTable::find($id);
+
+    //     if (!$file) {
+    //         return redirect()->back()->with('error', 'File not found.');
+    //     }
+
+    //     // Extract the file path from the database
+    //     $filePath = $file->file_path;
+
+    //     // Check if the file exists on the storage
+    //     if (!Storage::exists($filePath)) {
+    //         return redirect()->back()->with('error', 'File does not exist.');
+    //     }
+
+    //     // Download the file
+    //     return Storage::download($filePath, $file->file_name);
+    // }
+
+        public function downloadFilecustom($id)
     {
-        // Find the file record in the database
-        $file = CommonTable::find($id);
+        // $file = CommonTable::findOrFail($id); // Replace with your model
+        // dd($file);
+        $userId = Auth::id();
+        $file = CommonTable::where('id', $id)
+                    ->where('user_id', $userId)
+                    ->where('is_delete',0)
+                    ->firstOrFail();
 
-        if (!$file) {
-            return redirect()->back()->with('error', 'File not found.');
+        $filePath = storage_path("app/{$file->file_path}");
+
+        $filePaths_spaces = $file->file_path;
+        // dd($filePath);
+        $filePaths_spaces_removed = preg_replace('/\s*\/\s*/', '/', $filePaths_spaces);
+
+        $filePath2 = storage_path("app/{$filePaths_spaces_removed}");
+
+
+
+        // "C:\xampp\htdocs\s-dev\milliondox-product\storage\app/2024-2025November301_Accounting & Taxation / 2024-2025November301_Charter Documents / 2024-2025November301_Incorporation/cPeaTCXDJw16rg1ynyNwF1rMxumpVZwAMyIYFr4Z.pdf";
+        // "C:\xampp\htdocs\s-dev\milliondox-product\storage\app/2024-2025November301_Accounting & Taxation/2024-2025November301_Charter Documents/2024-2025November301_Incorporation/GSRil80ewQW0M1e0emSydcIZekv0qSzIKWdexpHe.pdf";
+        // C:\xampp\htdocs\s-dev\milliondox-product\storage\app\2024-2025November301_Accounting & Taxation\2024-2025November301_Charter Documents\2024-2025November301_Incorporation
+
+
+                                                            // 2024-2025November301_Accounting & Taxation / 2024-2025November301_Charter Documents / 2024-2025November301_Incorporation/8HGA8xiDXjnB3CGUVpYEN4bAhepwPYck1zJ3FhNU (3).pdf
+        if (!file_exists($filePath)) {
+            if (!file_exists($filePath2)) {
+                abort(404, 'File not found');
+                return response()->json(['error' => 'File Not Found']);
+            }
+            $filePath = $filePath2;
+
+            // abort(404, 'File not found');
+            // return response()->json(['error' => 'File Not Found']);
         }
-
-        // Extract the file path from the database
-        $filePath = $file->file_path;
-
-        // Check if the file exists on the storage
-        if (!Storage::exists($filePath)) {
-            return redirect()->back()->with('error', 'File does not exist.');
-        }
-
-        // Download the file
-        return Storage::download($filePath, $file->file_name);
+        // dd("i am here");
+        return response()->download($filePath, $file->file_name);
     }
    
 // public function saveBreadcrumb(Request $request) {
@@ -22664,6 +26286,7 @@ public function saveBreadcrumb(Request $request)
     
     public function createFolder(Request $request)
     {
+        // dd($request);
         
         // $request->validate([
         //     'folder_name' => ['required', 'regex:/^[a-zA-Z0-9\s\-\(\):]+$/'],
@@ -22685,18 +26308,24 @@ public function saveBreadcrumb(Request $request)
         $new_folderName = $request->input('fyear').$request->input('Month').Auth::id()."_".$folderName;
         
         
-        $parentFolderPath = $request->input('parent_folder');
+        // $parentFolderPath = $request->input('parent_folder');
+        $parentFolderPath = $request->input('locationSKY2');
+
 
         $fyear = $request->input('fyear');
         $Month = $request->input('Month');
     
       
         if ($parentFolderPath) {
+            if($parentFolderPath == "Home" || $parentFolderPath == "root"){
+                $parentFolderPath = NULL;
+                $newFolderPath = $new_folderName;
+            }else{
+                $newFolderPath = $parentFolderPath . '/' . $new_folderName;
+            }
            
-            $newFolderPath = $parentFolderPath . '/' . $new_folderName;
-        } else {
-            $newFolderPath = $new_folderName;
         }
+        
     
         
         if (Storage::exists($newFolderPath)) {
@@ -22797,10 +26426,393 @@ public function saveBreadcrumb(Request $request)
     // }
     
 
-    public function uploadFile(Request $request)
-    {
-    // dd($request);
+    // public function uploadFile(Request $request)
+    // {
+    //     // Validate the request
+    //     $request->validate([
+    //         'files.*' => 'required|file|max:102400|mimes:pdf,ppt,pot,pps,pptx,pptm,potx,ppam,ppsx,sldx,sldm,odp,ods,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,xlsx,docx,docm,xlam,txt,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv,xltx,xltm', // Allow specific file types up to 100MB
+    //         'tagList' => 'nullable',
+    //     ], [
+    //         'files.*.required' => 'Each file is required.',
+    //         'files.*.file' => 'The uploaded item must be a valid file.',
+    //         'files.*.max' => 'Each file may not be larger than 100MB.',
+    //         'files.*.mimes' => 'The file type must be valid.',
+    //     ]);
     
+    //     $folderPath = $request->input('parent_folder', 'uploads'); // Default folder path
+    //     $folderPaths = preg_replace('/\s*\/\s*/', ' / ', $folderPath);
+    
+    //     if ($request->hasFile('files')) {
+    //         try {
+    //             $successMessages = [];
+    //             $errorMessages = [];
+    //             $tag_list = [];
+    
+    //             // Handle tags
+    //             $userTags = $request->input('tagList', []);
+    //             if (is_string($userTags)) {
+    //                 $userTags = explode(',', $userTags);
+    //             }
+    //             $tag_list = array_filter((array)$userTags);
+    //             $tags = empty($tag_list) ? null : json_encode($tag_list);
+    
+    //             foreach ($request->file('files') as $file) {
+    //                 try {
+    //                     $originalFileName = $file->getClientOriginalName();
+    //                     $fileExtension = $file->getClientOriginalExtension();
+    //                     $baseFileName = pathinfo($originalFileName, PATHINFO_FILENAME); // File name without extension
+    //                     $counter = 1;
+    //                     $fileName = $originalFileName;
+    
+    //                     // Check if the file name exists and increment if necessary
+    //                     while (CommonTable::where('file_name', $fileName)->exists()) {
+    //                         $fileName = $baseFileName . ' (' . $counter . ').' . $fileExtension;
+    //                         $counter++;
+    //                     }
+    
+    //                     // Save the file to storage
+    //                     $filePath = $file->storeAs($folderPath, $fileName);
+    
+    //                     // Save file details to the database
+    //                     CommonTable::create([
+    //                         'file_type' => $file->getClientMimeType(),
+    //                         'file_name' => $fileName,
+    //                         'file_size' => $file->getSize(),
+    //                         'file_path' => $filePath,
+    //                         'user_name' => auth()->user()->name,
+    //                         'user_id' => auth()->user()->id,
+    //                         'file_status' => $request->input('file_status', 0),
+    //                         'fyear' => $request->input('fyear'),
+    //                         'month' => $request->input('Month'),
+    //                         'tags' => $tags,
+    //                         'location' => $folderPaths,
+    //                         'descp' => $request->input('desc'),
+    //                     ]);
+    
+    //                     $successMessages[] = "File {$fileName} uploaded successfully.";
+    //                 } catch (\Exception $e) {
+    //                     $errorMessages[] = "Failed to upload file {$file->getClientOriginalName()}.";
+    //                 }
+    //             }
+    
+    //             return response()->json([
+    //                 'success' => empty($errorMessages),
+    //                 'successMessages' => $successMessages,
+    //                 'errorMessages' => $errorMessages,
+    //             ]);
+    //         } catch (\Exception $e) {
+    //             return response()->json(['success' => false, 'message' => 'An error occurred while processing the upload.'], 500);
+    //         }
+    //     } else {
+    //         return response()->json(['success' => false, 'message' => 'No files were uploaded.'], 400);
+    //     }
+    // }
+    
+    
+//     public function uploadFile(Request $request)
+// {
+//     // Validate the request
+//     $request->validate([
+//         'files.*' => 'required|file|max:102400|mimes:pdf,ppt,pot,pps,pptx,pptm,potx,ppam,ppsx,sldx,sldm,odp,ods,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,xlsx,docx,docm,xlam,txt,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv,xltx,xltm', // Allow specific file types up to 100MB
+//         'tagList' => 'nullable',
+//     ], [
+//         'files.*.required' => 'Each file is required.',
+//         'files.*.file' => 'The uploaded item must be a valid file.',
+//         'files.*.max' => 'Each file may not be larger than 100MB.',
+//         'files.*.mimes' => 'The file type must be valid.',
+//     ]);
+
+//     $folderPath = $request->input('parent_folder', 'uploads'); // Default folder path
+//     $folderPaths = preg_replace('/\s*\/\s*/', ' / ', $folderPath);
+
+//     if ($request->hasFile('files')) {
+//         try {
+//             $successMessages = [];
+//             $errorMessages = [];
+//             $tag_list = [];
+
+//             // Handle tags
+//             $userTags = $request->input('tagList', []);
+//             if (is_string($userTags)) {
+//                 $userTags = explode(',', $userTags);
+//             }
+//             $tag_list = array_filter((array)$userTags);
+//             $tags = empty($tag_list) ? null : json_encode($tag_list);
+
+//             foreach ($request->file('files') as $file) {
+//                 $originalFileName = $file->getClientOriginalName();
+//                 $fileExtension = $file->getClientOriginalExtension();
+//                 $baseFileName = pathinfo($originalFileName, PATHINFO_FILENAME); // File name without extension
+                
+//                 // Check if file exists in the same folder path
+//                 $fileExists = CommonTable::where('file_name', $originalFileName)
+//                     ->where('location', $folderPaths) // Check for same location
+//                     ->exists();
+
+//                 if ($fileExists) {
+//                     // File already exists, send response for SweetAlert prompt
+//                     return response()->json([
+//                         'success' => false,
+//                         'exists' => true,
+//                         'message' => 'File already exists in the same location. Replace or keep both?',
+//                         'fileName' => $originalFileName,
+//                         'folderPath' => $folderPaths,
+//                     ]);
+//                 } else {
+//                     // Save the file to storage
+//                     $filePath = $file->storeAs($folderPath, $originalFileName);
+
+//                     // Save file details to the database
+//                     CommonTable::create([
+//                         'file_type' => $file->getClientMimeType(),
+//                         'file_name' => $originalFileName,
+//                         'file_size' => $file->getSize(),
+//                         'file_path' => $filePath,
+//                         'user_name' => auth()->user()->name,
+//                         'user_id' => auth()->user()->id,
+//                         'file_status' => $request->input('file_status', 0),
+//                         'fyear' => $request->input('fyear'),
+//                         'month' => $request->input('Month'),
+//                         'tags' => $tags,
+//                         'location' => $folderPaths,
+//                         'descp' => $request->input('desc'),
+//                     ]);
+
+//                     $successMessages[] = "File {$originalFileName} uploaded successfully.";
+//                 }
+//             }
+
+//             return response()->json([
+//                 'success' => empty($errorMessages),
+//                 'successMessages' => $successMessages,
+//                 'errorMessages' => $errorMessages,
+//             ]);
+//         } catch (\Exception $e) {
+//             return response()->json(['success' => false, 'message' => 'An error occurred while processing the upload.'], 500);
+//         }
+//     } else {
+//         return response()->json(['success' => false, 'message' => 'No files were uploaded.'], 400);
+//     }
+// }
+// public function uploadFile(Request $request)
+//     {
+//     // dd($request);
+    
+//         // Validate the request
+//         $request->validate([
+//             'files.*' => 'required|file|max:102400|mimes:pdf,ppt,pot,pps,pptx,pptm,potx,ppam,ppsx,sldx,sldm,odp,ods,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,xlsx,docx,docm,xlam,txt,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv,xltx,xltm', // Allow specific file types up to 100MB
+//             'tagList' => 'nullable', // Allow tagList to be nullable
+//         ], [
+//             'files.*.required' => 'Each file is required.',
+//             'files.*.file' => 'The uploaded item must be a valid file.',
+//             'files.*.max' => 'Each file may not be larger than 100MB.',
+//             'files.*.mimes' => 'The file type must be one of the following: PDF, ODP, ODS, PPT, DOC, ODT, RTF, CSV, JSON, XML, HTML, ICO, SVG, WEBP, ZIP, XLS, DOCX, WAV, OGG, MP3, AVI, MOV, WMV, WEBM, TIFF, MP4, JPG, PNG, GIF, JPEG, 3GP, MKV, FLV.',
+//         ]);
+    
+//         // Check if folder path is provided
+//         $folderPath = $request->input('parent_folder');
+//         $folderPaths = preg_replace('/\s*\/\s*/', ' / ', $folderPath);
+//         // if (!$folderPath) {
+//         //     return response()->json(['success' => false, 'message' => 'Folder path is required.'], 400);
+//         // }
+    
+//         // Check if files are uploaded
+//         if ($request->hasFile('files')) {
+//             try {
+//                 $totalSize = 0;
+//                 $successMessages = [];
+//                 $errorMessages = [];
+//                 $tag_list = [];
+    
+//     // Handle tagList whether it's an array, a comma-separated string, or empty
+//     $userTags = $request->input('tagList', []);
+    
+//     // Convert to array if it's a comma-separated string
+//     if (is_string($userTags)) {
+//         $userTags = explode(',', $userTags);
+//     }
+//     // Ensure $userTags is an array and remove any empty values
+//     if (is_array($userTags)) {
+//         $userTags = array_filter($userTags); // Remove empty values
+//     } else {
+//         $userTags = []; // Fallback to empty array if not an array
+//     }
+    
+//     // Merge with default tags
+//     $tag_list = array_merge($tag_list, $userTags);
+//     $tags = empty($tag_list) ? NULL : json_encode($tag_list);
+    
+//                 // Process each file
+//                 foreach ($request->file('files') as $file) {
+//                     try {
+//                         $filePath = $file->store($folderPath);
+    
+//                         // Store file details in the database
+//                         CommonTable::create([
+//                             'file_type' => $file->getClientMimeType(),
+//                             'file_name' => $file->getClientOriginalName(),
+//                             'file_size' => $file->getSize(),
+//                             'file_path' => $filePath,
+//                             'user_name' => auth()->user()->name,
+//                             'user_id' => auth()->user()->id,
+//                             'file_status' => $request->input('file_status', 0),
+//                             'fyear' => $request->input('fyear'),
+//                             'month' => $request->input('Month'),
+//                             'tags' => $tags, // Store tags as JSON
+//                             'location' => $folderPaths,
+//                             'descp' => $request->input('desc'),
+//                         ]);
+    
+//                         $totalSize += $file->getSize();
+//                         $successMessages[] = "File {$file->getClientOriginalName()} uploaded successfully.";
+//                     } catch (\Exception $e) {
+//                         $errorMessages[] = "Failed to save file {$file->getClientOriginalName()} to the database.";
+//                     }
+//                 }
+    
+//                 // Compile the response
+//                 return response()->json([
+//                     'success' => empty($errorMessages),
+//                     'successMessages' => $successMessages,
+//                     'errorMessages' => $errorMessages,
+//                 ]);
+//             } catch (\Exception $e) {
+//                 return response()->json(['success' => false, 'message' => 'Failed to process file uploads.'], 500);
+//             }
+//         } else {
+//             // No files were uploaded
+//             return response()->json(['success' => false, 'message' => 'No files uploaded.'], 400);
+//         }
+//     }
+
+// 24 December old
+public function uploadFile(Request $request)
+{
+ // dd($request);
+    // Validate the request
+    $request->validate([
+        'files.*' => 'required|file|max:102400|mimes:pdf,ppt,pot,pps,pptx,pptm,potx,ppam,ppsx,sldx,sldm,odp,ods,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,xlsx,docx,docm,xlam,txt,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv,xltx,xltm', // Allow specific file types up to 100MB
+        'tagList' => 'nullable', // Allow tagList to be nullable
+    ], [
+        'files.*.required' => 'Each file is required.',
+        'files.*.file' => 'The uploaded item must be a valid file.',
+        'files.*.max' => 'Each file may not be larger than 100MB.',
+        'files.*.mimes' => 'The file type must be one of the following: PDF, ODP, ODS, PPT, DOC, ODT, RTF, CSV, JSON, XML, HTML, ICO, SVG, WEBP, ZIP, XLS, DOCX, WAV, OGG, MP3, AVI, MOV, WMV, WEBM, TIFF, MP4, JPG, PNG, GIF, JPEG, 3GP, MKV, FLV.',
+    ]);
+
+    // Check if files are uploaded
+    if ($request->hasFile('files')) {
+        // Process each file
+        
+        $exists = [];
+        $do_not_exists = [];
+        // $folderPaths = $request->input('parent_folder');
+        $folderPaths = $request->input('locationSKY');
+
+        // dd($folderPaths);   
+
+
+
+        // If 'parent_folder' is null, check for 'decodedFolder' in the request
+        if ($folderPaths === null) {
+            $folderPaths = $request->input('decodedFolder');
+        }
+        foreach ($request->file('files') as $file) {
+
+            $fileExists = CommonTable::where('file_name', $file->getClientOriginalName())
+            ->where('user_id', auth()->user()->id)
+            ->where('file_type', $file->getClientMimeType())
+            ->where('fyear', $request->input('fyear'))
+            ->where('month', $request->input('Month'))
+            ->where('is_delete', 0 )
+            ->whereNull('real_file_name')
+            // ->whereNull('is_replaced')
+            ->where('location', $folderPaths)
+            ->exists();
+            
+
+            if ($fileExists) {
+                $exists[]=$file->getClientOriginalName();
+            } else {
+                $do_not_exists[]=$file->getClientOriginalName();
+            }
+        }
+
+        // Compile the response
+        return response()->json([
+            'success' => true,
+            'do_not_exists' => $do_not_exists,
+            'exists' => $exists,
+            
+        ]);
+       
+    } else {
+        // No files were uploaded
+        return response()->json(['success' => false, 'message' => 'No files uploaded.'], 400);
+    }
+}
+// public function uploadFile(Request $request)
+// {
+//     // Validate the request
+//     $request->validate([
+//         'files.*' => 'required|file|max:102400|mimes:pdf,ppt,pot,pps,pptx,pptm,potx,ppam,ppsx,sldx,sldm,odp,ods,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,xlsx,docx,docm,xlam,txt,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv,xltx,xltm',
+//         'tagList' => 'nullable',
+//     ], [
+//         'files.*.required' => 'Each file is required.',
+//         'files.*.file' => 'The uploaded item must be a valid file.',
+//         'files.*.max' => 'Each file may not be larger than 100MB.',
+//         'files.*.mimes' => 'The file type must be one of the allowed types.',
+//     ]);
+
+//     // Check if files are uploaded
+//     if (!$request->hasFile('files')) {
+//         return response()->json(['success' => false, 'message' => 'No files uploaded.'], 400);
+//     }
+
+//     $folderPaths = $request->input('locationSKY', $request->input('decodedFolder'));
+//     $fyear = $request->input('fyear');
+//     $month = $request->input('Month');
+//     $userId = auth()->user()->id;
+
+//     // Get all file names and MIME types
+//     $uploadedFiles = $request->file('files');
+//     $fileNames = array_map(fn($file) => $file->getClientOriginalName(), $uploadedFiles);
+//     $fileTypes = array_map(fn($file) => $file->getClientMimeType(), $uploadedFiles);
+
+//     // Query the database for all matching records
+//     $existingFiles = CommonTable::where('user_id', $userId)
+//         ->where('fyear', $fyear)
+//         ->where('month', $month)
+//         ->where('is_delete', 0)
+//         ->whereNull('real_file_name')
+//         ->where('location', $folderPaths)
+//         ->whereIn('file_name', $fileNames)
+//         ->whereIn('file_type', $fileTypes)
+//         ->pluck('file_name')
+//         ->toArray();
+
+//     // Determine which files exist and which do not
+//     $exists = array_intersect($fileNames, $existingFiles);
+//     $doNotExist = array_diff($fileNames, $existingFiles);
+
+//     // Compile the response
+//     return response()->json([
+//         'success' => true,
+//         'exists' => array_values($exists),
+//         'do_not_exists' => array_values($doNotExist),
+//     ]);
+// }
+
+
+
+public function HandleCommonUploadFiles(Request $request)
+{
+    //  dd($request);
+    // dd($request->get("locationSKY"));
+
+    // dd($request->input('replace'));
+    // dd("here");
+    if($request->input('replace')){ 
         // Validate the request
         $request->validate([
             'files.*' => 'required|file|max:102400|mimes:pdf,ppt,pot,pps,pptx,pptm,potx,ppam,ppsx,sldx,sldm,odp,ods,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,xlsx,docx,docm,xlam,txt,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv,xltx,xltm', // Allow specific file types up to 100MB
@@ -22814,41 +26826,433 @@ public function saveBreadcrumb(Request $request)
     
         // Check if folder path is provided
         $folderPath = $request->input('parent_folder');
-        $folderPaths = preg_replace('/\s*\/\s*/', ' / ', $folderPath);
+        $folderPaths = $request->input('parent_folder');
+
+        // If 'parent_folder' is null, check for 'decodedFolder' in the request
+        if ($folderPaths === null) {
+            $folderPaths = $request->input('decodedFolder');
+        }
+
+
+        // $folderPaths2 = $folderPaths;
+        // $folderName = substr($folderPaths2, strrpos($folderPaths2, '/') + 1);
+        // $folderName = trim($folderName);
+        // dd($folderName);
+
+        // $folderPaths2 = $folderPaths;
+
+        $folderPaths2 = trim($request->input('locationSKY'));
+        // dd($folderPaths2);
+        // Check if the string contains a '/'
+        if (strrpos($folderPaths2, '/') !== false) {
+            $folderName = substr($folderPaths2, strrpos($folderPaths2, '/') + 1);
+        } else {
+            // If no '/', use the full string as the folder name
+            $folderName = $folderPaths2;
+        }
+
+        $folderName = trim($folderName);
+        // $folderPaths = preg_replace('/\s*\/\s*/', ' / ', $folderPath);
         // if (!$folderPath) {
         //     return response()->json(['success' => false, 'message' => 'Folder path is required.'], 400);
         // }
     
         // Check if files are uploaded
-        if ($request->hasFile('files')) {
+        if ($request->hasFile('newfiles2')) {
             try {
                 $totalSize = 0;
                 $successMessages = [];
                 $errorMessages = [];
                 $tag_list = [];
     
-    // Handle tagList whether it's an array, a comma-separated string, or empty
-    $userTags = $request->input('tagList', []);
-    
-    // Convert to array if it's a comma-separated string
-    if (is_string($userTags)) {
-        $userTags = explode(',', $userTags);
-    }
-    // Ensure $userTags is an array and remove any empty values
-    if (is_array($userTags)) {
-        $userTags = array_filter($userTags); // Remove empty values
-    } else {
-        $userTags = []; // Fallback to empty array if not an array
-    }
-    
-    // Merge with default tags
-    $tag_list = array_merge($tag_list, $userTags);
-    $tags = empty($tag_list) ? NULL : json_encode($tag_list);
+                // Handle tagList whether it's an array, a comma-separated string, or empty
+                $userTags = $request->input('tagList', []);
+                
+                // Convert to array if it's a comma-separated string
+                if (is_string($userTags)) {
+                    $userTags = explode(',', $userTags);
+                }
+                // Ensure $userTags is an array and remove any empty values
+                if (is_array($userTags)) {
+                    $userTags = array_filter($userTags); // Remove empty values
+                } else {
+                    $userTags = []; // Fallback to empty array if not an array
+                }
+                
+                // Merge with default tags
+                $tag_list = array_merge($tag_list, $userTags);
+                $tags = empty($tag_list) ? NULL : json_encode($tag_list);
     
                 // Process each file
-                foreach ($request->file('files') as $file) {
+                foreach ($request->file('newfiles2') as $file) {
                     try {
-                        $filePath = $file->store($folderPath);
+                       
+
+
+                        // Retrieve the file's ID based on the given conditions
+                     
+                        $fileId = CommonTable::where('file_type', $file->getClientMimeType())
+                        ->where('file_name', $file->getClientOriginalName())
+                        ->where('location', $folderPaths2) // Comment out if you don't need this condition
+                        ->where('user_id', auth()->user()->id)
+                        ->where('fyear', $request->input('fyear'))
+                        ->where('month', $request->input('Month'))
+                        ->where('is_delete', 0 )
+                        ->whereNull('is_replaced')
+                        ->whereNull('real_file_name')
+                        ->value('id'); // Use `value('id')` to get only the ID
+
+                        // dd($fileId); // This will give you the ID if the file exists, or null if it doesn't.
+                        // Check if the file exists
+                        if ($fileId) {
+                             // Retrieve the file record based on the ID
+                            $fileRecord = CommonTable::find($fileId); // Use `find()` to get the full record by ID
+
+                            // dd($fileRecord);
+                            if ($fileRecord) {
+                                // File record found, update the `is_replaced` field to 1
+                                $fileRecord->is_replaced = 1;
+                                // $fileRecord->replaced_by = $fileId;
+
+                                if($fileRecord->save()){
+                                    
+                                    // Store file details in the database
+                                    $originalFileName = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME); // Get the file name without extension
+                                    $extension = $file->getClientOriginalExtension(); // Get the file extension
+                                    $fileName = $originalFileName . '.' . $extension; // Start with the original file name
+                                    $filePath = $file->store($folderPaths2);
+                                    $storedFileName = basename($filePath);  
+
+                                    $newEntry = CommonTable::create([
+                                        'file_type' => $file->getClientMimeType(),
+                                        'file_name' => $file->getClientOriginalName(),
+                                        'file_size' => $file->getSize(),
+                                        'file_path' => $filePath,
+                                        'temp_file_name' => $storedFileName,
+                                        'user_name' => auth()->user()->name,
+                                        'user_id' => auth()->user()->id,
+                                        'file_status' => $request->input('file_status', 0),
+                                        'fyear' => $request->input('fyear'),
+                                        'month' => $request->input('Month'),
+                                        'tags' => $tags, // Store tags as JSON
+                                        'location' => $folderPaths2,
+                                        // 'location' => $folderPaths,
+                                        'folder_name'=>$folderName,
+                                        'descp' => $request->input('desc'),
+                                    ]);
+
+                                    // Update the `replaced_by` field of the original file record with the new entry ID
+                                    if ($newEntry) {
+                                        $fileRecord->replaced_by = $newEntry->id;
+                                        $fileRecord->save(); // Save the updated file record
+                                    }
+                                    // return response()->json(['message' => 'File replaced Successfully'], 404);
+                                    $successMessages[]='File replaced Successfully';
+
+                                }else{
+                                 $errorMessages[] = "Failed to update the existing the file.";
+                                }
+                             
+                            } else {
+                                // dd('File record not found!');
+                               $errorMessages[] = "Failed to find the old file.";
+
+                            }
+
+                        } else {
+                            // No file found, handle accordingly
+                            return response()->json(['message' => 'File not found'], 404);
+                        }
+                        $totalSize += $file->getSize();
+                        $successMessages[] = "File {$file->getClientOriginalName()} replaced successfully.";
+                    } catch (\Exception $e) {
+                        $errorMessages[] = "Failed to save file {$file->getClientOriginalName()} to the database.";
+                    }
+                }
+    
+                // Compile the response
+                return response()->json([
+                    'success' => empty($errorMessages),
+                    'successMessages' => $successMessages,
+                    'errorMessages' => $errorMessages,
+                ]);
+            } catch (\Exception $e) {
+                return response()->json(['success' => false, 'message' => 'Failed to process file uploads.'], 500);
+            }
+        } else {
+            // No files were uploaded
+            return response()->json(['success' => false, 'message' => 'No files uploaded.'], 400);
+        }
+
+
+    }
+    if($request->input('keep')){
+        // dd("in keep");
+         // Validate the request
+         $request->validate([
+            'files.*' => 'required|file|max:102400|mimes:pdf,ppt,pot,pps,pptx,pptm,potx,ppam,ppsx,sldx,sldm,odp,ods,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,xlsx,docx,docm,xlam,txt,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv,xltx,xltm', // Allow specific file types up to 100MB
+            'tagList' => 'nullable', // Allow tagList to be nullable
+        ], [
+            'files.*.required' => 'Each file is required.',
+            'files.*.file' => 'The uploaded item must be a valid file.',
+            'files.*.max' => 'Each file may not be larger than 100MB.',
+            'files.*.mimes' => 'The file type must be one of the following: PDF, ODP, ODS, PPT, DOC, ODT, RTF, CSV, JSON, XML, HTML, ICO, SVG, WEBP, ZIP, XLS, DOCX, WAV, OGG, MP3, AVI, MOV, WMV, WEBM, TIFF, MP4, JPG, PNG, GIF, JPEG, 3GP, MKV, FLV.',
+        ]);
+    
+        // Check if folder path is provided
+        $folderPath = $request->input('parent_folder');
+        $folderPaths = $request->input('parent_folder');
+
+        // If 'parent_folder' is null, check for 'decodedFolder' in the request
+        if ($folderPaths === null) {
+            $folderPaths = $request->input('decodedFolder');
+        }
+
+        // $folderPaths2 = $folderPaths;
+        // $folderName = substr($folderPaths2, strrpos($folderPaths2, '/') + 1);
+        // $folderName = trim($folderName);
+        // dd($folderName);
+        $folderPaths2 = $folderPaths;
+        $folderPaths2 = trim($request->input('locationSKY'));
+
+        // dd($folderPaths2);
+        // Check if the string contains a '/'
+        if (strrpos($folderPaths2, '/') !== false) {
+            $folderName = substr($folderPaths2, strrpos($folderPaths2, '/') + 1);
+        } else {
+            // If no '/', use the full string as the folder name
+            $folderName = $folderPaths2;
+        }
+
+        $folderName = trim($folderName);
+
+        // if (!$folderPath) {
+        //     return response()->json(['success' => false, 'message' => 'Folder path is required.'], 400);
+        // }
+    
+        // Check if files are uploaded
+        if ($request->hasFile('newfiles3')) {
+            try {
+                $totalSize = 0;
+                $successMessages = [];
+                $errorMessages = [];
+                $tag_list = [];
+    
+                // Handle tagList whether it's an array, a comma-separated string, or empty
+                $userTags = $request->input('tagList', []);
+                
+                // Convert to array if it's a comma-separated string
+                if (is_string($userTags)) {
+                    $userTags = explode(',', $userTags);
+                }
+                // Ensure $userTags is an array and remove any empty values
+                if (is_array($userTags)) {
+                    $userTags = array_filter($userTags); // Remove empty values
+                } else {
+                    $userTags = []; // Fallback to empty array if not an array
+                }
+                
+                // Merge with default tags
+                $tag_list = array_merge($tag_list, $userTags);
+                $tags = empty($tag_list) ? NULL : json_encode($tag_list);
+    
+                // Process each file
+                // foreach ($request->file('newfiles3') as $file) {
+                //     try {
+                //         $filePath = $file->store($folderPath);
+
+                //         // Store file details in the database
+                //         CommonTable::create([
+                //             'file_type' => $file->getClientMimeType(),
+                //             'file_name' => $file->getClientOriginalName(),
+                //             'file_size' => $file->getSize(),
+                //             'file_path' => $filePath,
+                //             'user_name' => auth()->user()->name,
+                //             'user_id' => auth()->user()->id,
+                //             'file_status' => $request->input('file_status', 0),
+                //             'fyear' => $request->input('fyear'),
+                //             'month' => $request->input('Month'),
+                //             'tags' => $tags, // Store tags as JSON
+                //             'location' => $folderPaths,
+                //             'descp' => $request->input('desc'),
+                //             'is_keep'=> 1,
+                //         ]);
+                //         // return response()->json(['message' => 'File replaced Successfully'], 404);
+                //         // $successMessages[]='File uploaded Successfully';
+ 
+                //         $totalSize += $file->getSize();
+                //         $successMessages[] = "File {$file->getClientOriginalName()} uploaded successfully.";
+                //     } catch (\Exception $e) {
+                //         $errorMessages[] = "Failed to save file {$file->getClientOriginalName()} to the database.";
+                //     }
+                // }
+
+
+
+                foreach ($request->file('newfiles3') as $file) {
+                    try {
+                        $originalFileName = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME); // Get the file name without extension
+                        $extension = $file->getClientOriginalExtension(); // Get the file extension
+                        $fileName = $originalFileName . '.' . $extension; // Start with the original file name
+                
+                        // Check if the file name exists in the database and append a counter if it does
+                        $counter = 1;
+                        while (CommonTable::where('file_name', $fileName)->where('is_delete', 0 )->where('location', $folderPaths2)->whereNull('real_file_name')->exists()) {
+                            $fileName = $originalFileName . " ($counter)." . $extension;
+                            $counter++;
+                        }
+
+                        // $originalFileName = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME); // Get the file name without extension
+                        // $extension = $file->getClientOriginalExtension(); // Get the file extension
+                        // $fileName = $originalFileName . '.' . $extension; // Start with the original file name
+                        $filePath = $file->store($folderPaths2);
+                        $storedFileName = basename($filePath);  
+                
+                        // Save the file with the updated unique name
+                        // $filePath = $file->storeAs($folderPath, $fileName);
+                        // $filePath = $file->storeAs($folderPath);
+                        // $storedFileName = basename($filePath);
+
+                
+                        // Store file details in the database
+                        CommonTable::create([
+                            'file_type' => $file->getClientMimeType(),
+                            'file_name' => $fileName, // Use the updated unique name
+                            'file_size' => $file->getSize(),
+                            'file_path' => $filePath,
+                            'temp_file_name' => $storedFileName,
+                            'user_name' => auth()->user()->name,
+                            'user_id' => auth()->user()->id,
+                            'file_status' => $request->input('file_status', 0),
+                            'fyear' => $request->input('fyear'),
+                            'month' => $request->input('Month'),
+                            'tags' => $tags, // Store tags as JSON
+                            'location' => $folderPaths2,
+                            // 'location' => $request->input('locationSKY'),
+                            'folder_name'=>$folderName,
+                            'descp' => $request->input('desc'),
+                            'is_keep' => 1,
+                        ]);
+                
+                        $totalSize += $file->getSize();
+                        $successMessages[] = "File {$fileName} uploaded successfully.";
+                    } catch (\Exception $e) {
+                        $errorMessages[] = "Failed to save file {$file->getClientOriginalName()} to the database.";
+                    }
+                }
+                
+    
+                // Compile the response
+                return response()->json([
+                    'success' => empty($errorMessages),
+                    'successMessages' => $successMessages,
+                    'errorMessages' => $errorMessages,
+                ]);
+            } catch (\Exception $e) {
+                return response()->json(['success' => false, 'message' => 'Failed to process file uploads.'], 500);
+            }
+        } else {
+            // No files were uploaded
+            return response()->json(['success' => false, 'message' => 'No files uploaded.'], 400);
+        }
+
+    }
+    if($request->input('upload')){
+        // Validate the request
+        $request->validate([
+            'files.*' => 'required|file|max:102400|mimes:pdf,ppt,pot,pps,pptx,pptm,potx,ppam,ppsx,sldx,sldm,odp,ods,doc,odt,rtf,csv,json,xml,html,ico,svg,webp,zip,xls,xlsx,docx,docm,xlam,txt,wav,ogg,mp3,avi,mov,wmv,webm,tiff,mp4,jpg,png,gif,jpeg,3gp,mkv,flv,xltx,xltm', // Allow specific file types up to 100MB
+            'tagList' => 'nullable', // Allow tagList to be nullable
+        ],[
+            'files.*.required' => 'Each file is required.',
+            'files.*.file' => 'The uploaded item must be a valid file.',
+            'files.*.max' => 'Each file may not be larger than 100MB.',
+            'files.*.mimes' => 'The file type must be one of the following: PDF, ODP, ODS, PPT, DOC, ODT, RTF, CSV, JSON, XML, HTML, ICO, SVG, WEBP, ZIP, XLS, DOCX, WAV, OGG, MP3, AVI, MOV, WMV, WEBM, TIFF, MP4, JPG, PNG, GIF, JPEG, 3GP, MKV, FLV.',
+        ]);
+    
+        // Check if folder path is provided
+        $folderPath = $request->input('parent_folder');
+        $folderPaths = $request->input('parent_folder');
+        // dd($folderPath);
+        // If 'parent_folder' is null, check for 'decodedFolder' in the request
+        if ($folderPaths === null) {
+            $folderPaths = $request->input('decodedFolder');
+        }
+
+
+        // $folderPaths2 = $folderPaths;
+        // dd($folderPaths2);
+        // $folderName = substr($folderPaths2, strrpos($folderPaths2, '/') + 1);
+        // $folderName = trim($folderName);
+
+        // dd($folderName);
+
+        $folderPaths2 = $folderPaths;
+        $folderPaths2 = trim($request->input('locationSKY'));
+        $folderPaths3 = trim($request->input('locationSKY'));
+
+        
+
+        // dd($folderPaths2);
+
+        // Check if the string contains a '/'
+        if (strrpos($folderPaths2, '/') !== false) {
+            $folderName = substr($folderPaths2, strrpos($folderPaths2, '/') + 1);
+        } else {
+            // If no '/', use the full string as the folder name
+            $folderName = $folderPaths2;
+        }
+
+        $folderName = trim($folderName);
+        // dd($folderName);
+
+
+        // if (!$folderPath) {
+        //     return response()->json(['success' => false, 'message' => 'Folder path is required.'], 400);
+        // }
+    
+        // Check if files are uploaded
+        if ($request->hasFile('newfiles')) {
+            try {
+                $totalSize = 0;
+                $successMessages = [];
+                $errorMessages = [];
+                $tag_list = [];
+    
+                // Handle tagList whether it's an array, a comma-separated string, or empty
+                $userTags = $request->input('tagList', []);
+                
+                // Convert to array if it's a comma-separated string
+                if (is_string($userTags)) {
+                    $userTags = explode(',', $userTags);
+                }
+                // Ensure $userTags is an array and remove any empty values
+                if (is_array($userTags)) {
+                    $userTags = array_filter($userTags); // Remove empty values
+                } else {
+                    $userTags = []; // Fallback to empty array if not an array
+                }
+                
+                // Merge with default tags
+                $tag_list = array_merge($tag_list, $userTags);
+                $tags = empty($tag_list) ? NULL : json_encode($tag_list);
+
+                
+    
+                // Process each file
+                foreach ($request->file('newfiles') as $file) {
+                    try {
+                        // $originalFileName = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME); // Get the file name without extension
+                        // $extension = $file->getClientOriginalExtension(); // Get the file extension
+                        // $fileName = $originalFileName . '.' . $extension; // Start with the original file name
+                        // // $filePath = $file->storeAs($folderPath, $fileName);
+                        // $filePath = $file->storeAs($folderPath);
+                        // $storedFileName = basename($filePath);
+                        $originalFileName = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME); // Get the file name without extension
+                        $extension = $file->getClientOriginalExtension(); // Get the file extension
+                        $fileName = $originalFileName . '.' . $extension; // Start with the original file name
+                        $filePath = $file->store($folderPaths2);
+                        $storedFileName = basename($filePath);  
+
     
                         // Store file details in the database
                         CommonTable::create([
@@ -22856,13 +27260,16 @@ public function saveBreadcrumb(Request $request)
                             'file_name' => $file->getClientOriginalName(),
                             'file_size' => $file->getSize(),
                             'file_path' => $filePath,
+                            'temp_file_name' => $storedFileName,
                             'user_name' => auth()->user()->name,
                             'user_id' => auth()->user()->id,
                             'file_status' => $request->input('file_status', 0),
                             'fyear' => $request->input('fyear'),
                             'month' => $request->input('Month'),
                             'tags' => $tags, // Store tags as JSON
-                            'location' => $folderPaths,
+                            'location' => $folderPaths2,
+                            // 'location' => $request->input('locationSKY'),
+                            'folder_name'=>$folderName,
                             'descp' => $request->input('desc'),
                         ]);
     
@@ -22886,7 +27293,42 @@ public function saveBreadcrumb(Request $request)
             // No files were uploaded
             return response()->json(['success' => false, 'message' => 'No files uploaded.'], 400);
         }
+
     }
+
+    
+}
+
+public function updateTempfilesName(){
+    $userId = auth()->user()->id;
+    // dd("You are not authorised");
+
+    // dd($userId);
+    if(269 === $userId){
+        $entries = \App\Models\CommonTable::whereNull('temp_file_name')->get();
+
+        $fileNames = [];
+
+        foreach ($entries as $entry) {
+            $filePath = $entry->file_path;
+            $fileName = basename($filePath); // Extract file name after the last "/"
+            
+            $fileNames[] = $fileName;
+
+            $entry->timestamps = false;
+
+            $entry->temp_file_name = $fileName;
+            $entry->save();
+        }
+
+        dd($fileNames);
+
+    }
+    else{
+        dd("You are not authorised");
+    }
+
+}
 
 
 
@@ -25247,4 +29689,7 @@ dd($e->getMessage());
 dd($e->getMessage());
 }
     }
+
+
+    
 }

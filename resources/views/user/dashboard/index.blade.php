@@ -1156,7 +1156,7 @@ $(document).ready(function () {
                               
                               
                               <!--edit form Task start-->
-                              @foreach($tasks as $taskslist)
+                              @foreach($tasksall as $taskslist)
                                                    <form id="event_edit{{$taskslist->id}}" action="{{ route('editTask') }}" method="POST" class="event_edit_form" style="display: none;"> 
                                       @csrf
                                       <button class="close_form" id="closee_edit_event" data-event-id="{{$taskslist->id}}">
@@ -2133,7 +2133,7 @@ $(document).ready(function() {
                               </form>
                               
                                  <!--edit form start for event-->
-                                 @foreach ($eventsData as $eventsDataList)
+                                 @foreach ($eventsDataall as $eventsDataList)
                                 <form id="eventFormddd_edit{{ $eventsDataList->id }}" action="{{ route('editEvents') }}" method="POST"
                                     class="upload-form eventsformedit">
                                     <!-- <input type="hidden" name="_token" value="#" autocomplete="off"> -->
@@ -2849,24 +2849,24 @@ $(document).ready(function() {
           <div class="col-md-4">
             <div class="main_thumb y_organistaion">
               <div class="in_thumb">
-                @if($user->profile_picture == NULL)
-                <h2>
-    <?php 
-        // Get the first and last name
-        $nameParts = explode(' ', $user->name);
-        $firstLetter = strtoupper(substr($nameParts[0], 0, 1)); // First letter of first name
-        $secondLetter = strtoupper(substr($nameParts[1], 0, 1)); // First letter of last name
-        
-        // Display the initials
-        echo $firstLetter . $secondLetter;
-    ?>
-</h2>
-                <!-- <img src="../assets/images/gold-logo.png" class="mtt"> -->
-                @else
-
-                <img src="{{asset('/' . $user->profile_picture)}}" class="mtt" alt="Profile Image">
-                @endif
-              </div>
+                <?php 
+                    // Extract initials
+                    $nameParts = explode(' ', $user->name);
+                    $firstLetter = strtoupper(substr($nameParts[0], 0, 1)); // First letter of first name
+                    $secondLetter = isset($nameParts[1]) ? strtoupper(substr($nameParts[1], 0, 1)) : ''; // First letter of last name (if exists)
+            
+                    // Path to the profile picture
+                    $profilePicturePath = public_path($user->profile_picture);
+            
+                    // Check if the profile picture exists
+                    if ($user->profile_picture === NULL || !file_exists($profilePicturePath)) {
+                        echo '<h2>' . $firstLetter . $secondLetter . '</h2>';
+                    } else {
+                        echo '<img src="' . asset('/' . $user->profile_picture) . '" class="mtt" alt="Profile Image">';
+                    }
+                ?>
+            </div>
+            
               <p>My Organization</p>
               <h2>{{$user->name_of_the_business}}</h2>
 
