@@ -474,7 +474,10 @@
                                                         <span class="number">2</span>
                                                         <span class="tick d-none">✓</span>
                                                     </div>
-
+                                                    <div class="step" data-step="3">
+                                                        <span class="number">3</span>
+                                                        <span class="tick d-none">✓</span>
+                                                    </div>
                                                 </div>
                                                 <!-- Step Forms -->
                                                 <form id="customerContractForm" action="{{ route('storecustomercontract') }}" method="POST" enctype="multipart/form-data" class="upload-form">
@@ -602,7 +605,6 @@
                                                     <!-- Step 2 -->
                                                     <div class="step-form step-2 d-none">
                                                         <h4>Terms of Contract:</h4>
-
                                                         <div class="gropu_form">
                                                             <label for="renewal_terms">Renewal Terms <span class="red_star">*</span></label>
                                                             <textarea name="renewal_terms[]" style="height: 58px;" required></textarea>
@@ -627,6 +629,138 @@
                                                                         <path d="M9.46402 14.9349L14.4904 9.90645C14.6042 9.79264 14.6681 9.63817 14.6681 9.47711C14.6681 9.31614 14.6042 9.16167 14.4904 9.04775C14.3766 8.93394 14.2222 8.87 14.0613 8.87C13.9004 8.87 13.746 8.93394 13.6322 9.04775L8.17804 14.5056C8.1216 14.562 8.07682 14.6289 8.04627 14.7026C8.01573 14.7762 8 14.8552 8 14.9349C8 15.0147 8.01573 15.0937 8.04627 15.1674C8.07682 15.2411 8.1216 15.308 8.17804 15.3643L13.6322 20.8222C13.746 20.936 13.9004 21 14.0613 21C14.2222 21 14.3766 20.936 14.4904 20.8222C14.6042 20.7083 14.6681 20.5538 14.6681 20.3928C14.6681 20.2318 14.6042 20.0773 14.4904 19.9635L9.46402 14.9349Z" fill="black"></path>
                                                                     </svg>
                                                                 </button>
+                                                                <button type="button" class="btn btn-primary next-step" data-next-step="3">
+                                                                    <svg width="30" height="30" viewBox="0 0 30 30" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                                        <rect x="29.5" y="29.5" width="29" height="29" rx="14.5" transform="rotate(180 29.5 29.5)" stroke="black"></rect>
+                                                                        <path d="M20.7866 15.5415H8.66608C8.50532 15.5415 8.35124 15.4776 8.2376 15.3639C8.12386 15.2502 8.06006 15.0959 8.06006 14.9351C8.06006 14.7742 8.12386 14.62 8.2376 14.5063C8.35124 14.3925 8.50532 14.3287 8.66608 14.3287H20.7866C20.9473 14.3287 21.1014 14.3925 21.2151 14.5063C21.3287 14.62 21.3926 14.7742 21.3926 14.9351C21.3926 15.0959 21.3287 15.2502 21.2151 15.3639C21.1014 15.4776 20.9473 15.5415 20.7866 15.5415Z" fill="black"></path>
+                                                                        <path d="M20.536 14.9349L15.5096 9.90645C15.3958 9.79264 15.3319 9.63817 15.3319 9.47711C15.3319 9.31614 15.3958 9.16167 15.5096 9.04775C15.6234 8.93394 15.7778 8.87 15.9387 8.87C16.0996 8.87 16.254 8.93394 16.3678 9.04775L21.822 14.5056C21.8784 14.562 21.9232 14.6289 21.9537 14.7026C21.9843 14.7762 22 14.8552 22 14.9349C22 15.0147 21.9843 15.0937 21.9537 15.1674C21.9232 15.2411 21.8784 15.308 21.822 15.3643L16.3678 20.8222C16.254 20.936 16.0996 21 15.9387 21C15.7778 21 15.6234 20.936 15.5096 20.8222C15.3958 20.7083 15.3319 20.5538 15.3319 20.3928C15.3319 20.2318 15.3958 20.0773 15.5096 19.9635L20.536 14.9349Z" fill="black"></path>
+                                                                    </svg></button>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                    <!-- Step 3 -->
+                                                    <div class="step-form step-3 d-none">
+                                                        <h4>Signing Authority:</h4>
+
+                                                        <div class="gropu_dataprint_wrap">
+                                                            <div class="gropu_form_divide">
+                                                                <div class="gropu_form">
+                                                                    <label for="nameprint">Name:</label>
+                                                                    <input type="text" id="nameprint" name="nameprint" readonly value="test singh">
+                                                                </div>
+
+                                                                <!-- Email Input -->
+                                                                <div class="gropu_form">
+                                                                    <label for="emailprint">Email:</label>
+                                                                    <input type="email" id="emailprint" name="emailprint" readonly value="test@gmail.com">
+                                                                </div>
+
+                                                                <!-- Phone Input -->
+                                                                <div class="gropu_form">
+                                                                    <label for="phoneprint">Phone:</label>
+                                                                    <input type="tel" id="phoneprint" name="phoneprint" readonly value="7045598514">
+                                                                </div>
+                                                            </div>
+                                                            <div class="show-side_signature">
+                                                                <img src="../../assets/images/dummy_sign.png" alt="img">
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="gropu_datatake_wrap">
+                                                            <div class="gropu_form">
+                                                                <label for="name">Name</label>
+                                                                <input type="text" id="name" name="name" required placeholder="Enter Name">
+                                                            </div>
+
+                                                            <!-- Email Input -->
+                                                            <div class="gropu_form">
+                                                                <label for="email">Email</label>
+                                                                <input type="email" id="email" name="email" required placeholder="Enter Email">
+                                                            </div>
+
+                                                            <!-- Phone Input -->
+                                                            <div class="gropu_form">
+                                                                <label for="phone">Phone</label>
+                                                                <input type="tel" id="phone" name="phone" required placeholder="Enter Phoneno">
+                                                            </div>
+
+                                                            <!-- Division Selection -->
+                                                            <div class="gropu_form">
+                                                                <label for="Division">Division</label>
+                                                                <select id="division" name="division" required>
+                                                                    <option value="" disabled selected>Select</option>
+
+                                                                    <option value="">test</option>
+
+                                                                </select>
+                                                            </div>
+
+                                                            <div class="append_bootm_contarct_wrap">
+
+                                                                <div class="rept_cont_nt">
+                                                                    <label for="up_picture">Upload Picture:</label>
+                                                                    <div class="file-area_cover">
+                                                                        <div class="file-area">
+                                                                            <input type="file" class="drag_file_signature" id="up_picture" name="up_picture">
+                                                                            <div class="file-dummy">
+                                                                                <div class="default">
+                                                                                    <span class="upload_icon">
+                                                                                        <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                                                            <path fill-rule="evenodd" clip-rule="evenodd" d="M8.9974 0.041504C9.08764 0.0414466 9.17682 0.0609324 9.25882 0.0986218C9.34082 0.136311 9.41368 0.19131 9.47239 0.259837L11.9724 3.1765C12.0802 3.30248 12.1336 3.46615 12.1208 3.63149C12.108 3.79683 12.03 3.95032 11.9041 4.05817C11.7781 4.16603 11.6144 4.21942 11.4491 4.2066C11.2837 4.19379 11.1303 4.11581 11.0224 3.98984L9.6224 2.3565V11.4998C9.6224 11.6656 9.55655 11.8246 9.43934 11.9418C9.32213 12.059 9.16316 12.1248 8.9974 12.1248C8.83164 12.1248 8.67266 12.059 8.55545 11.9418C8.43824 11.8246 8.3724 11.6656 8.3724 11.4998V2.35567L6.9724 3.98984C6.91899 4.05222 6.85382 4.10346 6.78061 4.14066C6.7074 4.17785 6.62758 4.20026 6.54571 4.2066C6.46384 4.21295 6.38153 4.20311 6.30346 4.17764C6.22539 4.15217 6.15311 4.11157 6.09073 4.05817C6.02835 4.00477 5.9771 3.9396 5.93991 3.86639C5.90272 3.79318 5.88031 3.71336 5.87396 3.63149C5.86762 3.54962 5.87746 3.4673 5.90293 3.38923C5.9284 3.31117 5.96899 3.23888 6.0224 3.1765L8.5224 0.259837C8.58111 0.19131 8.65398 0.136311 8.73597 0.0986218C8.81797 0.0609324 8.90715 0.0414466 8.9974 0.041504ZM4.8274 5.8765C4.99316 5.87562 5.15248 5.94062 5.27031 6.05721C5.38815 6.17379 5.45484 6.33241 5.45573 6.49817C5.45661 6.66393 5.39161 6.82325 5.27503 6.94109C5.15844 7.05892 4.99982 7.12562 4.83406 7.1265C3.92323 7.1315 3.2774 7.15484 2.78656 7.24484C2.3149 7.33234 2.04073 7.4715 1.83823 7.674C1.6074 7.90484 1.4574 8.229 1.3749 8.84067C1.29073 9.46984 1.28906 10.304 1.28906 11.4998V12.3332C1.28906 13.5298 1.29073 14.364 1.3749 14.9932C1.4574 15.6048 1.60823 15.9282 1.83823 16.1598C2.06906 16.3898 2.3924 16.5398 3.0049 16.6223C3.63323 16.7073 4.46823 16.7082 5.66406 16.7082H12.3307C13.5266 16.7082 14.3607 16.7073 14.9907 16.6223C15.6024 16.5398 15.9257 16.3898 16.1566 16.159C16.3874 15.9282 16.5374 15.6048 16.6199 14.9932C16.7041 14.364 16.7057 13.5298 16.7057 12.3332V11.4998C16.7057 10.304 16.7041 9.46984 16.6199 8.83984C16.5374 8.229 16.3866 7.90484 16.1566 7.674C15.9532 7.4715 15.6799 7.33234 15.2082 7.24484C14.7174 7.15484 14.0716 7.1315 13.1607 7.1265C13.0787 7.12607 12.9975 7.10947 12.9218 7.07765C12.8461 7.04584 12.7775 6.99943 12.7198 6.94109C12.662 6.88274 12.6164 6.8136 12.5854 6.7376C12.5544 6.66161 12.5386 6.58025 12.5391 6.49817C12.5395 6.41609 12.5561 6.33491 12.5879 6.25925C12.6197 6.18359 12.6661 6.11493 12.7245 6.05721C12.7828 5.99948 12.852 5.95381 12.928 5.9228C13.004 5.8918 13.0853 5.87607 13.1674 5.8765C14.0691 5.8815 14.8199 5.90317 15.4341 6.01567C16.0657 6.13234 16.6032 6.35317 17.0407 6.79067C17.5424 7.2915 17.7574 7.924 17.8591 8.674C17.9557 9.39567 17.9557 10.3148 17.9557 11.454V12.379C17.9557 13.519 17.9557 14.4373 17.8591 15.1598C17.7574 15.9098 17.5424 16.5415 17.0407 17.0432C16.5391 17.5448 15.9074 17.7598 15.1574 17.8615C14.4349 17.9582 13.5157 17.9582 12.3766 17.9582H5.61823C4.47906 17.9582 3.5599 17.9582 2.8374 17.8615C2.0874 17.7607 1.45573 17.5448 0.954063 17.0432C0.452396 16.5415 0.237396 15.9098 0.136562 15.1598C0.0390625 14.4373 0.0390625 13.5182 0.0390625 12.379V11.454C0.0390625 10.3148 0.0390625 9.39567 0.136562 8.67317C0.236562 7.92317 0.453229 7.2915 0.954063 6.78984C1.39156 6.35317 1.92906 6.1315 2.56073 6.01567C3.1749 5.90317 3.92573 5.8815 4.8274 5.8765Z" fill="#ABABAB"></path>
+                                                                                        </svg>
+                                                                                        Upload a file
+                                                                                    </span>
+                                                                                    
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="show_signature_pre pro_iimage" style="display:none;">
+                                                                    </div>
+                                                                </div>
+
+
+
+                                                                <div class="rept_cont_nt">
+                                                                    <label for="signature">Upload Signature:</label>
+
+                                                                    <div class="file-area_cover">
+                                                                        <div class="file-area">
+                                                                            <input type="file" class="drag_file_signature" id="signature" name="signature"  accept="image/*">
+                                                                            <div class="file-dummy">
+                                                                                <div class="default">
+                                                                                    <span class="upload_icon">
+                                                                                        <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                                                            <path fill-rule="evenodd" clip-rule="evenodd" d="M8.9974 0.041504C9.08764 0.0414466 9.17682 0.0609324 9.25882 0.0986218C9.34082 0.136311 9.41368 0.19131 9.47239 0.259837L11.9724 3.1765C12.0802 3.30248 12.1336 3.46615 12.1208 3.63149C12.108 3.79683 12.03 3.95032 11.9041 4.05817C11.7781 4.16603 11.6144 4.21942 11.4491 4.2066C11.2837 4.19379 11.1303 4.11581 11.0224 3.98984L9.6224 2.3565V11.4998C9.6224 11.6656 9.55655 11.8246 9.43934 11.9418C9.32213 12.059 9.16316 12.1248 8.9974 12.1248C8.83164 12.1248 8.67266 12.059 8.55545 11.9418C8.43824 11.8246 8.3724 11.6656 8.3724 11.4998V2.35567L6.9724 3.98984C6.91899 4.05222 6.85382 4.10346 6.78061 4.14066C6.7074 4.17785 6.62758 4.20026 6.54571 4.2066C6.46384 4.21295 6.38153 4.20311 6.30346 4.17764C6.22539 4.15217 6.15311 4.11157 6.09073 4.05817C6.02835 4.00477 5.9771 3.9396 5.93991 3.86639C5.90272 3.79318 5.88031 3.71336 5.87396 3.63149C5.86762 3.54962 5.87746 3.4673 5.90293 3.38923C5.9284 3.31117 5.96899 3.23888 6.0224 3.1765L8.5224 0.259837C8.58111 0.19131 8.65398 0.136311 8.73597 0.0986218C8.81797 0.0609324 8.90715 0.0414466 8.9974 0.041504ZM4.8274 5.8765C4.99316 5.87562 5.15248 5.94062 5.27031 6.05721C5.38815 6.17379 5.45484 6.33241 5.45573 6.49817C5.45661 6.66393 5.39161 6.82325 5.27503 6.94109C5.15844 7.05892 4.99982 7.12562 4.83406 7.1265C3.92323 7.1315 3.2774 7.15484 2.78656 7.24484C2.3149 7.33234 2.04073 7.4715 1.83823 7.674C1.6074 7.90484 1.4574 8.229 1.3749 8.84067C1.29073 9.46984 1.28906 10.304 1.28906 11.4998V12.3332C1.28906 13.5298 1.29073 14.364 1.3749 14.9932C1.4574 15.6048 1.60823 15.9282 1.83823 16.1598C2.06906 16.3898 2.3924 16.5398 3.0049 16.6223C3.63323 16.7073 4.46823 16.7082 5.66406 16.7082H12.3307C13.5266 16.7082 14.3607 16.7073 14.9907 16.6223C15.6024 16.5398 15.9257 16.3898 16.1566 16.159C16.3874 15.9282 16.5374 15.6048 16.6199 14.9932C16.7041 14.364 16.7057 13.5298 16.7057 12.3332V11.4998C16.7057 10.304 16.7041 9.46984 16.6199 8.83984C16.5374 8.229 16.3866 7.90484 16.1566 7.674C15.9532 7.4715 15.6799 7.33234 15.2082 7.24484C14.7174 7.15484 14.0716 7.1315 13.1607 7.1265C13.0787 7.12607 12.9975 7.10947 12.9218 7.07765C12.8461 7.04584 12.7775 6.99943 12.7198 6.94109C12.662 6.88274 12.6164 6.8136 12.5854 6.7376C12.5544 6.66161 12.5386 6.58025 12.5391 6.49817C12.5395 6.41609 12.5561 6.33491 12.5879 6.25925C12.6197 6.18359 12.6661 6.11493 12.7245 6.05721C12.7828 5.99948 12.852 5.95381 12.928 5.9228C13.004 5.8918 13.0853 5.87607 13.1674 5.8765C14.0691 5.8815 14.8199 5.90317 15.4341 6.01567C16.0657 6.13234 16.6032 6.35317 17.0407 6.79067C17.5424 7.2915 17.7574 7.924 17.8591 8.674C17.9557 9.39567 17.9557 10.3148 17.9557 11.454V12.379C17.9557 13.519 17.9557 14.4373 17.8591 15.1598C17.7574 15.9098 17.5424 16.5415 17.0407 17.0432C16.5391 17.5448 15.9074 17.7598 15.1574 17.8615C14.4349 17.9582 13.5157 17.9582 12.3766 17.9582H5.61823C4.47906 17.9582 3.5599 17.9582 2.8374 17.8615C2.0874 17.7607 1.45573 17.5448 0.954063 17.0432C0.452396 16.5415 0.237396 15.9098 0.136562 15.1598C0.0390625 14.4373 0.0390625 13.5182 0.0390625 12.379V11.454C0.0390625 10.3148 0.0390625 9.39567 0.136562 8.67317C0.236562 7.92317 0.453229 7.2915 0.954063 6.78984C1.39156 6.35317 1.92906 6.1315 2.56073 6.01567C3.1749 5.90317 3.92573 5.8815 4.8274 5.8765Z" fill="#ABABAB"></path>
+                                                                                        </svg>
+                                                                                        Upload a file
+                                                                                    </span>
+                                                                                   
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="show_signature_pre" style="display:none;">
+
+                                                                    </div>
+
+
+                                                                </div>
+                                                            </div>
+
+                                                        </div>
+
+
+                                                        <div class="btn-group">
+                                                            <div class="btn-container">
+                                                                <button type="button" class="btn btn-secondary prev-step" data-prev-step="2">
+                                                                    <svg width="30" height="30" viewBox="0 0 30 30" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                                        <rect x="0.5" y="-0.5" width="29" height="29" rx="14.5" transform="matrix(1 0 0 -1 0 29)" stroke="black"></rect>
+                                                                        <path d="M9.21345 15.5415H21.3339C21.4947 15.5415 21.6488 15.4776 21.7624 15.3639C21.8761 15.2502 21.9399 15.0959 21.9399 14.9351C21.9399 14.7742 21.8761 14.62 21.7624 14.5063C21.6488 14.3925 21.4947 14.3287 21.3339 14.3287H9.21345C9.05272 14.3287 8.89857 14.3925 8.78492 14.5063C8.67127 14.62 8.60742 14.7742 8.60742 14.9351C8.60742 15.0959 8.67127 15.2502 8.78492 15.3639C8.89857 15.4776 9.05272 15.5415 9.21345 15.5415Z" fill="black"></path>
+                                                                        <path d="M9.46402 14.9349L14.4904 9.90645C14.6042 9.79264 14.6681 9.63817 14.6681 9.47711C14.6681 9.31614 14.6042 9.16167 14.4904 9.04775C14.3766 8.93394 14.2222 8.87 14.0613 8.87C13.9004 8.87 13.746 8.93394 13.6322 9.04775L8.17804 14.5056C8.1216 14.562 8.07682 14.6289 8.04627 14.7026C8.01573 14.7762 8 14.8552 8 14.9349C8 15.0147 8.01573 15.0937 8.04627 15.1674C8.07682 15.2411 8.1216 15.308 8.17804 15.3643L13.6322 20.8222C13.746 20.936 13.9004 21 14.0613 21C14.2222 21 14.3766 20.936 14.4904 20.8222C14.6042 20.7083 14.6681 20.5538 14.6681 20.3928C14.6681 20.2318 14.6042 20.0773 14.4904 19.9635L9.46402 14.9349Z" fill="black"></path>
+                                                                    </svg>
+                                                                </button>
                                                                 <button type="button" id="draftButton" class="btn btn-draft">Save as Draft</button>
                                                                 <button type="submit" id="submitButton" class="btn btn-success">Upload</button>
                                                             </div>
@@ -635,152 +769,145 @@
 
                                                 </form>
 
-                                                <script>
-                                                    $(document).ready(function () {
-                                                        // When the "Save as Draft" button is clicked
-                                                        $('#draftButton').on('click', function () {
-                                                            var formData = new FormData($('#customerContractForm')[0]);
-                                                            formData.append('draft', true);  // Add a flag to indicate it's a draft
-                                                
-                                                            $.ajax({
-                                                                url: $('#customerContractForm').attr('action'),
-                                                                type: 'POST',
-                                                                data: formData,
-                                                                contentType: false,
-                                                                processData: false,
-                                                                success: function (response) {
-                                                                    if (response.success) {
-                                                                        toastr.success(response.message, 'Success', { timeOut: 3000 });  // Set timeOut to 3 seconds
-                                                                        location.reload();
-                                                                    } else {
-                                                                        toastr.error(response.message || 'There was an issue saving the draft.', 'Error');
-                                                                    }
-                                                                },
-                                                                error: function () {
-                                                                    toastr.error('An error occurred while saving the draft.', 'Error');
-                                                                }
-                                                            });
-                                                        });
-                                                
-                                                        // When the "Submit" button is clicked
-                                                        $('#submitButton').on('click', function (e) {
-                                                            e.preventDefault(); // Prevent the default form submission
-                                                
-                                                            var formData = new FormData($('#customerContractForm')[0]);
-                                                
-                                                            $.ajax({
-                                                                url: $('#customerContractForm').attr('action'),
-                                                                type: 'POST',
-                                                                data: formData,
-                                                                contentType: false,
-                                                                processData: false,
-                                                                success: function (response) {
-                                                                    if (response.success) {
-                                                                        toastr.success(response.message, 'Success', { timeOut: 3000 });  // Set timeOut to 3 seconds
-                                                                        location.reload();
-                                                                    } else {
-                                                                        toastr.error(response.message || 'There was an issue submitting the contract.', 'Error');
-                                                                    }
-                                                                },
-                                                                error: function () {
-                                                                    toastr.error('An error occurred while submitting the contract.', 'Error');
-                                                                }
-                                                            });
-                                                        });
-                                                    });
-                                                </script>
-
-                                                <script>
-                                                    document.addEventListener('DOMContentLoaded', function() {
-                                                        const form = document.getElementById('customerContractForm');
-
-                                                        if (form) {
-                                                            // Remove the 'required' attribute from all input and select elements for draft
-                                                            document.getElementById('draftButton').addEventListener('click', function() {
-                                                                const isDrafted = document.getElementById('is_drafted');
-                                                                if (isDrafted) {
-                                                                    isDrafted.value = '1'; // Mark as draft
-                                                                }
-                                                                Array.from(form.elements).forEach(element => {
-                                                                    if (element.hasAttribute('required')) {
-                                                                        element.removeAttribute('required');
-                                                                    }
-                                                                });
-                                                                form.submit(); // Submit the form
-                                                            });
-
-                                                            // Handle final submission
-                                                            document.getElementById('submitButton').addEventListener('click', function() {
-                                                                const isDrafted = document.getElementById('is_drafted');
-                                                                if (isDrafted) {
-                                                                    isDrafted.value = '0'; // Mark as final submission
-                                                                }
-                                                            });
-                                                        } else {
-                                                            console.error('Form with ID "customerContractForm" not found.');
-                                                        }
-                                                    });
-                                                </script>
-
-
-                                                <script>
-                                                    $(document).ready(function() {
-                                                        // Disable submit button initially
-                                                        $('#submitButton').prop('disabled', true);
-
-                                                        // Function to check if all required fields are filled
-                                                        function checkRequiredFields() {
-                                                            let allFilled = true;
-
-                                                            // Iterate over each required field
-                                                            $('form#customercontractForm [required]').each(function() {
-                                                                if ($(this).val() === '') {
-                                                                    allFilled = false;
-                                                                }
-                                                            });
-
-                                                            // Enable or disable the submit button based on field validity
-                                                            $('#submitButton').prop('disabled', !allFilled);
-                                                        }
-
-                                                        // Run the check on page load
-                                                        checkRequiredFields();
-
-                                                        // Bind the change and input events to required fields to check when values are updated
-                                                        $('form#customercontractForm [required]').on('input change', function() {
-                                                            checkRequiredFields();
-                                                        });
-                                                    });
-                                                </script>
-
                                             </div>
                                         </div>
                                     </div>
                                 </div>
 
+                                <script>
+                                    $(document).ready(function() {
+                                        // When the "Save as Draft" button is clicked
+                                        $('#draftButton').on('click', function() {
+                                            var formData = new FormData($('#customerContractForm')[0]);
+                                            formData.append('draft', true); // Add a flag to indicate it's a draft
+
+                                            $.ajax({
+                                                url: $('#customerContractForm').attr('action'),
+                                                type: 'POST',
+                                                data: formData,
+                                                contentType: false,
+                                                processData: false,
+                                                success: function(response) {
+                                                    if (response.success) {
+                                                        toastr.success(response.message, 'Success', {
+                                                            timeOut: 3000
+                                                        }); // Set timeOut to 3 seconds
+                                                        location.reload();
+                                                    } else {
+                                                        toastr.error(response.message || 'There was an issue saving the draft.', 'Error');
+                                                    }
+                                                },
+                                                error: function() {
+                                                    toastr.error('An error occurred while saving the draft.', 'Error');
+                                                }
+                                            });
+                                        });
+
+                                        // When the "Submit" button is clicked
+                                        $('#submitButton').on('click', function(e) {
+                                            e.preventDefault(); // Prevent the default form submission
+
+                                            var formData = new FormData($('#customerContractForm')[0]);
+
+                                            $.ajax({
+                                                url: $('#customerContractForm').attr('action'),
+                                                type: 'POST',
+                                                data: formData,
+                                                contentType: false,
+                                                processData: false,
+                                                success: function(response) {
+                                                    if (response.success) {
+                                                        toastr.success(response.message, 'Success', {
+                                                            timeOut: 3000
+                                                        }); // Set timeOut to 3 seconds
+                                                        location.reload();
+                                                    } else {
+                                                        toastr.error(response.message || 'There was an issue submitting the contract.', 'Error');
+                                                    }
+                                                },
+                                                error: function() {
+                                                    toastr.error('An error occurred while submitting the contract.', 'Error');
+                                                }
+                                            });
+                                        });
+                                    });
+                                </script>
+
+                                <script>
+                                    document.addEventListener('DOMContentLoaded', function() {
+                                        const form = document.getElementById('customerContractForm');
+
+                                        if (form) {
+                                            // Remove the 'required' attribute from all input and select elements for draft
+                                            document.getElementById('draftButton').addEventListener('click', function() {
+                                                const isDrafted = document.getElementById('is_drafted');
+                                                if (isDrafted) {
+                                                    isDrafted.value = '1'; // Mark as draft
+                                                }
+                                                Array.from(form.elements).forEach(element => {
+                                                    if (element.hasAttribute('required')) {
+                                                        element.removeAttribute('required');
+                                                    }
+                                                });
+                                                form.submit(); // Submit the form
+                                            });
+
+                                            // Handle final submission
+                                            document.getElementById('submitButton').addEventListener('click', function() {
+                                                const isDrafted = document.getElementById('is_drafted');
+                                                if (isDrafted) {
+                                                    isDrafted.value = '0'; // Mark as final submission
+                                                }
+                                            });
+                                        } else {
+                                            console.error('Form with ID "customerContractForm" not found.');
+                                        }
+                                    });
+                                </script>
 
 
                                 <script>
                                     $(document).ready(function() {
-                                        function validateStep(step) {
-                                            const input = $(`.step-form.step-${step} input`);
-                                            return input.val().trim() !== '';
+                                        // Disable submit button initially
+                                        $('#submitButton').prop('disabled', true);
+
+                                        // Function to check if all required fields are filled
+                                        function checkRequiredFields() {
+                                            let allFilled = true;
+
+                                            // Iterate over each required field
+                                            $('form#customercontractForm [required]').each(function() {
+                                                if ($(this).val() === '') {
+                                                    allFilled = false;
+                                                }
+                                            });
+
+                                            // Enable or disable the submit button based on field validity
+                                            $('#submitButton').prop('disabled', !allFilled);
                                         }
 
+                                        // Run the check on page load
+                                        checkRequiredFields();
+
+                                        // Bind the change and input events to required fields to check when values are updated
+                                        $('form#customercontractForm [required]').on('input change', function() {
+                                            checkRequiredFields();
+                                        });
+                                    });
+                                </script>
+
+
+
+                                <script>
+                                    $(document).ready(function() {
                                         function updateProgress(step) {
                                             $('.step').each(function() {
                                                 const stepNum = $(this).data('step');
-                                                const isValid = validateStep(stepNum);
 
                                                 if (stepNum < step) {
                                                     $(this).addClass('active');
-                                                    if (isValid) {
-                                                        $(this).find('.number').addClass('d-none');
-                                                        $(this).find('.tick').removeClass('d-none');
-                                                    } else {
-                                                        $(this).find('.number').removeClass('d-none');
-                                                        $(this).find('.tick').addClass('d-none');
-                                                    }
+                                                    $(this).find('.number').addClass('d-none');
+                                                    $(this).find('.tick').removeClass('d-none');
                                                 } else {
                                                     $(this).removeClass('active');
                                                     $(this).find('.number').removeClass('d-none');
@@ -792,8 +919,6 @@
                                         $('.next-step').on('click', function() {
                                             const currentStep = $(this).data('next-step') - 1;
                                             const nextStep = $(this).data('next-step');
-
-                                            if (!validateStep(currentStep)) return;
 
                                             $(`.step-form.step-${currentStep}`).addClass('d-none');
                                             $(`.step-form.step-${nextStep}`).removeClass('d-none');
@@ -811,9 +936,7 @@
 
                                         $('#customerContractForm').on('submit', function(e) {
                                             e.preventDefault();
-                                            if (validateStep(3)) {
-                                                $('#threeStepModal').modal('hide');
-                                            }
+                                            $('#threeStepModal').modal('hide');
                                         });
 
                                         $('input').on('input', function() {
