@@ -702,6 +702,30 @@ public function showGst($id)
 
         return redirect()->back()->with('success', 'Authorize Management added successfully.');
     }
+
+    public function checkEmail(Request $request)
+    {
+        $exists = Customer::where('email', $request->email)->exists();
+        return response()->json(['exists' => $exists]);
+    }
+
+    public function checkPhone(Request $request)
+    {
+        $exists = Customer::where('phone', $request->phone)->exists();
+        return response()->json(['exists' => $exists]);
+    }
+
+    public function checkCin(Request $request)
+    {
+        $exists = Customer::where('cin_no', $request->CinNo)->exists();
+        return response()->json(['exists' => $exists]);
+    }
+
+    public function checkGstin(Request $request)
+    {
+        $exists = Customer::where('gstin_no', $request->GSTINNo)->exists();
+        return response()->json(['exists' => $exists]);
+    }
    
        // customer creation code end here from here 
 }

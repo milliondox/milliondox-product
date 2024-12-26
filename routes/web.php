@@ -1156,6 +1156,12 @@ Route::get('/user/contractmanage', [App\Http\Controllers\ContractController::cla
 Route::get('/user/contractmanagedetail/{id}', [App\Http\Controllers\ContractController::class, 'contractmanagedetail'])->name('user/contractmanagedetail')->middleware('auth');
 Route::post('/download-contracts', [App\Http\Controllers\ContractController::class, 'downloadContracts'])->name('download.contracts');
 
+Route::get('/api/check-email', [App\Http\Controllers\ContractController::class, 'checkEmail']);
+Route::get('/api/check-phone', [App\Http\Controllers\ContractController::class, 'checkPhone']);
+Route::get('/api/check-cin',[App\Http\Controllers\ContractController::class, 'checkCin']);
+Route::get('/api/check-gstin', [App\Http\Controllers\ContractController::class, 'checkGstin']);
+
+
 Route::post('/addauthmanagement', [App\Http\Controllers\ContractController::class, 'addauthmanagement'])->name('addauthmanagement');
 Route::post('/adddivision', [App\Http\Controllers\ContractController::class, 'adddivision'])->name('adddivision');
 Route::post('/contracts/import', [App\Http\Controllers\ContractController::class, 'import'])->name('contracts.import');

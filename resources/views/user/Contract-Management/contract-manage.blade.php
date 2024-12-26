@@ -316,7 +316,44 @@
                       </div>
                     </div>
 
-
+                    <script>
+                      // Function to check if a value exists
+                      function checkIfExists(fieldId, apiEndpoint, errorMessage) {
+                        const input = document.getElementById(fieldId);
+                        let isAlertShown = false; // Flag to track if SweetAlert has already been shown
+                    
+                        input.addEventListener('blur', function () {
+                          const value = input.value.trim();
+                          if (value !== "" && !isAlertShown) { // Check if alert hasn't been shown yet
+                            fetch(`${apiEndpoint}?${fieldId}=${encodeURIComponent(value)}`)
+                              .then(response => response.json())
+                              .then(data => {
+                                if (data.exists) {
+                                  isAlertShown = true; // Set the flag to true when the alert is shown
+                                  // Show SweetAlert
+                                  Swal.fire({
+                                    icon: 'error',
+                                    title: 'Oops...',
+                                    text: errorMessage,
+                                  }).then(() => {
+                                    // Reset the flag when the user closes the SweetAlert
+                                    isAlertShown = false;
+                                  });
+                                  input.focus(); // Set focus back on the input
+                                }
+                              })
+                              .catch(error => console.error('Error checking value:', error));
+                          }
+                        });
+                      }
+                    
+                      // Apply checks to the input fields
+                      checkIfExists('email', '/api/check-email', 'This email is already in use.');
+                      checkIfExists('phoneNumber', '/api/check-phone', 'This phone number is already in use.');
+                      checkIfExists('CinNo', '/api/check-cin', 'This CIN No is already in use.');
+                      checkIfExists('GSTINNo', '/api/check-gstin', 'This GSTIN No is already in use.');
+                    </script>
+                    
 
                     <script>
                       $(document).ready(function () {
