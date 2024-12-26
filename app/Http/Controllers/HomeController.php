@@ -20623,60 +20623,121 @@ private function generateUniqueUsername($fname, $lname)
                         ->orderBy('name')
                         ->get();
 
-// Fetch the authenticated user's folders
-$userFolders = Folder::where('user_id', Auth::id())
-                        ->orderBy('name')
-                        ->get();
+            // Fetch the authenticated user's folders
+            $userFolders = Folder::where('user_id', Auth::id())
+            ->orderBy('name')
+            ->get();
 
-$RealFileFolders = Folder::where('user_id', Auth::id())
-    ->orWhere('common_folder', 1)
-    ->whereNull('is_bank')
-    ->whereNotNull('real_file_name')
-    ->orderBy('name')
-    ->get();
 
-// dd($RealFileFolders);
+            $deletedEmployeeIds = DB::table('store_company_employee')
+            ->where('is_delete', 1)
+            ->pluck('id')
+            ->toArray();
+            // dd($deletedEmployeeIds); 
 
-$RealFileFoldersBank = Folder::where('common_folder', 1)
-->where('is_bank', 1)
-->whereNotNull('real_file_name')
-->orderBy('name')
-->get();
-// dd($RealFileFolders);
+            $deletedDirectorIds = DB::table('store_company_director')
+            ->where('is_delete', 1)
+            ->pluck('id')
+            ->toArray();
 
-// Combine both results
-$folders = $commonFolders->merge($userFolders);
+            // $RealFileFolders = Folder::where('user_id', Auth::id())
+            // ->orWhere('common_folder', 1)
+            // ->whereNull('is_bank')
+            // ->where('is_delete', 0)
+            // ->whereNotNull('real_file_name')
+            // ->orWhere(function ($query) use ($deletedDirectorIds, $deletedEmployeeIds) {
+            //     $query->whereNotIn('director_id', $deletedDirectorIds)
+            //           ->orWhereNotIn('employee_id', $deletedEmployeeIds);
+            // })
+            // ->orderBy('name')
+            // ->get();
+            // $RealFileFolders = Folder::where(function ($query) {
+            //     $query->where('user_id', Auth::id())
+            //           ->orWhere('common_folder', 1);
+            // })
+            // ->whereNull('is_bank')
+            // ->where('is_delete', 0)
+            // ->whereNotNull('real_file_name')
+            // // ->whereNotIn('director_id', $deletedDirectorIds)
+            // // ->whereNotIn('employee_id', $deletedEmployeeIds)
+            // ->orderBy('name')
+            // ->get();
+            $RealFileFolders = Folder::where(function ($query) {
+                $query->where('user_id', Auth::id())
+                      ->orWhere('user_id', 301);
+            })
+            ->whereNull('is_bank')
+            ->where('is_delete', 0)
+            ->whereNotNull('real_file_name')
+            ->where(function ($query) use ($deletedDirectorIds, $deletedEmployeeIds) {
+                $query->where(function ($subQuery) use ($deletedDirectorIds) {
+                    $subQuery->whereNotIn('director_id', $deletedDirectorIds)
+                             ->orWhereNull('director_id');
+                })
+                ->orWhere(function ($subQuery) use ($deletedEmployeeIds) {
+                    $subQuery->whereNotIn('employee_id', $deletedEmployeeIds)
+                             ->orWhereNull('employee_id');
+                });
+            })
+            ->orderBy('name')
+            ->get();
+
+            // dd($RealFileFolders);
+
+            $RealFileFoldersBank = Folder::where(function ($query) {
+                $query->where('user_id', Auth::id())
+                      ->orWhere('user_id', 301);
+            })
+            ->where('is_bank', 1)
+            ->where('is_delete', 0)
+            ->whereNotNull('real_file_name')
+            ->where(function ($query) use ($deletedDirectorIds, $deletedEmployeeIds) {
+                $query->where(function ($subQuery) use ($deletedDirectorIds) {
+                    $subQuery->whereNotIn('director_id', $deletedDirectorIds)
+                             ->orWhereNull('director_id');
+                })
+                ->orWhere(function ($subQuery) use ($deletedEmployeeIds) {
+                    $subQuery->whereNotIn('employee_id', $deletedEmployeeIds)
+                             ->orWhereNull('employee_id');
+                });
+            })
+            ->orderBy('name')
+            ->get();
+            // dd($RealFileFolders);
+
+            // Combine both results
+            $folders = $commonFolders->merge($userFolders);
         
     
-        $allFolders = Folder::where('common_folder', 1) ->orwhere('user_id', Auth::id())->orderBy('name')->get();
-        $parentFolders = $allFolders->whereNull('parent_name'); 
-        $latestFolderPath = Folder::where('user_id', Auth::id())->latest()->value('path');
-        $userId = Auth::id();
-        $commondataroom = DataRoom::where('user_id', Auth::id())->get();
+            $allFolders = Folder::where('common_folder', 1) ->orwhere('user_id', Auth::id())->orderBy('name')->get();
+            $parentFolders = $allFolders->whereNull('parent_name'); 
+            $latestFolderPath = Folder::where('user_id', Auth::id())->latest()->value('path');
+            $userId = Auth::id();
+            $commondataroom = DataRoom::where('user_id', Auth::id())->get();
 
-   $user = auth()->user();
-//   $files = BoardNotice::where('user_id', $user->id)
-//                     ->where('is_delete', 1)
-//                     ->orderBy('updated_at', 'desc')
-//                     ->get();
-                    
-//                     $files3 = BoardMinuteBook::where('user_id', $user->id)
-//                     ->where('is_delete', 1)
-//                     ->orderBy('updated_at', 'desc')
-//                     ->get();
-                    
-                    
-//                     $files3 = BoardResolutions::where('user_id', $user->id)
-//                     ->where('is_delete', 1)
-//                     ->orderBy('updated_at', 'desc')
-//                     ->get();
-                    
-//                     $files4 = BoardAttendencesheet::where('user_id', $user->id)
-//                     ->where('is_delete', 1)
-//                     ->orderBy('updated_at', 'desc')
-//                     ->get();
-                    
-//                     dd($files4);
+            $user = auth()->user();
+            //   $files = BoardNotice::where('user_id', $user->id)
+            //                     ->where('is_delete', 1)
+            //                     ->orderBy('updated_at', 'desc')
+            //                     ->get();
+                                
+            //                     $files3 = BoardMinuteBook::where('user_id', $user->id)
+            //                     ->where('is_delete', 1)
+            //                     ->orderBy('updated_at', 'desc')
+            //                     ->get();
+                                
+                                
+            //                     $files3 = BoardResolutions::where('user_id', $user->id)
+            //                     ->where('is_delete', 1)
+            //                     ->orderBy('updated_at', 'desc')
+            //                     ->get();
+                                
+            //                     $files4 = BoardAttendencesheet::where('user_id', $user->id)
+            //                     ->where('is_delete', 1)
+            //                     ->orderBy('updated_at', 'desc')
+            //                     ->get();
+                                
+            //                     dd($files4);
 
 
 $user_id = $user->id;
