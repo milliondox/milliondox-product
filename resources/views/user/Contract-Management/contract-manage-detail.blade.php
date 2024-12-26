@@ -144,37 +144,31 @@
                                         <h2>Authrized Signatory</h2>
 
                                         <ul>
+                                            @if($authdata->isEmpty())
+                                            <li>No contract uploaded yet</li>
+                                        @else
+                                            @foreach ($authdata as $data )
+                                                
+                                           
 
                                             <li>
                                                 <div class="auth_image">
-                                                    <img src="https://f-dev.milliondox.in/profile_pictures/V21JjJbUitpBjn45II8C6qqCtvj1ljfRyaOO2nfo.webp" alt="img">
+                                                    <img src="{{ asset($data->sign_image_path) }}" alt="img">
                                                 </div>
-                                                <h2>Anurag Srivastava</h2>
+                                                <h2>{{$data->name}}</h2>
 
-                                                <div class="Authrized_Signatory">
+                                                {{-- <div class="Authrized_Signatory">
                                                     <b>Anurag 1</b>
                                                     <b>Anurag 2</b>
                                                     <b>Anurag 3</b>
                                                     <b>Anurag 4</b>
                                                     <b>Anurag 5</b>
                                                     <b class="count"></b>
-                                                </div>
+                                                </div> --}}
 
                                             </li>
-
-                                            <li>
-                                                <div class="auth_image">
-                                                    <img src="https://f-dev.milliondox.in/profile_pictures/V21JjJbUitpBjn45II8C6qqCtvj1ljfRyaOO2nfo.webp" alt="img">
-                                                </div>
-                                                <h2>Devanshu Kumar</h2>
-
-                                                <div class="Authrized_Signatory">
-                                                    <b>Devanshu 1</b>
-                                                    <b>Devanshu 2</b>
-                                                    <b class="count"></b>
-                                                </div>
-
-                                            </li>
+                                            @endforeach
+                                            @endif
 
                                         </ul>
 

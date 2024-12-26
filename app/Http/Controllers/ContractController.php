@@ -153,11 +153,11 @@ class ContractController extends Controller
    ->whereColumn('a.auth_user_id', 'd.user_id') // Compares auth_user_id with user_id in divisions
    ->get();
 
-
+$authdata = AuthorizeManagement::where('auth_user_id', $user->id)->get();
 //    dd($authmanagement);
 
       
-      return view('user.Contract-Management.contract-manage-detail',compact('authmanagement','div','cli_announcements','user','customerrecord','customercontract','divisions','overallStatus'));
+      return view('user.Contract-Management.contract-manage-detail',compact('authdata','authmanagement','div','cli_announcements','user','customerrecord','customercontract','divisions','overallStatus'));
    }
 
    public function customerstore(Request $request)
