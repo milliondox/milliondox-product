@@ -621,7 +621,7 @@
                                                     <div class="step-form step-2 d-none">
 
                                                         <h4></h4>
-                                                        <div class="group_form">
+                                                        <div class="gropu_form">
 
                                                             <label for="renewal_terms">Renewal Terms <span class="red_star">*</span></label>
                                                             <div id="quill-renewal-terms" class="quill-editor"></div>
@@ -629,14 +629,14 @@
                                                           </div>
                                                       
                                                           <!-- Payment Terms -->
-                                                          <div class="group_form">
+                                                          <div class="gropu_form">
                                                             <label for="payment_terms">Payment Terms <span class="red_star">*</span></label>
                                                             <div id="quill-payment-terms" class="quill-editor"></div>
                                                             <textarea name="payment_terms[]" id="payment_terms" required></textarea>
                                                           </div>
                                                       
                                                           <!-- Fee Escalation Clause -->
-                                                          <div class="group_form">
+                                                          <div class="gropu_form">
                                                             <label for="fee_escalation_clause">Fee Escalation Clause <span class="red_star">*</span></label>
                                                             <div id="quill-fee-escalation-clause" class="quill-editor"></div>
                                                             <textarea name="fee_escalation_clause[]" id="fee_escalation_clause" required></textarea>

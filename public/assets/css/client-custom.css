@@ -22680,6 +22680,52 @@ span.clinet_name {
 }
 
 
+.drop_coman_file.have_title .step-2 .gropu_form {
+    display: block;
+    text-align: left;
+}
+
+.drop_coman_file.have_title .step-2 .gropu_form label {
+    margin-bottom: 8px;
+}
+
+.drop_coman_file.have_title .step-2 .gropu_form .quill-editor {
+    height: 100px !IMPORTANT;
+}
+
+.drop_coman_file.have_title .step-2 .gropu_form .ql-toolbar .ql-formats:last-child {
+    margin: 0;
+}
+
+
+.dark-only .drop_coman_file.have_title .step-2 .gropu_form .ql-toolbar {
+    border-color: #3e4d70 ! IMPORTANT;
+}
+
+.dark-only .drop_coman_file.have_title .step-2 .gropu_form .ql-editor.ql-blank {
+    background: transparent !important;
+    border-color: #3e4d70 ! IMPORTANT;
+}
+
+.dark-only .drop_coman_file.have_title .step-2 .gropu_form .quill-editor {
+    background: #262b33 ! IMPORTANT;
+    border: 0 !IMPORTANT;
+}
+
+.dark-only .drop_coman_file.have_title .step-2 .gropu_form .ql-toolbar * {
+    color: #c1c2c3 !important;
+   stroke: #c1c2c3 !important;
+   }
+
+   .dark-only .drop_coman_file.have_title .step-2 .gropu_form .quill-editor .ql-editor {
+    background: transparent !IMPORTANT;
+    border-color: #3e4d70 !IMPORTANT;
+}
+
+.dark-only .drop_coman_file.have_title .step-2 .gropu_form .quill-editor .ql-editor.ql-blank::before {
+    color: #dbdbdb !IMPORTANT;
+}
+
 /*new div append css end*/
 
 /********/
