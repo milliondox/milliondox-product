@@ -465,6 +465,11 @@
 
                                             <div class="modal-body customer_wrap customer_details">
                                                 <!-- Progress Bar -->
+                                                <div class="stepp_ott">
+                                                <span class="smal_titlle">Details</span>
+                                                <span class="smal_titlle">Terms</span>
+                                                <span class="smal_titlle">Authority</span>
+                                                </div>
                                                 <div class="progress-bar-container_step">
                                                     <div class="step" data-step="1">
                                                         <span class="number">1</span>
@@ -484,7 +489,7 @@
                                                     @csrf
                                                     <!-- Step 1 -->
                                                     <div class="step-form step-1">
-                                                        <h4>Contract Details:</h4>
+                                                        <h4></h4>
 
                                                         <!-- Upload Contract -->
                                                         <input type="hidden" name="is_drafted" id="is_drafted" value="0">
@@ -604,7 +609,7 @@
 
                                                     <!-- Step 2 -->
                                                     <div class="step-form step-2 d-none">
-                                                        <h4>Terms of Contract:</h4>
+                                                        <h4></h4>
                                                         <div class="gropu_form">
                                                             <label for="renewal_terms">Renewal Terms <span class="red_star">*</span></label>
                                                             <textarea name="renewal_terms[]" style="height: 58px;" required></textarea>
@@ -619,6 +624,8 @@
                                                             <label for="fee_escalation_clause">Fee Escalation Clause <span class="red_star">*</span></label>
                                                             <textarea name="fee_escalation_clause[]" style="height: 58px;" required></textarea>
                                                         </div>
+
+
 
                                                         <div class="btn-group">
                                                             <div class="btn-container">
@@ -641,7 +648,7 @@
 
                                                     <!-- Step 3 -->
                                                     <div class="step-form step-3 d-none">
-                                                        <h4>Signing Authority:</h4>
+                                                        <h4>First Party:</h4>
 
                                                         <div class="gropu_dataprint_wrap">
                                                             <div class="gropu_form_divide">
@@ -667,6 +674,7 @@
                                                             </div>
                                                         </div>
 
+                                                        <h4 class="secound_spacce">Second Party:</h4>
                                                         <div class="gropu_datatake_wrap">
                                                             <div class="gropu_form">
                                                                 <label for="name">Name</label>

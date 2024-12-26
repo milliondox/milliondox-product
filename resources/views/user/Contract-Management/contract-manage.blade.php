@@ -118,7 +118,7 @@
                             </div>
                             <!-- Step Forms -->
                             <form id="customerForm" action="{{ route('customerstore') }}" method="POST" enctype="multipart/form-data" class="upload-form">
-                            @csrf                              
+                              @csrf
                               <!-- Step 1 -->
                               <div class="step-form step-1">
                                 <h4>Business Details:</h4>
@@ -277,14 +277,23 @@
 
                                 <!-- Director Name with Add/Remove Buttons -->
                                 <div class="gropu_form" id="directors-container">
-                                  <label for="dname">Director's</label>
                                   <div class="director_field_wrap">
                                     <div class="director-field">
-                                      <div class="director-field_input">
-                                        <input placeholder="Director Name" type="text" id="dname" name="dname[]" required>
-                                        <input placeholder="Director Email" type="text" id="dmail" name="dmail[]" required>
-                                        <input placeholder="Director Mobile" type="text" id="dphone" name="dphone[]" required>
+                                      <div class="director-field_input_wrap">
+                                        <div class="director-field_input">
+                                          <label for="dname">Director Name:</label>
+                                          <input placeholder="Director Name" type="text" id="dname" name="dname[]" required>
+                                        </div>
+                                        <div class="director-field_input">
+                                          <label for="dname">Director Email:</label>
+                                          <input placeholder="Director Email" type="text" id="dmail" name="dmail[]" required>
+                                        </div>
+                                        <div class="director-field_input">
+                                          <label for="dname">Director Mobile:</label>
+                                          <input placeholder="Director Mobile" type="text" id="dphone" name="dphone[]" required>
+                                        </div>
                                       </div>
+
                                       <button type="button" class="add-director"><svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
                                           <path d="M1 6H11M6 11V1" stroke="#5790FF" stroke-width="1.66" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"></path>
                                         </svg></button>
@@ -365,7 +374,7 @@
 
                         $('#customerForm').on('submit', function(e) {
                           e.preventDefault();
-                          if (validateStep(3)) {                           
+                          if (validateStep(3)) {
                             $('#threeStepModal').modal('hide');
                           }
                         });
@@ -460,11 +469,20 @@
                           const newField = document.createElement('div');
                           newField.className = 'director-field';
                           newField.innerHTML = `
-                          <div class="director-field_input">
-      <input placeholder="Director Name" type="text" name="dname[]" value="">
-     <input placeholder="Director Email" type="text" id="dmail" name="dmail[]" required>
-    <input placeholder="Director Mobile" type="text" id="dphone" name="dphone[]" required>
-    </div>
+                                    <div class="director-field_input_wrap">
+                                      <div class="director-field_input">
+                                        <label for="dname">Director Name:</label>
+                                        <input placeholder="Director Name" type="text" id="dname" name="dname[]" required>
+                                        </div>
+                                        <div class="director-field_input">
+                                        <label for="dname">Director Email:</label>
+                                        <input placeholder="Director Email" type="text" id="dmail" name="dmail[]" required>
+                                        </div>
+                                        <div class="director-field_input">
+                                        <label for="dname">Director Mobile:</label>
+                                        <input placeholder="Director Mobile" type="text" id="dphone" name="dphone[]" required>
+                                        </div>
+                                        </div>
       <button type="button" class="remove-director">
 <svg width="12" height="2" viewBox="0 0 12 2" fill="none" xmlns="http://www.w3.org/2000/svg">
 <path d="M1 1H11H10.873" stroke="#5790FF" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
