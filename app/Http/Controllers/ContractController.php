@@ -147,13 +147,17 @@ class ContractController extends Controller
 
    
    $div = Division::get();
+   $authmanagement = DB::table('authorize_management as a')
+   ->join('divisions as d', 'a.division_id', '=', 'd.id')
+   ->select('a.*', 'd.division_name') // Adjust the selected columns as needed
+   ->whereColumn('a.auth_user_id', 'd.user_id') // Compares auth_user_id with user_id in divisions
+   ->get();
 
 
-
-//    dd($division);
+//    dd($authmanagement);
 
       
-      return view('user.Contract-Management.contract-manage-detail',compact('div','cli_announcements','user','customerrecord','customercontract','divisions','overallStatus'));
+      return view('user.Contract-Management.contract-manage-detail',compact('authmanagement','div','cli_announcements','user','customerrecord','customercontract','divisions','overallStatus'));
    }
 
    public function customerstore(Request $request)
@@ -224,6 +228,10 @@ $validated['gstin_file'] = $request->file('gstin_file')
 {
     // dd($request); // Uncomment this to debug incoming data.
 
+    $actualContractType = $request->contract_type === 'Other'
+    ? $request->other_contract_type_input
+    : $request->contract_type;
+
     // Validate the request data
     if ($request->is_drafted != 1) { // Skip validation if saving as draft
         $request->validate([
@@ -240,6 +248,18 @@ $validated['gstin_file'] = $request->file('gstin_file')
             'payment_terms' => 'required|array', // Ensure it's an array
             'fee_escalation_clause' => 'required|array', // Ensure it's an array
             'customer_id' => 'required|exists:customertb,id',
+
+            'sign_party1_name' => 'required|string',
+            'sign_party1_email' => 'required|string',
+            'sign_party1_phone' => 'required|string',
+            'sign_party1_sign_path' => 'required|string',
+            'sign_party2_name' => 'required|string',
+            'sign_party2_email' => 'required|string',
+            'sign_party2_phone' => 'required|string',
+            'up_picture' => 'required|file',
+            'signature' => 'required|file',
+            
+
         ]);
     }
 
@@ -254,6 +274,17 @@ $validated['gstin_file'] = $request->file('gstin_file')
         $fileName = $file->getClientOriginalName();
         $fileSize = round($file->getSize() / 1024, 2); // Size in KB
     }
+    
+    if ($request->hasFile('up_picture')) {
+        $fileimage = $request->file('up_picture');
+        $filePathimage = $file->store('uploads/images', 'public');
+       
+    }
+    if ($request->hasFile('signature')) {
+        $filesign = $request->file('signature');
+        $filePathsign = $file->store('uploads/signatures', 'public');
+       
+    }
 
     // Save or update the customer contract using updateOrCreate
     try {
@@ -265,7 +296,7 @@ $validated['gstin_file'] = $request->file('gstin_file')
                 'file_size' => $fileSize,
                 'contract_name' => $request->contract_name,
                 'contracttype' => $request->contracttype,
-                'contract_type' => $request->contract_type,
+                'contract_type' => $actualContractType,
                 'division' => $request->division,
                 'startdate' => $request->startdate,
                 'startend' => $request->startend,
@@ -276,6 +307,17 @@ $validated['gstin_file'] = $request->file('gstin_file')
                 'fee_escalation_clause' => json_encode($request->fee_escalation_clause), // Convert array to JSON
                 'customer_id' => $request->customer_id,
                 'is_drafted' => $request->is_drafted ?? 0, // Set draft status (0 if not drafted)
+                'sign_party1_name' => $request->sign_party1_name,
+                'sign_party1_email' => $request->sign_party1_email ,
+                'sign_party1_phone' => $request->sign_party1_phone,
+                'sign_party1_sign_path' => $request->sign_party1_sign_path,
+                'sign_party2_name' => $request->sign_party2_name,
+                'sign_party2_email' => $request->sign_party2_email,
+                'sign_party2_phone' => $request->sign_party2_phone,
+                'sign_party2_image_path' => $filePathimage,
+                'sign_party2_sign_path' =>  $filePathsign,
+                
+
             ]
         );
 
