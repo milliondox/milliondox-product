@@ -660,8 +660,8 @@
                                                     <!-- Step 3 -->
                                                     <div class="step-form step-3 d-none">
                                                         <h4>First Party:</h4>
-
-                                                        <div class="gropu_dataprint_wrap">
+                                                        
+                                                        <div class="gropu_dataprint_wrap active" id="dataPrintWrap">
                                                             <div class="gropu_form_divide">
                                                                 <div class="gropu_form">
                                                                     <label for="nameprint">Name:</label>
@@ -784,6 +784,19 @@
                                         </div>
                                     </div>
                                 </div>
+                                <script>
+                                    document.getElementById('division').addEventListener('change', function () {
+                                        const dataPrintWrap = document.getElementById('dataPrintWrap');
+                                
+                                        if (this.value) {
+                                            // Remove the 'active' class when a division is selected
+                                            dataPrintWrap.classList.remove('active');
+                                        } else {
+                                            // Optionally add 'active' back if no division is selected (optional)
+                                            dataPrintWrap.classList.add('active');
+                                        }
+                                    });
+                                </script>
                                 <script>
                                     $(document).ready(function() {
                                             // Listen for changes to the contract type select box
@@ -1084,6 +1097,22 @@
                                                 <path d="M8.99806 15.2085C9.77148 15.2085 10.3985 14.5815 10.3985 13.8081C10.3985 13.0347 9.77148 12.4077 8.99806 12.4077C8.22464 12.4077 7.59766 13.0347 7.59766 13.8081C7.59766 14.5815 8.22464 15.2085 8.99806 15.2085Z" fill="#8D8D8D"></path>
                                             </svg>
                                         </button>
+                                        @if(is_null($startDate) || is_null($endDate))
+                                        <div id="myDropdown3" class="dropdown-content">
+
+                                           
+                                        
+
+                                            <a class="dropdown-itemm Editdraft">
+                                                <svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                    <path d="M1.68029 10.5673C1.70709 10.3261 1.7205 10.2055 1.75699 10.0928C1.78936 9.99277 1.83511 9.89759 1.89298 9.80983C1.9582 9.71092 2.04401 9.62512 2.21561 9.45351L9.91929 1.74985C10.5636 1.10552 11.6083 1.10552 12.2526 1.74985C12.897 2.39418 12.897 3.43885 12.2526 4.08319L4.54894 11.7868C4.37734 11.9585 4.29154 12.0443 4.19262 12.1095C4.10487 12.1673 4.00969 12.2131 3.90968 12.2455C3.79696 12.282 3.67635 12.2954 3.43515 12.3222L1.46094 12.5415L1.68029 10.5673Z" stroke="#414651" stroke-width="1.66667" stroke-linecap="round" stroke-linejoin="round" />
+                                                </svg>
+
+                                                Edit Draft </a>
+
+                                           
+                                        </div>
+                                        @else
                                         <div id="myDropdown3" class="dropdown-content">
 
                                             @php
@@ -1119,6 +1148,7 @@
                                                     <path d="M8.33333 3.50033V3.03366C8.33333 2.38026 8.33333 2.05357 8.20617 1.804C8.09432 1.58448 7.91584 1.406 7.69632 1.29415C7.44676 1.16699 7.12006 1.16699 6.46667 1.16699H5.53333C4.87994 1.16699 4.55324 1.16699 4.30368 1.29415C4.08416 1.406 3.90568 1.58448 3.79383 1.804C3.66667 2.05357 3.66667 2.38026 3.66667 3.03366V3.50033M4.83333 6.70866V9.62533M7.16667 6.70866V9.62533M0.75 3.50033H11.25M10.0833 3.50033V10.0337C10.0833 11.0138 10.0833 11.5038 9.89259 11.8781C9.72482 12.2074 9.4571 12.4751 9.12782 12.6429C8.75347 12.8337 8.26342 12.8337 7.28333 12.8337H4.71667C3.73657 12.8337 3.24653 12.8337 2.87218 12.6429C2.5429 12.4751 2.27518 12.2074 2.10741 11.8781C1.91667 11.5038 1.91667 11.0138 1.91667 10.0337V3.50033" stroke="#FA4A4A" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
                                                 </svg> Delete </a>
                                         </div>
+                                        @endif
                                     </div>
                                 </td>
                                 </tr>

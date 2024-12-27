@@ -711,21 +711,21 @@ public function showGst($id)
 
     public function checkPhone(Request $request)
     {
-        $exists = Customer::where('phone', $request->phone)->exists();
+        $phone = $request->input('phoneNumber');
+    // dd($phone);
+        // Ensure the phone field is properly received
+        if (!$phone) {
+            return response()->json(['exists' => false]);
+        }
+    
+        // Check if the phone exists in the database
+        $exists = Customer::where('phone', $phone)->exists();
+    
         return response()->json(['exists' => $exists]);
     }
+    
 
-    public function checkCin(Request $request)
-    {
-        $exists = Customer::where('cin_no', $request->CinNo)->exists();
-        return response()->json(['exists' => $exists]);
-    }
-
-    public function checkGstin(Request $request)
-    {
-        $exists = Customer::where('gstin_no', $request->GSTINNo)->exists();
-        return response()->json(['exists' => $exists]);
-    }
+   
    
        // customer creation code end here from here 
 }
