@@ -225,71 +225,66 @@ $validated['gstin_file'] = $request->file('gstin_file')
    }
    
    public function storecustomercontract(Request $request)
-{
-    // dd($request); // Uncomment this to debug incoming data.
-
-    $actualContractType = $request->contract_type === 'Other'
-    ? $request->other_contract_type_input
-    : $request->contract_type;
-
-    // Validate the request data
-    if ($request->is_drafted != 1) { // Skip validation if saving as draft
-        $request->validate([
-            'file' => 'required|mimes:pdf,doc,docx|max:20048',
-            'contract_name' => 'required|string',
-            'contracttype' => 'required|string',
-            'contract_type' => 'required|string',
-            'division' => 'required',
-            'startdate' => 'required|date',
-            'startend' => 'required|date',
-            'contract_value' => 'required|numeric',
-            'signing_status' => 'required|string',
-            'renewal_terms' => 'required|array', // Ensure it's an array
-            'payment_terms' => 'required|array', // Ensure it's an array
-            'fee_escalation_clause' => 'required|array', // Ensure it's an array
-            'customer_id' => 'required|exists:customertb,id',
-
-            'sign_party1_name' => 'required|string',
-            'sign_party1_email' => 'required|string',
-            'sign_party1_phone' => 'required|string',
-            'sign_party1_sign_path' => 'required|string',
-            'sign_party2_name' => 'required|string',
-            'sign_party2_email' => 'required|string',
-            'sign_party2_phone' => 'required|string',
-            'up_picture' => 'required|file',
-            'signature' => 'required|file',
-            
-
-        ]);
-    }
-
-    // Handle file upload (if provided)
-    $filePath = null;
-    $fileName = null;
-    $fileSize = null;
-
-    if ($request->hasFile('file')) {
-        $file = $request->file('file');
-        $filePath = $file->store('contracts', 'public');
-        $fileName = $file->getClientOriginalName();
-        $fileSize = round($file->getSize() / 1024, 2); // Size in KB
-    }
-    
-    if ($request->hasFile('up_picture')) {
-        $fileimage = $request->file('up_picture');
-        $filePathimage = $file->store('uploads/images', 'public');
+   {
+       $actualContractType = $request->contract_type === 'Other' && $request->filled('other_contract_type_input')
+           ? $request->other_contract_type_input
+           : ($request->contract_type === 'Other' ? null : $request->contract_type);
+   
+       // Validate the request data
+       if ($request->is_drafted != 1) {
+           $request->validate([
+               'file' => 'required|mimes:pdf,doc,docx|max:20048',
+               'contract_name' => 'required|string',
+               'contracttype' => 'required|string',
+               'contract_type' => 'required|string',
+               'division' => 'required',
+               'startdate' => 'required|date',
+               'startend' => 'required|date',
+               'contract_value' => 'required|numeric',
+               'signing_status' => 'required|string',
+               'renewal_terms' => 'required|array',
+               'payment_terms' => 'required|array',
+               'fee_escalation_clause' => 'required|array',
+               'customer_id' => 'required|exists:customertb,id',
+               'sign_party1_name' => 'required|string',
+               'sign_party1_email' => 'required|string',
+               'sign_party1_phone' => 'required|string',
+               'sign_party1_sign_path' => 'required|string',
+               'sign_party2_name' => 'required|string',
+               'sign_party2_email' => 'required|string',
+               'sign_party2_phone' => 'required|string',
+               'up_picture' => 'required|file',
+               'signature' => 'required|file',
+           ]);
+       }
+   
+       // Handle file upload (if provided)
+       $filePath = null;
+       $fileName = null;
+       $fileSize = null;
+       $filePathimage = null;
+       $filePathsign = null;
+   
+       if ($request->hasFile('file')) {
+           $file = $request->file('file');
+           $filePath = $file->store('contracts', 'public');
+           $fileName = $file->getClientOriginalName();
+           $fileSize = round($file->getSize() / 1024, 2); // Size in KB
+       }
+   
+       if ($request->hasFile('up_picture')) {
+           $fileimage = $request->file('up_picture');
+           $filePathimage = $fileimage->store('uploads/images', 'public');
+       }
        
-    }
-    if ($request->hasFile('signature')) {
-        $filesign = $request->file('signature');
-        $filePathsign = $file->store('uploads/signatures', 'public');
-       
-    }
-
-    // Save or update the customer contract using updateOrCreate
-    try {
-        $cust = CustomerContract::updateOrCreate(
-            ['id' => $request->id], // Check if the record exists, if not, it will create a new one
+       if ($request->hasFile('signature')) {
+           $filesign = $request->file('signature');
+           $filePathsign = $filesign->store('uploads/signatures', 'public');
+       }
+   
+       try {
+        CustomerContract::updateOrCreate(
+            ['id' => $request->id],
             [
                 'file_name' => $fileName,
                 'file_path' => $filePath,
@@ -302,38 +297,33 @@ $validated['gstin_file'] = $request->file('gstin_file')
                 'startend' => $request->startend,
                 'contract_value' => $request->contract_value,
                 'signing_status' => $request->signing_status,
-                'renewal_terms' => json_encode($request->renewal_terms), // Convert array to JSON
-                'payment_terms' => json_encode($request->payment_terms), // Convert array to JSON
-                'fee_escalation_clause' => json_encode($request->fee_escalation_clause), // Convert array to JSON
+                'renewal_terms' => json_encode($request->renewal_terms),
+                'payment_terms' => json_encode($request->payment_terms),
+                'fee_escalation_clause' => json_encode($request->fee_escalation_clause),
                 'customer_id' => $request->customer_id,
-                'is_drafted' => $request->is_drafted ?? 0, // Set draft status (0 if not drafted)
+                'is_drafted' => $request->is_drafted ?? 0,
                 'sign_party1_name' => $request->sign_party1_name,
-                'sign_party1_email' => $request->sign_party1_email ,
+                'sign_party1_email' => $request->sign_party1_email,
                 'sign_party1_phone' => $request->sign_party1_phone,
                 'sign_party1_sign_path' => $request->sign_party1_sign_path,
                 'sign_party2_name' => $request->sign_party2_name,
                 'sign_party2_email' => $request->sign_party2_email,
                 'sign_party2_phone' => $request->sign_party2_phone,
                 'sign_party2_image_path' => $filePathimage,
-                'sign_party2_sign_path' =>  $filePathsign,
-                
-
+                'sign_party2_sign_path' => $filePathsign,
             ]
         );
-
-        // If the contract is drafted, show a message indicating it was saved as draft
-        $message = $request->is_drafted == 1
-            ? 'Customer contract saved as draft!'
-            : 'Customer contract submitted successfully!';
-
-        // Redirect back with a success message
-        
-
-     return response()->json(['success' => true, 'message' =>  $message]);
+    
+        $message = $request->is_drafted == 1 ? 'Customer contract saved as draft!' : 'Customer contract submitted successfully!';
+        return response()->json(['success' => true, 'message' => $message]);
     } catch (\Exception $e) {
+        // Log the exception message
+        \Log::error("Failed to store contract data: " . $e->getMessage());
         return response()->json(['success' => false, 'message' => 'Failed to store contract data.']);
     }
-}
+         
+   }
+   
 
    
    
