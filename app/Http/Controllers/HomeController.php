@@ -18209,15 +18209,7 @@ public function masterclientanagementdetail($id)
         // Format the result
         $time_formatted = "{$hours} h {$minutes} m";
 
-        
-
-
-
-
-
         // daily activity tracking end sandeep 22 November 2024
-
-
 
         $cli_announcements = Announcement::where('role', 'Client')->latest()->get();
         return view('master_admin.client_management.client_management_detail',compact('cli_announcements', 'user' , 'client' , 'totalStorage', 'usedStorage','percentage','labels_logins','data_logins','total_login_count','labels_durations','data_durations','time_formatted'));
@@ -19274,7 +19266,7 @@ public function trashbox()
         // dd($role);
         
         if (!$role) {
-            echo "You have no Access to Trash Panel , Please Contact to your Account Provider";
+            //echo "You have no Access to Trash Panel , Please Contact to your Account Provider";
             abort(404);  // Abort if the role is not found or access is not granted
         } 
     $cli_announcements = Announcement::where('role', 'Client')->latest()->get();
@@ -19866,7 +19858,7 @@ public function tickting()
 // dd($role);
 
 if (!$role) {
-echo "You have no Access to Edit Password , Please Contact to your Account Provider";
+//echo "You have no Access to Edit Password , Please Contact to your Account Provider";
 abort(403);  // Abort if the role is not found or access is not granted
 }
         $cli_announcements = Announcement::where('role', 'Client')->latest()->get();
@@ -19922,7 +19914,7 @@ public function rolemanagement()
         // dd($role);
         
         if (!$role) {
-            echo "You have no Access to Role Management , Please Contact to your Account Provider";
+           // echo "You have no Access to Role Management , Please Contact to your Account Provider";
             abort(404);  // Abort if the role is not found or access is not granted
         }
  
@@ -19991,7 +19983,40 @@ public function rolemanagement()
     ]);
 }
 
+public function Managedivision()
+{
+    $cli_announcements = Announcement::where('role', 'Client')->latest()->get();
+    $user = Auth::user();
+    $userId = $user->id;
+    $ddsdsdiv = Division::where('user_id',  $userId)->get();
 
+    // $authmanagement = AuthorizeManagement::where('auth_user_id', $user->id)->get();
+    $division = Division::where('user_id', $user->id)->get();
+    $authmanagement = DB::table('authorize_management as a')
+    ->join('divisions as d', 'a.division_id', '=', 'd.id')
+    ->select('a.*', 'd.division_name') // Adjust the selected columns as needed
+    ->where('a.auth_user_id', $userId) // Compares auth_user_id with user_id in divisions
+    ->get();
+    // dd($authmanagement);
+   return view('user.role-management.manage-division',compact('cli_announcements','user', 'ddsdsdiv', 'authmanagement', 'division'));
+}
+
+public function Managesignauth()
+{
+    $cli_announcements = Announcement::where('role', 'Client')->latest()->get();
+    $user = Auth::user();
+    $userId = $user->id;
+    $ddsdsdiv = Division::where('user_id',  $userId)->get();
+
+    // $authmanagement = AuthorizeManagement::where('auth_user_id', $user->id)->get();
+    $division = Division::where('user_id', $user->id)->get();
+    $authmanagement = DB::table('authorize_management as a')
+    ->join('divisions as d', 'a.division_id', '=', 'd.id')
+    ->select('a.*', 'd.division_name') // Adjust the selected columns as needed
+    ->where('a.auth_user_id', $userId) // Compares auth_user_id with user_id in divisions
+    ->get();
+   return view('user.role-management.manage-sign-auth',compact('cli_announcements','user', 'ddsdsdiv', 'authmanagement', 'division'));
+}
 
     
     
@@ -20612,7 +20637,7 @@ private function generateUniqueUsername($fname, $lname)
         // dd($role);
         
         if (!$role) {
-            echo "You have no Access to Document Repository , Please Contact to your Account Provider";
+           // echo "You have no Access to Document Repository , Please Contact to your Account Provider";
             abort(403);  // Abort if the role is not found or access is not granted
         }
         
@@ -27798,7 +27823,7 @@ public function welcomewallet()
         // dd($role);
         
         if (!$role) {
-            echo "You have no Access to Promoters Vault , Please Contact to your Account Provider";
+            //echo "You have no Access to Promoters Vault , Please Contact to your Account Provider";
             abort(404);  // Abort if the role is not found or access is not granted
         }
     $cli_announcements = Announcement::where('role', 'Client')->latest()->get();
@@ -28115,7 +28140,7 @@ public function updateoutofexpense(request $request)
         // dd($role);
         
         if (!$role) {
-            echo "You have no Access to Promoters Vault , Please Contact to your Account Provider";
+           // echo "You have no Access to Promoters Vault , Please Contact to your Account Provider";
             abort(404);  // Abort if the role is not found or access is not granted
         }
         // Clear the 'otp' session variable

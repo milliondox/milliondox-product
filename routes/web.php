@@ -1135,6 +1135,8 @@ Route::post('/spicedoc', [App\Http\Controllers\UploadedFileController::class, 's
 Route::get('/download-aoa528-file/{id}',[App\Http\Controllers\UploadedFileController::class, 'downloadaoaFile528'])->name('download-aoa528-file');
 Route::post('/customdoc', [App\Http\Controllers\UploadedFileController::class, 'customdoc'])->name('customdoc');
 Route::get('/user/rolemanagement', [App\Http\Controllers\HomeController::class, 'rolemanagement'])->name('user/rolemanagement');
+Route::get('/user/Managesignauth', [App\Http\Controllers\HomeController::class, 'Managesignauth'])->name('user/Managesignauth');
+Route::get('/user/Managedivision', [App\Http\Controllers\HomeController::class, 'Managedivision'])->name('user/Managedivision');
 Route::get('/user/loginpassedit', [App\Http\Controllers\HomeController::class, 'loginpassedit'])->name('user/loginpassedit');
 Route::get('/user/incorporationdocs', [App\Http\Controllers\UploadedFileController::class, 'index'])->name('user/incorporationdocs');
 
