@@ -359,8 +359,7 @@
                       // Apply checks to the input fields
                       checkIfExists('email', '/api/check-email', 'This email is already in use.');
                       checkIfExists('phoneNumber', '/api/check-phone', 'This phone number is already in use.');
-                      checkIfExists('CinNo', '/api/check-cin', 'This CIN No is already in use.');
-                      checkIfExists('GSTINNo', '/api/check-gstin', 'This GSTIN No is already in use.');
+                      
                     </script>
                     
 
