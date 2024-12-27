@@ -883,16 +883,7 @@ public function storecompanyemployee(Request $request)
         ],
     ];
 
-    // Real file names for specific folders
-    $realFileNames = [
-        'Onboarding documents' => ["Offer Letter", "Acceptance Letter", "Employment Agreement", "Non Disclosure Agreement", "Non-compete", "Contractual Bond", "Form 11 - EPF", "Form 12BB - Income Tax"],
-        'KYC Documents' => ["Photo", "Aadhar KYC", "PAN KYC", "Address Proof", "Contact Details"],
-        'Offboarding' => ["Resignation letter", "Experience Letter", "No Dues certificate", "Character certificate"],
-        'ESOP' => ["Policy", "Grant Letters", "Acceptance Letters", "Nominations"],
-        'Declarations' => ["Asset Declaration Forms", "Employee Master"],
-        'Monthly Payrun' => ["Attendance log", "Variable pays", "Terminations/ Exits", "New Hires", "Pay Register"],
-        'Reimbursements' => ["Reimbursement forms & Invoices", "Approvals"],
-    ];
+    
 
     // Create fixed folders with prefix
     foreach ($fixedFolders as $mainFolder => $subFolders) {
@@ -968,39 +959,166 @@ public function storecompanyemployee(Request $request)
         ]
     ];
 
+    // Real file names for specific folders
+    // $realFileNames = [
+    //     $otherPrefix.'Onboarding documents' => ["Offer Letter", "Acceptance Letter", "Employment Agreement", "Non Disclosure Agreement", "Non-compete", "Contractual Bond", "Form 11 - EPF", "Form 12BB - Income Tax"],
+    //     $otherPrefix.'KYC Documents' => ["Photo", "Aadhar KYC", "PAN KYC", "Address Proof", "Contact Details"],
+    //     $otherPrefix.'Offboarding' => ["Resignation letter", "Experience Letter", "No Dues certificate", "Character certificate"],
+    //     $otherPrefix.'ESOP' => ["Policy", "Grant Letters", "Acceptance Letters", "Nominations"],
+    //     $otherPrefix.'Declarations' => ["Asset Declaration Forms", "Employee Master"],
+    //     // 'Monthly Payrun' => ["Attendance log", "Variable pays", "Terminations/ Exits", "New Hires", "Pay Register"],
+    //     // 'Reimbursements' => ["Reimbursement forms & Invoices", "Approvals"],
+    // ];
+    $realFileNames = [
+        'Onboarding documents' => ["Offer Letter", "Acceptance Letter", "Employment Agreement", "Non Disclosure Agreement", "Non-compete", "Contractual Bond", "Form 11 - EPF", "Form 12BB - Income Tax"],
+        'KYC Documents' => ["Photo", "Aadhar KYC", "PAN KYC", "Address Proof", "Contact Details"],
+        'Offboarding' => ["Resignation letter", "Experience Letter", "No Dues certificate", "Character certificate"],
+        'ESOP' => ["Policy", "Grant Letters", "Acceptance Letters", "Nominations"],
+        'Declarations' => ["Asset Declaration Forms", "Employee Master"]
+    ];
+
+    // dd($realFileNames);
+    // array:5 [ // app\Http\Controllers\HomeController.php:973
+    //     "2024-2025December269_Onboarding documents" => array:8 [
+    //       0 => "Offer Letter"
+    //       1 => "Acceptance Letter"
+    //       2 => "Employment Agreement"
+    //       3 => "Non Disclosure Agreement"
+    //       4 => "Non-compete"
+    //       5 => "Contractual Bond"
+    //       6 => "Form 11 - EPF"
+    //       7 => "Form 12BB - Income Tax"
+    //     ]
+    //     "2024-2025December269_KYC Documents" => array:5 [
+    //       0 => "Photo"
+    //       1 => "Aadhar KYC"
+    //       2 => "PAN KYC"
+    //       3 => "Address Proof"
+    //       4 => "Contact Details"
+    //     ]
+    //     "2024-2025December269_Offboarding" => array:4 [
+    //       0 => "Resignation letter"
+    //       1 => "Experience Letter"
+    //       2 => "No Dues certificate"
+    //       3 => "Character certificate"
+    //     ]
+    //     "2024-2025December269_ESOP" => array:4 [
+    //       0 => "Policy"
+    //       1 => "Grant Letters"
+    //       2 => "Acceptance Letters"
+    //       3 => "Nominations"
+    //     ]
+    //     "2024-2025December269_Declarations" => array:2 [
+    //       0 => "Asset Declaration Forms"
+    //       1 => "Employee Master"
+    //     ]
+    //   ]
+
     // Create non-fixed folders and add files with prefix if defined
+    // foreach ($employeeFolders as $folder => $subFolders) {
+    //     $folderName = is_string($folder) ? $folder : $subFolders;
+    //     $folderPath = "{$employeeFolderPath}/{$otherPrefix}{$folderName}";
+
+    //     if (!Storage::exists($folderPath)) {
+    //         Storage::makeDirectory($folderPath);
+    //         Folder::create([
+    //             'name' => "{$otherPrefix}{$folderName}",
+    //             'path' => $folderPath,
+    //             'parent_name' => $employeeFolderPath,
+    //             'user_id' => $userId,
+    //             'employee_id' => $storeemp->id,
+    //             'common_folder' => 1,
+    //         ]);
+    //     }
+
+    //     // Check if the folder has predefined files to create with prefix
+    //     if (isset($realFileNames[$folderName])) {
+    //         foreach ($realFileNames[$folderName] as $fileName) {
+    //             $filePath = "{$folderPath}/{$otherPrefix}{$fileName}.txt";  // Adjust extension if needed
+    //             if (!Storage::exists($filePath)) {
+    //                 Storage::put($filePath, "Placeholder content for {$fileName}");
+    //             }
+    //         }
+    //     }
+
+    //     // Create subfolders with prefix if applicable
+    //     if (is_array($subFolders)) {
+    //         foreach ($subFolders as $subFolder) {
+    //             $subFolderPath = "{$folderPath}/{$otherPrefix}{$subFolder}";
+    //             if (!Storage::exists($subFolderPath)) {
+    //                 Storage::makeDirectory($subFolderPath);
+    //                 Folder::create([
+    //                     'name' => "{$otherPrefix}{$subFolder}",
+    //                     'path' => $subFolderPath,
+    //                     'parent_name' => $folderPath,
+    //                     'user_id' => $userId,
+    //                     'employee_id' => $storeemp->id,
+    //                     'common_folder' => 1,
+    //                 ]);
+    //             }
+    //         }
+    //     }
+    // }
     foreach ($employeeFolders as $folder => $subFolders) {
         $folderName = is_string($folder) ? $folder : $subFolders;
         $folderPath = "{$employeeFolderPath}/{$otherPrefix}{$folderName}";
 
+        // // $folderName = "2024-2025December269_Onboarding documents";
+        // // Split the string by underscore
+        // $parts = explode('_', $folderName);
+        // // Get the last part after the underscore
+        // $FilteredFolderName = end($parts);
+        // // echo $FilteredFolderName; // Output: Onboarding documents
+    
+        $realFileNamesForFolder = isset($realFileNames[$folderName]) ? $realFileNames[$folderName] : null;
+        // dd("Folder Name : ".$folderName);
+        // "Folder Name : Onboarding documents" 
+        // dd($realFileNamesForFolder);
+        // array:8 [ // app\Http\Controllers\HomeController.php:1076
+        //     0 => "Offer Letter"
+        //     1 => "Acceptance Letter"
+        //     2 => "Employment Agreement"
+        //     3 => "Non Disclosure Agreement"
+        //     4 => "Non-compete"
+        //     5 => "Contractual Bond"
+        //     6 => "Form 11 - EPF"
+        //     7 => "Form 12BB - Income Tax"
+        //   ]
+
+    
         if (!Storage::exists($folderPath)) {
-            Storage::makeDirectory($folderPath);
             Folder::create([
                 'name' => "{$otherPrefix}{$folderName}",
-                'path' => $folderPath,
+                'path' => $folderPath,  
                 'parent_name' => $employeeFolderPath,
                 'user_id' => $userId,
                 'employee_id' => $storeemp->id,
                 'common_folder' => 1,
+                'real_file_name' => $realFileNamesForFolder ? json_encode($realFileNamesForFolder) : null,
+                // 'real_file_name' => $realFileNamesForFolder
+
             ]);
+    
+            Storage::makeDirectory($folderPath);
         }
-
+    
         // Check if the folder has predefined files to create with prefix
-        if (isset($realFileNames[$folderName])) {
-            foreach ($realFileNames[$folderName] as $fileName) {
-                $filePath = "{$folderPath}/{$otherPrefix}{$fileName}.txt";  // Adjust extension if needed
-                if (!Storage::exists($filePath)) {
-                    Storage::put($filePath, "Placeholder content for {$fileName}");
-                }
-            }
-        }
-
+        // if ($realFileNamesForFolder) {
+        //     foreach ($realFileNamesForFolder as $fileName) {
+        //         $filePath = "{$folderPath}/{$otherPrefix}{$fileName}.txt";  // Adjust extension if needed
+        //         if (!Storage::exists($filePath)) {
+        //             Storage::put($filePath, "Placeholder content for {$fileName}");
+        //         }
+        //     }
+        // }
+        // commented on 27 December 2024
+    
         // Create subfolders with prefix if applicable
         if (is_array($subFolders)) {
             foreach ($subFolders as $subFolder) {
+                // dd("Sub Folder : ".$subFolder);
                 $subFolderPath = "{$folderPath}/{$otherPrefix}{$subFolder}";
                 if (!Storage::exists($subFolderPath)) {
-                    Storage::makeDirectory($subFolderPath);
                     Folder::create([
                         'name' => "{$otherPrefix}{$subFolder}",
                         'path' => $subFolderPath,
@@ -1008,11 +1126,15 @@ public function storecompanyemployee(Request $request)
                         'user_id' => $userId,
                         'employee_id' => $storeemp->id,
                         'common_folder' => 1,
+                        'real_file_name' => null, // No real files for subfolders
                     ]);
+
+                    Storage::makeDirectory($subFolderPath);
                 }
             }
         }
     }
+    
 
     return response()->json(['message' => 'All folders and files created successfully with prefixed names!']);
 }
@@ -18209,15 +18331,7 @@ public function masterclientanagementdetail($id)
         // Format the result
         $time_formatted = "{$hours} h {$minutes} m";
 
-        
-
-
-
-
-
         // daily activity tracking end sandeep 22 November 2024
-
-
 
         $cli_announcements = Announcement::where('role', 'Client')->latest()->get();
         return view('master_admin.client_management.client_management_detail',compact('cli_announcements', 'user' , 'client' , 'totalStorage', 'usedStorage','percentage','labels_logins','data_logins','total_login_count','labels_durations','data_durations','time_formatted'));
@@ -19274,7 +19388,7 @@ public function trashbox()
         // dd($role);
         
         if (!$role) {
-            echo "You have no Access to Trash Panel , Please Contact to your Account Provider";
+            //echo "You have no Access to Trash Panel , Please Contact to your Account Provider";
             abort(404);  // Abort if the role is not found or access is not granted
         } 
     $cli_announcements = Announcement::where('role', 'Client')->latest()->get();
@@ -19866,7 +19980,7 @@ public function tickting()
 // dd($role);
 
 if (!$role) {
-echo "You have no Access to Edit Password , Please Contact to your Account Provider";
+//echo "You have no Access to Edit Password , Please Contact to your Account Provider";
 abort(403);  // Abort if the role is not found or access is not granted
 }
         $cli_announcements = Announcement::where('role', 'Client')->latest()->get();
@@ -19922,7 +20036,7 @@ public function rolemanagement()
         // dd($role);
         
         if (!$role) {
-            echo "You have no Access to Role Management , Please Contact to your Account Provider";
+           // echo "You have no Access to Role Management , Please Contact to your Account Provider";
             abort(404);  // Abort if the role is not found or access is not granted
         }
  
@@ -19965,14 +20079,14 @@ public function rolemanagement()
 
     // Fetch the current user's role record (if needed elsewhere)
     $userRoleRecord = UserRole::where('role', $user->role)->where('is_deleted', 0)->first();
-    $ddsdsdiv = Division::get();
+    $ddsdsdiv = Division::where('user_id',  $userId)->get();
 
     // $authmanagement = AuthorizeManagement::where('auth_user_id', $user->id)->get();
 
     $authmanagement = DB::table('authorize_management as a')
     ->join('divisions as d', 'a.division_id', '=', 'd.id')
     ->select('a.*', 'd.division_name') // Adjust the selected columns as needed
-    ->whereColumn('a.auth_user_id', 'd.user_id') // Compares auth_user_id with user_id in divisions
+    ->where('a.auth_user_id', $userId) // Compares auth_user_id with user_id in divisions
     ->get();
     // dd($authmanagement);
 
@@ -19991,7 +20105,40 @@ public function rolemanagement()
     ]);
 }
 
+public function Managedivision()
+{
+    $cli_announcements = Announcement::where('role', 'Client')->latest()->get();
+    $user = Auth::user();
+    $userId = $user->id;
+    $ddsdsdiv = Division::where('user_id',  $userId)->get();
 
+    // $authmanagement = AuthorizeManagement::where('auth_user_id', $user->id)->get();
+    $division = Division::where('user_id', $user->id)->get();
+    $authmanagement = DB::table('authorize_management as a')
+    ->join('divisions as d', 'a.division_id', '=', 'd.id')
+    ->select('a.*', 'd.division_name') // Adjust the selected columns as needed
+    ->where('a.auth_user_id', $userId) // Compares auth_user_id with user_id in divisions
+    ->get();
+    // dd($authmanagement);
+   return view('user.role-management.manage-division',compact('cli_announcements','user', 'ddsdsdiv', 'authmanagement', 'division'));
+}
+
+public function Managesignauth()
+{
+    $cli_announcements = Announcement::where('role', 'Client')->latest()->get();
+    $user = Auth::user();
+    $userId = $user->id;
+    $ddsdsdiv = Division::where('user_id',  $userId)->get();
+
+    // $authmanagement = AuthorizeManagement::where('auth_user_id', $user->id)->get();
+    $division = Division::where('user_id', $user->id)->get();
+    $authmanagement = DB::table('authorize_management as a')
+    ->join('divisions as d', 'a.division_id', '=', 'd.id')
+    ->select('a.*', 'd.division_name') // Adjust the selected columns as needed
+    ->where('a.auth_user_id', $userId) // Compares auth_user_id with user_id in divisions
+    ->get();
+   return view('user.role-management.manage-sign-auth',compact('cli_announcements','user', 'ddsdsdiv', 'authmanagement', 'division'));
+}
 
     
     
@@ -20612,7 +20759,7 @@ private function generateUniqueUsername($fname, $lname)
         // dd($role);
         
         if (!$role) {
-            echo "You have no Access to Document Repository , Please Contact to your Account Provider";
+           // echo "You have no Access to Document Repository , Please Contact to your Account Provider";
             abort(403);  // Abort if the role is not found or access is not granted
         }
         
@@ -27798,7 +27945,7 @@ public function welcomewallet()
         // dd($role);
         
         if (!$role) {
-            echo "You have no Access to Promoters Vault , Please Contact to your Account Provider";
+            //echo "You have no Access to Promoters Vault , Please Contact to your Account Provider";
             abort(404);  // Abort if the role is not found or access is not granted
         }
     $cli_announcements = Announcement::where('role', 'Client')->latest()->get();
@@ -28115,7 +28262,7 @@ public function updateoutofexpense(request $request)
         // dd($role);
         
         if (!$role) {
-            echo "You have no Access to Promoters Vault , Please Contact to your Account Provider";
+           // echo "You have no Access to Promoters Vault , Please Contact to your Account Provider";
             abort(404);  // Abort if the role is not found or access is not granted
         }
         // Clear the 'otp' session variable

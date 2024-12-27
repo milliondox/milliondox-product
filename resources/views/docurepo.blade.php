@@ -623,6 +623,28 @@ document.addEventListener('DOMContentLoaded', function () {
         handleFiles(fileInput, fileList, inputId, Array.from(fileInput.files));
     });
 
+    // Handle file input change (when no file is selected)
+$('body').on('change', '.dragfile', function () {
+    const fileInput = this;
+    const fileList = $(fileInput).closest('.file-area').next('.file-list');
+    const inputId = $(fileInput).attr('id');
+
+    // If no files are selected (i.e., the files array is empty)
+    if (fileInput.files.length === 0) {
+        fileData[inputId] = []; // Clear the file data
+        fileList.empty(); // Clear the file list UI
+        return; // Exit early as no files were selected
+    }
+
+    // Initialize fileData for the input if not already present
+    if (!fileData[inputId]) fileData[inputId] = [];
+
+    // Handle the selected files
+    handleFiles(fileInput, fileList, inputId, Array.from(fileInput.files));
+});
+
+
+
     // Handle drag and drop events for file-area
     $('.file-area').on('dragover', function (event) {
         event.preventDefault();
@@ -643,12 +665,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
 
         handleFiles(fileInput, fileList, inputId, Array.from(fileInput.files));
-
-
-       
-
-
-
     });
 
     // Clear file data and reset input when closing the modal
@@ -663,9 +679,7 @@ document.addEventListener('DOMContentLoaded', function () {
             updateFileInput(fileInput, inputId);
             fileList.empty();
         });
-    });
-
-    
+    });   
 });
 
 
