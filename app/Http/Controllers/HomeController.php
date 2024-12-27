@@ -1111,6 +1111,7 @@ public function storecompanyemployee(Request $request)
         //         }
         //     }
         // }
+        // commented on 27 December 2024
     
         // Create subfolders with prefix if applicable
         if (is_array($subFolders)) {
@@ -1127,7 +1128,7 @@ public function storecompanyemployee(Request $request)
                         'common_folder' => 1,
                         'real_file_name' => null, // No real files for subfolders
                     ]);
-    
+
                     Storage::makeDirectory($subFolderPath);
                 }
             }
