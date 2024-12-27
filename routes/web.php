@@ -1160,8 +1160,7 @@ Route::post('/download-contracts', [App\Http\Controllers\ContractController::cla
 
 Route::get('/api/check-email', [App\Http\Controllers\ContractController::class, 'checkEmail']);
 Route::get('/api/check-phone', [App\Http\Controllers\ContractController::class, 'checkPhone']);
-Route::get('/api/check-cin',[App\Http\Controllers\ContractController::class, 'checkCin']);
-Route::get('/api/check-gstin', [App\Http\Controllers\ContractController::class, 'checkGstin']);
+
 
 
 Route::post('/addauthmanagement', [App\Http\Controllers\ContractController::class, 'addauthmanagement'])->name('addauthmanagement');

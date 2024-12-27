@@ -20086,7 +20086,7 @@ public function rolemanagement()
     $authmanagement = DB::table('authorize_management as a')
     ->join('divisions as d', 'a.division_id', '=', 'd.id')
     ->select('a.*', 'd.division_name') // Adjust the selected columns as needed
-    ->whereColumn('a.auth_user_id', 'd.user_id') // Compares auth_user_id with user_id in divisions
+    ->where('a.auth_user_id', $userId) // Compares auth_user_id with user_id in divisions
     ->get();
     // dd($authmanagement);
 
