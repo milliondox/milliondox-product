@@ -850,62 +850,60 @@
                                     });
                                 </script>
                                 <script>
-                                    $(document).ready(function() {
-                                        // When the "Save as Draft" button is clicked
-                                        $('#draftButton').on('click', function() {
-                                            var formData = new FormData($('#customerContractForm')[0]);
-                                            formData.append('draft', true); // Add a flag to indicate it's a draft
+                                  $(document).ready(function () {
+    // Handle "Save as Draft"
+    $('#draftButton').on('click', function () {
+        // Set the is_drafted field to 1 to indicate this is a draft
+        $('#is_drafted').val(1); // Update the hidden field value
 
-                                            $.ajax({
-                                                url: $('#customerContractForm').attr('action'),
-                                                type: 'POST',
-                                                data: formData,
-                                                contentType: false,
-                                                processData: false,
-                                                success: function(response) {
-                                                    if (response.success) {
-                                                        toastr.success(response.message, 'Success', {
-                                                            timeOut: 3000
-                                                        }); // Set timeOut to 3 seconds
-                                                        location.reload();
-                                                    } else {
-                                                        toastr.error(response.message || 'There was an issue saving the draft.', 'Error');
-                                                    }
-                                                },
-                                                error: function() {
-                                                    toastr.error('An error occurred while saving the draft.', 'Error');
-                                                }
-                                            });
-                                        });
+        var formData = new FormData($('#customerContractForm')[0]);
+        
+        $.ajax({
+            url: $('#customerContractForm').attr('action'),
+            type: 'POST',
+            data: formData,
+            contentType: false,
+            processData: false,
+            success: function (response) {
+                if (response.success) {
+                    toastr.success(response.message, 'Success', { timeOut: 3000 });
+                    location.reload(); // Reload for submissions
+                } else {
+                    toastr.error(response.message || 'There was an issue saving the draft.', 'Error');
+                }
+            },
+            error: function () {
+                toastr.error('An error occurred while saving the draft.', 'Error');
+            }
+        });
+    });
 
-                                        // When the "Submit" button is clicked
-                                        $('#submitButton').on('click', function(e) {
-                                            e.preventDefault(); // Prevent the default form submission
+    // Handle "Submit"
+    $('#submitButton').on('click', function (e) {
+        e.preventDefault(); // Prevent default submission
+        var formData = new FormData($('#customerContractForm')[0]);
 
-                                            var formData = new FormData($('#customerContractForm')[0]);
+        $.ajax({
+            url: $('#customerContractForm').attr('action'),
+            type: 'POST',
+            data: formData,
+            contentType: false,
+            processData: false,
+            success: function (response) {
+                if (response.success) {
+                    toastr.success(response.message, 'Success', { timeOut: 3000 });
+                    location.reload(); // Reload for submissions
+                } else {
+                    toastr.error(response.message || 'There was an issue submitting the contract.', 'Error');
+                }
+            },
+            error: function () {
+                toastr.error('An error occurred while submitting the contract.', 'Error');
+            }
+        });
+    });
+});
 
-                                            $.ajax({
-                                                url: $('#customerContractForm').attr('action'),
-                                                type: 'POST',
-                                                data: formData,
-                                                contentType: false,
-                                                processData: false,
-                                                success: function(response) {
-                                                    if (response.success) {
-                                                        toastr.success(response.message, 'Success', {
-                                                            timeOut: 3000
-                                                        }); // Set timeOut to 3 seconds
-                                                        location.reload();
-                                                    } else {
-                                                        toastr.error(response.message || 'There was an issue submitting the contract.', 'Error');
-                                                    }
-                                                },
-                                                error: function() {
-                                                    toastr.error('An error occurred while submitting the contract.', 'Error');
-                                                }
-                                            });
-                                        });
-                                    });
                                 </script>
 
                                 <script>
