@@ -85,6 +85,8 @@
 
     <!-- DataTables JS -->
     <script src="https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script>
+
+    
     <script>
         $(document).ready(function() {
             $('#contarct_table').DataTable({
@@ -442,6 +444,7 @@
                 refreshFileList(fileList, inputId);
                 updateFileInput(fileInput, inputId);
             });
+            
 
             // Handle drag and drop events
             $('.file-area').on('dragover', function(event) {
@@ -531,6 +534,7 @@
         });
     </script>
 
+    <!-- show single file names in popup list script -->
     <!-- show single file names in popup list script -->
     <script>
         $(document).ready(function() {

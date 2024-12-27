@@ -22362,6 +22362,32 @@ span.clinet_name {
 
 /*  */
 
+.stepp_ott {
+    display: flex;
+    justify-content: space-between;
+    position: relative;
+    margin: 0px 0px 2px;
+}
+
+.stepp_ott .smal_titlle {
+    flex: 1;
+    text-align: center;
+    font-size: 12px;
+    color: #8e8e8e;
+}
+
+.stepp_ott .smal_titlle:first-child {
+    text-align: left;
+}
+
+.stepp_ott .smal_titlle:last-child {
+    text-align: right;
+}
+
+.dark-only .stepp_ott .smal_titlle {
+    color: #c5c5c5;
+}
+
 .progress-bar-container_step {
     display: flex;
     justify-content: space-between;
@@ -22405,8 +22431,8 @@ span.clinet_name {
 .custom_add_customer .step-form h4 {
     display: block;
     text-align: left;
-    font-size: 16px;
-    margin: 0px 0px 15px;
+    font-size: 14px;
+    margin: 0px 0px 12px;
     padding: 0;
     color: #868686;
     position: relative;
@@ -22495,9 +22521,9 @@ span.clinet_name {
 
 
 .custom_add_customer  .gropu_form .director_field_wrap {
-    max-height: 300px;
+    max-height: 250px;
     overflow: auto;
-    padding: 0px 2px 0px 0px;
+    padding: 0px 5px 0px 0px;
     width: 100%;
     display: block;
     flex: 2;
@@ -22584,6 +22610,120 @@ span.clinet_name {
 .dark-only .gropu_dataprint_wrap {
     background: #3c424a;
     border: 0;
+}
+
+/* width */
+.custom_add_customer .director_field_wrap::-webkit-scrollbar {
+    width: 5px;
+    border-radius: 10px;
+}
+
+/* Track */
+.custom_add_customer .director_field_wrap::-webkit-scrollbar-track {
+    background: #dfdfdf;
+    border-radius: 10px;
+}
+
+/* Handle */
+.custom_add_customer .director_field_wrap::-webkit-scrollbar-thumb {
+    background: #c6bcbc;
+    border-radius: 10px;
+}
+
+/* Track */
+.dark-only .custom_add_customer .director_field_wrap::-webkit-scrollbar-track {
+    background: #1c2027;
+}
+
+/* Handle */
+.dark-only .custom_add_customer .director_field_wrap::-webkit-scrollbar-thumb {
+    background: #475162;
+}
+
+.custom_add_customer .gropu_form .director_field_wrap  .director-field_input_wrap {
+    background: #f4f7fe;
+    flex: 1;
+    border: 1px solid #f4f7fe;
+    padding: 10px 10px;
+    border-radius: 10px;
+    margin-bottom: 15px;
+    gap: 5px 0px;
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: column;
+}
+
+.custom_add_customer .gropu_form .director_field_wrap .director-field_input_wrap .director-field_input {
+    flex-direction: row;
+    border: 0;
+    margin: 0;
+    padding: 0;
+    align-items: center;
+}
+
+.custom_add_customer .gropu_form .director_field_wrap .director-field_input_wrap label {
+    font-size: 13px;
+    color: #888888;
+}
+
+.custom_add_customer .gropu_form .director_field_wrap .director-field_input_wrap input::placeholder {
+    color: #c8c8c8;
+}
+
+.dark-only .custom_add_customer .gropu_form .director_field_wrap .director-field_input_wrap {
+    background: #23272d;
+    border-color: #1c2027;
+}
+
+.dark-only .custom_add_customer .gropu_form .director_field_wrap .director-field_input_wrap input::placeholder {
+    color: #585c62;
+}
+
+
+.drop_coman_file.have_title .step-2 .gropu_form {
+    display: block;
+    text-align: left;
+}
+
+.drop_coman_file.have_title .step-2 .gropu_form label {
+    margin-bottom: 8px;
+}
+
+.drop_coman_file.have_title .step-2 .gropu_form .quill-editor {
+    height: 100px !IMPORTANT;
+}
+
+.drop_coman_file.have_title .step-2 .gropu_form .ql-toolbar .ql-formats:last-child {
+    margin: 0;
+}
+
+
+.dark-only .drop_coman_file.have_title .step-2 .gropu_form .ql-toolbar {
+    border-color: #3e4d70 ! IMPORTANT;
+}
+
+.dark-only .drop_coman_file.have_title .step-2 .gropu_form .ql-editor.ql-blank {
+    background: transparent !important;
+    border-color: #3e4d70 ! IMPORTANT;
+}
+
+.dark-only .drop_coman_file.have_title .step-2 .gropu_form .quill-editor {
+    background: #262b33 ! IMPORTANT;
+    border: 0 !IMPORTANT;
+}
+
+.dark-only .drop_coman_file.have_title .step-2 .gropu_form .ql-toolbar * {
+    color: #c1c2c3 !important;
+   stroke: #c1c2c3 !important;
+   }
+
+   .dark-only .drop_coman_file.have_title .step-2 .gropu_form .quill-editor .ql-editor {
+    background: transparent !IMPORTANT;
+    border-color: #3e4d70 !IMPORTANT;
+}
+
+.dark-only .drop_coman_file.have_title .step-2 .gropu_form .quill-editor .ql-editor.ql-blank::before {
+    color: #dbdbdb !IMPORTANT;
 }
 
 /*new div append css end*/
@@ -24343,6 +24483,7 @@ div.dataTables_wrapper {
     color: #FFFFFF;
     padding: 9px 10px;
     border-radius: 5px;
+    border: 0;
 }
 
 .addcustomer_fix .customer_wrap .root_btn #draftButton {
@@ -25131,6 +25272,9 @@ div.dataTables_wrapper {
     display: inline-block;
     font-size: 13px;
     font-weight: 500;
+}
+.contract_detail_middle .divisions_associated .divi_ass_wrap span:empty {
+    display: none;
 }
 
 .cpllape_btn {

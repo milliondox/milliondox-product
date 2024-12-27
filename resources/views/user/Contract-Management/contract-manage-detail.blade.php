@@ -13,6 +13,12 @@
 <!-- Loader ends-->
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
+
+
+
+
+
+
 <link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
 
@@ -138,37 +144,31 @@
                                         <h2>Authrized Signatory</h2>
 
                                         <ul>
+                                            @if($authdata->isEmpty())
+                                            <li>No contract uploaded yet</li>
+                                        @else
+                                            @foreach ($authdata as $data )
+                                                
+                                           
 
                                             <li>
                                                 <div class="auth_image">
-                                                    <img src="https://f-dev.milliondox.in/profile_pictures/V21JjJbUitpBjn45II8C6qqCtvj1ljfRyaOO2nfo.webp" alt="img">
+                                                    <img src="{{ asset($data->sign_image_path) }}" alt="img">
                                                 </div>
-                                                <h2>Anurag Srivastava</h2>
+                                                <h2>{{$data->name}}</h2>
 
-                                                <div class="Authrized_Signatory">
+                                                {{-- <div class="Authrized_Signatory">
                                                     <b>Anurag 1</b>
                                                     <b>Anurag 2</b>
                                                     <b>Anurag 3</b>
                                                     <b>Anurag 4</b>
                                                     <b>Anurag 5</b>
                                                     <b class="count"></b>
-                                                </div>
+                                                </div> --}}
 
                                             </li>
-
-                                            <li>
-                                                <div class="auth_image">
-                                                    <img src="https://f-dev.milliondox.in/profile_pictures/V21JjJbUitpBjn45II8C6qqCtvj1ljfRyaOO2nfo.webp" alt="img">
-                                                </div>
-                                                <h2>Devanshu Kumar</h2>
-
-                                                <div class="Authrized_Signatory">
-                                                    <b>Devanshu 1</b>
-                                                    <b>Devanshu 2</b>
-                                                    <b class="count"></b>
-                                                </div>
-
-                                            </li>
+                                            @endforeach
+                                            @endif
 
                                         </ul>
 
@@ -465,6 +465,11 @@
 
                                             <div class="modal-body customer_wrap customer_details">
                                                 <!-- Progress Bar -->
+                                                <div class="stepp_ott">
+                                                <span class="smal_titlle">Details</span>
+                                                <span class="smal_titlle">Terms</span>
+                                                <span class="smal_titlle">Authority</span>
+                                                </div>
                                                 <div class="progress-bar-container_step">
                                                     <div class="step" data-step="1">
                                                         <span class="number">1</span>
@@ -484,7 +489,7 @@
                                                     @csrf
                                                     <!-- Step 1 -->
                                                     <div class="step-form step-1">
-                                                        <h4>Contract Details:</h4>
+                                                        <h4></h4>
 
                                                         <!-- Upload Contract -->
                                                         <input type="hidden" name="is_drafted" id="is_drafted" value="0">
@@ -505,10 +510,10 @@
                                                         </div>
 
                                                         <!-- Legal Entity Name -->
-                                                        <div class="gropu_form">
+                                                        {{-- <div class="gropu_form">
                                                             <label for="lename">Legal Entity Name</label>
                                                             <input placeholder="Legal Entity Name" type="text" id="lename" name="lename" value="" required>
-                                                        </div>
+                                                        </div> --}}
 
                                                         <div class="gropu_form">
                                                             <label for="fname">Contract name <span class="red_star">*</span></label>
@@ -524,7 +529,7 @@
                                                                 <option value="" disabled Selected>select</option>
                                                                 <option value="Non-disclosure Agreement (NDA)">Non-disclosure Agreement (NDA)</option>
                                                                 <option value="Service Agreement">Service Agreement</option>
-                                                                <option value="Employment Contract">Employment Contract</option>
+                                                               
                                                                 <option value="Partnership Agreement">Partnership Agreement</option>
                                                                 <option value="Vendor Agreement">Vendor Agreement</option>
                                                                 <option value="Purchase Agreement">Purchase Agreement</option>
@@ -539,18 +544,22 @@
                                                                 <option value="Termination Agreement">Termination Agreement</option>
                                                                 <option value="Software License Agreement">Software License Agreement</option>
                                                                 <option value="Supply Agreement">Supply Agreement</option>
+                                                                <option value="Other">Other</option>
                                                             </select>
                                                         </div>
-
+                                                        <div id="other_contract_type" class="gropu_form" style="display: none;">
+                                                            <label for="other_contract_type_input">Please specify:</label>
+                                                            <input type="text" id="other_contract_type_input" name="other_contract_type_input" placeholder="Enter contract type">
+                                                        </div>
                                                         <div class="gropu_form">
                                                             <label for="Division">Division<span class="red_star">*</span></label>
                                                             <select id="division" name="division" required>
                                                                 <option value="" disabled selected>Select</option>
-                                                                @foreach ( $div as $divi)
+                                                               @foreach ( $authmanagement as $divi)
 
 
-                                                                <option value="{{ $divi->division_name }}">{{ $divi->division_name }}</option>
-                                                                @endforeach
+                                                                <option value="{{ $divi->division_name }}" data-name="{{ $divi->name }}" data-email="{{ $divi->email }}" data-phone="{{ $divi->phone }}" data-sign-image="{{ asset($divi->sign_image_path) }}" data-sign-image-new="{{ $divi->sign_image_path }}">{{ $divi->division_name }}</option>
+                                                               @endforeach
                                                             </select>
                                                         </div>
 
@@ -604,21 +613,30 @@
 
                                                     <!-- Step 2 -->
                                                     <div class="step-form step-2 d-none">
-                                                        <h4>Terms of Contract:</h4>
+
+                                                        <h4></h4>
                                                         <div class="gropu_form">
+
                                                             <label for="renewal_terms">Renewal Terms <span class="red_star">*</span></label>
-                                                            <textarea name="renewal_terms[]" style="height: 58px;" required></textarea>
-                                                        </div>
-
-                                                        <div class="gropu_form">
+                                                            <div id="quill-renewal-terms" class="quill-editor"></div>
+                                                            <textarea name="renewal_terms[]" id="renewal_terms" required></textarea>
+                                                          </div>
+                                                      
+                                                          <!-- Payment Terms -->
+                                                          <div class="gropu_form">
                                                             <label for="payment_terms">Payment Terms <span class="red_star">*</span></label>
-                                                            <textarea name="payment_terms[]" style="height: 58px;" required></textarea>
-                                                        </div>
-
-                                                        <div class="gropu_form">
+                                                            <div id="quill-payment-terms" class="quill-editor"></div>
+                                                            <textarea name="payment_terms[]" id="payment_terms" required></textarea>
+                                                          </div>
+                                                      
+                                                          <!-- Fee Escalation Clause -->
+                                                          <div class="gropu_form">
                                                             <label for="fee_escalation_clause">Fee Escalation Clause <span class="red_star">*</span></label>
-                                                            <textarea name="fee_escalation_clause[]" style="height: 58px;" required></textarea>
-                                                        </div>
+                                                            <div id="quill-fee-escalation-clause" class="quill-editor"></div>
+                                                            <textarea name="fee_escalation_clause[]" id="fee_escalation_clause" required></textarea>
+                                                          </div>
+
+
 
                                                         <div class="btn-group">
                                                             <div class="btn-container">
@@ -641,60 +659,53 @@
 
                                                     <!-- Step 3 -->
                                                     <div class="step-form step-3 d-none">
-                                                        <h4>Signing Authority:</h4>
+                                                        <h4>First Party:</h4>
 
                                                         <div class="gropu_dataprint_wrap">
                                                             <div class="gropu_form_divide">
                                                                 <div class="gropu_form">
                                                                     <label for="nameprint">Name:</label>
-                                                                    <input type="text" id="nameprint" name="nameprint" readonly value="test singh">
+                                                                    <input type="text" id="sign_party1_name" name="sign_party1_name" readonly >
                                                                 </div>
 
                                                                 <!-- Email Input -->
                                                                 <div class="gropu_form">
                                                                     <label for="emailprint">Email:</label>
-                                                                    <input type="email" id="emailprint" name="emailprint" readonly value="test@gmail.com">
+                                                                    <input type="email" id="sign_party1_email" name="sign_party1_email" readonly >
                                                                 </div>
 
                                                                 <!-- Phone Input -->
                                                                 <div class="gropu_form">
                                                                     <label for="phoneprint">Phone:</label>
-                                                                    <input type="tel" id="phoneprint" name="phoneprint" readonly value="7045598514">
+                                                                    <input type="tel" id="sign_party1_phone" name="sign_party1_phone" readonly >
                                                                 </div>
                                                             </div>
                                                             <div class="show-side_signature">
-                                                                <img src="../../assets/images/dummy_sign.png" alt="img">
+                                                                <img src="{{ asset('default-sign.png') }}"  alt="img" id="sign_image_preview">
+                                                                <input type="hidden" id="sign_party1_sign_path" name="sign_party1_sign_path" readonly >
                                                             </div>
                                                         </div>
 
+                                                        <h4 class="secound_spacce">Second Party:</h4>
                                                         <div class="gropu_datatake_wrap">
                                                             <div class="gropu_form">
                                                                 <label for="name">Name</label>
-                                                                <input type="text" id="name" name="name" required placeholder="Enter Name">
+                                                                <input type="text" id="sign_party2_name" name="sign_party2_name" required placeholder="Enter Name">
                                                             </div>
 
                                                             <!-- Email Input -->
                                                             <div class="gropu_form">
                                                                 <label for="email">Email</label>
-                                                                <input type="email" id="email" name="email" required placeholder="Enter Email">
+                                                                <input type="email" id="sign_party2_email" name="sign_party2_email" required placeholder="Enter Email">
                                                             </div>
 
                                                             <!-- Phone Input -->
                                                             <div class="gropu_form">
                                                                 <label for="phone">Phone</label>
-                                                                <input type="tel" id="phone" name="phone" required placeholder="Enter Phoneno">
+                                                                <input type="tel" id="sign_party2_phone" name="sign_party2_phone" required placeholder="Enter Phoneno">
                                                             </div>
 
-                                                            <!-- Division Selection -->
-                                                            <div class="gropu_form">
-                                                                <label for="Division">Division</label>
-                                                                <select id="division" name="division" required>
-                                                                    <option value="" disabled selected>Select</option>
-
-                                                                    <option value="">test</option>
-
-                                                                </select>
-                                                            </div>
+                                                            
 
                                                             <div class="append_bootm_contarct_wrap">
 
@@ -773,7 +784,43 @@
                                         </div>
                                     </div>
                                 </div>
+                                <script>
+                                    $(document).ready(function() {
+                                            // Listen for changes to the contract type select box
+                                            $('#contract_type').change(function() {
+                                                // Check if the selected value is "Other"
+                                                if ($(this).val() === 'Other') {
+                                                    // Show the input field for "Other"
+                                                    $('#other_contract_type').show();
+                                                } else {
+                                                    // Hide the input field if any other option is selected
+                                                    $('#other_contract_type').hide();
+                                                }
+                                            });
+                                        });
 
+                                </script>
+                                <script>
+                                    document.getElementById('division').addEventListener('change', function () {
+                                        var selectedOption = this.options[this.selectedIndex];
+                                        
+                                        // Fetch data from data attributes of the selected option
+                                        var name = selectedOption.getAttribute('data-name');
+                                        var email = selectedOption.getAttribute('data-email');
+                                        var phone = selectedOption.getAttribute('data-phone');
+                                        var signImagePath = selectedOption.getAttribute('data-sign-image'); // Here we get the asset URL directly
+                                        var signImagePathnew = selectedOption.getAttribute('data-sign-image-new'); // Here we get the asset URL directly
+                                
+                                        // Populate the input fields with the data
+                                        document.getElementById('sign_party1_name').value = name;
+                                        document.getElementById('sign_party1_email').value = email;
+                                        document.getElementById('sign_party1_phone').value = phone;
+                                        document.getElementById('sign_party1_sign_path').value = signImagePathnew;
+                                
+                                        // Update the signature image source dynamically
+                                        document.getElementById('sign_image_preview').src = signImagePath ? signImagePath : '{{ asset('default-sign.png') }}';
+                                    });
+                                </script>
                                 <script>
                                     $(document).ready(function() {
                                         // When the "Save as Draft" button is clicked
@@ -1838,4 +1885,51 @@
         });
     });
 </script>
+
+<link href="https://cdn.quilljs.com/1.3.7/quill.snow.css" rel="stylesheet">
+<script src="https://cdn.quilljs.com/1.3.7/quill.min.js"></script>
+<style>
+  .quill-editor {
+    height: 150px;
+    background-color: #fff;
+    border: 1px solid #ccc;
+  }
+  textarea {
+    display: none;
+  }
+</style>
+ <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      const options = {
+        theme: 'snow',
+        placeholder: 'Enter text here...',
+        modules: {
+          toolbar: [
+            [{ header: [1, 2, false] }],
+            ['bold', 'italic', 'underline'],
+            ['link', 'blockquote', 'code-block'],
+            [{ list: 'ordered' }, { list: 'bullet' }],
+            ['clean'],
+          ],
+        },
+      };
+
+      // Initialize Quill editors
+      const renewalTermsEditor = new Quill("#quill-renewal-terms", options);
+      const paymentTermsEditor = new Quill("#quill-payment-terms", options);
+      const feeEscalationClauseEditor = new Quill("#quill-fee-escalation-clause", options);
+
+      // Synchronize Quill content with corresponding textareas
+      function syncContent(editor, textareaId) {
+        const textarea = document.getElementById(textareaId);
+        editor.on('text-change', () => {
+          textarea.value = editor.root.innerHTML; // Sync HTML content
+        });
+      }
+
+      syncContent(renewalTermsEditor, "renewal_terms");
+      syncContent(paymentTermsEditor, "payment_terms");
+      syncContent(feeEscalationClauseEditor, "fee_escalation_clause");
+    });
+  </script>
 @endsection

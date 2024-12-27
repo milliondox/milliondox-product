@@ -20086,7 +20086,7 @@ public function rolemanagement()
 
     // Fetch the current user's role record (if needed elsewhere)
     $userRoleRecord = UserRole::where('role', $user->role)->where('is_deleted', 0)->first();
-    $ddsdsdiv = Division::get();
+    $ddsdsdiv = Division::where('user_id',  $userId)->get();
 
     // $authmanagement = AuthorizeManagement::where('auth_user_id', $user->id)->get();
 
