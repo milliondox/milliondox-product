@@ -143,13 +143,19 @@
                                     <div class="authrized_signatory cmn_authh">
                                         <h2>Authrized Signatory</h2>
 
-                                        <ul>
+                                        
                                             @if($authdata->isEmpty())
-                                            <li>No contract uploaded yet</li>
-                                        @else
+                                            <ul class="no_data_border">
+                                            <li>
+                                            <svg width="15" height="15" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M7.0277 8.93L6.9077 4H8.0477L7.9277 8.93H7.0277ZM7.5077 11.06C7.30103 11.06 7.13103 10.9967 6.9977 10.87C6.87103 10.7367 6.8077 10.58 6.8077 10.4C6.8077 10.2133 6.87103 10.0567 6.9977 9.93C7.13103 9.79667 7.30103 9.73 7.5077 9.73C7.70103 9.73 7.86103 9.79667 7.9877 9.93C8.12103 10.0567 8.1877 10.2133 8.1877 10.4C8.1877 10.58 8.12103 10.7367 7.9877 10.87C7.86103 10.9967 7.70103 11.06 7.5077 11.06Z" fill="#848484"></path>
+                                <circle cx="7.5" cy="7.5" r="7" stroke="#848484"></circle>
+                              </svg> No contract uploaded yet</li>
+                                            </ul>
+                                            @else
                                             @foreach ($authdata as $data )
-                                                
-                                           
+
+                                            <ul>
 
                                             <li>
                                                 <div class="auth_image">
@@ -392,6 +398,7 @@
                                         <h2>Contracts uploaded</h2>
                                     </div>
                                     <div class="right_btn_contt">
+
                                         <button type="button" id="downloadBtn" class="download opload" style="display: none;">
                                             <svg width="20" height="18" viewBox="0 0 20 18" fill="none" xmlns="http://www.w3.org/2000/svg">
                                                 <g clip-path="url(#clip0_669_662)">
@@ -466,9 +473,9 @@
                                             <div class="modal-body customer_wrap customer_details">
                                                 <!-- Progress Bar -->
                                                 <div class="stepp_ott">
-                                                <span class="smal_titlle">Details</span>
-                                                <span class="smal_titlle">Terms</span>
-                                                <span class="smal_titlle">Authority</span>
+                                                    <span class="smal_titlle">Details</span>
+                                                    <span class="smal_titlle">Terms</span>
+                                                    <span class="smal_titlle">Authority</span>
                                                 </div>
                                                 <div class="progress-bar-container_step">
                                                     <div class="step" data-step="1">
@@ -529,7 +536,7 @@
                                                                 <option value="" disabled Selected>select</option>
                                                                 <option value="Non-disclosure Agreement (NDA)">Non-disclosure Agreement (NDA)</option>
                                                                 <option value="Service Agreement">Service Agreement</option>
-                                                               
+
                                                                 <option value="Partnership Agreement">Partnership Agreement</option>
                                                                 <option value="Vendor Agreement">Vendor Agreement</option>
                                                                 <option value="Purchase Agreement">Purchase Agreement</option>
@@ -555,11 +562,11 @@
                                                             <label for="Division">Division<span class="red_star">*</span></label>
                                                             <select id="division" name="division" required>
                                                                 <option value="" disabled selected>Select</option>
-                                                               @foreach ( $authmanagement as $divi)
+                                                                @foreach ( $authmanagement as $divi)
 
 
                                                                 <option value="{{ $divi->division_name }}" data-name="{{ $divi->name }}" data-email="{{ $divi->email }}" data-phone="{{ $divi->phone }}" data-sign-image="{{ asset($divi->sign_image_path) }}" data-sign-image-new="{{ $divi->sign_image_path }}">{{ $divi->division_name }}</option>
-                                                               @endforeach
+                                                                @endforeach
                                                             </select>
                                                         </div>
 
@@ -602,11 +609,13 @@
 
                                                         <div class="btn-group">
                                                             <div class="btn-container">
+                                                            <button type="button" id="draftButton" class="btn btn-draft">Save as Draft</button>
                                                                 <button type="button" class="btn btn-primary next-step" data-next-step="2"><svg width="30" height="30" viewBox="0 0 30 30" fill="none" xmlns="http://www.w3.org/2000/svg">
                                                                         <rect x="29.5" y="29.5" width="29" height="29" rx="14.5" transform="rotate(180 29.5 29.5)" stroke="black"></rect>
                                                                         <path d="M20.7866 15.5415H8.66608C8.50532 15.5415 8.35124 15.4776 8.2376 15.3639C8.12386 15.2502 8.06006 15.0959 8.06006 14.9351C8.06006 14.7742 8.12386 14.62 8.2376 14.5063C8.35124 14.3925 8.50532 14.3287 8.66608 14.3287H20.7866C20.9473 14.3287 21.1014 14.3925 21.2151 14.5063C21.3287 14.62 21.3926 14.7742 21.3926 14.9351C21.3926 15.0959 21.3287 15.2502 21.2151 15.3639C21.1014 15.4776 20.9473 15.5415 20.7866 15.5415Z" fill="black"></path>
                                                                         <path d="M20.536 14.9349L15.5096 9.90645C15.3958 9.79264 15.3319 9.63817 15.3319 9.47711C15.3319 9.31614 15.3958 9.16167 15.5096 9.04775C15.6234 8.93394 15.7778 8.87 15.9387 8.87C16.0996 8.87 16.254 8.93394 16.3678 9.04775L21.822 14.5056C21.8784 14.562 21.9232 14.6289 21.9537 14.7026C21.9843 14.7762 22 14.8552 22 14.9349C22 15.0147 21.9843 15.0937 21.9537 15.1674C21.9232 15.2411 21.8784 15.308 21.822 15.3643L16.3678 20.8222C16.254 20.936 16.0996 21 15.9387 21C15.7778 21 15.6234 20.936 15.5096 20.8222C15.3958 20.7083 15.3319 20.5538 15.3319 20.3928C15.3319 20.2318 15.3958 20.0773 15.5096 19.9635L20.536 14.9349Z" fill="black"></path>
                                                                     </svg></button>
+                                                                    
                                                             </div>
                                                         </div>
                                                     </div>
@@ -620,21 +629,21 @@
                                                             <label for="renewal_terms">Renewal Terms <span class="red_star">*</span></label>
                                                             <div id="quill-renewal-terms" class="quill-editor"></div>
                                                             <textarea name="renewal_terms[]" id="renewal_terms" required></textarea>
-                                                          </div>
-                                                      
-                                                          <!-- Payment Terms -->
-                                                          <div class="gropu_form">
+                                                        </div>
+
+                                                        <!-- Payment Terms -->
+                                                        <div class="gropu_form">
                                                             <label for="payment_terms">Payment Terms <span class="red_star">*</span></label>
                                                             <div id="quill-payment-terms" class="quill-editor"></div>
                                                             <textarea name="payment_terms[]" id="payment_terms" required></textarea>
-                                                          </div>
-                                                      
-                                                          <!-- Fee Escalation Clause -->
-                                                          <div class="gropu_form">
+                                                        </div>
+
+                                                        <!-- Fee Escalation Clause -->
+                                                        <div class="gropu_form">
                                                             <label for="fee_escalation_clause">Fee Escalation Clause <span class="red_star">*</span></label>
                                                             <div id="quill-fee-escalation-clause" class="quill-editor"></div>
                                                             <textarea name="fee_escalation_clause[]" id="fee_escalation_clause" required></textarea>
-                                                          </div>
+                                                        </div>
 
 
 
@@ -653,6 +662,7 @@
                                                                         <path d="M20.7866 15.5415H8.66608C8.50532 15.5415 8.35124 15.4776 8.2376 15.3639C8.12386 15.2502 8.06006 15.0959 8.06006 14.9351C8.06006 14.7742 8.12386 14.62 8.2376 14.5063C8.35124 14.3925 8.50532 14.3287 8.66608 14.3287H20.7866C20.9473 14.3287 21.1014 14.3925 21.2151 14.5063C21.3287 14.62 21.3926 14.7742 21.3926 14.9351C21.3926 15.0959 21.3287 15.2502 21.2151 15.3639C21.1014 15.4776 20.9473 15.5415 20.7866 15.5415Z" fill="black"></path>
                                                                         <path d="M20.536 14.9349L15.5096 9.90645C15.3958 9.79264 15.3319 9.63817 15.3319 9.47711C15.3319 9.31614 15.3958 9.16167 15.5096 9.04775C15.6234 8.93394 15.7778 8.87 15.9387 8.87C16.0996 8.87 16.254 8.93394 16.3678 9.04775L21.822 14.5056C21.8784 14.562 21.9232 14.6289 21.9537 14.7026C21.9843 14.7762 22 14.8552 22 14.9349C22 15.0147 21.9843 15.0937 21.9537 15.1674C21.9232 15.2411 21.8784 15.308 21.822 15.3643L16.3678 20.8222C16.254 20.936 16.0996 21 15.9387 21C15.7778 21 15.6234 20.936 15.5096 20.8222C15.3958 20.7083 15.3319 20.5538 15.3319 20.3928C15.3319 20.2318 15.3958 20.0773 15.5096 19.9635L20.536 14.9349Z" fill="black"></path>
                                                                     </svg></button>
+                                                                    <button type="button" id="draftButton" class="btn btn-draft">Save as Draft</button>
                                                             </div>
                                                         </div>
                                                     </div>
@@ -660,29 +670,34 @@
                                                     <!-- Step 3 -->
                                                     <div class="step-form step-3 d-none">
                                                         <h4>First Party:</h4>
-                                                        
+
                                                         <div class="gropu_dataprint_wrap active" id="dataPrintWrap">
+                                                            <span class="show_empty_message" style="display:none;">
+                                                                <svg width="15" height="15" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                                    <path d="M7.0277 8.93L6.9077 4H8.0477L7.9277 8.93H7.0277ZM7.5077 11.06C7.30103 11.06 7.13103 10.9967 6.9977 10.87C6.87103 10.7367 6.8077 10.58 6.8077 10.4C6.8077 10.2133 6.87103 10.0567 6.9977 9.93C7.13103 9.79667 7.30103 9.73 7.5077 9.73C7.70103 9.73 7.86103 9.79667 7.9877 9.93C8.12103 10.0567 8.1877 10.2133 8.1877 10.4C8.1877 10.58 8.12103 10.7367 7.9877 10.87C7.86103 10.9967 7.70103 11.06 7.5077 11.06Z" fill="#FFDE2F"></path>
+                                                                    <circle cx="7.5" cy="7.5" r="7" stroke="#FFDE2F"></circle>
+                                                                </svg>Please Select Division First</span>
                                                             <div class="gropu_form_divide">
                                                                 <div class="gropu_form">
                                                                     <label for="nameprint">Name:</label>
-                                                                    <input type="text" id="sign_party1_name" name="sign_party1_name" readonly >
+                                                                    <input type="text" id="sign_party1_name" name="sign_party1_name" readonly>
                                                                 </div>
 
                                                                 <!-- Email Input -->
                                                                 <div class="gropu_form">
                                                                     <label for="emailprint">Email:</label>
-                                                                    <input type="email" id="sign_party1_email" name="sign_party1_email" readonly >
+                                                                    <input type="email" id="sign_party1_email" name="sign_party1_email" readonly>
                                                                 </div>
 
                                                                 <!-- Phone Input -->
                                                                 <div class="gropu_form">
                                                                     <label for="phoneprint">Phone:</label>
-                                                                    <input type="tel" id="sign_party1_phone" name="sign_party1_phone" readonly >
+                                                                    <input type="tel" id="sign_party1_phone" name="sign_party1_phone" readonly>
                                                                 </div>
                                                             </div>
                                                             <div class="show-side_signature">
-                                                                <img src="{{ asset('default-sign.png') }}"  alt="img" id="sign_image_preview">
-                                                                <input type="hidden" id="sign_party1_sign_path" name="sign_party1_sign_path" readonly >
+                                                                <img src="{{ asset('default-sign.png') }}" alt="img" id="sign_image_preview">
+                                                                <input type="hidden" id="sign_party1_sign_path" name="sign_party1_sign_path" readonly>
                                                             </div>
                                                         </div>
 
@@ -705,7 +720,7 @@
                                                                 <input type="tel" id="sign_party2_phone" name="sign_party2_phone" required placeholder="Enter Phoneno">
                                                             </div>
 
-                                                            
+
 
                                                             <div class="append_bootm_contarct_wrap">
 
@@ -722,7 +737,7 @@
                                                                                         </svg>
                                                                                         Upload a file
                                                                                     </span>
-                                                                                    
+
                                                                                 </div>
                                                                             </div>
                                                                         </div>
@@ -738,7 +753,7 @@
 
                                                                     <div class="file-area_cover">
                                                                         <div class="file-area">
-                                                                            <input type="file" class="drag_file_signature" id="signature" name="signature"  accept="image/*">
+                                                                            <input type="file" class="drag_file_signature" id="signature" name="signature" accept="image/*">
                                                                             <div class="file-dummy">
                                                                                 <div class="default">
                                                                                     <span class="upload_icon">
@@ -747,7 +762,7 @@
                                                                                         </svg>
                                                                                         Upload a file
                                                                                     </span>
-                                                                                   
+
                                                                                 </div>
                                                                             </div>
                                                                         </div>
@@ -785,9 +800,9 @@
                                     </div>
                                 </div>
                                 <script>
-                                    document.getElementById('division').addEventListener('change', function () {
+                                    document.getElementById('division').addEventListener('change', function() {
                                         const dataPrintWrap = document.getElementById('dataPrintWrap');
-                                
+
                                         if (this.value) {
                                             // Remove the 'active' class when a division is selected
                                             dataPrintWrap.classList.remove('active');
@@ -799,39 +814,39 @@
                                 </script>
                                 <script>
                                     $(document).ready(function() {
-                                            // Listen for changes to the contract type select box
-                                            $('#contract_type').change(function() {
-                                                // Check if the selected value is "Other"
-                                                if ($(this).val() === 'Other') {
-                                                    // Show the input field for "Other"
-                                                    $('#other_contract_type').show();
-                                                } else {
-                                                    // Hide the input field if any other option is selected
-                                                    $('#other_contract_type').hide();
-                                                }
-                                            });
+                                        // Listen for changes to the contract type select box
+                                        $('#contract_type').change(function() {
+                                            // Check if the selected value is "Other"
+                                            if ($(this).val() === 'Other') {
+                                                // Show the input field for "Other"
+                                                $('#other_contract_type').show();
+                                            } else {
+                                                // Hide the input field if any other option is selected
+                                                $('#other_contract_type').hide();
+                                            }
                                         });
-
+                                    });
                                 </script>
                                 <script>
-                                    document.getElementById('division').addEventListener('change', function () {
+                                    document.getElementById('division').addEventListener('change', function() {
                                         var selectedOption = this.options[this.selectedIndex];
-                                        
+
                                         // Fetch data from data attributes of the selected option
                                         var name = selectedOption.getAttribute('data-name');
                                         var email = selectedOption.getAttribute('data-email');
                                         var phone = selectedOption.getAttribute('data-phone');
                                         var signImagePath = selectedOption.getAttribute('data-sign-image'); // Here we get the asset URL directly
                                         var signImagePathnew = selectedOption.getAttribute('data-sign-image-new'); // Here we get the asset URL directly
-                                
+
                                         // Populate the input fields with the data
                                         document.getElementById('sign_party1_name').value = name;
                                         document.getElementById('sign_party1_email').value = email;
                                         document.getElementById('sign_party1_phone').value = phone;
                                         document.getElementById('sign_party1_sign_path').value = signImagePathnew;
-                                
+
                                         // Update the signature image source dynamically
-                                        document.getElementById('sign_image_preview').src = signImagePath ? signImagePath : '{{ asset('default-sign.png') }}';
+                                        document.getElementById('sign_image_preview').src = signImagePath ? signImagePath : '{{ asset('
+                                        default -sign.png ') }}';
                                     });
                                 </script>
                                 <script>
@@ -1100,17 +1115,17 @@
                                         @if(is_null($startDate) || is_null($endDate))
                                         <div id="myDropdown3" class="dropdown-content">
 
-                                           
-                                        
 
-                                            <a class="dropdown-itemm Editdraft">
+
+
+                                            <a class="dropdown-itemm Editdraft" data-bs-toggle="modal" data-bs-target="#editthreeStepModal">
                                                 <svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
                                                     <path d="M1.68029 10.5673C1.70709 10.3261 1.7205 10.2055 1.75699 10.0928C1.78936 9.99277 1.83511 9.89759 1.89298 9.80983C1.9582 9.71092 2.04401 9.62512 2.21561 9.45351L9.91929 1.74985C10.5636 1.10552 11.6083 1.10552 12.2526 1.74985C12.897 2.39418 12.897 3.43885 12.2526 4.08319L4.54894 11.7868C4.37734 11.9585 4.29154 12.0443 4.19262 12.1095C4.10487 12.1673 4.00969 12.2131 3.90968 12.2455C3.79696 12.282 3.67635 12.2954 3.43515 12.3222L1.46094 12.5415L1.68029 10.5673Z" stroke="#414651" stroke-width="1.66667" stroke-linecap="round" stroke-linejoin="round" />
                                                 </svg>
 
                                                 Edit Draft </a>
 
-                                           
+
                                         </div>
                                         @else
                                         <div id="myDropdown3" class="dropdown-content">
@@ -1160,7 +1175,349 @@
                                 </tbody>
                                 </table>
 
+<!-- edit three step model start-->
+<div class="modal fade drop_coman_file have_title custom_add_customer" id="editthreeStepModal" tabindex="-1" role="dialog" aria-labelledby="editthreeStepModalLabel" aria-hidden="true">
+                                    <div class="modal-dialog modal-dialog-centered" role="document">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title" style="font-weight:700">Edit Contract</h5>
+                                                <button class="close" style="border-radius:5px;" type="button" data-bs-dismiss="modal">
+                                                    <span aria-hidden="true">
+                                                        <svg width="50" height="50" viewBox="0 0 50 50" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                            <rect width="4.27093" height="66.172" transform="matrix(0.702074 -0.712104 0.709324 0.704883 0 3.31244)" fill="black" />
+                                                            <rect width="4.27086" height="66.3713" transform="matrix(-0.704896 -0.70931 0.706518 -0.707695 3.10742 50)" fill="black" />
+                                                        </svg>
+                                                    </span>
+                                                </button>
+                                            </div>
 
+                                            <div class="modal-body customer_wrap customer_details">
+                                                <!-- Progress Bar -->
+                                                <div class="stepp_ott">
+                                                    <span class="smal_titlle">Details</span>
+                                                    <span class="smal_titlle">Terms</span>
+                                                    <span class="smal_titlle">Authority</span>
+                                                </div>
+                                                <div class="progress-bar-container_step">
+                                                    <div class="step" data-step="1">
+                                                        <span class="number">1</span>
+                                                        <span class="tick d-none">✓</span>
+                                                    </div>
+                                                    <div class="step" data-step="2">
+                                                        <span class="number">2</span>
+                                                        <span class="tick d-none">✓</span>
+                                                    </div>
+                                                    <div class="step" data-step="3">
+                                                        <span class="number">3</span>
+                                                        <span class="tick d-none">✓</span>
+                                                    </div>
+                                                </div>
+                                                <!-- Step Forms -->
+                                                <form id="editcustomerContractForm" action="{{ route('storecustomercontract') }}" method="POST" enctype="multipart/form-data" class="upload-form">
+                                                    @csrf
+                                                    <!-- Step 1 -->
+                                                    <div class="step-form step-1">
+                                                        <h4></h4>
+
+                                                        <!-- Upload Contract -->
+                                                        <input type="hidden" name="is_drafted" id="is_drafted" value="0">
+                                                        <div class="file-area">
+                                                            <input type="file" class="dragfile" id="contractfile" name="file" accept=".pdf,.doc,.docx" required>
+
+                                                            <div class="file-dummy">
+                                                                <div class="default">
+                                                                    <span class="upload_icon">
+                                                                        <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                                            <path fill-rule="evenodd" clip-rule="evenodd" d="M8.9974 0.041504C9.08764 0.0414466 9.17682 0.0609324 9.25882 0.0986218C9.34082 0.136311 9.41368 0.19131 9.47239 0.259837L11.9724 3.1765C12.0802 3.30248 12.1336 3.46615 12.1208 3.63149C12.108 3.79683 12.03 3.95032 11.9041 4.05817C11.7781 4.16603 11.6144 4.21942 11.4491 4.2066C11.2837 4.19379 11.1303 4.11581 11.0224 3.98984L9.6224 2.3565V11.4998C9.6224 11.6656 9.55655 11.8246 9.43934 11.9418C9.32213 12.059 9.16316 12.1248 8.9974 12.1248C8.83164 12.1248 8.67266 12.059 8.55545 11.9418C8.43824 11.8246 8.3724 11.6656 8.3724 11.4998V2.35567L6.9724 3.98984C6.91899 4.05222 6.85382 4.10346 6.78061 4.14066C6.7074 4.17785 6.62758 4.20026 6.54571 4.2066C6.46384 4.21295 6.38153 4.20311 6.30346 4.17764C6.22539 4.15217 6.15311 4.11157 6.09073 4.05817C6.02835 4.00477 5.9771 3.9396 5.93991 3.86639C5.90272 3.79318 5.88031 3.71336 5.87396 3.63149C5.86762 3.54962 5.87746 3.4673 5.90293 3.38923C5.9284 3.31117 5.96899 3.23888 6.0224 3.1765L8.5224 0.259837C8.58111 0.19131 8.65398 0.136311 8.73597 0.0986218C8.81797 0.0609324 8.90715 0.0414466 8.9974 0.041504ZM4.8274 5.8765C4.99316 5.87562 5.15248 5.94062 5.27031 6.05721C5.38815 6.17379 5.45484 6.33241 5.45573 6.49817C5.45661 6.66393 5.39161 6.82325 5.27503 6.94109C5.15844 7.05892 4.99982 7.12562 4.83406 7.1265C3.92323 7.1315 3.2774 7.15484 2.78656 7.24484C2.3149 7.33234 2.04073 7.4715 1.83823 7.674C1.6074 7.90484 1.4574 8.229 1.3749 8.84067C1.29073 9.46984 1.28906 10.304 1.28906 11.4998V12.3332C1.28906 13.5298 1.29073 14.364 1.3749 14.9932C1.4574 15.6048 1.60823 15.9282 1.83823 16.1598C2.06906 16.3898 2.3924 16.5398 3.0049 16.6223C3.63323 16.7073 4.46823 16.7082 5.66406 16.7082H12.3307C13.5266 16.7082 14.3607 16.7073 14.9907 16.6223C15.6024 16.5398 15.9257 16.3898 16.1566 16.159C16.3874 15.9282 16.5374 15.6048 16.6199 14.9932C16.7041 14.364 16.7057 13.5298 16.7057 12.3332V11.4998C16.7057 10.304 16.7041 9.46984 16.6199 8.83984C16.5374 8.229 16.3866 7.90484 16.1566 7.674C15.9532 7.4715 15.6799 7.33234 15.2082 7.24484C14.7174 7.15484 14.0716 7.1315 13.1607 7.1265C13.0787 7.12607 12.9975 7.10947 12.9218 7.07765C12.8461 7.04584 12.7775 6.99943 12.7198 6.94109C12.662 6.88274 12.6164 6.8136 12.5854 6.7376C12.5544 6.66161 12.5386 6.58025 12.5391 6.49817C12.5395 6.41609 12.5561 6.33491 12.5879 6.25925C12.6197 6.18359 12.6661 6.11493 12.7245 6.05721C12.7828 5.99948 12.852 5.95381 12.928 5.9228C13.004 5.8918 13.0853 5.87607 13.1674 5.8765C14.0691 5.8815 14.8199 5.90317 15.4341 6.01567C16.0657 6.13234 16.6032 6.35317 17.0407 6.79067C17.5424 7.2915 17.7574 7.924 17.8591 8.674C17.9557 9.39567 17.9557 10.3148 17.9557 11.454V12.379C17.9557 13.519 17.9557 14.4373 17.8591 15.1598C17.7574 15.9098 17.5424 16.5415 17.0407 17.0432C16.5391 17.5448 15.9074 17.7598 15.1574 17.8615C14.4349 17.9582 13.5157 17.9582 12.3766 17.9582H5.61823C4.47906 17.9582 3.5599 17.9582 2.8374 17.8615C2.0874 17.7607 1.45573 17.5448 0.954063 17.0432C0.452396 16.5415 0.237396 15.9098 0.136562 15.1598C0.0390625 14.4373 0.0390625 13.5182 0.0390625 12.379V11.454C0.0390625 10.3148 0.0390625 9.39567 0.136562 8.67317C0.236562 7.92317 0.453229 7.2915 0.954063 6.78984C1.39156 6.35317 1.92906 6.1315 2.56073 6.01567C3.1749 5.90317 3.92573 5.8815 4.8274 5.8765Z" fill="#ABABAB" />
+                                                                        </svg>
+                                                                        Upload a file
+                                                                    </span>
+                                                                    <span class="fille">Choose File</span>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+
+                                                        <!-- Legal Entity Name -->
+                                                        {{-- <div class="gropu_form">
+                                                            <label for="lename">Legal Entity Name</label>
+                                                            <input placeholder="Legal Entity Name" type="text" id="lename" name="lename" value="" required>
+                                                        </div> --}}
+
+                                                        <div class="gropu_form">
+                                                            <label for="fname">Contract name <span class="red_star">*</span></label>
+                                                            <input placeholder="Type" required type="text" id="contract_name" name="contract_name" pattern="^[A-Za-z\s]+$"
+                                                                title="Only alphabets and spaces are allowed">
+                                                            <input required type="hidden" id="contracttype" name="contracttype" value="customer contract">
+                                                            <input required type="hidden" id="customer_id" name="customer_id" value="{{$customerrecord->id}}">
+                                                        </div>
+
+                                                        <div class="gropu_form">
+                                                            <label for="con_type">Contract type <span class="red_star">*</span></label>
+                                                            <select id="contract_type" name="contract_type" required>
+                                                                <option value="" disabled Selected>select</option>
+                                                                <option value="Non-disclosure Agreement (NDA)">Non-disclosure Agreement (NDA)</option>
+                                                                <option value="Service Agreement">Service Agreement</option>
+
+                                                                <option value="Partnership Agreement">Partnership Agreement</option>
+                                                                <option value="Vendor Agreement">Vendor Agreement</option>
+                                                                <option value="Purchase Agreement">Purchase Agreement</option>
+                                                                <option value="Lease Agreement">Lease Agreement</option>
+                                                                <option value="Licensing Agreement">Licensing Agreement</option>
+                                                                <option value="Consultancy Agreement">Consultancy Agreement</option>
+                                                                <option value="Master Service Agreement (MSA)">Master Service Agreement (MSA)</option>
+                                                                <option value="Sales Agreement">Sales Agreement</option>
+                                                                <option value="Joint Venture Agreement">Joint Venture Agreement</option>
+                                                                <option value="Distribution Agreement">Distribution Agreement</option>
+                                                                <option value="Subcontractor Agreement">Subcontractor Agreement</option>
+                                                                <option value="Termination Agreement">Termination Agreement</option>
+                                                                <option value="Software License Agreement">Software License Agreement</option>
+                                                                <option value="Supply Agreement">Supply Agreement</option>
+                                                                <option value="Other">Other</option>
+                                                            </select>
+                                                        </div>
+                                                        <div id="other_contract_type" class="gropu_form" style="display: none;">
+                                                            <label for="other_contract_type_input">Please specify:</label>
+                                                            <input type="text" id="other_contract_type_input" name="other_contract_type_input" placeholder="Enter contract type">
+                                                        </div>
+                                                        <div class="gropu_form">
+                                                            <label for="Division">Division<span class="red_star">*</span></label>
+                                                            <select id="division" name="division" required>
+                                                                <option value="" disabled selected>Select</option>
+                                                                @foreach ( $authmanagement as $divi)
+
+
+                                                                <option value="{{ $divi->division_name }}" data-name="{{ $divi->name }}" data-email="{{ $divi->email }}" data-phone="{{ $divi->phone }}" data-sign-image="{{ asset($divi->sign_image_path) }}" data-sign-image-new="{{ $divi->sign_image_path }}">{{ $divi->division_name }}</option>
+                                                                @endforeach
+                                                            </select>
+                                                        </div>
+
+
+
+                                                        <div class="gropu_form">
+                                                            <label for="start">Date of commencement <span class="red_star">*</span></label>
+                                                            <input type="date" id="start" name="startdate" required />
+                                                        </div>
+
+
+                                                        <div class="gropu_form">
+                                                            <label for="start">Date of expiry <span class="red_star">*</span></label>
+                                                            <input type="date" id="start" name="startend" required />
+                                                        </div>
+
+                                                        <div class="gropu_form">
+                                                            <label for="fname">Contract Value <span class="red_star">*</span></label>
+                                                            <input placeholder="Type" required type="text" id="contract_value" pattern="^\d+(\.\d+)?$" title="Please enter a valid value" name="contract_value">
+                                                        </div>
+
+                                                        <div class="gropu_form">
+                                                            <label for="ss">Signing Status <span class="red_star">*</span></label>
+                                                            <select id="signing_status" name="signing_status" required>
+                                                                <option value="" disabled Selected>select</option>
+                                                                <option value="Draft">Draft</option>
+                                                                <option value="Pending Signature">Pending Signature</option>
+                                                                <option value="Signed">Signed</option>
+                                                                <option value="Signed with Amendments">Signed with Amendments</option>
+                                                                <option value="Partially Signed">Partially Signed</option>
+                                                                <option value="Awaiting Counterparty Signature">Awaiting Counterparty Signature</option>
+                                                                <option value="Rejected">Rejected</option>
+                                                                <option value="Expired">Expired</option>
+                                                                <option value="Revoked">Revoked</option>
+                                                                <option value="In Review">In Review</option>
+                                                                <option value="Terminated">Terminated</option>
+                                                            </select>
+                                                        </div>
+
+
+                                                        <div class="btn-group">
+                                                            <div class="btn-container">
+                                                                <button type="button" class="btn btn-primary next-step" data-next-step="2"><svg width="30" height="30" viewBox="0 0 30 30" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                                        <rect x="29.5" y="29.5" width="29" height="29" rx="14.5" transform="rotate(180 29.5 29.5)" stroke="black"></rect>
+                                                                        <path d="M20.7866 15.5415H8.66608C8.50532 15.5415 8.35124 15.4776 8.2376 15.3639C8.12386 15.2502 8.06006 15.0959 8.06006 14.9351C8.06006 14.7742 8.12386 14.62 8.2376 14.5063C8.35124 14.3925 8.50532 14.3287 8.66608 14.3287H20.7866C20.9473 14.3287 21.1014 14.3925 21.2151 14.5063C21.3287 14.62 21.3926 14.7742 21.3926 14.9351C21.3926 15.0959 21.3287 15.2502 21.2151 15.3639C21.1014 15.4776 20.9473 15.5415 20.7866 15.5415Z" fill="black"></path>
+                                                                        <path d="M20.536 14.9349L15.5096 9.90645C15.3958 9.79264 15.3319 9.63817 15.3319 9.47711C15.3319 9.31614 15.3958 9.16167 15.5096 9.04775C15.6234 8.93394 15.7778 8.87 15.9387 8.87C16.0996 8.87 16.254 8.93394 16.3678 9.04775L21.822 14.5056C21.8784 14.562 21.9232 14.6289 21.9537 14.7026C21.9843 14.7762 22 14.8552 22 14.9349C22 15.0147 21.9843 15.0937 21.9537 15.1674C21.9232 15.2411 21.8784 15.308 21.822 15.3643L16.3678 20.8222C16.254 20.936 16.0996 21 15.9387 21C15.7778 21 15.6234 20.936 15.5096 20.8222C15.3958 20.7083 15.3319 20.5538 15.3319 20.3928C15.3319 20.2318 15.3958 20.0773 15.5096 19.9635L20.536 14.9349Z" fill="black"></path>
+                                                                    </svg></button>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                    <!-- Step 2 -->
+                                                    <div class="step-form step-2 d-none">
+
+                                                        <h4></h4>
+                                                        <div class="gropu_form">
+
+                                                            <label for="renewal_terms">Renewal Terms <span class="red_star">*</span></label>
+                                                            <div id="quill-renewal-terms" class="quill-editor"></div>
+                                                            <textarea name="renewal_terms[]" id="renewal_terms" required></textarea>
+                                                        </div>
+
+                                                        <!-- Payment Terms -->
+                                                        <div class="gropu_form">
+                                                            <label for="payment_terms">Payment Terms <span class="red_star">*</span></label>
+                                                            <div id="quill-payment-terms" class="quill-editor"></div>
+                                                            <textarea name="payment_terms[]" id="payment_terms" required></textarea>
+                                                        </div>
+
+                                                        <!-- Fee Escalation Clause -->
+                                                        <div class="gropu_form">
+                                                            <label for="fee_escalation_clause">Fee Escalation Clause <span class="red_star">*</span></label>
+                                                            <div id="quill-fee-escalation-clause" class="quill-editor"></div>
+                                                            <textarea name="fee_escalation_clause[]" id="fee_escalation_clause" required></textarea>
+                                                        </div>
+
+
+
+                                                        <div class="btn-group">
+                                                            <div class="btn-container">
+                                                                <button type="button" class="btn btn-secondary prev-step" data-prev-step="1">
+                                                                    <svg width="30" height="30" viewBox="0 0 30 30" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                                        <rect x="0.5" y="-0.5" width="29" height="29" rx="14.5" transform="matrix(1 0 0 -1 0 29)" stroke="black"></rect>
+                                                                        <path d="M9.21345 15.5415H21.3339C21.4947 15.5415 21.6488 15.4776 21.7624 15.3639C21.8761 15.2502 21.9399 15.0959 21.9399 14.9351C21.9399 14.7742 21.8761 14.62 21.7624 14.5063C21.6488 14.3925 21.4947 14.3287 21.3339 14.3287H9.21345C9.05272 14.3287 8.89857 14.3925 8.78492 14.5063C8.67127 14.62 8.60742 14.7742 8.60742 14.9351C8.60742 15.0959 8.67127 15.2502 8.78492 15.3639C8.89857 15.4776 9.05272 15.5415 9.21345 15.5415Z" fill="black"></path>
+                                                                        <path d="M9.46402 14.9349L14.4904 9.90645C14.6042 9.79264 14.6681 9.63817 14.6681 9.47711C14.6681 9.31614 14.6042 9.16167 14.4904 9.04775C14.3766 8.93394 14.2222 8.87 14.0613 8.87C13.9004 8.87 13.746 8.93394 13.6322 9.04775L8.17804 14.5056C8.1216 14.562 8.07682 14.6289 8.04627 14.7026C8.01573 14.7762 8 14.8552 8 14.9349C8 15.0147 8.01573 15.0937 8.04627 15.1674C8.07682 15.2411 8.1216 15.308 8.17804 15.3643L13.6322 20.8222C13.746 20.936 13.9004 21 14.0613 21C14.2222 21 14.3766 20.936 14.4904 20.8222C14.6042 20.7083 14.6681 20.5538 14.6681 20.3928C14.6681 20.2318 14.6042 20.0773 14.4904 19.9635L9.46402 14.9349Z" fill="black"></path>
+                                                                    </svg>
+                                                                </button>
+                                                                <button type="button" class="btn btn-primary next-step" data-next-step="3">
+                                                                    <svg width="30" height="30" viewBox="0 0 30 30" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                                        <rect x="29.5" y="29.5" width="29" height="29" rx="14.5" transform="rotate(180 29.5 29.5)" stroke="black"></rect>
+                                                                        <path d="M20.7866 15.5415H8.66608C8.50532 15.5415 8.35124 15.4776 8.2376 15.3639C8.12386 15.2502 8.06006 15.0959 8.06006 14.9351C8.06006 14.7742 8.12386 14.62 8.2376 14.5063C8.35124 14.3925 8.50532 14.3287 8.66608 14.3287H20.7866C20.9473 14.3287 21.1014 14.3925 21.2151 14.5063C21.3287 14.62 21.3926 14.7742 21.3926 14.9351C21.3926 15.0959 21.3287 15.2502 21.2151 15.3639C21.1014 15.4776 20.9473 15.5415 20.7866 15.5415Z" fill="black"></path>
+                                                                        <path d="M20.536 14.9349L15.5096 9.90645C15.3958 9.79264 15.3319 9.63817 15.3319 9.47711C15.3319 9.31614 15.3958 9.16167 15.5096 9.04775C15.6234 8.93394 15.7778 8.87 15.9387 8.87C16.0996 8.87 16.254 8.93394 16.3678 9.04775L21.822 14.5056C21.8784 14.562 21.9232 14.6289 21.9537 14.7026C21.9843 14.7762 22 14.8552 22 14.9349C22 15.0147 21.9843 15.0937 21.9537 15.1674C21.9232 15.2411 21.8784 15.308 21.822 15.3643L16.3678 20.8222C16.254 20.936 16.0996 21 15.9387 21C15.7778 21 15.6234 20.936 15.5096 20.8222C15.3958 20.7083 15.3319 20.5538 15.3319 20.3928C15.3319 20.2318 15.3958 20.0773 15.5096 19.9635L20.536 14.9349Z" fill="black"></path>
+                                                                    </svg></button>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                    <!-- Step 3 -->
+                                                    <div class="step-form step-3 d-none">
+                                                        <h4>First Party:</h4>
+
+                                                        <div class="gropu_dataprint_wrap active" id="dataPrintWrap">
+                                                            <span class="show_empty_message" style="display:none;">
+                                                                <svg width="15" height="15" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                                    <path d="M7.0277 8.93L6.9077 4H8.0477L7.9277 8.93H7.0277ZM7.5077 11.06C7.30103 11.06 7.13103 10.9967 6.9977 10.87C6.87103 10.7367 6.8077 10.58 6.8077 10.4C6.8077 10.2133 6.87103 10.0567 6.9977 9.93C7.13103 9.79667 7.30103 9.73 7.5077 9.73C7.70103 9.73 7.86103 9.79667 7.9877 9.93C8.12103 10.0567 8.1877 10.2133 8.1877 10.4C8.1877 10.58 8.12103 10.7367 7.9877 10.87C7.86103 10.9967 7.70103 11.06 7.5077 11.06Z" fill="#FFDE2F"></path>
+                                                                    <circle cx="7.5" cy="7.5" r="7" stroke="#FFDE2F"></circle>
+                                                                </svg>Please Select Division First</span>
+                                                            <div class="gropu_form_divide">
+                                                                <div class="gropu_form">
+                                                                    <label for="nameprint">Name:</label>
+                                                                    <input type="text" id="sign_party1_name" name="sign_party1_name" readonly>
+                                                                </div>
+
+                                                                <!-- Email Input -->
+                                                                <div class="gropu_form">
+                                                                    <label for="emailprint">Email:</label>
+                                                                    <input type="email" id="sign_party1_email" name="sign_party1_email" readonly>
+                                                                </div>
+
+                                                                <!-- Phone Input -->
+                                                                <div class="gropu_form">
+                                                                    <label for="phoneprint">Phone:</label>
+                                                                    <input type="tel" id="sign_party1_phone" name="sign_party1_phone" readonly>
+                                                                </div>
+                                                            </div>
+                                                            <div class="show-side_signature">
+                                                                <img src="{{ asset('default-sign.png') }}" alt="img" id="sign_image_preview">
+                                                                <input type="hidden" id="sign_party1_sign_path" name="sign_party1_sign_path" readonly>
+                                                            </div>
+                                                        </div>
+
+                                                        <h4 class="secound_spacce">Second Party:</h4>
+                                                        <div class="gropu_datatake_wrap">
+                                                            <div class="gropu_form">
+                                                                <label for="name">Name</label>
+                                                                <input type="text" id="sign_party2_name" name="sign_party2_name" required placeholder="Enter Name">
+                                                            </div>
+
+                                                            <!-- Email Input -->
+                                                            <div class="gropu_form">
+                                                                <label for="email">Email</label>
+                                                                <input type="email" id="sign_party2_email" name="sign_party2_email" required placeholder="Enter Email">
+                                                            </div>
+
+                                                            <!-- Phone Input -->
+                                                            <div class="gropu_form">
+                                                                <label for="phone">Phone</label>
+                                                                <input type="tel" id="sign_party2_phone" name="sign_party2_phone" required placeholder="Enter Phoneno">
+                                                            </div>
+
+
+
+                                                            <div class="append_bootm_contarct_wrap">
+
+                                                                <div class="rept_cont_nt">
+                                                                    <label for="up_picture">Upload Picture:</label>
+                                                                    <div class="file-area_cover">
+                                                                        <div class="file-area">
+                                                                            <input type="file" class="drag_file_signature" id="up_picture" name="up_picture">
+                                                                            <div class="file-dummy">
+                                                                                <div class="default">
+                                                                                    <span class="upload_icon">
+                                                                                        <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                                                            <path fill-rule="evenodd" clip-rule="evenodd" d="M8.9974 0.041504C9.08764 0.0414466 9.17682 0.0609324 9.25882 0.0986218C9.34082 0.136311 9.41368 0.19131 9.47239 0.259837L11.9724 3.1765C12.0802 3.30248 12.1336 3.46615 12.1208 3.63149C12.108 3.79683 12.03 3.95032 11.9041 4.05817C11.7781 4.16603 11.6144 4.21942 11.4491 4.2066C11.2837 4.19379 11.1303 4.11581 11.0224 3.98984L9.6224 2.3565V11.4998C9.6224 11.6656 9.55655 11.8246 9.43934 11.9418C9.32213 12.059 9.16316 12.1248 8.9974 12.1248C8.83164 12.1248 8.67266 12.059 8.55545 11.9418C8.43824 11.8246 8.3724 11.6656 8.3724 11.4998V2.35567L6.9724 3.98984C6.91899 4.05222 6.85382 4.10346 6.78061 4.14066C6.7074 4.17785 6.62758 4.20026 6.54571 4.2066C6.46384 4.21295 6.38153 4.20311 6.30346 4.17764C6.22539 4.15217 6.15311 4.11157 6.09073 4.05817C6.02835 4.00477 5.9771 3.9396 5.93991 3.86639C5.90272 3.79318 5.88031 3.71336 5.87396 3.63149C5.86762 3.54962 5.87746 3.4673 5.90293 3.38923C5.9284 3.31117 5.96899 3.23888 6.0224 3.1765L8.5224 0.259837C8.58111 0.19131 8.65398 0.136311 8.73597 0.0986218C8.81797 0.0609324 8.90715 0.0414466 8.9974 0.041504ZM4.8274 5.8765C4.99316 5.87562 5.15248 5.94062 5.27031 6.05721C5.38815 6.17379 5.45484 6.33241 5.45573 6.49817C5.45661 6.66393 5.39161 6.82325 5.27503 6.94109C5.15844 7.05892 4.99982 7.12562 4.83406 7.1265C3.92323 7.1315 3.2774 7.15484 2.78656 7.24484C2.3149 7.33234 2.04073 7.4715 1.83823 7.674C1.6074 7.90484 1.4574 8.229 1.3749 8.84067C1.29073 9.46984 1.28906 10.304 1.28906 11.4998V12.3332C1.28906 13.5298 1.29073 14.364 1.3749 14.9932C1.4574 15.6048 1.60823 15.9282 1.83823 16.1598C2.06906 16.3898 2.3924 16.5398 3.0049 16.6223C3.63323 16.7073 4.46823 16.7082 5.66406 16.7082H12.3307C13.5266 16.7082 14.3607 16.7073 14.9907 16.6223C15.6024 16.5398 15.9257 16.3898 16.1566 16.159C16.3874 15.9282 16.5374 15.6048 16.6199 14.9932C16.7041 14.364 16.7057 13.5298 16.7057 12.3332V11.4998C16.7057 10.304 16.7041 9.46984 16.6199 8.83984C16.5374 8.229 16.3866 7.90484 16.1566 7.674C15.9532 7.4715 15.6799 7.33234 15.2082 7.24484C14.7174 7.15484 14.0716 7.1315 13.1607 7.1265C13.0787 7.12607 12.9975 7.10947 12.9218 7.07765C12.8461 7.04584 12.7775 6.99943 12.7198 6.94109C12.662 6.88274 12.6164 6.8136 12.5854 6.7376C12.5544 6.66161 12.5386 6.58025 12.5391 6.49817C12.5395 6.41609 12.5561 6.33491 12.5879 6.25925C12.6197 6.18359 12.6661 6.11493 12.7245 6.05721C12.7828 5.99948 12.852 5.95381 12.928 5.9228C13.004 5.8918 13.0853 5.87607 13.1674 5.8765C14.0691 5.8815 14.8199 5.90317 15.4341 6.01567C16.0657 6.13234 16.6032 6.35317 17.0407 6.79067C17.5424 7.2915 17.7574 7.924 17.8591 8.674C17.9557 9.39567 17.9557 10.3148 17.9557 11.454V12.379C17.9557 13.519 17.9557 14.4373 17.8591 15.1598C17.7574 15.9098 17.5424 16.5415 17.0407 17.0432C16.5391 17.5448 15.9074 17.7598 15.1574 17.8615C14.4349 17.9582 13.5157 17.9582 12.3766 17.9582H5.61823C4.47906 17.9582 3.5599 17.9582 2.8374 17.8615C2.0874 17.7607 1.45573 17.5448 0.954063 17.0432C0.452396 16.5415 0.237396 15.9098 0.136562 15.1598C0.0390625 14.4373 0.0390625 13.5182 0.0390625 12.379V11.454C0.0390625 10.3148 0.0390625 9.39567 0.136562 8.67317C0.236562 7.92317 0.453229 7.2915 0.954063 6.78984C1.39156 6.35317 1.92906 6.1315 2.56073 6.01567C3.1749 5.90317 3.92573 5.8815 4.8274 5.8765Z" fill="#ABABAB"></path>
+                                                                                        </svg>
+                                                                                        Upload a file
+                                                                                    </span>
+
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="show_signature_pre pro_iimage" style="display:none;">
+                                                                    </div>
+                                                                </div>
+
+
+
+                                                                <div class="rept_cont_nt">
+                                                                    <label for="signature">Upload Signature:</label>
+
+                                                                    <div class="file-area_cover">
+                                                                        <div class="file-area">
+                                                                            <input type="file" class="drag_file_signature" id="signature" name="signature" accept="image/*">
+                                                                            <div class="file-dummy">
+                                                                                <div class="default">
+                                                                                    <span class="upload_icon">
+                                                                                        <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                                                            <path fill-rule="evenodd" clip-rule="evenodd" d="M8.9974 0.041504C9.08764 0.0414466 9.17682 0.0609324 9.25882 0.0986218C9.34082 0.136311 9.41368 0.19131 9.47239 0.259837L11.9724 3.1765C12.0802 3.30248 12.1336 3.46615 12.1208 3.63149C12.108 3.79683 12.03 3.95032 11.9041 4.05817C11.7781 4.16603 11.6144 4.21942 11.4491 4.2066C11.2837 4.19379 11.1303 4.11581 11.0224 3.98984L9.6224 2.3565V11.4998C9.6224 11.6656 9.55655 11.8246 9.43934 11.9418C9.32213 12.059 9.16316 12.1248 8.9974 12.1248C8.83164 12.1248 8.67266 12.059 8.55545 11.9418C8.43824 11.8246 8.3724 11.6656 8.3724 11.4998V2.35567L6.9724 3.98984C6.91899 4.05222 6.85382 4.10346 6.78061 4.14066C6.7074 4.17785 6.62758 4.20026 6.54571 4.2066C6.46384 4.21295 6.38153 4.20311 6.30346 4.17764C6.22539 4.15217 6.15311 4.11157 6.09073 4.05817C6.02835 4.00477 5.9771 3.9396 5.93991 3.86639C5.90272 3.79318 5.88031 3.71336 5.87396 3.63149C5.86762 3.54962 5.87746 3.4673 5.90293 3.38923C5.9284 3.31117 5.96899 3.23888 6.0224 3.1765L8.5224 0.259837C8.58111 0.19131 8.65398 0.136311 8.73597 0.0986218C8.81797 0.0609324 8.90715 0.0414466 8.9974 0.041504ZM4.8274 5.8765C4.99316 5.87562 5.15248 5.94062 5.27031 6.05721C5.38815 6.17379 5.45484 6.33241 5.45573 6.49817C5.45661 6.66393 5.39161 6.82325 5.27503 6.94109C5.15844 7.05892 4.99982 7.12562 4.83406 7.1265C3.92323 7.1315 3.2774 7.15484 2.78656 7.24484C2.3149 7.33234 2.04073 7.4715 1.83823 7.674C1.6074 7.90484 1.4574 8.229 1.3749 8.84067C1.29073 9.46984 1.28906 10.304 1.28906 11.4998V12.3332C1.28906 13.5298 1.29073 14.364 1.3749 14.9932C1.4574 15.6048 1.60823 15.9282 1.83823 16.1598C2.06906 16.3898 2.3924 16.5398 3.0049 16.6223C3.63323 16.7073 4.46823 16.7082 5.66406 16.7082H12.3307C13.5266 16.7082 14.3607 16.7073 14.9907 16.6223C15.6024 16.5398 15.9257 16.3898 16.1566 16.159C16.3874 15.9282 16.5374 15.6048 16.6199 14.9932C16.7041 14.364 16.7057 13.5298 16.7057 12.3332V11.4998C16.7057 10.304 16.7041 9.46984 16.6199 8.83984C16.5374 8.229 16.3866 7.90484 16.1566 7.674C15.9532 7.4715 15.6799 7.33234 15.2082 7.24484C14.7174 7.15484 14.0716 7.1315 13.1607 7.1265C13.0787 7.12607 12.9975 7.10947 12.9218 7.07765C12.8461 7.04584 12.7775 6.99943 12.7198 6.94109C12.662 6.88274 12.6164 6.8136 12.5854 6.7376C12.5544 6.66161 12.5386 6.58025 12.5391 6.49817C12.5395 6.41609 12.5561 6.33491 12.5879 6.25925C12.6197 6.18359 12.6661 6.11493 12.7245 6.05721C12.7828 5.99948 12.852 5.95381 12.928 5.9228C13.004 5.8918 13.0853 5.87607 13.1674 5.8765C14.0691 5.8815 14.8199 5.90317 15.4341 6.01567C16.0657 6.13234 16.6032 6.35317 17.0407 6.79067C17.5424 7.2915 17.7574 7.924 17.8591 8.674C17.9557 9.39567 17.9557 10.3148 17.9557 11.454V12.379C17.9557 13.519 17.9557 14.4373 17.8591 15.1598C17.7574 15.9098 17.5424 16.5415 17.0407 17.0432C16.5391 17.5448 15.9074 17.7598 15.1574 17.8615C14.4349 17.9582 13.5157 17.9582 12.3766 17.9582H5.61823C4.47906 17.9582 3.5599 17.9582 2.8374 17.8615C2.0874 17.7607 1.45573 17.5448 0.954063 17.0432C0.452396 16.5415 0.237396 15.9098 0.136562 15.1598C0.0390625 14.4373 0.0390625 13.5182 0.0390625 12.379V11.454C0.0390625 10.3148 0.0390625 9.39567 0.136562 8.67317C0.236562 7.92317 0.453229 7.2915 0.954063 6.78984C1.39156 6.35317 1.92906 6.1315 2.56073 6.01567C3.1749 5.90317 3.92573 5.8815 4.8274 5.8765Z" fill="#ABABAB"></path>
+                                                                                        </svg>
+                                                                                        Upload a file
+                                                                                    </span>
+
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="show_signature_pre" style="display:none;">
+
+                                                                    </div>
+
+
+                                                                </div>
+                                                            </div>
+
+                                                        </div>
+
+
+                                                        <div class="btn-group">
+                                                            <div class="btn-container">
+                                                                <button type="button" class="btn btn-secondary prev-step" data-prev-step="2">
+                                                                    <svg width="30" height="30" viewBox="0 0 30 30" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                                        <rect x="0.5" y="-0.5" width="29" height="29" rx="14.5" transform="matrix(1 0 0 -1 0 29)" stroke="black"></rect>
+                                                                        <path d="M9.21345 15.5415H21.3339C21.4947 15.5415 21.6488 15.4776 21.7624 15.3639C21.8761 15.2502 21.9399 15.0959 21.9399 14.9351C21.9399 14.7742 21.8761 14.62 21.7624 14.5063C21.6488 14.3925 21.4947 14.3287 21.3339 14.3287H9.21345C9.05272 14.3287 8.89857 14.3925 8.78492 14.5063C8.67127 14.62 8.60742 14.7742 8.60742 14.9351C8.60742 15.0959 8.67127 15.2502 8.78492 15.3639C8.89857 15.4776 9.05272 15.5415 9.21345 15.5415Z" fill="black"></path>
+                                                                        <path d="M9.46402 14.9349L14.4904 9.90645C14.6042 9.79264 14.6681 9.63817 14.6681 9.47711C14.6681 9.31614 14.6042 9.16167 14.4904 9.04775C14.3766 8.93394 14.2222 8.87 14.0613 8.87C13.9004 8.87 13.746 8.93394 13.6322 9.04775L8.17804 14.5056C8.1216 14.562 8.07682 14.6289 8.04627 14.7026C8.01573 14.7762 8 14.8552 8 14.9349C8 15.0147 8.01573 15.0937 8.04627 15.1674C8.07682 15.2411 8.1216 15.308 8.17804 15.3643L13.6322 20.8222C13.746 20.936 13.9004 21 14.0613 21C14.2222 21 14.3766 20.936 14.4904 20.8222C14.6042 20.7083 14.6681 20.5538 14.6681 20.3928C14.6681 20.2318 14.6042 20.0773 14.4904 19.9635L9.46402 14.9349Z" fill="black"></path>
+                                                                    </svg>
+                                                                </button>
+                                                                <button type="button" id="draftButton" class="btn btn-draft">Save as Draft</button>
+                                                                <button type="submit" id="submitButton" class="btn btn-success">Upload</button>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                </form>
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+ <!-- edit three step model end-->
 
                                 <!-- notify model start -->
 
@@ -1919,47 +2276,54 @@
 <link href="https://cdn.quilljs.com/1.3.7/quill.snow.css" rel="stylesheet">
 <script src="https://cdn.quilljs.com/1.3.7/quill.min.js"></script>
 <style>
-  .quill-editor {
-    height: 150px;
-    background-color: #fff;
-    border: 1px solid #ccc;
-  }
-  textarea {
-    display: none;
-  }
+    .quill-editor {
+        height: 150px;
+        background-color: #fff;
+        border: 1px solid #ccc;
+    }
+
+    textarea {
+        display: none;
+    }
 </style>
- <script>
-    document.addEventListener("DOMContentLoaded", function () {
-      const options = {
-        theme: 'snow',
-        placeholder: 'Enter text here...',
-        modules: {
-          toolbar: [
-            [{ header: [1, 2, false] }],
-            ['bold', 'italic', 'underline'],
-            ['link', 'blockquote', 'code-block'],
-            [{ list: 'ordered' }, { list: 'bullet' }],
-            ['clean'],
-          ],
-        },
-      };
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const options = {
+            theme: 'snow',
+            placeholder: 'Enter text here...',
+            modules: {
+                toolbar: [
+                    [{
+                        header: [1, 2, false]
+                    }],
+                    ['bold', 'italic', 'underline'],
+                    ['link', 'blockquote', 'code-block'],
+                    [{
+                        list: 'ordered'
+                    }, {
+                        list: 'bullet'
+                    }],
+                    ['clean'],
+                ],
+            },
+        };
 
-      // Initialize Quill editors
-      const renewalTermsEditor = new Quill("#quill-renewal-terms", options);
-      const paymentTermsEditor = new Quill("#quill-payment-terms", options);
-      const feeEscalationClauseEditor = new Quill("#quill-fee-escalation-clause", options);
+        // Initialize Quill editors
+        const renewalTermsEditor = new Quill("#quill-renewal-terms", options);
+        const paymentTermsEditor = new Quill("#quill-payment-terms", options);
+        const feeEscalationClauseEditor = new Quill("#quill-fee-escalation-clause", options);
 
-      // Synchronize Quill content with corresponding textareas
-      function syncContent(editor, textareaId) {
-        const textarea = document.getElementById(textareaId);
-        editor.on('text-change', () => {
-          textarea.value = editor.root.innerHTML; // Sync HTML content
-        });
-      }
+        // Synchronize Quill content with corresponding textareas
+        function syncContent(editor, textareaId) {
+            const textarea = document.getElementById(textareaId);
+            editor.on('text-change', () => {
+                textarea.value = editor.root.innerHTML; // Sync HTML content
+            });
+        }
 
-      syncContent(renewalTermsEditor, "renewal_terms");
-      syncContent(paymentTermsEditor, "payment_terms");
-      syncContent(feeEscalationClauseEditor, "fee_escalation_clause");
+        syncContent(renewalTermsEditor, "renewal_terms");
+        syncContent(paymentTermsEditor, "payment_terms");
+        syncContent(feeEscalationClauseEditor, "fee_escalation_clause");
     });
-  </script>
+</script>
 @endsection

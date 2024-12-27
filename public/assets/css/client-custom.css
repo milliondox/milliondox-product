@@ -22741,6 +22741,53 @@ span.clinet_name {
     border-radius: 10px;
 }
 
+.gropu_dataprint_wrap.active {
+    position: relative;
+    overflow: hidden;
+}
+
+.gropu_dataprint_wrap.active:after {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    backdrop-filter: blur(2px);
+    filter: blur(5px);
+    content: "";
+    z-index: 1;
+}
+
+.gropu_dataprint_wrap.active .show_empty_message {
+    position: absolute;
+    left: 0;
+    top: 0;
+    display: flex !IMPORTANT;
+    align-items: center;
+    justify-content: center;
+    z-index: 2;
+    width: 100%;
+    height: 100%;
+    color: #848484;
+    font-weight: 700;
+    font-size: 12px;
+    text-decoration: underline;
+    gap: 0px 6px;
+}
+
+.gropu_dataprint_wrap.active .show_empty_message svg {
+    width: 20px;
+    height: 20px;
+}
+
+.gropu_dataprint_wrap.active .show_empty_message svg path {
+    fill: #848484;
+}
+
+.gropu_dataprint_wrap.active .show_empty_message svg  circle {
+    stroke: #848484;
+}
+
 .gropu_dataprint_wrap .gropu_form_divide {
     flex: 2;
 }
@@ -25134,6 +25181,14 @@ div.dataTables_wrapper {
     transform: translateY(-50%);
     left: 15px;
     height: 80%;
+}
+.contract_detail_middle .authrized_signatory ul.no_data_border:before {
+    display: none;
+}
+.contract_detail_middle .authrized_signatory ul.no_data_border li {
+    gap: 0px 4px;
+    color: #848484;
+    font-size: 12px;
 }
 
 .contract_detail_middle .authrized_signatory ul li {
