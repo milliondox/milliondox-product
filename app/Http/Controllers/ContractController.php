@@ -284,7 +284,7 @@ $validated['gstin_file'] = $request->file('gstin_file')
    
        try {
         CustomerContract::updateOrCreate(
-            ['id' => $request->id],
+            ['id' => $request->id], // Ensure this uniquely identifies the contract
             [
                 'file_name' => $fileName,
                 'file_path' => $filePath,
@@ -313,6 +313,7 @@ $validated['gstin_file'] = $request->file('gstin_file')
                 'sign_party2_sign_path' => $filePathsign,
             ]
         );
+        
     
         $message = $request->is_drafted == 1 ? 'Customer contract saved as draft!' : 'Customer contract submitted successfully!';
         return response()->json(['success' => true, 'message' => $message]);
@@ -714,7 +715,10 @@ public function showGst($id)
         return response()->json(['exists' => $exists]);
     }
     
-
+public function editcustomerContractForm(Request $request)
+{
+    dd($request);
+}
    
    
        // customer creation code end here from here 
