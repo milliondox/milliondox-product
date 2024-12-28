@@ -620,7 +620,7 @@
                                                         </div>
                                                     </div>
 
-                                                    <!-- Step 2 -->
+                                                    <!-- Step 2  start-->
                                                     <div class="step-form step-2 d-none">
 
                                                         <h4></h4>
