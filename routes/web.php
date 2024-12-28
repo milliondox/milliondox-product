@@ -181,6 +181,8 @@ Route::post('/customerstore', [App\Http\Controllers\ContractController::class, '
 
 Route::post('/storecustomercontract', [App\Http\Controllers\ContractController::class, 'storecustomercontract'])->name('storecustomercontract');
 
+Route::post('/editcustomerContractForm', [App\Http\Controllers\ContractController::class, 'editcustomerContractForm'])->name('editcustomerContractForm');
+
 // Save folder ID and URL to the session
 Route::post('/save-breadcrumb', [App\Http\Controllers\HomeController::class, 'saveBreadcrumb'])->name('save.breadcrumb');
 

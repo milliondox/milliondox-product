@@ -499,7 +499,7 @@
                                                         <h4></h4>
 
                                                         <!-- Upload Contract -->
-                                                        <input type="hidden" name="is_drafted" id="is_drafted" value="0">
+                                                        <input type="hidden" name="is_drafted" class="is_drafted" id="is_drafted" value="0">
                                                         <div class="file-area">
                                                             <input type="file" class="dragfile" id="contractfile" name="file" accept=".pdf,.doc,.docx" required>
 
@@ -560,7 +560,7 @@
                                                         </div>
                                                         <div class="gropu_form">
                                                             <label for="Division">Division<span class="red_star">*</span></label>
-                                                            <select id="division" name="division" required>
+                                                            <select id="division" class="division" name="division" required>
                                                                 <option value="" disabled selected>Select</option>
                                                                 @foreach ( $authmanagement as $divi)
 
@@ -609,7 +609,7 @@
 
                                                         <div class="btn-group">
                                                             <div class="btn-container">
-                                                            <button type="button" id="draftButton" class="btn btn-draft">Save as Draft</button>
+                                                            <button type="button" id="draftButton1" class="btn btn-draft">Save as Draft</button>
                                                                 <button type="button" class="btn btn-primary next-step" data-next-step="2"><svg width="30" height="30" viewBox="0 0 30 30" fill="none" xmlns="http://www.w3.org/2000/svg">
                                                                         <rect x="29.5" y="29.5" width="29" height="29" rx="14.5" transform="rotate(180 29.5 29.5)" stroke="black"></rect>
                                                                         <path d="M20.7866 15.5415H8.66608C8.50532 15.5415 8.35124 15.4776 8.2376 15.3639C8.12386 15.2502 8.06006 15.0959 8.06006 14.9351C8.06006 14.7742 8.12386 14.62 8.2376 14.5063C8.35124 14.3925 8.50532 14.3287 8.66608 14.3287H20.7866C20.9473 14.3287 21.1014 14.3925 21.2151 14.5063C21.3287 14.62 21.3926 14.7742 21.3926 14.9351C21.3926 15.0959 21.3287 15.2502 21.2151 15.3639C21.1014 15.4776 20.9473 15.5415 20.7866 15.5415Z" fill="black"></path>
@@ -662,7 +662,7 @@
                                                                         <path d="M20.7866 15.5415H8.66608C8.50532 15.5415 8.35124 15.4776 8.2376 15.3639C8.12386 15.2502 8.06006 15.0959 8.06006 14.9351C8.06006 14.7742 8.12386 14.62 8.2376 14.5063C8.35124 14.3925 8.50532 14.3287 8.66608 14.3287H20.7866C20.9473 14.3287 21.1014 14.3925 21.2151 14.5063C21.3287 14.62 21.3926 14.7742 21.3926 14.9351C21.3926 15.0959 21.3287 15.2502 21.2151 15.3639C21.1014 15.4776 20.9473 15.5415 20.7866 15.5415Z" fill="black"></path>
                                                                         <path d="M20.536 14.9349L15.5096 9.90645C15.3958 9.79264 15.3319 9.63817 15.3319 9.47711C15.3319 9.31614 15.3958 9.16167 15.5096 9.04775C15.6234 8.93394 15.7778 8.87 15.9387 8.87C16.0996 8.87 16.254 8.93394 16.3678 9.04775L21.822 14.5056C21.8784 14.562 21.9232 14.6289 21.9537 14.7026C21.9843 14.7762 22 14.8552 22 14.9349C22 15.0147 21.9843 15.0937 21.9537 15.1674C21.9232 15.2411 21.8784 15.308 21.822 15.3643L16.3678 20.8222C16.254 20.936 16.0996 21 15.9387 21C15.7778 21 15.6234 20.936 15.5096 20.8222C15.3958 20.7083 15.3319 20.5538 15.3319 20.3928C15.3319 20.2318 15.3958 20.0773 15.5096 19.9635L20.536 14.9349Z" fill="black"></path>
                                                                     </svg></button>
-                                                                    <button type="button" id="draftButton" class="btn btn-draft">Save as Draft</button>
+                                                                    <button type="button" id="draftButton2" class="btn btn-draft">Save as Draft</button>
                                                             </div>
                                                         </div>
                                                     </div>
@@ -680,24 +680,24 @@
                                                             <div class="gropu_form_divide">
                                                                 <div class="gropu_form">
                                                                     <label for="nameprint">Name:</label>
-                                                                    <input type="text" id="sign_party1_name" name="sign_party1_name" readonly>
+                                                                    <input type="text" id="sign_party1_name" class="sign_party1_name" name="sign_party1_name" readonly>
                                                                 </div>
 
                                                                 <!-- Email Input -->
                                                                 <div class="gropu_form">
                                                                     <label for="emailprint">Email:</label>
-                                                                    <input type="email" id="sign_party1_email" name="sign_party1_email" readonly>
+                                                                    <input type="email" id="sign_party1_email" class="sign_party1_email" name="sign_party1_email" readonly>
                                                                 </div>
 
                                                                 <!-- Phone Input -->
                                                                 <div class="gropu_form">
                                                                     <label for="phoneprint">Phone:</label>
-                                                                    <input type="tel" id="sign_party1_phone" name="sign_party1_phone" readonly>
+                                                                    <input type="tel" id="sign_party1_phone" class="sign_party1_phone" name="sign_party1_phone" readonly>
                                                                 </div>
                                                             </div>
                                                             <div class="show-side_signature">
-                                                                <img src="{{ asset('default-sign.png') }}" alt="img" id="sign_image_preview">
-                                                                <input type="hidden" id="sign_party1_sign_path" name="sign_party1_sign_path" readonly>
+                                                                <img src="{{ asset('default-sign.png') }}" alt="img" id="sign_image_preview" class="sign_image_preview">
+                                                                <input type="hidden" id="sign_party1_sign_path" class="sign_party1_sign_path" name="sign_party1_sign_path" readonly>
                                                             </div>
                                                         </div>
 
@@ -787,7 +787,7 @@
                                                                         <path d="M9.46402 14.9349L14.4904 9.90645C14.6042 9.79264 14.6681 9.63817 14.6681 9.47711C14.6681 9.31614 14.6042 9.16167 14.4904 9.04775C14.3766 8.93394 14.2222 8.87 14.0613 8.87C13.9004 8.87 13.746 8.93394 13.6322 9.04775L8.17804 14.5056C8.1216 14.562 8.07682 14.6289 8.04627 14.7026C8.01573 14.7762 8 14.8552 8 14.9349C8 15.0147 8.01573 15.0937 8.04627 15.1674C8.07682 15.2411 8.1216 15.308 8.17804 15.3643L13.6322 20.8222C13.746 20.936 13.9004 21 14.0613 21C14.2222 21 14.3766 20.936 14.4904 20.8222C14.6042 20.7083 14.6681 20.5538 14.6681 20.3928C14.6681 20.2318 14.6042 20.0773 14.4904 19.9635L9.46402 14.9349Z" fill="black"></path>
                                                                     </svg>
                                                                 </button>
-                                                                <button type="button" id="draftButton" class="btn btn-draft">Save as Draft</button>
+                                                                <button type="button" id="draftButton3" class="btn btn-draft ">Save as Draft</button>
                                                                 <button type="submit" id="submitButton" class="btn btn-success">Upload</button>
                                                             </div>
                                                         </div>
@@ -828,84 +828,193 @@
                                     });
                                 </script>
                                 <script>
-                                    document.getElementById('division').addEventListener('change', function() {
-                                        var selectedOption = this.options[this.selectedIndex];
-
-                                        // Fetch data from data attributes of the selected option
-                                        var name = selectedOption.getAttribute('data-name');
-                                        var email = selectedOption.getAttribute('data-email');
-                                        var phone = selectedOption.getAttribute('data-phone');
-                                        var signImagePath = selectedOption.getAttribute('data-sign-image'); // Here we get the asset URL directly
-                                        var signImagePathnew = selectedOption.getAttribute('data-sign-image-new'); // Here we get the asset URL directly
-
-                                        // Populate the input fields with the data
-                                        document.getElementById('sign_party1_name').value = name;
-                                        document.getElementById('sign_party1_email').value = email;
-                                        document.getElementById('sign_party1_phone').value = phone;
-                                        document.getElementById('sign_party1_sign_path').value = signImagePathnew;
-
-                                        // Update the signature image source dynamically
-                                        document.getElementById('sign_image_preview').src = signImagePath ? signImagePath : '{{ asset('
-                                        default -sign.png ') }}';
+                                    $(document).ready(function() {
+                                        // Listen for changes to the contract type select box
+                                        $('#contract_types').change(function() {
+                                            // Check if the selected value is "Other"
+                                            if ($(this).val() === 'Other') {
+                                                // Show the input field for "Other"
+                                                $('#other_contract_types').show();
+                                            } else {
+                                                // Hide the input field if any other option is selected
+                                                $('#other_contract_types').hide();
+                                            }
+                                        });
                                     });
                                 </script>
                                 <script>
-                                    $(document).ready(function() {
-                                        // When the "Save as Draft" button is clicked
-                                        $('#draftButton').on('click', function() {
-                                            var formData = new FormData($('#customerContractForm')[0]);
-                                            formData.append('draft', true); // Add a flag to indicate it's a draft
+                                   document.querySelector('.division').addEventListener('change', function() {
+    var selectedOption = this.options[this.selectedIndex];
 
-                                            $.ajax({
-                                                url: $('#customerContractForm').attr('action'),
-                                                type: 'POST',
-                                                data: formData,
-                                                contentType: false,
-                                                processData: false,
-                                                success: function(response) {
-                                                    if (response.success) {
-                                                        toastr.success(response.message, 'Success', {
-                                                            timeOut: 3000
-                                                        }); // Set timeOut to 3 seconds
-                                                        location.reload();
-                                                    } else {
-                                                        toastr.error(response.message || 'There was an issue saving the draft.', 'Error');
-                                                    }
-                                                },
-                                                error: function() {
-                                                    toastr.error('An error occurred while saving the draft.', 'Error');
-                                                }
-                                            });
-                                        });
+    // Fetch data from data attributes of the selected option
+    var name = selectedOption.getAttribute('data-name');
+    var email = selectedOption.getAttribute('data-email');
+    var phone = selectedOption.getAttribute('data-phone');
+    var signImagePath = selectedOption.getAttribute('data-sign-image'); // Here we get the asset URL directly
+    var signImagePathNew = selectedOption.getAttribute('data-sign-image-new'); // Here we get the asset URL directly
 
-                                        // When the "Submit" button is clicked
-                                        $('#submitButton').on('click', function(e) {
-                                            e.preventDefault(); // Prevent the default form submission
+    // Populate the input fields with the data
+    document.querySelector('.sign_party1_name').value = name;
+    document.querySelector('.sign_party1_email').value = email;
+    document.querySelector('.sign_party1_phone').value = phone;
+    document.querySelector('.sign_party1_sign_path').value = signImagePathNew;
 
-                                            var formData = new FormData($('#customerContractForm')[0]);
+    // Update the signature image source dynamically
+    var signImagePreview = document.querySelector('.sign_image_preview');
+    signImagePreview.src = signImagePath 
+        ? signImagePath 
+        : '{{ asset('default-sign.png') }}';
+});
 
-                                            $.ajax({
-                                                url: $('#customerContractForm').attr('action'),
-                                                type: 'POST',
-                                                data: formData,
-                                                contentType: false,
-                                                processData: false,
-                                                success: function(response) {
-                                                    if (response.success) {
-                                                        toastr.success(response.message, 'Success', {
-                                                            timeOut: 3000
-                                                        }); // Set timeOut to 3 seconds
-                                                        location.reload();
-                                                    } else {
-                                                        toastr.error(response.message || 'There was an issue submitting the contract.', 'Error');
-                                                    }
-                                                },
-                                                error: function() {
-                                                    toastr.error('An error occurred while submitting the contract.', 'Error');
-                                                }
-                                            });
-                                        });
-                                    });
+                                </script>
+
+<script>
+    document.querySelector('.divisions').addEventListener('change', function() {
+        var selectedOption = this.options[this.selectedIndex];
+
+        // Fetch data from data attributes of the selected option
+        var name = selectedOption.getAttribute('data-signparty1name');
+        var email = selectedOption.getAttribute('data-signparty1email');
+        var phone = selectedOption.getAttribute('data-signparty1phone');
+        var signImagePathNew = selectedOption.getAttribute('data-ssignparty1imagenew'); // Fetch the updated sign image path
+
+        // Populate the input fields with the data
+        document.querySelector('.sign_party1_names').value = name;
+        document.querySelector('.sign_party1_emails').value = email;
+        document.querySelector('.sign_party1_phones').value = phone;
+        document.querySelector('.sign_party1_sign_paths').value = signImagePathNew;
+
+        // Update the signature image source dynamically
+        var signImagePreview = document.querySelector('.sign_image_preview');
+        signImagePreview.src = signImagePathNew 
+            ? signImagePathNew 
+            : '{{ asset('default-sign.png') }}'; // Fallback to default if no sign image path
+    });
+</script>
+                                <script>
+ $(document).ready(function () {
+    // Handle "Save as Draft"
+    $('#draftButton1').on('click', function () {
+    // Disable the button to prevent multiple submissions
+    $(this).prop('disabled', true);
+
+    $('.is_drafted').val(1); // Set is_drafted to 1
+    var formData = new FormData($('#customerContractForm')[0]);
+
+    $.ajax({
+        url: $('#customerContractForm').attr('action'),
+        type: 'POST',
+        data: formData,
+        contentType: false,
+        processData: false,
+        success: function (response) {
+            if (response.success) {
+                toastr.success(response.message, 'Success', { timeOut: 3000 });
+                location.reload();
+            } else {
+                toastr.error(response.message || 'There was an issue saving the draft.', 'Error');
+            }
+        },
+        error: function () {
+            toastr.error('An error occurred while saving the draft.', 'Error');
+        },
+        complete: function () {
+            // Re-enable the button after the request completes
+            $('#draftButton1').prop('disabled', false);
+        }
+    });
+});
+
+
+$('#draftButton2').on('click', function () {
+    // Disable the button to prevent multiple submissions
+    $(this).prop('disabled', true);
+
+    $('.is_drafted').val(1); // Set is_drafted to 1
+    var formData = new FormData($('#customerContractForm')[0]);
+
+    $.ajax({
+        url: $('#customerContractForm').attr('action'),
+        type: 'POST',
+        data: formData,
+        contentType: false,
+        processData: false,
+        success: function (response) {
+            if (response.success) {
+                toastr.success(response.message, 'Success', { timeOut: 3000 });
+                location.reload();
+            } else {
+                toastr.error(response.message || 'There was an issue saving the draft.', 'Error');
+            }
+        },
+        error: function () {
+            toastr.error('An error occurred while saving the draft.', 'Error');
+        },
+        complete: function () {
+            // Re-enable the button after the request completes
+            $('#draftButton2').prop('disabled', false);
+        }
+    });
+});
+
+$('#draftButton3').on('click', function () {
+    // Disable the button to prevent multiple submissions
+    $(this).prop('disabled', true);
+
+    $('.is_drafted').val(1); // Set is_drafted to 1
+    var formData = new FormData($('#customerContractForm')[0]);
+
+    $.ajax({
+        url: $('#customerContractForm').attr('action'),
+        type: 'POST',
+        data: formData,
+        contentType: false,
+        processData: false,
+        success: function (response) {
+            if (response.success) {
+                toastr.success(response.message, 'Success', { timeOut: 3000 });
+                location.reload();
+            } else {
+                toastr.error(response.message || 'There was an issue saving the draft.', 'Error');
+            }
+        },
+        error: function () {
+            toastr.error('An error occurred while saving the draft.', 'Error');
+        },
+        complete: function () {
+            // Re-enable the button after the request completes
+            $('#draftButton3').prop('disabled', false);
+        }
+    });
+});
+
+    // Handle "Submit"
+    $('#submitButton').off('click').on('click', function (e) {
+        e.preventDefault();
+
+        var formData = new FormData($('#customerContractForm')[0]);
+
+        $.ajax({
+            url: $('#customerContractForm').attr('action'),
+            type: 'POST',
+            data: formData,
+            contentType: false,
+            processData: false,
+            success: function (response) {
+                if (response.success) {
+                    toastr.success(response.message, 'Success', { timeOut: 3000 });
+                    location.reload(); // Reload for submissions
+                } else {
+                    toastr.error(response.message || 'There was an issue submitting the contract.', 'Error');
+                }
+            },
+            error: function () {
+                toastr.error('An error occurred while submitting the contract.', 'Error');
+            }
+        });
+    });
+});
+
                                 </script>
 
                                 <script>
@@ -1115,10 +1224,24 @@
                                         @if(is_null($startDate) || is_null($endDate))
                                         <div id="myDropdown3" class="dropdown-content">
 
+                                            @php
+                                            $renewalTermsArray = json_decode($contract->renewal_terms, true);
+                                            $feeEscalationArray = json_decode($contract->fee_escalation_clause, true);
+                                            $paymentTermsArray = json_decode($contract->payment_terms, true);
+
+                                            $lastRenewalTerm = is_array($renewalTermsArray) && !empty($renewalTermsArray) ? end($renewalTermsArray) : null;
+                                            $lastFeeEscalation = is_array($feeEscalationArray) && !empty($feeEscalationArray) ? end($feeEscalationArray) : null;
+                                            $lastPaymentTerm = is_array($paymentTermsArray) && !empty($paymentTermsArray) ? end($paymentTermsArray) : null;
+                                            @endphp
 
 
+                                            <a class="dropdown-itemm Editdraft" data-bs-toggle="modal" data-bs-target="#editthreeStepModal" data-id="{{ $contract->id }}" data-filepath="{{ $contract->file_path }}"
+                                                data-contractname="{{ $contract->contract_name }}"  data-contracttype="{{ $contract->contracttype }}" data-conttype="{{ $contract->contract_type }}"  data-division="{{ $contract->division }}" data-vname="{{ $contract->vendor_name }}"
+                                                data-les="{{ $contract->legal_entity_status }}" data-startdate="{{ $contract->startdate }}"  data-startend="{{ $contract->startend }}"  data-contractvalue="{{ $contract->contract_value }}" data-signingstatus="{{ $contract->signing_status }}" data-renewalterms="{{ $lastRenewalTerm }}"
+                                                data-paymentterms="{{ $lastPaymentTerm }}" data-feeescalationclause="{{ $lastFeeEscalation }}" data-signparty1name="{{ $contract->sign_party1_name }}"  data-signparty1email="{{ $contract->sign_party1_email }}"  data-signparty1phone="{{ $contract->sign_party1_phone }}"
+                                                data-signparty1signpath="{{ $contract->sign_party1_sign_path }}"  data-signparty2name="{{ $contract->sign_party2_name }}" data-signparty2email="{{ $contract->sign_party2_email }}"
 
-                                            <a class="dropdown-itemm Editdraft" data-bs-toggle="modal" data-bs-target="#editthreeStepModal">
+                                                data-signparty2phone="{{ $contract->sign_party2_phone }}"   data-signparty2imagepath="{{ $contract->sign_party2_image_path }}"  data-signparty2signpath="{{ $contract->sign_party2_sign_path }}">
                                                 <svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
                                                     <path d="M1.68029 10.5673C1.70709 10.3261 1.7205 10.2055 1.75699 10.0928C1.78936 9.99277 1.83511 9.89759 1.89298 9.80983C1.9582 9.71092 2.04401 9.62512 2.21561 9.45351L9.91929 1.74985C10.5636 1.10552 11.6083 1.10552 12.2526 1.74985C12.897 2.39418 12.897 3.43885 12.2526 4.08319L4.54894 11.7868C4.37734 11.9585 4.29154 12.0443 4.19262 12.1095C4.10487 12.1673 4.00969 12.2131 3.90968 12.2455C3.79696 12.282 3.67635 12.2954 3.43515 12.3222L1.46094 12.5415L1.68029 10.5673Z" stroke="#414651" stroke-width="1.66667" stroke-linecap="round" stroke-linejoin="round" />
                                                 </svg>
@@ -1213,14 +1336,14 @@
                                                     </div>
                                                 </div>
                                                 <!-- Step Forms -->
-                                                <form id="editcustomerContractForm" action="{{ route('storecustomercontract') }}" method="POST" enctype="multipart/form-data" class="upload-form">
+                                                <form id="editcustomerContractForm" action="action="{{ route('editcustomerContractForm') }}"" method="POST" enctype="multipart/form-data" class="upload-form">
                                                     @csrf
                                                     <!-- Step 1 -->
                                                     <div class="step-form step-1">
                                                         <h4></h4>
 
                                                         <!-- Upload Contract -->
-                                                        <input type="hidden" name="is_drafted" id="is_drafted" value="0">
+                                                      
                                                         <div class="file-area">
                                                             <input type="file" class="dragfile" id="contractfile" name="file" accept=".pdf,.doc,.docx" required>
 
@@ -1237,23 +1360,20 @@
                                                             </div>
                                                         </div>
 
-                                                        <!-- Legal Entity Name -->
-                                                        {{-- <div class="gropu_form">
-                                                            <label for="lename">Legal Entity Name</label>
-                                                            <input placeholder="Legal Entity Name" type="text" id="lename" name="lename" value="" required>
-                                                        </div> --}}
+                                                      
 
                                                         <div class="gropu_form">
                                                             <label for="fname">Contract name <span class="red_star">*</span></label>
-                                                            <input placeholder="Type" required type="text" id="contract_name" name="contract_name" pattern="^[A-Za-z\s]+$"
+                                                            <input placeholder="Type" required type="text" id="contract_names" name="contract_name" pattern="^[A-Za-z\s]+$"
                                                                 title="Only alphabets and spaces are allowed">
-                                                            <input required type="hidden" id="contracttype" name="contracttype" value="customer contract">
+                                                            <input required type="hidden" id="contracttypes" name="contracttype" value="customer contract">
                                                             <input required type="hidden" id="customer_id" name="customer_id" value="{{$customerrecord->id}}">
+                                                            <input required type="hidden" id="contid" name="contid" >
                                                         </div>
 
                                                         <div class="gropu_form">
                                                             <label for="con_type">Contract type <span class="red_star">*</span></label>
-                                                            <select id="contract_type" name="contract_type" required>
+                                                            <select id="contract_types" name="contract_type" required>
                                                                 <option value="" disabled Selected>select</option>
                                                                 <option value="Non-disclosure Agreement (NDA)">Non-disclosure Agreement (NDA)</option>
                                                                 <option value="Service Agreement">Service Agreement</option>
@@ -1275,18 +1395,25 @@
                                                                 <option value="Other">Other</option>
                                                             </select>
                                                         </div>
-                                                        <div id="other_contract_type" class="gropu_form" style="display: none;">
+                                                        <div id="other_contract_types" class="gropu_form" style="display: none;">
                                                             <label for="other_contract_type_input">Please specify:</label>
-                                                            <input type="text" id="other_contract_type_input" name="other_contract_type_input" placeholder="Enter contract type">
+                                                            <input type="text" id="other_contract_type_inputs" name="other_contract_type_input" placeholder="Enter contract type">
                                                         </div>
                                                         <div class="gropu_form">
                                                             <label for="Division">Division<span class="red_star">*</span></label>
-                                                            <select id="division" name="division" required>
+                                                            <select id="divisions" class="divisions" name="division" required>
                                                                 <option value="" disabled selected>Select</option>
                                                                 @foreach ( $authmanagement as $divi)
 
 
-                                                                <option value="{{ $divi->division_name }}" data-name="{{ $divi->name }}" data-email="{{ $divi->email }}" data-phone="{{ $divi->phone }}" data-sign-image="{{ asset($divi->sign_image_path) }}" data-sign-image-new="{{ $divi->sign_image_path }}">{{ $divi->division_name }}</option>
+                                                                <option value="{{ $divi->division_name }}" 
+                                                                    data-signparty1name="{{ $divi->name }}" 
+                                                                    data-signparty1email="{{ $divi->email }}" 
+                                                                    data-signparty1phone="{{ $divi->phone }}" 
+                                                                    data-signparty1image="{{ asset($divi->sign_image_path) }}" 
+                                                                    data-ssignparty1imagenew="{{ $divi->sign_image_path }}">
+                                                                    {{ $divi->division_name }}
+                                                                </option>
                                                                 @endforeach
                                                             </select>
                                                         </div>
@@ -1295,23 +1422,23 @@
 
                                                         <div class="gropu_form">
                                                             <label for="start">Date of commencement <span class="red_star">*</span></label>
-                                                            <input type="date" id="start" name="startdate" required />
+                                                            <input type="date" id="starts" name="startdate" required />
                                                         </div>
 
 
                                                         <div class="gropu_form">
                                                             <label for="start">Date of expiry <span class="red_star">*</span></label>
-                                                            <input type="date" id="start" name="startend" required />
+                                                            <input type="date" id="ends" name="startend" required />
                                                         </div>
 
                                                         <div class="gropu_form">
                                                             <label for="fname">Contract Value <span class="red_star">*</span></label>
-                                                            <input placeholder="Type" required type="text" id="contract_value" pattern="^\d+(\.\d+)?$" title="Please enter a valid value" name="contract_value">
+                                                            <input placeholder="Type" required type="text" id="contract_values" pattern="^\d+(\.\d+)?$" title="Please enter a valid value" name="contract_value">
                                                         </div>
 
                                                         <div class="gropu_form">
                                                             <label for="ss">Signing Status <span class="red_star">*</span></label>
-                                                            <select id="signing_status" name="signing_status" required>
+                                                            <select id="signing_statuss" name="signing_status" required>
                                                                 <option value="" disabled Selected>select</option>
                                                                 <option value="Draft">Draft</option>
                                                                 <option value="Pending Signature">Pending Signature</option>
@@ -1347,21 +1474,21 @@
 
                                                             <label for="renewal_terms">Renewal Terms <span class="red_star">*</span></label>
                                                             <div id="quill-renewal-terms" class="quill-editor"></div>
-                                                            <textarea name="renewal_terms[]" id="renewal_terms" required></textarea>
+                                                            <textarea name="renewal_terms[]" id="renewal_termss" required></textarea>
                                                         </div>
 
                                                         <!-- Payment Terms -->
                                                         <div class="gropu_form">
                                                             <label for="payment_terms">Payment Terms <span class="red_star">*</span></label>
                                                             <div id="quill-payment-terms" class="quill-editor"></div>
-                                                            <textarea name="payment_terms[]" id="payment_terms" required></textarea>
+                                                            <textarea name="payment_terms[]" id="payment_termss" required></textarea>
                                                         </div>
 
                                                         <!-- Fee Escalation Clause -->
                                                         <div class="gropu_form">
                                                             <label for="fee_escalation_clause">Fee Escalation Clause <span class="red_star">*</span></label>
                                                             <div id="quill-fee-escalation-clause" class="quill-editor"></div>
-                                                            <textarea name="fee_escalation_clause[]" id="fee_escalation_clause" required></textarea>
+                                                            <textarea name="fee_escalation_clause[]" id="fee_escalation_clauses" required></textarea>
                                                         </div>
 
 
@@ -1398,24 +1525,24 @@
                                                             <div class="gropu_form_divide">
                                                                 <div class="gropu_form">
                                                                     <label for="nameprint">Name:</label>
-                                                                    <input type="text" id="sign_party1_name" name="sign_party1_name" readonly>
+                                                                    <input type="text" id="sign_party1_names" class="sign_party1_names" name="sign_party1_name" readonly>
                                                                 </div>
 
                                                                 <!-- Email Input -->
                                                                 <div class="gropu_form">
                                                                     <label for="emailprint">Email:</label>
-                                                                    <input type="email" id="sign_party1_email" name="sign_party1_email" readonly>
+                                                                    <input type="email" id="sign_party1_emails"  class="sign_party1_emails" name="sign_party1_email" readonly>
                                                                 </div>
 
                                                                 <!-- Phone Input -->
                                                                 <div class="gropu_form">
                                                                     <label for="phoneprint">Phone:</label>
-                                                                    <input type="tel" id="sign_party1_phone" name="sign_party1_phone" readonly>
+                                                                    <input type="tel" id="sign_party1_phones" class="sign_party1_phones" name="sign_party1_phone" readonly>
                                                                 </div>
                                                             </div>
                                                             <div class="show-side_signature">
-                                                                <img src="{{ asset('default-sign.png') }}" alt="img" id="sign_image_preview">
-                                                                <input type="hidden" id="sign_party1_sign_path" name="sign_party1_sign_path" readonly>
+                                                                <img src="{{ asset('default-sign.png') }}" alt="img" id="sign_image_previews" class="sign_image_preview">
+                                                                <input type="hidden" id="sign_party1_sign_paths" class="sign_party1_sign_path" name="sign_party1_sign_path" readonly>
                                                             </div>
                                                         </div>
 
@@ -1423,19 +1550,19 @@
                                                         <div class="gropu_datatake_wrap">
                                                             <div class="gropu_form">
                                                                 <label for="name">Name</label>
-                                                                <input type="text" id="sign_party2_name" name="sign_party2_name" required placeholder="Enter Name">
+                                                                <input type="text" id="sign_party2_names" name="sign_party2_name" required placeholder="Enter Name">
                                                             </div>
 
                                                             <!-- Email Input -->
                                                             <div class="gropu_form">
                                                                 <label for="email">Email</label>
-                                                                <input type="email" id="sign_party2_email" name="sign_party2_email" required placeholder="Enter Email">
+                                                                <input type="email" id="sign_party2_emails" name="sign_party2_email" required placeholder="Enter Email">
                                                             </div>
 
                                                             <!-- Phone Input -->
                                                             <div class="gropu_form">
                                                                 <label for="phone">Phone</label>
-                                                                <input type="tel" id="sign_party2_phone" name="sign_party2_phone" required placeholder="Enter Phoneno">
+                                                                <input type="tel" id="sign_party2_phones" name="sign_party2_phone" required placeholder="Enter Phoneno">
                                                             </div>
 
 
@@ -1446,7 +1573,7 @@
                                                                     <label for="up_picture">Upload Picture:</label>
                                                                     <div class="file-area_cover">
                                                                         <div class="file-area">
-                                                                            <input type="file" class="drag_file_signature" id="up_picture" name="up_picture">
+                                                                            <input type="file" class="drag_file_signature" id="up_pictures" name="up_picture">
                                                                             <div class="file-dummy">
                                                                                 <div class="default">
                                                                                     <span class="upload_icon">
@@ -1471,7 +1598,7 @@
 
                                                                     <div class="file-area_cover">
                                                                         <div class="file-area">
-                                                                            <input type="file" class="drag_file_signature" id="signature" name="signature" accept="image/*">
+                                                                            <input type="file" class="drag_file_signature" id="signatures" name="signature" accept="image/*">
                                                                             <div class="file-dummy">
                                                                                 <div class="default">
                                                                                     <span class="upload_icon">
@@ -1505,7 +1632,7 @@
                                                                         <path d="M9.46402 14.9349L14.4904 9.90645C14.6042 9.79264 14.6681 9.63817 14.6681 9.47711C14.6681 9.31614 14.6042 9.16167 14.4904 9.04775C14.3766 8.93394 14.2222 8.87 14.0613 8.87C13.9004 8.87 13.746 8.93394 13.6322 9.04775L8.17804 14.5056C8.1216 14.562 8.07682 14.6289 8.04627 14.7026C8.01573 14.7762 8 14.8552 8 14.9349C8 15.0147 8.01573 15.0937 8.04627 15.1674C8.07682 15.2411 8.1216 15.308 8.17804 15.3643L13.6322 20.8222C13.746 20.936 13.9004 21 14.0613 21C14.2222 21 14.3766 20.936 14.4904 20.8222C14.6042 20.7083 14.6681 20.5538 14.6681 20.3928C14.6681 20.2318 14.6042 20.0773 14.4904 19.9635L9.46402 14.9349Z" fill="black"></path>
                                                                     </svg>
                                                                 </button>
-                                                                <button type="button" id="draftButton" class="btn btn-draft">Save as Draft</button>
+                                                                
                                                                 <button type="submit" id="submitButton" class="btn btn-success">Upload</button>
                                                             </div>
                                                         </div>
@@ -1518,6 +1645,72 @@
                                     </div>
                                 </div>
  <!-- edit three step model end-->
+ <script>
+   $(document).ready(function () {
+    // When the Edit Draft link is clicked
+    $('.Editdraft').on('click', function () {
+        // Extract data attributes from the clicked link
+        var contractId = $(this).data('id');
+        var filepath = $(this).data('filepath');
+        var contractName = $(this).data('contractname');
+        var contractType = $(this).data('contracttype');
+        var contype = $(this).data('conttype');
+        var division = $(this).data('division');
+        var vendorName = $(this).data('vname');
+        var legalStatus = $(this).data('les');
+        var startDate = $(this).data('startdate');
+        var startEnd = $(this).data('startend');
+        var contractValue = $(this).data('contractvalue');
+        var signingStatus = $(this).data('signingstatus');
+        var renewalTerms = $(this).data('renewalterms');
+        var paymentTerms = $(this).data('paymentterms');
+        var feeEscalationClause = $(this).data('feeescalationclause');
+        var signParty1Name = $(this).data('signparty1name');
+        var signParty1Email = $(this).data('signparty1email');
+        var signParty1Phone = $(this).data('signparty1phone');
+        var signParty1SignPath = $(this).data('signparty1signpath');
+        var signParty2Name = $(this).data('signparty2name');
+        var signParty2Email = $(this).data('signparty2email');
+        var signParty2Phone = $(this).data('signparty2phone');
+        var signParty2ImagePath = $(this).data('signparty2imagepath');
+        var signParty2SignPath = $(this).data('signparty2signpath');
+
+        // Populate the form fields with the extracted values
+        $('#contid').val(contractId);
+        $('#contract_names').val(contractName);
+        $('#contract_types').val(contractType);
+        $('#contracttypes').val(contype);
+        $('#divisions').val(division);
+        
+       
+        $('#starts').val(startDate);
+        $('#ends').val(startEnd);
+        $('#contract_values').val(contractValue);
+        $('#signing_statuss').val(signingStatus);
+        $('#renewal_termss').val(renewalTerms);
+        $('#payment_termss').val(paymentTerms);
+        $('#fee_escalation_clauses').val(feeEscalationClause);
+        $('#sign_party1_names').val(signParty1Name);
+        $('#sign_party1_emails').val(signParty1Email);
+        $('#sign_party1_phones').val(signParty1Phone);
+        $('#sign_party1_sign_paths').val(signParty1SignPath);
+        $('#sign_party2_names').val(signParty2Name);
+        $('#sign_party2_emails').val(signParty2Email);
+        $('#sign_party2_phones').val(signParty2Phone);
+        $('#sign_party2_image_paths').val(signParty2ImagePath);
+        $('#sign_party2_sign_paths').val(signParty2SignPath);
+
+        // Optional: Show the preview images for signatures or other files
+        if (signParty1SignPath) {
+            $('#sign_image_previews').attr('src', signParty1SignPath).show();
+        }
+        if (signParty2ImagePath) {
+            $('#sign_party2_image_previews').attr('src', signParty2ImagePath).show();
+        }
+    });
+});
+
+ </script>
 
                                 <!-- notify model start -->
 
