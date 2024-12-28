@@ -812,6 +812,7 @@
                                         }
                                     });
                                 </script>
+                                 
                                 <script>
                                     $(document).ready(function() {
                                         // Listen for changes to the contract type select box
@@ -869,28 +870,57 @@
                                 </script>
 
 <script>
-    document.querySelector('.divisions').addEventListener('change', function() {
-        var selectedOption = this.options[this.selectedIndex];
+    document.addEventListener('DOMContentLoaded', function () {
+        // Get the divisions select element
+        const divisionsSelect = document.querySelector('.divisions');
 
-        // Fetch data from data attributes of the selected option
-        var name = selectedOption.getAttribute('data-signparty1name');
-        var email = selectedOption.getAttribute('data-signparty1email');
-        var phone = selectedOption.getAttribute('data-signparty1phone');
-        var signImagePathNew = selectedOption.getAttribute('data-ssignparty1imagenew'); // Fetch the updated sign image path
+        if (divisionsSelect) {
+            divisionsSelect.addEventListener('change', function () {
+                const selectedOption = this.options[this.selectedIndex];
 
-        // Populate the input fields with the data
-        document.querySelector('.sign_party1_names').value = name;
-        document.querySelector('.sign_party1_emails').value = email;
-        document.querySelector('.sign_party1_phones').value = phone;
-        document.querySelector('.sign_party1_sign_paths').value = signImagePathNew;
+                // Remove the active class from dataPrintWraps
+                const dataPrintWrap = document.getElementById('dataPrintWraps');
+                if (dataPrintWrap) {
+                    dataPrintWrap.classList.remove('active');
+                }
 
-        // Update the signature image source dynamically
-        var signImagePreview = document.querySelector('.sign_image_preview');
-        signImagePreview.src = signImagePathNew 
-            ? signImagePathNew 
-            : '{{ asset('default-sign.png') }}'; // Fallback to default if no sign image path
+                // Fetch data attributes from the selected option
+                const name = selectedOption.getAttribute('data-signparty1name') || '';
+                const email = selectedOption.getAttribute('data-signparty1email') || '';
+                const phone = selectedOption.getAttribute('data-signparty1phone') || '';
+                const signImagePath = selectedOption.getAttribute('data-ssignparty1image') || '';
+                const signPathHidden = selectedOption.getAttribute('data-ssignparty1imagenew') || '';
+
+                // Alert the value of signPathHidden
+                // alert(signPathHidden);
+
+                // Populate input fields
+                document.querySelector('.sign_party1_names').value = name;
+                document.querySelector('.sign_party1_emails').value = email;
+                document.querySelector('.sign_party1_phones').value = phone;
+                document.querySelector('.sign_party1_sign_paths').value = signPathHidden;
+
+                // Update the image preview
+                const signImagePreview = document.querySelector('.sign_image_previewss');
+                if (signImagePreview) {
+                    // Get the base URL dynamically from the window's location
+                    const baseUrl = window.location.origin;
+
+                    // Prepend the dynamic URL to signPathHidden
+                    signImagePreview.src = signImagePath 
+                        ? signImagePath 
+                        : (signPathHidden ? `${baseUrl}/${signPathHidden}` : '{{ asset('default-sign.png') }}');
+                }
+            });
+        }
     });
 </script>
+
+
+
+
+
+
                                 <script>
  $(document).ready(function () {
     // Handle "Save as Draft"
@@ -1221,7 +1251,7 @@ $('#draftButton3').on('click', function () {
                                                 <path d="M8.99806 15.2085C9.77148 15.2085 10.3985 14.5815 10.3985 13.8081C10.3985 13.0347 9.77148 12.4077 8.99806 12.4077C8.22464 12.4077 7.59766 13.0347 7.59766 13.8081C7.59766 14.5815 8.22464 15.2085 8.99806 15.2085Z" fill="#8D8D8D"></path>
                                             </svg>
                                         </button>
-                                        @if(is_null($startDate) || is_null($endDate))
+                                        @if(is_null($startDate) || is_null($endDate) || is_null($contract->file_name) || is_null($contract->contract_name) || is_null($contract->file_path) || is_null($contract->contract_type) || is_null($contract->division) || is_null($contract->contract_value) || is_null($contract->signing_status) || is_null($contract->renewal_terms) || is_null($contract->payment_terms) || is_null($contract->fee_escalation_clause) || is_null($contract->sign_party1_name) || is_null($contract->sign_party1_email) || is_null($contract->sign_party1_phone) || is_null($contract->sign_party1_sign_path) || is_null($contract->sign_party2_name) || is_null($contract->sign_party2_email) || is_null($contract->sign_party2_phone) || is_null($contract->sign_party2_image_path) || is_null($contract->sign_party2_sign_path))
                                         <div id="myDropdown3" class="dropdown-content">
 
                                             @php
@@ -1336,7 +1366,7 @@ $('#draftButton3').on('click', function () {
                                                     </div>
                                                 </div>
                                                 <!-- Step Forms -->
-                                                <form id="editcustomerContractForm" action="action="{{ route('editcustomerContractForm') }}"" method="POST" enctype="multipart/form-data" class="upload-form">
+                                                <form id="editcustomerContractForm" action="{{ route('editcustomerContractForm') }}" method="POST" enctype="multipart/form-data" class="upload-form">
                                                     @csrf
                                                     <!-- Step 1 -->
                                                     <div class="step-form step-1">
@@ -1473,22 +1503,22 @@ $('#draftButton3').on('click', function () {
                                                         <div class="gropu_form">
 
                                                             <label for="renewal_terms">Renewal Terms <span class="red_star">*</span></label>
-                                                            <div id="quill-renewal-terms" class="quill-editor"></div>
-                                                            <textarea name="renewal_terms[]" id="renewal_termss" required></textarea>
+                                                            <div id="quill-renewal-termsd" class="quill-editor"></div>
+                                                            <textarea name="renewal_terms[]" id="renewal_termssd" required></textarea>
                                                         </div>
 
                                                         <!-- Payment Terms -->
                                                         <div class="gropu_form">
                                                             <label for="payment_terms">Payment Terms <span class="red_star">*</span></label>
-                                                            <div id="quill-payment-terms" class="quill-editor"></div>
-                                                            <textarea name="payment_terms[]" id="payment_termss" required></textarea>
+                                                            <div id="quill-payment-termsd" class="quill-editor"></div>
+                                                            <textarea name="payment_terms[]" id="payment_termssd" required></textarea>
                                                         </div>
 
                                                         <!-- Fee Escalation Clause -->
                                                         <div class="gropu_form">
                                                             <label for="fee_escalation_clause">Fee Escalation Clause <span class="red_star">*</span></label>
-                                                            <div id="quill-fee-escalation-clause" class="quill-editor"></div>
-                                                            <textarea name="fee_escalation_clause[]" id="fee_escalation_clauses" required></textarea>
+                                                            <div id="quill-fee-escalation-claused" class="quill-editor"></div>
+                                                            <textarea name="fee_escalation_clause[]" id="fee_escalation_clausesd" required></textarea>
                                                         </div>
 
 
@@ -1516,7 +1546,7 @@ $('#draftButton3').on('click', function () {
                                                     <div class="step-form step-3 d-none">
                                                         <h4>First Party:</h4>
 
-                                                        <div class="gropu_dataprint_wrap active" id="dataPrintWrap">
+                                                        <div class="gropu_dataprint_wrap fgfdgfdgdfg active" id="dataPrintWraps">
                                                             <span class="show_empty_message" style="display:none;">
                                                                 <svg width="15" height="15" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg">
                                                                     <path d="M7.0277 8.93L6.9077 4H8.0477L7.9277 8.93H7.0277ZM7.5077 11.06C7.30103 11.06 7.13103 10.9967 6.9977 10.87C6.87103 10.7367 6.8077 10.58 6.8077 10.4C6.8077 10.2133 6.87103 10.0567 6.9977 9.93C7.13103 9.79667 7.30103 9.73 7.5077 9.73C7.70103 9.73 7.86103 9.79667 7.9877 9.93C8.12103 10.0567 8.1877 10.2133 8.1877 10.4C8.1877 10.58 8.12103 10.7367 7.9877 10.87C7.86103 10.9967 7.70103 11.06 7.5077 11.06Z" fill="#FFDE2F"></path>
@@ -1541,8 +1571,8 @@ $('#draftButton3').on('click', function () {
                                                                 </div>
                                                             </div>
                                                             <div class="show-side_signature">
-                                                                <img src="{{ asset('default-sign.png') }}" alt="img" id="sign_image_previews" class="sign_image_preview">
-                                                                <input type="hidden" id="sign_party1_sign_paths" class="sign_party1_sign_path" name="sign_party1_sign_path" readonly>
+                                                                <img src="{{ asset('default-sign.png') }}" alt="img" id="sign_image_previewss" class="sign_image_previewss">
+                                                                <input type="hidden" id="sign_party1_sign_paths" class="sign_party1_sign_paths" name="sign_party1_sign_path" readonly>
                                                             </div>
                                                         </div>
 
@@ -2517,6 +2547,47 @@ $('#draftButton3').on('click', function () {
         syncContent(renewalTermsEditor, "renewal_terms");
         syncContent(paymentTermsEditor, "payment_terms");
         syncContent(feeEscalationClauseEditor, "fee_escalation_clause");
+    });
+</script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const options = {
+            theme: 'snow',
+            placeholder: 'Enter text here...',
+            modules: {
+                toolbar: [
+                    [{
+                        header: [1, 2, false]
+                    }],
+                    ['bold', 'italic', 'underline'],
+                    ['link', 'blockquote', 'code-block'],
+                    [{
+                        list: 'ordered'
+                    }, {
+                        list: 'bullet'
+                    }],
+                    ['clean'],
+                ],
+            },
+        };
+
+        // Initialize Quill editors
+        const renewalTermsEditord = new Quill("#quill-renewal-termsd", options);
+        const paymentTermsEditord = new Quill("#quill-payment-termsd", options);
+        const feeEscalationClauseEditord = new Quill("#quill-fee-escalation-claused", options);
+
+        // Synchronize Quill content with corresponding textareas
+        function syncContent(editor, textareaId) {
+            const textarea = document.getElementById(textareaId);
+            editor.on('text-change', () => {
+                textarea.value = editor.root.innerHTML; // Sync HTML content
+            });
+        }
+
+        syncContent(renewalTermsEditord, "renewal_termssd");
+        syncContent(paymentTermsEditord, "payment_termssd");
+        syncContent(feeEscalationClauseEditord, "fee_escalation_clausesd");
     });
 </script>
 @endsection

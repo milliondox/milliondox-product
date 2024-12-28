@@ -717,7 +717,56 @@ public function showGst($id)
     
 public function editcustomerContractForm(Request $request)
 {
-    dd($request);
+    // dd($request);
+    $contract = CustomerContract::findOrFail($request->contid);
+
+    // Update contract fields
+    $contract->contract_name = $request->contract_name;
+    $contract->contract_type = $request->contract_type;
+    $contract->division = $request->division;
+    $contract->startdate = $request->startdate;
+    $contract->startend = $request->startend;
+    $contract->contract_value = $request->contract_value;
+    $contract->signing_status = $request->signing_status;
+    $contract->sign_party1_name = $request->sign_party1_name;
+    $contract->sign_party1_email = $request->sign_party1_email;
+    $contract->sign_party1_phone = $request->sign_party1_phone;
+    $contract->sign_party1_sign_path = $request->sign_party1_sign_path;
+    $contract->is_drafted = 0;
+    $contract->renewal_terms = json_encode($request->renewal_terms); // Assuming JSON storage
+    $contract->payment_terms = json_encode($request->payment_terms);
+    $contract->fee_escalation_clause = json_encode($request->fee_escalation_clause);
+    $contract->sign_party2_name = $request->sign_party2_name;
+    $contract->sign_party2_email = $request->sign_party2_email;
+    $contract->sign_party2_phone = $request->sign_party2_phone;
+
+    // Handle file uploads
+    if ($request->hasFile('file')) {
+       $file = $request->file('file');
+        $fileName = $file->getClientOriginalName();
+        $fileSize = round($file->getSize() / 1024, 2); // Size in KB
+        $filePath = $request->file('file')->store('contracts', 'public');
+        $contract->file_name = $fileName  ;
+        $contract->file_size = $fileSize;
+        $contract->file_path = $filePath;
+    }
+
+    if ($request->hasFile('signature')) {
+        $signaturePath = $request->file('signature')->store('uploads/signatures', 'public');
+        $contract->sign_party2_image_path = $signaturePath;
+    }
+    if ($request->hasFile('up_picture')) {
+        
+        $signaturePaths = $request->file('up_picture')->store('uploads/images', 'public');
+        $contract->	sign_party2_image_path = $signaturePaths;
+    }
+    
+    
+
+    // Save the updated contract
+    $contract->save();
+
+    return redirect()->back()->with('success', 'Contract updated successfully.');
 }
    
    
