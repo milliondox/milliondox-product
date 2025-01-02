@@ -813,7 +813,7 @@
                                         }
                                     });
                                 </script>
-
+                                 
                                 <script>
                                     $(document).ready(function() {
                                         // Listen for changes to the contract type select box
@@ -845,215 +845,207 @@
                                     });
                                 </script>
                                 <script>
-                                    document.querySelector('.division').addEventListener('change', function() {
-                                        var selectedOption = this.options[this.selectedIndex];
+                                   document.querySelector('.division').addEventListener('change', function() {
+    var selectedOption = this.options[this.selectedIndex];
 
-                                        // Fetch data from data attributes of the selected option
-                                        var name = selectedOption.getAttribute('data-name');
-                                        var email = selectedOption.getAttribute('data-email');
-                                        var phone = selectedOption.getAttribute('data-phone');
-                                        var signImagePath = selectedOption.getAttribute('data-sign-image'); // Here we get the asset URL directly
-                                        var signImagePathNew = selectedOption.getAttribute('data-sign-image-new'); // Here we get the asset URL directly
+    // Fetch data from data attributes of the selected option
+    var name = selectedOption.getAttribute('data-name');
+    var email = selectedOption.getAttribute('data-email');
+    var phone = selectedOption.getAttribute('data-phone');
+    var signImagePath = selectedOption.getAttribute('data-sign-image'); // Here we get the asset URL directly
+    var signImagePathNew = selectedOption.getAttribute('data-sign-image-new'); // Here we get the asset URL directly
 
-                                        // Populate the input fields with the data
-                                        document.querySelector('.sign_party1_name').value = name;
-                                        document.querySelector('.sign_party1_email').value = email;
-                                        document.querySelector('.sign_party1_phone').value = phone;
-                                        document.querySelector('.sign_party1_sign_path').value = signImagePathNew;
+    // Populate the input fields with the data
+    document.querySelector('.sign_party1_name').value = name;
+    document.querySelector('.sign_party1_email').value = email;
+    document.querySelector('.sign_party1_phone').value = phone;
+    document.querySelector('.sign_party1_sign_path').value = signImagePathNew;
 
-                                        // Update the signature image source dynamically
-                                        var signImagePreview = document.querySelector('.sign_image_preview');
-                                        signImagePreview.src = signImagePath ?
-                                            signImagePath :
-                                            '{{ asset('
-                                        default -sign.png ') }}';
-                                    });
+    // Update the signature image source dynamically
+    var signImagePreview = document.querySelector('.sign_image_preview');
+    signImagePreview.src = signImagePath 
+        ? signImagePath 
+        : '{{ asset('default-sign.png') }}';
+});
+
                                 </script>
 
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        // Get the divisions select element
+        const divisionsSelect = document.querySelector('.divisions');
+
+        if (divisionsSelect) {
+            divisionsSelect.addEventListener('change', function () {
+                const selectedOption = this.options[this.selectedIndex];
+
+                // Remove the active class from dataPrintWraps
+                const dataPrintWrap = document.getElementById('dataPrintWraps');
+                if (dataPrintWrap) {
+                    dataPrintWrap.classList.remove('active');
+                }
+
+                // Fetch data attributes from the selected option
+                const name = selectedOption.getAttribute('data-signparty1name') || '';
+                const email = selectedOption.getAttribute('data-signparty1email') || '';
+                const phone = selectedOption.getAttribute('data-signparty1phone') || '';
+                const signImagePath = selectedOption.getAttribute('data-ssignparty1image') || '';
+                const signPathHidden = selectedOption.getAttribute('data-ssignparty1imagenew') || '';
+
+                // Alert the value of signPathHidden
+                // alert(signPathHidden);
+
+                // Populate input fields
+                document.querySelector('.sign_party1_names').value = name;
+                document.querySelector('.sign_party1_emails').value = email;
+                document.querySelector('.sign_party1_phones').value = phone;
+                document.querySelector('.sign_party1_sign_paths').value = signPathHidden;
+
+                // Update the image preview
+                const signImagePreview = document.querySelector('.sign_image_previewss');
+                if (signImagePreview) {
+                    // Get the base URL dynamically from the window's location
+                    const baseUrl = window.location.origin;
+
+                    // Prepend the dynamic URL to signPathHidden
+                    signImagePreview.src = signImagePath 
+                        ? signImagePath 
+                        : (signPathHidden ? `${baseUrl}/${signPathHidden}` : '{{ asset('default-sign.png') }}');
+                }
+            });
+        }
+    });
+</script>
+
+
+
+
+
+
                                 <script>
-                                    document.addEventListener('DOMContentLoaded', function() {
-                                        // Get the divisions select element
-                                        const divisionsSelect = document.querySelector('.divisions');
+ $(document).ready(function () {
+    // Handle "Save as Draft"
+    $('#draftButton1').on('click', function () {
+    // Disable the button to prevent multiple submissions
+    $(this).prop('disabled', true);
 
-                                        if (divisionsSelect) {
-                                            divisionsSelect.addEventListener('change', function() {
-                                                const selectedOption = this.options[this.selectedIndex];
+    $('.is_drafted').val(1); // Set is_drafted to 1
+    var formData = new FormData($('#customerContractForm')[0]);
 
-                                                // Remove the active class from dataPrintWraps
-                                                const dataPrintWrap = document.getElementById('dataPrintWraps');
-                                                if (dataPrintWrap) {
-                                                    dataPrintWrap.classList.remove('active');
-                                                }
-
-                                                // Fetch data attributes from the selected option
-                                                const name = selectedOption.getAttribute('data-signparty1name') || '';
-                                                const email = selectedOption.getAttribute('data-signparty1email') || '';
-                                                const phone = selectedOption.getAttribute('data-signparty1phone') || '';
-                                                const signImagePath = selectedOption.getAttribute('data-ssignparty1image') || '';
-                                                const signPathHidden = selectedOption.getAttribute('data-ssignparty1imagenew') || '';
-
-                                                // Alert the value of signPathHidden
-                                                // alert(signPathHidden);
-
-                                                // Populate input fields
-                                                document.querySelector('.sign_party1_names').value = name;
-                                                document.querySelector('.sign_party1_emails').value = email;
-                                                document.querySelector('.sign_party1_phones').value = phone;
-                                                document.querySelector('.sign_party1_sign_paths').value = signPathHidden;
-
-                                                // Update the image preview
-                                                const signImagePreview = document.querySelector('.sign_image_previewss');
-                                                if (signImagePreview) {
-                                                    // Get the base URL dynamically from the window's location
-                                                    const baseUrl = window.location.origin;
-
-                                                    // Prepend the dynamic URL to signPathHidden
-                                                    signImagePreview.src = signImagePath ?
-                                                        signImagePath :
-                                                        (signPathHidden ? `${baseUrl}/${signPathHidden}` : '{{ asset('
-                                                            default -sign.png ') }}');
-                                                }
-                                            });
-                                        }
-                                    });
-                                </script>
+    $.ajax({
+        url: $('#customerContractForm').attr('action'),
+        type: 'POST',
+        data: formData,
+        contentType: false,
+        processData: false,
+        success: function (response) {
+            if (response.success) {
+                toastr.success(response.message, 'Success', { timeOut: 3000 });
+                location.reload();
+            } else {
+                toastr.error(response.message || 'There was an issue saving the draft.', 'Error');
+            }
+        },
+        error: function () {
+            toastr.error('An error occurred while saving the draft.', 'Error');
+        },
+        complete: function () {
+            // Re-enable the button after the request completes
+            $('#draftButton1').prop('disabled', false);
+        }
+    });
+});
 
 
+$('#draftButton2').on('click', function () {
+    // Disable the button to prevent multiple submissions
+    $(this).prop('disabled', true);
 
+    $('.is_drafted').val(1); // Set is_drafted to 1
+    var formData = new FormData($('#customerContractForm')[0]);
 
+    $.ajax({
+        url: $('#customerContractForm').attr('action'),
+        type: 'POST',
+        data: formData,
+        contentType: false,
+        processData: false,
+        success: function (response) {
+            if (response.success) {
+                toastr.success(response.message, 'Success', { timeOut: 3000 });
+                location.reload();
+            } else {
+                toastr.error(response.message || 'There was an issue saving the draft.', 'Error');
+            }
+        },
+        error: function () {
+            toastr.error('An error occurred while saving the draft.', 'Error');
+        },
+        complete: function () {
+            // Re-enable the button after the request completes
+            $('#draftButton2').prop('disabled', false);
+        }
+    });
+});
 
+$('#draftButton3').on('click', function () {
+    // Disable the button to prevent multiple submissions
+    $(this).prop('disabled', true);
 
-                                <script>
-                                    $(document).ready(function() {
-                                        // Handle "Save as Draft"
-                                        $('#draftButton1').on('click', function() {
-                                            // Disable the button to prevent multiple submissions
-                                            $(this).prop('disabled', true);
+    $('.is_drafted').val(1); // Set is_drafted to 1
+    var formData = new FormData($('#customerContractForm')[0]);
 
-                                            $('.is_drafted').val(1); // Set is_drafted to 1
-                                            var formData = new FormData($('#customerContractForm')[0]);
+    $.ajax({
+        url: $('#customerContractForm').attr('action'),
+        type: 'POST',
+        data: formData,
+        contentType: false,
+        processData: false,
+        success: function (response) {
+            if (response.success) {
+                toastr.success(response.message, 'Success', { timeOut: 3000 });
+                location.reload();
+            } else {
+                toastr.error(response.message || 'There was an issue saving the draft.', 'Error');
+            }
+        },
+        error: function () {
+            toastr.error('An error occurred while saving the draft.', 'Error');
+        },
+        complete: function () {
+            // Re-enable the button after the request completes
+            $('#draftButton3').prop('disabled', false);
+        }
+    });
+});
 
-                                            $.ajax({
-                                                url: $('#customerContractForm').attr('action'),
-                                                type: 'POST',
-                                                data: formData,
-                                                contentType: false,
-                                                processData: false,
-                                                success: function(response) {
-                                                    if (response.success) {
-                                                        toastr.success(response.message, 'Success', {
-                                                            timeOut: 3000
-                                                        });
-                                                        location.reload();
-                                                    } else {
-                                                        toastr.error(response.message || 'There was an issue saving the draft.', 'Error');
-                                                    }
-                                                },
-                                                error: function() {
-                                                    toastr.error('An error occurred while saving the draft.', 'Error');
-                                                },
-                                                complete: function() {
-                                                    // Re-enable the button after the request completes
-                                                    $('#draftButton1').prop('disabled', false);
-                                                }
-                                            });
-                                        });
+    // Handle "Submit"
+    $('#submitButton').off('click').on('click', function (e) {
+        e.preventDefault();
 
+        var formData = new FormData($('#customerContractForm')[0]);
 
-                                        $('#draftButton2').on('click', function() {
-                                            // Disable the button to prevent multiple submissions
-                                            $(this).prop('disabled', true);
+        $.ajax({
+            url: $('#customerContractForm').attr('action'),
+            type: 'POST',
+            data: formData,
+            contentType: false,
+            processData: false,
+            success: function (response) {
+                if (response.success) {
+                    toastr.success(response.message, 'Success', { timeOut: 3000 });
+                    location.reload(); // Reload for submissions
+                } else {
+                    toastr.error(response.message || 'There was an issue submitting the contract.', 'Error');
+                }
+            },
+            error: function () {
+                toastr.error('An error occurred while submitting the contract.', 'Error');
+            }
+        });
+    });
+});
 
-                                            $('.is_drafted').val(1); // Set is_drafted to 1
-                                            var formData = new FormData($('#customerContractForm')[0]);
-
-                                            $.ajax({
-                                                url: $('#customerContractForm').attr('action'),
-                                                type: 'POST',
-                                                data: formData,
-                                                contentType: false,
-                                                processData: false,
-                                                success: function(response) {
-                                                    if (response.success) {
-                                                        toastr.success(response.message, 'Success', {
-                                                            timeOut: 3000
-                                                        });
-                                                        location.reload();
-                                                    } else {
-                                                        toastr.error(response.message || 'There was an issue saving the draft.', 'Error');
-                                                    }
-                                                },
-                                                error: function() {
-                                                    toastr.error('An error occurred while saving the draft.', 'Error');
-                                                },
-                                                complete: function() {
-                                                    // Re-enable the button after the request completes
-                                                    $('#draftButton2').prop('disabled', false);
-                                                }
-                                            });
-                                        });
-
-                                        $('#draftButton3').on('click', function() {
-                                            // Disable the button to prevent multiple submissions
-                                            $(this).prop('disabled', true);
-
-                                            $('.is_drafted').val(1); // Set is_drafted to 1
-                                            var formData = new FormData($('#customerContractForm')[0]);
-
-                                            $.ajax({
-                                                url: $('#customerContractForm').attr('action'),
-                                                type: 'POST',
-                                                data: formData,
-                                                contentType: false,
-                                                processData: false,
-                                                success: function(response) {
-                                                    if (response.success) {
-                                                        toastr.success(response.message, 'Success', {
-                                                            timeOut: 3000
-                                                        });
-                                                        location.reload();
-                                                    } else {
-                                                        toastr.error(response.message || 'There was an issue saving the draft.', 'Error');
-                                                    }
-                                                },
-                                                error: function() {
-                                                    toastr.error('An error occurred while saving the draft.', 'Error');
-                                                },
-                                                complete: function() {
-                                                    // Re-enable the button after the request completes
-                                                    $('#draftButton3').prop('disabled', false);
-                                                }
-                                            });
-                                        });
-
-                                        // Handle "Submit"
-                                        $('#submitButton').off('click').on('click', function(e) {
-                                            e.preventDefault();
-
-                                            var formData = new FormData($('#customerContractForm')[0]);
-
-                                            $.ajax({
-                                                url: $('#customerContractForm').attr('action'),
-                                                type: 'POST',
-                                                data: formData,
-                                                contentType: false,
-                                                processData: false,
-                                                success: function(response) {
-                                                    if (response.success) {
-                                                        toastr.success(response.message, 'Success', {
-                                                            timeOut: 3000
-                                                        });
-                                                        location.reload(); // Reload for submissions
-                                                    } else {
-                                                        toastr.error(response.message || 'There was an issue submitting the contract.', 'Error');
-                                                    }
-                                                },
-                                                error: function() {
-                                                    toastr.error('An error occurred while submitting the contract.', 'Error');
-                                                }
-                                            });
-                                        });
-                                    });
                                 </script>
 
                                 <script>
@@ -1168,6 +1160,7 @@
                                         });
                                     });
                                 </script>
+
 
 
 
@@ -1685,70 +1678,71 @@
                                 </div>
                                 <!-- edit three step model end-->
                                 <script>
-                                    $(document).ready(function() {
-                                        // When the Edit Draft link is clicked
-                                        $('.Editdraft').on('click', function() {
-                                            // Extract data attributes from the clicked link
-                                            var contractId = $(this).data('id');
-                                            var filepath = $(this).data('filepath');
-                                            var contractName = $(this).data('contractname');
-                                            var contractType = $(this).data('contracttype');
-                                            var contype = $(this).data('conttype');
-                                            var division = $(this).data('division');
-                                            var vendorName = $(this).data('vname');
-                                            var legalStatus = $(this).data('les');
-                                            var startDate = $(this).data('startdate');
-                                            var startEnd = $(this).data('startend');
-                                            var contractValue = $(this).data('contractvalue');
-                                            var signingStatus = $(this).data('signingstatus');
-                                            var renewalTerms = $(this).data('renewalterms');
-                                            var paymentTerms = $(this).data('paymentterms');
-                                            var feeEscalationClause = $(this).data('feeescalationclause');
-                                            var signParty1Name = $(this).data('signparty1name');
-                                            var signParty1Email = $(this).data('signparty1email');
-                                            var signParty1Phone = $(this).data('signparty1phone');
-                                            var signParty1SignPath = $(this).data('signparty1signpath');
-                                            var signParty2Name = $(this).data('signparty2name');
-                                            var signParty2Email = $(this).data('signparty2email');
-                                            var signParty2Phone = $(this).data('signparty2phone');
-                                            var signParty2ImagePath = $(this).data('signparty2imagepath');
-                                            var signParty2SignPath = $(this).data('signparty2signpath');
-
-                                            // Populate the form fields with the extracted values
-                                            $('#contid').val(contractId);
-                                            $('#contract_names').val(contractName);
-                                            $('#contract_types').val(contractType);
-                                            $('#contracttypes').val(contype);
-                                            $('#divisions').val(division);
-
-
-                                            $('#starts').val(startDate);
-                                            $('#ends').val(startEnd);
-                                            $('#contract_values').val(contractValue);
-                                            $('#signing_statuss').val(signingStatus);
-                                            $('#renewal_termss').val(renewalTerms);
-                                            $('#payment_termss').val(paymentTerms);
-                                            $('#fee_escalation_clauses').val(feeEscalationClause);
-                                            $('#sign_party1_names').val(signParty1Name);
-                                            $('#sign_party1_emails').val(signParty1Email);
-                                            $('#sign_party1_phones').val(signParty1Phone);
-                                            $('#sign_party1_sign_paths').val(signParty1SignPath);
-                                            $('#sign_party2_names').val(signParty2Name);
-                                            $('#sign_party2_emails').val(signParty2Email);
-                                            $('#sign_party2_phones').val(signParty2Phone);
-                                            $('#sign_party2_image_paths').val(signParty2ImagePath);
-                                            $('#sign_party2_sign_paths').val(signParty2SignPath);
-
-                                            // Optional: Show the preview images for signatures or other files
-                                            if (signParty1SignPath) {
-                                                $('#sign_image_previews').attr('src', signParty1SignPath).show();
-                                            }
-                                            if (signParty2ImagePath) {
-                                                $('#sign_party2_image_previews').attr('src', signParty2ImagePath).show();
-                                            }
-                                        });
-                                    });
-                                </script>
+                                    $(document).ready(function () {
+                                     // When the Edit Draft link is clicked
+                                     $('.Editdraft').on('click', function () {
+                                         // Extract data attributes from the clicked link
+                                         var contractId = $(this).data('id');
+                                         var filepath = $(this).data('filepath');
+                                         var contractName = $(this).data('contractname');
+                                         var contractType = $(this).data('contracttype');
+                                         var contype = $(this).data('conttype');
+                                         var division = $(this).data('division');
+                                         var vendorName = $(this).data('vname');
+                                         var legalStatus = $(this).data('les');
+                                         var startDate = $(this).data('startdate');
+                                         var startEnd = $(this).data('startend');
+                                         var contractValue = $(this).data('contractvalue');
+                                         var signingStatus = $(this).data('signingstatus');
+                                         var renewalTerms = $(this).data('renewalterms');
+                                         var paymentTerms = $(this).data('paymentterms');
+                                         var feeEscalationClause = $(this).data('feeescalationclause');
+                                         var signParty1Name = $(this).data('signparty1name');
+                                         var signParty1Email = $(this).data('signparty1email');
+                                         var signParty1Phone = $(this).data('signparty1phone');
+                                         var signParty1SignPath = $(this).data('signparty1signpath');
+                                         var signParty2Name = $(this).data('signparty2name');
+                                         var signParty2Email = $(this).data('signparty2email');
+                                         var signParty2Phone = $(this).data('signparty2phone');
+                                         var signParty2ImagePath = $(this).data('signparty2imagepath');
+                                         var signParty2SignPath = $(this).data('signparty2signpath');
+                                 
+                                         // Populate the form fields with the extracted values
+                                         $('#contid').val(contractId);
+                                         $('#contract_names').val(contractName);
+                                         $('#contract_types').val(contractType);
+                                         $('#contracttypes').val(contype);
+                                         $('#divisions').val(division);
+                                         
+                                        
+                                         $('#starts').val(startDate);
+                                         $('#ends').val(startEnd);
+                                         $('#contract_values').val(contractValue);
+                                         $('#signing_statuss').val(signingStatus);
+                                         $('#renewal_termss').val(renewalTerms);
+                                         $('#payment_termss').val(paymentTerms);
+                                         $('#fee_escalation_clauses').val(feeEscalationClause);
+                                         $('#sign_party1_names').val(signParty1Name);
+                                         $('#sign_party1_emails').val(signParty1Email);
+                                         $('#sign_party1_phones').val(signParty1Phone);
+                                         $('#sign_party1_sign_paths').val(signParty1SignPath);
+                                         $('#sign_party2_names').val(signParty2Name);
+                                         $('#sign_party2_emails').val(signParty2Email);
+                                         $('#sign_party2_phones').val(signParty2Phone);
+                                         $('#sign_party2_image_paths').val(signParty2ImagePath);
+                                         $('#sign_party2_sign_paths').val(signParty2SignPath);
+                                 
+                                         // Optional: Show the preview images for signatures or other files
+                                         if (signParty1SignPath) {
+                                             $('#sign_image_previews').attr('src', signParty1SignPath).show();
+                                         }
+                                         if (signParty2ImagePath) {
+                                             $('#sign_party2_image_previews').attr('src', signParty2ImagePath).show();
+                                         }
+                                     });
+                                 });
+                                 
+                                  </script>
 
                                 <!-- notify model start -->
 
