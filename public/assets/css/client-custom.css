@@ -25903,10 +25903,6 @@ div.dataTables_wrapper {
     background: #363a41;
 }
 
-
-
-
-
 .drop_coman_file.have_title .modal-content .gropu_form .file_coman_wrap {
     flex: 2.1;
 }
@@ -26007,7 +26003,495 @@ div.dataTables_wrapper {
     font-weight: 700;
 }
 
+/*******smart contarct css start*******/
+.contract_main_show, .main_smart_contract {
+    transition: opacity 0.5s ease-in-out, visibility 0.5s ease-in-out;
+    opacity: 1;
+    visibility: visible;
+}
+.main_smart_contract {
+    width: 100%;
+}
 
+.hidden {
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none; /* Prevent interaction when hidden */
+}
+
+.smart_contract_active {
+    background: #2E72F7;
+    min-height: 85vh;
+    padding: 40px 40px;
+    display: flex;
+    flex-wrap: wrap;
+    width: 100%;
+}
+
+.main_smart_contract .head_progress_smmart {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.main_smart_contract .head_progress_smmart .hide_smart_contract {
+    background: #d9d9d9;
+    padding: 0;
+    width: 30px;
+    height: 30px;
+    border: 1px solid #d9d9d9;
+    border-radius: 50%;
+    outline: none;
+    transition: all .25s ease-out;
+    position: relative;
+    top: -20px;
+    right: -20px;
+}
+
+.main_smart_contract .head_progress_smmart .hide_smart_contract:hover {
+    background: transparent;
+}
+
+.main_smart_contract .head_progress_smmart .hide_smart_contract:hover path {
+    stroke: #d9d9d9;
+}
+
+.main_smart_contract .smrt_bodyy {
+    display: block;
+    margin: 30px 0px 0px;
+}
+
+.main_smart_contract .say_hii_smart {
+    display: flex;
+    align-items: center;
+    gap: 0px 20px;
+}
+
+.main_smart_contract .say_hii_smart .left_hii {
+    flex: 1;
+}
+
+.main_smart_contract .say_hii_smart .right_hii {
+    max-width: 220px;
+}
+
+.main_smart_contract .say_hii_smart .right_hii svg {
+    width: 100%;
+    height: 100%;
+}
+
+.main_smart_contract .say_hii_smart .left_hii span {
+    color: #CBDDFF;
+    font-size: 48px;
+    letter-spacing: -0.02em;
+    line-height: normal;
+    margin: 0;
+}
+
+.main_smart_contract .say_hii_smart .left_hii  h2 {
+    font-family: DM Serif Text;
+    font-size: 100px;
+    font-weight: 500;
+    line-height: 88px;
+    letter-spacing: -0.06em;
+    color: #FFFFFF;
+    margin: 0;
+}
+
+.bottom_smart_next {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.bottom_smart_next .left_message_smart {
+    color: #CBDDFF;
+}
+
+.bottom_smart_next .left_message_smart p {
+    font-size: 16px;
+    font-weight: 400;
+    margin: 0;
+    line-height: normal;
+}
+
+ .smart_next_pre button.btn {
+    padding: 0;
+    width: unset;
+    height: unset;
+    display: flex;
+    background: transparent !IMPORTANT;
+    border: 0;
+    outline: none;
+    box-shadow: none;
+    text-decoration: underline;
+    font-size: 14px;
+    font-weight: 400;
+}
+
+.main_smart_contract  .progrees_skill {
+    display: flex;
+    align-items: center;
+    gap: 0px 30px;
+    position: relative;
+}
+
+.main_smart_contract .progrees_skill span.active {
+    color: #2E72F7;
+    background: #FFF;
+    border-color: #FFF;
+}
+
+.main_smart_contract .progrees_skill span {
+    border: 1px solid #5790FF;
+    background: #2E72F7;
+    color: #9ABDFF;
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    z-index: 1;
+    font-weight: 600;
+}
+
+.main_smart_contract .progrees_skill:after {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    height: 1px;
+    width: 100%;
+    right: 0;
+    background: #5790FF;
+}
+
+.main_smart_contract .smart_step_2 .smrt_bodyy .select_templete {
+    display: block;
+    text-align: center;
+    margin-bottom: 40px;
+}
+
+.main_smart_contract .smart_step_2 .smrt_bodyy .select_templete label {
+    display: block;
+    font-size: 16px;
+    font-weight: 400;
+    color: #C3D7FF;
+    margin: 0px 0px 8px;
+}
+
+.main_smart_contract .smart_step_2 .smrt_bodyy .select_templete select {
+    background: #5790FF;
+    outline: none;
+    padding: 10px 20px;
+    border-radius: 16px;
+    font-size: 16px;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    color: #FFF;
+    box-shadow: none;
+    border: 0;
+    display: block;
+    width: 100%;
+    max-width: 25%;
+    margin: 0 auto;
+}
+
+.smart_step_1, .smart_step_2, .smart_step_3, .smart_step_4 {
+    transition: opacity 0.5s ease-in-out, visibility 0.5s ease-in-out;
+    opacity: 1;
+    visibility: visible;
+}
+
+.smart_step_1 {
+    height: 100%;
+}
+
+.smart_step_1 .smrt_bodyy {
+    height: 100%;
+    display: flex;
+    justify-content: space-between;
+    flex-direction: column;
+    margin: 0;
+    padding-top: 30px;
+    padding-bottom: 20px;
+}
+
+.smart_step_2 {
+    height: 100%;
+}
+
+.smart_step_2 .smrt_bodyy {
+    height: 100%;
+    display: flex;
+    justify-content: space-between;
+    flex-direction: column;
+    margin: 0;
+    padding-top: 250px;
+    padding-bottom: 20px;
+}
+
+.smart_step_3 .smrt_bodyy {
+    display: flex;
+    gap: 0px 40px;
+}
+
+.smart_step_3 .smrt_bodyy .form_feilds {
+    width: 40%;
+    padding: 0px 10px 0px 0px;
+    max-height: 590px;
+    overflow: auto;
+}
+
+.smart_step_3 .smrt_bodyy .right_live_pre {
+    width: 60%;
+}
+
+.smart_step_3 .smrt_bodyy .right_live_pre .lve_framee {
+    display: block;
+    min-height: 500px;
+    max-height: 600px;
+    overflow: auto;
+    background: #FFF;
+    padding: 20px 20px  20px;
+    margin: 0px 0px 15px;
+}
+
+.smart_step_3 .smrt_bodyy .right_live_pre .lve_framee .title_smart h2 {
+    font-family: DM Serif Text;
+    font-size: 32px;
+    font-weight: 400;
+    text-align: center;
+    margin: 0;
+}
+
+.smart_step_3 .smrt_bodyy .right_live_pre .lve_framee .title_smart {
+    border-bottom: 1px solid #BCBCBC;
+    padding: 0px 0px 10px;
+    margin: 0px 0px 20px;
+}
+
+/* width */
+.smart_step_3 .smrt_bodyy .right_live_pre .lve_framee::-webkit-scrollbar {
+  width: 10px;
+}
+
+/* Track */
+.smart_step_3 .smrt_bodyy .right_live_pre .lve_framee::-webkit-scrollbar-track {
+  background: #9D9D9D; 
+}
+ 
+/* Handle */
+.smart_step_3 .smrt_bodyy .right_live_pre .lve_framee::-webkit-scrollbar-thumb {
+  background: #3E3E3E; 
+}
+
+.smart_step_3 .smart_next_pre {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0px 10px;
+}
+
+.smart_step_3 .smrt_bodyy .form_feilds .form-group {
+    display: block;
+    margin: 0px 0px 15px;
+    background: #1961ED;
+    padding: 18px 19px 21px;
+    border-radius: 10px;
+}
+
+.smart_step_3 .smrt_bodyy .form_feilds .form-group:last-child {
+    margin: 0;
+}
+
+.smart_step_3 .smrt_bodyy .form_feilds .form-group label {
+    display: block;
+    color: #C3D7FF;
+    margin: 0px 0px 8px;
+    font-weight: 400;
+    font-size: 14px;
+    text-transform: capitalize;
+}
+
+.smart_step_3 .smrt_bodyy .form_feilds .form-group input, .smart_step_3 .smrt_bodyy .form_feilds .form-group select, .smart_step_3 .smrt_bodyy .form_feilds .form-group textarea {
+    border: 1px solid #5790FF;
+    width: 100%;
+    display: block;
+    background: #1961ED;
+    color: #FFFFFF;
+    font-size: 14px;
+    padding: 6px 8px;
+    border-radius: 16px;
+    outline: none;
+    box-shadow: none;
+}
+
+.smart_step_3 .smrt_bodyy .form_feilds .form-group input::placeholder {
+    color: #b5b5b5;
+    opacity: 0.5;
+    font-size: 14px;
+}
+
+
+/* width */
+.smart_step_3 .smrt_bodyy .form_feilds::-webkit-scrollbar {
+    width: 7px;
+      border-radius:20px;
+  }
+  
+  /* Track */
+  .smart_step_3 .smrt_bodyy .form_feilds::-webkit-scrollbar-track {
+    background: transparent; 
+        border-radius:20px;
+  }
+   
+  /* Handle */
+  .smart_step_3 .smrt_bodyy .form_feilds::-webkit-scrollbar-thumb {
+    background: #5790FF; 
+        border-radius:20px;
+  }
+
+  .smart_step_4 .final_contract {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0px 6px;
+    font-size: 26px;
+    font-weight: 700;
+    color: #FFFFFF;
+    margin: 0px 0px 30px;
+}
+
+.smart_step_4 .right_live_pre {
+    display: block;
+    max-width: 900px;
+    margin: 0 auto;
+}
+
+.smart_step_4 .right_live_pre .lve_framee {
+    display: block;
+    min-height: 500px;
+    max-height: 600px;
+    overflow: auto;
+    background: #FFF;
+    padding: 20px 20px 20px;
+    margin: 0px 0px 15px;
+}
+.smart_step_3 .smrt_bodyy .form_feilds h3 {
+    font-size: 16px;
+    margin: 0px 0px 8px;
+    padding: 0px 0px 0px 5px;
+    color: #FFF;
+}
+
+/* width */
+.smart_step_4 .right_live_pre .lve_framee::-webkit-scrollbar {
+  width: 10px;
+}
+
+/* Track */
+.smart_step_4 .right_live_pre .lve_framee::-webkit-scrollbar-track {
+  background: #9D9D9D; 
+}
+ 
+/* Handle */
+.smart_step_4 .right_live_pre .lve_framee::-webkit-scrollbar-thumb {
+  background: #3E3E3E; 
+}
+
+.smart_step_4 .right_live_pre .lve_framee .title_smart {
+    border-bottom: 1px solid #BCBCBC;
+    padding: 0px 0px 10px;
+    margin: 0px 0px 20px;
+}
+
+.smart_step_4 .right_live_pre .lve_framee .title_smart h2 {
+    font-family: DM Serif Text;
+    font-size: 32px;
+    font-weight: 400;
+    text-align: center;
+    margin: 0;
+}
+
+.smart_step_4 .right_live_pre  .smart_next_pre {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0px 10px;
+}
+
+.smart_step_4 .right_live_pre .smart_next_pre .upload_contract {
+    background: #FFFFFF;
+    border: 0;
+    box-shadow: none;
+    outline: none;
+    color: #2E72F7;
+    font-size: 14px;
+    font-weight: 600;
+    padding: 10px 15px;
+    border-radius: 12px;
+}
+
+.preview-content p {
+    margin-bottom: 15px;
+    text-align: justify;
+}
+
+.preview-content li {
+    margin-bottom: 15px;
+    text-align: justify;
+}
+
+.preview-content li span {
+    word-break: break-all;
+}
+
+.dark-only .main_smart_contract .progrees_skill span {
+    border: 1px solid #686868;
+    background: #262b33;
+    color: #a0a8ca;
+}
+
+.dark-only .main_smart_contract .progrees_skill span.active {
+    background: #1a1e25;
+}
+
+.dark-only .main_smart_contract .progrees_skill:after {
+    background: #686868;
+}
+
+.dark-only .main_smart_contract .smart_step_2 .smrt_bodyy .select_templete select {
+    background: #1a1e25;
+}
+
+.dark-only .smart_step_3 .smrt_bodyy .form_feilds .form-group {
+    background: #1a1e25;
+}
+
+.dark-only .smart_step_3 .smrt_bodyy .form_feilds .form-group input, .dark-only .smart_step_3 .smrt_bodyy .form_feilds .form-group select, .dark-only .smart_step_3 .smrt_bodyy .form_feilds .form-group textarea {
+    background: #1a1e25;
+    border: 1px solid #262b33;
+    color-scheme: dark;
+}
+
+.dark-only .smart_step_3 .smrt_bodyy .form_feilds::-webkit-scrollbar-thumb {
+    background: #1a1e25;
+}
+
+
+.dark-only .smart_step_3 .smrt_bodyy .right_live_pre .lve_framee {
+    background: #1e1f23;
+}
+
+.dark-only .smart_step_4 .right_live_pre .lve_framee {
+    background: #1e1f23;
+}
+
+
+/*******smart contarct css end*******/
 
 /*****New Contract Management detail css end******/
 
@@ -30122,6 +30606,20 @@ b.toggle-password i {
     .manage_co_nt .volt_headd-filter .exprot_master {
         margin: 10px 0px 0px 0px;
     }
+
+    .main_smart_contract .say_hii_smart .left_hii span {
+        font-size: 36px;
+    }
+    
+    .main_smart_contract .say_hii_smart .left_hii h2 {
+        font-size: 80px;
+        line-height: 0.9em;
+    }
+    
+    .main_smart_contract .say_hii_smart .right_hii {
+        max-width: 180px;
+    }
+
 }
 
 @media (max-width: 1184px) {
@@ -30212,6 +30710,11 @@ b.toggle-password i {
     .login_form_editfl {
         max-width: 80%;
     }
+
+    .smart_step_3 .smrt_bodyy {
+        gap: 0px 20px;
+    }
+
 }
 
 @media (max-width: 992px) {
@@ -30439,6 +30942,45 @@ b.toggle-password i {
     body.dark-only .page-wrapper .page-header .header-logo-wrapper {
         background-color: #1a1e25;
     }
+
+    .main_smart_contract .say_hii_smart .left_hii h2 {
+        font-size: 60px;
+    }
+    
+    .main_smart_contract .say_hii_smart .right_hii {
+        max-width: 150px;
+    }
+
+    .bottom_smart_next .left_message_smart p {
+        font-size: 14px;
+    }
+
+    .main_smart_contract .smart_step_2 .smrt_bodyy .select_templete select {
+        max-width: 70%;
+    }
+
+    .smart_step_3 .smrt_bodyy {
+        gap: 0px 20px;
+    }
+    
+    .smart_step_3 .smrt_bodyy {
+        flex-wrap: wrap;
+    }
+    
+    .smart_step_3 .smrt_bodyy .form_feilds {
+        width: 100%;
+        margin-bottom: 30px;
+    }
+    
+    .smart_step_3 .smrt_bodyy .right_live_pre {
+        width: 100%;
+    }
+    
+    .smart_step_3 .smrt_bodyy .right_live_pre .lve_framee .title_smart h2 {
+        font-size: 22px;
+    }
+
+
 }
 
 @media (max-width: 767px) {
@@ -31422,6 +31964,75 @@ b.toggle-password i {
     .append_bootm_contarct .append_bootm_contarct_wrap {
         flex-wrap: wrap;
         gap: 20px 0px;
+    }
+
+    .contract_uploadd .contract_up_head .right_btn_contt button.opload:hover .button-text {
+        opacity: 0;
+        transition: opacity .5s;
+    }
+    
+    .contract_uploadd .contract_up_head .right_btn_contt button.opload:hover svg {
+        opacity: 1;
+        transition: opacity 0.5s;
+    }
+    
+    .contract_uploadd .contract_up_head .right_btn_contt button.opload:hover {
+        width: 40px;
+    }
+    
+    .contract_uploadd .contract_up_head h2 {
+        font-size: 16px;
+    }
+    .drop_coman_file button.btn {
+        padding: 10px 15px;
+    }
+
+    .drop_coman_file button.btn {
+        padding: 10px 15px;
+    }
+    
+    .main_smart_contract .say_hii_smart .left_hii h2 {
+        font-size: 32px;
+    }
+    
+    .main_smart_contract .say_hii_smart .left_hii span {
+        font-size: 18px;
+    }
+    
+    .main_smart_contract .say_hii_smart .right_hii {
+        max-width: 50px;
+    }
+    
+    .smart_contract_active {
+        min-height: 80vh;
+        padding: 40px 20px;
+    }
+    
+    .main_smart_contract .head_progress_smmart .hide_smart_contract {
+        top: -20px;
+        right: -10px;
+    }
+    
+    .bottom_smart_next .left_message_smart p {
+        font-size: 9px;
+    }
+    
+    .smart_next_pre button.btn {
+        font-size: 12px;
+    }
+
+    .main_smart_contract .smart_step_2 .smrt_bodyy .select_templete select {
+        max-width: 100%;
+        font-size: 14px;
+    }
+
+    .smart_step_4 .right_live_pre .lve_framee .title_smart h2 {
+        font-size: 22px;
+    }
+    
+    .smart_step_4 .right_live_pre .smart_next_pre .upload_contract {
+        padding: 8px 10px;
+        font-size: 12px;
     }
 
 }

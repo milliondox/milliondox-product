@@ -84,7 +84,7 @@
             <!-- Container-fluid start-->
             <div class="container-fluid">
                 <div class="main_contractt_detail">
-                    <div class="row">
+                    <div class="row contract_main_show">
                         <div class="col-md-4">
 
                             <div class="contract_deatols">
@@ -143,19 +143,20 @@
                                     <div class="authrized_signatory cmn_authh">
                                         <h2>Authrized Signatory</h2>
 
-                                        
-                                            @if($authdata->isEmpty())
-                                            <ul class="no_data_border">
-                                            <li>
-                                            <svg width="15" height="15" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                <path d="M7.0277 8.93L6.9077 4H8.0477L7.9277 8.93H7.0277ZM7.5077 11.06C7.30103 11.06 7.13103 10.9967 6.9977 10.87C6.87103 10.7367 6.8077 10.58 6.8077 10.4C6.8077 10.2133 6.87103 10.0567 6.9977 9.93C7.13103 9.79667 7.30103 9.73 7.5077 9.73C7.70103 9.73 7.86103 9.79667 7.9877 9.93C8.12103 10.0567 8.1877 10.2133 8.1877 10.4C8.1877 10.58 8.12103 10.7367 7.9877 10.87C7.86103 10.9967 7.70103 11.06 7.5077 11.06Z" fill="#848484"></path>
-                                <circle cx="7.5" cy="7.5" r="7" stroke="#848484"></circle>
-                              </svg> No contract uploaded yet</li>
-                                            </ul>
-                                            @else
-                                            @foreach ($authdata as $data )
 
-                                            <ul>
+                                        @if($authdata->isEmpty())
+                                        <ul class="no_data_border">
+                                            <li>
+                                                <svg width="15" height="15" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                    <path d="M7.0277 8.93L6.9077 4H8.0477L7.9277 8.93H7.0277ZM7.5077 11.06C7.30103 11.06 7.13103 10.9967 6.9977 10.87C6.87103 10.7367 6.8077 10.58 6.8077 10.4C6.8077 10.2133 6.87103 10.0567 6.9977 9.93C7.13103 9.79667 7.30103 9.73 7.5077 9.73C7.70103 9.73 7.86103 9.79667 7.9877 9.93C8.12103 10.0567 8.1877 10.2133 8.1877 10.4C8.1877 10.58 8.12103 10.7367 7.9877 10.87C7.86103 10.9967 7.70103 11.06 7.5077 11.06Z" fill="#848484"></path>
+                                                    <circle cx="7.5" cy="7.5" r="7" stroke="#848484"></circle>
+                                                </svg> No contract uploaded yet
+                                            </li>
+                                        </ul>
+                                        @else
+                                        @foreach ($authdata as $data )
+
+                                        <ul>
 
                                             <li>
                                                 <div class="auth_image">
@@ -433,7 +434,7 @@
                                                 </li>
 
                                                 <li class="oplod_inner">
-                                                    <a>
+                                                    <a class="sarrt_contract">
                                                         <svg width="16" height="19" viewBox="0 0 16 19" fill="none" xmlns="http://www.w3.org/2000/svg">
                                                             <path d="M3.5 10.5H3V11.5H3.5V10.5ZM9.5 11.5H10V10.5H9.5V11.5ZM3.5 7.5H3V8.5H3.5V7.5ZM5.5 8.5H6V7.5H5.5V8.5ZM9.5 4L9.854 3.646L9.707 3.5H9.5V4ZM12.5 7H13V6.793L12.854 6.646L12.5 7ZM6.5 15L6.724 15.447L6.764 15.427L6.8 15.4L6.5 15ZM3.5 11.5H9.5V10.5H3.5V11.5ZM3.5 8.5H5.5V7.5H3.5V8.5ZM11.5 17.5H1.5V18.5H11.5V17.5ZM1 17V5H0V17H1ZM1.5 4.5H9.5V3.5H1.5V4.5ZM12 7V17H13V7H12ZM9.146 4.354L12.146 7.354L12.854 6.646L9.854 3.646L9.146 4.354ZM1.5 17.5C1.36739 17.5 1.24021 17.4473 1.14645 17.3536C1.05268 17.2598 1 17.1326 1 17H0C0 17.3978 0.158035 17.7794 0.43934 18.0607C0.720644 18.342 1.10218 18.5 1.5 18.5V17.5ZM11.5 18.5C11.8978 18.5 12.2794 18.342 12.5607 18.0607C12.842 17.7794 13 17.3978 13 17H12C12 17.1326 11.9473 17.2598 11.8536 17.3536C11.7598 17.4473 11.6326 17.5 11.5 17.5V18.5ZM1 5C1 4.86739 1.05268 4.74021 1.14645 4.64645C1.24021 4.55268 1.36739 4.5 1.5 4.5V3.5C1.10218 3.5 0.720644 3.65804 0.43934 3.93934C0.158035 4.22064 0 4.60218 0 5H1ZM4.474 15.158C4.585 14.825 4.901 14.516 5.304 14.408C5.681 14.307 6.166 14.373 6.646 14.854L7.354 14.146C6.634 13.426 5.785 13.243 5.045 13.442C4.332 13.634 3.748 14.175 3.525 14.842L4.474 15.158ZM6.646 14.854C6.67402 14.8814 6.70039 14.9105 6.725 14.941L7.515 14.327C7.46501 14.2638 7.41124 14.2037 7.354 14.147L6.646 14.854ZM6.725 14.941C6.803 15.041 6.785 15.073 6.788 15.051C6.79 15.037 6.794 15.06 6.734 15.114C6.64755 15.1863 6.5495 15.2434 6.444 15.283C6.31719 15.3338 6.18501 15.3701 6.05 15.391C5.96741 15.4048 5.88342 15.4081 5.8 15.401C5.783 15.397 5.818 15.401 5.87 15.438C5.93353 15.4874 5.98023 15.5552 6.00368 15.6322C6.02714 15.7092 6.0262 15.7916 6.001 15.868C5.99542 15.8846 5.98769 15.9004 5.978 15.915C5.976 15.917 5.993 15.895 6.05 15.848C6.164 15.756 6.374 15.622 6.724 15.448L6.276 14.553C5.9 14.741 5.61533 14.9133 5.422 15.07C5.32382 15.147 5.23638 15.2368 5.162 15.337C5.06734 15.4631 5.01801 15.6174 5.022 15.775C5.02632 15.8672 5.05151 15.9573 5.09568 16.0383C5.13986 16.1194 5.20185 16.1894 5.277 16.243C5.39 16.327 5.515 16.363 5.607 16.382C5.794 16.419 6.007 16.409 6.2 16.38C6.58 16.322 7.072 16.158 7.407 15.854C7.581 15.695 7.746 15.467 7.781 15.168C7.817 14.862 7.707 14.575 7.514 14.328L6.725 14.941ZM6.8 15.4C6.96019 15.278 7.13403 15.1749 7.318 15.093L6.921 14.175C6.681 14.2783 6.44067 14.42 6.2 14.6L6.8 15.4ZM7.318 15.093C7.968 14.812 8.549 14.96 9.144 15.243C9.29267 15.3157 9.44067 15.3923 9.588 15.473C9.732 15.551 9.884 15.634 10.028 15.708C10.304 15.847 10.646 16 11 16V15C10.906 15 10.752 14.953 10.48 14.816C10.352 14.75 10.218 14.676 10.064 14.593C9.914 14.512 9.748 14.423 9.574 14.341C8.876 14.008 7.963 13.725 6.921 14.175L7.318 15.093Z" fill="#5790FF" />
                                                             <path d="M12.7531 1.362C12.9026 0.9245 13.5071 0.91125 13.6843 1.32225L13.6993 1.36225L13.9011 1.95225C13.9473 2.08756 14.022 2.21138 14.1202 2.31536C14.2184 2.41933 14.3377 2.50105 14.4701 2.555L14.5243 2.57525L15.1143 2.77675C15.5518 2.92625 15.5651 3.53075 15.1543 3.708L15.1143 3.723L14.5243 3.92475C14.389 3.97096 14.2651 4.04566 14.1611 4.14381C14.0571 4.24197 13.9753 4.3613 13.9213 4.49375L13.9011 4.54775L13.6996 5.138C13.5501 5.5755 12.9456 5.58875 12.7686 5.178L12.7531 5.138L12.5516 4.548C12.5054 4.41265 12.4307 4.28878 12.3325 4.18475C12.2344 4.08073 12.115 3.99897 11.9826 3.945L11.9286 3.92475L11.3386 3.72325C10.9008 3.57375 10.8876 2.96925 11.2986 2.79225L11.3386 2.77675L11.9286 2.57525C12.0639 2.52901 12.1877 2.4543 12.2917 2.35614C12.3957 2.25799 12.4774 2.13867 12.5313 2.00625L12.5516 1.95225L12.7531 1.362ZM15.2263 0.5C15.2731 0.5 15.3189 0.51312 15.3586 0.537868C15.3983 0.562616 15.4303 0.598001 15.4508 0.64L15.4628 0.66925L15.5503 0.92575L15.8071 1.01325C15.854 1.02917 15.8951 1.05865 15.9252 1.09795C15.9552 1.13725 15.973 1.1846 15.9762 1.23401C15.9793 1.28341 15.9677 1.33263 15.9429 1.37545C15.9181 1.41826 15.8811 1.45273 15.8366 1.4745L15.8071 1.4865L15.5506 1.574L15.4631 1.83075C15.4471 1.87761 15.4176 1.91867 15.3783 1.94875C15.339 1.97882 15.2917 1.99655 15.2423 1.99968C15.1929 2.00281 15.1436 1.99121 15.1008 1.96634C15.058 1.94148 15.0236 1.90447 15.0018 1.86L14.9898 1.83075L14.9023 1.57425L14.6456 1.48675C14.5987 1.47083 14.5576 1.44135 14.5275 1.40205C14.4974 1.36275 14.4797 1.3154 14.4765 1.26599C14.4734 1.21659 14.4849 1.16737 14.5098 1.12455C14.5346 1.08174 14.5716 1.04727 14.6161 1.0255L14.6456 1.0135L14.9021 0.926L14.9896 0.66925C15.0065 0.619856 15.0383 0.576977 15.0808 0.546625C15.1233 0.516272 15.1742 0.499969 15.2263 0.5Z" fill="#5790FF" />
@@ -609,13 +610,13 @@
 
                                                         <div class="btn-group">
                                                             <div class="btn-container">
-                                                            <button type="button" id="draftButton1" class="btn btn-draft">Save as Draft</button>
+                                                                <button type="button" id="draftButton1" class="btn btn-draft">Save as Draft</button>
                                                                 <button type="button" class="btn btn-primary next-step" data-next-step="2"><svg width="30" height="30" viewBox="0 0 30 30" fill="none" xmlns="http://www.w3.org/2000/svg">
                                                                         <rect x="29.5" y="29.5" width="29" height="29" rx="14.5" transform="rotate(180 29.5 29.5)" stroke="black"></rect>
                                                                         <path d="M20.7866 15.5415H8.66608C8.50532 15.5415 8.35124 15.4776 8.2376 15.3639C8.12386 15.2502 8.06006 15.0959 8.06006 14.9351C8.06006 14.7742 8.12386 14.62 8.2376 14.5063C8.35124 14.3925 8.50532 14.3287 8.66608 14.3287H20.7866C20.9473 14.3287 21.1014 14.3925 21.2151 14.5063C21.3287 14.62 21.3926 14.7742 21.3926 14.9351C21.3926 15.0959 21.3287 15.2502 21.2151 15.3639C21.1014 15.4776 20.9473 15.5415 20.7866 15.5415Z" fill="black"></path>
                                                                         <path d="M20.536 14.9349L15.5096 9.90645C15.3958 9.79264 15.3319 9.63817 15.3319 9.47711C15.3319 9.31614 15.3958 9.16167 15.5096 9.04775C15.6234 8.93394 15.7778 8.87 15.9387 8.87C16.0996 8.87 16.254 8.93394 16.3678 9.04775L21.822 14.5056C21.8784 14.562 21.9232 14.6289 21.9537 14.7026C21.9843 14.7762 22 14.8552 22 14.9349C22 15.0147 21.9843 15.0937 21.9537 15.1674C21.9232 15.2411 21.8784 15.308 21.822 15.3643L16.3678 20.8222C16.254 20.936 16.0996 21 15.9387 21C15.7778 21 15.6234 20.936 15.5096 20.8222C15.3958 20.7083 15.3319 20.5538 15.3319 20.3928C15.3319 20.2318 15.3958 20.0773 15.5096 19.9635L20.536 14.9349Z" fill="black"></path>
                                                                     </svg></button>
-                                                                    
+
                                                             </div>
                                                         </div>
                                                     </div>
@@ -662,7 +663,7 @@
                                                                         <path d="M20.7866 15.5415H8.66608C8.50532 15.5415 8.35124 15.4776 8.2376 15.3639C8.12386 15.2502 8.06006 15.0959 8.06006 14.9351C8.06006 14.7742 8.12386 14.62 8.2376 14.5063C8.35124 14.3925 8.50532 14.3287 8.66608 14.3287H20.7866C20.9473 14.3287 21.1014 14.3925 21.2151 14.5063C21.3287 14.62 21.3926 14.7742 21.3926 14.9351C21.3926 15.0959 21.3287 15.2502 21.2151 15.3639C21.1014 15.4776 20.9473 15.5415 20.7866 15.5415Z" fill="black"></path>
                                                                         <path d="M20.536 14.9349L15.5096 9.90645C15.3958 9.79264 15.3319 9.63817 15.3319 9.47711C15.3319 9.31614 15.3958 9.16167 15.5096 9.04775C15.6234 8.93394 15.7778 8.87 15.9387 8.87C16.0996 8.87 16.254 8.93394 16.3678 9.04775L21.822 14.5056C21.8784 14.562 21.9232 14.6289 21.9537 14.7026C21.9843 14.7762 22 14.8552 22 14.9349C22 15.0147 21.9843 15.0937 21.9537 15.1674C21.9232 15.2411 21.8784 15.308 21.822 15.3643L16.3678 20.8222C16.254 20.936 16.0996 21 15.9387 21C15.7778 21 15.6234 20.936 15.5096 20.8222C15.3958 20.7083 15.3319 20.5538 15.3319 20.3928C15.3319 20.2318 15.3958 20.0773 15.5096 19.9635L20.536 14.9349Z" fill="black"></path>
                                                                     </svg></button>
-                                                                    <button type="button" id="draftButton2" class="btn btn-draft">Save as Draft</button>
+                                                                <button type="button" id="draftButton2" class="btn btn-draft">Save as Draft</button>
                                                             </div>
                                                         </div>
                                                     </div>
@@ -812,7 +813,7 @@
                                         }
                                     });
                                 </script>
-                                 
+
                                 <script>
                                     $(document).ready(function() {
                                         // Listen for changes to the contract type select box
@@ -844,77 +845,78 @@
                                     });
                                 </script>
                                 <script>
-                                   document.querySelector('.division').addEventListener('change', function() {
-    var selectedOption = this.options[this.selectedIndex];
+                                    document.querySelector('.division').addEventListener('change', function() {
+                                        var selectedOption = this.options[this.selectedIndex];
 
-    // Fetch data from data attributes of the selected option
-    var name = selectedOption.getAttribute('data-name');
-    var email = selectedOption.getAttribute('data-email');
-    var phone = selectedOption.getAttribute('data-phone');
-    var signImagePath = selectedOption.getAttribute('data-sign-image'); // Here we get the asset URL directly
-    var signImagePathNew = selectedOption.getAttribute('data-sign-image-new'); // Here we get the asset URL directly
+                                        // Fetch data from data attributes of the selected option
+                                        var name = selectedOption.getAttribute('data-name');
+                                        var email = selectedOption.getAttribute('data-email');
+                                        var phone = selectedOption.getAttribute('data-phone');
+                                        var signImagePath = selectedOption.getAttribute('data-sign-image'); // Here we get the asset URL directly
+                                        var signImagePathNew = selectedOption.getAttribute('data-sign-image-new'); // Here we get the asset URL directly
 
-    // Populate the input fields with the data
-    document.querySelector('.sign_party1_name').value = name;
-    document.querySelector('.sign_party1_email').value = email;
-    document.querySelector('.sign_party1_phone').value = phone;
-    document.querySelector('.sign_party1_sign_path').value = signImagePathNew;
+                                        // Populate the input fields with the data
+                                        document.querySelector('.sign_party1_name').value = name;
+                                        document.querySelector('.sign_party1_email').value = email;
+                                        document.querySelector('.sign_party1_phone').value = phone;
+                                        document.querySelector('.sign_party1_sign_path').value = signImagePathNew;
 
-    // Update the signature image source dynamically
-    var signImagePreview = document.querySelector('.sign_image_preview');
-    signImagePreview.src = signImagePath 
-        ? signImagePath 
-        : '{{ asset('default-sign.png') }}';
-});
-
+                                        // Update the signature image source dynamically
+                                        var signImagePreview = document.querySelector('.sign_image_preview');
+                                        signImagePreview.src = signImagePath ?
+                                            signImagePath :
+                                            '{{ asset('
+                                        default -sign.png ') }}';
+                                    });
                                 </script>
 
-<script>
-    document.addEventListener('DOMContentLoaded', function () {
-        // Get the divisions select element
-        const divisionsSelect = document.querySelector('.divisions');
+                                <script>
+                                    document.addEventListener('DOMContentLoaded', function() {
+                                        // Get the divisions select element
+                                        const divisionsSelect = document.querySelector('.divisions');
 
-        if (divisionsSelect) {
-            divisionsSelect.addEventListener('change', function () {
-                const selectedOption = this.options[this.selectedIndex];
+                                        if (divisionsSelect) {
+                                            divisionsSelect.addEventListener('change', function() {
+                                                const selectedOption = this.options[this.selectedIndex];
 
-                // Remove the active class from dataPrintWraps
-                const dataPrintWrap = document.getElementById('dataPrintWraps');
-                if (dataPrintWrap) {
-                    dataPrintWrap.classList.remove('active');
-                }
+                                                // Remove the active class from dataPrintWraps
+                                                const dataPrintWrap = document.getElementById('dataPrintWraps');
+                                                if (dataPrintWrap) {
+                                                    dataPrintWrap.classList.remove('active');
+                                                }
 
-                // Fetch data attributes from the selected option
-                const name = selectedOption.getAttribute('data-signparty1name') || '';
-                const email = selectedOption.getAttribute('data-signparty1email') || '';
-                const phone = selectedOption.getAttribute('data-signparty1phone') || '';
-                const signImagePath = selectedOption.getAttribute('data-ssignparty1image') || '';
-                const signPathHidden = selectedOption.getAttribute('data-ssignparty1imagenew') || '';
+                                                // Fetch data attributes from the selected option
+                                                const name = selectedOption.getAttribute('data-signparty1name') || '';
+                                                const email = selectedOption.getAttribute('data-signparty1email') || '';
+                                                const phone = selectedOption.getAttribute('data-signparty1phone') || '';
+                                                const signImagePath = selectedOption.getAttribute('data-ssignparty1image') || '';
+                                                const signPathHidden = selectedOption.getAttribute('data-ssignparty1imagenew') || '';
 
-                // Alert the value of signPathHidden
-                // alert(signPathHidden);
+                                                // Alert the value of signPathHidden
+                                                // alert(signPathHidden);
 
-                // Populate input fields
-                document.querySelector('.sign_party1_names').value = name;
-                document.querySelector('.sign_party1_emails').value = email;
-                document.querySelector('.sign_party1_phones').value = phone;
-                document.querySelector('.sign_party1_sign_paths').value = signPathHidden;
+                                                // Populate input fields
+                                                document.querySelector('.sign_party1_names').value = name;
+                                                document.querySelector('.sign_party1_emails').value = email;
+                                                document.querySelector('.sign_party1_phones').value = phone;
+                                                document.querySelector('.sign_party1_sign_paths').value = signPathHidden;
 
-                // Update the image preview
-                const signImagePreview = document.querySelector('.sign_image_previewss');
-                if (signImagePreview) {
-                    // Get the base URL dynamically from the window's location
-                    const baseUrl = window.location.origin;
+                                                // Update the image preview
+                                                const signImagePreview = document.querySelector('.sign_image_previewss');
+                                                if (signImagePreview) {
+                                                    // Get the base URL dynamically from the window's location
+                                                    const baseUrl = window.location.origin;
 
-                    // Prepend the dynamic URL to signPathHidden
-                    signImagePreview.src = signImagePath 
-                        ? signImagePath 
-                        : (signPathHidden ? `${baseUrl}/${signPathHidden}` : '{{ asset('default-sign.png') }}');
-                }
-            });
-        }
-    });
-</script>
+                                                    // Prepend the dynamic URL to signPathHidden
+                                                    signImagePreview.src = signImagePath ?
+                                                        signImagePath :
+                                                        (signPathHidden ? `${baseUrl}/${signPathHidden}` : '{{ asset('
+                                                            default -sign.png ') }}');
+                                                }
+                                            });
+                                        }
+                                    });
+                                </script>
 
 
 
@@ -922,129 +924,136 @@
 
 
                                 <script>
- $(document).ready(function () {
-    // Handle "Save as Draft"
-    $('#draftButton1').on('click', function () {
-    // Disable the button to prevent multiple submissions
-    $(this).prop('disabled', true);
+                                    $(document).ready(function() {
+                                        // Handle "Save as Draft"
+                                        $('#draftButton1').on('click', function() {
+                                            // Disable the button to prevent multiple submissions
+                                            $(this).prop('disabled', true);
 
-    $('.is_drafted').val(1); // Set is_drafted to 1
-    var formData = new FormData($('#customerContractForm')[0]);
+                                            $('.is_drafted').val(1); // Set is_drafted to 1
+                                            var formData = new FormData($('#customerContractForm')[0]);
 
-    $.ajax({
-        url: $('#customerContractForm').attr('action'),
-        type: 'POST',
-        data: formData,
-        contentType: false,
-        processData: false,
-        success: function (response) {
-            if (response.success) {
-                toastr.success(response.message, 'Success', { timeOut: 3000 });
-                location.reload();
-            } else {
-                toastr.error(response.message || 'There was an issue saving the draft.', 'Error');
-            }
-        },
-        error: function () {
-            toastr.error('An error occurred while saving the draft.', 'Error');
-        },
-        complete: function () {
-            // Re-enable the button after the request completes
-            $('#draftButton1').prop('disabled', false);
-        }
-    });
-});
+                                            $.ajax({
+                                                url: $('#customerContractForm').attr('action'),
+                                                type: 'POST',
+                                                data: formData,
+                                                contentType: false,
+                                                processData: false,
+                                                success: function(response) {
+                                                    if (response.success) {
+                                                        toastr.success(response.message, 'Success', {
+                                                            timeOut: 3000
+                                                        });
+                                                        location.reload();
+                                                    } else {
+                                                        toastr.error(response.message || 'There was an issue saving the draft.', 'Error');
+                                                    }
+                                                },
+                                                error: function() {
+                                                    toastr.error('An error occurred while saving the draft.', 'Error');
+                                                },
+                                                complete: function() {
+                                                    // Re-enable the button after the request completes
+                                                    $('#draftButton1').prop('disabled', false);
+                                                }
+                                            });
+                                        });
 
 
-$('#draftButton2').on('click', function () {
-    // Disable the button to prevent multiple submissions
-    $(this).prop('disabled', true);
+                                        $('#draftButton2').on('click', function() {
+                                            // Disable the button to prevent multiple submissions
+                                            $(this).prop('disabled', true);
 
-    $('.is_drafted').val(1); // Set is_drafted to 1
-    var formData = new FormData($('#customerContractForm')[0]);
+                                            $('.is_drafted').val(1); // Set is_drafted to 1
+                                            var formData = new FormData($('#customerContractForm')[0]);
 
-    $.ajax({
-        url: $('#customerContractForm').attr('action'),
-        type: 'POST',
-        data: formData,
-        contentType: false,
-        processData: false,
-        success: function (response) {
-            if (response.success) {
-                toastr.success(response.message, 'Success', { timeOut: 3000 });
-                location.reload();
-            } else {
-                toastr.error(response.message || 'There was an issue saving the draft.', 'Error');
-            }
-        },
-        error: function () {
-            toastr.error('An error occurred while saving the draft.', 'Error');
-        },
-        complete: function () {
-            // Re-enable the button after the request completes
-            $('#draftButton2').prop('disabled', false);
-        }
-    });
-});
+                                            $.ajax({
+                                                url: $('#customerContractForm').attr('action'),
+                                                type: 'POST',
+                                                data: formData,
+                                                contentType: false,
+                                                processData: false,
+                                                success: function(response) {
+                                                    if (response.success) {
+                                                        toastr.success(response.message, 'Success', {
+                                                            timeOut: 3000
+                                                        });
+                                                        location.reload();
+                                                    } else {
+                                                        toastr.error(response.message || 'There was an issue saving the draft.', 'Error');
+                                                    }
+                                                },
+                                                error: function() {
+                                                    toastr.error('An error occurred while saving the draft.', 'Error');
+                                                },
+                                                complete: function() {
+                                                    // Re-enable the button after the request completes
+                                                    $('#draftButton2').prop('disabled', false);
+                                                }
+                                            });
+                                        });
 
-$('#draftButton3').on('click', function () {
-    // Disable the button to prevent multiple submissions
-    $(this).prop('disabled', true);
+                                        $('#draftButton3').on('click', function() {
+                                            // Disable the button to prevent multiple submissions
+                                            $(this).prop('disabled', true);
 
-    $('.is_drafted').val(1); // Set is_drafted to 1
-    var formData = new FormData($('#customerContractForm')[0]);
+                                            $('.is_drafted').val(1); // Set is_drafted to 1
+                                            var formData = new FormData($('#customerContractForm')[0]);
 
-    $.ajax({
-        url: $('#customerContractForm').attr('action'),
-        type: 'POST',
-        data: formData,
-        contentType: false,
-        processData: false,
-        success: function (response) {
-            if (response.success) {
-                toastr.success(response.message, 'Success', { timeOut: 3000 });
-                location.reload();
-            } else {
-                toastr.error(response.message || 'There was an issue saving the draft.', 'Error');
-            }
-        },
-        error: function () {
-            toastr.error('An error occurred while saving the draft.', 'Error');
-        },
-        complete: function () {
-            // Re-enable the button after the request completes
-            $('#draftButton3').prop('disabled', false);
-        }
-    });
-});
+                                            $.ajax({
+                                                url: $('#customerContractForm').attr('action'),
+                                                type: 'POST',
+                                                data: formData,
+                                                contentType: false,
+                                                processData: false,
+                                                success: function(response) {
+                                                    if (response.success) {
+                                                        toastr.success(response.message, 'Success', {
+                                                            timeOut: 3000
+                                                        });
+                                                        location.reload();
+                                                    } else {
+                                                        toastr.error(response.message || 'There was an issue saving the draft.', 'Error');
+                                                    }
+                                                },
+                                                error: function() {
+                                                    toastr.error('An error occurred while saving the draft.', 'Error');
+                                                },
+                                                complete: function() {
+                                                    // Re-enable the button after the request completes
+                                                    $('#draftButton3').prop('disabled', false);
+                                                }
+                                            });
+                                        });
 
-    // Handle "Submit"
-    $('#submitButton').off('click').on('click', function (e) {
-        e.preventDefault();
+                                        // Handle "Submit"
+                                        $('#submitButton').off('click').on('click', function(e) {
+                                            e.preventDefault();
 
-        var formData = new FormData($('#customerContractForm')[0]);
+                                            var formData = new FormData($('#customerContractForm')[0]);
 
-        $.ajax({
-            url: $('#customerContractForm').attr('action'),
-            type: 'POST',
-            data: formData,
-            contentType: false,
-            processData: false,
-            success: function (response) {
-                if (response.success) {
-                    toastr.success(response.message, 'Success', { timeOut: 3000 });
-                    location.reload(); // Reload for submissions
-                } else {
-                    toastr.error(response.message || 'There was an issue submitting the contract.', 'Error');
-                }
-            },
-            error: function () {
-                toastr.error('An error occurred while submitting the contract.', 'Error');
-            }
-        });
-    });
-});
-
+                                            $.ajax({
+                                                url: $('#customerContractForm').attr('action'),
+                                                type: 'POST',
+                                                data: formData,
+                                                contentType: false,
+                                                processData: false,
+                                                success: function(response) {
+                                                    if (response.success) {
+                                                        toastr.success(response.message, 'Success', {
+                                                            timeOut: 3000
+                                                        });
+                                                        location.reload(); // Reload for submissions
+                                                    } else {
+                                                        toastr.error(response.message || 'There was an issue submitting the contract.', 'Error');
+                                                    }
+                                                },
+                                                error: function() {
+                                                    toastr.error('An error occurred while submitting the contract.', 'Error');
+                                                }
+                                            });
+                                        });
+                                    });
                                 </script>
 
                                 <script>
@@ -1266,12 +1275,12 @@ $('#draftButton3').on('click', function () {
 
 
                                             <a class="dropdown-itemm Editdraft" data-bs-toggle="modal" data-bs-target="#editthreeStepModal" data-id="{{ $contract->id }}" data-filepath="{{ $contract->file_path }}"
-                                                data-contractname="{{ $contract->contract_name }}"  data-contracttype="{{ $contract->contracttype }}" data-conttype="{{ $contract->contract_type }}"  data-division="{{ $contract->division }}" data-vname="{{ $contract->vendor_name }}"
-                                                data-les="{{ $contract->legal_entity_status }}" data-startdate="{{ $contract->startdate }}"  data-startend="{{ $contract->startend }}"  data-contractvalue="{{ $contract->contract_value }}" data-signingstatus="{{ $contract->signing_status }}" data-renewalterms="{{ $lastRenewalTerm }}"
-                                                data-paymentterms="{{ $lastPaymentTerm }}" data-feeescalationclause="{{ $lastFeeEscalation }}" data-signparty1name="{{ $contract->sign_party1_name }}"  data-signparty1email="{{ $contract->sign_party1_email }}"  data-signparty1phone="{{ $contract->sign_party1_phone }}"
-                                                data-signparty1signpath="{{ $contract->sign_party1_sign_path }}"  data-signparty2name="{{ $contract->sign_party2_name }}" data-signparty2email="{{ $contract->sign_party2_email }}"
+                                                data-contractname="{{ $contract->contract_name }}" data-contracttype="{{ $contract->contracttype }}" data-conttype="{{ $contract->contract_type }}" data-division="{{ $contract->division }}" data-vname="{{ $contract->vendor_name }}"
+                                                data-les="{{ $contract->legal_entity_status }}" data-startdate="{{ $contract->startdate }}" data-startend="{{ $contract->startend }}" data-contractvalue="{{ $contract->contract_value }}" data-signingstatus="{{ $contract->signing_status }}" data-renewalterms="{{ $lastRenewalTerm }}"
+                                                data-paymentterms="{{ $lastPaymentTerm }}" data-feeescalationclause="{{ $lastFeeEscalation }}" data-signparty1name="{{ $contract->sign_party1_name }}" data-signparty1email="{{ $contract->sign_party1_email }}" data-signparty1phone="{{ $contract->sign_party1_phone }}"
+                                                data-signparty1signpath="{{ $contract->sign_party1_sign_path }}" data-signparty2name="{{ $contract->sign_party2_name }}" data-signparty2email="{{ $contract->sign_party2_email }}"
 
-                                                data-signparty2phone="{{ $contract->sign_party2_phone }}"   data-signparty2imagepath="{{ $contract->sign_party2_image_path }}"  data-signparty2signpath="{{ $contract->sign_party2_sign_path }}">
+                                                data-signparty2phone="{{ $contract->sign_party2_phone }}" data-signparty2imagepath="{{ $contract->sign_party2_image_path }}" data-signparty2signpath="{{ $contract->sign_party2_sign_path }}">
                                                 <svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
                                                     <path d="M1.68029 10.5673C1.70709 10.3261 1.7205 10.2055 1.75699 10.0928C1.78936 9.99277 1.83511 9.89759 1.89298 9.80983C1.9582 9.71092 2.04401 9.62512 2.21561 9.45351L9.91929 1.74985C10.5636 1.10552 11.6083 1.10552 12.2526 1.74985C12.897 2.39418 12.897 3.43885 12.2526 4.08319L4.54894 11.7868C4.37734 11.9585 4.29154 12.0443 4.19262 12.1095C4.10487 12.1673 4.00969 12.2131 3.90968 12.2455C3.79696 12.282 3.67635 12.2954 3.43515 12.3222L1.46094 12.5415L1.68029 10.5673Z" stroke="#414651" stroke-width="1.66667" stroke-linecap="round" stroke-linejoin="round" />
                                                 </svg>
@@ -1328,8 +1337,8 @@ $('#draftButton3').on('click', function () {
                                 </tbody>
                                 </table>
 
-<!-- edit three step model start-->
-<div class="modal fade drop_coman_file have_title custom_add_customer" id="editthreeStepModal" tabindex="-1" role="dialog" aria-labelledby="editthreeStepModalLabel" aria-hidden="true">
+                                <!-- edit three step model start-->
+                                <div class="modal fade drop_coman_file have_title custom_add_customer" id="editthreeStepModal" tabindex="-1" role="dialog" aria-labelledby="editthreeStepModalLabel" aria-hidden="true">
                                     <div class="modal-dialog modal-dialog-centered" role="document">
                                         <div class="modal-content">
                                             <div class="modal-header">
@@ -1373,7 +1382,7 @@ $('#draftButton3').on('click', function () {
                                                         <h4></h4>
 
                                                         <!-- Upload Contract -->
-                                                      
+
                                                         <div class="file-area">
                                                             <input type="file" class="dragfile" id="contractfile" name="file" accept=".pdf,.doc,.docx" required>
 
@@ -1390,7 +1399,7 @@ $('#draftButton3').on('click', function () {
                                                             </div>
                                                         </div>
 
-                                                      
+
 
                                                         <div class="gropu_form">
                                                             <label for="fname">Contract name <span class="red_star">*</span></label>
@@ -1398,7 +1407,7 @@ $('#draftButton3').on('click', function () {
                                                                 title="Only alphabets and spaces are allowed">
                                                             <input required type="hidden" id="contracttypes" name="contracttype" value="customer contract">
                                                             <input required type="hidden" id="customer_id" name="customer_id" value="{{$customerrecord->id}}">
-                                                            <input required type="hidden" id="contid" name="contid" >
+                                                            <input required type="hidden" id="contid" name="contid">
                                                         </div>
 
                                                         <div class="gropu_form">
@@ -1436,11 +1445,11 @@ $('#draftButton3').on('click', function () {
                                                                 @foreach ( $authmanagement as $divi)
 
 
-                                                                <option value="{{ $divi->division_name }}" 
-                                                                    data-signparty1name="{{ $divi->name }}" 
-                                                                    data-signparty1email="{{ $divi->email }}" 
-                                                                    data-signparty1phone="{{ $divi->phone }}" 
-                                                                    data-signparty1image="{{ asset($divi->sign_image_path) }}" 
+                                                                <option value="{{ $divi->division_name }}"
+                                                                    data-signparty1name="{{ $divi->name }}"
+                                                                    data-signparty1email="{{ $divi->email }}"
+                                                                    data-signparty1phone="{{ $divi->phone }}"
+                                                                    data-signparty1image="{{ asset($divi->sign_image_path) }}"
                                                                     data-ssignparty1imagenew="{{ $divi->sign_image_path }}">
                                                                     {{ $divi->division_name }}
                                                                 </option>
@@ -1561,7 +1570,7 @@ $('#draftButton3').on('click', function () {
                                                                 <!-- Email Input -->
                                                                 <div class="gropu_form">
                                                                     <label for="emailprint">Email:</label>
-                                                                    <input type="email" id="sign_party1_emails"  class="sign_party1_emails" name="sign_party1_email" readonly>
+                                                                    <input type="email" id="sign_party1_emails" class="sign_party1_emails" name="sign_party1_email" readonly>
                                                                 </div>
 
                                                                 <!-- Phone Input -->
@@ -1662,7 +1671,7 @@ $('#draftButton3').on('click', function () {
                                                                         <path d="M9.46402 14.9349L14.4904 9.90645C14.6042 9.79264 14.6681 9.63817 14.6681 9.47711C14.6681 9.31614 14.6042 9.16167 14.4904 9.04775C14.3766 8.93394 14.2222 8.87 14.0613 8.87C13.9004 8.87 13.746 8.93394 13.6322 9.04775L8.17804 14.5056C8.1216 14.562 8.07682 14.6289 8.04627 14.7026C8.01573 14.7762 8 14.8552 8 14.9349C8 15.0147 8.01573 15.0937 8.04627 15.1674C8.07682 15.2411 8.1216 15.308 8.17804 15.3643L13.6322 20.8222C13.746 20.936 13.9004 21 14.0613 21C14.2222 21 14.3766 20.936 14.4904 20.8222C14.6042 20.7083 14.6681 20.5538 14.6681 20.3928C14.6681 20.2318 14.6042 20.0773 14.4904 19.9635L9.46402 14.9349Z" fill="black"></path>
                                                                     </svg>
                                                                 </button>
-                                                                
+
                                                                 <button type="submit" id="submitButton" class="btn btn-success">Upload</button>
                                                             </div>
                                                         </div>
@@ -1674,73 +1683,72 @@ $('#draftButton3').on('click', function () {
                                         </div>
                                     </div>
                                 </div>
- <!-- edit three step model end-->
- <script>
-   $(document).ready(function () {
-    // When the Edit Draft link is clicked
-    $('.Editdraft').on('click', function () {
-        // Extract data attributes from the clicked link
-        var contractId = $(this).data('id');
-        var filepath = $(this).data('filepath');
-        var contractName = $(this).data('contractname');
-        var contractType = $(this).data('contracttype');
-        var contype = $(this).data('conttype');
-        var division = $(this).data('division');
-        var vendorName = $(this).data('vname');
-        var legalStatus = $(this).data('les');
-        var startDate = $(this).data('startdate');
-        var startEnd = $(this).data('startend');
-        var contractValue = $(this).data('contractvalue');
-        var signingStatus = $(this).data('signingstatus');
-        var renewalTerms = $(this).data('renewalterms');
-        var paymentTerms = $(this).data('paymentterms');
-        var feeEscalationClause = $(this).data('feeescalationclause');
-        var signParty1Name = $(this).data('signparty1name');
-        var signParty1Email = $(this).data('signparty1email');
-        var signParty1Phone = $(this).data('signparty1phone');
-        var signParty1SignPath = $(this).data('signparty1signpath');
-        var signParty2Name = $(this).data('signparty2name');
-        var signParty2Email = $(this).data('signparty2email');
-        var signParty2Phone = $(this).data('signparty2phone');
-        var signParty2ImagePath = $(this).data('signparty2imagepath');
-        var signParty2SignPath = $(this).data('signparty2signpath');
+                                <!-- edit three step model end-->
+                                <script>
+                                    $(document).ready(function() {
+                                        // When the Edit Draft link is clicked
+                                        $('.Editdraft').on('click', function() {
+                                            // Extract data attributes from the clicked link
+                                            var contractId = $(this).data('id');
+                                            var filepath = $(this).data('filepath');
+                                            var contractName = $(this).data('contractname');
+                                            var contractType = $(this).data('contracttype');
+                                            var contype = $(this).data('conttype');
+                                            var division = $(this).data('division');
+                                            var vendorName = $(this).data('vname');
+                                            var legalStatus = $(this).data('les');
+                                            var startDate = $(this).data('startdate');
+                                            var startEnd = $(this).data('startend');
+                                            var contractValue = $(this).data('contractvalue');
+                                            var signingStatus = $(this).data('signingstatus');
+                                            var renewalTerms = $(this).data('renewalterms');
+                                            var paymentTerms = $(this).data('paymentterms');
+                                            var feeEscalationClause = $(this).data('feeescalationclause');
+                                            var signParty1Name = $(this).data('signparty1name');
+                                            var signParty1Email = $(this).data('signparty1email');
+                                            var signParty1Phone = $(this).data('signparty1phone');
+                                            var signParty1SignPath = $(this).data('signparty1signpath');
+                                            var signParty2Name = $(this).data('signparty2name');
+                                            var signParty2Email = $(this).data('signparty2email');
+                                            var signParty2Phone = $(this).data('signparty2phone');
+                                            var signParty2ImagePath = $(this).data('signparty2imagepath');
+                                            var signParty2SignPath = $(this).data('signparty2signpath');
 
-        // Populate the form fields with the extracted values
-        $('#contid').val(contractId);
-        $('#contract_names').val(contractName);
-        $('#contract_types').val(contractType);
-        $('#contracttypes').val(contype);
-        $('#divisions').val(division);
-        
-       
-        $('#starts').val(startDate);
-        $('#ends').val(startEnd);
-        $('#contract_values').val(contractValue);
-        $('#signing_statuss').val(signingStatus);
-        $('#renewal_termss').val(renewalTerms);
-        $('#payment_termss').val(paymentTerms);
-        $('#fee_escalation_clauses').val(feeEscalationClause);
-        $('#sign_party1_names').val(signParty1Name);
-        $('#sign_party1_emails').val(signParty1Email);
-        $('#sign_party1_phones').val(signParty1Phone);
-        $('#sign_party1_sign_paths').val(signParty1SignPath);
-        $('#sign_party2_names').val(signParty2Name);
-        $('#sign_party2_emails').val(signParty2Email);
-        $('#sign_party2_phones').val(signParty2Phone);
-        $('#sign_party2_image_paths').val(signParty2ImagePath);
-        $('#sign_party2_sign_paths').val(signParty2SignPath);
+                                            // Populate the form fields with the extracted values
+                                            $('#contid').val(contractId);
+                                            $('#contract_names').val(contractName);
+                                            $('#contract_types').val(contractType);
+                                            $('#contracttypes').val(contype);
+                                            $('#divisions').val(division);
 
-        // Optional: Show the preview images for signatures or other files
-        if (signParty1SignPath) {
-            $('#sign_image_previews').attr('src', signParty1SignPath).show();
-        }
-        if (signParty2ImagePath) {
-            $('#sign_party2_image_previews').attr('src', signParty2ImagePath).show();
-        }
-    });
-});
 
- </script>
+                                            $('#starts').val(startDate);
+                                            $('#ends').val(startEnd);
+                                            $('#contract_values').val(contractValue);
+                                            $('#signing_statuss').val(signingStatus);
+                                            $('#renewal_termss').val(renewalTerms);
+                                            $('#payment_termss').val(paymentTerms);
+                                            $('#fee_escalation_clauses').val(feeEscalationClause);
+                                            $('#sign_party1_names').val(signParty1Name);
+                                            $('#sign_party1_emails').val(signParty1Email);
+                                            $('#sign_party1_phones').val(signParty1Phone);
+                                            $('#sign_party1_sign_paths').val(signParty1SignPath);
+                                            $('#sign_party2_names').val(signParty2Name);
+                                            $('#sign_party2_emails').val(signParty2Email);
+                                            $('#sign_party2_phones').val(signParty2Phone);
+                                            $('#sign_party2_image_paths').val(signParty2ImagePath);
+                                            $('#sign_party2_sign_paths').val(signParty2SignPath);
+
+                                            // Optional: Show the preview images for signatures or other files
+                                            if (signParty1SignPath) {
+                                                $('#sign_image_previews').attr('src', signParty1SignPath).show();
+                                            }
+                                            if (signParty2ImagePath) {
+                                                $('#sign_party2_image_previews').attr('src', signParty2ImagePath).show();
+                                            }
+                                        });
+                                    });
+                                </script>
 
                                 <!-- notify model start -->
 
@@ -1963,6 +1971,173 @@ $('#draftButton3').on('click', function () {
                         </div>
                     </div>
                 </div>
+
+                <div class="main_smart_contract" style="display: none;">
+                    <!-- step 1 select templete start-->
+                    <div class="smart_step_1">
+                        <div class="head_progress_smmart">
+                            <div class="progrees_sk">
+                            </div>
+                            <button type="button" class="hide_smart_contract"><svg width="11" height="11" viewBox="0 0 11 11" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M1.24264 9.72799L9.72792 1.24271M9.72792 9.72799L1.24264 1.24271" stroke="#FF0000" stroke-width="1.66" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"></path>
+                                </svg></button>
+                        </div>
+                        <div class="smrt_bodyy">
+                            <div class="say_hii_smart">
+                                <div class="left_hii">
+                                    <span>Say Hi to</span>
+                                    <h2>Smart Contract <br>Generator</h2>
+                                </div>
+                                <div class="right_hii">
+                                    <svg width="288" height="326" viewBox="0 0 288 326" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <path fill-rule="evenodd" clip-rule="evenodd" d="M0 81.4997C0 74.2946 2.84879 67.3847 7.91966 62.2899C12.9905 57.1952 19.8681 54.333 27.0394 54.333H174.981L234.342 113.973V298.833C234.342 306.038 231.493 312.948 226.422 318.043C221.351 323.137 214.474 326 207.302 326H27.0394C19.8681 326 12.9905 323.137 7.91966 318.043C2.84879 312.948 0 306.038 0 298.833V81.4997ZM108.158 126.777H54.0788V144.889H108.158V126.777ZM180.263 181.111H54.0788V199.222H180.263V181.111ZM95.6294 251.889C88.3468 253.845 82.6505 259.441 80.6676 265.472L63.5426 259.749C67.5625 247.669 78.0899 237.871 90.9426 234.394C103.687 230.953 118.234 233.85 130.817 245.46C134.602 244.361 138.34 243.715 142.029 243.522C151.763 242.996 160.47 245.46 167.951 248.593C173.449 250.893 178.767 253.791 183.273 256.236C184.691 257.033 186.025 257.757 187.275 258.409C193.098 261.488 196.288 262.611 198.289 262.611V280.722C191.259 280.722 184.337 277.317 178.893 274.455L173.99 271.811C169.775 269.427 165.443 267.257 161.011 265.309C154.99 262.774 149.059 261.289 143.002 261.615C142.098 261.665 141.196 261.75 140.299 261.868L140.317 262.122C140.803 267.99 138.388 272.825 135.269 276.303C129.537 282.714 120.181 286.083 113.151 287.351C109.507 288.073 105.773 288.226 102.083 287.803C99.9899 287.534 97.9692 286.858 96.1342 285.811C94.7049 284.989 93.4741 283.86 92.5299 282.504C91.5856 281.148 90.9513 279.6 90.6722 277.969C90.2342 274.922 90.948 271.82 92.6731 269.276C93.9864 267.347 95.5782 265.626 97.396 264.168C100.821 261.325 105.778 258.246 112.43 254.877L112.917 254.515C110.36 252.921 107.508 251.865 104.533 251.414C101.558 250.963 98.5403 251.124 95.6294 251.889Z" fill="white" />
+                                        <path d="M229.891 15.6118C232.586 7.68817 243.483 7.4482 246.678 14.8919L246.948 15.6163L250.585 26.3019C251.418 28.7524 252.765 30.9949 254.535 32.8781C256.304 34.7613 258.455 36.2413 260.842 37.2183L261.82 37.5851L272.455 41.2345C280.342 43.9421 280.581 54.8902 273.176 58.1004L272.455 58.3721L261.82 62.026C259.38 62.8629 257.147 64.2158 255.272 65.9935C253.397 67.7713 251.923 69.9325 250.95 72.3313L250.585 73.3092L246.953 83.9993C244.258 91.9229 233.361 92.1629 230.17 84.7238L229.891 83.9993L226.259 73.3138C225.426 70.8624 224.079 68.619 222.31 66.735C220.54 64.851 218.389 63.3703 216.002 62.3928L215.028 62.026L204.393 58.3766C196.502 55.669 196.263 44.7209 203.672 41.5152L204.393 41.2345L215.028 37.5851C217.467 36.7477 219.699 35.3945 221.574 33.6168C223.448 31.8391 224.921 29.6782 225.894 27.2799L226.259 26.3019L229.891 15.6118ZM274.474 8.18113e-07C275.317 -1.06843e-06 276.144 0.23761 276.859 0.68583C277.574 1.13405 278.15 1.7749 278.521 2.53556L278.738 3.06531L280.315 7.71081L284.943 9.29553C285.788 9.58393 286.529 10.1178 287.071 10.8296C287.614 11.5414 287.934 12.3989 287.991 13.2937C288.048 14.1884 287.839 15.0799 287.391 15.8553C286.943 16.6307 286.276 17.2551 285.475 17.6493L284.943 17.8666L280.319 19.4513L278.742 24.1014C278.455 24.95 277.923 25.6938 277.214 26.2384C276.505 26.7831 275.652 27.1041 274.761 27.1609C273.871 27.2176 272.983 27.0075 272.212 26.5571C271.44 26.1068 270.819 25.4365 270.427 24.6311L270.211 24.1014L268.634 19.4559L264.006 17.8711C263.161 17.5827 262.42 17.0488 261.877 16.3371C261.335 15.6253 261.015 14.7677 260.958 13.873C260.901 12.9783 261.11 12.0868 261.558 11.3114C262.005 10.5359 262.672 9.91158 263.474 9.51739L264.006 9.30006L268.629 7.71533L270.207 3.06531C270.51 2.17073 271.085 1.39414 271.851 0.844425C272.616 0.294709 273.534 -0.000567246 274.474 8.18113e-07Z" fill="white" />
+                                    </svg>
+                                </div>
+                            </div>
+
+                            <div class="bottom_smart_next">
+                                <div class="left_message_smart">
+                                    <p>Lorem Ipsum Dolor Sit Amet<br>
+                                        (Description about the Smart Contract Feature)</p>
+                                </div>
+
+                                <div class="smart_next_pre">
+                                    <button type="button" class="btn btn-primary next-step-smart">
+                                        Next →</button>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- step 1 select templete end-->
+
+                    <!-- step 2 select templete start-->
+                    <div class="smart_step_2" style="display:none;">
+                        <div class="head_progress_smmart">
+                            <div class="progrees_skill">
+                                <span class="active">1</span>
+                                <span>2</span>
+                                <span>3</span>
+                            </div>
+                            <button type="button" class="hide_smart_contract"><svg width="11" height="11" viewBox="0 0 11 11" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M1.24264 9.72799L9.72792 1.24271M9.72792 9.72799L1.24264 1.24271" stroke="#FF0000" stroke-width="1.66" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"></path>
+                                </svg></button>
+                        </div>
+                        <div class="smrt_bodyy">
+                            <div class="select_templete">
+                                <label for="template">Select the type of Contract</label>
+                                <select id="template">
+                                    <option value="" disabled="" selected="">select</option>
+                                    <option value="1">Non-Disclosure Agreement (NDA)</option>
+                                    <option value="2">Template 2</option>
+                                    <option value="3">Template 3</option>
+                                </select>
+
+                            </div>
+
+                            <div class="bottom_smart_next">
+                                <div class="left_message_smart">
+                                    <p>Lorem Ipsum Dolor Sit Amet<br>
+                                        (Description about the Smart Contract Feature)</p>
+                                </div>
+
+                                <div class="smart_next_pre">
+                                    <button type="button" class="btn btn-primary next-step-smart" disabled>
+                                        Next →</button>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- step 2 select templete end-->
+
+                    <!-- step 3 select templete start-->
+                    <div class="smart_step_3" style="display:none;">
+                        <div class="head_progress_smmart">
+                            <div class="progrees_skill">
+                                <span><svg width="11" height="8" viewBox="0 0 11 8" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M1 4.2L3.8 7L9.4 1" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+                                    </svg></span>
+                                <span class="active">2</span>
+                                <span>3</span>
+                            </div>
+                            <button type="button" class="hide_smart_contract"><svg width="11" height="11" viewBox="0 0 11 11" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M1.24264 9.72799L9.72792 1.24271M9.72792 9.72799L1.24264 1.24271" stroke="#FF0000" stroke-width="1.66" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"></path>
+                                </svg></button>
+                        </div>
+                        <div class="smrt_bodyy">
+                            <div class="form_feilds">
+                                <div id="dynamic-fields"></div>
+                            </div>
+
+                            <div class="right_live_pre">
+                                <div class="lve_framee">
+                                    <div class="title_smart">
+                                        <h2 class="title-heading">Non-Disclosure Agreement</h2>
+                                    </div>
+
+                                    <div class="preview-content">
+                                        <!-- Dynamic templates will load here -->
+                                    </div>
+                                </div>
+
+                                <div class="smart_next_pre">
+                                    <button type="button" class="btn btn-secondary prev-step-smart">
+                                        ← Previous
+                                    </button>
+                                    <button type="button" class="btn btn-primary next-step-smart">
+                                        Next →</button>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                    <!-- step 3 select templete end-->
+
+                    <!-- step 4 select templete start-->
+                    <div class="smart_step_4" style="display:none;">
+                        <div class="head_progress_smmart">
+                            <div class="progrees_sk">
+                            </div>
+                            <button type="button" class="hide_smart_contract"><svg width="11" height="11" viewBox="0 0 11 11" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M1.24264 9.72799L9.72792 1.24271M9.72792 9.72799L1.24264 1.24271" stroke="#FF0000" stroke-width="1.66" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"></path>
+                                </svg></button>
+                        </div>
+                        <div class="smrt_bodyy">
+
+                            <div class="right_live_pre">
+                                <div class="final_contract">
+                                    <svg width="34" height="34" viewBox="0 0 34 34" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <circle cx="17" cy="17" r="16.5" fill="white" stroke="white" />
+                                        <path d="M10.6016 17.3202L15.0816 21.8002L24.0416 12.2002" stroke="#2E72F7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" />
+                                    </svg>
+                                    Contract Signed
+                                </div>
+                                <div class="lve_framee">
+                                    <div class="title_smart">
+                                        <h2 class="title-heading">Non-Disclosure Agreement</h2>
+                                    </div>
+                                    <div class="preview-content">
+                                        <!-- Dynamic templates will load here -->
+                                    </div>
+                                </div>
+
+                                <div class="smart_next_pre">
+                                    <button type="button" class="btn btn-secondary prev-step-smart">
+                                        ← Previous
+                                    </button>
+                                    <button type="button" class="upload_contract">Upload Contract</button>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                    <!-- step 4 select templete end-->
+
+
+                </div>
+
             </div>
         </div>
         <!-- Container-fluid start-->
