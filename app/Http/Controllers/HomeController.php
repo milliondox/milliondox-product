@@ -24171,7 +24171,7 @@ if (is_array($dataTags)) {
     public function fetchfixedFiles(Request $request)
     {
         $user_id = Auth::id();
-        if($user_id === 269){
+        // if($user_id === 269){
              // Fetch folder path from the request query
             $path = $request->query('path');
             // Ensure the folder path is provided
@@ -24253,10 +24253,10 @@ if (is_array($dataTags)) {
             // dd($data);
             return response()->json(['data'=>$data, 'counts'=>$counts, 'file_sizes'=>$file_sizes]);
 
-        }
-        else{
-            return response()->json($data="User is not authorised");
-        }
+        // }
+        // else{
+        //     return response()->json($data="User is not authorised");
+        // }
        
     }
 
