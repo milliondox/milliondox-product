@@ -1858,7 +1858,7 @@ $('#draftButton3').on('click', function () {
                                                 <div class="gropu_form">
                                                     <label for="con_term">Current Payment Terms </label>
                                                     <div class="renui_term">
-                                                        <div class="gropu_form addendforms">
+                                                        <div class="gropu_form addendforms no_edit">
                                                             <label for="payment_terms">Payment Terms <span class="red_star">*</span></label>
                                                             <div id="quill-payment-termssd" class="quill-editor"></div>
                                                             <textarea name="con_add_payment_term1" id="contractpaymentds" disabled ></textarea>
@@ -1868,10 +1868,14 @@ $('#draftButton3').on('click', function () {
                                                 </div>
 
                                                  <!-- Payment Terms -->
+                                                 <div class="gropu_form">
+                                                 <div class="renui_term">
                                                  <div class="gropu_form addendforms">
                                                     <label for="payment_terms">Payment Terms <span class="red_star">*</span></label>
                                                     <div id="quill-payment-termssdd" class="quill-editor"></div>
                                                     <textarea name="con_add_payment_term" id="payment_termssddd" required></textarea>
+                                                </div>
+                                                </div>
                                                 </div>
                                                 
                                             </div>
@@ -1881,7 +1885,7 @@ $('#draftButton3').on('click', function () {
                                                 <div class="gropu_form">
                                                     <label for="con_term">Current Renewal Terms </label>
                                                     <div class="renui_term">
-                                                        <div class="gropu_form addendforms">
+                                                        <div class="gropu_form addendforms no_edit">
 
                                                             <label for="renewal_terms">Renewal Terms <span class="red_star">*</span></label>
                                                             <div id="quill-renewal-termssd" class="quill-editor"></div>
@@ -1891,12 +1895,12 @@ $('#draftButton3').on('click', function () {
                                                     </div>
                                                 </div>
                                                 <div class="gropu_form addendforms">
-
+                                                <div class="renui_term">
                                                     <label for="renewal_terms">Renewal Terms <span class="red_star">*</span></label>
                                                     <div id="quill-renewal-termssdd" class="quill-editor"></div>
                                                     <textarea name="con_add_renew_term" id="renewal_termssddd" required></textarea>
                                                 </div>
-                                                
+                                                </div>
                                             </div>
 
                                             <!-- Fee Exclusion Matrix Addendum Group -->
@@ -1904,7 +1908,7 @@ $('#draftButton3').on('click', function () {
                                                 <div class="gropu_form">
                                                     <label for="con_term">Current Fee Exclusion Matrix </label>
                                                     <div class="renui_term">
-                                                        <div class="gropu_form addendforms">
+                                                        <div class="gropu_form addendforms no_edit">
                                                             <label for="fee_escalation_clause">Fee Escalation Clause <span class="red_star">*</span></label>
                                                             <div id="quill-fee-escalation-clausesd" class="quill-editor"></div>
                                                             <textarea name="fee_escalation_clause1" id="contractfeeds" disabled ></textarea>
@@ -1913,11 +1917,12 @@ $('#draftButton3').on('click', function () {
                                                     </div>
                                                 </div>
                                                 <div class="gropu_form addendforms">
+                                                <div class="renui_term">
                                                     <label for="fee_escalation_clause">Fee Escalation Clause <span class="red_star">*</span></label>
                                                     <div id="quill-fee-escalation-clausesdd" class="quill-editor"></div>
                                                     <textarea name="con_add_fee_term" id="fee_escalation_clausesddd" required></textarea>
                                                 </div>
-
+                                                </div>
                                             </div>
 
                                             <input type="hidden" name="contractid" id="contractid">

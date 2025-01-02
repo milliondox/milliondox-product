@@ -5659,7 +5659,7 @@ span.red_star {
         margin: 10px 0px 10px;
     }
 
-  
+
 
     .dark-only .drop_coman_file.have_title .modal-content .gropu_form input,
     .dark-only .drop_coman_file.have_title .modal-content .gropu_form select {
@@ -22508,13 +22508,14 @@ span.clinet_name {
     white-space: unset;
     width: 320px;
 }
+
 .custo_phonne .phone_country .iti input {
     padding-left: 90px !important;
     min-width: unset !important;
     width: 100%;
 }
 
-.custom_add_customer.drop_coman_file.have_title  .file_coman_wrap .coman_file_uplaodd label {
+.custom_add_customer.drop_coman_file.have_title .file_coman_wrap .coman_file_uplaodd label {
     font-size: 12px;
     margin-bottom: 3px;
     display: block;
@@ -22522,7 +22523,7 @@ span.clinet_name {
 }
 
 
-.custom_add_customer  .gropu_form .director_field_wrap {
+.custom_add_customer .gropu_form .director_field_wrap {
     max-height: 250px;
     overflow: auto;
     padding: 0px 5px 0px 0px;
@@ -22532,7 +22533,7 @@ span.clinet_name {
 }
 
 
-.custom_add_customer  .gropu_form .director-field_input {
+.custom_add_customer .gropu_form .director-field_input {
     display: flex;
     flex-wrap: wrap;
     flex-direction: column;
@@ -22562,12 +22563,15 @@ span.clinet_name {
     background: #E2ECFF;
     padding: 0;
 }
+
 .custom_add_customer .gropu_form .director_field_wrap button:hover {
     background: #d0dbef;
 }
+
 .dark-only .custom_add_customer .gropu_form .director_field_wrap button {
     background: #363a41;
 }
+
 .dark-only .custom_add_customer .gropu_form .director_field_wrap button:hover {
     background: #2e323b;
 }
@@ -22576,6 +22580,7 @@ span.clinet_name {
     width: 100%;
     display: block;
 }
+
 .custom_add_customer .gropu_form .director_field_wrap .director-field {
     display: flex;
     align-items: center;
@@ -22642,7 +22647,7 @@ span.clinet_name {
     background: #475162;
 }
 
-.custom_add_customer .gropu_form .director_field_wrap  .director-field_input_wrap {
+.custom_add_customer .gropu_form .director_field_wrap .director-field_input_wrap {
     background: #f4f7fe;
     flex: 1;
     border: 1px solid #f4f7fe;
@@ -22691,40 +22696,40 @@ span.clinet_name {
     margin-bottom: 8px;
 }
 
-.drop_coman_file.have_title .customer_details .step-2 .gropu_form .quill-editor {
+.contract_uploadd .gropu_form .quill-editor {
     height: 100px !IMPORTANT;
 }
 
-.drop_coman_file.have_title .customer_details .step-2 .gropu_form .ql-toolbar .ql-formats:last-child {
+.contract_uploadd .gropu_form .ql-toolbar .ql-formats:last-child {
     margin: 0;
 }
 
 
-.dark-only .drop_coman_file.have_title .customer_details .step-2 .gropu_form .ql-toolbar {
+.dark-only .contract_uploadd .gropu_form .ql-toolbar {
     border-color: #3e4d70 ! IMPORTANT;
 }
 
-.dark-only .drop_coman_file.have_title .customer_details .step-2 .gropu_form .ql-editor.ql-blank {
+.dark-only .contract_uploadd .gropu_form .ql-editor.ql-blank {
     background: transparent !important;
     border-color: #3e4d70 ! IMPORTANT;
 }
 
-.dark-only .drop_coman_file.have_title .customer_details .step-2 .gropu_form .quill-editor {
+.dark-only .contract_uploadd .gropu_form .quill-editor {
     background: #262b33 ! IMPORTANT;
     border: 0 !IMPORTANT;
 }
 
-.dark-only .drop_coman_file.have_title .customer_details .step-2 .gropu_form .ql-toolbar * {
+.dark-only .contract_uploadd .gropu_form .ql-toolbar * {
     color: #c1c2c3 !important;
-   stroke: #c1c2c3 !important;
-   }
+    stroke: #c1c2c3 !important;
+}
 
-   .dark-only .drop_coman_file.have_title .customer_details .step-2 .gropu_form .quill-editor .ql-editor {
+.dark-only .contract_uploadd .gropu_form .quill-editor .ql-editor {
     background: transparent !IMPORTANT;
     border-color: #3e4d70 !IMPORTANT;
 }
 
-.dark-only .drop_coman_file.have_title .customer_details .step-2 .gropu_form .quill-editor .ql-editor.ql-blank::before {
+.dark-only .contract_uploadd .gropu_form .quill-editor .ql-editor.ql-blank::before {
     color: #dbdbdb !IMPORTANT;
 }
 
@@ -22784,7 +22789,7 @@ span.clinet_name {
     fill: #848484;
 }
 
-.gropu_dataprint_wrap.active .show_empty_message svg  circle {
+.gropu_dataprint_wrap.active .show_empty_message svg circle {
     stroke: #848484;
 }
 
@@ -22801,7 +22806,7 @@ span.clinet_name {
     margin: 0px 0px 3px;
 }
 
-.drop_coman_file.have_title .gropu_dataprint_wrap .gropu_form_divide .gropu_form  input {
+.drop_coman_file.have_title .gropu_dataprint_wrap .gropu_form_divide .gropu_form input {
     width: 100%;
     border: 0;
     box-shadow: none;
@@ -22810,7 +22815,7 @@ span.clinet_name {
     font-size: 14px;
 }
 
-.gropu_dataprint_wrap  .show-side_signature {
+.gropu_dataprint_wrap .show-side_signature {
     flex: 1;
 }
 
@@ -24660,6 +24665,19 @@ div.dataTables_wrapper {
     flex-wrap: wrap;
 }
 
+.addendcustomer_fix .customer_wrap .gropu_form.addendforms {
+    display: block;
+    margin: 0px 0px 5px;
+}
+
+.addendcustomer_fix .customer_wrap .gropu_form.addendforms.no_edit .ql-toolbar.ql-snow {
+    display: none !IMPORTANT;
+}
+
+.addendcustomer_fix .customer_wrap .gropu_form.addendforms.no_edit .ql-editor {
+    pointer-events: none !IMPORTANT;
+}
+
 .addendcustomer_fix .customer_wrap .gropu_form label {
     display: block;
     width: 100%;
@@ -24719,6 +24737,9 @@ div.dataTables_wrapper {
 }
 
 .dark-only .main_contractt_detail .dropdown .dropdown-content a.dropdown-itemm.Renew svg path {
+    fill: #A3AED0;
+}
+.dark-only .dropdown .dropdown-content a.dropdown-itemm.notify path {
     fill: #A3AED0;
 }
 
@@ -25182,9 +25203,11 @@ div.dataTables_wrapper {
     left: 15px;
     height: 80%;
 }
+
 .contract_detail_middle .authrized_signatory ul.no_data_border:before {
     display: none;
 }
+
 .contract_detail_middle .authrized_signatory ul.no_data_border li {
     gap: 0px 4px;
     color: #848484;
@@ -25330,6 +25353,7 @@ div.dataTables_wrapper {
     font-size: 13px;
     font-weight: 500;
 }
+
 .contract_detail_middle .divisions_associated .divi_ass_wrap span:empty {
     display: none;
 }
@@ -26009,6 +26033,7 @@ div.dataTables_wrapper {
     opacity: 1;
     visibility: visible;
 }
+
 .main_smart_contract {
     width: 100%;
 }
@@ -26016,7 +26041,8 @@ div.dataTables_wrapper {
 .hidden {
     opacity: 0;
     visibility: hidden;
-    pointer-events: none; /* Prevent interaction when hidden */
+    pointer-events: none;
+    /* Prevent interaction when hidden */
 }
 
 .smart_contract_active {
@@ -26088,7 +26114,7 @@ div.dataTables_wrapper {
     margin: 0;
 }
 
-.main_smart_contract .say_hii_smart .left_hii  h2 {
+.main_smart_contract .say_hii_smart .left_hii h2 {
     font-family: DM Serif Text;
     font-size: 100px;
     font-weight: 500;
@@ -26115,7 +26141,7 @@ div.dataTables_wrapper {
     line-height: normal;
 }
 
- .smart_next_pre button.btn {
+.smart_next_pre button.btn {
     padding: 0;
     width: unset;
     height: unset;
@@ -26129,7 +26155,7 @@ div.dataTables_wrapper {
     font-weight: 400;
 }
 
-.main_smart_contract  .progrees_skill {
+.main_smart_contract .progrees_skill {
     display: flex;
     align-items: center;
     gap: 0px 30px;
@@ -26255,7 +26281,7 @@ div.dataTables_wrapper {
     max-height: 600px;
     overflow: auto;
     background: #FFF;
-    padding: 20px 20px  20px;
+    padding: 20px 20px 20px;
     margin: 0px 0px 15px;
 }
 
@@ -26275,17 +26301,17 @@ div.dataTables_wrapper {
 
 /* width */
 .smart_step_3 .smrt_bodyy .right_live_pre .lve_framee::-webkit-scrollbar {
-  width: 10px;
+    width: 10px;
 }
 
 /* Track */
 .smart_step_3 .smrt_bodyy .right_live_pre .lve_framee::-webkit-scrollbar-track {
-  background: #9D9D9D; 
+    background: #9D9D9D;
 }
- 
+
 /* Handle */
 .smart_step_3 .smrt_bodyy .right_live_pre .lve_framee::-webkit-scrollbar-thumb {
-  background: #3E3E3E; 
+    background: #3E3E3E;
 }
 
 .smart_step_3 .smart_next_pre {
@@ -26339,22 +26365,22 @@ div.dataTables_wrapper {
 /* width */
 .smart_step_3 .smrt_bodyy .form_feilds::-webkit-scrollbar {
     width: 7px;
-      border-radius:20px;
-  }
-  
-  /* Track */
-  .smart_step_3 .smrt_bodyy .form_feilds::-webkit-scrollbar-track {
-    background: transparent; 
-        border-radius:20px;
-  }
-   
-  /* Handle */
-  .smart_step_3 .smrt_bodyy .form_feilds::-webkit-scrollbar-thumb {
-    background: #5790FF; 
-        border-radius:20px;
-  }
+    border-radius: 20px;
+}
 
-  .smart_step_4 .final_contract {
+/* Track */
+.smart_step_3 .smrt_bodyy .form_feilds::-webkit-scrollbar-track {
+    background: transparent;
+    border-radius: 20px;
+}
+
+/* Handle */
+.smart_step_3 .smrt_bodyy .form_feilds::-webkit-scrollbar-thumb {
+    background: #5790FF;
+    border-radius: 20px;
+}
+
+.smart_step_4 .final_contract {
     display: flex;
     align-items: center;
     justify-content: center;
@@ -26380,6 +26406,7 @@ div.dataTables_wrapper {
     padding: 20px 20px 20px;
     margin: 0px 0px 15px;
 }
+
 .smart_step_3 .smrt_bodyy .form_feilds h3 {
     font-size: 16px;
     margin: 0px 0px 8px;
@@ -26389,17 +26416,17 @@ div.dataTables_wrapper {
 
 /* width */
 .smart_step_4 .right_live_pre .lve_framee::-webkit-scrollbar {
-  width: 10px;
+    width: 10px;
 }
 
 /* Track */
 .smart_step_4 .right_live_pre .lve_framee::-webkit-scrollbar-track {
-  background: #9D9D9D; 
+    background: #9D9D9D;
 }
- 
+
 /* Handle */
 .smart_step_4 .right_live_pre .lve_framee::-webkit-scrollbar-thumb {
-  background: #3E3E3E; 
+    background: #3E3E3E;
 }
 
 .smart_step_4 .right_live_pre .lve_framee .title_smart {
@@ -26416,7 +26443,7 @@ div.dataTables_wrapper {
     margin: 0;
 }
 
-.smart_step_4 .right_live_pre  .smart_next_pre {
+.smart_step_4 .right_live_pre .smart_next_pre {
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -30610,12 +30637,12 @@ b.toggle-password i {
     .main_smart_contract .say_hii_smart .left_hii span {
         font-size: 36px;
     }
-    
+
     .main_smart_contract .say_hii_smart .left_hii h2 {
         font-size: 80px;
         line-height: 0.9em;
     }
-    
+
     .main_smart_contract .say_hii_smart .right_hii {
         max-width: 180px;
     }
@@ -30946,7 +30973,7 @@ b.toggle-password i {
     .main_smart_contract .say_hii_smart .left_hii h2 {
         font-size: 60px;
     }
-    
+
     .main_smart_contract .say_hii_smart .right_hii {
         max-width: 150px;
     }
@@ -30962,20 +30989,20 @@ b.toggle-password i {
     .smart_step_3 .smrt_bodyy {
         gap: 0px 20px;
     }
-    
+
     .smart_step_3 .smrt_bodyy {
         flex-wrap: wrap;
     }
-    
+
     .smart_step_3 .smrt_bodyy .form_feilds {
         width: 100%;
         margin-bottom: 30px;
     }
-    
+
     .smart_step_3 .smrt_bodyy .right_live_pre {
         width: 100%;
     }
-    
+
     .smart_step_3 .smrt_bodyy .right_live_pre .lve_framee .title_smart h2 {
         font-size: 22px;
     }
@@ -31970,19 +31997,20 @@ b.toggle-password i {
         opacity: 0;
         transition: opacity .5s;
     }
-    
+
     .contract_uploadd .contract_up_head .right_btn_contt button.opload:hover svg {
         opacity: 1;
         transition: opacity 0.5s;
     }
-    
+
     .contract_uploadd .contract_up_head .right_btn_contt button.opload:hover {
         width: 40px;
     }
-    
+
     .contract_uploadd .contract_up_head h2 {
         font-size: 16px;
     }
+
     .drop_coman_file button.btn {
         padding: 10px 15px;
     }
@@ -31990,33 +32018,33 @@ b.toggle-password i {
     .drop_coman_file button.btn {
         padding: 10px 15px;
     }
-    
+
     .main_smart_contract .say_hii_smart .left_hii h2 {
         font-size: 32px;
     }
-    
+
     .main_smart_contract .say_hii_smart .left_hii span {
         font-size: 18px;
     }
-    
+
     .main_smart_contract .say_hii_smart .right_hii {
         max-width: 50px;
     }
-    
+
     .smart_contract_active {
         min-height: 80vh;
         padding: 40px 20px;
     }
-    
+
     .main_smart_contract .head_progress_smmart .hide_smart_contract {
         top: -20px;
         right: -10px;
     }
-    
+
     .bottom_smart_next .left_message_smart p {
         font-size: 9px;
     }
-    
+
     .smart_next_pre button.btn {
         font-size: 12px;
     }
@@ -32029,7 +32057,7 @@ b.toggle-password i {
     .smart_step_4 .right_live_pre .lve_framee .title_smart h2 {
         font-size: 22px;
     }
-    
+
     .smart_step_4 .right_live_pre .smart_next_pre .upload_contract {
         padding: 8px 10px;
         font-size: 12px;
