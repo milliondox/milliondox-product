@@ -1,10 +1,16 @@
 @extends('user.includes.document-repository') @section('content')
 @include('script1')
 @include('script2')
-@include('hr_on_board')
-@include('directtax')
+{{-- @include('hr_on_board') --}}
+{{-- @include('directtax') --}}
 @include('indirecttax2')
 <!-- tap on top starts-->
+<script>
+    var customFilesHtml = "";
+
+
+</script>
+
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 <script>
     window.jQuery || document.write('<script src="{{ asset("assets/js/jquerylocal.js") }}"><\/script>');
@@ -4160,7 +4166,7 @@ document.addEventListener('DOMContentLoaded', function () {
                                                                             // Clear existing content and populate with new subfolder HTML
                                                                             $dropdownMenu.html(subfolderHtml);
                                                                             // Fetch folder contents and ensure visibility
-                                                                            fetchFolderContents2(folderPath, false);
+                                                                            // fetchFolderContents2(folderPath, false);
                                                                             // Invoke callback with the latest folder path if provided
                                                                             // if (callback) callback(response.latestFolderPath);
                                                                         },
@@ -5020,7 +5026,7 @@ document.addEventListener('DOMContentLoaded', function () {
                                                                     if (folderParam) {
                                                                         // Decode the folder parameter (handle double encoding)
                                                                         var decodedFolderParam = decodeURIComponent(decodeURIComponent(folderParam));
-                                                                        triggerDocurepo(decodedFolderParam); // Call the reusable function with the folder path
+                                                                        // triggerDocurepo(decodedFolderParam); // Call the reusable function with the folder path
                                                                     }
                                                                 });
 
@@ -5048,16 +5054,16 @@ document.addEventListener('DOMContentLoaded', function () {
                                                                 }
 
                                                                 // Event listener for folder links
-                                                                $('.folder-link').on('click', function(event) {
-                                                                    event.preventDefault(); // Prevent default link behavior
+                                                                // $('.folder-link').on('click', function(event) {
+                                                                //     event.preventDefault(); // Prevent default link behavior
 
-                                                                    // Get the folder path from the clicked link (assuming data-folder-path is an attribute)
-                                                                    const folderPath = $(this).data('folder-path'); // Change to your actual attribute
+                                                                //     // Get the folder path from the clicked link (assuming data-folder-path is an attribute)
+                                                                //     const folderPath = $(this).data('folder-path'); // Change to your actual attribute
 
-                                                                    // Call the fetchTotalSize function with the folder path
+                                                                //     // Call the fetchTotalSize function with the folder path
 
 
-                                                                });
+                                                                // });
 
                                                                 // $('.fold-link').on('click', function(event) {
                                                                 //     event.preventDefault(); // Prevent default link behavior
@@ -5111,7 +5117,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
 
                                                                     updateBreadcrumb(folderPath);
-                                                                    fetchFolderContents(folderPath, false);
                                                                     openNewFolder(folderPath);
                                                                     $('li a').removeClass('selected-folder');
                                                                     $(`[data-folder-path="${folderPath}"]`).addClass('selected-folder');
@@ -5132,6 +5137,8 @@ document.addEventListener('DOMContentLoaded', function () {
                                                                             path: newUrl.href
                                                                         }, '', newUrl.href);
                                                                     }
+                                                                    fetchFolderContents(folderPath, false);
+
                                                                 }
 
                                                                 // //   Listen for browser navigation (back/forward buttons)
@@ -5608,6 +5615,7 @@ document.addEventListener('DOMContentLoaded', function () {
                                                                 function fetchFolderContents(folderPath) {
                                                                     // showLoader(); // Ensure the loader is shown when the request starts
                                                                     showLoader();
+                                                                    // alert("i am 111 ");
 
                                                                     function getQueryParam(param) {
                                                                         const queryString = window.location.search.substring(1);
@@ -5622,12 +5630,18 @@ document.addEventListener('DOMContentLoaded', function () {
                                                                     }
 
                                                                     // Retrieve the folder path from the URL parameters
+                                                                    bindFolderClickEvents();
+
+
                                                                     const folderPaths = getQueryParam('folder');
 
                                                                     // alert("inside fetch folder");
 
                                                                     // Determine the folder path to use
                                                                     const pathToUse = folderPaths ? decodeURIComponent(folderPaths) : null;
+
+                                                                    updateBreadcrumb(pathToUse);
+
                                                                     // alert(pathToUse);
                                                                     // if (window.location.pathname === '/docurepo') {
                                                                     //     pathToUse = null; // Default for '/docurepo'
@@ -5672,6 +5686,8 @@ document.addEventListener('DOMContentLoaded', function () {
 
                                                                             $('.folder-contents').html(response.folderHtml);
                                                                             $('.file-container').html(response.fileHtml);
+                                                                            customFilesHtml = response.fileHtml;
+                                                                            // alert(customFilesHtml);
 
                                                                             clearAppendedTables();
                                                                             // if (result.endsWith("Secretarial/Board Meetings") && !incorporationTableAppended) {
@@ -5807,10 +5823,14 @@ document.addEventListener('DOMContentLoaded', function () {
                                                                             // } else
                                                                             if(!indirecttaxLitigationsTableAppended) {
                                                                                 // alert("jijijij");
+                                                                                // let asdfasdf = $('.file-container').html(customFilesHtml);
+
                                                                                 insertindirecttaxLitigationsTableAppendeds();
                                                                                 // alert('2');
                                                                                 indirecttaxLitigationsTableAppended = true;
                                                                                 // alert('3');
+                                                                                // console.log(asdfasdf);
+
                                                                             }
 
 
@@ -5818,7 +5838,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
 
                                                                             bindFolderClickEvents();
-                                                                            updateBreadcrumb(pathToUse);
+                                                                            updateBreadcrumb(pathToUse);    
                                                                             hideLoader(); // Hide loader after contents are updated
                                                                         },
                                                                         error: function(xhr) {
@@ -6167,29 +6187,29 @@ document.addEventListener('DOMContentLoaded', function () {
 
 
                                                                 // Define the folder-to-function mappings and appended status
-                                                                const tableFunctions = {
-                                                                    'Legal/Secretarial/Board Meetings': ['insertIncorporationTable', 'incorporationTableAppended'],
-                                                                    'Legal/Secretarial/Annual General Meeting': ['insertMeetingTable', 'meetingTableAppended'],
-                                                                    'Legal/Secretarial/Extra Ordinary General Meeting': ['insertOrderTable', 'orderTableAppended'],
-                                                                    'Legal/Secretarial/Incorporation': ['insertINCTable', 'incTableAppended'],
-                                                                    'Legal/Secretarial/Annual Filings': ['insertANNTable', 'annTableAppended'],
-                                                                    'Legal/Secretarial/Director Appointments': ['insertDirectTable', 'directTableAppended'],
-                                                                    'Legal/Secretarial/Director Resignation': ['insertDirectexitTable', 'directexitTableAppended'],
-                                                                    'Legal/Secretarial/Auditor Appointment': ['insertauditappTable', 'auditappTableAppended'],
-                                                                    'Legal/Secretarial/Auditor Exits': ['insertauditexitTable', 'auditexitTableAppended'],
-                                                                    'Legal/Secretarial/Statutory Registers': ['insertstaturegiTable', 'staturegiTableAppended'],
-                                                                    'Legal/Secretarial/Deposit Undertakings': ['insertundertakingTable', 'undertakingTableAppended'],
-                                                                    'Accounting & Taxation/Book-Keeping/Bank Account Statements': ['insertbankAccountStatementsTable', 'bankAccountStatementsTableAppended'],
-                                                                    'Accounting & Taxation/Book-Keeping/Fixed Deposit Statements': ['insertbankFixedDepositStatementsTable', 'bankFixedDepositStatementsTableAppended'],
-                                                                    'Accounting & Taxation/Book-Keeping/Credit Card Statements': ['insertbankCreditCardStatementsTable', 'bankCreditCardStatementsTableAppended'],
-                                                                    'Accounting & Taxation/Book-Keeping/Mutual Fund Statements': ['insertbankMutualFundStatementsTable', 'bankMutualFundStatementsTableAppended'],
-                                                                    'Accounting & Taxation/Charter documents/Director Details/Director 1': ['insertcharterdocumentsDirectordetatilsDirector1Table', 'charterdocumentsDirectordetatilsDirector1TableAppended'],
-                                                                    'Accounting & Taxation/Charter documents/Director Details/Director 2': ['insertcharterdocumentsDirectordetatilsDirector2Table', 'charterdocumentsDirectordetatilsDirector2TableAppended'],
-                                                                    'Accounting & Taxation/Charter documents/Incorporation': ['insertcharterdocumentsIncorporationTable', 'charterdocumentsIncorporationTableAppended'],
-                                                                    'Accounting & Taxation/Charter documents/Registrations': ['insertcharterdocumentsRegistrationsTable', 'charterdocumentsRegistrationsTableAppended'],
-                                                                    'Accounting & Taxation/Indirect Tax/Indirect/GST/Litigations': ['insertindirecttaxLitigationsTableAppendeds', 'indirecttaxLitigationsTableAppended']
+                                                                // const tableFunctions = {
+                                                                //     'Legal/Secretarial/Board Meetings': ['insertIncorporationTable', 'incorporationTableAppended'],
+                                                                //     'Legal/Secretarial/Annual General Meeting': ['insertMeetingTable', 'meetingTableAppended'],
+                                                                //     'Legal/Secretarial/Extra Ordinary General Meeting': ['insertOrderTable', 'orderTableAppended'],
+                                                                //     'Legal/Secretarial/Incorporation': ['insertINCTable', 'incTableAppended'],
+                                                                //     'Legal/Secretarial/Annual Filings': ['insertANNTable', 'annTableAppended'],
+                                                                //     'Legal/Secretarial/Director Appointments': ['insertDirectTable', 'directTableAppended'],
+                                                                //     'Legal/Secretarial/Director Resignation': ['insertDirectexitTable', 'directexitTableAppended'],
+                                                                //     'Legal/Secretarial/Auditor Appointment': ['insertauditappTable', 'auditappTableAppended'],
+                                                                //     'Legal/Secretarial/Auditor Exits': ['insertauditexitTable', 'auditexitTableAppended'],
+                                                                //     'Legal/Secretarial/Statutory Registers': ['insertstaturegiTable', 'staturegiTableAppended'],
+                                                                //     'Legal/Secretarial/Deposit Undertakings': ['insertundertakingTable', 'undertakingTableAppended'],
+                                                                //     'Accounting & Taxation/Book-Keeping/Bank Account Statements': ['insertbankAccountStatementsTable', 'bankAccountStatementsTableAppended'],
+                                                                //     'Accounting & Taxation/Book-Keeping/Fixed Deposit Statements': ['insertbankFixedDepositStatementsTable', 'bankFixedDepositStatementsTableAppended'],
+                                                                //     'Accounting & Taxation/Book-Keeping/Credit Card Statements': ['insertbankCreditCardStatementsTable', 'bankCreditCardStatementsTableAppended'],
+                                                                //     'Accounting & Taxation/Book-Keeping/Mutual Fund Statements': ['insertbankMutualFundStatementsTable', 'bankMutualFundStatementsTableAppended'],
+                                                                //     'Accounting & Taxation/Charter documents/Director Details/Director 1': ['insertcharterdocumentsDirectordetatilsDirector1Table', 'charterdocumentsDirectordetatilsDirector1TableAppended'],
+                                                                //     'Accounting & Taxation/Charter documents/Director Details/Director 2': ['insertcharterdocumentsDirectordetatilsDirector2Table', 'charterdocumentsDirectordetatilsDirector2TableAppended'],
+                                                                //     'Accounting & Taxation/Charter documents/Incorporation': ['insertcharterdocumentsIncorporationTable', 'charterdocumentsIncorporationTableAppended'],
+                                                                //     'Accounting & Taxation/Charter documents/Registrations': ['insertcharterdocumentsRegistrationsTable', 'charterdocumentsRegistrationsTableAppended'],
+                                                                //     'Accounting & Taxation/Indirect Tax/Indirect/GST/Litigations': ['insertindirecttaxLitigationsTableAppendeds', 'indirecttaxLitigationsTableAppended']
 
-                                                                };
+                                                                // };
 
                                                                 // Function to check if the table is already appended
                                                                 // function isTableAppended(folderPath) {

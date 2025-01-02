@@ -6,12 +6,12 @@
         // Get query parameters from the current URL
         const urlParams = new URLSearchParams(window.location.search);
         const folderPath = urlParams.get('folder'); // Get the 'folder' query parameter
-        console.log("path is :"+folderPath);
+        // console.log("path is :"+folderPath);
 
         const decodedPath = decodeURIComponent(folderPath);
 
         // Log the cleaned folder path for debugging
-        console.log('Cleaned Path:', decodedPath);
+        // console.log('Cleaned Path:', decodedPath);
 
         if (!folderPath) {
             console.error('Folder path query parameter is missing in the URL');
@@ -30,7 +30,12 @@
                 if(response.success){
                   // if no data found then nothing because table head is visible with 0 tr so 
                 }else{
+                  // alert("Before");
                   appendDataToTable(response);
+                  // alert("sdfsdf");
+                  $('.file-container').append(customFilesHtml);
+                  // alert(customFilesHtml);
+                  // alert("after");
                 }
             },
             error: function(xhr, status, error) {
@@ -164,6 +169,7 @@
 
         // Check if the response contains the data and counts
         if (response && response.data) {
+          // alert("ASedfasdfsadfsa");
             const data = response.data;
             const counts = response.counts;
             const file_sizes = response.file_sizes;
@@ -172,8 +178,8 @@
             // Parse the real_file_name string into an array
             const realFileNames = JSON.parse(data.real_file_name);
 
-            console.log("Parsed real_file_name array:", realFileNames);
-            console.log("Counts:", counts);
+            // console.log("Parsed real_file_name array:", realFileNames);
+            // console.log("Counts:", counts);
 
             // Now, you can loop through `realFileNames` and access count from `counts`
             realFileNames.forEach(fileName => {
@@ -246,7 +252,10 @@
                         </tr>`;
 
                     // Append the new row to the table body
+                    // alert("before append tablerefreshdata");
+
                     $('#tablerefreshdata').append(newRow);
+                    // alert("after append tablerefreshdata");
                 });
 
         } else {
