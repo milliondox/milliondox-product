@@ -1,10 +1,16 @@
 @extends('user.includes.document-repository') @section('content')
 @include('script1')
 @include('script2')
-@include('hr_on_board')
-@include('directtax')
-@include('indirecttax')
+{{-- @include('hr_on_board') --}}
+{{-- @include('directtax') --}}
+@include('indirecttax2')
 <!-- tap on top starts-->
+<script>
+    var customFilesHtml = "";
+
+
+</script>
+
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 <script>
     window.jQuery || document.write('<script src="{{ asset("assets/js/jquerylocal.js") }}"><\/script>');
@@ -623,28 +629,6 @@ document.addEventListener('DOMContentLoaded', function () {
         handleFiles(fileInput, fileList, inputId, Array.from(fileInput.files));
     });
 
-    // Handle file input change (when no file is selected)
-$('body').on('change', '.dragfile', function () {
-    const fileInput = this;
-    const fileList = $(fileInput).closest('.file-area').next('.file-list');
-    const inputId = $(fileInput).attr('id');
-
-    // If no files are selected (i.e., the files array is empty)
-    if (fileInput.files.length === 0) {
-        fileData[inputId] = []; // Clear the file data
-        fileList.empty(); // Clear the file list UI
-        return; // Exit early as no files were selected
-    }
-
-    // Initialize fileData for the input if not already present
-    if (!fileData[inputId]) fileData[inputId] = [];
-
-    // Handle the selected files
-    handleFiles(fileInput, fileList, inputId, Array.from(fileInput.files));
-});
-
-
-
     // Handle drag and drop events for file-area
     $('.file-area').on('dragover', function (event) {
         event.preventDefault();
@@ -665,6 +649,12 @@ $('body').on('change', '.dragfile', function () {
 
 
         handleFiles(fileInput, fileList, inputId, Array.from(fileInput.files));
+
+
+       
+
+
+
     });
 
     // Clear file data and reset input when closing the modal
@@ -679,7 +669,9 @@ $('body').on('change', '.dragfile', function () {
             updateFileInput(fileInput, inputId);
             fileList.empty();
         });
-    });   
+    });
+
+    
 });
 
 
@@ -4174,7 +4166,7 @@ $('body').on('change', '.dragfile', function () {
                                                                             // Clear existing content and populate with new subfolder HTML
                                                                             $dropdownMenu.html(subfolderHtml);
                                                                             // Fetch folder contents and ensure visibility
-                                                                            fetchFolderContents2(folderPath, false);
+                                                                            // fetchFolderContents2(folderPath, false);
                                                                             // Invoke callback with the latest folder path if provided
                                                                             // if (callback) callback(response.latestFolderPath);
                                                                         },
@@ -4406,550 +4398,550 @@ $('body').on('change', '.dragfile', function () {
 
                                                                 $(document).ready(function() {
                                                                     // Function to trigger the /docurepo request
-                                                                    function triggerDocurepo(folderPath) {
-                                                                        // console.log("i am here insode trigger docurepo");
-                                                                        // console.log(folderPath);
-                                                                        // 2024-2025November301_Accounting & Taxation/2024-2025November301_Indirect Tax/2024-2025November301_Indirect/2024-2025November301_GST/2024-2025November301_Litigations
-                                                                        // console.log("after jhdfhsfjkjkhkj");
+                                                                    // function triggerDocurepo(folderPath) {
+                                                                    //     // console.log("i am here insode trigger docurepo");
+                                                                    //     // console.log(folderPath);
+                                                                    //     // 2024-2025November301_Accounting & Taxation/2024-2025November301_Indirect Tax/2024-2025November301_Indirect/2024-2025November301_GST/2024-2025November301_Litigations
+                                                                    //     // console.log("after jhdfhsfjkjkhkj");
 
-                                                                        // Remove 'selected-folder' class from all folder links and toggle icons
-                                                                        $('.folder-link').removeClass('selected-folder');
-                                                                        $('.toggle_icconn').removeClass('selected-folder');
+                                                                    //     // Remove 'selected-folder' class from all folder links and toggle icons
+                                                                    //     $('.folder-link').removeClass('selected-folder');
+                                                                    //     $('.toggle_icconn').removeClass('selected-folder');
 
-                                                                        // Add 'selected-folder' class to the relevant folder link
-                                                                        $(`.folder-link[data-folder-path="${folderPath}"]`).addClass('selected-folder');
+                                                                    //     // Add 'selected-folder' class to the relevant folder link
+                                                                    //     $(`.folder-link[data-folder-path="${folderPath}"]`).addClass('selected-folder');
 
-                                                                        $.ajax({
-                                                                            url: '/docurepo', // URL for the GET request
-                                                                            method: 'GET',
-                                                                            data: {
-                                                                                folderPath: folderPath
-                                                                            }, // Pass folderPath directly as query parameter
-                                                                            success: function(response) {
-                                                                                setTimeout(function() {
-                                                                                    $('.comm_size[data-variable="totalSizeKBentrieafs"]').text(response.totalSizeKBentrieafs + ' KB');
-                                                                                    $('.comm_count[data-variable="countentriesafs"]').text(response.countentriesafs);
+                                                                    //     $.ajax({
+                                                                    //         url: '/docurepo', // URL for the GET request
+                                                                    //         method: 'GET',
+                                                                    //         data: {
+                                                                    //             folderPath: folderPath
+                                                                    //         }, // Pass folderPath directly as query parameter
+                                                                    //         success: function(response) {
+                                                                    //             setTimeout(function() {
+                                                                    //                 $('.comm_size[data-variable="totalSizeKBentrieafs"]').text(response.totalSizeKBentrieafs + ' KB');
+                                                                    //                 $('.comm_count[data-variable="countentriesafs"]').text(response.countentriesafs);
 
-                                                                                    $('.comm_size[data-variable="totalSizeKBentriecfs"]').text(response.totalSizeKBentriecfs + ' KB');
-                                                                                    $('.comm_count[data-variable="countentriescfs"]').text(response.countentriescfs);
+                                                                    //                 $('.comm_size[data-variable="totalSizeKBentriecfs"]').text(response.totalSizeKBentriecfs + ' KB');
+                                                                    //                 $('.comm_count[data-variable="countentriescfs"]').text(response.countentriescfs);
 
 
-                                                                                    $('.comm_size[data-variable="totalSizeKBentriemgt7"]').text(response.totalSizeKBentriemgt7 + ' KB');
-                                                                                    $('.comm_count[data-variable="countentriesmgt7"]').text(response.countentriesmgt7);
+                                                                    //                 $('.comm_size[data-variable="totalSizeKBentriemgt7"]').text(response.totalSizeKBentriemgt7 + ' KB');
+                                                                    //                 $('.comm_count[data-variable="countentriesmgt7"]').text(response.countentriesmgt7);
 
-                                                                                    $('.comm_size[data-variable="totalSizeKBentriemgt7a"]').text(response.totalSizeKBentriemgt7a + ' KB');
-                                                                                    $('.comm_count[data-variable="countentriesmgt7a"]').text(response.countentriesmgt7a);
+                                                                    //                 $('.comm_size[data-variable="totalSizeKBentriemgt7a"]').text(response.totalSizeKBentriemgt7a + ' KB');
+                                                                    //                 $('.comm_count[data-variable="countentriesmgt7a"]').text(response.countentriesmgt7a);
 
 
-                                                                                    $('.comm_size[data-variable="totalSizeKBbank"]').text(response.totalSizeKBbank + ' KB');
-                                                                                    $('.comm_count[data-variable="countbank"]').text(response.countbank);
+                                                                    //                 $('.comm_size[data-variable="totalSizeKBbank"]').text(response.totalSizeKBbank + ' KB');
+                                                                    //                 $('.comm_count[data-variable="countbank"]').text(response.countbank);
 
 
-                                                                                    $('.comm_size[data-variable="totalSizeKBcreditcardstatement"]').text(response.totalSizeKBcreditcardstatement + ' KB');
-                                                                                    $('.comm_count[data-variable="countdcreditcardstatement"]').text(response.countdcreditcardstatement);
+                                                                    //                 $('.comm_size[data-variable="totalSizeKBcreditcardstatement"]').text(response.totalSizeKBcreditcardstatement + ' KB');
+                                                                    //                 $('.comm_count[data-variable="countdcreditcardstatement"]').text(response.countdcreditcardstatement);
 
-                                                                                    $('.comm_size[data-variable="totalSizeKBfixeddepoiststatement"]').text(response.totalSizeKBfixeddepoiststatement + ' KB');
-                                                                                    $('.comm_count[data-variable="countfixeddepoiststatement"]').text(response.countfixeddepoiststatement);
+                                                                    //                 $('.comm_size[data-variable="totalSizeKBfixeddepoiststatement"]').text(response.totalSizeKBfixeddepoiststatement + ' KB');
+                                                                    //                 $('.comm_count[data-variable="countfixeddepoiststatement"]').text(response.countfixeddepoiststatement);
 
-                                                                                    $('.comm_size[data-variable="totalSizeKBmutualfundstatement"]').text(response.totalSizeKBmutualfundstatement + ' KB');
-                                                                                    $('.comm_count[data-variable="countmutualfundstatement"]').text(response.countmutualfundstatement);
+                                                                    //                 $('.comm_size[data-variable="totalSizeKBmutualfundstatement"]').text(response.totalSizeKBmutualfundstatement + ' KB');
+                                                                    //                 $('.comm_count[data-variable="countmutualfundstatement"]').text(response.countmutualfundstatement);
 
 
-                                                                                    $('.comm_size[data-variable="totalSizeKBDirector1Photo"]').text(response.totalSizeKBDirector1Photo + ' KB');
-                                                                                    $('.comm_count[data-variable="countDirector1Photo"]').text(response.countDirector1Photo);
+                                                                    //                 $('.comm_size[data-variable="totalSizeKBDirector1Photo"]').text(response.totalSizeKBDirector1Photo + ' KB');
+                                                                    //                 $('.comm_count[data-variable="countDirector1Photo"]').text(response.countDirector1Photo);
 
-                                                                                    $('.comm_size[data-variable="totalSizeKBDirector1Signimg"]').text(response.totalSizeKBDirector1Signimg + ' KB');
-                                                                                    $('.comm_count[data-variable="countDirector1Signimg"]').text(response.countDirector1Signimg);
+                                                                    //                 $('.comm_size[data-variable="totalSizeKBDirector1Signimg"]').text(response.totalSizeKBDirector1Signimg + ' KB');
+                                                                    //                 $('.comm_count[data-variable="countDirector1Signimg"]').text(response.countDirector1Signimg);
 
-                                                                                    $('.comm_size[data-variable="totalSizeKBDirector1AadharKYC"]').text(response.totalSizeKBDirector1AadharKYC + ' KB');
-                                                                                    $('.comm_count[data-variable="countDirector1AadharKYC"]').text(response.countDirector1AadharKYC);
+                                                                    //                 $('.comm_size[data-variable="totalSizeKBDirector1AadharKYC"]').text(response.totalSizeKBDirector1AadharKYC + ' KB');
+                                                                    //                 $('.comm_count[data-variable="countDirector1AadharKYC"]').text(response.countDirector1AadharKYC);
 
 
-                                                                                    $('.comm_size[data-variable="totalSizeKBDirector1PANKYC"]').text(response.totalSizeKBDirector1PANKYC + ' KB');
-                                                                                    $('.comm_count[data-variable="countDirector1PANKYC"]').text(response.countDirector1PANKYC);
+                                                                    //                 $('.comm_size[data-variable="totalSizeKBDirector1PANKYC"]').text(response.totalSizeKBDirector1PANKYC + ' KB');
+                                                                    //                 $('.comm_count[data-variable="countDirector1PANKYC"]').text(response.countDirector1PANKYC);
 
 
-                                                                                    $('.comm_size[data-variable="totalSizeKBDirector1AddressProof"]').text(response.totalSizeKBDirector1AddressProof + ' KB');
-                                                                                    $('.comm_count[data-variable="countDirector1AddressProof"]').text(response.countDirector1AddressProof);
+                                                                    //                 $('.comm_size[data-variable="totalSizeKBDirector1AddressProof"]').text(response.totalSizeKBDirector1AddressProof + ' KB');
+                                                                    //                 $('.comm_count[data-variable="countDirector1AddressProof"]').text(response.countDirector1AddressProof);
 
-                                                                                    $('.comm_size[data-variable="totalSizeKBDirector1ContactDetails"]').text(response.totalSizeKBDirector1ContactDetails + ' KB');
-                                                                                    $('.comm_count[data-variable="countDirector1ContactDetails"]').text(response.countDirector1ContactDetails);
+                                                                    //                 $('.comm_size[data-variable="totalSizeKBDirector1ContactDetails"]').text(response.totalSizeKBDirector1ContactDetails + ' KB');
+                                                                    //                 $('.comm_count[data-variable="countDirector1ContactDetails"]').text(response.countDirector1ContactDetails);
 
-                                                                                    $('.comm_size[data-variable="totalSizeKBIncorporationMemoofAssoc"]').text(response.totalSizeKBIncorporationMemoofAssoc + ' KB');
-                                                                                    $('.comm_count[data-variable="countIncorporationMemoofAssoc"]').text(response.countIncorporationMemoofAssoc);
+                                                                    //                 $('.comm_size[data-variable="totalSizeKBIncorporationMemoofAssoc"]').text(response.totalSizeKBIncorporationMemoofAssoc + ' KB');
+                                                                    //                 $('.comm_count[data-variable="countIncorporationMemoofAssoc"]').text(response.countIncorporationMemoofAssoc);
 
 
-                                                                                    $('.comm_size[data-variable="totalSizeKBIncorporationArtofAssoc"]').text(response.totalSizeKBIncorporationArtofAssoc + ' KB');
-                                                                                    $('.comm_count[data-variable="countIncorporationArtofAssoc"]').text(response.countIncorporationArtofAssoc);
+                                                                    //                 $('.comm_size[data-variable="totalSizeKBIncorporationArtofAssoc"]').text(response.totalSizeKBIncorporationArtofAssoc + ' KB');
+                                                                    //                 $('.comm_count[data-variable="countIncorporationArtofAssoc"]').text(response.countIncorporationArtofAssoc);
 
-                                                                                    $('.comm_size[data-variable="totalSizeKBIncorporationCertifofincorp"]').text(response.totalSizeKBIncorporationCertifofincorp + ' KB');
-                                                                                    $('.comm_count[data-variable="countIncorporationCertifofincorp"]').text(response.countIncorporationCertifofincorp);
+                                                                    //                 $('.comm_size[data-variable="totalSizeKBIncorporationCertifofincorp"]').text(response.totalSizeKBIncorporationCertifofincorp + ' KB');
+                                                                    //                 $('.comm_count[data-variable="countIncorporationCertifofincorp"]').text(response.countIncorporationCertifofincorp);
 
 
-                                                                                    $('.comm_size[data-variable="totalSizeKBIncorporationPartnerdeed"]').text(response.totalSizeKBIncorporationPartnerdeed + ' KB');
-                                                                                    $('.comm_count[data-variable="countIncorporationPartnerdeed"]').text(response.countIncorporationPartnerdeed);
+                                                                    //                 $('.comm_size[data-variable="totalSizeKBIncorporationPartnerdeed"]').text(response.totalSizeKBIncorporationPartnerdeed + ' KB');
+                                                                    //                 $('.comm_count[data-variable="countIncorporationPartnerdeed"]').text(response.countIncorporationPartnerdeed);
 
-                                                                                    $('.comm_size[data-variable="totalSizeKBIncorporationLLPAgreement"]').text(response.totalSizeKBIncorporationLLPAgreement + ' KB');
-                                                                                    $('.comm_count[data-variable="countIncorporationLLPAgreement"]').text(response.countIncorporationLLPAgreement);
+                                                                    //                 $('.comm_size[data-variable="totalSizeKBIncorporationLLPAgreement"]').text(response.totalSizeKBIncorporationLLPAgreement + ' KB');
+                                                                    //                 $('.comm_count[data-variable="countIncorporationLLPAgreement"]').text(response.countIncorporationLLPAgreement);
 
 
-                                                                                    $('.comm_size[data-variable="totalSizeKBIncorporationTrustDeed"]').text(response.totalSizeKBIncorporationTrustDeed + ' KB');
-                                                                                    $('.comm_count[data-variable="countIncorporationTrustDeed"]').text(response.countIncorporationTrustDeed);
+                                                                    //                 $('.comm_size[data-variable="totalSizeKBIncorporationTrustDeed"]').text(response.totalSizeKBIncorporationTrustDeed + ' KB');
+                                                                    //                 $('.comm_count[data-variable="countIncorporationTrustDeed"]').text(response.countIncorporationTrustDeed);
 
-                                                                                    $('.comm_size[data-variable="totalSizeKBIncorporationSharecertifF"]').text(response.totalSizeKBIncorporationSharecertifF + ' KB');
-                                                                                    $('.comm_count[data-variable="countIncorporationSharecertifF"]').text(response.countIncorporationSharecertifF);
+                                                                    //                 $('.comm_size[data-variable="totalSizeKBIncorporationSharecertifF"]').text(response.totalSizeKBIncorporationSharecertifF + ' KB');
+                                                                    //                 $('.comm_count[data-variable="countIncorporationSharecertifF"]').text(response.countIncorporationSharecertifF);
 
 
-                                                                                    $('.comm_size[data-variable="totalSizeKBcharregpan"]').text(response.totalSizeKBcharregpan + ' KB');
-                                                                                    $('.comm_count[data-variable="countcharregpan"]').text(response.countcharregpan);
+                                                                    //                 $('.comm_size[data-variable="totalSizeKBcharregpan"]').text(response.totalSizeKBcharregpan + ' KB');
+                                                                    //                 $('.comm_count[data-variable="countcharregpan"]').text(response.countcharregpan);
 
-                                                                                    $('.comm_size[data-variable="totalSizeKBcharregtan"]').text(response.totalSizeKBcharregtan + ' KB');
-                                                                                    $('.comm_count[data-variable="countcharregtan"]').text(response.countcharregtan);
+                                                                    //                 $('.comm_size[data-variable="totalSizeKBcharregtan"]').text(response.totalSizeKBcharregtan + ' KB');
+                                                                    //                 $('.comm_count[data-variable="countcharregtan"]').text(response.countcharregtan);
 
 
-                                                                                    $('.comm_size[data-variable="totalSizeKBcharregGSTIN"]').text(response.totalSizeKBcharregGSTIN + ' KB');
-                                                                                    $('.comm_count[data-variable="countcharregGSTIN"]').text(response.countcharregGSTIN);
+                                                                    //                 $('.comm_size[data-variable="totalSizeKBcharregGSTIN"]').text(response.totalSizeKBcharregGSTIN + ' KB');
+                                                                    //                 $('.comm_count[data-variable="countcharregGSTIN"]').text(response.countcharregGSTIN);
 
-                                                                                    $('.comm_size[data-variable="totalSizeKBcharregMSME"]').text(response.totalSizeKBcharregMSME + ' KB');
-                                                                                    $('.comm_count[data-variable="countcharregMSME"]').text(response.countcharregMSME);
+                                                                    //                 $('.comm_size[data-variable="totalSizeKBcharregMSME"]').text(response.totalSizeKBcharregMSME + ' KB');
+                                                                    //                 $('.comm_count[data-variable="countcharregMSME"]').text(response.countcharregMSME);
 
 
-                                                                                    $('.comm_size[data-variable="totalSizeKBcharregTrademark"]').text(response.totalSizeKBcharregTrademark + ' KB');
-                                                                                    $('.comm_count[data-variable="countcharregTrademark"]').text(response.countcharregTrademark);
+                                                                    //                 $('.comm_size[data-variable="totalSizeKBcharregTrademark"]').text(response.totalSizeKBcharregTrademark + ' KB');
+                                                                    //                 $('.comm_count[data-variable="countcharregTrademark"]').text(response.countcharregTrademark);
 
-                                                                                    $('.comm_size[data-variable="totalSizeKBcharregPFC"]').text(response.totalSizeKBcharregPFC + ' KB');
-                                                                                    $('.comm_count[data-variable="countcharregPFC"]').text(response.countcharregPFC);
+                                                                    //                 $('.comm_size[data-variable="totalSizeKBcharregPFC"]').text(response.totalSizeKBcharregPFC + ' KB');
+                                                                    //                 $('.comm_count[data-variable="countcharregPFC"]').text(response.countcharregPFC);
 
-                                                                                    $('.comm_size[data-variable="totalSizeKBcharregESIC"]').text(response.totalSizeKBcharregESIC + ' KB');
-                                                                                    $('.comm_count[data-variable="countcharregESIC"]').text(response.countcharregESIC);
+                                                                    //                 $('.comm_size[data-variable="totalSizeKBcharregESIC"]').text(response.totalSizeKBcharregESIC + ' KB');
+                                                                    //                 $('.comm_count[data-variable="countcharregESIC"]').text(response.countcharregESIC);
 
 
-                                                                                    $('.comm_size[data-variable="totalSizeKBcharregPTC"]').text(response.totalSizeKBcharregPTC + ' KB');
-                                                                                    $('.comm_count[data-variable="countcharregPTC"]').text(response.countcharregPTC);
+                                                                    //                 $('.comm_size[data-variable="totalSizeKBcharregPTC"]').text(response.totalSizeKBcharregPTC + ' KB');
+                                                                    //                 $('.comm_count[data-variable="countcharregPTC"]').text(response.countcharregPTC);
 
-                                                                                    $('.comm_size[data-variable="totalSizeKBcharregLWFC"]').text(response.totalSizeKBcharregLWFC + ' KB');
-                                                                                    $('.comm_count[data-variable="countcharregLWFC"]').text(response.countcharregLWFC);
+                                                                    //                 $('.comm_size[data-variable="totalSizeKBcharregLWFC"]').text(response.totalSizeKBcharregLWFC + ' KB');
+                                                                    //                 $('.comm_count[data-variable="countcharregLWFC"]').text(response.countcharregLWFC);
 
-                                                                                    $('.comm_size[data-variable="totalSizeKBcharregPP"]').text(response.totalSizeKBcharregPP + ' KB');
-                                                                                    $('.comm_count[data-variable="countcharregPP"]').text(response.countcharregPP);
+                                                                    //                 $('.comm_size[data-variable="totalSizeKBcharregPP"]').text(response.totalSizeKBcharregPP + ' KB');
+                                                                    //                 $('.comm_count[data-variable="countcharregPP"]').text(response.countcharregPP);
 
 
-                                                                                    $('.comm_size[data-variable="totalSizeKBentriesnomeet"]').text(response.totalSizeKBentriesnomeet + ' KB');
-                                                                                    $('.comm_count[data-variable="countentriesnomeet"]').text(response.countentriesnomeet);
+                                                                    //                 $('.comm_size[data-variable="totalSizeKBentriesnomeet"]').text(response.totalSizeKBentriesnomeet + ' KB');
+                                                                    //                 $('.comm_count[data-variable="countentriesnomeet"]').text(response.countentriesnomeet);
 
-                                                                                    $('.comm_size[data-variable="totalSizeKBentriesminbookmeet"]').text(response.totalSizeKBentriesminbookmeet + ' KB');
-                                                                                    $('.comm_count[data-variable="countentriesminbookmeet"]').text(response.countentriesminbookmeet);
+                                                                    //                 $('.comm_size[data-variable="totalSizeKBentriesminbookmeet"]').text(response.totalSizeKBentriesminbookmeet + ' KB');
+                                                                    //                 $('.comm_count[data-variable="countentriesminbookmeet"]').text(response.countentriesminbookmeet);
 
 
-                                                                                    $('.comm_size[data-variable="totalSizeKBentriesasmeet"]').text(response.totalSizeKBentriesasmeet + ' KB');
-                                                                                    $('.comm_count[data-variable="countentriesasmeet"]').text(response.countentriesasmeet);
+                                                                    //                 $('.comm_size[data-variable="totalSizeKBentriesasmeet"]').text(response.totalSizeKBentriesasmeet + ' KB');
+                                                                    //                 $('.comm_count[data-variable="countentriesasmeet"]').text(response.countentriesasmeet);
 
-                                                                                    $('.comm_size[data-variable="totalSizeKBentriesresomeet"]').text(response.totalSizeKBentriesresomeet + ' KB');
-                                                                                    $('.comm_count[data-variable="countentriesresomeet"]').text(response.countentriesresomeet);
+                                                                    //                 $('.comm_size[data-variable="totalSizeKBentriesresomeet"]').text(response.totalSizeKBentriesresomeet + ' KB');
+                                                                    //                 $('.comm_count[data-variable="countentriesresomeet"]').text(response.countentriesresomeet);
 
-                                                                                    $('.comm_size[data-variable="totalSizeKBSECAABRAA"]').text(response.totalSizeKBSECAABRAA + ' KB');
-                                                                                    $('.comm_count[data-variable="countSECAABRAA"]').text(response.countSECAABRAA);
+                                                                    //                 $('.comm_size[data-variable="totalSizeKBSECAABRAA"]').text(response.totalSizeKBSECAABRAA + ' KB');
+                                                                    //                 $('.comm_count[data-variable="countSECAABRAA"]').text(response.countSECAABRAA);
 
 
-                                                                                    $('.comm_size[data-variable="totalSizeKBSECAAIA"]').text(response.totalSizeKBSECAAIA + ' KB');
-                                                                                    $('.comm_count[data-variable="countSECAAIA"]').text(response.countSECAAIA);
+                                                                    //                 $('.comm_size[data-variable="totalSizeKBSECAAIA"]').text(response.totalSizeKBSECAAIA + ' KB');
+                                                                    //                 $('.comm_count[data-variable="countSECAAIA"]').text(response.countSECAAIA);
 
-                                                                                    $('.comm_size[data-variable="totalSizeKBSECAAIA"]').text(response.totalSizeKBSECAAIA + ' KB');
-                                                                                    $('.comm_count[data-variable="countSECAAIA"]').text(response.countSECAAIA);
+                                                                    //                 $('.comm_size[data-variable="totalSizeKBSECAAIA"]').text(response.totalSizeKBSECAAIA + ' KB');
+                                                                    //                 $('.comm_count[data-variable="countSECAAIA"]').text(response.countSECAAIA);
 
-                                                                                    $('.comm_size[data-variable="totalSizeKBSECAALA"]').text(response.totalSizeKBSECAALA + ' KB');
-                                                                                    $('.comm_count[data-variable="countSECAALA"]').text(response.countSECAALA);
+                                                                    //                 $('.comm_size[data-variable="totalSizeKBSECAALA"]').text(response.totalSizeKBSECAALA + ' KB');
+                                                                    //                 $('.comm_count[data-variable="countSECAALA"]').text(response.countSECAALA);
 
 
-                                                                                    $('.comm_size[data-variable="totalSizeKBSECAACRCAA"]').text(response.totalSizeKBSECAACRCAA + ' KB');
-                                                                                    $('.comm_count[data-variable="countSECAACRCAA"]').text(response.countSECAACRCAA);
+                                                                    //                 $('.comm_size[data-variable="totalSizeKBSECAACRCAA"]').text(response.totalSizeKBSECAACRCAA + ' KB');
+                                                                    //                 $('.comm_count[data-variable="countSECAACRCAA"]').text(response.countSECAACRCAA);
 
 
-                                                                                    $('.comm_size[data-variable="totalSizeKBSECAAALA"]').text(response.totalSizeKBSECAAALA + ' KB');
-                                                                                    $('.comm_count[data-variable="countSECAAALA"]').text(response.countSECAAALA);
+                                                                    //                 $('.comm_size[data-variable="totalSizeKBSECAAALA"]').text(response.totalSizeKBSECAAALA + ' KB');
+                                                                    //                 $('.comm_count[data-variable="countSECAAALA"]').text(response.countSECAAALA);
 
 
-                                                                                    $('.comm_size[data-variable="totalSizeKBSECAASR"]').text(response.totalSizeKBSECAASR + ' KB');
-                                                                                    $('.comm_count[data-variable="countSECAASR"]').text(response.countSECAASR);
+                                                                    //                 $('.comm_size[data-variable="totalSizeKBSECAASR"]').text(response.totalSizeKBSECAASR + ' KB');
+                                                                    //                 $('.comm_count[data-variable="countSECAASR"]').text(response.countSECAASR);
 
 
-                                                                                    $('.comm_size[data-variable="totalSizeKBAuditorExitsADT3"]').text(response.totalSizeKBAuditorExitsADT3 + ' KB');
-                                                                                    $('.comm_count[data-variable="countAuditorExitsADT3"]').text(response.countAuditorExitsADT3);
+                                                                    //                 $('.comm_size[data-variable="totalSizeKBAuditorExitsADT3"]').text(response.totalSizeKBAuditorExitsADT3 + ' KB');
+                                                                    //                 $('.comm_count[data-variable="countAuditorExitsADT3"]').text(response.countAuditorExitsADT3);
 
-                                                                                    $('.comm_size[data-variable="totalSizeKBAuditorExitsResignletteraud"]').text(response.totalSizeKBAuditorExitsResignletteraud + ' KB');
-                                                                                    $('.comm_count[data-variable="countAuditorExitsResignletteraud"]').text(response.countAuditorExitsResignletteraud);
+                                                                    //                 $('.comm_size[data-variable="totalSizeKBAuditorExitsResignletteraud"]').text(response.totalSizeKBAuditorExitsResignletteraud + ' KB');
+                                                                    //                 $('.comm_count[data-variable="countAuditorExitsResignletteraud"]').text(response.countAuditorExitsResignletteraud);
 
-                                                                                    $('.comm_size[data-variable="totalSizeKBAuditorExitsResignDetofgroundsseekremaud"]').text(response.totalSizeKBAuditorExitsResignDetofgroundsseekremaud + ' KB');
-                                                                                    $('.comm_count[data-variable="countAuditorExitsResignDetofgroundsseekremaud"]').text(response.countAuditorExitsResignDetofgroundsseekremaud);
+                                                                    //                 $('.comm_size[data-variable="totalSizeKBAuditorExitsResignDetofgroundsseekremaud"]').text(response.totalSizeKBAuditorExitsResignDetofgroundsseekremaud + ' KB');
+                                                                    //                 $('.comm_count[data-variable="countAuditorExitsResignDetofgroundsseekremaud"]').text(response.countAuditorExitsResignDetofgroundsseekremaud);
 
 
-                                                                                    $('.comm_size[data-variable="totalSizeKBAuditorExitsSpecialResol"]').text(response.totalSizeKBAuditorExitsSpecialResol + ' KB');
-                                                                                    $('.comm_count[data-variable="countAuditorExitsSpecialResol"]').text(response.countAuditorExitsSpecialResol);
+                                                                    //                 $('.comm_size[data-variable="totalSizeKBAuditorExitsSpecialResol"]').text(response.totalSizeKBAuditorExitsSpecialResol + ' KB');
+                                                                    //                 $('.comm_count[data-variable="countAuditorExitsSpecialResol"]').text(response.countAuditorExitsSpecialResol);
 
-                                                                                    $('.comm_size[data-variable="totalSizeKBAuditorExitsADT2"]').text(response.totalSizeKBAuditorExitsADT2 + ' KB');
-                                                                                    $('.comm_count[data-variable="countAuditorExitsADT2"]').text(response.countAuditorExitsADT2);
+                                                                    //                 $('.comm_size[data-variable="totalSizeKBAuditorExitsADT2"]').text(response.totalSizeKBAuditorExitsADT2 + ' KB');
+                                                                    //                 $('.comm_count[data-variable="countAuditorExitsADT2"]').text(response.countAuditorExitsADT2);
 
-                                                                                    $('.comm_size[data-variable="totalSizeKB"]').text(response.totalSizeKB + ' KB');
-                                                                                    $('.comm_count[data-variable="count"]').text(response.count);
+                                                                    //                 $('.comm_size[data-variable="totalSizeKB"]').text(response.totalSizeKB + ' KB');
+                                                                    //                 $('.comm_count[data-variable="count"]').text(response.count);
 
-                                                                                    $('.comm_size[data-variable="totalSizeKBMinbooks"]').text(response.totalSizeKBMinbooks + ' KB');
-                                                                                    $('.comm_count[data-variable="countMinbooks"]').text(response.countMinbooks);
+                                                                    //                 $('.comm_size[data-variable="totalSizeKBMinbooks"]').text(response.totalSizeKBMinbooks + ' KB');
+                                                                    //                 $('.comm_count[data-variable="countMinbooks"]').text(response.countMinbooks);
 
 
-                                                                                    $('.comm_size[data-variable="totalSizeKBentriesas"]').text(response.totalSizeKBentriesas + ' KB');
-                                                                                    $('.comm_count[data-variable="countentriesas"]').text(response.countentriesas);
+                                                                    //                 $('.comm_size[data-variable="totalSizeKBentriesas"]').text(response.totalSizeKBentriesas + ' KB');
+                                                                    //                 $('.comm_count[data-variable="countentriesas"]').text(response.countentriesas);
 
-                                                                                    $('.comm_size[data-variable="totalSizeKBentriesreso"]').text(response.totalSizeKBentriesreso + ' KB');
-                                                                                    $('.comm_count[data-variable="countentriesreso"]').text(response.countentriesreso);
+                                                                    //                 $('.comm_size[data-variable="totalSizeKBentriesreso"]').text(response.totalSizeKBentriesreso + ' KB');
+                                                                    //                 $('.comm_count[data-variable="countentriesreso"]').text(response.countentriesreso);
 
 
-                                                                                    $('.comm_size[data-variable="totalSizeKBdepositundertakingsFormDPT3"]').text(response.totalSizeKBdepositundertakingsFormDPT3 + ' KB');
-                                                                                    $('.comm_count[data-variable="countdepositundertakingsFormDPT3"]').text(response.countdepositundertakingsFormDPT3);
+                                                                    //                 $('.comm_size[data-variable="totalSizeKBdepositundertakingsFormDPT3"]').text(response.totalSizeKBdepositundertakingsFormDPT3 + ' KB');
+                                                                    //                 $('.comm_count[data-variable="countdepositundertakingsFormDPT3"]').text(response.countdepositundertakingsFormDPT3);
 
-                                                                                    $('.comm_size[data-variable="totalSizeKBdirectorappointmentsdir3din"]').text(response.totalSizeKBdirectorappointmentsdir3din + ' KB');
-                                                                                    $('.comm_count[data-variable="countdirectorappointmentsdir3din"]').text(response.countdirectorappointmentsdir3din);
+                                                                    //                 $('.comm_size[data-variable="totalSizeKBdirectorappointmentsdir3din"]').text(response.totalSizeKBdirectorappointmentsdir3din + ' KB');
+                                                                    //                 $('.comm_count[data-variable="countdirectorappointmentsdir3din"]').text(response.countdirectorappointmentsdir3din);
 
-                                                                                    $('.comm_size[data-variable="totalSizeKBdirectorappointmentsdir3"]').text(response.totalSizeKBdirectorappointmentsdir3 + ' KB');
-                                                                                    $('.comm_count[data-variable="countdirectorappointmentsdir3"]').text(response.countdirectorappointmentsdir3);
+                                                                    //                 $('.comm_size[data-variable="totalSizeKBdirectorappointmentsdir3"]').text(response.totalSizeKBdirectorappointmentsdir3 + ' KB');
+                                                                    //                 $('.comm_count[data-variable="countdirectorappointmentsdir3"]').text(response.countdirectorappointmentsdir3);
 
-                                                                                    $('.comm_size[data-variable="totalSizeKBdirectorappointmentsdir6"]').text(response.totalSizeKBdirectorappointmentsdir6 + ' KB');
-                                                                                    $('.comm_count[data-variable="countdirectorappointmentsdir6"]').text(response.countdirectorappointmentsdir6);
+                                                                    //                 $('.comm_size[data-variable="totalSizeKBdirectorappointmentsdir6"]').text(response.totalSizeKBdirectorappointmentsdir6 + ' KB');
+                                                                    //                 $('.comm_count[data-variable="countdirectorappointmentsdir6"]').text(response.countdirectorappointmentsdir6);
 
-                                                                                    $('.comm_size[data-variable="totalSizeKBdirectorappointmentsdir12"]').text(response.totalSizeKBdirectorappointmentsdir12 + ' KB');
-                                                                                    $('.comm_count[data-variable="countdirectorappointmentsdir12"]').text(response.countdirectorappointmentsdir12);
+                                                                    //                 $('.comm_size[data-variable="totalSizeKBdirectorappointmentsdir12"]').text(response.totalSizeKBdirectorappointmentsdir12 + ' KB');
+                                                                    //                 $('.comm_count[data-variable="countdirectorappointmentsdir12"]').text(response.countdirectorappointmentsdir12);
 
-                                                                                    $('.comm_size[data-variable="totalSizeKBdirectorresignationdir11"]').text(response.totalSizeKBdirectorresignationdir11 + ' KB');
-                                                                                    $('.comm_count[data-variable="countdirectorresignationdir11"]').text(response.countdirectorresignationdir11);
+                                                                    //                 $('.comm_size[data-variable="totalSizeKBdirectorresignationdir11"]').text(response.totalSizeKBdirectorresignationdir11 + ' KB');
+                                                                    //                 $('.comm_count[data-variable="countdirectorresignationdir11"]').text(response.countdirectorresignationdir11);
 
-                                                                                    $('.comm_size[data-variable="totalSizeKBdirectorresignationdir12"]').text(response.totalSizeKBdirectorresignationdir12 + ' KB');
-                                                                                    $('.comm_count[data-variable="countdirectorresignationdir12"]').text(response.countdirectorresignationdir12);
+                                                                    //                 $('.comm_size[data-variable="totalSizeKBdirectorresignationdir12"]').text(response.totalSizeKBdirectorresignationdir12 + ' KB');
+                                                                    //                 $('.comm_count[data-variable="countdirectorresignationdir12"]').text(response.countdirectorresignationdir12);
 
-                                                                                    $('.comm_size[data-variable="totalSizeKBentriesordernotice"]').text(response.totalSizeKBentriesordernotice + ' KB');
-                                                                                    $('.comm_count[data-variable="countentriesordernotice"]').text(response.countentriesordernotice);
+                                                                    //                 $('.comm_size[data-variable="totalSizeKBentriesordernotice"]').text(response.totalSizeKBentriesordernotice + ' KB');
+                                                                    //                 $('.comm_count[data-variable="countentriesordernotice"]').text(response.countentriesordernotice);
 
-                                                                                    $('.comm_size[data-variable="totalSizeKBentriesorderminbook"]').text(response.totalSizeKBentriesorderminbook + ' KB');
-                                                                                    $('.comm_count[data-variable="countentriesorderminbook"]').text(response.countentriesorderminbook);
+                                                                    //                 $('.comm_size[data-variable="totalSizeKBentriesorderminbook"]').text(response.totalSizeKBentriesorderminbook + ' KB');
+                                                                    //                 $('.comm_count[data-variable="countentriesorderminbook"]').text(response.countentriesorderminbook);
 
-                                                                                    $('.comm_size[data-variable="totalSizeKBentriesorderAttend"]').text(response.totalSizeKBentriesorderAttend + ' KB');
-                                                                                    $('.comm_count[data-variable="countentriesorderAttend"]').text(response.countentriesorderAttend);
+                                                                    //                 $('.comm_size[data-variable="totalSizeKBentriesorderAttend"]').text(response.totalSizeKBentriesorderAttend + ' KB');
+                                                                    //                 $('.comm_count[data-variable="countentriesorderAttend"]').text(response.countentriesorderAttend);
 
-                                                                                    $('.comm_size[data-variable="totalSizeKBentriesorderreso"]').text(response.totalSizeKBentriesorderreso + ' KB');
-                                                                                    $('.comm_count[data-variable="countentriesorderreso"]').text(response.countentriesorderreso);
+                                                                    //                 $('.comm_size[data-variable="totalSizeKBentriesorderreso"]').text(response.totalSizeKBentriesorderreso + ' KB');
+                                                                    //                 $('.comm_count[data-variable="countentriesorderreso"]').text(response.countentriesorderreso);
 
-                                                                                    $('.comm_size[data-variable="totalSizeKBinnerrun"]').text(response.totalSizeKBinnerrun + ' KB');
-                                                                                    $('.comm_count[data-variable="countinnerrun"]').text(response.countinnerrun);
+                                                                    //                 $('.comm_size[data-variable="totalSizeKBinnerrun"]').text(response.totalSizeKBinnerrun + ' KB');
+                                                                    //                 $('.comm_count[data-variable="countinnerrun"]').text(response.countinnerrun);
 
-                                                                                    $('.comm_size[data-variable="totalSizeKBentrieinc9"]').text(response.totalSizeKBentrieinc9 + ' KB');
-                                                                                    $('.comm_count[data-variable="countentriesinc9"]').text(response.countentriesinc9);
+                                                                    //                 $('.comm_size[data-variable="totalSizeKBentrieinc9"]').text(response.totalSizeKBentrieinc9 + ' KB');
+                                                                    //                 $('.comm_count[data-variable="countentriesinc9"]').text(response.countentriesinc9);
 
-                                                                                    $('.comm_size[data-variable="totalSizeKBentrieinnerspice"]').text(response.totalSizeKBentrieinnerspice + ' KB');
-                                                                                    $('.comm_count[data-variable="countentriesinnerspice"]').text(response.countentriesinnerspice);
+                                                                    //                 $('.comm_size[data-variable="totalSizeKBentrieinnerspice"]').text(response.totalSizeKBentrieinnerspice + ' KB');
+                                                                    //                 $('.comm_count[data-variable="countentriesinnerspice"]').text(response.countentriesinnerspice);
 
 
-                                                                                    $('.comm_size[data-variable="totalSizeKBentrieinnerinc33"]').text(response.totalSizeKBentrieinnerinc33 + ' KB');
-                                                                                    $('.comm_count[data-variable="countentriesinnerinc33"]').text(response.countentriesinnerinc33);
+                                                                    //                 $('.comm_size[data-variable="totalSizeKBentrieinnerinc33"]').text(response.totalSizeKBentrieinnerinc33 + ' KB');
+                                                                    //                 $('.comm_count[data-variable="countentriesinnerinc33"]').text(response.countentriesinnerinc33);
 
-                                                                                    $('.comm_size[data-variable="totalSizeKBentrieinnerinc34"]').text(response.totalSizeKBentrieinnerinc34 + ' KB');
-                                                                                    $('.comm_count[data-variable="countentriesinnerinc34"]').text(response.countentriesinnerinc34);
+                                                                    //                 $('.comm_size[data-variable="totalSizeKBentrieinnerinc34"]').text(response.totalSizeKBentrieinnerinc34 + ' KB');
+                                                                    //                 $('.comm_count[data-variable="countentriesinnerinc34"]').text(response.countentriesinnerinc34);
 
-                                                                                    $('.comm_size[data-variable="totalSizeKBentrieinnerinc35"]').text(response.totalSizeKBentrieinnerinc35 + ' KB');
-                                                                                    $('.comm_count[data-variable="countentriesinnerinc35"]').text(response.countentriesinnerinc35);
+                                                                    //                 $('.comm_size[data-variable="totalSizeKBentrieinnerinc35"]').text(response.totalSizeKBentrieinnerinc35 + ' KB');
+                                                                    //                 $('.comm_count[data-variable="countentriesinnerinc35"]').text(response.countentriesinnerinc35);
 
-                                                                                    $('.comm_size[data-variable="totalSizeKBentrieinnerinc20a"]').text(response.totalSizeKBentrieinnerinc20a + ' KB');
-                                                                                    $('.comm_count[data-variable="countentriesinnerinc20a"]').text(response.countentriesinnerinc20a);
+                                                                    //                 $('.comm_size[data-variable="totalSizeKBentrieinnerinc20a"]').text(response.totalSizeKBentrieinnerinc20a + ' KB');
+                                                                    //                 $('.comm_count[data-variable="countentriesinnerinc20a"]').text(response.countentriesinnerinc20a);
 
-                                                                                    $('.comm_size[data-variable="totalSizeKBSECSRRM"]').text(response.totalSizeKBSECSRRM + ' KB');
-                                                                                    $('.comm_count[data-variable="countSECSRRM"]').text(response.countSECSRRM);
+                                                                    //                 $('.comm_size[data-variable="totalSizeKBSECSRRM"]').text(response.totalSizeKBSECSRRM + ' KB');
+                                                                    //                 $('.comm_count[data-variable="countSECSRRM"]').text(response.countSECSRRM);
 
-                                                                                    $('.comm_size[data-variable="totalSizeKBSECSRROSH"]').text(response.totalSizeKBSECSRROSH + ' KB');
-                                                                                    $('.comm_count[data-variable="countSECSRROSH"]').text(response.countSECSRROSH);
+                                                                    //                 $('.comm_size[data-variable="totalSizeKBSECSRROSH"]').text(response.totalSizeKBSECSRROSH + ' KB');
+                                                                    //                 $('.comm_count[data-variable="countSECSRROSH"]').text(response.countSECSRROSH);
 
 
-                                                                                    $('.comm_size[data-variable="totalSizeKBSECSRFR"]').text(response.totalSizeKBSECSRFR + ' KB');
-                                                                                    $('.comm_count[data-variable="countSECSRFR"]').text(response.countSECSRFR);
+                                                                    //                 $('.comm_size[data-variable="totalSizeKBSECSRFR"]').text(response.totalSizeKBSECSRFR + ' KB');
+                                                                    //                 $('.comm_count[data-variable="countSECSRFR"]').text(response.countSECSRFR);
 
-                                                                                    $('.comm_size[data-variable="totalSizeKBSECSRRDKMPR"]').text(response.totalSizeKBSECSRRDKMPR + ' KB');
-                                                                                    $('.comm_count[data-variable="countSECSRRDKMPR"]').text(response.countSECSRRDKMPR);
+                                                                    //                 $('.comm_size[data-variable="totalSizeKBSECSRRDKMPR"]').text(response.totalSizeKBSECSRRDKMPR + ' KB');
+                                                                    //                 $('.comm_count[data-variable="countSECSRRDKMPR"]').text(response.countSECSRRDKMPR);
 
-                                                                                    $('.comm_size[data-variable="totalSizeKBSECSRROC"]').text(response.totalSizeKBSECSRROC + ' KB');
-                                                                                    $('.comm_count[data-variable="countSECSRROC"]').text(response.countSECSRROC);
+                                                                    //                 $('.comm_size[data-variable="totalSizeKBSECSRROC"]').text(response.totalSizeKBSECSRROC + ' KB');
+                                                                    //                 $('.comm_count[data-variable="countSECSRROC"]').text(response.countSECSRROC);
 
-                                                                                    $('.comm_size[data-variable="totalSizeKBSECSRROD"]').text(response.totalSizeKBSECSRROD + ' KB');
-                                                                                    $('.comm_count[data-variable="countSECSRROD"]').text(response.countSECSRROD);
+                                                                    //                 $('.comm_size[data-variable="totalSizeKBSECSRROD"]').text(response.totalSizeKBSECSRROD + ' KB');
+                                                                    //                 $('.comm_count[data-variable="countSECSRROD"]').text(response.countSECSRROD);
 
-                                                                                    $('.comm_size[data-variable="totalSizeKBSECSRRLGS"]').text(response.totalSizeKBSECSRRLGS + ' KB');
-                                                                                    $('.comm_count[data-variable="countSECSRRLGS"]').text(response.countSECSRRLGS);
+                                                                    //                 $('.comm_size[data-variable="totalSizeKBSECSRRLGS"]').text(response.totalSizeKBSECSRRLGS + ' KB');
+                                                                    //                 $('.comm_count[data-variable="countSECSRRLGS"]').text(response.countSECSRRLGS);
 
 
-                                                                                    $('.comm_size[data-variable="totalSizeKBSECSRROINHCN"]').text(response.totalSizeKBSECSRROINHCN + ' KB');
-                                                                                    $('.comm_count[data-variable="countSECSRROINHCN"]').text(response.countSECSRROINHCN);
+                                                                    //                 $('.comm_size[data-variable="totalSizeKBSECSRROINHCN"]').text(response.totalSizeKBSECSRROINHCN + ' KB');
+                                                                    //                 $('.comm_count[data-variable="countSECSRROINHCN"]').text(response.countSECSRROINHCN);
 
-                                                                                    $('.comm_size[data-variable="totalSizeKBSECSRRCDI"]').text(response.totalSizeKBSECSRRCDI + ' KB');
-                                                                                    $('.comm_count[data-variable="countSECSRRCDI"]').text(response.countSECSRRCDI);
+                                                                    //                 $('.comm_size[data-variable="totalSizeKBSECSRRCDI"]').text(response.totalSizeKBSECSRRCDI + ' KB');
+                                                                    //                 $('.comm_count[data-variable="countSECSRRCDI"]').text(response.countSECSRRCDI);
 
-                                                                                    $('.comm_size[data-variable="totalSizeKBSECSRRSES"]').text(response.totalSizeKBSECSRRSES + ' KB');
-                                                                                    $('.comm_count[data-variable="countSECSRRSES"]').text(response.countSECSRRSES);
+                                                                    //                 $('.comm_size[data-variable="totalSizeKBSECSRRSES"]').text(response.totalSizeKBSECSRRSES + ' KB');
+                                                                    //                 $('.comm_count[data-variable="countSECSRRSES"]').text(response.countSECSRRSES);
 
-                                                                                    $('.comm_size[data-variable="totalSizeKBSECSRRSES"]').text(response.totalSizeKBSECSRRSES + ' KB');
-                                                                                    $('.comm_count[data-variable="countSECSRRSES"]').text(response.countSECSRRSES);
+                                                                    //                 $('.comm_size[data-variable="totalSizeKBSECSRRSES"]').text(response.totalSizeKBSECSRRSES + ' KB');
+                                                                    //                 $('.comm_count[data-variable="countSECSRRSES"]').text(response.countSECSRRSES);
 
 
-                                                                                    $('.comm_size[data-variable="totalSizeKBSECSRRESO"]').text(response.totalSizeKBSECSRRESO + ' KB');
-                                                                                    $('.comm_count[data-variable="countSECSRRESO"]').text(response.countSECSRRESO);
+                                                                    //                 $('.comm_size[data-variable="totalSizeKBSECSRRESO"]').text(response.totalSizeKBSECSRRESO + ' KB');
+                                                                    //                 $('.comm_count[data-variable="countSECSRRESO"]').text(response.countSECSRRESO);
 
 
-                                                                                    $('.comm_size[data-variable="totalSizeKBSECSRROSBB"]').text(response.totalSizeKBSECSRROSBB + ' KB');
-                                                                                    $('.comm_count[data-variable="countSECSRROSBB"]').text(response.countSECSRROSBB);
+                                                                    //                 $('.comm_size[data-variable="totalSizeKBSECSRROSBB"]').text(response.totalSizeKBSECSRROSBB + ' KB');
+                                                                    //                 $('.comm_count[data-variable="countSECSRROSBB"]').text(response.countSECSRROSBB);
 
-                                                                                    $('.comm_size[data-variable="totalSizeKBSECSRRRDSC"]').text(response.totalSizeKBSECSRRRDSC + ' KB');
-                                                                                    $('.comm_count[data-variable="countSECSRRRDSC"]').text(response.countSECSRRRDSC);
+                                                                    //                 $('.comm_size[data-variable="totalSizeKBSECSRRRDSC"]').text(response.totalSizeKBSECSRRRDSC + ' KB');
+                                                                    //                 $('.comm_count[data-variable="countSECSRRRDSC"]').text(response.countSECSRRRDSC);
 
-                                                                                    $('.comm_size[data-variable="totalSizeKBSECSRRSBO"]').text(response.totalSizeKBSECSRRSBO + ' KB');
-                                                                                    $('.comm_count[data-variable="countSECSRRSBO"]').text(response.countSECSRRSBO);
+                                                                    //                 $('.comm_size[data-variable="totalSizeKBSECSRRSBO"]').text(response.totalSizeKBSECSRRSBO + ' KB');
+                                                                    //                 $('.comm_count[data-variable="countSECSRRSBO"]').text(response.countSECSRRSBO);
 
-                                                                                    // $('.comm_size[data-variable="totalSizeKBSECSRRPB"]').text(response.totalSizeKBSECSRRPB + ' KB');
-                                                                                    // $('.comm_count[data-variable="countSECSRRPB"]').text(response.countSECSRRPB);
+                                                                    //                 // $('.comm_size[data-variable="totalSizeKBSECSRRPB"]').text(response.totalSizeKBSECSRRPB + ' KB');
+                                                                    //                 // $('.comm_count[data-variable="countSECSRRPB"]').text(response.countSECSRRPB);
 
 
-                                                                                    $('.comm_size[data-variable="totalSizeKBSECSRRPB"]').text(response.totalSizeKBSECSRRPB + ' KB');
-                                                                                    $('.comm_count[data-variable="countSECSRRPB"]').text(response.countSECSRRPB);
+                                                                    //                 $('.comm_size[data-variable="totalSizeKBSECSRRPB"]').text(response.totalSizeKBSECSRRPB + ' KB');
+                                                                    //                 $('.comm_count[data-variable="countSECSRRPB"]').text(response.countSECSRRPB);
 
-                                                                                    $('.comm_size[data-variable="totalSizeKBhrpayrim"]').text(response.totalSizeKBhrpayrim + ' KB');
-                                                                                    $('.comm_count[data-variable="counthrpayrim"]').text(response.counthrpayrim);
+                                                                    //                 $('.comm_size[data-variable="totalSizeKBhrpayrim"]').text(response.totalSizeKBhrpayrim + ' KB');
+                                                                    //                 $('.comm_count[data-variable="counthrpayrim"]').text(response.counthrpayrim);
 
-                                                                                    $('.comm_size[data-variable="totalSizeKBhrpayrimapprove"]').text(response.totalSizeKBhrpayrimapprove + ' KB');
-                                                                                    $('.comm_count[data-variable="counthrpayrimapprove"]').text(response.counthrpayrimapprove);
+                                                                    //                 $('.comm_size[data-variable="totalSizeKBhrpayrimapprove"]').text(response.totalSizeKBhrpayrimapprove + ' KB');
+                                                                    //                 $('.comm_count[data-variable="counthrpayrimapprove"]').text(response.counthrpayrimapprove);
 
-                                                                                    $('.comm_size[data-variable="totalSizeKBhrpaymoney1"]').text(response.totalSizeKBhrpaymoney1 + ' KB');
-                                                                                    $('.comm_count[data-variable="counthrhrpaymoney1"]').text(response.counthrhrpaymoney1);
+                                                                    //                 $('.comm_size[data-variable="totalSizeKBhrpaymoney1"]').text(response.totalSizeKBhrpaymoney1 + ' KB');
+                                                                    //                 $('.comm_count[data-variable="counthrhrpaymoney1"]').text(response.counthrhrpaymoney1);
 
-                                                                                    $('.comm_size[data-variable="totalSizeKBhrpaymoney2"]').text(response.totalSizeKBhrpaymoney2 + ' KB');
-                                                                                    $('.comm_count[data-variable="counthrhrpaymoney2"]').text(response.counthrhrpaymoney2);
+                                                                    //                 $('.comm_size[data-variable="totalSizeKBhrpaymoney2"]').text(response.totalSizeKBhrpaymoney2 + ' KB');
+                                                                    //                 $('.comm_count[data-variable="counthrhrpaymoney2"]').text(response.counthrhrpaymoney2);
 
-                                                                                    $('.comm_size[data-variable="totalSizeKBhrpaymoney3"]').text(response.totalSizeKBhrpaymoney3 + ' KB');
-                                                                                    $('.comm_count[data-variable="counthrhrpaymoney3"]').text(response.counthrhrpaymoney3);
+                                                                    //                 $('.comm_size[data-variable="totalSizeKBhrpaymoney3"]').text(response.totalSizeKBhrpaymoney3 + ' KB');
+                                                                    //                 $('.comm_count[data-variable="counthrhrpaymoney3"]').text(response.counthrhrpaymoney3);
 
 
-                                                                                    $('.comm_size[data-variable="totalSizeKBhrpaymoney4"]').text(response.totalSizeKBhrpaymoney4 + ' KB');
-                                                                                    $('.comm_count[data-variable="counthrhrpaymoney4"]').text(response.counthrhrpaymoney4);
+                                                                    //                 $('.comm_size[data-variable="totalSizeKBhrpaymoney4"]').text(response.totalSizeKBhrpaymoney4 + ' KB');
+                                                                    //                 $('.comm_count[data-variable="counthrhrpaymoney4"]').text(response.counthrhrpaymoney4);
 
-                                                                                    $('.comm_size[data-variable="totalSizeKBhrpaymoney5"]').text(response.totalSizeKBhrpaymoney5 + ' KB');
-                                                                                    $('.comm_count[data-variable="counthrhrpaymoney5"]').text(response.counthrhrpaymoney5);
+                                                                    //                 $('.comm_size[data-variable="totalSizeKBhrpaymoney5"]').text(response.totalSizeKBhrpaymoney5 + ' KB');
+                                                                    //                 $('.comm_count[data-variable="counthrhrpaymoney5"]').text(response.counthrhrpaymoney5);
 
-                                                                                    $('.comm_size[data-variable="totalSizeKBhremppol1"]').text(response.totalSizeKBhremppol1 + ' KB');
-                                                                                    $('.comm_count[data-variable="counthremppol1"]').text(response.counthremppol1);
+                                                                    //                 $('.comm_size[data-variable="totalSizeKBhremppol1"]').text(response.totalSizeKBhremppol1 + ' KB');
+                                                                    //                 $('.comm_count[data-variable="counthremppol1"]').text(response.counthremppol1);
 
-                                                                                    $('.comm_size[data-variable="totalSizeKBhremppol2"]').text(response.totalSizeKBhremppol2 + ' KB');
-                                                                                    $('.comm_count[data-variable="counthremppol2"]').text(response.counthremppol2);
+                                                                    //                 $('.comm_size[data-variable="totalSizeKBhremppol2"]').text(response.totalSizeKBhremppol2 + ' KB');
+                                                                    //                 $('.comm_count[data-variable="counthremppol2"]').text(response.counthremppol2);
 
-                                                                                    $('.comm_size[data-variable="totalSizeKBhremppol3"]').text(response.totalSizeKBhremppol3 + ' KB');
-                                                                                    $('.comm_count[data-variable="counthremppol3"]').text(response.counthremppol3);
+                                                                    //                 $('.comm_size[data-variable="totalSizeKBhremppol3"]').text(response.totalSizeKBhremppol3 + ' KB');
+                                                                    //                 $('.comm_count[data-variable="counthremppol3"]').text(response.counthremppol3);
 
-                                                                                    $('.comm_size[data-variable="totalSizeKBhremppol4"]').text(response.totalSizeKBhremppol4 + ' KB');
-                                                                                    $('.comm_count[data-variable="counthremppol4"]').text(response.counthremppol4);
+                                                                    //                 $('.comm_size[data-variable="totalSizeKBhremppol4"]').text(response.totalSizeKBhremppol4 + ' KB');
+                                                                    //                 $('.comm_count[data-variable="counthremppol4"]').text(response.counthremppol4);
 
-                                                                                    $('.comm_size[data-variable="totalSizeKBhroff1"]').text(response.totalSizeKBhroff1 + ' KB');
-                                                                                    $('.comm_count[data-variable="counthroff1"]').text(response.counthroff1);
+                                                                    //                 $('.comm_size[data-variable="totalSizeKBhroff1"]').text(response.totalSizeKBhroff1 + ' KB');
+                                                                    //                 $('.comm_count[data-variable="counthroff1"]').text(response.counthroff1);
 
-                                                                                    $('.comm_size[data-variable="totalSizeKBhroff2"]').text(response.totalSizeKBhroff2 + ' KB');
-                                                                                    $('.comm_count[data-variable="counthroff2"]').text(response.counthroff2);
+                                                                    //                 $('.comm_size[data-variable="totalSizeKBhroff2"]').text(response.totalSizeKBhroff2 + ' KB');
+                                                                    //                 $('.comm_count[data-variable="counthroff2"]').text(response.counthroff2);
 
-                                                                                    $('.comm_size[data-variable="totalSizeKBhroff3"]').text(response.totalSizeKBhroff3 + ' KB');
-                                                                                    $('.comm_count[data-variable="counthroff3"]').text(response.counthroff3);
+                                                                    //                 $('.comm_size[data-variable="totalSizeKBhroff3"]').text(response.totalSizeKBhroff3 + ' KB');
+                                                                    //                 $('.comm_count[data-variable="counthroff3"]').text(response.counthroff3);
 
-                                                                                    $('.comm_size[data-variable="totalSizeKBhroff4"]').text(response.totalSizeKBhroff4 + ' KB');
-                                                                                    $('.comm_count[data-variable="counthroff4"]').text(response.counthroff4);
+                                                                    //                 $('.comm_size[data-variable="totalSizeKBhroff4"]').text(response.totalSizeKBhroff4 + ' KB');
+                                                                    //                 $('.comm_count[data-variable="counthroff4"]').text(response.counthroff4);
 
-                                                                                    $('.comm_size[data-variable="totalSizeKBhrempdec"]').text(response.totalSizeKBhrempdec + ' KB');
-                                                                                    $('.comm_count[data-variable="counthrhrempdec"]').text(response.counthrhrempdec);
+                                                                    //                 $('.comm_size[data-variable="totalSizeKBhrempdec"]').text(response.totalSizeKBhrempdec + ' KB');
+                                                                    //                 $('.comm_count[data-variable="counthrhrempdec"]').text(response.counthrhrempdec);
 
 
-                                                                                    $('.comm_size[data-variable="totalSizeKBhrempdecmaster"]').text(response.totalSizeKBhrempdecmaster + ' KB');
-                                                                                    $('.comm_count[data-variable="counthrhrempdecmaster"]').text(response.counthrhrempdecmaster);
+                                                                    //                 $('.comm_size[data-variable="totalSizeKBhrempdecmaster"]').text(response.totalSizeKBhrempdecmaster + ' KB');
+                                                                    //                 $('.comm_count[data-variable="counthrhrempdecmaster"]').text(response.counthrhrempdecmaster);
 
-                                                                                    $('.comm_size[data-variable="totalSizeKBkycphoto"]').text(response.totalSizeKBkycphoto + ' KB');
-                                                                                    $('.comm_count[data-variable="countkycphoto"]').text(response.countkycphoto);
+                                                                    //                 $('.comm_size[data-variable="totalSizeKBkycphoto"]').text(response.totalSizeKBkycphoto + ' KB');
+                                                                    //                 $('.comm_count[data-variable="countkycphoto"]').text(response.countkycphoto);
 
-                                                                                    $('.comm_size[data-variable="totalSizeKBkycaadhar"]').text(response.totalSizeKBkycaadhar + ' KB');
-                                                                                    $('.comm_count[data-variable="countkycaadhar"]').text(response.countkycaadhar);
+                                                                    //                 $('.comm_size[data-variable="totalSizeKBkycaadhar"]').text(response.totalSizeKBkycaadhar + ' KB');
+                                                                    //                 $('.comm_count[data-variable="countkycaadhar"]').text(response.countkycaadhar);
 
-                                                                                    $('.comm_size[data-variable="totalSizeKBentrieinnerinc22"]').text(response.totalSizeKBentrieinnerinc22 + ' KB');
-                                                                                    $('.comm_count[data-variable="countentriesinnerinc22"]').text(response.countentriesinnerinc22);
+                                                                    //                 $('.comm_size[data-variable="totalSizeKBentrieinnerinc22"]').text(response.totalSizeKBentrieinnerinc22 + ' KB');
+                                                                    //                 $('.comm_count[data-variable="countentriesinnerinc22"]').text(response.countentriesinnerinc22);
 
-                                                                                    $('.comm_size[data-variable="totalSizeKBkycpan"]').text(response.totalSizeKBkycpan + ' KB');
-                                                                                    $('.comm_count[data-variable="countkycpan"]').text(response.countkycpan);
+                                                                    //                 $('.comm_size[data-variable="totalSizeKBkycpan"]').text(response.totalSizeKBkycpan + ' KB');
+                                                                    //                 $('.comm_count[data-variable="countkycpan"]').text(response.countkycpan);
 
-                                                                                    $('.comm_size[data-variable="totalSizeKBkycaddressproof"]').text(response.totalSizeKBkycaddressproof + ' KB');
-                                                                                    $('.comm_count[data-variable="countkycaddressproof"]').text(response.countkycaddressproof);
+                                                                    //                 $('.comm_size[data-variable="totalSizeKBkycaddressproof"]').text(response.totalSizeKBkycaddressproof + ' KB');
+                                                                    //                 $('.comm_count[data-variable="countkycaddressproof"]').text(response.countkycaddressproof);
 
-                                                                                    $('.comm_size[data-variable="totalSizeKBkyccontactdetails"]').text(response.totalSizeKBkyccontactdetails + ' KB');
-                                                                                    $('.comm_count[data-variable="countkyccontactdetails"]').text(response.countkyccontactdetails);
+                                                                    //                 $('.comm_size[data-variable="totalSizeKBkyccontactdetails"]').text(response.totalSizeKBkyccontactdetails + ' KB');
+                                                                    //                 $('.comm_count[data-variable="countkyccontactdetails"]').text(response.countkyccontactdetails);
 
-                                                                                    $('.comm_size[data-variable="totalSizeKBemponboard"]').text(response.totalSizeKBemponboard + ' KB');
-                                                                                    $('.comm_count[data-variable="countemponboard"]').text(response.countemponboard);
+                                                                    //                 $('.comm_size[data-variable="totalSizeKBemponboard"]').text(response.totalSizeKBemponboard + ' KB');
+                                                                    //                 $('.comm_count[data-variable="countemponboard"]').text(response.countemponboard);
 
-                                                                                    $('.comm_size[data-variable="totalSizeKBemponboardal"]').text(response.totalSizeKBemponboardal + ' KB');
-                                                                                    $('.comm_count[data-variable="countemponboardal"]').text(response.countemponboardal);
+                                                                    //                 $('.comm_size[data-variable="totalSizeKBemponboardal"]').text(response.totalSizeKBemponboardal + ' KB');
+                                                                    //                 $('.comm_count[data-variable="countemponboardal"]').text(response.countemponboardal);
 
-                                                                                    $('.comm_size[data-variable="totalSizeKBemponboardea"]').text(response.totalSizeKBemponboardea + ' KB');
-                                                                                    $('.comm_count[data-variable="countemponboardea"]').text(response.countemponboardea);
+                                                                    //                 $('.comm_size[data-variable="totalSizeKBemponboardea"]').text(response.totalSizeKBemponboardea + ' KB');
+                                                                    //                 $('.comm_count[data-variable="countemponboardea"]').text(response.countemponboardea);
 
-                                                                                    $('.comm_size[data-variable="totalSizeKBemponboardnda"]').text(response.totalSizeKBemponboardnda + ' KB');
-                                                                                    $('.comm_count[data-variable="countemponboardnda"]').text(response.countemponboardnda);
+                                                                    //                 $('.comm_size[data-variable="totalSizeKBemponboardnda"]').text(response.totalSizeKBemponboardnda + ' KB');
+                                                                    //                 $('.comm_count[data-variable="countemponboardnda"]').text(response.countemponboardnda);
 
-                                                                                    $('.comm_size[data-variable="totalSizeKBemponboardnc"]').text(response.totalSizeKBemponboardnc + ' KB');
-                                                                                    $('.comm_count[data-variable="countemponboardnc"]').text(response.countemponboardnc);
+                                                                    //                 $('.comm_size[data-variable="totalSizeKBemponboardnc"]').text(response.totalSizeKBemponboardnc + ' KB');
+                                                                    //                 $('.comm_count[data-variable="countemponboardnc"]').text(response.countemponboardnc);
 
-                                                                                    $('.comm_size[data-variable="totalSizeKBemponboardcb"]').text(response.totalSizeKBemponboardcb + ' KB');
-                                                                                    $('.comm_count[data-variable="countemponboardcb"]').text(response.countemponboardcb);
+                                                                    //                 $('.comm_size[data-variable="totalSizeKBemponboardcb"]').text(response.totalSizeKBemponboardcb + ' KB');
+                                                                    //                 $('.comm_count[data-variable="countemponboardcb"]').text(response.countemponboardcb);
 
-                                                                                    $('.comm_size[data-variable="totalSizeKBemponboardepf"]').text(response.totalSizeKBemponboardepf + ' KB');
-                                                                                    $('.comm_count[data-variable="countemponboardepf"]').text(response.countemponboardepf);
+                                                                    //                 $('.comm_size[data-variable="totalSizeKBemponboardepf"]').text(response.totalSizeKBemponboardepf + ' KB');
+                                                                    //                 $('.comm_count[data-variable="countemponboardepf"]').text(response.countemponboardepf);
 
-                                                                                    $('.comm_size[data-variable="totalSizeKBemponboardincometax"]').text(response.totalSizeKBemponboardincometax + ' KB');
-                                                                                    $('.comm_count[data-variable="countemponboardincometax"]').text(response.countemponboardincometax);
+                                                                    //                 $('.comm_size[data-variable="totalSizeKBemponboardincometax"]').text(response.totalSizeKBemponboardincometax + ' KB');
+                                                                    //                 $('.comm_count[data-variable="countemponboardincometax"]').text(response.countemponboardincometax);
 
-                                                                                    $('.comm_size[data-variable="totalSizeKBdirecttaxmonthlyworking"]').text(response.totalSizeKBdirecttaxmonthlyworking + ' KB');
-                                                                                    $('.comm_count[data-variable="countdirecttaxmonthlyworking"]').text(response.countdirecttaxmonthlyworking);
+                                                                    //                 $('.comm_size[data-variable="totalSizeKBdirecttaxmonthlyworking"]').text(response.totalSizeKBdirecttaxmonthlyworking + ' KB');
+                                                                    //                 $('.comm_count[data-variable="countdirecttaxmonthlyworking"]').text(response.countdirecttaxmonthlyworking);
 
-                                                                                    $('.comm_size[data-variable="totalSizeKBdirecttaxmonthlyChallan"]').text(response.totalSizeKBdirecttaxmonthlyChallan + ' KB');
-                                                                                    $('.comm_count[data-variable="countdirecttaxmonthlyChallan"]').text(response.countdirecttaxmonthlyChallan);
+                                                                    //                 $('.comm_size[data-variable="totalSizeKBdirecttaxmonthlyChallan"]').text(response.totalSizeKBdirecttaxmonthlyChallan + ' KB');
+                                                                    //                 $('.comm_count[data-variable="countdirecttaxmonthlyChallan"]').text(response.countdirecttaxmonthlyChallan);
 
 
-                                                                                    $('.comm_size[data-variable="totalSizeKBdirecttaxQuarterlyFilingsWorkings"]').text(response.totalSizeKBdirecttaxQuarterlyFilingsWorkings + ' KB');
-                                                                                    $('.comm_count[data-variable="countdirecttaxQuarterlyFilingsWorkings"]').text(response.countdirecttaxQuarterlyFilingsWorkings);
+                                                                    //                 $('.comm_size[data-variable="totalSizeKBdirecttaxQuarterlyFilingsWorkings"]').text(response.totalSizeKBdirecttaxQuarterlyFilingsWorkings + ' KB');
+                                                                    //                 $('.comm_count[data-variable="countdirecttaxQuarterlyFilingsWorkings"]').text(response.countdirecttaxQuarterlyFilingsWorkings);
 
 
-                                                                                    $('.comm_size[data-variable="totalSizeKBdirecttaxQuarterlyFilingsReturn"]').text(response.totalSizeKBdirecttaxQuarterlyFilingsReturn + ' KB');
-                                                                                    $('.comm_count[data-variable="countdirecttaxQuarterlyFilingsReturn"]').text(response.countdirecttaxQuarterlyFilingsReturn);
+                                                                    //                 $('.comm_size[data-variable="totalSizeKBdirecttaxQuarterlyFilingsReturn"]').text(response.totalSizeKBdirecttaxQuarterlyFilingsReturn + ' KB');
+                                                                    //                 $('.comm_count[data-variable="countdirecttaxQuarterlyFilingsReturn"]').text(response.countdirecttaxQuarterlyFilingsReturn);
 
-                                                                                    $('.comm_size[data-variable="totalSizeKBdirecttaxQuarterlyFilingsAcknowledgement"]').text(response.totalSizeKBdirecttaxQuarterlyFilingsAcknowledgement + ' KB');
-                                                                                    $('.comm_count[data-variable="countdirecttaxQuarterlyFilingsAcknowledgement"]').text(response.countdirecttaxQuarterlyFilingsAcknowledgement);
+                                                                    //                 $('.comm_size[data-variable="totalSizeKBdirecttaxQuarterlyFilingsAcknowledgement"]').text(response.totalSizeKBdirecttaxQuarterlyFilingsAcknowledgement + ' KB');
+                                                                    //                 $('.comm_count[data-variable="countdirecttaxQuarterlyFilingsAcknowledgement"]').text(response.countdirecttaxQuarterlyFilingsAcknowledgement);
 
 
-                                                                                    $('.comm_size[data-variable="totalSizeKBdirecttaxLitigationsNotices"]').text(response.totalSizeKBdirecttaxLitigationsNotices + ' KB');
-                                                                                    $('.comm_count[data-variable="countdirecttaxLitigationsNotices"]').text(response.countdirecttaxLitigationsNotices);
+                                                                    //                 $('.comm_size[data-variable="totalSizeKBdirecttaxLitigationsNotices"]').text(response.totalSizeKBdirecttaxLitigationsNotices + ' KB');
+                                                                    //                 $('.comm_count[data-variable="countdirecttaxLitigationsNotices"]').text(response.countdirecttaxLitigationsNotices);
 
 
-                                                                                    $('.comm_size[data-variable="totalSizeKBdirecttaxLitigationsResponses"]').text(response.totalSizeKBdirecttaxLitigationsResponses + ' KB');
-                                                                                    $('.comm_count[data-variable="countdirecttaxLitigationsResponses"]').text(response.countdirecttaxLitigationsResponses);
+                                                                    //                 $('.comm_size[data-variable="totalSizeKBdirecttaxLitigationsResponses"]').text(response.totalSizeKBdirecttaxLitigationsResponses + ' KB');
+                                                                    //                 $('.comm_count[data-variable="countdirecttaxLitigationsResponses"]').text(response.countdirecttaxLitigationsResponses);
 
-                                                                                    $('.comm_size[data-variable="totalSizeKBdirecttaxLitigationsOrders"]').text(response.totalSizeKBdirecttaxLitigationsOrders + ' KB');
-                                                                                    $('.comm_count[data-variable="countdirecttaxLitigationsOrders"]').text(response.countdirecttaxLitigationsOrders);
+                                                                    //                 $('.comm_size[data-variable="totalSizeKBdirecttaxLitigationsOrders"]').text(response.totalSizeKBdirecttaxLitigationsOrders + ' KB');
+                                                                    //                 $('.comm_count[data-variable="countdirecttaxLitigationsOrders"]').text(response.countdirecttaxLitigationsOrders);
 
 
-                                                                                    $('.comm_size[data-variable="totalSizeKBdirecttaxQuarterlyPaymentsWorkings"]').text(response.totalSizeKBdirecttaxQuarterlyPaymentsWorkings + ' KB');
-                                                                                    $('.comm_count[data-variable="countdirecttaxQuarterlyPaymentsWorkings"]').text(response.countdirecttaxQuarterlyPaymentsWorkings);
+                                                                    //                 $('.comm_size[data-variable="totalSizeKBdirecttaxQuarterlyPaymentsWorkings"]').text(response.totalSizeKBdirecttaxQuarterlyPaymentsWorkings + ' KB');
+                                                                    //                 $('.comm_count[data-variable="countdirecttaxQuarterlyPaymentsWorkings"]').text(response.countdirecttaxQuarterlyPaymentsWorkings);
 
-                                                                                    $('.comm_size[data-variable="totalSizeKBdirecttaxQuarterlyPaymentsChallan"]').text(response.totalSizeKBdirecttaxQuarterlyPaymentsChallan + ' KB');
-                                                                                    $('.comm_count[data-variable="countdirecttaxQuarterlyPaymentsChallan"]').text(response.countdirecttaxQuarterlyPaymentsChallan);
+                                                                    //                 $('.comm_size[data-variable="totalSizeKBdirecttaxQuarterlyPaymentsChallan"]').text(response.totalSizeKBdirecttaxQuarterlyPaymentsChallan + ' KB');
+                                                                    //                 $('.comm_count[data-variable="countdirecttaxQuarterlyPaymentsChallan"]').text(response.countdirecttaxQuarterlyPaymentsChallan);
 
-                                                                                    $('.comm_size[data-variable="totalSizeKBdirecttaxIncomeTaxAnnualReturnsFinancialStatements"]').text(response.totalSizeKBdirecttaxIncomeTaxAnnualReturnsFinancialStatements + ' KB');
-                                                                                    $('.comm_count[data-variable="countdirecttaxIncomeTaxAnnualReturnsFinancialStatements"]').text(response.countdirecttaxIncomeTaxAnnualReturnsFinancialStatements);
+                                                                    //                 $('.comm_size[data-variable="totalSizeKBdirecttaxIncomeTaxAnnualReturnsFinancialStatements"]').text(response.totalSizeKBdirecttaxIncomeTaxAnnualReturnsFinancialStatements + ' KB');
+                                                                    //                 $('.comm_count[data-variable="countdirecttaxIncomeTaxAnnualReturnsFinancialStatements"]').text(response.countdirecttaxIncomeTaxAnnualReturnsFinancialStatements);
 
 
-                                                                                    $('.comm_size[data-variable="totalSizeKBdirecttaxIncomeTaxAnnualReturnsCOI"]').text(response.totalSizeKBdirecttaxIncomeTaxAnnualReturnsCOI + ' KB');
-                                                                                    $('.comm_count[data-variable="countdirecttaxIncomeTaxAnnualReturnsCOI"]').text(response.countdirecttaxIncomeTaxAnnualReturnsCOI);
+                                                                    //                 $('.comm_size[data-variable="totalSizeKBdirecttaxIncomeTaxAnnualReturnsCOI"]').text(response.totalSizeKBdirecttaxIncomeTaxAnnualReturnsCOI + ' KB');
+                                                                    //                 $('.comm_count[data-variable="countdirecttaxIncomeTaxAnnualReturnsCOI"]').text(response.countdirecttaxIncomeTaxAnnualReturnsCOI);
 
-                                                                                    $('.comm_size[data-variable="totalSizeKBdirecttaxIncomeTaxAnnualReturnsReturn"]').text(response.totalSizeKBdirecttaxIncomeTaxAnnualReturnsReturn + ' KB');
-                                                                                    $('.comm_count[data-variable="countdirecttaxIncomeTaxAnnualReturnsReturn"]').text(response.countdirecttaxIncomeTaxAnnualReturnsReturn);
+                                                                    //                 $('.comm_size[data-variable="totalSizeKBdirecttaxIncomeTaxAnnualReturnsReturn"]').text(response.totalSizeKBdirecttaxIncomeTaxAnnualReturnsReturn + ' KB');
+                                                                    //                 $('.comm_count[data-variable="countdirecttaxIncomeTaxAnnualReturnsReturn"]').text(response.countdirecttaxIncomeTaxAnnualReturnsReturn);
 
 
-                                                                                    $('.comm_size[data-variable="totalSizeKBdirecttaxIncomeTaxAnnualReturnsAcknowledgement"]').text(response.totalSizeKBdirecttaxIncomeTaxAnnualReturnsAcknowledgement + ' KB');
-                                                                                    $('.comm_count[data-variable="countdirecttaxIncomeTaxAnnualReturnsAcknowledgement"]').text(response.countdirecttaxIncomeTaxAnnualReturnsAcknowledgement);
+                                                                    //                 $('.comm_size[data-variable="totalSizeKBdirecttaxIncomeTaxAnnualReturnsAcknowledgement"]').text(response.totalSizeKBdirecttaxIncomeTaxAnnualReturnsAcknowledgement + ' KB');
+                                                                    //                 $('.comm_count[data-variable="countdirecttaxIncomeTaxAnnualReturnsAcknowledgement"]').text(response.countdirecttaxIncomeTaxAnnualReturnsAcknowledgement);
 
 
-                                                                                    $('.comm_size[data-variable="totalSizeKBdirecttaxIncomeTaxLitigationsNotices"]').text(response.totalSizeKBdirecttaxIncomeTaxLitigationsNotices + ' KB');
-                                                                                    $('.comm_count[data-variable="countdirecttaxIncomeTaxLitigationsNotices"]').text(response.countdirecttaxIncomeTaxLitigationsNotices);
+                                                                    //                 $('.comm_size[data-variable="totalSizeKBdirecttaxIncomeTaxLitigationsNotices"]').text(response.totalSizeKBdirecttaxIncomeTaxLitigationsNotices + ' KB');
+                                                                    //                 $('.comm_count[data-variable="countdirecttaxIncomeTaxLitigationsNotices"]').text(response.countdirecttaxIncomeTaxLitigationsNotices);
 
-                                                                                    $('.comm_size[data-variable="totalSizeKBdirecttaxIncomeTaxLitigationsResponses"]').text(response.totalSizeKBdirecttaxIncomeTaxLitigationsResponses + ' KB');
-                                                                                    $('.comm_count[data-variable="countdirecttaxIncomeTaxLitigationsResponses"]').text(response.countdirecttaxIncomeTaxLitigationsResponses);
+                                                                    //                 $('.comm_size[data-variable="totalSizeKBdirecttaxIncomeTaxLitigationsResponses"]').text(response.totalSizeKBdirecttaxIncomeTaxLitigationsResponses + ' KB');
+                                                                    //                 $('.comm_count[data-variable="countdirecttaxIncomeTaxLitigationsResponses"]').text(response.countdirecttaxIncomeTaxLitigationsResponses);
 
-                                                                                    $('.comm_size[data-variable="totalSizeKBindirecttaxIncomeTaxLitigationsNotices"]').text(response.totalSizeKBindirecttaxIncomeTaxLitigationsNotices + ' KB');
-                                                                                    $('.comm_count[data-variable="countindirecttaxIncomeTaxLitigationsNotices"]').text(response.countindirecttaxIncomeTaxLitigationsNotices);
+                                                                    //                 $('.comm_size[data-variable="totalSizeKBindirecttaxIncomeTaxLitigationsNotices"]').text(response.totalSizeKBindirecttaxIncomeTaxLitigationsNotices + ' KB');
+                                                                    //                 $('.comm_count[data-variable="countindirecttaxIncomeTaxLitigationsNotices"]').text(response.countindirecttaxIncomeTaxLitigationsNotices);
 
-                                                                                    $('.comm_size[data-variable="totalSizeKBindirecttaxIncomeTaxLitigationsResponses"]').text(response.totalSizeKBindirecttaxIncomeTaxLitigationsResponses + ' KB');
-                                                                                    $('.comm_count[data-variable="countindirecttaxIncomeTaxLitigationsResponses"]').text(response.countindirecttaxIncomeTaxLitigationsResponses);
+                                                                    //                 $('.comm_size[data-variable="totalSizeKBindirecttaxIncomeTaxLitigationsResponses"]').text(response.totalSizeKBindirecttaxIncomeTaxLitigationsResponses + ' KB');
+                                                                    //                 $('.comm_count[data-variable="countindirecttaxIncomeTaxLitigationsResponses"]').text(response.countindirecttaxIncomeTaxLitigationsResponses);
 
-                                                                                    $('.comm_size[data-variable="totalSizeKBindirecttaxIncomeTaxLitigationsOrders"]').text(response.totalSizeKBindirecttaxIncomeTaxLitigationsOrders + ' KB');
-                                                                                    $('.comm_count[data-variable="countindirecttaxIncomeTaxLitigationsOrders"]').text(response.countindirecttaxIncomeTaxLitigationsOrders);
+                                                                    //                 $('.comm_size[data-variable="totalSizeKBindirecttaxIncomeTaxLitigationsOrders"]').text(response.totalSizeKBindirecttaxIncomeTaxLitigationsOrders + ' KB');
+                                                                    //                 $('.comm_count[data-variable="countindirecttaxIncomeTaxLitigationsOrders"]').text(response.countindirecttaxIncomeTaxLitigationsOrders);
 
 
-                                                                                    $('.comm_size[data-variable="totalSizeKBindirecttaxIncomeTaxGSTR1Workings"]').text(response.totalSizeKBindirecttaxIncomeTaxGSTR1Workings + ' KB');
-                                                                                    $('.comm_count[data-variable="countindirecttaxIncomeTaxGSTR1Workings"]').text(response.countindirecttaxIncomeTaxGSTR1Workings);
+                                                                    //                 $('.comm_size[data-variable="totalSizeKBindirecttaxIncomeTaxGSTR1Workings"]').text(response.totalSizeKBindirecttaxIncomeTaxGSTR1Workings + ' KB');
+                                                                    //                 $('.comm_count[data-variable="countindirecttaxIncomeTaxGSTR1Workings"]').text(response.countindirecttaxIncomeTaxGSTR1Workings);
 
-                                                                                    $('.comm_size[data-variable="totalSizeKBindirecttaxIncomeTaxGSTR1Return"]').text(response.totalSizeKBindirecttaxIncomeTaxGSTR1Return + ' KB');
-                                                                                    $('.comm_count[data-variable="countindirecttaxIncomeTaxGSTR1Return"]').text(response.countindirecttaxIncomeTaxGSTR1Return);
+                                                                    //                 $('.comm_size[data-variable="totalSizeKBindirecttaxIncomeTaxGSTR1Return"]').text(response.totalSizeKBindirecttaxIncomeTaxGSTR1Return + ' KB');
+                                                                    //                 $('.comm_count[data-variable="countindirecttaxIncomeTaxGSTR1Return"]').text(response.countindirecttaxIncomeTaxGSTR1Return);
 
-                                                                                    $('.comm_size[data-variable="totalSizeKBindirecttaxIncomeTaxGSTR1Acknowledgement"]').text(response.totalSizeKBindirecttaxIncomeTaxGSTR1Acknowledgement + ' KB');
-                                                                                    $('.comm_count[data-variable="countindirecttaxIncomeTaxGSTR1Acknowledgement"]').text(response.countindirecttaxIncomeTaxGSTR1Acknowledgement);
+                                                                    //                 $('.comm_size[data-variable="totalSizeKBindirecttaxIncomeTaxGSTR1Acknowledgement"]').text(response.totalSizeKBindirecttaxIncomeTaxGSTR1Acknowledgement + ' KB');
+                                                                    //                 $('.comm_count[data-variable="countindirecttaxIncomeTaxGSTR1Acknowledgement"]').text(response.countindirecttaxIncomeTaxGSTR1Acknowledgement);
 
 
-                                                                                    $('.comm_size[data-variable="totalSizeKBindirecttaxIncomeTaxGSTR3bWorkings"]').text(response.totalSizeKBindirecttaxIncomeTaxGSTR3bWorkings + ' KB');
-                                                                                    $('.comm_count[data-variable="countindirecttaxIncomeTaxGSTR3bWorkings"]').text(response.countindirecttaxIncomeTaxGSTR3bWorkings);
+                                                                    //                 $('.comm_size[data-variable="totalSizeKBindirecttaxIncomeTaxGSTR3bWorkings"]').text(response.totalSizeKBindirecttaxIncomeTaxGSTR3bWorkings + ' KB');
+                                                                    //                 $('.comm_count[data-variable="countindirecttaxIncomeTaxGSTR3bWorkings"]').text(response.countindirecttaxIncomeTaxGSTR3bWorkings);
 
-                                                                                    $('.comm_size[data-variable="totalSizeKBindirecttaxIncomeTaxGSTR3bReturn"]').text(response.totalSizeKBindirecttaxIncomeTaxGSTR3bReturn + ' KB');
-                                                                                    $('.comm_count[data-variable="countindirecttaxIncomeTaxGSTR3bReturn"]').text(response.countindirecttaxIncomeTaxGSTR3bReturn);
+                                                                    //                 $('.comm_size[data-variable="totalSizeKBindirecttaxIncomeTaxGSTR3bReturn"]').text(response.totalSizeKBindirecttaxIncomeTaxGSTR3bReturn + ' KB');
+                                                                    //                 $('.comm_count[data-variable="countindirecttaxIncomeTaxGSTR3bReturn"]').text(response.countindirecttaxIncomeTaxGSTR3bReturn);
 
 
-                                                                                    $('.comm_size[data-variable="totalSizeKBindirecttaxIncomeTaxGSTR3bChallanReceipt"]').text(response.totalSizeKBindirecttaxIncomeTaxGSTR3bChallanReceipt + ' KB');
-                                                                                    $('.comm_count[data-variable="countindirecttaxIncomeTaxGSTR3bChallanReceipt"]').text(response.countindirecttaxIncomeTaxGSTR3bChallanReceipt);
+                                                                    //                 $('.comm_size[data-variable="totalSizeKBindirecttaxIncomeTaxGSTR3bChallanReceipt"]').text(response.totalSizeKBindirecttaxIncomeTaxGSTR3bChallanReceipt + ' KB');
+                                                                    //                 $('.comm_count[data-variable="countindirecttaxIncomeTaxGSTR3bChallanReceipt"]').text(response.countindirecttaxIncomeTaxGSTR3bChallanReceipt);
 
-                                                                                    $('.comm_size[data-variable="totalSizeKBindirecttaxIncomeTaxGSTR3bAcknowledgement"]').text(response.totalSizeKBindirecttaxIncomeTaxGSTR3bAcknowledgement + ' KB');
-                                                                                    $('.comm_count[data-variable="countindirecttaxIncomeTaxGSTR3bAcknowledgement"]').text(response.countindirecttaxIncomeTaxGSTR3bAcknowledgement);
+                                                                    //                 $('.comm_size[data-variable="totalSizeKBindirecttaxIncomeTaxGSTR3bAcknowledgement"]').text(response.totalSizeKBindirecttaxIncomeTaxGSTR3bAcknowledgement + ' KB');
+                                                                    //                 $('.comm_count[data-variable="countindirecttaxIncomeTaxGSTR3bAcknowledgement"]').text(response.countindirecttaxIncomeTaxGSTR3bAcknowledgement);
 
 
 
-                                                                                    $('.comm_size[data-variable="totalSizeKBindirecttaxIncomeTaxGSTR9Workings"]').text(response.totalSizeKBindirecttaxIncomeTaxGSTR9Workings + ' KB');
-                                                                                    $('.comm_count[data-variable="countindirecttaxIncomeTaxGSTR9Workings"]').text(response.countindirecttaxIncomeTaxGSTR9Workings);
+                                                                    //                 $('.comm_size[data-variable="totalSizeKBindirecttaxIncomeTaxGSTR9Workings"]').text(response.totalSizeKBindirecttaxIncomeTaxGSTR9Workings + ' KB');
+                                                                    //                 $('.comm_count[data-variable="countindirecttaxIncomeTaxGSTR9Workings"]').text(response.countindirecttaxIncomeTaxGSTR9Workings);
 
-                                                                                    $('.comm_size[data-variable="totalSizeKBindirecttaxIncomeTaxGSTR9Return"]').text(response.totalSizeKBindirecttaxIncomeTaxGSTR9Return + ' KB');
-                                                                                    $('.comm_count[data-variable="countindirecttaxIncomeTaxGSTR9Return"]').text(response.countindirecttaxIncomeTaxGSTR9Return);
+                                                                    //                 $('.comm_size[data-variable="totalSizeKBindirecttaxIncomeTaxGSTR9Return"]').text(response.totalSizeKBindirecttaxIncomeTaxGSTR9Return + ' KB');
+                                                                    //                 $('.comm_count[data-variable="countindirecttaxIncomeTaxGSTR9Return"]').text(response.countindirecttaxIncomeTaxGSTR9Return);
 
 
-                                                                                    $('.comm_size[data-variable="totalSizeKBindirecttaxIncomeTaxGSTR9ChallanReceipt"]').text(response.totalSizeKBindirecttaxIncomeTaxGSTR9ChallanReceipt + ' KB');
-                                                                                    $('.comm_count[data-variable="countindirecttaxIncomeTaxGSTR9ChallanReceipt"]').text(response.countindirecttaxIncomeTaxGSTR9ChallanReceipt);
+                                                                    //                 $('.comm_size[data-variable="totalSizeKBindirecttaxIncomeTaxGSTR9ChallanReceipt"]').text(response.totalSizeKBindirecttaxIncomeTaxGSTR9ChallanReceipt + ' KB');
+                                                                    //                 $('.comm_count[data-variable="countindirecttaxIncomeTaxGSTR9ChallanReceipt"]').text(response.countindirecttaxIncomeTaxGSTR9ChallanReceipt);
 
-                                                                                    $('.comm_size[data-variable="totalSizeKBindirecttaxIncomeTaxGSTR9Acknowledgement"]').text(response.totalSizeKBindirecttaxIncomeTaxGSTR9Acknowledgement + ' KB');
-                                                                                    $('.comm_count[data-variable="countindirecttaxIncomeTaxGSTR9Acknowledgement"]').text(response.countindirecttaxIncomeTaxGSTR9Acknowledgement);
+                                                                    //                 $('.comm_size[data-variable="totalSizeKBindirecttaxIncomeTaxGSTR9Acknowledgement"]').text(response.totalSizeKBindirecttaxIncomeTaxGSTR9Acknowledgement + ' KB');
+                                                                    //                 $('.comm_count[data-variable="countindirecttaxIncomeTaxGSTR9Acknowledgement"]').text(response.countindirecttaxIncomeTaxGSTR9Acknowledgement);
 
 
 
 
-                                                                                    $('.comm_size[data-variable="totalSizeKBindirecttaxIncomeTaxGSTR9cWorkings"]').text(response.totalSizeKBindirecttaxIncomeTaxGSTR9cWorkings + ' KB');
-                                                                                    $('.comm_count[data-variable="countindirecttaxIncomeTaxGSTR9cWorkings"]').text(response.countindirecttaxIncomeTaxGSTR9cWorkings);
+                                                                    //                 $('.comm_size[data-variable="totalSizeKBindirecttaxIncomeTaxGSTR9cWorkings"]').text(response.totalSizeKBindirecttaxIncomeTaxGSTR9cWorkings + ' KB');
+                                                                    //                 $('.comm_count[data-variable="countindirecttaxIncomeTaxGSTR9cWorkings"]').text(response.countindirecttaxIncomeTaxGSTR9cWorkings);
 
-                                                                                    $('.comm_size[data-variable="totalSizeKBindirecttaxIncomeTaxGSTR9cReturn"]').text(response.totalSizeKBindirecttaxIncomeTaxGSTR9cReturn + ' KB');
-                                                                                    $('.comm_count[data-variable="countindirecttaxIncomeTaxGSTR9cReturn"]').text(response.countindirecttaxIncomeTaxGSTR9cReturn);
+                                                                    //                 $('.comm_size[data-variable="totalSizeKBindirecttaxIncomeTaxGSTR9cReturn"]').text(response.totalSizeKBindirecttaxIncomeTaxGSTR9cReturn + ' KB');
+                                                                    //                 $('.comm_count[data-variable="countindirecttaxIncomeTaxGSTR9cReturn"]').text(response.countindirecttaxIncomeTaxGSTR9cReturn);
 
 
-                                                                                    $('.comm_size[data-variable="totalSizeKBindirecttaxIncomeTaxGSTR9cChallanReceipt"]').text(response.totalSizeKBindirecttaxIncomeTaxGSTR9cChallanReceipt + ' KB');
-                                                                                    $('.comm_count[data-variable="countindirecttaxIncomeTaxGSTR9cChallanReceipt"]').text(response.countindirecttaxIncomeTaxGSTR9cChallanReceipt);
+                                                                    //                 $('.comm_size[data-variable="totalSizeKBindirecttaxIncomeTaxGSTR9cChallanReceipt"]').text(response.totalSizeKBindirecttaxIncomeTaxGSTR9cChallanReceipt + ' KB');
+                                                                    //                 $('.comm_count[data-variable="countindirecttaxIncomeTaxGSTR9cChallanReceipt"]').text(response.countindirecttaxIncomeTaxGSTR9cChallanReceipt);
 
-                                                                                    $('.comm_size[data-variable="totalSizeKBindirecttaxIncomeTaxGSTR9cAcknowledgement"]').text(response.totalSizeKBindirecttaxIncomeTaxGSTR9cAcknowledgement + ' KB');
-                                                                                    $('.comm_count[data-variable="countindirecttaxIncomeTaxGSTR9cAcknowledgement"]').text(response.countindirecttaxIncomeTaxGSTR9cAcknowledgement);
-                                                                                }, 1000);
+                                                                    //                 $('.comm_size[data-variable="totalSizeKBindirecttaxIncomeTaxGSTR9cAcknowledgement"]').text(response.totalSizeKBindirecttaxIncomeTaxGSTR9cAcknowledgement + ' KB');
+                                                                    //                 $('.comm_count[data-variable="countindirecttaxIncomeTaxGSTR9cAcknowledgement"]').text(response.countindirecttaxIncomeTaxGSTR9cAcknowledgement);
+                                                                    //             }, 1000);
 
-                                                                            },
+                                                                    //         },
 
-                                                                            error: function(xhr, status, error) {
-                                                                                console.error(error); // Log any error for debugging
-                                                                            }
-                                                                        });
-                                                                        //     setInterval(function () {
-                                                                        //     triggerDocurepo(folderPath);
-                                                                        //     window.reload();
-                                                                        // }, 10000); // 1000 ms = 1 second
-                                                                    }
+                                                                    //         error: function(xhr, status, error) {
+                                                                    //             console.error(error); // Log any error for debugging
+                                                                    //         }
+                                                                    //     });
+                                                                    //     //     setInterval(function () {
+                                                                    //     //     triggerDocurepo(folderPath);
+                                                                    //     //     window.reload();
+                                                                    //     // }, 10000); // 1000 ms = 1 second
+                                                                    // }
 
                                                                     // Trigger on click of a folder link
-                                                                    $(document).on('click', '.folder-link', function(e) {
-                                                                        e.preventDefault();
-                                                                        e.stopPropagation();
-                                                                        var folderPath = $(this).data('folder-path'); // Get folder path from data attribute
-                                                                        // alert(folderPath);
-                                                                        triggerDocurepo(folderPath); // Call the reusable function
-                                                                    });
+                                                                    // $(document).on('click', '.folder-link', function(e) {
+                                                                    //     e.preventDefault();
+                                                                    //     e.stopPropagation();
+                                                                    //     var folderPath = $(this).data('folder-path'); // Get folder path from data attribute
+                                                                    //     // alert(folderPath);
+                                                                    //     triggerDocurepo(folderPath); // Call the reusable function
+                                                                    // });
 
                                                                     // for inside form location click 23 December 2024
                                                                 
@@ -5034,7 +5026,7 @@ $('body').on('change', '.dragfile', function () {
                                                                     if (folderParam) {
                                                                         // Decode the folder parameter (handle double encoding)
                                                                         var decodedFolderParam = decodeURIComponent(decodeURIComponent(folderParam));
-                                                                        triggerDocurepo(decodedFolderParam); // Call the reusable function with the folder path
+                                                                        // triggerDocurepo(decodedFolderParam); // Call the reusable function with the folder path
                                                                     }
                                                                 });
 
@@ -5062,16 +5054,16 @@ $('body').on('change', '.dragfile', function () {
                                                                 }
 
                                                                 // Event listener for folder links
-                                                                $('.folder-link').on('click', function(event) {
-                                                                    event.preventDefault(); // Prevent default link behavior
+                                                                // $('.folder-link').on('click', function(event) {
+                                                                //     event.preventDefault(); // Prevent default link behavior
 
-                                                                    // Get the folder path from the clicked link (assuming data-folder-path is an attribute)
-                                                                    const folderPath = $(this).data('folder-path'); // Change to your actual attribute
+                                                                //     // Get the folder path from the clicked link (assuming data-folder-path is an attribute)
+                                                                //     const folderPath = $(this).data('folder-path'); // Change to your actual attribute
 
-                                                                    // Call the fetchTotalSize function with the folder path
+                                                                //     // Call the fetchTotalSize function with the folder path
 
 
-                                                                });
+                                                                // });
 
                                                                 // $('.fold-link').on('click', function(event) {
                                                                 //     event.preventDefault(); // Prevent default link behavior
@@ -5125,7 +5117,6 @@ $('body').on('change', '.dragfile', function () {
 
 
                                                                     updateBreadcrumb(folderPath);
-                                                                    fetchFolderContents(folderPath, false);
                                                                     openNewFolder(folderPath);
                                                                     $('li a').removeClass('selected-folder');
                                                                     $(`[data-folder-path="${folderPath}"]`).addClass('selected-folder');
@@ -5146,6 +5137,8 @@ $('body').on('change', '.dragfile', function () {
                                                                             path: newUrl.href
                                                                         }, '', newUrl.href);
                                                                     }
+                                                                    fetchFolderContents(folderPath, false);
+
                                                                 }
 
                                                                 // //   Listen for browser navigation (back/forward buttons)
@@ -5622,6 +5615,7 @@ $('body').on('change', '.dragfile', function () {
                                                                 function fetchFolderContents(folderPath) {
                                                                     // showLoader(); // Ensure the loader is shown when the request starts
                                                                     showLoader();
+                                                                    // alert("i am 111 ");
 
                                                                     function getQueryParam(param) {
                                                                         const queryString = window.location.search.substring(1);
@@ -5636,18 +5630,23 @@ $('body').on('change', '.dragfile', function () {
                                                                     }
 
                                                                     // Retrieve the folder path from the URL parameters
+                                                                    bindFolderClickEvents();
+
+
                                                                     const folderPaths = getQueryParam('folder');
 
                                                                     // alert("inside fetch folder");
 
                                                                     // Determine the folder path to use
                                                                     const pathToUse = folderPaths ? decodeURIComponent(folderPaths) : null;
+
+                                                                    updateBreadcrumb(pathToUse);
+
                                                                     // alert(pathToUse);
                                                                     // if (window.location.pathname === '/docurepo') {
                                                                     //     pathToUse = null; // Default for '/docurepo'
                                                                     // } else {
                                                                     //     pathToUse = decodedFolderPath || folderPath; // Use decoded folderPath or the provided folderPath
-
                                                                     // }
 
                                                                     // Make sure to use backticks (`) for the template literal
@@ -5663,9 +5662,6 @@ $('body').on('change', '.dragfile', function () {
 
                                                                     // Extract the part after the base path
                                                                     let newPermitter = fullPath.replace(basePath, '').split('/')[0];
-
-
-
 
 
                                                                     let newbase = "Human Resources/Employee Database/";
@@ -5690,145 +5686,150 @@ $('body').on('change', '.dragfile', function () {
 
                                                                             $('.folder-contents').html(response.folderHtml);
                                                                             $('.file-container').html(response.fileHtml);
+                                                                            customFilesHtml = response.fileHtml;
+                                                                            // alert(customFilesHtml);
 
                                                                             clearAppendedTables();
-                                                                            if (result.endsWith("Secretarial/Board Meetings") && !incorporationTableAppended) {
-                                                                                insertIncorporationTable();
-                                                                                incorporationTableAppended = true;
+                                                                            // if (result.endsWith("Secretarial/Board Meetings") && !incorporationTableAppended) {
+                                                                            //     insertIncorporationTable();
+                                                                            //     incorporationTableAppended = true;
 
-                                                                            } else if (result.endsWith("Secretarial/Annual General Meeting") && !meetingTableAppended) {
-                                                                                insertMeetingTable();
-                                                                                meetingTableAppended = true;
-                                                                            } else if (result.endsWith("Secretarial/Extra Ordinary General Meeting") && !orderTableAppended) {
-                                                                                insertOrderTable();
-                                                                                orderTableAppended = true;
-                                                                            } else if (result.endsWith("Secretarial/Incorporation") && !incTableAppended) {
-                                                                                insertINCTable();
-                                                                                incTableAppended = true;
-                                                                            } else if (result.endsWith("Secretarial/Annual Filings") && !annTableAppended) {
-                                                                                insertANNTable();
-                                                                                annTableAppended = true;
-                                                                            } else if (result.endsWith("Secretarial/Director Appointments") && !directTableAppended) {
-                                                                                insertDirectTable();
-                                                                                directTableAppended = true;
-                                                                            } else if (result.endsWith("Secretarial/Director Resignation & Removal") && !directexitTableAppended) {
-                                                                                insertDirectexitTable();
-                                                                                directexitTableAppended = true;
-                                                                            } else if (result.endsWith("Secretarial/Auditor Appointments") && !auditappTableAppended) {
-                                                                                insertauditappTable();
-                                                                                auditappTableAppended = true;
-                                                                            } else if (result.endsWith("Secretarial/Auditor Exits") && !auditexitTableAppended) {
-                                                                                insertauditexitTable();
-                                                                                auditexitTableAppended = true;
-                                                                            } else if (result.endsWith("Secretarial/Statutory Registers") && !staturegiTableAppended) {
-                                                                                insertstaturegiTable();
-                                                                                staturegiTableAppended = true;
-                                                                            } else if (result.endsWith("Secretarial/Deposit Undertakings") && !undertakingTableAppended) {
-                                                                                insertundertakingTable();
-                                                                                undertakingTableAppended = true;
-                                                                            } else if (result.endsWith("Accounting & Taxation/Book-keeping/Bank Account Statements") && !bankAccountStatementsTableAppended) {
-                                                                                insertbankAccountStatementsTable();
-                                                                                bankAccountStatementsTableAppended = true;
-                                                                            } else if (result.endsWith("Accounting & Taxation/Book-keeping/Fixed Deposit Statements") && !bankFixedDepositStatementsTableAppended) {
-                                                                                insertbankFixedDepositStatementsTable();
-                                                                                bankFixedDepositStatementsTableAppended = true;
-                                                                            } else if (result.endsWith("Accounting & Taxation/Book-keeping/Credit Card Statements") && !bankCreditCardStatementsTableAppended) {
-                                                                                insertbankCreditCardStatementsTable();
-                                                                                bankCreditCardStatementsTableAppended = true;
-                                                                            } else if (result.endsWith("Accounting & Taxation/Book-keeping/Mutual Fund Statements") && !bankMutualFundStatementsTableAppended) {
-                                                                                insertbankMutualFundStatementsTable();
-                                                                                bankMutualFundStatementsTableAppended = true;
-                                                                            } else if (result.endsWith(`Accounting & Taxation/Charter Documents/Director Details/${newPermitter}`) && !charterdocumentsDirectordetatilsDirector1TableAppended) {
+                                                                            // } else if (result.endsWith("Secretarial/Annual General Meeting") && !meetingTableAppended) {
+                                                                            //     insertMeetingTable();
+                                                                            //     meetingTableAppended = true;
+                                                                            // } else if (result.endsWith("Secretarial/Extra Ordinary General Meeting") && !orderTableAppended) {
+                                                                            //     insertOrderTable();
+                                                                            //     orderTableAppended = true;
+                                                                            // } else if (result.endsWith("Secretarial/Incorporation") && !incTableAppended) {
+                                                                            //     insertINCTable();
+                                                                            //     incTableAppended = true;
+                                                                            // } else if (result.endsWith("Secretarial/Annual Filings") && !annTableAppended) {
+                                                                            //     insertANNTable();
+                                                                            //     annTableAppended = true;
+                                                                            // } else if (result.endsWith("Secretarial/Director Appointments") && !directTableAppended) {
+                                                                            //     insertDirectTable();
+                                                                            //     directTableAppended = true;
+                                                                            // } else if (result.endsWith("Secretarial/Director Resignation & Removal") && !directexitTableAppended) {
+                                                                            //     insertDirectexitTable();
+                                                                            //     directexitTableAppended = true;
+                                                                            // } else if (result.endsWith("Secretarial/Auditor Appointments") && !auditappTableAppended) {
+                                                                            //     insertauditappTable();
+                                                                            //     auditappTableAppended = true;
+                                                                            // } else if (result.endsWith("Secretarial/Auditor Exits") && !auditexitTableAppended) {
+                                                                            //     insertauditexitTable();
+                                                                            //     auditexitTableAppended = true;
+                                                                            // } else if (result.endsWith("Secretarial/Statutory Registers") && !staturegiTableAppended) {
+                                                                            //     insertstaturegiTable();
+                                                                            //     staturegiTableAppended = true;
+                                                                            // } else if (result.endsWith("Secretarial/Deposit Undertakings") && !undertakingTableAppended) {
+                                                                            //     insertundertakingTable();
+                                                                            //     undertakingTableAppended = true;
+                                                                            // } else if (result.endsWith("Accounting & Taxation/Book-keeping/Bank Account Statements") && !bankAccountStatementsTableAppended) {
+                                                                            //     insertbankAccountStatementsTable();
+                                                                            //     bankAccountStatementsTableAppended = true;
+                                                                            // } else if (result.endsWith("Accounting & Taxation/Book-keeping/Fixed Deposit Statements") && !bankFixedDepositStatementsTableAppended) {
+                                                                            //     insertbankFixedDepositStatementsTable();
+                                                                            //     bankFixedDepositStatementsTableAppended = true;
+                                                                            // } else if (result.endsWith("Accounting & Taxation/Book-keeping/Credit Card Statements") && !bankCreditCardStatementsTableAppended) {
+                                                                            //     insertbankCreditCardStatementsTable();
+                                                                            //     bankCreditCardStatementsTableAppended = true;
+                                                                            // } else if (result.endsWith("Accounting & Taxation/Book-keeping/Mutual Fund Statements") && !bankMutualFundStatementsTableAppended) {
+                                                                            //     insertbankMutualFundStatementsTable();
+                                                                            //     bankMutualFundStatementsTableAppended = true;
+                                                                            // } else if (result.endsWith(`Accounting & Taxation/Charter Documents/Director Details/${newPermitter}`) && !charterdocumentsDirectordetatilsDirector1TableAppended) {
 
-                                                                                setInterval(function() {
-                                                                                    let result = decodeAndFormatUrl(url);
-                                                                                    let fullPath = `${result}`;
+                                                                            //     setInterval(function() {
+                                                                            //         let result = decodeAndFormatUrl(url);
+                                                                            //         let fullPath = `${result}`;
 
-                                                                                    // Extract the part after the base path and get only the first parameter (name)
-                                                                                    let newPermitter = fullPath.replace(basePath, '').split('/')[0];
+                                                                            //         // Extract the part after the base path and get only the first parameter (name)
+                                                                            //         let newPermitter = fullPath.replace(basePath, '').split('/')[0];
 
-                                                                                    // Output the result or use it to trigger actions
-                                                                                    // console.log(newPermitter); // Output the cleaned value
-                                                                                }, 1000);
+                                                                            //         // Output the result or use it to trigger actions
+                                                                            //         // console.log(newPermitter); // Output the cleaned value
+                                                                            //     }, 1000);
 
-                                                                                if (response.directorfolder) {
-                                                                                    insertcharterdocumentsDirectordetatilsDirector1Table();
-                                                                                    charterdocumentsDirectordetatilsDirector1TableAppended = true;
-                                                                                }
-                                                                            } else if (result.endsWith("Accounting & Taxation/Charter Documents/Incorporation") && !charterdocumentsIncorporationTableAppended) {
-                                                                                // alert(result);
-                                                                                insertcharterdocumentsIncorporationTableAppendedTable();
-                                                                                charterdocumentsIncorporationTableAppended = true;
-                                                                            } else if (result.endsWith("Accounting & Taxation/Charter Documents/Registrations") && !charterdocumentsRegistrationsTableAppended) {
-                                                                                insertcharterdocumentsRegistrationsTableAppendedTable();
-                                                                                charterdocumentsRegistrationsTableAppended = true;
-                                                                            } else if (result.endsWith("Onboarding documents") && !hronboarTableAppended) {
+                                                                            //     if (response.directorfolder) {
+                                                                            //         insertcharterdocumentsDirectordetatilsDirector1Table();
+                                                                            //         charterdocumentsDirectordetatilsDirector1TableAppended = true;
+                                                                            //     }
+                                                                            // } else if (result.endsWith("Accounting & Taxation/Charter Documents/Incorporation") && !charterdocumentsIncorporationTableAppended) {
+                                                                            //     // alert(result);
+                                                                            //     insertcharterdocumentsIncorporationTableAppendedTable();
+                                                                            //     charterdocumentsIncorporationTableAppended = true;
+                                                                            // } else if (result.endsWith("Accounting & Taxation/Charter Documents/Registrations") && !charterdocumentsRegistrationsTableAppended) {
+                                                                            //     insertcharterdocumentsRegistrationsTableAppendedTable();
+                                                                            //     charterdocumentsRegistrationsTableAppended = true;
+                                                                            // } else if (result.endsWith("Onboarding documents") && !hronboarTableAppended) {
 
 
 
-                                                                                inserthronboarTableAppended(); // Call the function to append the table
-                                                                                hronboarTableAppended = true; // Set the flag to true to prevent further appends
-                                                                            } else if (result.endsWith("KYC Documents") && !hrkycTableAppended) {
+                                                                            //     inserthronboarTableAppended(); // Call the function to append the table
+                                                                            //     hronboarTableAppended = true; // Set the flag to true to prevent further appends
+                                                                            // } else if (result.endsWith("KYC Documents") && !hrkycTableAppended) {
 
-                                                                                inserthrkycTableAppended(); // Call the function to append the table
-                                                                                hrkycTableAppended = true; // Set the flag to true to prevent further appends
-                                                                            } else if (result.endsWith("Declarations") && !hrdecTableAppended) {
+                                                                            //     inserthrkycTableAppended(); // Call the function to append the table
+                                                                            //     hrkycTableAppended = true; // Set the flag to true to prevent further appends
+                                                                            // } else if (result.endsWith("Declarations") && !hrdecTableAppended) {
 
-                                                                                inserthrdecTableAppended(); // Call the function to append the table
-                                                                                hrdecTableAppended = true; // Set the flag to true to prevent further appends
-                                                                            } else if (result.endsWith("Offboarding") && !hroffboardTableAppended) {
+                                                                            //     inserthrdecTableAppended(); // Call the function to append the table
+                                                                            //     hrdecTableAppended = true; // Set the flag to true to prevent further appends
+                                                                            // } else if (result.endsWith("Offboarding") && !hroffboardTableAppended) {
 
-                                                                                inserthroffboardTableAppended(); // Call the function to append the table
-                                                                                hroffboardTableAppended = true; // Set the flag to true to prevent further appends
-                                                                            } else if (result.endsWith("ESOP") && !hresopTableAppended) {
+                                                                            //     inserthroffboardTableAppended(); // Call the function to append the table
+                                                                            //     hroffboardTableAppended = true; // Set the flag to true to prevent further appends
+                                                                            // } else if (result.endsWith("ESOP") && !hresopTableAppended) {
 
-                                                                                inserthresopTableAppended(); // Call the function to append the table
-                                                                                hresopTableAppended = true; // Set the flag to true to prevent further appends
-                                                                            } else if (result.endsWith("Pay Registers/Monthly Payrun") && !hrmpTableAppended) {
+                                                                            //     inserthresopTableAppended(); // Call the function to append the table
+                                                                            //     hresopTableAppended = true; // Set the flag to true to prevent further appends
+                                                                            // } else if (result.endsWith("Pay Registers/Monthly Payrun") && !hrmpTableAppended) {
 
-                                                                                inserthrmpTableAppended(); // Call the function to append the table
-                                                                                hrmpTableAppended = true; // Set the flag to true to prevent further appends
-                                                                            } else if (result.endsWith("Pay Registers/Reimbursements") && !hrreimbTableAppended) {
+                                                                            //     inserthrmpTableAppended(); // Call the function to append the table
+                                                                            //     hrmpTableAppended = true; // Set the flag to true to prevent further appends
+                                                                            // } else if (result.endsWith("Pay Registers/Reimbursements") && !hrreimbTableAppended) {
 
-                                                                                inserthrreimTableAppended(); // Call the function to append the table
-                                                                                hrreimbTableAppended = true; // Set the flag to true to prevent further appends
-                                                                            } else if (result.endsWith("Accounting & Taxation/Direct Tax/Tax Deducted at Source (TDS)/Monthly Payments") && !directtaxmonthlyTableAppended) {
-                                                                                insertdirecttaxmonthlyTableAppendeds();
-                                                                                directtaxmonthlyTableAppended = true;
-                                                                            } else if (result.endsWith("Accounting & Taxation/Direct Tax/Tax Deducted at Source (TDS)/Quarterly Filings") && !directtaxquarterlyTableAppended) {
-                                                                                insertdirecttaxQuarterlyTableAppendeds();
-                                                                                directtaxquarterlyTableAppended = true;
-                                                                            } else if (result.endsWith("Accounting & Taxation/Direct Tax/Tax Deducted at Source (TDS)/Litigations") && !directtaxLitigationsTableAppended) {
-                                                                                insertdirecttaxLitigationsTableAppendeds();
-                                                                                directtaxLitigationsTableAppended = true;
-                                                                            } else if (result.endsWith("Accounting & Taxation/Direct Tax/Advance Tax/Quarterly Payments") && !directtaxQuarterlyPaymentsTableAppended) {
-                                                                                insertdirecttaxQuarterlyPaymentsTableAppendeds();
-                                                                                directtaxQuarterlyPaymentsTableAppended = true;
-                                                                            } else if (result.endsWith("Accounting & Taxation/Direct Tax/Income Tax/Annual Returns") && !directtaxAnnualReturnsTableAppended) {
-                                                                                insertdirecttaxAnnualReturnsTableAppendeds();
-                                                                                directtaxAnnualReturnsTableAppended = true;
-                                                                            } else if (result.endsWith("Accounting & Taxation/Direct Tax/Income Tax/Litigations") && !directtaxincomeLitigationsTableAppended) {
-                                                                                insertdirecttaxincomeLitigationsTableAppendeds();
-                                                                                directtaxincomeLitigationsTableAppended = true;
-                                                                            } else if (result.endsWith("Accounting & Taxation/Indirect Tax/Indirect/GST/Monthly & Quarterly Returns/GSTR-1") && !indirecttaxGSTR1TableAppended) {
-                                                                                insertindirecttaxGSTR1TableAppendeds();
-                                                                                indirecttaxGSTR1TableAppended = true;
-                                                                            } else if (result.endsWith("Accounting & Taxation/Indirect Tax/Indirect/GST/Monthly & Quarterly Returns/GSTR 3B") && !indirecttaxGSTR3bTableAppended) {
-                                                                                insertindirecttaxGSTR3bTableAppendeds();
-                                                                                indirecttaxGSTR3bTableAppended = true;
-                                                                            } else if (result.endsWith("Accounting & Taxation/Indirect Tax/Indirect/GST/Monthly & Quarterly Returns/GSTR 9") && !indirecttaxGSTR9TableAppended) {
-                                                                                insertindirecttaxGSTR9TableAppendeds();
-                                                                                indirecttaxGSTR9TableAppended = true;
-                                                                            } else if (result.endsWith("Accounting & Taxation/Indirect Tax/Indirect/GST/Monthly & Quarterly Returns/GSTR 9C") && !indirecttaxGSTR9cTableAppended) {
-                                                                                insertindirecttaxGSTR9cTableAppendeds();
-                                                                                indirecttaxGSTR9cTableAppended = true;
-                                                                            } else if (result.endsWith("Accounting & Taxation/Indirect Tax/Indirect/GST/Litigations") && !indirecttaxLitigationsTableAppended) {
+                                                                            //     inserthrreimTableAppended(); // Call the function to append the table
+                                                                            //     hrreimbTableAppended = true; // Set the flag to true to prevent further appends
+                                                                            // } else if (result.endsWith("Accounting & Taxation/Direct Tax/Tax Deducted at Source (TDS)/Monthly Payments") && !directtaxmonthlyTableAppended) {
+                                                                            //     insertdirecttaxmonthlyTableAppendeds();
+                                                                            //     directtaxmonthlyTableAppended = true;
+                                                                            // } else if (result.endsWith("Accounting & Taxation/Direct Tax/Tax Deducted at Source (TDS)/Quarterly Filings") && !directtaxquarterlyTableAppended) {
+                                                                            //     insertdirecttaxQuarterlyTableAppendeds();
+                                                                            //     directtaxquarterlyTableAppended = true;
+                                                                            // } else if (result.endsWith("Accounting & Taxation/Direct Tax/Tax Deducted at Source (TDS)/Litigations") && !directtaxLitigationsTableAppended) {
+                                                                            //     insertdirecttaxLitigationsTableAppendeds();
+                                                                            //     directtaxLitigationsTableAppended = true;
+                                                                            // } else if (result.endsWith("Accounting & Taxation/Direct Tax/Advance Tax/Quarterly Payments") && !directtaxQuarterlyPaymentsTableAppended) {
+                                                                            //     insertdirecttaxQuarterlyPaymentsTableAppendeds();
+                                                                            //     directtaxQuarterlyPaymentsTableAppended = true;
+                                                                            // } else if (result.endsWith("Accounting & Taxation/Direct Tax/Income Tax/Annual Returns") && !directtaxAnnualReturnsTableAppended) {
+                                                                            //     insertdirecttaxAnnualReturnsTableAppendeds();
+                                                                            //     directtaxAnnualReturnsTableAppended = true;
+                                                                            // } else if (result.endsWith("Accounting & Taxation/Direct Tax/Income Tax/Litigations") && !directtaxincomeLitigationsTableAppended) {
+                                                                            //     insertdirecttaxincomeLitigationsTableAppendeds();
+                                                                            //     directtaxincomeLitigationsTableAppended = true;
+                                                                            // } else if (result.endsWith("Accounting & Taxation/Indirect Tax/Indirect/GST/Monthly & Quarterly Returns/GSTR-1") && !indirecttaxGSTR1TableAppended) {
+                                                                            //     insertindirecttaxGSTR1TableAppendeds();
+                                                                            //     indirecttaxGSTR1TableAppended = true;
+                                                                            // } else if (result.endsWith("Accounting & Taxation/Indirect Tax/Indirect/GST/Monthly & Quarterly Returns/GSTR 3B") && !indirecttaxGSTR3bTableAppended) {
+                                                                            //     insertindirecttaxGSTR3bTableAppendeds();
+                                                                            //     indirecttaxGSTR3bTableAppended = true;
+                                                                            // } else if (result.endsWith("Accounting & Taxation/Indirect Tax/Indirect/GST/Monthly & Quarterly Returns/GSTR 9") && !indirecttaxGSTR9TableAppended) {
+                                                                            //     insertindirecttaxGSTR9TableAppendeds();
+                                                                            //     indirecttaxGSTR9TableAppended = true;
+                                                                            // } else if (result.endsWith("Accounting & Taxation/Indirect Tax/Indirect/GST/Monthly & Quarterly Returns/GSTR 9C") && !indirecttaxGSTR9cTableAppended) {
+                                                                            //     insertindirecttaxGSTR9cTableAppendeds();
+                                                                            //     indirecttaxGSTR9cTableAppended = true;
+                                                                            // } else
+                                                                            if(!indirecttaxLitigationsTableAppended) {
                                                                                 // alert("jijijij");
+                                                                                // let asdfasdf = $('.file-container').html(customFilesHtml);
+
                                                                                 insertindirecttaxLitigationsTableAppendeds();
                                                                                 // alert('2');
                                                                                 indirecttaxLitigationsTableAppended = true;
                                                                                 // alert('3');
-
+                                                                                // console.log(asdfasdf);
 
                                                                             }
 
@@ -5837,7 +5838,7 @@ $('body').on('change', '.dragfile', function () {
 
 
                                                                             bindFolderClickEvents();
-                                                                            updateBreadcrumb(pathToUse);
+                                                                            updateBreadcrumb(pathToUse);    
                                                                             hideLoader(); // Hide loader after contents are updated
                                                                         },
                                                                         error: function(xhr) {
@@ -5964,161 +5965,162 @@ $('body').on('change', '.dragfile', function () {
 
                                                                             clearAppendedTables();
 
-                                                                            if (result.endsWith("Secretarial/Board Meetings") && !incorporationTableAppended) {
-                                                                                insertIncorporationTable();
-                                                                                incorporationTableAppended = true;
-                                                                            } else if (result.endsWith("Secretarial/Annual General Meeting") && !meetingTableAppended) {
-                                                                                insertMeetingTable();
-                                                                                meetingTableAppended = true;
-                                                                            } else if (result.endsWith("Secretarial/Extra Ordinary General Meeting") && !orderTableAppended) {
-                                                                                insertOrderTable();
-                                                                                orderTableAppended = true;
-                                                                            } else if (result.endsWith("Secretarial/Incorporation") && !incTableAppended) {
-                                                                                insertINCTable();
-                                                                                incTableAppended = true;
-                                                                            } else if (result.endsWith("Secretarial/Annual Filings") && !annTableAppended) {
-                                                                                insertANNTable();
-                                                                                annTableAppended = true;
-                                                                            } else if (result.endsWith("Secretarial/Director Appointments") && !directTableAppended) {
-                                                                                insertDirectTable();
-                                                                                directTableAppended = true;
-                                                                            } else if (result.endsWith("Secretarial/Director Resignation & Removal") && !directexitTableAppended) {
-                                                                                insertDirectexitTable();
-                                                                                directexitTableAppended = true;
-                                                                            } else if (result.endsWith("Secretarial/Auditor Appointments") && !auditappTableAppended) {
-                                                                                insertauditappTable();
-                                                                                auditappTableAppended = true;
-                                                                            } else if (result.endsWith("Secretarial/Auditor Exits") && !auditexitTableAppended) {
-                                                                                insertauditexitTable();
-                                                                                auditexitTableAppended = true;
-                                                                            } else if (result.endsWith("Secretarial/Statutory Registers") && !staturegiTableAppended) {
-                                                                                insertstaturegiTable();
-                                                                                staturegiTableAppended = true;
-                                                                            } else if (result.endsWith("Secretarial/Deposit Undertakings") && !undertakingTableAppended) {
-                                                                                insertundertakingTable();
-                                                                                undertakingTableAppended = true;
-                                                                            } else if (result.endsWith("Accounting & Taxation/Book-keeping/Bank Account Statements") && !bankAccountStatementsTableAppended) {
-                                                                                insertbankAccountStatementsTable();
-                                                                                bankAccountStatementsTableAppended = true;
-                                                                            } else if (result.endsWith("Accounting & Taxation/Book-keeping/Fixed Deposit Statements") && !bankFixedDepositStatementsTableAppended) {
-                                                                                insertbankFixedDepositStatementsTable();
-                                                                                bankFixedDepositStatementsTableAppended = true;
-                                                                            } else if (result.endsWith("Accounting & Taxation/Book-keeping/Credit Card Statements") && !bankCreditCardStatementsTableAppended) {
-                                                                                insertbankCreditCardStatementsTable();
-                                                                                bankCreditCardStatementsTableAppended = true;
-                                                                            } else if (result.endsWith("Accounting & Taxation/Book-keeping/Mutual Fund Statements") && !bankMutualFundStatementsTableAppended) {
-                                                                                insertbankMutualFundStatementsTable();
-                                                                                bankMutualFundStatementsTableAppended = true;
-                                                                            } else if (result.endsWith(`Accounting & Taxation/Charter Documents/Director Details/${newPermitter}`) && !charterdocumentsDirectordetatilsDirector1TableAppended) {
+                                                                            // if (result.endsWith("Secretarial/Board Meetings") && !incorporationTableAppended) {
+                                                                            //     insertIncorporationTable();
+                                                                            //     incorporationTableAppended = true;
+                                                                            // } else if (result.endsWith("Secretarial/Annual General Meeting") && !meetingTableAppended) {
+                                                                            //     insertMeetingTable();
+                                                                            //     meetingTableAppended = true;
+                                                                            // } else if (result.endsWith("Secretarial/Extra Ordinary General Meeting") && !orderTableAppended) {
+                                                                            //     insertOrderTable();
+                                                                            //     orderTableAppended = true;
+                                                                            // } else if (result.endsWith("Secretarial/Incorporation") && !incTableAppended) {
+                                                                            //     insertINCTable();
+                                                                            //     incTableAppended = true;
+                                                                            // } else if (result.endsWith("Secretarial/Annual Filings") && !annTableAppended) {
+                                                                            //     insertANNTable();
+                                                                            //     annTableAppended = true;
+                                                                            // } else if (result.endsWith("Secretarial/Director Appointments") && !directTableAppended) {
+                                                                            //     insertDirectTable();
+                                                                            //     directTableAppended = true;
+                                                                            // } else if (result.endsWith("Secretarial/Director Resignation & Removal") && !directexitTableAppended) {
+                                                                            //     insertDirectexitTable();
+                                                                            //     directexitTableAppended = true;
+                                                                            // } else if (result.endsWith("Secretarial/Auditor Appointments") && !auditappTableAppended) {
+                                                                            //     insertauditappTable();
+                                                                            //     auditappTableAppended = true;
+                                                                            // } else if (result.endsWith("Secretarial/Auditor Exits") && !auditexitTableAppended) {
+                                                                            //     insertauditexitTable();
+                                                                            //     auditexitTableAppended = true;
+                                                                            // } else if (result.endsWith("Secretarial/Statutory Registers") && !staturegiTableAppended) {
+                                                                            //     insertstaturegiTable();
+                                                                            //     staturegiTableAppended = true;
+                                                                            // } else if (result.endsWith("Secretarial/Deposit Undertakings") && !undertakingTableAppended) {
+                                                                            //     insertundertakingTable();
+                                                                            //     undertakingTableAppended = true;
+                                                                            // } else if (result.endsWith("Accounting & Taxation/Book-keeping/Bank Account Statements") && !bankAccountStatementsTableAppended) {
+                                                                            //     insertbankAccountStatementsTable();
+                                                                            //     bankAccountStatementsTableAppended = true;
+                                                                            // } else if (result.endsWith("Accounting & Taxation/Book-keeping/Fixed Deposit Statements") && !bankFixedDepositStatementsTableAppended) {
+                                                                            //     insertbankFixedDepositStatementsTable();
+                                                                            //     bankFixedDepositStatementsTableAppended = true;
+                                                                            // } else if (result.endsWith("Accounting & Taxation/Book-keeping/Credit Card Statements") && !bankCreditCardStatementsTableAppended) {
+                                                                            //     insertbankCreditCardStatementsTable();
+                                                                            //     bankCreditCardStatementsTableAppended = true;
+                                                                            // } else if (result.endsWith("Accounting & Taxation/Book-keeping/Mutual Fund Statements") && !bankMutualFundStatementsTableAppended) {
+                                                                            //     insertbankMutualFundStatementsTable();
+                                                                            //     bankMutualFundStatementsTableAppended = true;
+                                                                            // } else if (result.endsWith(`Accounting & Taxation/Charter Documents/Director Details/${newPermitter}`) && !charterdocumentsDirectordetatilsDirector1TableAppended) {
 
-                                                                                // alert(response.directorfolderNames);
-                                                                                // console.log(response.directorfolderNames);
+                                                                            //     // alert(response.directorfolderNames);
+                                                                            //     // console.log(response.directorfolderNames);
 
-                                                                                // Declare a variable to store the matched parts
-                                                                                let matchedParts = null;
-                                                                                var pkk = '';
+                                                                            //     // Declare a variable to store the matched parts
+                                                                            //     let matchedParts = null;
+                                                                            //     var pkk = '';
 
-                                                                                // Ensure response.directorfolderNames is an array
-                                                                                if (Array.isArray(response.directorfolderNames)) {
-                                                                                    response.directorfolderNames.forEach((name) => {
-                                                                                        var parts = name.split('_', 2); // Split each string in the array
-                                                                                        console.log("First Part:", parts[0]);
-                                                                                        console.log("Second Part:", parts[1]);
-                                                                                        pkk = parts[1];
+                                                                            //     // Ensure response.directorfolderNames is an array
+                                                                            //     if (Array.isArray(response.directorfolderNames)) {
+                                                                            //         response.directorfolderNames.forEach((name) => {
+                                                                            //             var parts = name.split('_', 2); // Split each string in the array
+                                                                            //             console.log("First Part:", parts[0]);
+                                                                            //             console.log("Second Part:", parts[1]);
+                                                                            //             pkk = parts[1];
 
-                                                                                        // Check for a match
-                                                                                        if (pkk == newPermitter) {
-                                                                                            matchedParts = parts; // Store the matched parts
-                                                                                        }
-                                                                                    });
+                                                                            //             // Check for a match
+                                                                            //             if (pkk == newPermitter) {
+                                                                            //                 matchedParts = parts; // Store the matched parts
+                                                                            //             }
+                                                                            //         });
 
-                                                                                    // If matchedParts is set, proceed with the logic
-                                                                                    if (matchedParts) {
-                                                                                        console.log("Matched Parts:", matchedParts);
-                                                                                        insertcharterdocumentsDirectordetatilsDirector1Table();
-                                                                                        charterdocumentsDirectordetatilsDirector1TableAppended = true;
-                                                                                    }
-                                                                                } else {
-                                                                                    console.error('directorfolderNames is not an array');
-                                                                                }
+                                                                            //         // If matchedParts is set, proceed with the logic
+                                                                            //         if (matchedParts) {
+                                                                            //             console.log("Matched Parts:", matchedParts);
+                                                                            //             insertcharterdocumentsDirectordetatilsDirector1Table();
+                                                                            //             charterdocumentsDirectordetatilsDirector1TableAppended = true;
+                                                                            //         }
+                                                                            //     } else {
+                                                                            //         console.error('directorfolderNames is not an array');
+                                                                            //     }
 
-                                                                                setInterval(function() {
-                                                                                    let result = decodeAndFormatUrl(url);
-                                                                                    let fullPath = `${result}`;
+                                                                            //     setInterval(function() {
+                                                                            //         let result = decodeAndFormatUrl(url);
+                                                                            //         let fullPath = `${result}`;
 
-                                                                                    // Extract the part after the base path and get only the first parameter (name)
-                                                                                    let newPermitter = fullPath.replace(basePath, '').split('/')[0];
+                                                                            //         // Extract the part after the base path and get only the first parameter (name)
+                                                                            //         let newPermitter = fullPath.replace(basePath, '').split('/')[0];
 
-                                                                                    // Output the result or use it to trigger actions
-                                                                                    // console.log(newPermitter); // Output the cleaned value
-                                                                                }, 1000);
+                                                                            //         // Output the result or use it to trigger actions
+                                                                            //         // console.log(newPermitter); // Output the cleaned value
+                                                                            //     }, 1000);
 
-                                                                                // if(pkk == newPermitter){
-                                                                                // insertcharterdocumentsDirectordetatilsDirector1Table();
-                                                                                // charterdocumentsDirectordetatilsDirector1TableAppended = true;
-                                                                                // }
-                                                                            } else if (result.endsWith("Accounting & Taxation/Charter Documents/Incorporation") && !charterdocumentsIncorporationTableAppended) {
-                                                                                // alert(result);
-                                                                                insertcharterdocumentsIncorporationTableAppendedTable();
-                                                                                charterdocumentsIncorporationTableAppended = true;
-                                                                            } else if (result.endsWith("Accounting & Taxation/Charter Documents/Registrations") && !charterdocumentsRegistrationsTableAppended) {
-                                                                                insertcharterdocumentsRegistrationsTableAppendedTable();
-                                                                                charterdocumentsRegistrationsTableAppended = true;
-                                                                            } else if (result.endsWith(`Onboarding documents`) && !hronboarTableAppended) {
-                                                                                inserthronboarTableAppended(); // Call the function to append the table
-                                                                                hronboarTableAppended = true; // Set the flag to true to prevent further appends
-                                                                            } else if (result.endsWith("KYC Documents") && !hrkycTableAppended) {
-                                                                                inserthrkycTableAppended(); // Call the function to append the table
-                                                                                hrkycTableAppended = true; // Set the flag to true to prevent further appends
-                                                                            } else if (result.endsWith("Declarations") && !hrdecTableAppended) {
-                                                                                inserthrdecTableAppended(); // Call the function to append the table
-                                                                                hrdecTableAppended = true; // Set the flag to true to prevent further appends
-                                                                            } else if (result.endsWith("Offboarding") && !hroffboardTableAppended) {
-                                                                                inserthroffboardTableAppended(); // Call the function to append the table
-                                                                                hroffboardTableAppended = true; // Set the flag to true to prevent further appends
-                                                                            } else if (result.endsWith("ESOP") && !hresopTableAppended) {
-                                                                                inserthresopTableAppended(); // Call the function to append the table
-                                                                                hresopTableAppended = true; // Set the flag to true to prevent further appends
-                                                                            } else if (result.endsWith("Pay Registers/Monthly Payrun") && !hrmpTableAppended) {
-                                                                                inserthrmpTableAppended(); // Call the function to append the table
-                                                                                hrmpTableAppended = true; // Set the flag to true to prevent further appends
-                                                                            } else if (result.endsWith("Pay Registers/Reimbursements") && !hrreimbTableAppended) {
-                                                                                inserthrreimTableAppended(); // Call the function to append the table
-                                                                                hrreimbTableAppended = true; // Set the flag to true to prevent further appends
-                                                                            } else if (result.endsWith("Accounting & Taxation/Direct Tax/Tax Deducted at Source (TDS)/Monthly Payments") && !directtaxmonthlyTableAppended) {
-                                                                                insertdirecttaxmonthlyTableAppendeds();
-                                                                                directtaxmonthlyTableAppended = true;
-                                                                            } else if (result.endsWith("Accounting & Taxation/Direct Tax/Tax Deducted at Source (TDS)/Quarterly Filings") && !directtaxquarterlyTableAppended) {
-                                                                                insertdirecttaxQuarterlyTableAppendeds();
-                                                                                directtaxquarterlyTableAppended = true;
-                                                                            } else if (result.endsWith("Accounting & Taxation/Direct Tax/Tax Deducted at Source (TDS)/Quarterly Filings") && !directtaxquarterlyTableAppended) {
-                                                                                insertdirecttaxQuarterlyTableAppendeds();
-                                                                                directtaxquarterlyTableAppended = true;
-                                                                            } else if (result.endsWith("Accounting & Taxation/Direct Tax/Tax Deducted at Source (TDS)/Litigations") && !directtaxLitigationsTableAppended) {
-                                                                                insertdirecttaxLitigationsTableAppendeds();
-                                                                                directtaxLitigationsTableAppended = true;
-                                                                            } else if (result.endsWith("Accounting & Taxation/Direct Tax/Advance Tax/Quarterly Payments") && !directtaxQuarterlyPaymentsTableAppended) {
-                                                                                insertdirecttaxQuarterlyPaymentsTableAppendeds();
-                                                                                directtaxQuarterlyPaymentsTableAppended = true;
-                                                                            } else if (result.endsWith("Accounting & Taxation/Direct Tax/Income Tax/Annual Returns") && !directtaxAnnualReturnsTableAppended) {
-                                                                                insertdirecttaxAnnualReturnsTableAppendeds();
-                                                                                directtaxAnnualReturnsTableAppended = true;
-                                                                            } else if (result.endsWith("Accounting & Taxation/Direct Tax/Income Tax/Litigations") && !directtaxincomeLitigationsTableAppended) {
-                                                                                insertdirecttaxincomeLitigationsTableAppendeds();
-                                                                                directtaxincomeLitigationsTableAppended = true;
-                                                                            } else if (result.endsWith("Accounting & Taxation/Indirect Tax/Indirect/GST/Monthly & Quarterly Returns/GSTR-1") && !indirecttaxGSTR1TableAppended) {
-                                                                                insertindirecttaxGSTR1TableAppendeds();
-                                                                                indirecttaxGSTR1TableAppended = true;
-                                                                            } else if (result.endsWith("Accounting & Taxation/Indirect Tax/Indirect/GST/Monthly & Quarterly Returns/GSTR 3B") && !indirecttaxGSTR3bTableAppended) {
-                                                                                insertindirecttaxGSTR3bTableAppendeds();
-                                                                                indirecttaxGSTR3bTableAppended = true;
-                                                                            } else if (result.endsWith("Accounting & Taxation/Indirect Tax/Indirect/GST/Monthly & Quarterly Returns/GSTR 9") && !indirecttaxGSTR9TableAppended) {
-                                                                                insertindirecttaxGSTR9TableAppendeds();
-                                                                                indirecttaxGSTR9TableAppended = true;
-                                                                            } else if (result.endsWith("Accounting & Taxation/Indirect Tax/Indirect/GST/Monthly & Quarterly Returns/GSTR 9C") && !indirecttaxGSTR9cTableAppended) {
-                                                                                insertindirecttaxGSTR9cTableAppendeds();
-                                                                                indirecttaxGSTR9cTableAppended = true;
-                                                                            } else if (result.endsWith("Accounting & Taxation/Indirect Tax/Indirect/GST/Litigations") && !indirecttaxLitigationsTableAppended) {
+                                                                            //     // if(pkk == newPermitter){
+                                                                            //     // insertcharterdocumentsDirectordetatilsDirector1Table();
+                                                                            //     // charterdocumentsDirectordetatilsDirector1TableAppended = true;
+                                                                            //     // }
+                                                                            // } else if (result.endsWith("Accounting & Taxation/Charter Documents/Incorporation") && !charterdocumentsIncorporationTableAppended) {
+                                                                            //     // alert(result);
+                                                                            //     insertcharterdocumentsIncorporationTableAppendedTable();
+                                                                            //     charterdocumentsIncorporationTableAppended = true;
+                                                                            // } else if (result.endsWith("Accounting & Taxation/Charter Documents/Registrations") && !charterdocumentsRegistrationsTableAppended) {
+                                                                            //     insertcharterdocumentsRegistrationsTableAppendedTable();
+                                                                            //     charterdocumentsRegistrationsTableAppended = true;
+                                                                            // } else if (result.endsWith(`Onboarding documents`) && !hronboarTableAppended) {
+                                                                            //     inserthronboarTableAppended(); // Call the function to append the table
+                                                                            //     hronboarTableAppended = true; // Set the flag to true to prevent further appends
+                                                                            // } else if (result.endsWith("KYC Documents") && !hrkycTableAppended) {
+                                                                            //     inserthrkycTableAppended(); // Call the function to append the table
+                                                                            //     hrkycTableAppended = true; // Set the flag to true to prevent further appends
+                                                                            // } else if (result.endsWith("Declarations") && !hrdecTableAppended) {
+                                                                            //     inserthrdecTableAppended(); // Call the function to append the table
+                                                                            //     hrdecTableAppended = true; // Set the flag to true to prevent further appends
+                                                                            // } else if (result.endsWith("Offboarding") && !hroffboardTableAppended) {
+                                                                            //     inserthroffboardTableAppended(); // Call the function to append the table
+                                                                            //     hroffboardTableAppended = true; // Set the flag to true to prevent further appends
+                                                                            // } else if (result.endsWith("ESOP") && !hresopTableAppended) {
+                                                                            //     inserthresopTableAppended(); // Call the function to append the table
+                                                                            //     hresopTableAppended = true; // Set the flag to true to prevent further appends
+                                                                            // } else if (result.endsWith("Pay Registers/Monthly Payrun") && !hrmpTableAppended) {
+                                                                            //     inserthrmpTableAppended(); // Call the function to append the table
+                                                                            //     hrmpTableAppended = true; // Set the flag to true to prevent further appends
+                                                                            // } else if (result.endsWith("Pay Registers/Reimbursements") && !hrreimbTableAppended) {
+                                                                            //     inserthrreimTableAppended(); // Call the function to append the table
+                                                                            //     hrreimbTableAppended = true; // Set the flag to true to prevent further appends
+                                                                            // } else if (result.endsWith("Accounting & Taxation/Direct Tax/Tax Deducted at Source (TDS)/Monthly Payments") && !directtaxmonthlyTableAppended) {
+                                                                            //     insertdirecttaxmonthlyTableAppendeds();
+                                                                            //     directtaxmonthlyTableAppended = true;
+                                                                            // } else if (result.endsWith("Accounting & Taxation/Direct Tax/Tax Deducted at Source (TDS)/Quarterly Filings") && !directtaxquarterlyTableAppended) {
+                                                                            //     insertdirecttaxQuarterlyTableAppendeds();
+                                                                            //     directtaxquarterlyTableAppended = true;
+                                                                            // } else if (result.endsWith("Accounting & Taxation/Direct Tax/Tax Deducted at Source (TDS)/Quarterly Filings") && !directtaxquarterlyTableAppended) {
+                                                                            //     insertdirecttaxQuarterlyTableAppendeds();
+                                                                            //     directtaxquarterlyTableAppended = true;
+                                                                            // } else if (result.endsWith("Accounting & Taxation/Direct Tax/Tax Deducted at Source (TDS)/Litigations") && !directtaxLitigationsTableAppended) {
+                                                                            //     insertdirecttaxLitigationsTableAppendeds();
+                                                                            //     directtaxLitigationsTableAppended = true;
+                                                                            // } else if (result.endsWith("Accounting & Taxation/Direct Tax/Advance Tax/Quarterly Payments") && !directtaxQuarterlyPaymentsTableAppended) {
+                                                                            //     insertdirecttaxQuarterlyPaymentsTableAppendeds();
+                                                                            //     directtaxQuarterlyPaymentsTableAppended = true;
+                                                                            // } else if (result.endsWith("Accounting & Taxation/Direct Tax/Income Tax/Annual Returns") && !directtaxAnnualReturnsTableAppended) {
+                                                                            //     insertdirecttaxAnnualReturnsTableAppendeds();
+                                                                            //     directtaxAnnualReturnsTableAppended = true;
+                                                                            // } else if (result.endsWith("Accounting & Taxation/Direct Tax/Income Tax/Litigations") && !directtaxincomeLitigationsTableAppended) {
+                                                                            //     insertdirecttaxincomeLitigationsTableAppendeds();
+                                                                            //     directtaxincomeLitigationsTableAppended = true;
+                                                                            // } else if (result.endsWith("Accounting & Taxation/Indirect Tax/Indirect/GST/Monthly & Quarterly Returns/GSTR-1") && !indirecttaxGSTR1TableAppended) {
+                                                                            //     insertindirecttaxGSTR1TableAppendeds();
+                                                                            //     indirecttaxGSTR1TableAppended = true;
+                                                                            // } else if (result.endsWith("Accounting & Taxation/Indirect Tax/Indirect/GST/Monthly & Quarterly Returns/GSTR 3B") && !indirecttaxGSTR3bTableAppended) {
+                                                                            //     insertindirecttaxGSTR3bTableAppendeds();
+                                                                            //     indirecttaxGSTR3bTableAppended = true;
+                                                                            // } else if (result.endsWith("Accounting & Taxation/Indirect Tax/Indirect/GST/Monthly & Quarterly Returns/GSTR 9") && !indirecttaxGSTR9TableAppended) {
+                                                                            //     insertindirecttaxGSTR9TableAppendeds();
+                                                                            //     indirecttaxGSTR9TableAppended = true;
+                                                                            // } else if (result.endsWith("Accounting & Taxation/Indirect Tax/Indirect/GST/Monthly & Quarterly Returns/GSTR 9C") && !indirecttaxGSTR9cTableAppended) {
+                                                                            //     insertindirecttaxGSTR9cTableAppendeds();
+                                                                            //     indirecttaxGSTR9cTableAppended = true;
+                                                                            // } else
+                                                                             if (!indirecttaxLitigationsTableAppended) {
                                                                                 // alert('4');
                                                                                 insertindirecttaxLitigationsTableAppendeds();
                                                                                 // alert('5');
@@ -6185,210 +6187,208 @@ $('body').on('change', '.dragfile', function () {
 
 
                                                                 // Define the folder-to-function mappings and appended status
-                                                                const tableFunctions = {
-                                                                    'Legal/Secretarial/Board Meetings': ['insertIncorporationTable', 'incorporationTableAppended'],
-                                                                    'Legal/Secretarial/Annual General Meeting': ['insertMeetingTable', 'meetingTableAppended'],
-                                                                    'Legal/Secretarial/Extra Ordinary General Meeting': ['insertOrderTable', 'orderTableAppended'],
-                                                                    'Legal/Secretarial/Incorporation': ['insertINCTable', 'incTableAppended'],
-                                                                    'Legal/Secretarial/Annual Filings': ['insertANNTable', 'annTableAppended'],
-                                                                    'Legal/Secretarial/Director Appointments': ['insertDirectTable', 'directTableAppended'],
-                                                                    'Legal/Secretarial/Director Resignation': ['insertDirectexitTable', 'directexitTableAppended'],
-                                                                    'Legal/Secretarial/Auditor Appointment': ['insertauditappTable', 'auditappTableAppended'],
-                                                                    'Legal/Secretarial/Auditor Exits': ['insertauditexitTable', 'auditexitTableAppended'],
-                                                                    'Legal/Secretarial/Statutory Registers': ['insertstaturegiTable', 'staturegiTableAppended'],
-                                                                    'Legal/Secretarial/Deposit Undertakings': ['insertundertakingTable', 'undertakingTableAppended'],
-                                                                    'Accounting & Taxation/Book-Keeping/Bank Account Statements': ['insertbankAccountStatementsTable', 'bankAccountStatementsTableAppended'],
-                                                                    'Accounting & Taxation/Book-Keeping/Fixed Deposit Statements': ['insertbankFixedDepositStatementsTable', 'bankFixedDepositStatementsTableAppended'],
-                                                                    'Accounting & Taxation/Book-Keeping/Credit Card Statements': ['insertbankCreditCardStatementsTable', 'bankCreditCardStatementsTableAppended'],
-                                                                    'Accounting & Taxation/Book-Keeping/Mutual Fund Statements': ['insertbankMutualFundStatementsTable', 'bankMutualFundStatementsTableAppended'],
-                                                                    'Accounting & Taxation/Charter documents/Director Details/Director 1': ['insertcharterdocumentsDirectordetatilsDirector1Table', 'charterdocumentsDirectordetatilsDirector1TableAppended'],
-                                                                    'Accounting & Taxation/Charter documents/Director Details/Director 2': ['insertcharterdocumentsDirectordetatilsDirector2Table', 'charterdocumentsDirectordetatilsDirector2TableAppended'],
-                                                                    'Accounting & Taxation/Charter documents/Incorporation': ['insertcharterdocumentsIncorporationTable', 'charterdocumentsIncorporationTableAppended'],
-                                                                    'Accounting & Taxation/Charter documents/Registrations': ['insertcharterdocumentsRegistrationsTable', 'charterdocumentsRegistrationsTableAppended'],
-                                                                    'Accounting & Taxation/Indirect Tax/Indirect/GST/Litigations': ['insertindirecttaxLitigationsTableAppendeds', 'indirecttaxLitigationsTableAppended']
+                                                                // const tableFunctions = {
+                                                                //     'Legal/Secretarial/Board Meetings': ['insertIncorporationTable', 'incorporationTableAppended'],
+                                                                //     'Legal/Secretarial/Annual General Meeting': ['insertMeetingTable', 'meetingTableAppended'],
+                                                                //     'Legal/Secretarial/Extra Ordinary General Meeting': ['insertOrderTable', 'orderTableAppended'],
+                                                                //     'Legal/Secretarial/Incorporation': ['insertINCTable', 'incTableAppended'],
+                                                                //     'Legal/Secretarial/Annual Filings': ['insertANNTable', 'annTableAppended'],
+                                                                //     'Legal/Secretarial/Director Appointments': ['insertDirectTable', 'directTableAppended'],
+                                                                //     'Legal/Secretarial/Director Resignation': ['insertDirectexitTable', 'directexitTableAppended'],
+                                                                //     'Legal/Secretarial/Auditor Appointment': ['insertauditappTable', 'auditappTableAppended'],
+                                                                //     'Legal/Secretarial/Auditor Exits': ['insertauditexitTable', 'auditexitTableAppended'],
+                                                                //     'Legal/Secretarial/Statutory Registers': ['insertstaturegiTable', 'staturegiTableAppended'],
+                                                                //     'Legal/Secretarial/Deposit Undertakings': ['insertundertakingTable', 'undertakingTableAppended'],
+                                                                //     'Accounting & Taxation/Book-Keeping/Bank Account Statements': ['insertbankAccountStatementsTable', 'bankAccountStatementsTableAppended'],
+                                                                //     'Accounting & Taxation/Book-Keeping/Fixed Deposit Statements': ['insertbankFixedDepositStatementsTable', 'bankFixedDepositStatementsTableAppended'],
+                                                                //     'Accounting & Taxation/Book-Keeping/Credit Card Statements': ['insertbankCreditCardStatementsTable', 'bankCreditCardStatementsTableAppended'],
+                                                                //     'Accounting & Taxation/Book-Keeping/Mutual Fund Statements': ['insertbankMutualFundStatementsTable', 'bankMutualFundStatementsTableAppended'],
+                                                                //     'Accounting & Taxation/Charter documents/Director Details/Director 1': ['insertcharterdocumentsDirectordetatilsDirector1Table', 'charterdocumentsDirectordetatilsDirector1TableAppended'],
+                                                                //     'Accounting & Taxation/Charter documents/Director Details/Director 2': ['insertcharterdocumentsDirectordetatilsDirector2Table', 'charterdocumentsDirectordetatilsDirector2TableAppended'],
+                                                                //     'Accounting & Taxation/Charter documents/Incorporation': ['insertcharterdocumentsIncorporationTable', 'charterdocumentsIncorporationTableAppended'],
+                                                                //     'Accounting & Taxation/Charter documents/Registrations': ['insertcharterdocumentsRegistrationsTable', 'charterdocumentsRegistrationsTableAppended'],
+                                                                //     'Accounting & Taxation/Indirect Tax/Indirect/GST/Litigations': ['insertindirecttaxLitigationsTableAppendeds', 'indirecttaxLitigationsTableAppended']
 
-                                                                };
+                                                                // };
 
                                                                 // Function to check if the table is already appended
-                                                                function isTableAppended(folderPath) {
-                                                                    const tableFuncEntry = tableFunctions[folderPath];
-                                                                    if (tableFuncEntry) {
-                                                                        const flagName = tableFuncEntry[1];
-                                                                        return JSON.parse(localStorage.getItem(flagName) || 'false');
-                                                                    }
-                                                                    return false;
-                                                                }
+                                                                // function isTableAppended(folderPath) {
+                                                                //     const tableFuncEntry = tableFunctions[folderPath];
+                                                                //     if (tableFuncEntry) {
+                                                                //         const flagName = tableFuncEntry[1];
+                                                                //         return JSON.parse(localStorage.getItem(flagName) || 'false');
+                                                                //     }
+                                                                //     return false;
+                                                                // }
 
-                                                                // Function to set table appended status in localStorage
-                                                                function setTableAppended(folderPath, status) {
-                                                                    const tableFuncEntry = tableFunctions[folderPath];
-                                                                    if (tableFuncEntry) {
-                                                                        const flagName = tableFuncEntry[1];
-                                                                        localStorage.setItem(flagName, JSON.stringify(status));
-                                                                    }
-                                                                }
+                                                                // // Function to set table appended status in localStorage
+                                                                // function setTableAppended(folderPath, status) {
+                                                                //     const tableFuncEntry = tableFunctions[folderPath];
+                                                                //     if (tableFuncEntry) {
+                                                                //         const flagName = tableFuncEntry[1];
+                                                                //         localStorage.setItem(flagName, JSON.stringify(status));
+                                                                //     }
+                                                                // }
 
                                                                 // Clear appended table status
-                                                                function clearAppendedTables() {
-                                                                    for (let folderPath in tableFunctions) {
-                                                                        const flagName = tableFunctions[folderPath][1];
-                                                                        localStorage.removeItem(flagName);
-                                                                    }
-                                                                }
+                                                                // function clearAppendedTables() {
+                                                                //     for (let folderPath in tableFunctions) {
+                                                                //         const flagName = tableFunctions[folderPath][1];
+                                                                //         localStorage.removeItem(flagName);
+                                                                //     }
+                                                                // }
 
                                                                 // Function to handle table insertion
-                                                                function handleFolderPath(folderPath) {
-                                                                    console.log("Handling folder path:", folderPath);
-                                                                    clearAppendedTables();
+                                                                // function handleFolderPath(folderPath) {
+                                                                //     console.log("Handling folder path:", folderPath);
+                                                                //     clearAppendedTables();
 
-                                                                    if (folderPath === 'Legal/Secretarial/Board Meetings' && !incorporationTableAppended) {
-                                                                        console.log("Inserting Incorporation Table");
-                                                                        insertIncorporationTable();
-                                                                        incorporationTableAppended = true;
-                                                                    } else if (folderPath === 'Legal/Secretarial/Annual General Meeting' && !meetingTableAppended) {
-                                                                        console.log("Inserting Meeting Table");
-                                                                        insertMeetingTable();
-                                                                        meetingTableAppended = true;
-                                                                    } else if (folderPath === 'Legal/Secretarial/Extra Ordinary General Meeting' && !orderTableAppended) {
-                                                                        console.log("Inserting Order Table");
-                                                                        insertOrderTable();
-                                                                        orderTableAppended = true;
-                                                                    } else if (folderPath === 'Legal/Secretarial/Incorporation' && !incTableAppended) {
-                                                                        console.log("Inserting INC Table");
-                                                                        insertINCTable();
-                                                                        incTableAppended = true;
-                                                                    } else if (folderPath === 'Legal/Secretarial/Annual Filings' && !annTableAppended) {
-                                                                        console.log("Inserting ANN Table");
-                                                                        insertANNTable();
-                                                                        annTableAppended = true;
-                                                                    } else if (folderPath === 'Legal/Secretarial/Director Appointments' && !directTableAppended) {
-                                                                        console.log("Inserting Direct Table");
-                                                                        insertDirectTable();
-                                                                        directTableAppended = true;
-                                                                    } else if (folderPath === 'Legal/Secretarial/Director Resignation' && !directexitTableAppended) {
-                                                                        console.log("Inserting Direct Exit Table");
-                                                                        insertDirectexitTable();
-                                                                        directexitTableAppended = true;
-                                                                    } else if (folderPath === 'Legal/Secretarial/Auditor Appointment' && !auditappTableAppended) {
-                                                                        console.log("Inserting Audit App Table");
-                                                                        insertauditappTable();
-                                                                        auditappTableAppended = true;
-                                                                    } else if (folderPath === 'Legal/Secretarial/Auditor Exits' && !auditexitTableAppended) {
-                                                                        console.log("Inserting Audit Exit Table");
-                                                                        insertauditexitTable();
-                                                                        auditexitTableAppended = true;
-                                                                    } else if (folderPath === 'Legal/Secretarial/Statutory Registers' && !staturegiTableAppended) {
-                                                                        console.log("Inserting Statutory Registers Table");
-                                                                        insertstaturegiTable();
-                                                                        staturegiTableAppended = true;
-                                                                    } else if (folderPath === 'Legal/Secretarial/Deposit Undertakings' && !undertakingTableAppended) {
-                                                                        console.log("Inserting Undertaking Table");
-                                                                        insertundertakingTable();
-                                                                        undertakingTableAppended = true;
-                                                                    } else if (folderPath === 'Accounting & Taxation/Book-Keeping/Bank Account Statements' && !bankAccountStatementsTableAppended) {
-                                                                        console.log("Inserting Bank Account Statements Table");
-                                                                        insertbankAccountStatementsTable();
-                                                                        bankAccountStatementsTableAppended = true;
-                                                                    } else if (folderPath === 'Accounting & Taxation/Book-Keeping/Fixed Deposit Statements' && !bankFixedDepositStatementsTableAppended) {
-                                                                        console.log("Inserting Fixed Deposit Statements Table");
-                                                                        insertbankFixedDepositStatementsTable();
-                                                                        bankFixedDepositStatementsTableAppended = true;
-                                                                    } else if (folderPath === 'Accounting & Taxation/Book-Keeping/Credit Card Statements' && !bankCreditCardStatementsTableAppended) {
-                                                                        console.log("Inserting Credit Card Statements Table");
-                                                                        insertbankCreditCardStatementsTable();
-                                                                        bankCreditCardStatementsTableAppended = true;
-                                                                    } else if (folderPath === 'Accounting & Taxation/Book-Keeping/Mutual Fund Statements' && !bankMutualFundStatementsTableAppended) {
-                                                                        console.log("Inserting Mutual Fund Statements Table");
-                                                                        insertbankMutualFundStatementsTable();
-                                                                        bankMutualFundStatementsTableAppended = true;
-                                                                    } else if (folderPath === `Accounting & Taxation/Charter Documents/Director Details/${newPermitter}` && !charterdocumentsDirectordetatilsDirector1TableAppended) {
-                                                                        console.log("Inserting Director 1 Table");
-                                                                        insertcharterdocumentsDirectordetatilsDirector1Table();
-                                                                        charterdocumentsDirectordetatilsDirector1TableAppended = true;
-                                                                    } else if (folderPath === 'Accounting & Taxation/Charter documents/Incorporation' && !charterdocumentsIncorporationTableAppended) {
-                                                                        console.log("Inserting Incorporation Table");
-                                                                        insertcharterdocumentsIncorporationTableAppendedTable();
-                                                                        charterdocumentsIncorporationTableAppended = true;
-                                                                    } else if (folderPath === 'Accounting & Taxation/Charter documents/Registrations' && !charterdocumentsRegistrationsTableAppended) {
-                                                                        console.log("Inserting Registrations Table");
-                                                                        insertcharterdocumentsRegistrationsTableAppendedTable();
-                                                                        charterdocumentsRegistrationsTableAppended = true;
-                                                                    } else if ("Employee Database/Onboarding documents" && !hronboarTableAppended) {
+                                                                //     if (folderPath === 'Legal/Secretarial/Board Meetings' && !incorporationTableAppended) {
+                                                                //         console.log("Inserting Incorporation Table");
+                                                                //         insertIncorporationTable();
+                                                                //         incorporationTableAppended = true;
+                                                                //     } else if (folderPath === 'Legal/Secretarial/Annual General Meeting' && !meetingTableAppended) {
+                                                                //         console.log("Inserting Meeting Table");
+                                                                //         insertMeetingTable();
+                                                                //         meetingTableAppended = true;
+                                                                //     } else if (folderPath === 'Legal/Secretarial/Extra Ordinary General Meeting' && !orderTableAppended) {
+                                                                //         console.log("Inserting Order Table");
+                                                                //         insertOrderTable();
+                                                                //         orderTableAppended = true;
+                                                                //     } else if (folderPath === 'Legal/Secretarial/Incorporation' && !incTableAppended) {
+                                                                //         console.log("Inserting INC Table");
+                                                                //         insertINCTable();
+                                                                //         incTableAppended = true;
+                                                                //     } else if (folderPath === 'Legal/Secretarial/Annual Filings' && !annTableAppended) {
+                                                                //         console.log("Inserting ANN Table");
+                                                                //         insertANNTable();
+                                                                //         annTableAppended = true;
+                                                                //     } else if (folderPath === 'Legal/Secretarial/Director Appointments' && !directTableAppended) {
+                                                                //         console.log("Inserting Direct Table");
+                                                                //         insertDirectTable();
+                                                                //         directTableAppended = true;
+                                                                //     } else if (folderPath === 'Legal/Secretarial/Director Resignation' && !directexitTableAppended) {
+                                                                //         console.log("Inserting Direct Exit Table");
+                                                                //         insertDirectexitTable();
+                                                                //         directexitTableAppended = true;
+                                                                //     } else if (folderPath === 'Legal/Secretarial/Auditor Appointment' && !auditappTableAppended) {
+                                                                //         console.log("Inserting Audit App Table");
+                                                                //         insertauditappTable();
+                                                                //         auditappTableAppended = true;
+                                                                //     } else if (folderPath === 'Legal/Secretarial/Auditor Exits' && !auditexitTableAppended) {
+                                                                //         console.log("Inserting Audit Exit Table");
+                                                                //         insertauditexitTable();
+                                                                //         auditexitTableAppended = true;
+                                                                //     } else if (folderPath === 'Legal/Secretarial/Statutory Registers' && !staturegiTableAppended) {
+                                                                //         console.log("Inserting Statutory Registers Table");
+                                                                //         insertstaturegiTable();
+                                                                //         staturegiTableAppended = true;
+                                                                //     } else if (folderPath === 'Legal/Secretarial/Deposit Undertakings' && !undertakingTableAppended) {
+                                                                //         console.log("Inserting Undertaking Table");
+                                                                //         insertundertakingTable();
+                                                                //         undertakingTableAppended = true;
+                                                                //     } else if (folderPath === 'Accounting & Taxation/Book-Keeping/Bank Account Statements' && !bankAccountStatementsTableAppended) {
+                                                                //         console.log("Inserting Bank Account Statements Table");
+                                                                //         insertbankAccountStatementsTable();
+                                                                //         bankAccountStatementsTableAppended = true;
+                                                                //     } else if (folderPath === 'Accounting & Taxation/Book-Keeping/Fixed Deposit Statements' && !bankFixedDepositStatementsTableAppended) {
+                                                                //         console.log("Inserting Fixed Deposit Statements Table");
+                                                                //         insertbankFixedDepositStatementsTable();
+                                                                //         bankFixedDepositStatementsTableAppended = true;
+                                                                //     } else if (folderPath === 'Accounting & Taxation/Book-Keeping/Credit Card Statements' && !bankCreditCardStatementsTableAppended) {
+                                                                //         console.log("Inserting Credit Card Statements Table");
+                                                                //         insertbankCreditCardStatementsTable();
+                                                                //         bankCreditCardStatementsTableAppended = true;
+                                                                //     } else if (folderPath === 'Accounting & Taxation/Book-Keeping/Mutual Fund Statements' && !bankMutualFundStatementsTableAppended) {
+                                                                //         console.log("Inserting Mutual Fund Statements Table");
+                                                                //         insertbankMutualFundStatementsTable();
+                                                                //         bankMutualFundStatementsTableAppended = true;
+                                                                //     } else if (folderPath === `Accounting & Taxation/Charter Documents/Director Details/${newPermitter}` && !charterdocumentsDirectordetatilsDirector1TableAppended) {
+                                                                //         console.log("Inserting Director 1 Table");
+                                                                //         insertcharterdocumentsDirectordetatilsDirector1Table();
+                                                                //         charterdocumentsDirectordetatilsDirector1TableAppended = true;
+                                                                //     } else if (folderPath === 'Accounting & Taxation/Charter documents/Incorporation' && !charterdocumentsIncorporationTableAppended) {
+                                                                //         console.log("Inserting Incorporation Table");
+                                                                //         insertcharterdocumentsIncorporationTableAppendedTable();
+                                                                //         charterdocumentsIncorporationTableAppended = true;
+                                                                //     } else if (folderPath === 'Accounting & Taxation/Charter documents/Registrations' && !charterdocumentsRegistrationsTableAppended) {
+                                                                //         console.log("Inserting Registrations Table");
+                                                                //         insertcharterdocumentsRegistrationsTableAppendedTable();
+                                                                //         charterdocumentsRegistrationsTableAppended = true;
+                                                                //     } else if ("Employee Database/Onboarding documents" && !hronboarTableAppended) {
 
-                                                                        inserthronboarTableAppended();
-                                                                        hronboarTableAppended = true;
-                                                                    } else if (folderPath === "Employee Database/KYC Documents" && !hrkycTableAppended) {
-                                                                        // alert(resultto);  // Display the result
-                                                                        inserthrkycTableAppended(); // Call the function to append the table
-                                                                        hrkycTableAppended = true; // Set the flag to true to prevent further appends
-                                                                    } else if (folderPath === "Employee Database/Declarations" && !hrdecTableAppended) {
-                                                                        // alert(resultto);  // Display the result
-                                                                        inserthrdecTableAppended(); // Call the function to append the table
-                                                                        hrdecTableAppended = true; // Set the flag to true to prevent further appends
-                                                                    } else if (folderPath === "Employee Database/Offboarding" && !hroffboardTableAppended) {
-                                                                        // alert(resultto);  // Display the result
-                                                                        inserthroffboardTableAppended(); // Call the function to append the table
-                                                                        hroffboardTableAppended = true; // Set the flag to true to prevent further appends
-                                                                    } else if (folderPath === "Employee Database/ESOP" && !hresopTableAppended) {
-                                                                        // alert(resultto);  // Display the result
-                                                                        inserthresopTableAppended(); // Call the function to append the table
-                                                                        hresopTableAppended = true; // Set the flag to true to prevent further appends
-                                                                    } else if (folderPath === "Pay Registers/Monthly Payrun" && !hrmpTableAppended) {
-                                                                        // alert(resultto);  // Display the result
-                                                                        inserthrmpTableAppended(); // Call the function to append the table
-                                                                        hrmpTableAppended = true; // Set the flag to true to prevent further appends
-                                                                    } else if (folderPath === "Pay Registers/Reimbursements" && !hrreimbTableAppended) {
-                                                                        // alert(resultto);  // Display the result
-                                                                        inserthrreimTableAppended(); // Call the function to append the table
-                                                                        hrreimbTableAppended = true; // Set the flag to true to prevent further appends
-                                                                    } else if (folderPath === "Accounting & Taxation/Direct Tax/Tax Deducted at Source (TDS)/Monthly Payments" && !directtaxmonthlyTableAppended) {
-                                                                        // alert(resultto);  // Display the result
-                                                                        insertdirecttaxmonthlyTableAppendeds(); // Call the function to append the table
-                                                                        directtaxmonthlyTableAppended = true; // Set the flag to true to prevent further appends
-                                                                    } else if (folderPath === "Accounting & Taxation/Direct Tax/Tax Deducted at Source (TDS)/Quarterly Filings" && !directtaxquarterlyTableAppended) {
-                                                                        // alert(resultto);  // Display the result
-                                                                        insertdirecttaxQuarterlyTableAppendeds(); // Call the function to append the table
-                                                                        directtaxquarterlyTableAppended = true; // Set the flag to true to prevent further appends
-                                                                    } else if (folderPath === "Accounting & Taxation/Direct Tax/Tax Deducted at Source (TDS)/Litigations" && !directtaxLitigationsTableAppended) {
-                                                                        // alert(resultto);  // Display the result
-                                                                        insertdirecttaxLitigationsTableAppendeds(); // Call the function to append the table
-                                                                        directtaxLitigationsTableAppended = true; // Set the flag to true to prevent further appends
-                                                                    } else if (folderPath === "Accounting & Taxation/Direct Tax/Advance Tax/Quarterly Payments" && !directtaxQuarterlyPaymentsTableAppended) {
-                                                                        // alert(resultto);  // Display the result
-                                                                        insertdirecttaxQuarterlyPaymentsTableAppendeds(); // Call the function to append the table
-                                                                        directtaxQuarterlyPaymentsTableAppended = true; // Set the flag to true to prevent further appends
-                                                                    } else if (folderPath === "Accounting & Taxation/Direct Tax/Income Tax/Annual Returns" && !directtaxAnnualReturnsTableAppended) {
-                                                                        // alert(resultto);  // Display the result
-                                                                        insertdirecttaxAnnualReturnsTableAppendeds(); // Call the function to append the table
-                                                                        directtaxAnnualReturnsTableAppended = true; // Set the flag to true to prevent further appends
-                                                                    } else if (folderPath === "Accounting & Taxation/Direct Tax/Income Tax/Litigations" && !directtaxincomeLitigationsTableAppended) {
-                                                                        // alert(resultto);  // Display the result
-                                                                        insertdirecttaxincomeLitigationsTableAppendeds(); // Call the function to append the table
-                                                                        directtaxincomeLitigationsTableAppended = true; // Set the flag to true to prevent further appends
-                                                                    } else if (folderPath === "Accounting & Taxation/Indirect Tax/Indirect/GST/Monthly & Quarterly Returns/GSTR-1" && !indirecttaxGSTR1TableAppended) {
-                                                                        // alert(resultto);  // Display the result
-                                                                        insertindirecttaxGSTR1TableAppendeds(); // Call the function to append the table
-                                                                        indirecttaxGSTR1TableAppended = true; // Set the flag to true to prevent further appends
-                                                                    } else if (folderPath === "Accounting & Taxation/Indirect Tax/Indirect/GST/Monthly & Quarterly Returns/GSTR 3B" && !indirecttaxGSTR3bTableAppended) {
-                                                                        // alert(resultto);  // Display the result
-                                                                        insertindirecttaxGSTR3bTableAppendeds(); // Call the function to append the table
-                                                                        indirecttaxGSTR3bTableAppended = true; // Set the flag to true to prevent further appends
-                                                                    } else if (folderPath === "Accounting & Taxation/Indirect Tax/Indirect/GST/Monthly & Quarterly Returns/GSTR 9" && !indirecttaxGSTR9TableAppended) {
-                                                                        // alert(resultto);  // Display the result
-                                                                        insertindirecttaxGSTR9TableAppendeds(); // Call the function to append the table
-                                                                        indirecttaxGSTR9TableAppended = true; // Set the flag to true to prevent further appends
-                                                                    } else if (folderPath === "Accounting & Taxation/Indirect Tax/Indirect/GST/Monthly & Quarterly Returns/GSTR 9C" && !indirecttaxGSTR9cTableAppended) {
-                                                                        // alert(resultto);  // Display the result
-                                                                        indirecttaxGSTR9cTableAppended(); // Call the function to append the table
-                                                                        indirecttaxGSTR9cTableAppended = true; // Set the flag to true to prevent further appends
-                                                                    } else if (folderPath === "Accounting & Taxation/Indirect Tax/Indirect/GST/Litigations" && !indirecttaxLitigationsTableAppended) {
-                                                                        // alert(resultto);  // Display the result
-                                                                        // alert("i am inside Litigations");
-                                                                        insertindirecttaxLitigationsTableAppendeds(); // Call the function to append the table
-                                                                        indirecttaxLitigationsTableAppended = true; // Set the flag to true to prevent further appends
-                                                                    }
-
-
+                                                                //         inserthronboarTableAppended();
+                                                                //         hronboarTableAppended = true;
+                                                                //     } else if (folderPath === "Employee Database/KYC Documents" && !hrkycTableAppended) {
+                                                                //         // alert(resultto);  // Display the result
+                                                                //         inserthrkycTableAppended(); // Call the function to append the table
+                                                                //         hrkycTableAppended = true; // Set the flag to true to prevent further appends
+                                                                //     } else if (folderPath === "Employee Database/Declarations" && !hrdecTableAppended) {
+                                                                //         // alert(resultto);  // Display the result
+                                                                //         inserthrdecTableAppended(); // Call the function to append the table
+                                                                //         hrdecTableAppended = true; // Set the flag to true to prevent further appends
+                                                                //     } else if (folderPath === "Employee Database/Offboarding" && !hroffboardTableAppended) {
+                                                                //         // alert(resultto);  // Display the result
+                                                                //         inserthroffboardTableAppended(); // Call the function to append the table
+                                                                //         hroffboardTableAppended = true; // Set the flag to true to prevent further appends
+                                                                //     } else if (folderPath === "Employee Database/ESOP" && !hresopTableAppended) {
+                                                                //         // alert(resultto);  // Display the result
+                                                                //         inserthresopTableAppended(); // Call the function to append the table
+                                                                //         hresopTableAppended = true; // Set the flag to true to prevent further appends
+                                                                //     } else if (folderPath === "Pay Registers/Monthly Payrun" && !hrmpTableAppended) {
+                                                                //         // alert(resultto);  // Display the result
+                                                                //         inserthrmpTableAppended(); // Call the function to append the table
+                                                                //         hrmpTableAppended = true; // Set the flag to true to prevent further appends
+                                                                //     } else if (folderPath === "Pay Registers/Reimbursements" && !hrreimbTableAppended) {
+                                                                //         // alert(resultto);  // Display the result
+                                                                //         inserthrreimTableAppended(); // Call the function to append the table
+                                                                //         hrreimbTableAppended = true; // Set the flag to true to prevent further appends
+                                                                //     } else if (folderPath === "Accounting & Taxation/Direct Tax/Tax Deducted at Source (TDS)/Monthly Payments" && !directtaxmonthlyTableAppended) {
+                                                                //         // alert(resultto);  // Display the result
+                                                                //         insertdirecttaxmonthlyTableAppendeds(); // Call the function to append the table
+                                                                //         directtaxmonthlyTableAppended = true; // Set the flag to true to prevent further appends
+                                                                //     } else if (folderPath === "Accounting & Taxation/Direct Tax/Tax Deducted at Source (TDS)/Quarterly Filings" && !directtaxquarterlyTableAppended) {
+                                                                //         // alert(resultto);  // Display the result
+                                                                //         insertdirecttaxQuarterlyTableAppendeds(); // Call the function to append the table
+                                                                //         directtaxquarterlyTableAppended = true; // Set the flag to true to prevent further appends
+                                                                //     } else if (folderPath === "Accounting & Taxation/Direct Tax/Tax Deducted at Source (TDS)/Litigations" && !directtaxLitigationsTableAppended) {
+                                                                //         // alert(resultto);  // Display the result
+                                                                //         insertdirecttaxLitigationsTableAppendeds(); // Call the function to append the table
+                                                                //         directtaxLitigationsTableAppended = true; // Set the flag to true to prevent further appends
+                                                                //     } else if (folderPath === "Accounting & Taxation/Direct Tax/Advance Tax/Quarterly Payments" && !directtaxQuarterlyPaymentsTableAppended) {
+                                                                //         // alert(resultto);  // Display the result
+                                                                //         insertdirecttaxQuarterlyPaymentsTableAppendeds(); // Call the function to append the table
+                                                                //         directtaxQuarterlyPaymentsTableAppended = true; // Set the flag to true to prevent further appends
+                                                                //     } else if (folderPath === "Accounting & Taxation/Direct Tax/Income Tax/Annual Returns" && !directtaxAnnualReturnsTableAppended) {
+                                                                //         // alert(resultto);  // Display the result
+                                                                //         insertdirecttaxAnnualReturnsTableAppendeds(); // Call the function to append the table
+                                                                //         directtaxAnnualReturnsTableAppended = true; // Set the flag to true to prevent further appends
+                                                                //     } else if (folderPath === "Accounting & Taxation/Direct Tax/Income Tax/Litigations" && !directtaxincomeLitigationsTableAppended) {
+                                                                //         // alert(resultto);  // Display the result
+                                                                //         insertdirecttaxincomeLitigationsTableAppendeds(); // Call the function to append the table
+                                                                //         directtaxincomeLitigationsTableAppended = true; // Set the flag to true to prevent further appends
+                                                                //     } else if (folderPath === "Accounting & Taxation/Indirect Tax/Indirect/GST/Monthly & Quarterly Returns/GSTR-1" && !indirecttaxGSTR1TableAppended) {
+                                                                //         // alert(resultto);  // Display the result
+                                                                //         insertindirecttaxGSTR1TableAppendeds(); // Call the function to append the table
+                                                                //         indirecttaxGSTR1TableAppended = true; // Set the flag to true to prevent further appends
+                                                                //     } else if (folderPath === "Accounting & Taxation/Indirect Tax/Indirect/GST/Monthly & Quarterly Returns/GSTR 3B" && !indirecttaxGSTR3bTableAppended) {
+                                                                //         // alert(resultto);  // Display the result
+                                                                //         insertindirecttaxGSTR3bTableAppendeds(); // Call the function to append the table
+                                                                //         indirecttaxGSTR3bTableAppended = true; // Set the flag to true to prevent further appends
+                                                                //     } else if (folderPath === "Accounting & Taxation/Indirect Tax/Indirect/GST/Monthly & Quarterly Returns/GSTR 9" && !indirecttaxGSTR9TableAppended) {
+                                                                //         // alert(resultto);  // Display the result
+                                                                //         insertindirecttaxGSTR9TableAppendeds(); // Call the function to append the table
+                                                                //         indirecttaxGSTR9TableAppended = true; // Set the flag to true to prevent further appends
+                                                                //     } else if (folderPath === "Accounting & Taxation/Indirect Tax/Indirect/GST/Monthly & Quarterly Returns/GSTR 9C" && !indirecttaxGSTR9cTableAppended) {
+                                                                //         // alert(resultto);  // Display the result
+                                                                //         indirecttaxGSTR9cTableAppended(); // Call the function to append the table
+                                                                //         indirecttaxGSTR9cTableAppended = true; // Set the flag to true to prevent further appends
+                                                                //     } else if (folderPath === "Accounting & Taxation/Indirect Tax/Indirect/GST/Litigations" && !indirecttaxLitigationsTableAppended) {
+                                                                //         // alert(resultto);  // Display the result
+                                                                //         // alert("i am inside Litigations");
+                                                                //         insertindirecttaxLitigationsTableAppendeds(); // Call the function to append the table
+                                                                //         indirecttaxLitigationsTableAppended = true; // Set the flag to true to prevent further appends
+                                                                //     }
 
 
 
@@ -6396,7 +6396,9 @@ $('body').on('change', '.dragfile', function () {
 
 
 
-                                                                }
+
+
+                                                                // }
 
                                                                 // Fetch folder contents
 
@@ -8589,7 +8591,7 @@ $('body').on('change', '.dragfile', function () {
 
                                                                             isUploading = true; // Set flag to true when upload starts
 
-                                                                            console.log("I am working here for location start");
+                                                                            // console.log("I am working here for location start");
                                                                             let parentFolderValue = $('#parent-folder').val();
                                                                             console.log(parentFolderValue);
 

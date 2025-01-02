@@ -24171,7 +24171,7 @@ if (is_array($dataTags)) {
     public function fetchfixedFiles(Request $request)
     {
         $user_id = Auth::id();
-        if($user_id === 269){
+        // if($user_id === 269){
              // Fetch folder path from the request query
             $path = $request->query('path');
             // Ensure the folder path is provided
@@ -24180,8 +24180,8 @@ if (is_array($dataTags)) {
             }
             // dd($path);
             // Fetch data from the database where `path` matches and `real_file_name` is not null
-            $data = DB::table('folders')
-            ->where('path', $path)
+            $data = Folder::where('path', $path)
+            ->where('is_delete', 0)
             ->whereNotNull('real_file_name')
             ->first();
 
@@ -24199,8 +24199,7 @@ if (is_array($dataTags)) {
                 // }
                 $real_file_names = json_decode($data->real_file_name, true); // Decode JSON as an array
 
-                $counts = DB::table('common_table')
-                ->where('user_id', $user_id)
+                $counts = CommonTable::where('user_id', $user_id)
                 ->where('location', $path)
                 ->where('is_delete', 0)
                 ->whereIn('real_file_name', $real_file_names)
@@ -24210,8 +24209,7 @@ if (is_array($dataTags)) {
                 ->toArray();
 
                 // Fetch the sum of file sizes for all real_file_names at once
-                $file_sizes = DB::table('common_table')
-                ->where('user_id', $user_id) // Filter by user_id
+                $file_sizes = CommonTable::where('user_id', $user_id) // Filter by user_id
                 ->where('location', $path) // Filter by location
                 ->where('is_delete', 0) // Only consider non-deleted records
                 ->whereIn('real_file_name', $real_file_names) // Filter by real_file_name from the decoded array
@@ -24240,7 +24238,9 @@ if (is_array($dataTags)) {
                 // return response()->json($counts);
                 
             } else {
-                dd('No data found.');
+                // dd('No data found.');
+                return response()->json(['success'=>"No data found"]);
+
             }
             // dd($counts);
 
@@ -24253,10 +24253,10 @@ if (is_array($dataTags)) {
             // dd($data);
             return response()->json(['data'=>$data, 'counts'=>$counts, 'file_sizes'=>$file_sizes]);
 
-        }
-        else{
-            return response()->json($data="User is not authorised");
-        }
+        // }
+        // else{
+        //     return response()->json($data="User is not authorised");
+        // }
        
     }
 
