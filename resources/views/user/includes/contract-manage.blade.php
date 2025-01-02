@@ -686,7 +686,7 @@
         setTimeout(function () {
             $('.contract_main_show').hide();
             $('.main_smart_contract').show().removeClass('hidden');
-        }, 500); // Matches CSS transition duration
+        }, 0); // Matches CSS transition duration
     });
 
     $('.hide_smart_contract').click(function () {
@@ -695,7 +695,7 @@
         setTimeout(function () {
             $('.main_smart_contract').hide();
             $('.contract_main_show').show().removeClass('hidden');
-        }, 500); // Matches CSS transition duration
+        }, 0); // Matches CSS transition duration
     });
 });
 
