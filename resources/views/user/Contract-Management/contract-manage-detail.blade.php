@@ -1864,13 +1864,22 @@
                                                 <div class="gropu_form">
                                                     <label for="con_term">Current Payment Terms </label>
                                                     <div class="renui_term">
-                                                        <p id="contractpayment"></p>
+                                                        <div class="gropu_form addendforms">
+                                                            <label for="payment_terms">Payment Terms <span class="red_star">*</span></label>
+                                                            <div id="quill-payment-termssd" class="quill-editor"></div>
+                                                            <textarea name="con_add_payment_term1" id="contractpaymentds" disabled ></textarea>
+                                                        </div>
+                                                        
                                                     </div>
                                                 </div>
-                                                <div class="gropu_form">
-                                                    <label for="con_add_term">Add to Payment Terms </label>
-                                                    <textarea name="con_add_payment_term" style="height: 150px;"></textarea>
+
+                                                 <!-- Payment Terms -->
+                                                 <div class="gropu_form addendforms">
+                                                    <label for="payment_terms">Payment Terms <span class="red_star">*</span></label>
+                                                    <div id="quill-payment-termssdd" class="quill-editor"></div>
+                                                    <textarea name="con_add_payment_term" id="payment_termssddd" required></textarea>
                                                 </div>
+                                                
                                             </div>
 
                                             <!-- Renewal Terms Addendum Group -->
@@ -1878,13 +1887,22 @@
                                                 <div class="gropu_form">
                                                     <label for="con_term">Current Renewal Terms </label>
                                                     <div class="renui_term">
-                                                        <p id="contractrenewal"></p>
+                                                        <div class="gropu_form addendforms">
+
+                                                            <label for="renewal_terms">Renewal Terms <span class="red_star">*</span></label>
+                                                            <div id="quill-renewal-termssd" class="quill-editor"></div>
+                                                            <textarea name="renewal_terms1" id="contractrenewalds" disabled ></textarea>
+                                                        </div>
+                                                       
                                                     </div>
                                                 </div>
-                                                <div class="gropu_form">
-                                                    <label for="con_add_term">Add to Renewal Terms </label>
-                                                    <textarea name="con_add_renew_term" style="height: 150px;"></textarea>
+                                                <div class="gropu_form addendforms">
+
+                                                    <label for="renewal_terms">Renewal Terms <span class="red_star">*</span></label>
+                                                    <div id="quill-renewal-termssdd" class="quill-editor"></div>
+                                                    <textarea name="con_add_renew_term" id="renewal_termssddd" required></textarea>
                                                 </div>
+                                                
                                             </div>
 
                                             <!-- Fee Exclusion Matrix Addendum Group -->
@@ -1892,12 +1910,18 @@
                                                 <div class="gropu_form">
                                                     <label for="con_term">Current Fee Exclusion Matrix </label>
                                                     <div class="renui_term">
-                                                        <p id="contractfee"></p>
+                                                        <div class="gropu_form addendforms">
+                                                            <label for="fee_escalation_clause">Fee Escalation Clause <span class="red_star">*</span></label>
+                                                            <div id="quill-fee-escalation-clausesd" class="quill-editor"></div>
+                                                            <textarea name="fee_escalation_clause1" id="contractfeeds" disabled ></textarea>
+                                                        </div>
+                                                        
                                                     </div>
                                                 </div>
-                                                <div class="gropu_form">
-                                                    <label for="con_add_term">Add to Fee Exclusion Matrix </label>
-                                                    <textarea name="con_add_fee_term" style="height: 150px;"></textarea>
+                                                <div class="gropu_form addendforms">
+                                                    <label for="fee_escalation_clause">Fee Escalation Clause <span class="red_star">*</span></label>
+                                                    <div id="quill-fee-escalation-clausesdd" class="quill-editor"></div>
+                                                    <textarea name="con_add_fee_term" id="fee_escalation_clausesddd" required></textarea>
                                                 </div>
 
                                             </div>
@@ -2638,7 +2662,7 @@
         $('#AddendfileNamefilename').text(AddendfileName);
         $('#contractrenewal').text(contractrenewal);
         $('#contractfee').text(contractfee);
-        $('#contractpayment').text(contractpayment);
+        $('#contractpaymentd').text(contractpayment);
         $('#contractid').val(contractid);
         $('#contractcustid').val(contractcustid);
 
@@ -2648,7 +2672,7 @@
 
     });
 </script>
-<script>
+{{-- <script>
     $(document).ready(function() {
         // Listen for changes in the "Addendum_type" select field
         $('#Addendum_type').on('change', function() {
@@ -2669,7 +2693,7 @@
             }
         });
     });
-</script>
+</script> --}}
 
 <link href="https://cdn.quilljs.com/1.3.7/quill.snow.css" rel="stylesheet">
 <script src="https://cdn.quilljs.com/1.3.7/quill.min.js"></script>
@@ -2765,4 +2789,117 @@
         syncContent(feeEscalationClauseEditord, "fee_escalation_clausesd");
     });
 </script>
+
+<script>
+    // Declare variables in the global scope
+    let renewalTermsEditordds, paymentTermsEditordds, feeEscalationClauseEditordds;
+
+    document.addEventListener("DOMContentLoaded", function () {
+        const options = {
+            theme: 'snow',
+            placeholder: 'Enter text here...',
+            modules: {
+                toolbar: [
+                    [{ header: [1, 2, false] }],
+                    ['bold', 'italic', 'underline'],
+                    ['link', 'blockquote', 'code-block'],
+                    [{ list: 'ordered' }, { list: 'bullet' }],
+                    ['clean'],
+                ],
+            },
+        };
+
+        // Initialize editors
+        renewalTermsEditordds = new Quill("#quill-renewal-termssd", options);
+        paymentTermsEditordds = new Quill("#quill-payment-termssd", options);
+        feeEscalationClauseEditordds = new Quill("#quill-fee-escalation-clausesd", options);
+
+        const renewalTermsEditorddsr = new Quill("#quill-renewal-termssdd", options);
+        const paymentTermsEditorddsr = new Quill("#quill-payment-termssdd", options);
+        const feeEscalationClauseEditorddsr = new Quill("#quill-fee-escalation-clausesdd", options);
+
+        // Synchronize content
+        const editorConfig = [
+            { editor: renewalTermsEditordds, id: "contractrenewalds" },
+            { editor: paymentTermsEditordds, id: "contractpaymentds" },
+            { editor: feeEscalationClauseEditordds, id: "contractfeeds" },
+            { editor: renewalTermsEditorddsr, id: "renewal_termssddd" },
+            { editor: paymentTermsEditorddsr, id: "payment_termssddd" },
+            { editor: feeEscalationClauseEditorddsr, id: "fee_escalation_clausesddd" },
+        ];
+
+        editorConfig.forEach(({ editor, id }) => {
+            syncContent(editor, id);
+        });
+
+        function syncContent(editor, textareaId) {
+            const textarea = document.getElementById(textareaId);
+            editor.on('text-change', () => {
+                textarea.value = editor.root.innerHTML;
+            });
+        }
+    });
+
+    // Handle Addend click event
+    $(document).on('click', '.Addend', function () {
+        const AddendfileName = $(this).data('file-name');
+        const contractid = $(this).data('id');
+        const contractrenewalsd = $(this).data('renewal');
+        const contractfeesd = $(this).data('fee');
+        const contractpaymentsd = $(this).data('payment');
+        const contractcustid = $(this).data('custid');
+
+        $('#AddendfileNamefilename').text(AddendfileName);
+        $('#contractrenewalds').val(contractrenewalsd);
+        $('#contractfeeds').val(contractfeesd);
+        $('#contractpaymentds').val(contractpaymentsd);
+        $('#contractid').val(contractid);
+        $('#contractcustid').val(contractcustid);
+
+        // Update Quill editors
+        renewalTermsEditordds.root.innerHTML = contractrenewalsd;
+        feeEscalationClauseEditordds.root.innerHTML = contractfeesd;
+        paymentTermsEditordds.root.innerHTML = contractpaymentsd;
+    });
+
+    // Handle Addendum type change event
+    $(document).on('change', '#Addendum_type', function () {
+        const selectedType = $(this).val();
+        $('.group_payment_terms, .group_renewal_terms, .group_fee_exclusion').hide();
+        if (selectedType === 'Payment Terms Addendum') {
+            $('.group_payment_terms').show();
+        } else if (selectedType === 'Renewal Terms Addendum') {
+            $('.group_renewal_terms').show();
+        } else if (selectedType === 'Fee Exclusion Matrix Addendum') {
+            $('.group_fee_exclusion').show();
+        }
+    });
+</script>
+<script>
+    document.getElementById('Addendum_type').addEventListener('change', function () {
+    // Hide all groups initially
+    document.querySelector('.group_payment_terms').style.display = 'none';
+    document.querySelector('.group_renewal_terms').style.display = 'none';
+    document.querySelector('.group_fee_exclusion').style.display = 'none';
+
+    // Remove "required" attribute from all fields
+    document.querySelectorAll('textarea[required]').forEach(function (textarea) {
+        textarea.removeAttribute('required');
+    });
+
+    // Show the selected group and set "required" attribute for its fields
+    if (this.value === 'Payment Terms Addendum') {
+        document.querySelector('.group_payment_terms').style.display = 'block';
+        document.getElementById('payment_termssddd').setAttribute('required', true);
+    } else if (this.value === 'Renewal Terms Addendum') {
+        document.querySelector('.group_renewal_terms').style.display = 'block';
+        document.getElementById('renewal_termssddd').setAttribute('required', true);
+    } else if (this.value === 'Fee Exclusion Matrix Addendum') {
+        document.querySelector('.group_fee_exclusion').style.display = 'block';
+        document.getElementById('fee_escalation_clausesddd').setAttribute('required', true);
+    }
+});
+
+</script>
+
 @endsection

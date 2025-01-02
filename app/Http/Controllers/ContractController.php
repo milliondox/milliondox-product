@@ -481,43 +481,41 @@ $validated['gstin_file'] = $request->file('gstin_file')
        return redirect()->back()->with('success', 'Notification stored and email sent successfully!');
    }
    
-   public function customeraddend(Request $request){
-       
-       
+   public function customeraddend(Request $request)
+   {
        $contract = CustomerContract::find($request->contractid);
    
        if ($contract) {
-           // Get the existing data or initialize an empty array
+           // Decode existing data or initialize empty arrays
            $paymentTerms = $contract->payment_terms ? json_decode($contract->payment_terms, true) : [];
            $renewalTerms = $contract->renewal_terms ? json_decode($contract->renewal_terms, true) : [];
            $feeExclusionMatrix = $contract->fee_escalation_clause ? json_decode($contract->fee_escalation_clause, true) : [];
    
-           // Check the selected addendum type and update corresponding fields
+           // Update the appropriate field based on the selected addendum type
            switch ($request->Addendum_type) {
                case 'Payment Terms Addendum':
-                   // Append new payment terms to the existing array
                    $paymentTerms[] = $request->con_add_payment_term;
                    $contract->payment_terms = json_encode($paymentTerms);
                    break;
    
                case 'Renewal Terms Addendum':
-                   // Append new renewal terms to the existing array
                    $renewalTerms[] = $request->con_add_renew_term;
                    $contract->renewal_terms = json_encode($renewalTerms);
                    break;
    
                case 'Fee Exclusion Matrix Addendum':
-                   // Append new fee exclusion terms to the existing array
                    $feeExclusionMatrix[] = $request->con_add_fee_term;
                    $contract->fee_escalation_clause = json_encode($feeExclusionMatrix);
                    break;
            }
    
-           // Save the updated contract
            $contract->save();
+           return redirect()->back()->with('success', 'Contract updated successfully!');
        }
-           return redirect()->back()->with('success', 'Contract Updated successfully!');
+   
+       return redirect()->back()->with('error', 'Contract not found!');
    }
+   
    
  
 
