@@ -750,18 +750,18 @@ $(document).ready(function () {
         const templates = {
             1: {
                 template: `
-                    <p><strong>THIS NON-DISCLOSURE AGREEMENT</strong> ("the Agreement") dated this <span class="preview-date">____________________</span> day of <span class="preview-year">____________________</span>.<br><br></p>
-	<p><strong>BETWEEN:</strong></p>
-	<p><span class="preview-fname">____________________</span> of <span class="preview-lname">____________________</span><br>(the "Employer")</p>
-	<p>OF THE FIRST PART</p>
-	<p><strong>- AND -</strong><br></p>
-	<p><span class="preview-secfname">____________________</span> of <span class="preview-seclname">____________________</span><br>(the "Employee")</p>
-	<p>OF THE SECOND PART</p>
-	<p><strong>BACKGROUND:</strong></p>
-	<ol start="1">
-		<li value="1"><span>The Employee is currently or may be employed as an employee with the Employer for the position of: <span class="preview-postion">____________________</span>. In addition to this responsibility or position (the "Employment"), this Agreement also covers any position or responsibility now or later held with the Employer.</span><br></li>
-		<li value="2"><span>The Employee will receive from the Employer, or develop on the behalf of the Employer, Confidential Information as a result of the Employment (the "Permitted Purpose").</span><br></li>
-	</ol>
+                     <p><strong>THIS NON-DISCLOSURE AGREEMENT</strong> ("the Agreement") dated this <span class="preview-date">[date]</span> day of <span class="preview-year">[year]</span>.</p>
+            <p><strong>BETWEEN:</strong></p>
+            <p><span class="preview-fname">[fname]</span> of <span class="preview-lname">[lname]</span> (the "Employer")</p>
+            <p>OF THE FIRST PART</p>
+            <p><strong>- AND -</strong></p>
+            <p><span class="preview-secfname">[secfname]</span> of <span class="preview-seclname">[seclname]</span> (the "Employee")</p>
+            <p>OF THE SECOND PART</p>
+            <p><strong>BACKGROUND:</strong></p>
+            <ol>
+                <li>The Employee is currently or may be employed as an employee with the Employer for the position of: <span class="preview-position">[position]</span>.</li>
+                <li>The Employee will receive from the Employer, or develop on the behalf of the Employer, Confidential Information as a result of the Employment.</li>
+            </ol>
 	<p><strong>IN CONSIDERATION OF</strong> and as a condition of the Employer employing the Employee and the Employer providing the Confidential Information to the Employee in addition to other valuable consideration, the receipt and sufficiency of which consideration is hereby acknowledged, the parties to this Agreement agree as follows:</p>
 	<ol start="1">
 		<li class="lh"><strong><u><span>Confidential Information</span></u></strong><strong><u><br></u></strong></li>
@@ -857,10 +857,13 @@ $(document).ready(function () {
 <li value="25"><span>This Agreement contains the entire understanding between the parties with respect to its subject matter and supersedes all prior or contemporaneous understandings, agreements, representations, and warranties. No modification or amendment to this Agreement will be effective unless made in writing and signed by both parties.</span></li>
                 `,
                 fields: [
-            { section: 'Parties:', id: 'date', label: 'Date', type: 'date' },
-            { section: 'Parties:', id: 'year', label: 'Year', type: 'number' },
-            { section: 'Parties:', id: 'fname', label: 'First Party:', type: 'text' },
-            { section: 'Parties:', id: 'secfname', label: 'Second Party:', type: 'text' }
+            { section: 'Parties', id: 'date', label: 'Date', type: 'date' },
+            { section: 'Parties', id: 'year', label: 'Year', type: 'number' },
+            { section: 'Parties', id: 'fname', label: 'First Party Name', type: 'text' },
+            { section: 'Parties', id: 'lname', label: 'First Party Last Name', type: 'text' },
+            { section: 'Parties', id: 'secfname', label: 'Second Party Name', type: 'text' },
+            { section: 'Parties', id: 'seclname', label: 'Second Party Last Name', type: 'text' },
+            { section: 'Parties', id: 'position', label: 'Position', type: 'text' }
         ]
             },
             // Add other templates as necessary
@@ -947,7 +950,10 @@ $(document).ready(function () {
             });
 
             document.querySelector('.preview-content').innerHTML = updatedContent;
+            document.querySelector('.latest_preview').innerHTML = updatedContent;
         };
+
+      
 
         window.onload = () => {
             loadFields(1);
@@ -973,6 +979,72 @@ $(document).ready(function () {
 });
 
     </script>
+   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script>
+   document.querySelector('.upload_contract').addEventListener('click', () => {
+    const previewContent = document.querySelector('.latest_preview');
+    
+    if (!previewContent) {
+      alert("No preview content found!");
+      return;
+    }
+
+    const { jsPDF } = window.jspdf;
+    const pdf = new jsPDF({
+      orientation: 'portrait',
+      unit: 'pt',
+      format: 'a4',
+    });
+
+    // Dynamically fetch content from the HTML
+    const contentLines = [];
+    previewContent.childNodes.forEach((node) => {
+        if (node.nodeType === Node.TEXT_NODE) {
+            // Include text nodes
+            contentLines.push(node.textContent.trim());
+        } else if (node.nodeType === Node.ELEMENT_NODE) {
+            // Include element text, ignoring extra whitespace
+            contentLines.push(node.textContent.trim());
+        }
+    });
+
+    // Remove empty lines
+    const filteredLines = contentLines.filter(line => line !== "");
+
+    // Add content to PDF with consistent styles
+    pdf.setFont('Arial', 'normal');
+    pdf.setFontSize(12);
+    pdf.setTextColor(0, 0, 0);
+
+    let y = 5; // Starting y-coordinate
+    const lineHeight = 20; // Line height (adjust for spacing)
+
+    const maxWidth = 1000; // Set the maximum width for text to fit the page (adjust as necessary)
+
+    filteredLines.forEach((line) => {
+        // Adjust text to fit within the maxWidth
+        const lines = pdf.splitTextToSize(line, maxWidth);
+        lines.forEach(text => {
+          pdf.text(text, 5, y);
+          y += lineHeight;
+        });
+    });
+
+    // Open the PDF in a new tab
+    const pdfBlob = pdf.output('blob');
+    const pdfURL = URL.createObjectURL(pdfBlob);
+    window.open(pdfURL, '_blank');
+
+    // Trigger download
+    pdf.save('contract.pdf');
+  });
+</script>
+
+    
+    
+    
+    
+    
 
 </body>
 
