@@ -2141,7 +2141,7 @@ $('#draftButton3').on('click', function () {
                                     <div class="title_smart">
                                         <h2 class="title-heading">Non-Disclosure Agreement</h2>
                                     </div>
-                                    <div class="preview-content">
+                                    <div class="preview-content latest_preview">
                                         <!-- Dynamic templates will load here -->
                                     </div>
                                 </div>
