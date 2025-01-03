@@ -25660,6 +25660,35 @@ div.dataTables_wrapper {
     margin: 0;
     padding: 0;
     min-height: 72vh;
+    max-height: 72vh;
+    overflow: auto;
+}
+
+/* Track */
+.dark-only .contract_uploadd .cont_body.entery_body::-webkit-scrollbar-track {
+    background: #363a41;
+}
+
+/* Handle */
+.dark-only .contract_uploadd .cont_body.entery_body::-webkit-scrollbar-thumb {
+    background: #5e5e7d;
+}
+
+/* width */
+.contract_uploadd .cont_body.entery_body::-webkit-scrollbar {
+    width: 5px;
+    height: 5px;
+}
+
+/* Track */
+.contract_uploadd .cont_body.entery_body::-webkit-scrollbar-track {
+    background: #f1f1f1;
+}
+
+/* Handle */
+.contract_uploadd .cont_body.entery_body::-webkit-scrollbar-thumb {
+    background: #bdbdc1;
+      border-radius:50px;
 }
 
 .dark-only .cpllape_btn .line {
